@@ -16,7 +16,7 @@ plugins {
 
 allprojects {
     group = "asia.kala"
-    version = kalaVersion("0.7.0", release = false)
+    version = kalaVersion("0.7.0", release = true)
 
     apply {
         plugin("java-library")
