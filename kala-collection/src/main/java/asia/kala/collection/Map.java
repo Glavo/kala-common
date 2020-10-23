@@ -65,11 +65,11 @@ public interface Map<K, V> extends Equals {
     }
 
     default V getOrDefault(K key, V defaultValue) {
-        return getOption(key).getOrElse(defaultValue);
+        return getOption(key).getOrDefault(defaultValue);
     }
 
     default V getOrElseGet(K key, @NotNull Supplier<? extends V> supplier) {
-        return getOption(key).getOrElseGet(supplier);
+        return getOption(key).getOrElse(supplier);
     }
 
     default <Ex extends Throwable> V getOrThrowException(K key, @NotNull Ex exception) throws Ex {

@@ -1,3 +1,5 @@
+import java.io.RandomAccessFile
+
 buildscript {
     repositories {
         maven(url = "https://plugins.gradle.org/m2/")
@@ -37,7 +39,22 @@ allprojects {
     }
 
     val modularity: org.javamodularity.moduleplugin.extensions.ModularityExtension by project
-    modularity.mixedJavaRelease(8)
+    modularity.standardJavaRelease(9)
+
+    tasks.compileJava {
+        doLast {
+            val tree = fileTree(destinationDir)
+            tree.include("**/*.class")
+            tree.exclude("module-info.class")
+            tree.forEach {
+                RandomAccessFile(it, "rw").use { rf ->
+                    rf.seek(7)   // major version
+                    rf.write(52) // java 8
+                    rf.close()
+                }
+            }
+        }
+    }
 
     if (this != rootProject) {
         java {
@@ -93,20 +110,19 @@ allprojects {
 
     val moduleName: String by project
 
+    tasks.compileTestJava {
+        extensions.configure(org.javamodularity.moduleplugin.extensions.ModuleOptions::class) {
+            addModules = listOf("org.junit.jupiter.api")
+            addReads = mapOf(moduleName to "org.junit.jupiter.api")
+        }
+    }
+
     tasks.test {
         useJUnitPlatform()
         testLogging.showStandardStreams = true
 
         extensions.configure(org.javamodularity.moduleplugin.extensions.TestModuleOptions::class) {
             runOnClasspath = true
-        }
-    }
-
-    tasks.compileTestJava {
-        options.compilerArgs.add("-Xlint:unchecked")
-        extensions.configure(org.javamodularity.moduleplugin.extensions.ModuleOptions::class) {
-            addModules = listOf("org.junit.jupiter.api")
-            addReads = mapOf(moduleName to "org.junit.jupiter.api")
         }
     }
 
