@@ -9,10 +9,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.NoSuchElementException;
 
 
 public final class LinkedBuffer<E> extends ImmutableInternal.LinkedBufferImpl<E>
-        implements MutableSeqOps<E, LinkedBuffer<?>, LinkedBuffer<E>>, Serializable {
+        implements MutableSeqOps<E, LinkedBuffer<?>, LinkedBuffer<E>>, MutableStack<E>, Serializable {
 
     private static final long serialVersionUID = 4403781063629141093L;
 
@@ -103,6 +104,27 @@ public final class LinkedBuffer<E> extends ImmutableInternal.LinkedBufferImpl<E>
         buffer.appendAll(values);
         return buffer;
     }
+
+    //endregion
+
+    //region MutableStack
+
+    @Override
+    public final void push(E value) {
+        prepend(value);
+    }
+
+    @Override
+    public final E pop() {
+        return removeFirst();
+    }
+
+    @Override
+    public final E peek() {
+        return first();
+    }
+
+
 
     //endregion
 

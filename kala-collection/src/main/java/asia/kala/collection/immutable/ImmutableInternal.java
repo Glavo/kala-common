@@ -86,6 +86,11 @@ public final class ImmutableInternal {
         }
 
         @Override
+        public final boolean isEmpty() {
+            return len == 0;
+        }
+
+        @Override
         public final void append(E value) {
             ImmutableList.MutableCons<E> i = new ImmutableList.MutableCons<>(value, ImmutableList.nil());
             if (len == 0) {
@@ -212,6 +217,22 @@ public final class ImmutableInternal {
 
             ((ImmutableList.MutableCons<E>) i).tail = t;
             len -= count;
+        }
+
+        public final E removeFirst() {
+            if (isEmpty()) {
+                throw new NoSuchElementException();
+            }
+
+            E v = first.head;
+            if (len == 1) {
+                first = last = null;
+                aliased = false;
+            } else {
+                first = (ImmutableList.MutableCons<E>) first.tail;
+            }
+            --len;
+            return v;
         }
 
         public final void clear() {
