@@ -23,7 +23,6 @@ public final class DoubleLinkedBuffer<E>
     public DoubleLinkedBuffer() {
     }
 
-    @NotNull
     @SuppressWarnings("unchecked")
     public static <E> @NotNull CollectionFactory<E, ?, DoubleLinkedBuffer<E>> factory() {
         return (DoubleLinkedBuffer.Factory<E>) FACTORY;
