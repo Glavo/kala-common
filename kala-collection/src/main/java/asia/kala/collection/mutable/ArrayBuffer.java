@@ -425,7 +425,7 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
 
     @NotNull
     @Override
-    public final Object[] toArray() {
+    public final Object @NotNull [] toArray() {
         final int size = this.size;
         Object[] arr = new Object[size];
         System.arraycopy(elements, 0, arr, 0, size);
