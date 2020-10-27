@@ -2,6 +2,7 @@ package asia.kala.control;
 
 import asia.kala.annotations.Covariant;
 import asia.kala.annotations.Sealed;
+import asia.kala.function.CheckedRunnable;
 import asia.kala.function.CheckedSupplier;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
@@ -84,6 +85,22 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
         }
     }
 
+    public static void runIgnoreException(@NotNull CheckedRunnable<?> runnable) {
+        Objects.requireNonNull(runnable);
+        try {
+            runnable.run();
+        } catch (Throwable ignored) {
+        }
+    }
+
+    public static void runUnchecked(@NotNull CheckedRunnable<?> runnable) {
+        Objects.requireNonNull(runnable);
+        try {
+            runnable.run();
+        } catch (Throwable e) {
+            Try.throwExceptionUnchecked(e);
+        }
+    }
 
     /**
      * Returns {@code true} if the {@code Try} is {@code Success}, otherwise return {@code false}.
@@ -156,7 +173,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
      * @throws E if the {@code Try} is a {@code Failure}
      */
     @NotNull
-    public abstract <E extends Throwable> Try<T> rethrow() throws E;
+    public abstract <E extends Throwable> Success<T> rethrow() throws E;
 
     /**
      * If the {@code Try} is a {@code Failure} and the {@code throwable} is an instance of {@code type},
@@ -297,17 +314,12 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
             return Either.right(value);
         }
 
-        //
-        // -- Functor
-        //
-
         /**
          * {@inheritDoc}
          */
         @Override
         @NotNull
         public final <U> Success<U> map(@NotNull Function<? super T, ? extends U> mapper) {
-            Objects.requireNonNull(mapper);
             return new Success<>(mapper.apply(value));
         }
 
@@ -393,7 +405,6 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
         @Override
         @Contract("_ -> new")
         public final Success<T> recover(@NotNull Function<? super Throwable, ? extends T> op) {
-            Objects.requireNonNull(op);
             return Try.success(op.apply(throwable));
         }
 
@@ -440,7 +451,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
         @NotNull
         @Override
         @Contract("-> fail")
-        public <E extends Throwable> Try<T> rethrow() throws E {
+        public <E extends Throwable> Success<T> rethrow() throws E {
             throw (E) throwable;
         }
 
@@ -462,10 +473,6 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
         public final Either<Throwable, T> toEither() {
             return Either.left(throwable);
         }
-
-        //
-        // -- Functor
-        //
 
         /**
          * {@inheritDoc}
