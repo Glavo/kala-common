@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
 public final class DoubleLinkedBuffer<E>
-        extends AbstractBuffer<E> implements BufferOps<E, DoubleLinkedBuffer<?>, DoubleLinkedBuffer<E>>, MutableStack<E> {
+        extends AbstractBuffer<E> implements BufferOps<E, DoubleLinkedBuffer<?>, DoubleLinkedBuffer<E>>, MutableStack<E>, MutableQueue<E> {
 
     private static final Factory<?> FACTORY = new Factory<>();
 
@@ -159,6 +159,50 @@ public final class DoubleLinkedBuffer<E>
     }
 
     @Override
+    public final void enqueue(E value) {
+        prepend(value);
+    }
+
+    @Override
+    public final E dequeue() {
+        return removeLast();
+    }
+
+    public final E removeFirst() {
+        final Node<E> first = this.first;
+        if (first == null) {
+            throw new NoSuchElementException();
+        }
+
+        final Node<E> next = first.next;
+        this.first = next;
+        if (next == null) {
+            this.last = null;
+        } else {
+            next.prev = null;
+        }
+        --len;
+        return first.value;
+    }
+
+    public final E removeLast() {
+        final Node<E> last = this.last;
+        if (last == null) {
+            throw new NoSuchElementException();
+        }
+
+        final Node<E> prev = last.prev;
+        this.last = prev;
+        if (prev == null) {
+            this.first = null;
+        } else {
+            prev.next = null;
+        }
+        --len;
+        return last.value;
+    }
+
+    @Override
     public final void insert(int index, E value) {
         final int len = this.len;
         if (index < 0 || index > this.len) {
@@ -258,20 +302,7 @@ public final class DoubleLinkedBuffer<E>
 
     @Override
     public final E pop() {
-        final Node<E> first = this.first;
-        if (first == null) {
-            throw new NoSuchElementException();
-        }
-
-        final Node<E> next = first.next;
-        this.first = next;
-        if (next == null) {
-            this.last = null;
-        } else {
-            next.prev = null;
-        }
-        --len;
-        return first.value;
+        return removeFirst();
     }
 
     @Override
