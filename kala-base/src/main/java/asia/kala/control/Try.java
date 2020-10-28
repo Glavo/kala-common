@@ -182,7 +182,6 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
      * {@inheritDoc}
      */
     @Override
-    @NotNull
     public abstract <U> @NotNull Try<U> map(@NotNull Function<? super T, ? extends U> mapper);
 
     public static final class Success<T> extends Try<T> {

@@ -2,6 +2,7 @@ package asia.kala.collection.mutable;
 
 import asia.kala.collection.AbstractIterator;
 import asia.kala.factory.CollectionFactory;
+import asia.kala.function.IndexedFunction;
 import asia.kala.iterator.Iterators;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -10,6 +11,7 @@ import org.jetbrains.annotations.Range;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
+import java.util.function.Function;
 
 public final class DoubleLinkedBuffer<E>
         extends AbstractBuffer<E> implements BufferOps<E, DoubleLinkedBuffer<?>, DoubleLinkedBuffer<E>>, MutableStack<E>, MutableQueue<E> {
@@ -313,6 +315,44 @@ public final class DoubleLinkedBuffer<E>
     @Override
     public final boolean isEmpty() {
         return len == 0;
+    }
+
+    @Override
+    public final void mapInPlace(@NotNull Function<? super E, ? extends E> mapper) {
+        Node<E> node = this.first;
+        while (node != null) {
+            node.value = mapper.apply(node.value);
+            node = node.next;
+        }
+    }
+
+    @Override
+    public final void mapInPlaceIndexed(@NotNull IndexedFunction<? super E, ? extends E> mapper) {
+        Node<E> node = this.first;
+        int idx = 0;
+        while (node != null) {
+            node.value = mapper.apply(idx++, node.value);
+            node = node.next;
+        }
+    }
+
+    @Override
+    public final void reverse() {
+        final int size = this.len;
+        if (size == 0) {
+            return;
+        }
+        int limit = size / 2;
+        Node<E> f = this.first;
+        Node<E> l = this.last;
+        for (int i = 0; i < limit; i++) {
+            E tmp = f.value;
+            f.value = l.value;
+            l.value = tmp;
+
+            f = f.next;
+            l = l.prev;
+        }
     }
 
     @Override

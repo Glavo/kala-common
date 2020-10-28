@@ -302,6 +302,20 @@ public final class ImmutableInternal {
         }
 
         @Override
+        public final void reverse() {
+            if (len == 0) {
+                return;
+            }
+            LinkedBufferImpl<E> newBuffer = new LinkedBuffer<>();
+            for (E e : this) {
+                newBuffer.prepend(e);
+            }
+            this.first = newBuffer.first;
+            this.last = newBuffer.last;
+            this.aliased = false;
+        }
+
+        @Override
         public final int size() {
             return len;
         }

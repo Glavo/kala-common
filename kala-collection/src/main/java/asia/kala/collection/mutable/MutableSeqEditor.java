@@ -27,6 +27,13 @@ public class MutableSeqEditor<E, C extends MutableSeq<E>> extends MutableCollect
 
     @NotNull
     @Contract("-> this")
+    public MutableSeqEditor<E, C> reverse() {
+        source.reverse();
+        return this;
+    }
+
+    @NotNull
+    @Contract("-> this")
     public MutableSeqEditor<E, C> sort() {
         source.sort();
         return this;

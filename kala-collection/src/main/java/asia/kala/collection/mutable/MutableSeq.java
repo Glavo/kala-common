@@ -120,6 +120,20 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
         }
     }
 
+    @Contract(mutates = "this")
+    default void reverse() {
+        final int size = this.size();
+        if (size == 0) {
+            return;
+        }
+
+        for (int i = 0; i < size / 2; i++) {
+            E tem = get(i);
+            set(i, get(size - i - 1));
+            set(size - i - 1, tem);
+        }
+    }
+
     //
     // -- MutableCollection
     //

@@ -77,14 +77,14 @@ public class BufferEditor<E, C extends Buffer<E>> extends MutableSeqEditor<E, C>
 
     @NotNull
     @Contract("_ -> this")
-    public BufferEditor<E, C> remove(int index) {
+    public BufferEditor<E, C> removeAt(int index) {
         source.removeAt(index);
         return this;
     }
 
     @NotNull
     @Contract("_, _ -> this")
-    public BufferEditor<E, C> remove(int index, int count) {
+    public BufferEditor<E, C> removeAt(int index, int count) {
         source.removeAt(index, count);
         return this;
     }
