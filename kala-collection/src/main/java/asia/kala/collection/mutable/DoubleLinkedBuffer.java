@@ -181,7 +181,7 @@ public final class DoubleLinkedBuffer<E>
     }
 
     @Override
-    public final E remove(int index) {
+    public final E removeAt(int index) {
         if (index < 0 || index >= len) {
             throw new IndexOutOfBoundsException();
         }

@@ -332,7 +332,7 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
     }
 
     @Override
-    public final E remove(int index) {
+    public final E removeAt(int index) {
         checkInBound(index);
         E v = (E) elements[index];
         System.arraycopy(elements, index + 1, elements, index, size - index);
@@ -341,7 +341,7 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
     }
 
     @Override
-    public final void remove(int index, int count) {
+    public final void removeAt(int index, int count) {
         if (count < 0) {
             throw new IllegalArgumentException("count: " + count);
         }

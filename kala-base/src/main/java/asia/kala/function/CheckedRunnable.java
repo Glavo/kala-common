@@ -2,6 +2,7 @@ package asia.kala.function;
 
 import asia.kala.control.Try;
 
+@FunctionalInterface
 public interface CheckedRunnable<Ex extends Throwable> extends Runnable {
 
     void runChecked() throws Ex;

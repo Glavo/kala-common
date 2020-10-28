@@ -314,7 +314,7 @@ public final class AsJavaConvert {
 
         @Override
         public E remove(int index) {
-            return collection.remove(index);
+            return collection.removeAt(index);
         }
 
         @Override

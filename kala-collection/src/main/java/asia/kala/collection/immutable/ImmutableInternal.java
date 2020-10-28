@@ -142,7 +142,7 @@ public final class ImmutableInternal {
 
         @Override
         @SuppressWarnings("unchecked")
-        public final E remove(int index) {
+        public final E removeAt(int index) {
             if (index < 0 || index >= len) {
                 throw new IndexOutOfBoundsException("Index out of range: " + index);
             }
@@ -174,7 +174,7 @@ public final class ImmutableInternal {
 
         @SuppressWarnings("unchecked")
         @Override
-        public final void remove(int index, int count) {
+        public final void removeAt(int index, int count) {
             if (count < 0) {
                 throw new IllegalArgumentException("count: " + count);
             }
@@ -186,7 +186,7 @@ public final class ImmutableInternal {
                 return;
             }
             if (count == 1) {
-                remove(index);
+                removeAt(index);
                 return;
             }
             if (count == len) {

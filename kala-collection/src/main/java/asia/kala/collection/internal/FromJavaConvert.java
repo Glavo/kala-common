@@ -204,7 +204,7 @@ public final class FromJavaConvert {
         }
 
         @Override
-        public E remove(int index) {
+        public E removeAt(int index) {
             return list.remove(index);
         }
 

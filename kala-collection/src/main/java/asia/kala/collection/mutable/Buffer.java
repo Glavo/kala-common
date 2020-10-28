@@ -176,12 +176,12 @@ public interface Buffer<E> extends MutableSeq<E> {
 
     @Contract(mutates = "this")
     @Flow(sourceIsContainer = true)
-    E remove(@Range(from = 0, to = Integer.MAX_VALUE) int index);
+    E removeAt(@Range(from = 0, to = Integer.MAX_VALUE) int index);
 
     @Contract(mutates = "this")
-    default void remove(int index, int count) {
+    default void removeAt(int index, int count) {
         for (int i = 0; i < count; i++) {
-            remove(index);
+            removeAt(index);
         }
     }
 
@@ -193,7 +193,7 @@ public interface Buffer<E> extends MutableSeq<E> {
         if (n <= 0) {
             return;
         }
-        remove(0, Integer.min(n, size()));
+        removeAt(0, Integer.min(n, size()));
     }
 
     @Contract(mutates = "this")
@@ -219,7 +219,7 @@ public interface Buffer<E> extends MutableSeq<E> {
         if (n >= size) {
             return;
         }
-        remove(n, size - n);
+        removeAt(n, size - n);
     }
 
     @Contract(mutates = "this")
