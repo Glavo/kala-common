@@ -5,7 +5,6 @@ buildscript {
         maven(url = "https://plugins.gradle.org/m2/")
     }
     dependencies {
-        classpath("org.javamodularity:moduleplugin:1.7.0")
         classpath("com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5")
     }
 }
@@ -20,7 +19,6 @@ allprojects {
 
     apply {
         plugin("java-library")
-        plugin("org.javamodularity.moduleplugin")
         plugin("maven-publish")
         plugin("com.jfrog.bintray")
     }
@@ -38,10 +36,10 @@ allprojects {
         testImplementation("org.junit.jupiter:junit-jupiter:5.7.0")
     }
 
-    val modularity: org.javamodularity.moduleplugin.extensions.ModularityExtension by project
-    modularity.standardJavaRelease(9)
-
     tasks.compileJava {
+        modularity.inferModulePath.set(true)
+        options.release.set(9)
+
         doLast {
             val tree = fileTree(destinationDir)
             tree.include("**/*.class")
@@ -108,22 +106,9 @@ allprojects {
         }
     }
 
-    val moduleName: String by project
-
-    tasks.compileTestJava {
-        extensions.configure(org.javamodularity.moduleplugin.extensions.ModuleOptions::class) {
-            addModules = listOf("org.junit.jupiter.api")
-            addReads = mapOf(moduleName to "org.junit.jupiter.api")
-        }
-    }
-
     tasks.test {
         useJUnitPlatform()
         testLogging.showStandardStreams = true
-
-        extensions.configure(org.javamodularity.moduleplugin.extensions.TestModuleOptions::class) {
-            runOnClasspath = true
-        }
     }
 
     configure<com.jfrog.bintray.gradle.BintrayExtension> {
