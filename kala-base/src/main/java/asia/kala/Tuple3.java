@@ -83,10 +83,9 @@ public final class Tuple3<@Covariant T1, @Covariant T2, @Covariant T3> extends H
     /**
      * {@inheritDoc}
      */
-    @NotNull
     @Override
     @SuppressWarnings("unchecked")
-    public final <U> U[] toArray(@NotNull IntFunction<U[]> generator) {
+    public final <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
         U[] arr = generator.apply(arity());
         arr[0] = (U) this._1;
         arr[1] = (U) this._2;
@@ -132,32 +131,18 @@ public final class Tuple3<@Covariant T1, @Covariant T2, @Covariant T3> extends H
     /**
      * {@inheritDoc}
      */
-    @NotNull
     @Override
-    public final Tuple2<T2, T3> tail() {
+    public final @NotNull Tuple2<T2, T3> tail() {
         return Tuple.of(_2, _3);
     }
 
     /**
      * {@inheritDoc}
      */
-    @NotNull
+    @Override
     @Contract("_ -> new")
-    @Override
-    public final <H> Tuple4<H, T1, T2, T3> cons(H head) {
+    public final <H> @NotNull Tuple4<H, T1, T2, T3> cons(H head) {
         return new Tuple4<>(head, _1, _2, _3);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public final int hashCode() {
-        int hash = 0;
-        hash = 31 * hash + Objects.hashCode(_1);
-        hash = 31 * hash + Objects.hashCode(_2);
-        hash = 31 * hash + Objects.hashCode(_3);
-        return hash + Tuple.HASH_MAGIC;
     }
 
     /**
@@ -173,6 +158,18 @@ public final class Tuple3<@Covariant T1, @Covariant T2, @Covariant T3> extends H
         }
         Tuple3<?, ?, ?> t = (Tuple3<?, ?, ?>) o;
         return Objects.equals(_1, t._1) && Objects.equals(_2, t._2) && Objects.equals(_3, t._3);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final int hashCode() {
+        int hash = 0;
+        hash = 31 * hash + Objects.hashCode(_1);
+        hash = 31 * hash + Objects.hashCode(_2);
+        hash = 31 * hash + Objects.hashCode(_3);
+        return hash + Tuple.HASH_MAGIC;
     }
 
     /**

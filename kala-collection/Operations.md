@@ -24,20 +24,20 @@
   * `size()`
   * `knownSize()`
 * Size Compare Operations
-  * sizeCompare(int)
-  * sizeCompare(Iterable)
-  * sizeIs(int)
-  * sizeIs(Iterable)
-  * sizeEquals(int)
-  * sizeEquals(Iterable)
-  * sizeLessThan(int)
-  * sizeLessThan(Iterable)
-  * sizeLessThanOrEquals(int)
-  * sizeLessThanOrEquals(Iterable)
-  * sizeGreaterThan(int)
-  * sizeGreaterThan(Iterable)
-  * sizeGreaterThanOrEquals(int)
-  * sizeGreaterThanOrEquals(Iterable)
+  * `sizeCompare(int)`
+  * `sizeCompare(Iterable)`
+  * `sizeIs(int)`
+  * `sizeIs(Iterable)`
+  * `sizeEquals(int)`
+  * `sizeEquals(Iterable)`
+  * `sizeLessThan(int)`
+  * `sizeLessThan(Iterable)`
+  * `sizeLessThanOrEquals(int)`
+  * `sizeLessThanOrEquals(Iterable)`
+  * `sizeGreaterThan(int)`
+  * `sizeGreaterThan(Iterable)`
+  * `sizeGreaterThanOrEquals(int)`
+  * `sizeGreaterThanOrEquals(Iterable)`
 * Positional Access Operations
   * `isDefinedAt(int)`
   * `get(int)`
@@ -50,6 +50,9 @@
   * `insertAll(int, Iterator<E>)`
   * `removeAt(int)`
   * `removeAt(int, int)`
+* Reversal Operations
+  * `reverseIterator()`
+  * `reversed()`
 * Modification Operations
   * `append(E)`
   * `appendAll(E[])`
@@ -77,6 +80,7 @@
   * `remove(K)`
   * `removeIfExists(K)`
 * Element Retrieval Operations
+  * `find(Predicate<E>)`
   * `first()`
   * `first(Predicate<E>)`
   * `firstOrNull()`
@@ -90,14 +94,14 @@
   * `lastOption()`
   * `lastOption(Predicate<E>)`
 * Element Conditions
-  * `anyMatch(Predicate<E>)`
-  * `allMatch(Predicate<E>)`
-  * `noneMatch(Predicate<E>)`
   * `contains(Object)`
   * `containsAll(E[])`
   * `containsAll(Iterable<?>)`
   * `sameElements(Iterable<?>)`
   * `sameElements(Iterable<?>, boolean)`
+  * `anyMatch(Predicate<E>)`
+  * `allMatch(Predicate<E>)`
+  * `noneMatch(Predicate<E>)`
 * Search Operations
   * `indexOf(Object)`
   * `indexOf(Object, int)`
@@ -119,6 +123,10 @@
   * `map(Function<E, U>)`
   * `flatMap(Function<E, Iterable<U>>)`
   * `span(Predicate<E>)`
+  * `chunked(int)`
+  * `windowed(int)`
+  * `windowed(int, int)`
+  * `windowed(int, int, boolean)`
 * Aggregate Operations
   * `count(Predicate<E>)`
   * `max()`
@@ -165,6 +173,7 @@
   * `toDoubleLinkedBuffer()`
 * Traverse Operations
   * `forEach(Consumer<E>)`
+  * `forEachPrimitive(T_CONSUMER)`
   * `forEachChecked(CheckedConsumer<E>)`
   * `forEachUnchecked(CheckedConsumer<E>)`
   * `forEachIndexed(IndexedConsumer<E>)`

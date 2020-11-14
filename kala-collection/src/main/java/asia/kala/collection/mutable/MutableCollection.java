@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 public interface MutableCollection<E> extends Collection<E> {
 
-    //region Factory methods
+    //region Static Factories
 
     @NotNull
     static <E> CollectionFactory<E, ?, ? extends MutableCollection<E>> factory() {

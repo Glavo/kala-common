@@ -74,10 +74,9 @@ public final class Tuple2<@Covariant T1, @Covariant T2> extends HList<T1, Tuple1
     /**
      * {@inheritDoc}
      */
-    @NotNull
     @Override
     @SuppressWarnings("unchecked")
-    public final <U> U[] toArray(@NotNull IntFunction<U[]> generator) {
+    public final <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
         U[] arr = generator.apply(arity());
         arr[0] = (U) this._1;
         arr[1] = (U) this._2;
@@ -113,19 +112,17 @@ public final class Tuple2<@Covariant T1, @Covariant T2> extends HList<T1, Tuple1
     /**
      * {@inheritDoc}
      */
-    @NotNull
     @Override
-    public final Tuple1<T2> tail() {
+    public final @NotNull Tuple1<T2> tail() {
         return Tuple.of(_2);
     }
 
     /**
      * {@inheritDoc}
      */
-    @NotNull
     @Contract("_ -> new")
     @Override
-    public final <H> Tuple3<H, T1, T2> cons(H head) {
+    public final <H> @NotNull Tuple3<H, T1, T2> cons(H head) {
         return new Tuple3<>(head, _1, _2);
     }
 
@@ -162,17 +159,6 @@ public final class Tuple2<@Covariant T1, @Covariant T2> extends HList<T1, Tuple1
      * {@inheritDoc}
      */
     @Override
-    public final int hashCode() {
-        int hash = 0;
-        hash = 31 * hash + Objects.hashCode(_1);
-        hash = 31 * hash + Objects.hashCode(_2);
-        return hash + Tuple.HASH_MAGIC;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public final boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -182,6 +168,17 @@ public final class Tuple2<@Covariant T1, @Covariant T2> extends HList<T1, Tuple1
         }
         Tuple2<?, ?> t = (Tuple2<?, ?>) o;
         return Objects.equals(_1, t._1) && Objects.equals(_2, t._2);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final int hashCode() {
+        int hash = 0;
+        hash = 31 * hash + Objects.hashCode(_1);
+        hash = 31 * hash + Objects.hashCode(_2);
+        return hash + Tuple.HASH_MAGIC;
     }
 
     /**

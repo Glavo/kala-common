@@ -22,8 +22,7 @@ public interface Mappable<@Covariant T> {
      * @param mapper a non-interfering stateless function to apply to each element
      * @return the new container
      */
-    @NotNull
     @Contract(pure = true)
-    <U> Mappable<U> map(@NotNull Function<? super T, ? extends U> mapper);
+    <U> @NotNull Mappable<U> map(@NotNull Function<? super T, ? extends U> mapper);
 }
 

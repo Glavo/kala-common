@@ -32,8 +32,7 @@ public abstract class HList<@Covariant H, @Covariant T extends Tuple> extends No
      *
      * @return the tail of this heterogeneous list
      */
-    @NotNull
-    public abstract T tail();
+    public abstract @NotNull T tail();
 
     /**
      * {@inheritDoc}

@@ -34,7 +34,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         this.array = array;
     }
 
-    //region Factory methods
+    //region Static Factories
 
     @NotNull
     public static <E> CollectionFactory<E, ?, ? extends ArraySeq<E>> factory() {
@@ -99,7 +99,6 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     @NotNull
     @Contract(pure = true)
     public static <E> ArraySeq<E> from(E @NotNull [] values) {
-        assert values != null;
         if (values.length == 0) {
             return empty();
         }
@@ -395,8 +394,6 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public final boolean containsAll(@NotNull Iterable<?> values) {
-        assert values != null;
-
         for (Object v : values) {
             if (!contains(v)) {
                 return false;

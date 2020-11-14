@@ -1,5 +1,6 @@
 package asia.kala.traversable;
 
+import asia.kala.annotations.DeprecatedReplaceWith;
 import asia.kala.control.OptionInt;
 import asia.kala.function.BooleanConsumer;
 import asia.kala.function.CheckedBooleanConsumer;
@@ -15,9 +16,10 @@ import java.util.function.IntPredicate;
 public interface IntTraversable
         extends PrimitiveTraversable<Integer, IntTraversable, IntIterator, int[], OptionInt, IntConsumer, IntPredicate> {
 
-    @NotNull
     @Override
-    IntIterator iterator();
+    @NotNull IntIterator iterator();
+
+    //region Element Conditions
 
     default boolean contains(int value) {
         return knownSize() != 0 && iterator().contains(value);
@@ -36,6 +38,10 @@ public interface IntTraversable
         return true;
     }
 
+    //endregion
+
+    //region Aggregate Operations
+
     default int max() {
         if (knownSize() == 0) {
             throw new NoSuchElementException();
@@ -49,6 +55,8 @@ public interface IntTraversable
         }
         return iterator().min();
     }
+
+    //endregion
 
     @Override
     default int @NotNull [] toArray() {
@@ -68,8 +76,11 @@ public interface IntTraversable
         }
     }
 
+    //region Traverse Operations
+
     @Override
     @Deprecated
+    @DeprecatedReplaceWith("forEachPrimitive(action::accept)")
     default void forEach(@NotNull Consumer<? super Integer> action) {
         if (action instanceof IntConsumer) {
             forEachPrimitive(((IntConsumer) action));
@@ -90,4 +101,6 @@ public interface IntTraversable
     default void forEachUnchecked(@NotNull CheckedIntConsumer<?> action) {
         forEachPrimitive(action);
     }
+
+    //endregion
 }

@@ -124,10 +124,9 @@ public final class Tuple7<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
     /**
      * {@inheritDoc}
      */
-    @NotNull
     @Override
     @SuppressWarnings("unchecked")
-    public final <U> U[] toArray(@NotNull IntFunction<U[]> generator) {
+    public final <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
         U[] arr = generator.apply(arity());
         arr[0] = (U) this._1;
         arr[1] = (U) this._2;
@@ -213,20 +212,33 @@ public final class Tuple7<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
     /**
      * {@inheritDoc}
      */
-    @NotNull
     @Override
-    public final Tuple6<T2, T3, T4, T5, T6, T7> tail() {
+    public final @NotNull Tuple6<T2, T3, T4, T5, T6, T7> tail() {
         return Tuple.of(_2, _3, _4, _5, _6, _7);
     }
 
     /**
      * {@inheritDoc}
      */
-    @NotNull
-    @Contract("_ -> new")
     @Override
-    public final <H> Tuple8<H, T1, T2, T3, T4, T5, T6, T7> cons(H head) {
+    @Contract("_ -> new")
+    public final <H> @NotNull Tuple8<H, T1, T2, T3, T4, T5, T6, T7> cons(H head) {
         return new Tuple8<>(head, _1, _2, _3, _4, _5, _6, _7);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Tuple7<?, ?, ?, ?, ?, ?, ?>)) {
+            return false;
+        }
+        Tuple7<?, ?, ?, ?, ?, ?, ?> t = (Tuple7<?, ?, ?, ?, ?, ?, ?>) o;
+        return Objects.equals(_1, t._1) && Objects.equals(_2, t._2) && Objects.equals(_3, t._3) && Objects.equals(_4, t._4) && Objects.equals(_5, t._5) && Objects.equals(_6, t._6) && Objects.equals(_7, t._7);
     }
 
     /**
@@ -243,21 +255,6 @@ public final class Tuple7<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
         hash = 31 * hash + Objects.hashCode(_6);
         hash = 31 * hash + Objects.hashCode(_7);
         return hash + Tuple.HASH_MAGIC;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public final boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Tuple7<?, ?, ?, ?, ?, ?, ?>)) {
-            return false;
-        }
-        Tuple7<?, ?, ?, ?, ?, ?, ?> t = (Tuple7<?, ?, ?, ?, ?, ?, ?>) o;
-        return Objects.equals(_1, t._1) && Objects.equals(_2, t._2) && Objects.equals(_3, t._3) && Objects.equals(_4, t._4) && Objects.equals(_5, t._5) && Objects.equals(_6, t._6) && Objects.equals(_7, t._7);
     }
 
     /**

@@ -51,7 +51,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
 
     //endregion
 
-    //region Factory methods
+    //region Static Factories
 
     @NotNull
     public static <E> CollectionFactory<E, ?, ImmutableArray<E>> factory() {

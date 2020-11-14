@@ -26,7 +26,7 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
 
     //endregion
 
-    //region Factory methods
+    //region Static Factories
 
     @NotNull
     @SuppressWarnings("unchecked")

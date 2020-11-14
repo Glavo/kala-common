@@ -29,7 +29,6 @@ import org.jetbrains.annotations.Contract;
 
 import java.util.function.Consumer;
 
-
 @FunctionalInterface
 public interface CheckedConsumer<T, Ex extends Throwable> extends Consumer<T> {
 

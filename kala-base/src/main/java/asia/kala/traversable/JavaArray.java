@@ -23,39 +23,35 @@ public final class JavaArray {
 
     public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
-    @NotNull
+    //region Static Factories
+
     @Contract(pure = true)
-    public static <E> IntFunction<E[]> generator(@NotNull Class<E> type) {
+    public static @NotNull <E> IntFunction<E[]> generator(@NotNull Class<E> type) {
         Objects.requireNonNull(type);
         return length -> (E[]) Array.newInstance(type, length);
     }
 
-    @NotNull
     @Contract(pure = true)
-    public static <E> CollectionFactory<E, ?, E[]> factory(@NotNull Class<E> type) {
+    public static <E> @NotNull CollectionFactory<E, ?, E[]> factory(@NotNull Class<E> type) {
         return factory(generator(type));
     }
 
-    @NotNull
     @Contract(pure = true)
-    public static <E> CollectionFactory<E, ?, E[]> factory(@NotNull IntFunction<E[]> generator) {
+    public static <E> @NotNull CollectionFactory<E, ?, E[]> factory(@NotNull IntFunction<E[]> generator) {
         Objects.requireNonNull(generator);
         return new JavaArray.Factory<>(generator);
     }
 
-    @NotNull
     @Contract(value = "_ -> param1", pure = true)
-    public static <E> E[] of(E... values) {
+    public static <E> E @NotNull [] of(E... values) {
         return values;
     }
 
-    @NotNull
-    public static <E> E[] from(E @NotNull [] values) {
+    public static <E> E @NotNull [] from(E @NotNull [] values) {
         return values.clone();
     }
 
-    @NotNull
-    public static <E> E[] from(@NotNull IntFunction<E[]> generator, @NotNull Iterable<? extends E> values) {
+    public static <E> E @NotNull [] from(@NotNull IntFunction<E[]> generator, @NotNull Iterable<? extends E> values) {
         Objects.requireNonNull(values);
         Objects.requireNonNull(generator);
 
@@ -79,8 +75,7 @@ public final class JavaArray {
         }
     }
 
-    @NotNull
-    public static <E> E[] fill(@NotNull IntFunction<E[]> generator, int n, E value) {
+    public static <E> E @NotNull [] fill(@NotNull IntFunction<E[]> generator, int n, E value) {
         if (n <= 0) {
             return generator.apply(0);
         }
@@ -91,8 +86,7 @@ public final class JavaArray {
         return ans;
     }
 
-    @NotNull
-    public static <E> E[] fill(@NotNull IntFunction<E[]> generator, int n, @NotNull Supplier<? extends E> supplier) {
+    public static <E> E @NotNull [] fill(@NotNull IntFunction<E[]> generator, int n, @NotNull Supplier<? extends E> supplier) {
         if (n <= 0) {
             return generator.apply(0);
         }
@@ -103,8 +97,7 @@ public final class JavaArray {
         return ans;
     }
 
-    @NotNull
-    public static <E> E[] fill(@NotNull IntFunction<E[]> generator, int n, @NotNull IntFunction<? extends E> supplier) {
+    public static <E> E @NotNull [] fill(@NotNull IntFunction<E[]> generator, int n, @NotNull IntFunction<? extends E> supplier) {
         if (n <= 0) {
             return generator.apply(0);
         }
@@ -115,75 +108,81 @@ public final class JavaArray {
         return ans;
     }
 
-    @NotNull
-    public static <E> E[] wrapInArray(E element) {
+    public static <E> E @NotNull [] wrapInArray(E element) {
         Class<?> cls = element == null ? Object.class : element.getClass();
         Object arr = Array.newInstance(cls, 1);
         Array.set(arr, 0, element);
         return (E[]) arr;
     }
 
-    @NotNull
-    public static <E> E[][] chunked(E @NotNull [] array, int size) {
-        if (size <= 0) {
-            throw new IllegalArgumentException();
-        }
+    //endregion
 
-        int arrayLength = array.length;
-        if (arrayLength == 0) {
-            return (E[][]) Array.newInstance(array.getClass(), 0);
-        }
+    //region Collection Operations
 
-        int x = arrayLength / size;
-        int r = arrayLength % size;
-
-        E[][] res = (E[][]) Array.newInstance(array.getClass(), r == 0 ? x : x + 1);
-
-        for (int i = 0; i < x; i++) {
-            res[i] = Arrays.copyOfRange(array, i * size, (i + 1) * size);
-        }
-        if (r != 0) {
-            res[x] = Arrays.copyOfRange(array, x * size, x * size + r);
-        }
-
-        return res;
-    }
-
-    @NotNull
-    public static <E> E[][] windowed(E @NotNull [] array, int size) {
-        return windowed(array, size, 1, false);
-    }
-
-    @NotNull
-    public static <E> E[][] windowed(E @NotNull [] array, int size, int step) {
-        return windowed(array, size, step, false);
-    }
-
-    @NotNull
-    public static <E> E[][] windowed(E @NotNull [] array, int size, int step, boolean partialWindows) {
+    public static <E> @NotNull Iterator<E> iterator(E @NotNull [] array) {
         final int arrayLength = array.length;
-        if (size <= 0 || step <= 0) {
-            if (size == step) {
-                throw new IllegalArgumentException("size " + size + " must be greater than zero.");
-            } else {
-                throw new IllegalArgumentException("Both size " + size + " and step " + step + " must be greater than zero.");
-            }
+        if (arrayLength == 0) {
+            return Iterators.empty();
         }
-
-        final int resultCapacity = arrayLength / step + (arrayLength % step == 0 ? 0 : 1);
-        E[][] ans = (E[][]) Array.newInstance(array.getClass(), resultCapacity);
-        int ansi = 0;
-        int index = 0;
-        while (index < arrayLength) {
-            int windowSize = Integer.min(size, arrayLength - index);
-            if (windowSize < size && !partialWindows) {
-                break;
-            }
-            ans[ansi++] = Arrays.copyOfRange(array, index, windowSize + index);
-            index += step;
+        if (arrayLength == 1) {
+            return Iterators.of(array[0]);
         }
-        return Arrays.copyOf(ans, ansi);
+        return new Itr<>(array, 0, arrayLength);
     }
+
+    public static <E> @NotNull Iterator<E> iterator(E @NotNull [] array, int from) {
+        final int arrayLength = array.length;
+        if (from < 0 || from > arrayLength) {
+            throw new IndexOutOfBoundsException();
+        }
+        final int len = arrayLength - from;
+
+        if (len == 0) {
+            return Iterators.empty();
+        }
+        if (len == 1) {
+            return Iterators.of(array[0]);
+        }
+        return new Itr<>(array, from, arrayLength);
+    }
+
+    public static <E> @NotNull Iterator<E> iterator(E @NotNull [] array, int from, int to) {
+        final int arrayLength = array.length;
+        if (from < 0 || from > arrayLength) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (to < from || to > arrayLength) {
+            throw new IndexOutOfBoundsException();
+        }
+        final int len = to - from;
+
+        if (len == 0) {
+            return Iterators.empty();
+        }
+        if (len == 1) {
+            return Iterators.of(array[0]);
+        }
+        return new Itr<>(array, from, to);
+    }
+
+    //endregion
+
+    //region Reversal Operations
+
+    public static <E> @NotNull Iterator<E> reverseIterator(E @NotNull [] array) {
+        final int length = array.length;
+        if (length == 0) {
+            return Iterators.empty();
+        }
+        if (length == 1) {
+            return Iterators.of(array[0]);
+        }
+        return new ReverseItr<>(array, length - 1);
+    }
+
+    //endregion
+
+    //region Search Operations
 
     @Contract(pure = true)
     public static int indexOf(Object @NotNull [] array, Object value) {
@@ -326,6 +325,72 @@ public final class JavaArray {
     }
 
 
+    //endregion
+
+    //region Misc Operations
+
+    public static <E> E @NotNull [] @NotNull [] chunked(E @NotNull [] array, int size) {
+        if (size <= 0) {
+            throw new IllegalArgumentException();
+        }
+
+        int arrayLength = array.length;
+        if (arrayLength == 0) {
+            return (E[][]) Array.newInstance(array.getClass(), 0);
+        }
+
+        int x = arrayLength / size;
+        int r = arrayLength % size;
+
+        E[][] res = (E[][]) Array.newInstance(array.getClass(), r == 0 ? x : x + 1);
+
+        for (int i = 0; i < x; i++) {
+            res[i] = Arrays.copyOfRange(array, i * size, (i + 1) * size);
+        }
+        if (r != 0) {
+            res[x] = Arrays.copyOfRange(array, x * size, x * size + r);
+        }
+
+        return res;
+    }
+
+    public static <E> E @NotNull [] @NotNull [] windowed(E @NotNull [] array, int size) {
+        return windowed(array, size, 1, false);
+    }
+
+    public static <E> E @NotNull [] @NotNull [] windowed(E @NotNull [] array, int size, int step) {
+        return windowed(array, size, step, false);
+    }
+
+    public static <E> E @NotNull [] @NotNull [] windowed(E @NotNull [] array, int size, int step, boolean partialWindows) {
+        final int arrayLength = array.length;
+        if (size <= 0 || step <= 0) {
+            if (size == step) {
+                throw new IllegalArgumentException("size " + size + " must be greater than zero.");
+            } else {
+                throw new IllegalArgumentException("Both size " + size + " and step " + step + " must be greater than zero.");
+            }
+        }
+
+        final int resultCapacity = arrayLength / step + (arrayLength % step == 0 ? 0 : 1);
+        E[][] ans = (E[][]) Array.newInstance(array.getClass(), resultCapacity);
+        int ansi = 0;
+        int index = 0;
+        while (index < arrayLength) {
+            int windowSize = Integer.min(size, arrayLength - index);
+            if (windowSize < size && !partialWindows) {
+                break;
+            }
+            ans[ansi++] = Arrays.copyOfRange(array, index, windowSize + index);
+            index += step;
+        }
+        return Arrays.copyOf(ans, ansi);
+    }
+
+    //endregion
+
+    //region Aggregate Operations
+
     @Contract(pure = true)
     public static <E extends Comparable<E>> E max(E @NotNull [] array) {
         return (E) Unsafe.max(array);
@@ -344,15 +409,13 @@ public final class JavaArray {
         return e;
     }
 
-    @Nullable
     @Contract(pure = true)
-    public static <E extends Comparable<E>> E maxOrNull(E @NotNull [] array) {
+    public static <E extends Comparable<E>> @Nullable E maxOrNull(E @NotNull [] array) {
         return (E) Unsafe.maxOrNull(array);
     }
 
-    @Nullable
     @Contract(pure = true)
-    public static <E> E maxOrNull(E @NotNull [] array, @NotNull Comparator<? super E> comparator) {
+    public static <E> @Nullable E maxOrNull(E @NotNull [] array, @NotNull Comparator<? super E> comparator) {
         final int length = array.length;
         if (length == 0) {
             return null;
@@ -367,18 +430,16 @@ public final class JavaArray {
         return e;
     }
 
-    @NotNull
     @Contract(pure = true)
-    public static <E extends Comparable<E>> Option<E> maxOption(E @NotNull [] array) {
+    public static <E extends Comparable<E>> @NotNull Option<E> maxOption(E @NotNull [] array) {
         if (array.length == 0) {
             return Option.none();
         }
         return Option.some((E) Unsafe.max(array));
     }
 
-    @NotNull
     @Contract(pure = true)
-    public static <E> Option<E> maxOption(E @NotNull [] array, @NotNull Comparator<? super E> comparator) {
+    public static <E> @NotNull Option<E> maxOption(E @NotNull [] array, @NotNull Comparator<? super E> comparator) {
         if (array.length == 0) {
             return Option.none();
         }
@@ -403,15 +464,13 @@ public final class JavaArray {
         return e;
     }
 
-    @Nullable
     @Contract(pure = true)
-    public static <E extends Comparable<E>> E minOrNull(E @NotNull [] array) {
+    public static <E extends Comparable<E>> @Nullable E minOrNull(E @NotNull [] array) {
         return (E) Unsafe.minOrNull(array);
     }
 
-    @Nullable
     @Contract(pure = true)
-    public static <E> E minOrNull(E @NotNull [] array, @NotNull Comparator<? super E> comparator) {
+    public static <E> @Nullable E minOrNull(E @NotNull [] array, @NotNull Comparator<? super E> comparator) {
         final int length = array.length;
         if (length == 0) {
             return null;
@@ -427,18 +486,16 @@ public final class JavaArray {
         return e;
     }
 
-    @NotNull
     @Contract(pure = true)
-    public static <E extends Comparable<E>> Option<E> minOption(E @NotNull [] array) {
+    public static <E extends Comparable<E>> @NotNull Option<E> minOption(E @NotNull [] array) {
         if (array.length == 0) {
             return Option.none();
         }
         return Option.some((E) Unsafe.min(array));
     }
 
-    @NotNull
     @Contract(pure = true)
-    public static <E> Option<E> minOption(E @NotNull [] array, @NotNull Comparator<? super E> comparator) {
+    public static <E> @NotNull Option<E> minOption(E @NotNull [] array, @NotNull Comparator<? super E> comparator) {
         if (array.length == 0) {
             return Option.none();
         }
@@ -478,6 +535,11 @@ public final class JavaArray {
     }
 
     @Contract(pure = true)
+    public static <E> @NotNull Option<E> reduceOption(E @NotNull [] array, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
+        return reduceLeftOption(array, op);
+    }
+
+    @Contract(pure = true)
     public static <E> E reduceLeft(E @NotNull [] array, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
         final int length = array.length;
 
@@ -490,6 +552,21 @@ public final class JavaArray {
             e = op.apply(e, array[i]);
         }
         return e;
+    }
+
+    @Contract(pure = true)
+    public static <E> @NotNull Option<E> reduceLeftOption(E @NotNull [] array, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
+        final int length = array.length;
+
+        if (length == 0) {
+            return Option.none();
+        }
+
+        E e = array[0];
+        for (int i = 1; i < length; i++) {
+            e = op.apply(e, array[i]);
+        }
+        return Option.some(e);
     }
 
     @Contract(pure = true)
@@ -507,31 +584,8 @@ public final class JavaArray {
         return e;
     }
 
-    @NotNull
     @Contract(pure = true)
-    public static <E> Option<E> reduceOption(E @NotNull [] array, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-        return reduceLeftOption(array, op);
-    }
-
-    @NotNull
-    @Contract(pure = true)
-    public static <E> Option<E> reduceLeftOption(E @NotNull [] array, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-        final int length = array.length;
-
-        if (length == 0) {
-            return Option.none();
-        }
-
-        E e = array[0];
-        for (int i = 1; i < length; i++) {
-            e = op.apply(e, array[i]);
-        }
-        return Option.some(e);
-    }
-
-    @NotNull
-    @Contract(pure = true)
-    public static <E> Option<E> reduceRightOption(E @NotNull [] array, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
+    public static <E> @NotNull Option<E> reduceRightOption(E @NotNull [] array, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
         final int length = array.length;
 
         if (length == 0) {
@@ -544,6 +598,10 @@ public final class JavaArray {
         }
         return Option.some(e);
     }
+
+    //endregion
+
+    //region Element Conditions
 
     public static <E> boolean anyMatch(E @NotNull [] array, @NotNull Predicate<? super E> predicate) {
         for (Object e : array) {
@@ -572,14 +630,18 @@ public final class JavaArray {
         return true;
     }
 
-    public static <A extends Appendable> A joinTo(
+    //endregion
+
+    //region String Representation
+
+    public static <A extends Appendable> @NotNull A joinTo(
             @NotNull Object[] array,
             @NotNull A buffer
     ) {
         return joinTo(array, buffer, ", ", "", "");
     }
 
-    public static <A extends Appendable> A joinTo(
+    public static <A extends Appendable> @NotNull A joinTo(
             @NotNull Object[] array,
             @NotNull A buffer,
             CharSequence separator
@@ -587,7 +649,7 @@ public final class JavaArray {
         return joinTo(array, buffer, separator, "", "");
     }
 
-    public static <A extends Appendable> A joinTo(
+    public static <A extends Appendable> @NotNull A joinTo(
             @NotNull Object[] array,
             @NotNull A buffer,
             CharSequence separator, CharSequence prefix, CharSequence postfix
@@ -610,86 +672,27 @@ public final class JavaArray {
         }
     }
 
-    public static String joinToString(
+    public static @NotNull String joinToString(
             @NotNull Object[] array
     ) {
         return joinTo(array, new StringBuilder()).toString();
     }
 
-    public static String joinToString(
+    public static @NotNull String joinToString(
             @NotNull Object[] array,
             CharSequence separator
     ) {
         return joinTo(array, new StringBuilder(), separator).toString();
     }
 
-    public static String joinToString(
+    public static @NotNull String joinToString(
             @NotNull Object[] array,
             CharSequence separator, CharSequence prefix, CharSequence postfix
     ) {
         return joinTo(array, new StringBuilder(), separator, prefix, postfix).toString();
     }
 
-    @NotNull
-    public static <E> Iterator<E> iterator(E @NotNull [] array) {
-        final int arrayLength = array.length;
-        if (arrayLength == 0) {
-            return Iterators.empty();
-        }
-        if (arrayLength == 1) {
-            return Iterators.of(array[0]);
-        }
-        return new Itr<>(array, 0, arrayLength);
-    }
-
-    @NotNull
-    public static <E> Iterator<E> iterator(E @NotNull [] array, int from) {
-        final int arrayLength = array.length;
-        if (from < 0 || from > arrayLength) {
-            throw new IndexOutOfBoundsException();
-        }
-        final int len = arrayLength - from;
-
-        if (len == 0) {
-            return Iterators.empty();
-        }
-        if (len == 1) {
-            return Iterators.of(array[0]);
-        }
-        return new Itr<>(array, from, arrayLength);
-    }
-
-    @NotNull
-    public static <E> Iterator<E> iterator(E @NotNull [] array, int from, int to) {
-        final int arrayLength = array.length;
-        if (from < 0 || from > arrayLength) {
-            throw new IndexOutOfBoundsException();
-        }
-        if (to < from || to > arrayLength) {
-            throw new IndexOutOfBoundsException();
-        }
-        final int len = to - from;
-
-        if (len == 0) {
-            return Iterators.empty();
-        }
-        if (len == 1) {
-            return Iterators.of(array[0]);
-        }
-        return new Itr<>(array, from, to);
-    }
-
-    @NotNull
-    public static <E> Iterator<E> reverseIterator(E @NotNull [] array) {
-        final int length = array.length;
-        if (length == 0) {
-            return Iterators.empty();
-        }
-        if (length == 1) {
-            return Iterators.of(array[0]);
-        }
-        return new ReverseItr<>(array, length - 1);
-    }
+    //endregion
 
     public static final class Unsafe {
         public static Object max(Object @NotNull [] array) {

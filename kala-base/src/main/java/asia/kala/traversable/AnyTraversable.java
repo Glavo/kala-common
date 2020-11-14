@@ -31,9 +31,14 @@ public interface AnyTraversable<
         return -1;
     }
 
-    @NotNull
+    //region Collection Operations
+
     @Override
-    T_ITERATOR iterator();
+    @NotNull T_ITERATOR iterator();
+
+    //endregion
+
+    //region Size Info
 
     default boolean isEmpty() {
         final int size = knownSize();
@@ -58,7 +63,9 @@ public interface AnyTraversable<
         return -1;
     }
 
-    //region Size compare operators
+    //endregion
+
+    //region Size Compare Operations
 
     default int sizeCompare(int otherSize) {
         if (otherSize < 0) {
@@ -161,6 +168,8 @@ public interface AnyTraversable<
 
     //endregion
 
+    //region Element Conditions
+
     boolean containsAll(@NotNull T_ARRAY values);
 
     boolean containsAll(@NotNull Iterable<?> values);
@@ -172,6 +181,10 @@ public interface AnyTraversable<
     boolean allMatch(@NotNull T_PREDICATE predicate);
 
     boolean noneMatch(@NotNull T_PREDICATE predicate);
+
+    //endregion
+
+    //region Aggregate Operations
 
     int count(@NotNull T_PREDICATE predicate);
 
@@ -190,38 +203,41 @@ public interface AnyTraversable<
     @NotNull
     T_OPTION minOption();
 
-    @NotNull
-    T_ARRAY toArray();
+    //endregion
 
-    @NotNull
-    default <A extends Appendable> A joinTo(@NotNull A buffer) {
+    //region Conversion Operations
+
+    @NotNull T_ARRAY toArray();
+
+    //endregion
+
+    //region String Representation
+
+    default <A extends Appendable> @NotNull A joinTo(@NotNull A buffer) {
         return joinTo(buffer, ", ");
     }
 
-    @NotNull
-    default <A extends Appendable> A joinTo(@NotNull A buffer, CharSequence separator) {
+    default <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, CharSequence separator) {
         return joinTo(buffer, separator, "", "");
     }
 
-    @NotNull
     @Contract(value = "_, _, _, _ -> param1", mutates = "param1")
-    <A extends Appendable> A joinTo(
+    <A extends Appendable> @NotNull A joinTo(
             @NotNull A buffer,
             CharSequence separator, CharSequence prefix, CharSequence postfix
     );
 
-    @NotNull
-    default String joinToString() {
+    default @NotNull String joinToString() {
         return joinTo(new StringBuilder()).toString();
     }
 
-    @NotNull
-    default String joinToString(CharSequence separator) {
+    default @NotNull String joinToString(CharSequence separator) {
         return joinTo(new StringBuilder(), separator).toString();
     }
 
-    @NotNull
-    default String joinToString(CharSequence separator, CharSequence prefix, CharSequence postfix) {
+    default @NotNull String joinToString(CharSequence separator, CharSequence prefix, CharSequence postfix) {
         return joinTo(new StringBuilder(), separator, prefix, postfix).toString();
     }
+
+    //endregion
 }

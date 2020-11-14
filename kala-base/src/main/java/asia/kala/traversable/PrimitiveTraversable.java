@@ -1,5 +1,6 @@
 package asia.kala.traversable;
 
+import asia.kala.annotations.DeprecatedReplaceWith;
 import asia.kala.control.OptionAny;
 import asia.kala.iterator.PrimIterator;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +18,8 @@ public interface PrimitiveTraversable<
         T_PREDICATE
         > extends AnyTraversable<T, T_ITERATOR, T_ARRAY, T_OPTION, T_CONSUMER, T_PREDICATE> {
 
+    //region Size Info
+
     /**
      * {@inheritDoc}
      */
@@ -25,9 +28,9 @@ public interface PrimitiveTraversable<
         return iterator().size();
     }
 
-    default boolean containsAll(@NotNull T_ARRAY values) {
-        return iterator().containsAll(values);
-    }
+    //endregion
+
+    //region Element Conditions
 
     boolean containsAll(@NotNull T_TRAVERSABLE values);
 
@@ -56,50 +59,71 @@ public interface PrimitiveTraversable<
         return knownSize() == 0 || iterator().noneMatch(predicate);
     }
 
+    default boolean containsAll(@NotNull T_ARRAY values) {
+        return iterator().containsAll(values);
+    }
+
+    //endregion
+
+    //region Search Operations
+
+    @Override
+    default @NotNull T_OPTION find(@NotNull T_PREDICATE predicate) {
+        return iterator().find(predicate);
+    }
+
+    //endregion
+
+    //region Aggregate Operations
+
     default int count(@NotNull T_PREDICATE predicate) {
         return knownSize() == 0 ? 0 : iterator().count(predicate);
     }
 
-    @NotNull
-    @Override
-    default T_OPTION find(@NotNull T_PREDICATE predicate) {
-        return iterator().find(predicate);
-    }
-
-    @Nullable
-    default T maxOrNull() {
+    default @Nullable T maxOrNull() {
         return knownSize() == 0 ? null : iterator().maxOrNull();
     }
 
-    @NotNull
-    default T_OPTION maxOption() {
+    default @NotNull T_OPTION maxOption() {
         return iterator().maxOption();
     }
 
-    @Nullable
-    default T minOrNull() {
+    default @Nullable T minOrNull() {
         return knownSize() == 0 ? null : iterator().minOrNull();
     }
 
-    @NotNull
-    default T_OPTION minOption() {
+    default @NotNull T_OPTION minOption() {
         return iterator().minOption();
     }
 
-    @NotNull
-    T_ARRAY toArray();
+    //endregion
 
-    @Override
-    default <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, CharSequence separator, CharSequence prefix, CharSequence postfix) {
-        return iterator().joinTo(buffer, separator, prefix, postfix);
-    }
+    //region Conversion Operations
 
-    void forEachPrimitive(@NotNull T_CONSUMER action);
+    @NotNull T_ARRAY toArray();
+
+    //endregion
+
+    //region Traverse Operations
 
     /**
      * @see #forEachPrimitive(Object)
      */
     @Override
     @Deprecated
+    @DeprecatedReplaceWith("forEachPrimitive(action::accept)")
     void forEach(@NotNull Consumer<? super T> action);
+
+    void forEachPrimitive(@NotNull T_CONSUMER action);
+
+    //endregion
+
+    //region String Representation
+
+    @Override
+    default <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, CharSequence separator, CharSequence prefix, CharSequence postfix) {
+        return iterator().joinTo(buffer, separator, prefix, postfix);
+    }
+
+    //endregion
 }

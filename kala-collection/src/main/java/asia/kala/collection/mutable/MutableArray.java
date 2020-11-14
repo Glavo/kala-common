@@ -39,7 +39,7 @@ public final class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>,
 
     //endregion
 
-    //region Factory methods
+    //region Static Factories
 
     @NotNull
     public static <E> CollectionFactory<E, ?, MutableArray<E>> factory() {

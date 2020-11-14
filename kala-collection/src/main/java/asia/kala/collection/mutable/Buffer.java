@@ -18,7 +18,7 @@ import java.util.function.Predicate;
 
 public interface Buffer<E> extends MutableSeq<E> {
 
-    //region Factory methods
+    //region Static Factories
 
     @NotNull
     static <E> CollectionFactory<E, ?, ? extends Buffer<E>> factory() {

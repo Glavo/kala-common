@@ -6,11 +6,9 @@ import java.util.function.Function;
 
 class MappedFactory<F extends Factory<Builder, R>, Builder, R, NewR>
         implements Factory<Builder, NewR> {
-    @NotNull
-    protected final F source;
+    protected final @NotNull F source;
 
-    @NotNull
-    protected final Function<? super R, ? extends NewR> mapper;
+    protected final @NotNull Function<? super R, ? extends NewR> mapper;
 
     MappedFactory(@NotNull F source, @NotNull Function<? super R, ? extends NewR> mapper) {
         this.source = source;

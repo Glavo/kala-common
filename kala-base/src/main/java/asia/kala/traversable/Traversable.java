@@ -11,13 +11,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
 import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.IntFunction;
-import java.util.function.Predicate;
-import java.util.stream.Collector;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+import java.util.function.*;
+import java.util.stream.*;
 
 @SuppressWarnings("unchecked")
 public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>, Object[], Option<T>, Consumer<? super T>, Predicate<? super T>> {
@@ -28,11 +23,11 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
         return (Traversable<T>) traversable;
     }
 
-    @NotNull
-    Iterator<T> iterator();
+    //region Collection Operations
 
-    @NotNull
-    default Spliterator<T> spliterator() {
+    @NotNull Iterator<T> iterator();
+
+    default @NotNull Spliterator<T> spliterator() {
         final int ks = this.knownSize();
         if (ks == 0) {
             return Spliterators.emptySpliterator();
@@ -43,15 +38,30 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
         }
     }
 
-    @NotNull
-    default Stream<T> stream() {
+    default @NotNull Stream<T> stream() {
         return StreamSupport.stream(spliterator(), false);
     }
 
-    @NotNull
-    default Stream<T> parallelStream() {
+    default @NotNull Stream<T> parallelStream() {
         return StreamSupport.stream(spliterator(), true);
     }
+
+    //endregion
+
+    //region Element Retrieval Operations
+
+    default @NotNull Option<T> find(@NotNull Predicate<? super T> predicate) {
+        for (T t : this) {
+            if (predicate.test(t)) {
+                return Option.some(t);
+            }
+        }
+        return Option.none();
+    }
+
+    //endregion
+
+    //region Element Conditions
 
     /**
      * {@inheritDoc}
@@ -118,21 +128,15 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
      * the {@code Traversable} is empty, otherwise {@code false}
      */
     default boolean noneMatch(@NotNull Predicate<? super T> predicate) {
-        return allMatch(predicate.negate());
+        return Iterators.noneMatch(iterator(), predicate);
     }
+
+    //endregion
+
+    //region Aggregate Operations
 
     default int count(@NotNull Predicate<? super T> predicate) {
         return Iterators.count(iterator(), predicate);
-    }
-
-    @NotNull
-    default Option<T> find(@NotNull Predicate<? super T> predicate) {
-        for (T t : this) {
-            if (predicate.test(t)) {
-                return Option.some(t);
-            }
-        }
-        return Option.none();
     }
 
     default T max() {
@@ -143,23 +147,19 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
         return maxOption(comparator).getOrThrow(NoSuchElementException::new);
     }
 
-    @Nullable
-    default T maxOrNull() {
+    default @Nullable T maxOrNull() {
         return maxOrNull((Comparator<T>) Comparator.naturalOrder());
     }
 
-    @Nullable
-    default T maxOrNull(@NotNull Comparator<? super T> comparator) {
+    default @Nullable T maxOrNull(@NotNull Comparator<? super T> comparator) {
         return maxOption(comparator).getOrNull();
     }
 
-    @NotNull
-    default Option<T> maxOption() {
+    default @NotNull Option<T> maxOption() {
         return maxOption((Comparator<T>) Comparator.naturalOrder());
     }
 
-    @NotNull
-    default Option<T> maxOption(@NotNull Comparator<? super T> comparator) {
+    default @NotNull Option<T> maxOption(@NotNull Comparator<? super T> comparator) {
         return Iterators.maxOption(iterator(), comparator);
     }
 
@@ -171,23 +171,19 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
         return minOption(comparator).getOrThrow(NoSuchElementException::new);
     }
 
-    @Nullable
-    default T minOrNull() {
+    default @Nullable T minOrNull() {
         return minOrNull((Comparator<T>) Comparator.naturalOrder());
     }
 
-    @Nullable
-    default T minOrNull(@NotNull Comparator<? super T> comparator) {
+    default @Nullable T minOrNull(@NotNull Comparator<? super T> comparator) {
         return minOption(comparator).getOrNull();
     }
 
-    @NotNull
-    default Option<T> minOption() {
+    default @NotNull Option<T> minOption() {
         return minOption((Comparator<T>) Comparator.naturalOrder());
     }
 
-    @NotNull
-    default Option<T> minOption(@NotNull Comparator<? super T> comparator) {
+    default @NotNull Option<T> minOption(@NotNull Comparator<? super T> comparator) {
         return Iterators.minOption(iterator(), comparator);
     }
 
@@ -248,6 +244,17 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
     }
 
     /**
+     * Reduces this elements by apply {@code op}.
+     *
+     * @param op the binary operator
+     * @return an {@code Option} contain the reduced value or a empty {@code Option} if the {@code Traversable} is empty
+     */
+    default @NotNull Option<T> reduceOption(@NotNull BiFunction<? super T, ? super T, ? extends T> op) {
+        Objects.requireNonNull(op);
+        return reduceLeftOption(op);
+    }
+
+    /**
      * Reduces this elements by apply {@code op}, going left to right.
      *
      * <p>If this is a sequential container, use {@code $N} to refer to the Nth element,
@@ -263,6 +270,19 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
             return opt.get();
         }
         throw new NoSuchElementException("Traversable.reduceLeft");
+    }
+
+    /**
+     * Reduces this elements by apply {@code op}, going left to right.
+     *
+     * <p>If this is a sequential container, use {@code $N} to refer to the Nth element,
+     * the return value of the function is {@code Option.some(op( op( ... op($1, $2) ..., ${n-1}), $n))}.
+     *
+     * @param op the binary operator
+     * @return an {@code Option} contain the reduced value or a empty {@code Option} if the {@code Traversable} is empty
+     */
+    default @NotNull Option<T> reduceLeftOption(@NotNull BiFunction<? super T, ? super T, ? extends T> op) {
+        return Iterators.reduceLeftOption(iterator(), op);
     }
 
     /**
@@ -284,32 +304,6 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
     }
 
     /**
-     * Reduces this elements by apply {@code op}.
-     *
-     * @param op the binary operator
-     * @return an {@code Option} contain the reduced value or a empty {@code Option} if the {@code Traversable} is empty
-     */
-    @NotNull
-    default Option<T> reduceOption(@NotNull BiFunction<? super T, ? super T, ? extends T> op) {
-        Objects.requireNonNull(op);
-        return reduceLeftOption(op);
-    }
-
-    /**
-     * Reduces this elements by apply {@code op}, going left to right.
-     *
-     * <p>If this is a sequential container, use {@code $N} to refer to the Nth element,
-     * the return value of the function is {@code Option.some(op( op( ... op($1, $2) ..., ${n-1}), $n))}.
-     *
-     * @param op the binary operator
-     * @return an {@code Option} contain the reduced value or a empty {@code Option} if the {@code Traversable} is empty
-     */
-    @NotNull
-    default Option<T> reduceLeftOption(@NotNull BiFunction<? super T, ? super T, ? extends T> op) {
-        return Iterators.reduceLeftOption(iterator(), op);
-    }
-
-    /**
      * Reduces this elements by apply {@code op}, going right to left.
      *
      * <p>If this is a sequential container, use {@code $N} to refer to the Nth element,
@@ -318,10 +312,13 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
      * @param op the binary operator
      * @return an {@code Option} contain the reduced value or a empty {@code Option} if the {@code Foldable} is empty
      */
-    @NotNull
-    default Option<T> reduceRightOption(@NotNull BiFunction<? super T, ? super T, ? extends T> op) {
+    default @NotNull Option<T> reduceRightOption(@NotNull BiFunction<? super T, ? super T, ? extends T> op) {
         return Iterators.reduceRightOption(iterator(), op);
     }
+
+    //endregion
+
+    //region Conversion Operations
 
     default <R, Builder> R collect(@NotNull Collector<? super T, Builder, ? extends R> collector) {
         return Iterators.collect(iterator(), collector);
@@ -336,10 +333,26 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
         return toArray(Object[]::new);
     }
 
+    default <U /*super E*/> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
+        int s = knownSize();
+        if (s == 0) {
+            return generator.apply(0);
+        } else if (s > 0) {
+            U[] arr = generator.apply(s);
+            int i = 0;
+            for (T t : this) {
+                arr[i++] = (U) t;
+            }
+            return arr;
+        } else {
+            return Iterators.toArray((Iterator<U>) iterator(), generator);
+        }
+    }
+
     /**
      * @see Collection#toArray(Object[])
      */
-    default <U /*super E*/> U[] toArray(@NotNull U[] array) {
+    default <U /*super E*/> U @NotNull [] toArray(U @NotNull [] array) {
         final int size = this.size();
         final int arrayLength = array.length;
         U[] res = arrayLength > size
@@ -370,36 +383,13 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
         return res;
     }
 
-    @NotNull
-    default <U /*super E*/> U[] toArray(@NotNull Class<U> type) {
+    default <U /*super E*/> U @NotNull [] toArray(@NotNull Class<U> type) {
         return toArray(JavaArray.generator(type));
     }
 
-    @NotNull
-    default <U /*super E*/> U[] toArray(@NotNull IntFunction<U[]> generator) {
-        int s = knownSize();
-        if (s == 0) {
-            return generator.apply(0);
-        } else if (s > 0) {
-            U[] arr = generator.apply(s);
-            int i = 0;
-            for (T t : this) {
-                arr[i++] = (U) t;
-            }
-            return arr;
-        } else {
-            return Iterators.toArray((Iterator<U>) iterator(), generator);
-        }
-    }
+    //endregion
 
-    @NotNull
-    @Contract(value = "_, _, _, _ -> param1", mutates = "param1")
-    default <A extends Appendable> A joinTo(
-            @NotNull A buffer,
-            CharSequence separator, CharSequence prefix, CharSequence postfix
-    ) {
-        return Iterators.joinTo(iterator(), buffer, separator, prefix, postfix);
-    }
+    //region Traverse Operations
 
     @Override
     default void forEach(@NotNull Consumer<? super T> action) {
@@ -416,4 +406,18 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
     default void forEachUnchecked(@NotNull CheckedConsumer<? super T, ?> action) {
         forEach(action);
     }
+
+    //endregion
+
+    //region String Representation
+
+    @Contract(value = "_, _, _, _ -> param1", mutates = "param1")
+    default <A extends Appendable> @NotNull A joinTo(
+            @NotNull A buffer,
+            CharSequence separator, CharSequence prefix, CharSequence postfix
+    ) {
+        return Iterators.joinTo(iterator(), buffer, separator, prefix, postfix);
+    }
+
+    //endregion
 }

@@ -19,7 +19,7 @@ public final class LinkedBuffer<E> extends ImmutableInternal.LinkedBufferImpl<E>
 
     private static final LinkedBuffer.Factory<?> FACTORY = new LinkedBuffer.Factory<>();
 
-    //region Factory methods
+    //region Static Factories
 
     @SuppressWarnings("unchecked")
     public static <E> CollectionFactory<E, ?, LinkedBuffer<E>> factory() {

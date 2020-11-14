@@ -42,6 +42,14 @@ interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>, Traver
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    default int size() {
+        return isDefined() ? 1 : 0;
+    }
+
+    /**
      * Returns the value of the container.
      *
      * @return the value of the container
@@ -60,20 +68,8 @@ interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>, Traver
         return isDefined() ? get() : defaultValue;
     }
 
-    @Deprecated
-    @DeprecatedReplaceWith("getOrDefault(defaultValue)")
-    default T getOrElse(T defaultValue) {
-        return getOrDefault(defaultValue);
-    }
-
     default T getOrElse(@NotNull Supplier<? extends T> supplier) {
         return isDefined() ? get() : supplier.get();
-    }
-
-    @Deprecated
-    @DeprecatedReplaceWith("getOrElse(supplier)")
-    default T getOrElseGet(@NotNull Supplier<? extends T> supplier) {
-        return getOrElse(supplier);
     }
 
     /**
@@ -121,8 +117,7 @@ interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>, Traver
      * @return {@code Option.some(get())} if the container {@link #isDefined()},
      * or the {@code Option.none()} if the container {@link #isEmpty()}
      */
-    @NotNull
-    default Option<T> getOption() {
+    default @NotNull Option<T> getOption() {
         return isDefined() ? Option.some(get()) : Option.none();
     }
 
@@ -132,8 +127,7 @@ interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>, Traver
      * @return {@code Option.some(get())} if the container {@link #isDefined()},
      * or the {@code Option.none()} if the container {@link #isEmpty()}
      */
-    @NotNull
-    default Option<T> toOption() {
+    default @NotNull Option<T> toOption() {
         return getOption();
     }
 
@@ -147,9 +141,18 @@ interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>, Traver
         return f.finisher().apply(builder);
     }
 
-    @NotNull
     @Override
-    <U> OptionContainer<U> map(@NotNull Function<? super T, ? extends U> mapper);
+    <U> @NotNull OptionContainer<U> map(@NotNull Function<? super T, ? extends U> mapper);
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Contract(pure = true)
+    default int count(@NotNull Predicate<? super T> predicate) {
+        Objects.requireNonNull(predicate);
+        return anyMatch(predicate) ? 1 : 0;
+    }
 
     /**
      * {@inheritDoc}
@@ -161,7 +164,6 @@ interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>, Traver
         }
         return op.apply(zero, get());
     }
-
 
     /**
      * {@inheritDoc}
@@ -201,9 +203,8 @@ interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>, Traver
      * {@inheritDoc}
      */
     @Override
-    @NotNull
     @Contract(pure = true)
-    default Option<T> reduceLeftOption(@NotNull BiFunction<? super T, ? super T, ? extends T> op) {
+    default @NotNull Option<T> reduceLeftOption(@NotNull BiFunction<? super T, ? super T, ? extends T> op) {
         return getOption();
     }
 
@@ -211,9 +212,8 @@ interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>, Traver
      * {@inheritDoc}
      */
     @Override
-    @NotNull
     @Contract(pure = true)
-    default Option<T> reduceRightOption(@NotNull BiFunction<? super T, ? super T, ? extends T> op) {
+    default @NotNull Option<T> reduceRightOption(@NotNull BiFunction<? super T, ? super T, ? extends T> op) {
         return getOption();
     }
 
@@ -256,28 +256,10 @@ interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>, Traver
      * {@inheritDoc}
      */
     @Override
-    @Contract(pure = true)
-    default int count(@NotNull Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate);
-        return anyMatch(predicate) ? 1 : 0;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     @NotNull
     default Option<T> find(@NotNull Predicate<? super T> predicate) {
         Objects.requireNonNull(predicate);
         return isDefined() && predicate.test(get()) ? Option.some(get()) : Option.none();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    default int size() {
-        return isDefined() ? 1 : 0;
     }
 
     @NotNull

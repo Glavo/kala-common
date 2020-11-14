@@ -43,9 +43,8 @@ public abstract class Tuple implements Serializable {
      *
      * @return a new tuple by prepending the head to `this` tuple
      */
-    @NotNull
     @Contract(pure = true)
-    public abstract <H> HList<H, ? extends Tuple> cons(H head);
+    public abstract <H> @NotNull HList<H, ? extends Tuple> cons(H head);
 
     /**
      * Returns an array containing all of the elements in this tuple.
@@ -65,17 +64,14 @@ public abstract class Tuple implements Serializable {
      * @throws ArrayStoreException if any element of this tuple cannot be stored in the generated
      *                             array because the runtime type does not match
      */
-    @NotNull
     @Contract(pure = true)
-    public abstract <U> U[] toArray(@NotNull IntFunction<U[]> generator);
+    public abstract <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator);
 
-    @NotNull
-    public static Unit empty() {
+    public static @NotNull Unit empty() {
         return Unit.INSTANCE;
     }
 
-    @NotNull
-    public static Unit of() {
+    public static @NotNull Unit of() {
         return Unit.INSTANCE;
     }
 
@@ -86,9 +82,8 @@ public abstract class Tuple implements Serializable {
      * @param t1   the 1st element
      * @return a tuple of 1 element
      */
-    @NotNull
     @Contract("_ -> new")
-    public static <T1> Tuple1<T1> of(T1 t1) {
+    public static <T1> @NotNull Tuple1<T1> of(T1 t1) {
         return new Tuple1<>(t1);
     }
 
@@ -101,9 +96,8 @@ public abstract class Tuple implements Serializable {
      * @param t2   the 2nd element
      * @return a tuple of 2 elements
      */
-    @NotNull
     @Contract("_, _ -> new")
-    public static <T1, T2> Tuple2<T1, T2> of(T1 t1, T2 t2) {
+    public static <T1, T2> @NotNull Tuple2<T1, T2> of(T1 t1, T2 t2) {
         return new Tuple2<>(t1, t2);
     }
 
@@ -118,9 +112,8 @@ public abstract class Tuple implements Serializable {
      * @param t3   the 3rd element
      * @return a tuple of 3 elements
      */
-    @NotNull
     @Contract("_, _, _ -> new")
-    public static <T1, T2, T3> Tuple3<T1, T2, T3> of(T1 t1, T2 t2, T3 t3) {
+    public static <T1, T2, T3> @NotNull Tuple3<T1, T2, T3> of(T1 t1, T2 t2, T3 t3) {
         return new Tuple3<>(t1, t2, t3);
     }
 
@@ -137,9 +130,8 @@ public abstract class Tuple implements Serializable {
      * @param t4   the 4th element
      * @return a tuple of 4 elements
      */
-    @NotNull
     @Contract("_, _, _, _ -> new")
-    public static <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> of(T1 t1, T2 t2, T3 t3, T4 t4) {
+    public static <T1, T2, T3, T4> @NotNull Tuple4<T1, T2, T3, T4> of(T1 t1, T2 t2, T3 t3, T4 t4) {
         return new Tuple4<>(t1, t2, t3, t4);
     }
 
@@ -158,9 +150,8 @@ public abstract class Tuple implements Serializable {
      * @param t5   the 5th element
      * @return a tuple of 5 elements
      */
-    @NotNull
     @Contract("_, _, _, _, _ -> new")
-    public static <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> of(
+    public static <T1, T2, T3, T4, T5> @NotNull Tuple5<T1, T2, T3, T4, T5> of(
             T1 t1, T2 t2, T3 t3, T4 t4, T5 t5) {
         return new Tuple5<>(t1, t2, t3, t4, t5);
     }
@@ -182,9 +173,8 @@ public abstract class Tuple implements Serializable {
      * @param t6   the 6th element
      * @return a tuple of 6 elements
      */
-    @NotNull
     @Contract("_, _, _, _, _, _ -> new")
-    public static <T1, T2, T3, T4, T5, T6> Tuple6<T1, T2, T3, T4, T5, T6> of(
+    public static <T1, T2, T3, T4, T5, T6> @NotNull Tuple6<T1, T2, T3, T4, T5, T6> of(
             T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6) {
         return new Tuple6<>(t1, t2, t3, t4, t5, t6);
     }
@@ -208,9 +198,8 @@ public abstract class Tuple implements Serializable {
      * @param t7   the 7th element
      * @return a tuple of 7 elements
      */
-    @NotNull
     @Contract("_, _, _, _, _, _, _ -> new")
-    public static <T1, T2, T3, T4, T5, T6, T7> Tuple7<T1, T2, T3, T4, T5, T6, T7> of(
+    public static <T1, T2, T3, T4, T5, T6, T7> @NotNull Tuple7<T1, T2, T3, T4, T5, T6, T7> of(
             T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7) {
         return new Tuple7<>(t1, t2, t3, t4, t5, t6, t7);
     }
@@ -236,9 +225,8 @@ public abstract class Tuple implements Serializable {
      * @param t8   the 8th element
      * @return a tuple of 8 elements
      */
-    @NotNull
     @Contract("_, _, _, _, _, _, _, _ -> new")
-    public static <T1, T2, T3, T4, T5, T6, T7, T8> Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> of(
+    public static <T1, T2, T3, T4, T5, T6, T7, T8> @NotNull Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> of(
             T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8) {
         return new Tuple8<>(t1, t2, t3, t4, t5, t6, t7, t8);
     }
@@ -266,18 +254,16 @@ public abstract class Tuple implements Serializable {
      * @param t9   the 9th element
      * @return a tuple of 9 elements
      */
-    @NotNull
     @Contract("_, _, _, _, _, _, _, _, _ -> new")
     public static <T1, T2, T3, T4, T5, T6, T7, T8, T9>
-    Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9> of(
+    @NotNull Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9> of(
             T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9) {
         return new Tuple9<>(t1, t2, t3, t4, t5, t6, t7, t8, t9);
     }
 
     @SuppressWarnings("unchecked")
-    @NotNull
     @Contract("_ -> new")
-    public static <T extends Tuple> T of(Object... values) {
+    public static <T extends Tuple> @NotNull T of(Object... values) {
         switch (values.length) {
             case 0:
                 return (T) Unit.INSTANCE;

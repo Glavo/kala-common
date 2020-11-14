@@ -16,15 +16,18 @@ import java.util.function.Consumer;
 
 public interface BooleanTraversable
         extends PrimitiveTraversable<Boolean, BooleanTraversable, BooleanIterator, boolean[], OptionBoolean, BooleanConsumer, BooleanPredicate> {
-    @NotNull
     @Override
-    BooleanIterator iterator();
+    @NotNull BooleanIterator iterator();
+
+
+    //region Element Conditions
 
     default boolean contains(boolean value) {
         return knownSize() != 0 && iterator().contains(value);
     }
 
     @Override
+    @SuppressWarnings("ConstantConditions")
     default boolean containsAll(@NotNull BooleanTraversable values) {
         BooleanIterator it1 = this.iterator();
         BooleanIterator it2 = values.iterator();
@@ -72,9 +75,10 @@ public interface BooleanTraversable
         return true;
     }
 
-    @NotNull
+    //endregion
+
     @Override
-    default OptionBoolean find(@NotNull BooleanPredicate predicate) {
+    default @NotNull OptionBoolean find(@NotNull BooleanPredicate predicate) {
         return knownSize() == 0 ? OptionBoolean.None : iterator().find(predicate);
     }
 
@@ -110,6 +114,19 @@ public interface BooleanTraversable
         }
     }
 
+    //region Traverse Operations
+
+    @Override
+    @Deprecated
+    default void forEach(@NotNull Consumer<? super Boolean> action) {
+        Objects.requireNonNull(action);
+        if (action instanceof BooleanConsumer) {
+            forEachPrimitive(((BooleanConsumer) action));
+        } else {
+            forEachPrimitive(action::accept);
+        }
+    }
+
     @Override
     default void forEachPrimitive(@NotNull BooleanConsumer action) {
         iterator().forEach(action);
@@ -123,14 +140,5 @@ public interface BooleanTraversable
         forEachPrimitive(action);
     }
 
-    @Override
-    @Deprecated
-    default void forEach(@NotNull Consumer<? super Boolean> action) {
-        Objects.requireNonNull(action);
-        if (action instanceof BooleanConsumer) {
-            forEachPrimitive(((BooleanConsumer) action));
-        } else {
-            forEachPrimitive(action::accept);
-        }
-    }
+    //endregion
 }

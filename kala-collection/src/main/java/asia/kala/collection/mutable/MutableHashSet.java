@@ -61,7 +61,7 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
 
     //endregion
 
-    //region Factory methods
+    //region Static Factories
 
     @NotNull
     public static <E> CollectionFactory<E, ?, MutableHashSet<E>> factory() {

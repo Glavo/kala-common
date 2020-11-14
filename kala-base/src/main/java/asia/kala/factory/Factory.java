@@ -11,7 +11,7 @@ public interface Factory<Builder, @Covariant R> {
 
     R build(@NotNull Builder builder);
 
-    default <U> Factory<Builder, U> mapResult(@NotNull Function<? super R, ? extends U> mapper) {
+    default <U> @NotNull Factory<Builder, U> mapResult(@NotNull Function<? super R, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
         return new MappedFactory<>(this, mapper);
     }

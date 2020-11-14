@@ -33,7 +33,7 @@ public final class ImmutableArraySet<E>
         this.elements = elements;
     }
 
-    //region Factory methods
+    //region Static Factories
 
     @NotNull
     public static <E extends Comparable<? super E>> CollectionFactory<E, ?, ImmutableArraySet<E>> factory() {

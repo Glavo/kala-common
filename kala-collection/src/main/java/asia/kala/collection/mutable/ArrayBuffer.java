@@ -54,7 +54,7 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
 
     //endregion
 
-    //region Factory methods
+    //region Static Factories
 
     @NotNull
     public static <E> CollectionFactory<E, ?, ArrayBuffer<E>> factory() {

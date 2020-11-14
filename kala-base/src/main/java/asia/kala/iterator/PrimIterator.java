@@ -27,11 +27,18 @@ public interface PrimIterator<
     /**
      * {@inheritDoc}
      */
-    @NotNull
     @Override
-    T next();
+    @NotNull T next();
+
+    //region Size Info
 
     int size();
+
+    //endregion
+
+    @NotNull T_OPTION find(@NotNull T_PREDICATE predicate);
+
+    //region Element Conditions
 
     boolean contains(Object value);
 
@@ -65,78 +72,81 @@ public interface PrimIterator<
 
     boolean noneMatch(@NotNull T_PREDICATE predicate);
 
+    //endregion
+
+    //region Misc Operations
+
+    @NotNull T_ITERATOR drop(int n);
+
+    @NotNull T_ITERATOR dropWhile(@NotNull T_PREDICATE predicate);
+
+    @NotNull T_ITERATOR take(int n);
+
+    @NotNull T_ITERATOR takeWhile(@NotNull T_PREDICATE predicate);
+
+    @NotNull T_ITERATOR filter(@NotNull T_PREDICATE predicate);
+
+    @NotNull T_ITERATOR filterNot(@NotNull T_PREDICATE predicate);
+
+    @NotNull Tuple2<@NotNull T_ITERATOR, @NotNull T_ITERATOR> span(@NotNull T_PREDICATE predicate);
+
+    //endregion
+
+    //region Aggregate Operations
+
     int count(@NotNull T_PREDICATE predicate);
 
-    @NotNull
-    T_OPTION find(@NotNull T_PREDICATE predicate);
+    @Nullable T maxOrNull();
 
-    @Nullable
-    T maxOrNull();
+    @NotNull T_OPTION maxOption();
 
-    @NotNull
-    T_OPTION maxOption();
+    @Nullable T minOrNull();
 
-    @Nullable
-    T minOrNull();
+    @NotNull T_OPTION minOption();
 
-    @NotNull
-    T_OPTION minOption();
+    //endregion
 
-    @NotNull
-    T_ITERATOR drop(int n);
+    @NotNull T_ARRAY toArray();
 
-    @NotNull
-    T_ITERATOR dropWhile(@NotNull T_PREDICATE predicate);
+    //region Traverse Operations
 
-    @NotNull
-    T_ITERATOR take(int n);
+    void forEach(@NotNull T_CONSUMER action);
 
-    @NotNull
-    T_ITERATOR takeWhile(@NotNull T_PREDICATE predicate);
+    @Override
+    @DeprecatedReplaceWith("forEach(action)")
+    default void forEachRemaining(@NotNull T_CONSUMER action) {
+        forEach(action);
+    }
 
-    @NotNull
-    T_ITERATOR filter(@NotNull T_PREDICATE predicate);
+    //endregion
 
-    @NotNull
-    T_ITERATOR filterNot(@NotNull T_PREDICATE predicate);
+    //region String Representation
 
-    @NotNull
-    Tuple2<@NotNull T_ITERATOR, @NotNull T_ITERATOR> span(@NotNull T_PREDICATE predicate);
-
-    T_ARRAY toArray();
-
-    default <A extends Appendable> A joinTo(@NotNull A buffer) {
+    default <A extends Appendable> @NotNull A joinTo(@NotNull A buffer) {
         return joinTo(buffer, ", ");
     }
 
-    default <A extends Appendable> A joinTo(@NotNull A buffer, CharSequence separator) {
+    default <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, CharSequence separator) {
         return joinTo(buffer, separator, "", "");
     }
 
-    @NotNull
     @Contract(value = "_, _, _, _ -> param1", mutates = "param1")
-    <A extends Appendable> A joinTo(
+    <A extends Appendable> @NotNull A joinTo(
             @NotNull A buffer,
             CharSequence separator, CharSequence prefix, CharSequence postfix
     );
 
-    default String joinToString() {
+    default @NotNull String joinToString() {
         return joinTo(new StringBuilder()).toString();
     }
 
-    default String joinToString(CharSequence separator) {
+    default @NotNull String joinToString(CharSequence separator) {
         return joinTo(new StringBuilder(), separator).toString();
     }
 
-    default String joinToString(CharSequence separator, CharSequence prefix, CharSequence postfix) {
+    default @NotNull String joinToString(CharSequence separator, CharSequence prefix, CharSequence postfix) {
         return joinTo(new StringBuilder(), separator, prefix, postfix).toString();
     }
 
-    void forEach(T_CONSUMER action);
-
-    @Override
-    @DeprecatedReplaceWith("forEach(action)")
-    default void forEachRemaining(T_CONSUMER action) {
-        forEach(action);
-    }
+    //endregion
 }

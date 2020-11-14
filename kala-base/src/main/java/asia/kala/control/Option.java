@@ -1,9 +1,7 @@
 package asia.kala.control;
 
-import asia.kala.traversable.Transformable;
 import asia.kala.Tuple2;
 import asia.kala.annotations.Covariant;
-import asia.kala.traversable.TransformableOps;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +26,7 @@ import java.util.function.Predicate;
  * @see Optional
  */
 public final class Option<@Covariant T> extends OptionAny<T>
-        implements OptionContainer<T>, Transformable<T>, TransformableOps<T, Option<?>, Option<T>>, Serializable {
+        implements OptionContainer<T>, Serializable {
     private static final long serialVersionUID = -4962768465676381896L;
 
     private static final int HASH_MAGIC = -1623337737;
@@ -54,6 +52,18 @@ public final class Option<@Covariant T> extends OptionAny<T>
     }
 
     /**
+     * Returns a new {@code Option} contain the {@code value}.
+     *
+     * @param value the value
+     * @param <T>   the type of the value
+     * @return a new {@code Option} contain the {@code value}
+     */
+    @Contract(value = "_ -> new", pure = true)
+    public static <T> @NotNull Option<T> some(T value) {
+        return new Option<>(value);
+    }
+
+    /**
      * Returns the single instance of empty {@code Option}.
      *
      * @param <T> the type of value
@@ -61,21 +71,8 @@ public final class Option<@Covariant T> extends OptionAny<T>
      * @see Option#None
      */
     @SuppressWarnings("unchecked")
-    public static <T> Option<T> none() {
+    public static <T> @NotNull Option<T> none() {
         return (Option<T>) None;
-    }
-
-    /**
-     * Returns a new {@code Option} contain the {@code value}.
-     *
-     * @param value the value
-     * @param <T>   the type of the value
-     * @return a new {@code Option} contain the {@code value}
-     */
-    @NotNull
-    @Contract(value = "_ -> new", pure = true)
-    public static <T> Option<T> some(T value) {
-        return new Option<>(value);
     }
 
     /**
@@ -85,7 +82,7 @@ public final class Option<@Covariant T> extends OptionAny<T>
      * @param <T>   the type of the value
      * @return {@code Option.some(value)} if value is not null, otherwise {@code Option.none()}
      */
-    public static <T> Option<T> of(@Nullable T value) {
+    public static <T> @NotNull Option<T> of(@Nullable T value) {
         return value == null ? none() : new Option<>(value);
     }
 
@@ -97,7 +94,7 @@ public final class Option<@Covariant T> extends OptionAny<T>
      * @return {@code Option.some(optional.get())} if {@code optional} is present, otherwise {@code Option.none()}
      */
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    public static <T> Option<T> fromJava(@NotNull Optional<? extends T> optional) {
+    public static <T> @NotNull Option<T> fromJava(@NotNull Optional<? extends T> optional) {
         return of(optional.orElse(null));
     }
 
@@ -127,27 +124,26 @@ public final class Option<@Covariant T> extends OptionAny<T>
     /**
      * {@inheritDoc}
      */
-    @NotNull
     @Override
-    public final Option<T> getOption() {
+    @Contract(value = "-> this", pure = true)
+    public final @NotNull Option<T> getOption() {
         return this;
     }
 
     /**
      * {@inheritDoc}
      */
-    @NotNull
     @Override
-    public final Option<T> toOption() {
+    @Contract(value = "-> this", pure = true)
+    public final @NotNull Option<T> toOption() {
         return this;
     }
 
     /**
      * {@inheritDoc}
      */
-    @NotNull
     @Override
-    public final <U> Option<U> map(@NotNull Function<? super T, ? extends U> mapper) {
+    public final <U> @NotNull Option<U> map(@NotNull Function<? super T, ? extends U> mapper) {
         return isDefined() ? some(mapper.apply(value)) : none();
     }
 
@@ -155,27 +151,19 @@ public final class Option<@Covariant T> extends OptionAny<T>
         return isDefined() ? narrow(mapper.apply(value)) : none();
     }
 
-    @NotNull
-    public final Option<T> filter(@NotNull Predicate<? super T> predicate) {
+    public final @NotNull Option<T> filter(@NotNull Predicate<? super T> predicate) {
         return isDefined() && predicate.test(value) ? this : none();
     }
 
-    @NotNull
-    @Override
-    public final Option<T> filterNot(@NotNull Predicate<? super T> predicate) {
+    public final @NotNull Option<T> filterNot(@NotNull Predicate<? super T> predicate) {
         return isDefined() && !predicate.test(value) ? this : none();
     }
 
-    @NotNull
-    @Override
-    public final Option<@NotNull T> filterNotNull() {
+    public final @NotNull Option<@NotNull T> filterNotNull() {
         return value == null ? none() : this;
     }
 
-
-    @NotNull
-    @Override
-    public final Tuple2<Option<T>, Option<T>> span(@NotNull Predicate<? super T> predicate) {
+    public final @NotNull Tuple2<@NotNull Option<T>, @NotNull Option<T>> span(@NotNull Predicate<? super T> predicate) {
         if (isDefined()) {
             if (predicate.test(value)) {
                 return new Tuple2<>(this, none());
@@ -200,8 +188,7 @@ public final class Option<@Covariant T> extends OptionAny<T>
      * {@inheritDoc}
      */
     @Override
-    @NotNull
-    public final Option<T> find(@NotNull Predicate<? super T> predicate) {
+    public final @NotNull Option<T> find(@NotNull Predicate<? super T> predicate) {
         return isDefined() && predicate.test(value) ? this : none();
     }
 
@@ -211,20 +198,17 @@ public final class Option<@Covariant T> extends OptionAny<T>
      * @return {@code Optional.of(get())} if the {@code Option} contain a value, otherwise {@link Optional#empty()}
      * @throws NullPointerException if {@link #isDefined()} but value is {@code null}
      */
-    @NotNull
-    public final Optional<T> asJava() {
+    public final @NotNull Optional<T> asJava() {
         return isEmpty() ? Optional.empty() : Optional.of(Objects.requireNonNull(value));
     }
 
-    @NotNull
     @Override
-    public final Iterator<T> iterator() {
+    public final @NotNull Iterator<T> iterator() {
         return new OptionContainerIterator<>(value);
     }
 
-    @NotNull
     @Override
-    public final Spliterator<T> spliterator() {
+    public final @NotNull Spliterator<T> spliterator() {
         return new OptionContainerIterator<>(value);
     }
 
@@ -248,7 +232,7 @@ public final class Option<@Covariant T> extends OptionAny<T>
      */
     @Override
     public final int hashCode() {
-        return value == null ? HASH_MAGIC : value.hashCode() + HASH_MAGIC;
+        return Objects.hashCode(value) + HASH_MAGIC;
     }
 
     /**

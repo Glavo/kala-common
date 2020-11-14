@@ -14,21 +14,20 @@ import java.io.UncheckedIOException;
 import java.util.*;
 import java.util.function.Consumer;
 
+@SuppressWarnings("ConstantConditions")
 public interface BooleanIterator
         extends PrimIterator<Boolean, BooleanIterator, boolean[], OptionBoolean, BooleanConsumer, BooleanPredicate> {
 
-    @NotNull
-    static BooleanIterator empty() {
+
+    static @NotNull BooleanIterator empty() {
         return BooleanIterators.EMPTY;
     }
 
-    @NotNull
-    static BooleanIterator of() {
+    static @NotNull BooleanIterator of() {
         return BooleanIterators.EMPTY;
     }
 
-    @NotNull
-    static BooleanIterator of(boolean value) {
+    static @NotNull BooleanIterator of(boolean value) {
         return new AbstractBooleanIterator() {
 
             private boolean hasNext = true;
@@ -50,8 +49,7 @@ public interface BooleanIterator
         };
     }
 
-    @NotNull
-    static BooleanIterator of(boolean... values) {
+    static @NotNull BooleanIterator of(boolean... values) {
         final int length = values.length;
         if (length == 0) {
             return empty();
@@ -62,8 +60,7 @@ public interface BooleanIterator
         }
     }
 
-    @NotNull
-    static BooleanIterator ofIterator(@NotNull Iterator<? extends Boolean> it) {
+    static @NotNull BooleanIterator ofIterator(@NotNull Iterator<@NotNull ? extends Boolean> it) {
         Objects.requireNonNull(it);
         if (it instanceof BooleanIterator) {
             return (BooleanIterator) it;
@@ -102,6 +99,8 @@ public interface BooleanIterator
         }
         return i;
     }
+
+    //region Element Conditions
 
     default boolean contains(boolean value) {
         while (hasNext()) {
@@ -315,19 +314,10 @@ public interface BooleanIterator
         return true;
     }
 
-    default int count(@NotNull BooleanPredicate predicate) {
-        int c = 0;
-        while (hasNext()) {
-            if (predicate.test(nextBoolean())) {
-                ++c;
-            }
-        }
-        return c;
-    }
+    //endregion
 
-    @NotNull
     @Override
-    default OptionBoolean find(@NotNull BooleanPredicate predicate) {
+    default @NotNull OptionBoolean find(@NotNull BooleanPredicate predicate) {
         while (hasNext()) {
             boolean v = nextBoolean();
             if (predicate.test(v)) {
@@ -336,6 +326,33 @@ public interface BooleanIterator
         }
 
         return OptionBoolean.None;
+    }
+
+    //region Addition Operations
+
+    default @NotNull BooleanIterator appended(boolean value) {
+        if (!hasNext()) {
+            return BooleanIterator.of(value);
+        }
+        return new BooleanIterators.Appended(this, value);
+    }
+
+    default @NotNull BooleanIterator prepended(boolean value) {
+        return new BooleanIterators.Prepended(this, value);
+    }
+
+    //endregion
+
+    //region Aggregate Operations
+
+    default int count(@NotNull BooleanPredicate predicate) {
+        int c = 0;
+        while (hasNext()) {
+            if (predicate.test(nextBoolean())) {
+                ++c;
+            }
+        }
+        return c;
     }
 
     default boolean max() {
@@ -351,8 +368,7 @@ public interface BooleanIterator
         return false;
     }
 
-    @Nullable
-    default Boolean maxOrNull() {
+    default @Nullable Boolean maxOrNull() {
         if (!hasNext()) {
             return null;
         }
@@ -365,8 +381,7 @@ public interface BooleanIterator
         return false;
     }
 
-    @NotNull
-    default OptionBoolean maxOption() {
+    default @NotNull OptionBoolean maxOption() {
         if (!hasNext()) {
             return OptionBoolean.None;
         }
@@ -392,8 +407,7 @@ public interface BooleanIterator
         return true;
     }
 
-    @Nullable
-    default Boolean minOrNull() {
+    default @Nullable Boolean minOrNull() {
         if (!hasNext()) {
             return null;
         }
@@ -406,8 +420,7 @@ public interface BooleanIterator
         return true;
     }
 
-    @NotNull
-    default OptionBoolean minOption() {
+    default @NotNull OptionBoolean minOption() {
         if (!hasNext()) {
             return OptionBoolean.None;
         }
@@ -420,9 +433,12 @@ public interface BooleanIterator
         return OptionBoolean.True;
     }
 
-    @NotNull
+    //endregion
+
+    //region Misc Operations
+
     @Contract(mutates = "this")
-    default  BooleanIterator drop(int n) {
+    default @NotNull BooleanIterator drop(int n) {
         while (n > 0 && hasNext()) {
             nextBoolean();
             --n;
@@ -430,8 +446,7 @@ public interface BooleanIterator
         return this;
     }
 
-    @NotNull
-    default BooleanIterator dropWhile(@NotNull BooleanPredicate predicate) {
+    default @NotNull BooleanIterator dropWhile(@NotNull BooleanPredicate predicate) {
         Objects.requireNonNull(predicate);
 
         if (!hasNext()) {
@@ -454,8 +469,7 @@ public interface BooleanIterator
         }
     }
 
-    @NotNull
-    default BooleanIterator take(int n) {
+    default @NotNull BooleanIterator take(int n) {
         if (!hasNext() || n <= 0) {
             return empty();
         }
@@ -463,8 +477,7 @@ public interface BooleanIterator
         return new BooleanIterators.Take(this, n);
     }
 
-    @NotNull
-    default BooleanIterator takeWhile(@NotNull BooleanPredicate predicate) {
+    default @NotNull BooleanIterator takeWhile(@NotNull BooleanPredicate predicate) {
         Objects.requireNonNull(predicate);
         if (!hasNext()) {
             return this;
@@ -472,8 +485,7 @@ public interface BooleanIterator
         return new BooleanIterators.TakeWhile(this, predicate);
     }
 
-    @NotNull
-    default BooleanIterator updated(int n, boolean newValue) {
+    default @NotNull BooleanIterator updated(int n, boolean newValue) {
         if (!hasNext() || n < 0) {
             return this;
         }
@@ -486,21 +498,7 @@ public interface BooleanIterator
         return new BooleanIterators.Updated(this, n, newValue);
     }
 
-    @NotNull
-    default BooleanIterator prepended(boolean value) {
-        return new BooleanIterators.Prepended(this, value);
-    }
-
-    @NotNull
-    default BooleanIterator appended(boolean value) {
-        if (!hasNext()) {
-            return BooleanIterator.of(value);
-        }
-        return new BooleanIterators.Appended(this, value);
-    }
-
-    @NotNull
-    default BooleanIterator filter(@NotNull BooleanPredicate predicate) {
+    default @NotNull BooleanIterator filter(@NotNull BooleanPredicate predicate) {
         Objects.requireNonNull(predicate);
         if (!hasNext()) {
             return empty();
@@ -508,8 +506,7 @@ public interface BooleanIterator
         return new BooleanIterators.Filter(this, predicate, false);
     }
 
-    @NotNull
-    default BooleanIterator filterNot(@NotNull BooleanPredicate predicate) {
+    default @NotNull BooleanIterator filterNot(@NotNull BooleanPredicate predicate) {
         Objects.requireNonNull(predicate);
         if (!hasNext()) {
             return empty();
@@ -517,8 +514,7 @@ public interface BooleanIterator
         return new BooleanIterators.Filter(this, predicate, true);
     }
 
-    @NotNull
-    default BooleanIterator map(@NotNull BooleanUnaryOperator mapper) {
+    default @NotNull BooleanIterator map(@NotNull BooleanUnaryOperator mapper) {
         Objects.requireNonNull(mapper);
         if (!hasNext()) {
             return this;
@@ -536,8 +532,7 @@ public interface BooleanIterator
         };
     }
 
-    @NotNull
-    default <U> Iterator<U> mapToObj(@NotNull BooleanFunction<? extends U> mapper) {
+    default <U> @NotNull Iterator<U> mapToObj(@NotNull BooleanFunction<? extends U> mapper) {
         Objects.requireNonNull(mapper);
         if (!hasNext()) {
             return Iterators.empty();
@@ -555,8 +550,7 @@ public interface BooleanIterator
         };
     }
 
-    @NotNull
-    default Tuple2<BooleanIterator, BooleanIterator> span(
+    default @NotNull Tuple2<BooleanIterator, BooleanIterator> span(
             @NotNull BooleanPredicate predicate
     ) {
         if (!hasNext()) {
@@ -579,6 +573,10 @@ public interface BooleanIterator
         return Tuple.of(buffer.iterator(), it);
     }
 
+    //endregion
+
+    //region Conversion Operations
+
     default boolean @NotNull [] toArray() {
         if (!hasNext()) {
             return new boolean[0];
@@ -591,9 +589,10 @@ public interface BooleanIterator
         return buffer.toArray();
     }
 
-    @NotNull
+    //endregion
+
     @Contract(value = "_, _, _, _ -> param1", mutates = "param1")
-    default <A extends Appendable> A joinTo(
+    default <A extends Appendable> @NotNull A joinTo(
             @NotNull A buffer,
             CharSequence separator, CharSequence prefix, CharSequence postfix
     ) {
@@ -615,10 +614,9 @@ public interface BooleanIterator
     /**
      * {@inheritDoc}
      */
-    @NotNull
     @Override
     @Deprecated
-    default Boolean next() {
+    default @NotNull Boolean next() {
         return nextBoolean();
     }
 

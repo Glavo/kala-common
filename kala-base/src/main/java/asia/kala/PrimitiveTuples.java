@@ -31,11 +31,6 @@ public interface PrimitiveTuples extends Serializable {
         }
 
         @Override
-        public final int hashCode() {
-            return 31 * _1 + _2 + HASH_MAGIC;
-        }
-
-        @Override
         public final boolean equals(Object o) {
             if (this == o) {
                 return true;
@@ -46,6 +41,11 @@ public interface PrimitiveTuples extends Serializable {
             IntTuple2 that = (IntTuple2) o;
             return _1 == that._1 &&
                     _2 == that._2;
+        }
+
+        @Override
+        public final int hashCode() {
+            return 31 * _1 + _2 + HASH_MAGIC;
         }
 
         @Override
@@ -79,11 +79,6 @@ public interface PrimitiveTuples extends Serializable {
         }
 
         @Override
-        public final int hashCode() {
-            return 31 * Boolean.hashCode(_1) + Boolean.hashCode(_2) + HASH_MAGIC;
-        }
-
-        @Override
         public final boolean equals(Object o) {
             if (this == o) {
                 return true;
@@ -94,6 +89,11 @@ public interface PrimitiveTuples extends Serializable {
             BooleanTuple2 that = (BooleanTuple2) o;
             return _1 == that._1 &&
                     _2 == that._2;
+        }
+
+        @Override
+        public final int hashCode() {
+            return 31 * Boolean.hashCode(_1) + Boolean.hashCode(_2) + HASH_MAGIC;
         }
 
         @Override
@@ -128,11 +128,6 @@ public interface PrimitiveTuples extends Serializable {
         }
 
         @Override
-        public final int hashCode() {
-            return 31 * _1 + Objects.hashCode(_2) + HASH_MAGIC;
-        }
-
-        @Override
         public final boolean equals(Object o) {
             if (this == o) {
                 return true;
@@ -143,6 +138,11 @@ public interface PrimitiveTuples extends Serializable {
             IntObjTuple2<?> that = (IntObjTuple2<?>) o;
             return _1 == that._1 &&
                     Objects.equals(_2, that._2);
+        }
+
+        @Override
+        public final int hashCode() {
+            return 31 * _1 + Objects.hashCode(_2) + HASH_MAGIC;
         }
 
         @Override
@@ -182,15 +182,6 @@ public interface PrimitiveTuples extends Serializable {
         }
 
         @Override
-        public final int hashCode() {
-            int hash = 0;
-            hash = 31 * hash + _1;
-            hash = 31 * hash + _2;
-            hash = 31 * hash + _3;
-            return hash + HASH_MAGIC;
-        }
-
-        @Override
         public final boolean equals(Object o) {
             if (this == o) {
                 return true;
@@ -202,6 +193,15 @@ public interface PrimitiveTuples extends Serializable {
             return _1 == other._1 &&
                     _2 == other._2 &&
                     _3 == other._3;
+        }
+
+        @Override
+        public final int hashCode() {
+            int hash = 0;
+            hash = 31 * hash + _1;
+            hash = 31 * hash + _2;
+            hash = 31 * hash + _3;
+            return hash + HASH_MAGIC;
         }
 
         @Override

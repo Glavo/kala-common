@@ -20,17 +20,20 @@ public interface Collection<@Covariant E> extends Traversable<E>, Equals {
 
     int SET_HASH_MAGIC = 1045751549;
 
+    //region Static Factories
+
     @SuppressWarnings("unchecked")
     @Contract(value = "_ -> param1", pure = true)
     static <E> Collection<E> narrow(Collection<? extends E> collection) {
         return (Collection<E>) collection;
     }
 
-    @NotNull
     @Contract(pure = true)
-    static <E> CollectionFactory<E, ?, ? extends Collection<E>> factory() {
+    static <E> @NotNull CollectionFactory<E, ?, ? extends Collection<E>> factory() {
         return ImmutableCollection.factory();
     }
+
+    //endregion
 
     @NotNull
     default Spliterator<E> spliterator() {

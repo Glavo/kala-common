@@ -37,7 +37,7 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
 
     //endregion
 
-    //region Factory methods
+    //region Static Factories
 
     @SuppressWarnings("unchecked")
     public static <E> CollectionFactory<E, ?, ImmutableList<E>> factory() {

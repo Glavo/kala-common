@@ -1,5 +1,7 @@
 package asia.kala.function;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Objects;
 
 /**
@@ -30,7 +32,7 @@ public interface BooleanConsumer {
      * operation followed by the {@code after} operation
      * @throws NullPointerException if {@code after} is null
      */
-    default BooleanConsumer andThen(BooleanConsumer after) {
+    default @NotNull BooleanConsumer andThen(@NotNull BooleanConsumer after) {
         Objects.requireNonNull(after);
         return (boolean t) -> {
             accept(t);

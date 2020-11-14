@@ -14,7 +14,7 @@ import java.util.function.Function;
 
 public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
 
-    //region Factory methods
+    //region Static Factories
 
     @NotNull
     static <E> CollectionFactory<E, ?, ? extends MutableSeq<E>> factory() {
@@ -133,10 +133,6 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
             set(size - i - 1, tem);
         }
     }
-
-    //
-    // -- MutableCollection
-    //
 
     @Override
     default String className() {

@@ -50,10 +50,9 @@ final class TupleXXL extends HList<Object, HList<?, ?>> {
         return values.clone();
     }
 
-    @NotNull
     @SuppressWarnings("SuspiciousSystemArraycopy")
     @Override
-    public final <U> U[] toArray(@NotNull IntFunction<U[]> generator) {
+    public final <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
         U[] arr = generator.apply(arity());
         System.arraycopy(values, 0, arr, 0, arity());
         return arr;
@@ -65,8 +64,7 @@ final class TupleXXL extends HList<Object, HList<?, ?>> {
     }
 
     @Override
-    @NotNull
-    public final HList<?, ?> tail() {
+    public final @NotNull HList<?, ?> tail() {
         int arity = arity();
         if (arity == 10) {
             return new Tuple9<>(

@@ -27,16 +27,14 @@ public final class LazyValue<@Covariant T> implements Traversable<T>, Mappable<T
         return (LazyValue<T>) value;
     }
 
-    @NotNull
     @Contract("_ -> new")
-    public static <T> LazyValue<T> of(@NotNull Supplier<? extends T> supplier) {
+    public static <T> @NotNull LazyValue<T> of(@NotNull Supplier<? extends T> supplier) {
         Objects.requireNonNull(supplier);
         return new LazyValue<>(supplier);
     }
 
-    @NotNull
     @Contract("_ -> new")
-    public static <T> LazyValue<T> ofValue(T value) {
+    public static <T> @NotNull LazyValue<T> ofValue(T value) {
         return new LazyValue<>(value);
     }
 
@@ -65,17 +63,15 @@ public final class LazyValue<@Covariant T> implements Traversable<T>, Mappable<T
         return supplier == null;
     }
 
-    @NotNull
     @Override
     @Contract("_ -> new")
-    public final <U> LazyValue<U> map(@NotNull Function<? super T, ? extends U> mapper) {
+    public final <U> @NotNull LazyValue<U> map(@NotNull Function<? super T, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
         return LazyValue.of(() -> mapper.apply(get()));
     }
 
-    @NotNull
     @Override
-    public final Iterator<T> iterator() {
+    public final @NotNull Iterator<T> iterator() {
         return new AbstractIterator<T>() {
             private boolean hasNext = true;
 
@@ -105,12 +101,17 @@ public final class LazyValue<@Covariant T> implements Traversable<T>, Mappable<T
         }
     }
 
-    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-        out.writeObject(get());
-    }
+    //region Serialization Operations
 
     @SuppressWarnings("unchecked")
     private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
         value = (T) in.readObject();
+        supplier = null;
     }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+        out.writeObject(get());
+    }
+
+    //endregion
 }

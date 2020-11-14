@@ -35,30 +35,26 @@ public final class OptionBoolean extends OptionAny<Boolean> implements BooleanTr
         this.hashCode = HASH_MAGIC + Boolean.hashCode(value);
     }
 
-    @NotNull
-    public static OptionBoolean some(boolean value) {
+    public static @NotNull OptionBoolean some(boolean value) {
         return value ? True : False;
     }
 
-    @NotNull
-    public static OptionBoolean none() {
+    public static @NotNull OptionBoolean none() {
         return None;
     }
 
-    @NotNull
-    public static OptionBoolean of(boolean value) {
+    public static @NotNull OptionBoolean of(boolean value) {
         return value ? True : False;
     }
 
-    @NotNull
-    public static OptionBoolean of(@Nullable Boolean value) {
+    public static @NotNull OptionBoolean of(@Nullable Boolean value) {
         if (value == null) {
             return None;
         }
         return value ? True : False;
     }
 
-    public static OptionBoolean fromOption(@NotNull Option<? extends Boolean> option) {
+    public static @NotNull OptionBoolean fromOption(@NotNull Option<? extends Boolean> option) {
         if (option.isDefined()) {
             return of(option.get());
         } else {
@@ -89,9 +85,8 @@ public final class OptionBoolean extends OptionAny<Boolean> implements BooleanTr
         }
     }
 
-    @NotNull
     @Override
-    public final BooleanIterator iterator() {
+    public final @NotNull BooleanIterator iterator() {
         return isDefined ? BooleanIterator.of(value) : BooleanIterator.empty();
     }
 
@@ -112,7 +107,6 @@ public final class OptionBoolean extends OptionAny<Boolean> implements BooleanTr
     public final String toString() {
         return name;
     }
-
 
     private Object readResolve() {
         if (isDefined) {

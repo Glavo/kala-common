@@ -34,7 +34,7 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
 
     //endregion
 
-    //region Factory methods
+    //region Static Factories
 
     @NotNull
     @Contract(pure = true)

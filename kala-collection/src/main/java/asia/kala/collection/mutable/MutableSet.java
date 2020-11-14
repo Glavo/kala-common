@@ -13,7 +13,7 @@ import java.util.function.Predicate;
 
 public interface MutableSet<E> extends MutableCollection<E>, Set<E> {
 
-    //region Factory methods
+    //region Static Factories
 
     @NotNull
     @Contract(pure = true)

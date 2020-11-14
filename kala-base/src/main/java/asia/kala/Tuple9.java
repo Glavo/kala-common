@@ -142,10 +142,9 @@ public final class Tuple9<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
     /**
      * {@inheritDoc}
      */
-    @NotNull
     @Override
     @SuppressWarnings("unchecked")
-    public final <U> U[] toArray(@NotNull IntFunction<U[]> generator) {
+    public final <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
         U[] arr = generator.apply(arity());
         arr[0] = (U) this._1;
         arr[1] = (U) this._2;
@@ -251,19 +250,17 @@ public final class Tuple9<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
     /**
      * {@inheritDoc}
      */
-    @NotNull
     @Override
-    public final Tuple8<T2, T3, T4, T5, T6, T7, T8, T9> tail() {
+    public final @NotNull Tuple8<T2, T3, T4, T5, T6, T7, T8, T9> tail() {
         return Tuple.of(_2, _3, _4, _5, _6, _7, _8, _9);
     }
 
     /**
      * {@inheritDoc}
      */
-    @NotNull
-    @Contract("_ -> new")
     @Override
-    public final <H> HList<H, Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9>> cons(H head) {
+    @Contract("_ -> new")
+    public final <H> @NotNull HList<H, Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9>> cons(H head) {
         Object[] arr = new Object[10];
         arr[0] = head;
         arr[1] = _1;
@@ -282,6 +279,21 @@ public final class Tuple9<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      * {@inheritDoc}
      */
     @Override
+    public final boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Tuple9<?, ?, ?, ?, ?, ?, ?, ?, ?>)) {
+            return false;
+        }
+        Tuple9<?, ?, ?, ?, ?, ?, ?, ?, ?> t = (Tuple9<?, ?, ?, ?, ?, ?, ?, ?, ?>) o;
+        return Objects.equals(_1, t._1) && Objects.equals(_2, t._2) && Objects.equals(_3, t._3) && Objects.equals(_4, t._4) && Objects.equals(_5, t._5) && Objects.equals(_6, t._6) && Objects.equals(_7, t._7) && Objects.equals(_8, t._8) && Objects.equals(_9, t._9);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public final int hashCode() {
         int hash = 0;
         hash = 31 * hash + Objects.hashCode(_1);
@@ -294,21 +306,6 @@ public final class Tuple9<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
         hash = 31 * hash + Objects.hashCode(_8);
         hash = 31 * hash + Objects.hashCode(_9);
         return hash + Tuple.HASH_MAGIC;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public final boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Tuple9<?, ?, ?, ?, ?, ?, ?, ?, ?>)) {
-            return false;
-        }
-        Tuple9<?, ?, ?, ?, ?, ?, ?, ?, ?> t = (Tuple9<?, ?, ?, ?, ?, ?, ?, ?, ?>) o;
-        return Objects.equals(_1, t._1) && Objects.equals(_2, t._2) && Objects.equals(_3, t._3) && Objects.equals(_4, t._4) && Objects.equals(_5, t._5) && Objects.equals(_6, t._6) && Objects.equals(_7, t._7) && Objects.equals(_8, t._8) && Objects.equals(_9, t._9);
     }
 
     /**

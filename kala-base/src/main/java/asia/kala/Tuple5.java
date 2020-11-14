@@ -104,10 +104,9 @@ public final class Tuple5<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
     /**
      * {@inheritDoc}
      */
-    @NotNull
     @Override
     @SuppressWarnings("unchecked")
-    public final <U> U[] toArray(@NotNull IntFunction<U[]> generator) {
+    public final <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
         U[] arr = generator.apply(arity());
         arr[0] = (U) this._1;
         arr[1] = (U) this._2;
@@ -173,34 +172,19 @@ public final class Tuple5<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
     /**
      * {@inheritDoc}
      */
-    @NotNull
     @Override
-    public final Tuple4<T2, T3, T4, T5> tail() {
+    public final @NotNull Tuple4<T2, T3, T4, T5> tail() {
         return Tuple.of(_2, _3, _4, _5);
     }
 
     /**
      * {@inheritDoc}
      */
-    @NotNull
-    @Contract("_ -> new")
-    @Override
-    public final <H> Tuple6<H, T1, T2, T3, T4, T5> cons(H head) {
-        return new Tuple6<>(head, _1, _2, _3, _4, _5);
-    }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public final int hashCode() {
-        int hash = 0;
-        hash = 31 * hash + Objects.hashCode(_1);
-        hash = 31 * hash + Objects.hashCode(_2);
-        hash = 31 * hash + Objects.hashCode(_3);
-        hash = 31 * hash + Objects.hashCode(_4);
-        hash = 31 * hash + Objects.hashCode(_5);
-        return hash + Tuple.HASH_MAGIC;
+    @Contract("_ -> new")
+    public final <H> @NotNull Tuple6<H, T1, T2, T3, T4, T5> cons(H head) {
+        return new Tuple6<>(head, _1, _2, _3, _4, _5);
     }
 
     /**
@@ -216,6 +200,20 @@ public final class Tuple5<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
         }
         Tuple5<?, ?, ?, ?, ?> t = (Tuple5<?, ?, ?, ?, ?>) o;
         return Objects.equals(_1, t._1) && Objects.equals(_2, t._2) && Objects.equals(_3, t._3) && Objects.equals(_4, t._4) && Objects.equals(_5, t._5);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final int hashCode() {
+        int hash = 0;
+        hash = 31 * hash + Objects.hashCode(_1);
+        hash = 31 * hash + Objects.hashCode(_2);
+        hash = 31 * hash + Objects.hashCode(_3);
+        hash = 31 * hash + Objects.hashCode(_4);
+        hash = 31 * hash + Objects.hashCode(_5);
+        return hash + Tuple.HASH_MAGIC;
     }
 
     /**

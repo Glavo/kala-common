@@ -13,8 +13,7 @@ import java.util.function.*;
 
 final class Views {
     static class Of<@Covariant E, C extends Collection<E>> implements View<E> {
-        @NotNull
-        protected final C collection;
+        protected final @NotNull C collection;
 
         Of(@NotNull C collection) {
             this.collection = collection;
@@ -85,12 +84,12 @@ final class Views {
         }
 
         @Override
-        public final <A extends Appendable> A joinTo(@NotNull A buffer) {
+        public final <A extends Appendable> @NotNull A joinTo(@NotNull A buffer) {
             return collection.joinTo(buffer);
         }
 
         @Override
-        public final <A extends Appendable> A joinTo(@NotNull A buffer, @NotNull CharSequence separator) {
+        public final <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, @NotNull CharSequence separator) {
             return collection.joinTo(buffer, separator);
         }
 
@@ -101,17 +100,17 @@ final class Views {
         }
 
         @Override
-        public final String joinToString() {
+        public final @NotNull String joinToString() {
             return collection.joinToString();
         }
 
         @Override
-        public final String joinToString(@NotNull CharSequence separator) {
+        public final @NotNull String joinToString(@NotNull CharSequence separator) {
             return collection.joinToString(separator);
         }
 
         @Override
-        public final String joinToString(@NotNull CharSequence separator, @NotNull CharSequence prefix, @NotNull CharSequence postfix) {
+        public final @NotNull String joinToString(@NotNull CharSequence separator, @NotNull CharSequence prefix, @NotNull CharSequence postfix) {
             return collection.joinToString(separator, prefix, postfix);
         }
 

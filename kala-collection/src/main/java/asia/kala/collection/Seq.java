@@ -31,7 +31,7 @@ public interface Seq<@Covariant E> extends Collection<E> {
 
     //endregion
 
-    //region Factory methods
+    //region Static Factories
 
     @NotNull
     static <E> CollectionFactory<E, ?, ? extends Seq<E>> factory() {

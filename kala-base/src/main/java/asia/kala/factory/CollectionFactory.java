@@ -11,9 +11,8 @@ import java.util.stream.Collector;
 public interface CollectionFactory<E, Builder, @Covariant R>
         extends Factory<Builder, R>, Collector<E, Builder, R> {
 
-    @NotNull
     @Contract(pure = true)
-    static <E, Builder, R> CollectionFactory<E, Builder, R> ofCollector(
+    static <E, Builder, R> @NotNull CollectionFactory<E, Builder, R> ofCollector(
             @NotNull Collector<E, Builder, R> collector
     ) {
         Objects.requireNonNull(collector);
@@ -165,7 +164,7 @@ public interface CollectionFactory<E, Builder, @Covariant R>
     }
 
 
-    default <U> CollectionFactory<E, Builder, U> mapResult(@NotNull Function<? super R, ? extends U> mapper) {
+    default <U> @NotNull CollectionFactory<E, Builder, U> mapResult(@NotNull Function<? super R, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
         return new MappedCollectionFactory<>(this, mapper);
     }

@@ -66,7 +66,8 @@ public final class OptionRef<T> implements Serializable {
     }
 
     public final void setOption(@NotNull Option<? extends T> option) {
-        this.value = Option.narrow(Objects.requireNonNull(option));
+        Objects.requireNonNull(option);
+        this.value = Option.narrow(option);
     }
 
     public final void setIfEmpty(T newValue) {

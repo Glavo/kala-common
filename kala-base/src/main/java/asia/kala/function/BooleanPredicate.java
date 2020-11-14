@@ -37,12 +37,12 @@ public interface BooleanPredicate {
 
     boolean test(boolean v);
 
-    default BooleanPredicate and(BooleanPredicate other) {
+    default @NotNull BooleanPredicate and(BooleanPredicate other) {
         Objects.requireNonNull(other);
         return b -> test(b) && other.test(b);
     }
 
-    default BooleanPredicate negate() {
+    default @NotNull BooleanPredicate negate() {
         return b -> !test(b);
     }
 
@@ -51,11 +51,11 @@ public interface BooleanPredicate {
         return b -> test(b) || other.test(b);
     }
 
-    static <T> BooleanPredicate isEqual(boolean target) {
+    static @NotNull BooleanPredicate isEqual(boolean target) {
         return target ? IS_TRUE : IS_FALSE;
     }
 
-    static <T> BooleanPredicate not(@NotNull BooleanPredicate target) {
+    static @NotNull BooleanPredicate not(@NotNull BooleanPredicate target) {
         return target.negate();
     }
 }

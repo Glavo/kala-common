@@ -2,6 +2,7 @@ package asia.kala.iterator;
 
 import asia.kala.Tuple;
 import asia.kala.Tuple2;
+import asia.kala.annotations.DeprecatedReplaceWith;
 import asia.kala.control.OptionInt;
 import asia.kala.internal.InternalIntLinkedBuffer;
 import org.jetbrains.annotations.Contract;
@@ -20,18 +21,15 @@ public interface IntIterator
         extends
         PrimIterator<Integer, IntIterator, int[], OptionInt, IntConsumer, IntPredicate>, PrimitiveIterator.OfInt {
 
-    @NotNull
-    static IntIterator empty() {
+    static @NotNull IntIterator empty() {
         return IntIterators.EMPTY;
     }
 
-    @NotNull
-    static IntIterator of() {
+    static @NotNull IntIterator of() {
         return empty();
     }
 
-    @NotNull
-    static IntIterator of(int value) {
+    static @NotNull IntIterator of(int value) {
         return new AbstractIntIterator() {
 
             private boolean hasNext = true;
@@ -78,6 +76,26 @@ public interface IntIterator
         }
         return i;
     }
+
+    @Override
+    @Deprecated
+    @DeprecatedReplaceWith("nextInt()")
+    default @NotNull Integer next() {
+        return nextInt();
+    }
+
+    @Override
+    default @NotNull OptionInt find(@NotNull IntPredicate predicate) {
+        while (hasNext()) {
+            int value = nextInt();
+            if (predicate.test(value)) {
+                return OptionInt.some(value);
+            }
+        }
+        return OptionInt.None;
+    }
+
+    //region Element Conditions
 
     default boolean contains(int value) {
         while (hasNext()) {
@@ -172,6 +190,159 @@ public interface IntIterator
         return true;
     }
 
+    //endregion
+
+    //region Misc Operations
+
+    @Contract(mutates = "this")
+    default @NotNull IntIterator drop(int n) {
+        while (n > 0 && hasNext()) {
+            nextInt();
+            --n;
+        }
+        return this;
+    }
+
+    default @NotNull IntIterator dropWhile(@NotNull IntPredicate predicate) {
+        if (!hasNext()) {
+            return this;
+        }
+
+        int value = 0;
+        boolean p = false;
+        while (hasNext()) {
+            if (!predicate.test(value = nextInt())) {
+                p = true;
+                break;
+            }
+        }
+
+        if (p) {
+            return hasNext() ? prepended(value) : IntIterator.of(value);
+        } else {
+            return this;
+        }
+    }
+
+    @Override
+    default @NotNull IntIterator take(int n) {
+        if (!hasNext() || n <= 0) {
+            return empty();
+        }
+
+        return new IntIterators.Take(this, n);
+    }
+
+    @Override
+    default @NotNull IntIterator takeWhile(@NotNull IntPredicate predicate) {
+        Objects.requireNonNull(predicate);
+        if (!hasNext()) {
+            return this;
+        }
+        return new IntIterators.TakeWhile(this, predicate);
+    }
+
+    default @NotNull IntIterator updated(int n, int newValue) {
+        if (!hasNext() || n < 0) {
+            return this;
+        }
+
+        if (n == 0) {
+            this.nextInt();
+            return prepended(newValue);
+        }
+
+        return new IntIterators.Updated(this, n, newValue);
+    }
+
+    default @NotNull IntIterator prepended(int value) {
+        return new IntIterators.Prepended(this, value);
+    }
+
+    default @NotNull IntIterator appended(int value) {
+        return new IntIterators.Appended(this, value);
+    }
+
+    @Override
+    default @NotNull IntIterator filter(@NotNull IntPredicate predicate) {
+        Objects.requireNonNull(predicate);
+        if (!hasNext()) {
+            return empty();
+        }
+        return new IntIterators.Filter(this, predicate, false);
+    }
+
+    @Override
+    default @NotNull IntIterator filterNot(@NotNull IntPredicate predicate) {
+        Objects.requireNonNull(predicate);
+        if (!hasNext()) {
+            return empty();
+        }
+        return new IntIterators.Filter(this, predicate, true);
+    }
+
+    default @NotNull IntIterator map(@NotNull IntUnaryOperator mapper) {
+        Objects.requireNonNull(mapper);
+        if (!hasNext()) {
+            return this;
+        }
+        return new AbstractIntIterator() {
+            @Override
+            public final boolean hasNext() {
+                return IntIterator.this.hasNext();
+            }
+
+            @Override
+            public final int nextInt() {
+                return mapper.applyAsInt(IntIterator.this.nextInt());
+            }
+        };
+    }
+
+    default <U> @NotNull Iterator<U> mapToObj(@NotNull IntFunction<? extends U> mapper) {
+        Objects.requireNonNull(mapper);
+        if (!hasNext()) {
+            return Iterators.empty();
+        }
+        return new AbstractIterator<U>() {
+            @Override
+            public final boolean hasNext() {
+                return IntIterator.this.hasNext();
+            }
+
+            @Override
+            public final U next() {
+                return mapper.apply(IntIterator.this.nextInt());
+            }
+        };
+    }
+
+    @Override
+    default @NotNull Tuple2<@NotNull IntIterator, @NotNull IntIterator> span(@NotNull IntPredicate predicate) {
+        if (!hasNext()) {
+            return Tuple.of(empty(), empty());
+        }
+
+        InternalIntLinkedBuffer buffer = new InternalIntLinkedBuffer();
+        IntIterator it = this;
+
+        while (it.hasNext()) {
+            int e = it.nextInt();
+            if (predicate.test(e)) {
+                buffer.append(e);
+            } else {
+                it = it.prepended(e);
+                break;
+            }
+        }
+
+        return Tuple.of(buffer.iterator(), it);
+    }
+
+    //endregion
+
+    //region Aggregate Operations
+
     @Override
     default int count(@NotNull IntPredicate predicate) {
         int c = 0;
@@ -181,18 +352,6 @@ public interface IntIterator
             }
         }
         return c;
-    }
-
-    @NotNull
-    @Override
-    default OptionInt find(@NotNull IntPredicate predicate) {
-        while (hasNext()) {
-            int value = nextInt();
-            if (predicate.test(value)) {
-                return OptionInt.some(value);
-            }
-        }
-        return OptionInt.None;
     }
 
     default int max() {
@@ -207,8 +366,7 @@ public interface IntIterator
         return value;
     }
 
-    @Nullable
-    default Integer maxOrNull() {
+    default @Nullable Integer maxOrNull() {
         if (!hasNext()) {
             return null;
         }
@@ -220,9 +378,8 @@ public interface IntIterator
         return value;
     }
 
-    @NotNull
     @Override
-    default OptionInt maxOption() {
+    default @NotNull OptionInt maxOption() {
         if (!hasNext()) {
             return OptionInt.None;
         }
@@ -246,8 +403,7 @@ public interface IntIterator
         return value;
     }
 
-    @Nullable
-    default Integer minOrNull() {
+    default @Nullable Integer minOrNull() {
         if (!hasNext()) {
             return null;
         }
@@ -259,9 +415,8 @@ public interface IntIterator
         return value;
     }
 
-    @NotNull
     @Override
-    default OptionInt minOption() {
+    default @NotNull OptionInt minOption() {
         if (!hasNext()) {
             return OptionInt.None;
         }
@@ -273,162 +428,9 @@ public interface IntIterator
         return OptionInt.some(value);
     }
 
-    @NotNull
-    @Contract(mutates = "this")
-    default IntIterator drop(int n) {
-        while (n > 0 && hasNext()) {
-            nextInt();
-            --n;
-        }
-        return this;
-    }
+    //endregion
 
-    @NotNull
-    default IntIterator dropWhile(@NotNull IntPredicate predicate) {
-        if (!hasNext()) {
-            return this;
-        }
-
-        int value = 0;
-        boolean p = false;
-        while (hasNext()) {
-            if (!predicate.test(value = nextInt())) {
-                p = true;
-                break;
-            }
-        }
-
-        if (p) {
-            return hasNext() ? prepended(value) : IntIterator.of(value);
-        } else {
-            return this;
-        }
-    }
-
-    @NotNull
-    @Override
-    default IntIterator take(int n) {
-        if (!hasNext() || n <= 0) {
-            return empty();
-        }
-
-        return new IntIterators.Take(this, n);
-    }
-
-    @NotNull
-    @Override
-    default IntIterator takeWhile(@NotNull IntPredicate predicate) {
-        Objects.requireNonNull(predicate);
-        if (!hasNext()) {
-            return this;
-        }
-        return new IntIterators.TakeWhile(this, predicate);
-    }
-
-    @NotNull
-    default IntIterator updated(int n, int newValue) {
-        if (!hasNext() || n < 0) {
-            return this;
-        }
-
-        if (n == 0) {
-            this.nextInt();
-            return prepended(newValue);
-        }
-
-        return new IntIterators.Updated(this, n, newValue);
-    }
-
-    @NotNull
-    default IntIterator prepended(int value) {
-        return new IntIterators.Prepended(this, value);
-    }
-
-    @NotNull
-    default IntIterator appended(int value) {
-        return new IntIterators.Appended(this, value);
-    }
-
-    @NotNull
-    @Override
-    default IntIterator filter(@NotNull IntPredicate predicate) {
-        Objects.requireNonNull(predicate);
-        if (!hasNext()) {
-            return empty();
-        }
-        return new IntIterators.Filter(this, predicate, false);
-    }
-
-    @NotNull
-    @Override
-    default IntIterator filterNot(@NotNull IntPredicate predicate) {
-        Objects.requireNonNull(predicate);
-        if (!hasNext()) {
-            return empty();
-        }
-        return new IntIterators.Filter(this, predicate, true);
-    }
-
-    @NotNull
-    default IntIterator map(@NotNull IntUnaryOperator mapper) {
-        Objects.requireNonNull(mapper);
-        if (!hasNext()) {
-            return this;
-        }
-        return new AbstractIntIterator() {
-            @Override
-            public final boolean hasNext() {
-                return IntIterator.this.hasNext();
-            }
-
-            @Override
-            public final int nextInt() {
-                return mapper.applyAsInt(IntIterator.this.nextInt());
-            }
-        };
-    }
-
-    @NotNull
-    default <U> Iterator<U> mapToObj(@NotNull IntFunction<? extends U> mapper) {
-        Objects.requireNonNull(mapper);
-        if (!hasNext()) {
-            return Iterators.empty();
-        }
-        return new AbstractIterator<U>() {
-            @Override
-            public final boolean hasNext() {
-                return IntIterator.this.hasNext();
-            }
-
-            @Override
-            public final U next() {
-                return mapper.apply(IntIterator.this.nextInt());
-            }
-        };
-    }
-
-    @NotNull
-    @Override
-    default Tuple2<@NotNull IntIterator, @NotNull IntIterator> span(@NotNull IntPredicate predicate) {
-        if (!hasNext()) {
-            return Tuple.of(empty(), empty());
-        }
-
-        InternalIntLinkedBuffer buffer = new InternalIntLinkedBuffer();
-        IntIterator it = this;
-
-        while (it.hasNext()) {
-            int e = it.nextInt();
-            if (predicate.test(e)) {
-                buffer.append(e);
-            } else {
-                it = it.prepended(e);
-                break;
-            }
-        }
-
-        return Tuple.of(buffer.iterator(), it);
-    }
+    //region Conversion Operations
 
     @Override
     default int @NotNull [] toArray() {
@@ -443,30 +445,9 @@ public interface IntIterator
         return buffer.toArray();
     }
 
-    @NotNull
-    @Override
-    default <A extends Appendable> A joinTo(@NotNull A buffer, CharSequence separator, CharSequence prefix, CharSequence postfix) {
-        try {
-            buffer.append(prefix);
-            if (hasNext()) {
-                buffer.append(String.valueOf(nextInt()));
-            }
-            while (hasNext()) {
-                buffer.append(separator).append(String.valueOf(nextInt()));
-            }
-            buffer.append(postfix);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-        return buffer;
-    }
+    //endregion
 
-    @NotNull
-    @Override
-    @Deprecated
-    default Integer next() {
-        return nextInt();
-    }
+    //region Traverse Operations
 
     @Override
     default void forEach(@NotNull IntConsumer action) {
@@ -488,4 +469,27 @@ public interface IntIterator
     default void forEachRemaining(@NotNull IntConsumer action) {
         forEach(action);
     }
+
+    //endregion
+
+    //region
+
+    @Override
+    default <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, CharSequence separator, CharSequence prefix, CharSequence postfix) {
+        try {
+            buffer.append(prefix);
+            if (hasNext()) {
+                buffer.append(String.valueOf(nextInt()));
+            }
+            while (hasNext()) {
+                buffer.append(separator).append(String.valueOf(nextInt()));
+            }
+            buffer.append(postfix);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        return buffer;
+    }
+
+    //endregion
 }

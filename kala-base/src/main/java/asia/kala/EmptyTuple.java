@@ -20,15 +20,13 @@ public abstract class EmptyTuple extends Tuple {
         throw new IndexOutOfBoundsException("EmptyTuple.elementAt()");
     }
 
-    @NotNull
     @Override
-    public final <U> U[] toArray(@NotNull IntFunction<U[]> generator) {
+    public final <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
         return generator.apply(0);
     }
 
-    @NotNull
     @Override
-    public final <H> Tuple1<H> cons(H head) {
+    public final <H> @NotNull Tuple1<H> cons(H head) {
         return new Tuple1<>(head);
     }
 

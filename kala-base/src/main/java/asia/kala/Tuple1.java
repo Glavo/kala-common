@@ -64,10 +64,9 @@ public final class Tuple1<@Covariant T1> extends HList<T1, Unit> implements Mapp
     /**
      * {@inheritDoc}
      */
-    @NotNull
     @Override
     @SuppressWarnings("unchecked")
-    public final <U> U[] toArray(@NotNull IntFunction<U[]> generator) {
+    public final <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
         U[] arr = generator.apply(arity());
         arr[0] = (U) this._1;
         return arr;
@@ -93,34 +92,23 @@ public final class Tuple1<@Covariant T1> extends HList<T1, Unit> implements Mapp
     /**
      * {@inheritDoc}
      */
-    @NotNull
     @Override
-    public final Unit tail() {
+    public final @NotNull Unit tail() {
         return Tuple.of();
     }
 
     /**
      * {@inheritDoc}
      */
-    @NotNull
-    @Contract("_ -> new")
     @Override
-    public final <H> Tuple2<H, T1> cons(H head) {
+    @Contract("_ -> new")
+    public final <H> @NotNull Tuple2<H, T1> cons(H head) {
         return new Tuple2<>(head, _1);
     }
 
-    @NotNull
     @Override
-    public final <U> Tuple1<U> map(@NotNull Function<? super T1, ? extends U> mapper) {
+    public final <U> @NotNull Tuple1<U> map(@NotNull Function<? super T1, ? extends U> mapper) {
         return new Tuple1<>(mapper.apply(_1));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public final int hashCode() {
-        return Tuple.HASH_MAGIC + Objects.hashCode(_1) ;
     }
 
     /**
@@ -136,6 +124,14 @@ public final class Tuple1<@Covariant T1> extends HList<T1, Unit> implements Mapp
         }
         Tuple1<?> t = (Tuple1<?>) o;
         return Objects.equals(_1, t._1);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final int hashCode() {
+        return Tuple.HASH_MAGIC + Objects.hashCode(_1);
     }
 
     /**

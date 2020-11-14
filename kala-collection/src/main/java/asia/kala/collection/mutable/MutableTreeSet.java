@@ -45,7 +45,7 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
 
     //endregion
 
-    //region Factory methods
+    //region Static Factories
 
     @NotNull
     public static <E extends Comparable<? super E>> CollectionFactory<E, ?, MutableTreeSet<E>> factory() {
