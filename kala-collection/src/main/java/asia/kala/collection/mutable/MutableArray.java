@@ -1,6 +1,6 @@
 package asia.kala.collection.mutable;
 
-import asia.kala.collection.internal.CollectionHelper;
+import asia.kala.function.IndexedFunction;
 import asia.kala.traversable.Traversable;
 import asia.kala.collection.*;
 import asia.kala.factory.CollectionFactory;
@@ -41,59 +41,49 @@ public final class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>,
 
     //region Static Factories
 
-    @NotNull
-    public static <E> CollectionFactory<E, ?, MutableArray<E>> factory() {
+    public static <E> @NotNull CollectionFactory<E, ?, MutableArray<E>> factory() {
         return (Factory<E>) FACTORY;
     }
 
-    @NotNull
-    public static <E> MutableArray<E> empty() {
+    public static <E> @NotNull MutableArray<E> empty() {
         return (MutableArray<E>) EMPTY;
     }
 
-    @NotNull
-    public static <E> MutableArray<E> of() {
+    public static <E> @NotNull MutableArray<E> of() {
         return (MutableArray<E>) EMPTY;
     }
 
-    @NotNull
     @Contract("_ -> new")
-    public static <E> MutableArray<E> of(E value1) {
+    public static <E> @NotNull MutableArray<E> of(E value1) {
         return new MutableArray<>(new Object[]{value1});
     }
 
-    @NotNull
     @Contract("_, _ -> new")
-    public static <E> MutableArray<E> of(E value1, E value2) {
+    public static <E> @NotNull MutableArray<E> of(E value1, E value2) {
         return new MutableArray<>(new Object[]{value1, value2});
     }
 
-    @NotNull
     @Contract("_, _, _ -> new")
-    public static <E> MutableArray<E> of(E value1, E value2, E value3) {
+    public static <E> @NotNull MutableArray<E> of(E value1, E value2, E value3) {
         return new MutableArray<>(new Object[]{value1, value2, value3});
     }
 
-    @NotNull
     @Contract("_, _, _, _ -> new")
-    public static <E> MutableArray<E> of(E value1, E value2, E value3, E value4) {
+    public static <E> @NotNull MutableArray<E> of(E value1, E value2, E value3, E value4) {
         return new MutableArray<>(new Object[]{value1, value2, value3, value4});
     }
 
-    @NotNull
     @Contract("_, _, _, _, _ -> new")
-    public static <E> MutableArray<E> of(E value1, E value2, E value3, E value4, E value5) {
+    public static <E> @NotNull MutableArray<E> of(E value1, E value2, E value3, E value4, E value5) {
         return new MutableArray<>(new Object[]{value1, value2, value3, value4, value5});
     }
 
-    @NotNull
-    public static <E> MutableArray<E> of(@NotNull E... values) {
+    public static <E> @NotNull MutableArray<E> of(E... values) {
         return from(values);
     }
 
-    @NotNull
-    public static <E> MutableArray<E> from(E @NotNull [] values) {
-        final int length = values.length;
+    public static <E> @NotNull MutableArray<E> from(E @NotNull [] values) {
+        final int length = values.length; // implicit null check of values+
         if (length == 0) {
             return empty();
         }
@@ -103,30 +93,21 @@ public final class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>,
         return new MutableArray<>(newValues);
     }
 
-    @NotNull
-    public static <E> MutableArray<E> from(@NotNull Traversable<? extends E> values) {
-        Objects.requireNonNull(values);
+    public static <E> @NotNull MutableArray<E> from(@NotNull Traversable<? extends E> values) {
+        return values.knownSize() == 0 // implicit null check of values
+                ? empty()
+                : new MutableArray<E>(values.toArray());
 
-        if (CollectionHelper.knowSize(values) == 0) {
-            return empty();
-        }
-
-        return new MutableArray<>(values.toArray());
     }
 
-    @NotNull
-    public static <E> MutableArray<E> from(@NotNull java.util.Collection<? extends E> values) {
-        Objects.requireNonNull(values);
+    public static <E> @NotNull MutableArray<E> from(@NotNull java.util.Collection<? extends E> values) {
+        return values.size() == 0 // implicit null check of values
+                ? empty()
+                : new MutableArray<E>(values.toArray());
 
-        if (values.size() == 0) {
-            return empty();
-        }
-
-        return new MutableArray<>(values.toArray());
     }
 
-    @NotNull
-    public static <E> MutableArray<E> from(@NotNull Iterable<? extends E> values) {
+    public static <E> @NotNull MutableArray<E> from(@NotNull Iterable<? extends E> values) {
         Objects.requireNonNull(values);
 
         if (values instanceof Traversable<?>) {
@@ -137,25 +118,48 @@ public final class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>,
             return from(((java.util.Collection<E>) values));
         }
 
-        ArrayBuffer<E> buffer = new ArrayBuffer<>();
-        buffer.appendAll(values);
-        if (buffer.size() == 0) {
+        return from(values.iterator());
+    }
+
+    public static <E> @NotNull MutableArray<E> from(@NotNull Iterator<? extends E> it) {
+        if (!it.hasNext()) { // implicit null check of it
             return empty();
+        }
+        ArrayBuffer<E> buffer = new ArrayBuffer<>();
+        while (it.hasNext()) {
+            buffer.append(it.next());
         }
         return new MutableArray<>(buffer.toArray());
     }
 
-    @NotNull
-    public static <E> MutableArray<E> wrap(E @NotNull [] array) {
+    public static <E> @NotNull MutableArray<E> wrap(E @NotNull [] array) {
         Objects.requireNonNull(array);
         return new MutableArray<>(array, true);
     }
 
     //endregion
 
-    //region MutableArray members
+    //region Collection Operations
 
-    public final Object[] getArray() {
+    @Override
+    public final String className() {
+        return "MutableArray";
+    }
+
+    @Override
+    public final <U> @NotNull CollectionFactory<U, ?, MutableArray<U>> iterableFactory() {
+        return factory();
+    }
+
+    @Override
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
+    public final @NotNull MutableArray<E> clone() {
+        return new MutableArray<E>(this.array.clone(), isChecked);
+    }
+
+    //endregion
+
+    public final Object @NotNull [] getArray() {
         return array;
     }
 
@@ -163,13 +167,13 @@ public final class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>,
         return isChecked;
     }
 
-    //endregion
-
-    //region MutableSeq members
-
     @Override
     public final void set(int index, E newValue) {
-        array[index] = newValue;
+        try {
+            array[index] = newValue;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException(e.getMessage());
+        }
     }
 
     @Override
@@ -181,36 +185,18 @@ public final class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>,
     }
 
     @Override
+    public final void mapInPlaceIndexed(@NotNull IndexedFunction<? super E, ? extends E> mapper) {
+        final Object[] array = this.array;
+        for (int i = 0; i < array.length; i++) {
+            array[i] = mapper.apply(i, (E) array[i]);
+        }
+    }
+
+    @Override
     public final void sort(@NotNull Comparator<? super E> comparator) {
         Arrays.sort(array, (Comparator<? super Object>) comparator);
     }
 
-    //endregion
-
-    //region MutableCollection members
-
-    @Override
-    public final String className() {
-        return "MutableArray";
-    }
-
-    @NotNull
-    @Override
-    public final <U> CollectionFactory<U, ?, MutableArray<U>> iterableFactory() {
-        return factory();
-    }
-
-    @NotNull
-    @Override
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public final MutableArray<E> clone() {
-        if (this == EMPTY) {
-            return this;
-        }
-        return new MutableArray<>(this.array.clone(), isChecked);
-    }
-
-    //endregion
 
     private static final class Factory<E> implements CollectionFactory<E, ArrayBuffer<E>, MutableArray<E>> {
         Factory() {
@@ -224,6 +210,11 @@ public final class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>,
         @Override
         public final MutableArray<E> from(@NotNull Iterable<? extends E> values) {
             return MutableArray.from(values);
+        }
+
+        @Override
+        public @NotNull MutableArray<E> from(@NotNull Iterator<? extends E> it) {
+            return MutableArray.from(it);
         }
 
         @Override
@@ -249,7 +240,7 @@ public final class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>,
 
         @Override
         public final MutableArray<E> build(@NotNull ArrayBuffer<E> buffer) {
-            return new MutableArray<>(buffer.toArray(Object[]::new));
+            return new MutableArray<>(buffer.toArray());
         }
     }
 }

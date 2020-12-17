@@ -15,20 +15,18 @@ final class SetViews {
     }
 
     static final class Filter<@Covariant E> extends AbstractSetView<E> {
-        @NotNull
-        private final View<E> source;
 
-        @NotNull
-        private final Predicate<? super E> predicate;
+        private final @NotNull View<E> source;
+
+        private final @NotNull Predicate<? super E> predicate;
 
         public Filter(@NotNull View<E> source, @NotNull Predicate<? super E> predicate) {
             this.source = source;
             this.predicate = predicate;
         }
 
-        @NotNull
         @Override
-        public final Iterator<E> iterator() {
+        public final @NotNull Iterator<E> iterator() {
             return Iterators.filter(source.iterator(), predicate);
         }
     }

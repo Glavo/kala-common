@@ -40,5 +40,5 @@ public interface ImmutableSeqOps<E, CC extends ImmutableSeq<?>, COLL extends Imm
 
     @NotNull COLL reversed();
 
-    @NotNull <U> CC mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper);
+    <U> @NotNull CC mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper);
 }

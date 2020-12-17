@@ -22,9 +22,6 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
             E newValue,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
-        assert seq != null;
-        assert factory != null;
-
         int s = seq.size();
 
         if (index < 0 || index >= s) {
@@ -78,9 +75,6 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
             @NotNull Predicate<? super E> predicate,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
-        assert seq != null;
-        assert factory != null;
-
         Objects.requireNonNull(predicate);
 
         Builder builder = factory.newBuilder();
@@ -133,9 +127,6 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
             @NotNull Predicate<? super E> predicate,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
-        assert seq != null;
-        assert factory != null;
-
         Objects.requireNonNull(predicate);
 
         Builder builder = factory.newBuilder();
@@ -155,9 +146,6 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
             @NotNull Seq<? extends E> other,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
-        assert seq != null;
-        assert factory != null;
-
         Objects.requireNonNull(other);
 
         Builder builder = factory.newBuilder();
@@ -176,9 +164,6 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
             E element,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
-        assert seq != null;
-        assert factory != null;
-
         Builder builder = factory.newBuilder();
 
         factory.sizeHint(builder, seq, 1);
@@ -194,8 +179,6 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
             @NotNull Iterable<? extends E> prefix,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
-        assert seq != null;
-        assert factory != null;
         Objects.requireNonNull(prefix);
 
         Builder builder = factory.newBuilder();
@@ -214,8 +197,6 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
             E @NotNull [] prefix,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
-        assert seq != null;
-        assert factory != null;
         Objects.requireNonNull(prefix);
 
         Builder builder = factory.newBuilder();
@@ -236,9 +217,6 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
             E element,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
-        assert seq != null;
-        assert factory != null;
-
         Builder builder = factory.newBuilder();
 
         factory.sizeHint(builder, seq, 1);
@@ -255,8 +233,6 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
             @NotNull Iterable<? extends E> postfix,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
-        assert seq != null;
-        assert factory != null;
         Objects.requireNonNull(postfix);
 
         Builder builder = factory.newBuilder();
@@ -275,8 +251,6 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
             E @NotNull [] postfix,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
-        assert seq != null;
-        assert factory != null;
         Objects.requireNonNull(postfix);
 
         Builder builder = factory.newBuilder();
@@ -320,8 +294,6 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
             @NotNull IndexedFunction<? super E, ? extends U> mapper,
             @NotNull CollectionFactory<? super U, Builder, ? extends T> factory
     ) {
-        assert Seq != null;
-        assert factory != null;
         Objects.requireNonNull(mapper);
 
         Builder builder = factory.newBuilder();

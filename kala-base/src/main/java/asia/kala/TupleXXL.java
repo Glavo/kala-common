@@ -15,10 +15,9 @@ import java.util.function.IntFunction;
 final class TupleXXL extends HList<Object, HList<?, ?>> {
     private static final long serialVersionUID = -1035728226134523579L;
 
-    @NotNull
-    private final Object[] values;
+    private final Object @NotNull [] values;
 
-    TupleXXL(@NotNull Object[] values) {
+    TupleXXL(Object @NotNull [] values) {
         this.values = values;
     }
 
@@ -37,12 +36,13 @@ final class TupleXXL extends HList<Object, HList<?, ?>> {
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public final <H> @NotNull HList<H, TupleXXL> cons(H head) {
         int arity = arity();
         Object[] arr = new Object[arity + 1];
         arr[0] = head;
         System.arraycopy(values, 0, arr, 1, arity);
-        return new TupleXXL(arr).cast();
+        return (HList) new TupleXXL(arr);
     }
 
     @Override
@@ -74,18 +74,14 @@ final class TupleXXL extends HList<Object, HList<?, ?>> {
         return new TupleXXL(Arrays.copyOfRange(values, 1, arity));
     }
 
-    final <U> U cast() {
-        return (U) this;
-    }
-
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof TupleXXL)) {
             return false;
         }
-        TupleXXL tupleXXL = (TupleXXL) o;
-        return Arrays.equals(values, tupleXXL.values);
+        TupleXXL other = (TupleXXL) o;
+        return Arrays.equals(values, other.values);
     }
 
     @Override

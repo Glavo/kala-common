@@ -18,40 +18,35 @@ import java.util.stream.Stream;
 @StaticClass
 public final class FromJavaConvert {
     public static class CollectionFromJava<E> extends AbstractCollection<E> implements Collection<E> {
-        @NotNull
-        protected final java.util.Collection<E> collection;
+
+        protected final @NotNull java.util.Collection<E> collection;
 
         public CollectionFromJava(@NotNull java.util.Collection<E> collection) {
             this.collection = collection;
         }
 
-        @NotNull
         @Override
-        public Iterator<E> iterator() {
+        public @NotNull Iterator<E> iterator() {
             return collection.iterator();
         }
 
-        @NotNull
         @Override
-        public Spliterator<E> spliterator() {
+        public @NotNull Spliterator<E> spliterator() {
             return collection.spliterator();
         }
 
-        @NotNull
         @Override
-        public Stream<E> stream() {
+        public @NotNull Stream<E> stream() {
             return collection.stream();
         }
 
-        @NotNull
         @Override
-        public Stream<E> parallelStream() {
+        public @NotNull Stream<E> parallelStream() {
             return collection.parallelStream();
         }
 
-        @NotNull
         @Override
-        public java.util.Collection<E> asJava() {
+        public @NotNull java.util.Collection<E> asJava() {
             return collection;
         }
 

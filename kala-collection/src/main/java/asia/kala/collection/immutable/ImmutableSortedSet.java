@@ -9,7 +9,14 @@ import java.util.function.Function;
 
 public interface ImmutableSortedSet<E> extends ImmutableSet<E>, SortedSet<E> {
 
-    default <U> ImmutableSortedSet<U> map(
+
+    @Override
+    <U> @NotNull CollectionFactory<U, ?, ? extends ImmutableSortedSet<U>> iterableFactory();
+
+    @Override
+    <U> @NotNull CollectionFactory<U, ?, ? extends ImmutableSortedSet<U>> iterableFactory(Comparator<? super U> comparator);
+
+    default <U> @NotNull ImmutableSortedSet<U> map(
             Comparator<? super U> newComparator,
             @NotNull Function<? super E, ? extends U> mapper
     ) {
@@ -18,19 +25,10 @@ public interface ImmutableSortedSet<E> extends ImmutableSet<E>, SortedSet<E> {
         return AbstractImmutableCollection.map(this, mapper, factory);
     }
 
-    @NotNull
-    default <U> ImmutableCollection<U> flatMap(
+    default <U> @NotNull ImmutableCollection<U> flatMap(
             Comparator<? super U> newComparator,
             @NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
         return AbstractImmutableCollection.flatMap(this, mapper, this.iterableFactory(newComparator));
     }
 
-    @NotNull
-
-    @Override
-    <U> CollectionFactory<U, ?, ? extends ImmutableSortedSet<U>> iterableFactory();
-
-    @NotNull
-    @Override
-    <U> CollectionFactory<U, ?, ? extends ImmutableSortedSet<U>> iterableFactory(Comparator<? super U> comparator);
 }

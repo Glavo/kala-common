@@ -30,6 +30,7 @@ public final class ImmutableInternal {
 
         private boolean aliased = false;
 
+        @SuppressWarnings("SpellCheckingInspection")
         private void ensureUnaliased() {
             if (aliased) {
                 LinkedBufferImpl<E> buffer = new LinkedBuffer<>();
@@ -52,9 +53,8 @@ public final class ImmutableInternal {
             return first.get(index);
         }
 
-        @NotNull
         @Override
-        public final Option<E> getOption(int index) {
+        public final @NotNull Option<E> getOption(int index) {
             if (index < 0 || index >= len) {
                 return Option.none();
             }
@@ -241,9 +241,8 @@ public final class ImmutableInternal {
             aliased = false;
         }
 
-        @NotNull
         @Override
-        public final ImmutableList<E> toImmutableList() {
+        public final @NotNull ImmutableList<E> toImmutableList() {
             aliased = true;
             return first;
         }
@@ -325,9 +324,8 @@ public final class ImmutableInternal {
             return len;
         }
 
-        @NotNull
         @Override
-        public final Iterator<E> iterator() {
+        public final @NotNull Iterator<E> iterator() {
             if (len == 0) {
                 return Iterators.empty();
             }

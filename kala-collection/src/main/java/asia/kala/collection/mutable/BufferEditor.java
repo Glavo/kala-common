@@ -12,98 +12,86 @@ public class BufferEditor<E, C extends Buffer<E>> extends MutableSeqEditor<E, C>
         super(source);
     }
 
-    @NotNull
     @Contract(value = "_ -> this")
-    public BufferEditor<E, C> append(E value) {
+    public @NotNull BufferEditor<E, C> append(E value) {
         source.append(value);
         return this;
     }
 
-    @NotNull
     @Contract("_ -> this")
-    public BufferEditor<E, C> appendAll(@NotNull Iterable<? extends E> collection) {
+    public @NotNull BufferEditor<E, C> appendAll(@NotNull Iterable<? extends E> collection) {
         source.appendAll(collection);
         return this;
     }
 
-    @NotNull
     @Contract("_ -> this")
-    public BufferEditor<E, C> appendAll(E @NotNull [] collection) {
+    public @NotNull BufferEditor<E, C> appendAll(E @NotNull [] collection) {
         source.appendAll(collection);
         return this;
     }
 
-    @NotNull
     @Contract("_ -> this")
-    public BufferEditor<E, C> prepend(E value) {
+    public @NotNull BufferEditor<E, C> prepend(E value) {
         source.prepend(value);
         return this;
     }
 
-    @NotNull
     @Contract("_ -> this")
-    public BufferEditor<E, C> prependAll(@NotNull Iterable<? extends E> collection) {
+    public @NotNull BufferEditor<E, C> prependAll(@NotNull Iterable<? extends E> collection) {
         source.prependAll(collection);
         return this;
     }
 
-    @NotNull
     @Contract("_ -> this")
-    public BufferEditor<E, C> prependAll(E @NotNull [] collection) {
+    public @NotNull BufferEditor<E, C> prependAll(E @NotNull [] collection) {
         source.prependAll(collection);
         return this;
     }
 
-    @NotNull
     @Contract("_, _ -> this")
-    public BufferEditor<E, C> insert(int index, E element) {
+    public @NotNull BufferEditor<E, C> insert(int index, E element) {
         source.insert(index, element);
         return this;
     }
 
-    @NotNull
     @Contract("_, _ -> this")
-    public BufferEditor<E, C> insertAll(int index, @NotNull Iterable<? extends E> values) {
+    public @NotNull BufferEditor<E, C> insertAll(int index, @NotNull Iterable<? extends E> values) {
         source.insertAll(index, values);
         return this;
     }
 
-    @NotNull
     @Contract("_, _ -> this")
-    public BufferEditor<E, C> insertAll(int index, E @NotNull [] values) {
+    public @NotNull BufferEditor<E, C> insertAll(int index, E @NotNull [] values) {
         source.insertAll(index, values);
         return this;
     }
 
-    @NotNull
     @Contract("_ -> this")
-    public BufferEditor<E, C> removeAt(int index) {
+    public @NotNull BufferEditor<E, C> removeAt(int index) {
         source.removeAt(index);
         return this;
     }
 
-    @NotNull
     @Contract("_, _ -> this")
-    public BufferEditor<E, C> removeAt(int index, int count) {
+    public @NotNull BufferEditor<E, C> removeAt(int index, int count) {
         source.removeAt(index, count);
         return this;
     }
 
-    @NotNull
     @Contract("-> this")
-    public BufferEditor<E, C> clear() {
+    public @NotNull BufferEditor<E, C> clear() {
         source.clear();
         return this;
     }
 
     @Contract("_ -> this")
-    public BufferEditor<E, C> dropInPlace(int n) {
+    public @NotNull BufferEditor<E, C> dropInPlace(int n) {
         source.dropInPlace(n);
         return this;
     }
 
     @Contract("_ -> this")
-    public BufferEditor<E, C> dropWhileInPlace(@NotNull Predicate<? super E> predicate) {
+    public @NotNull BufferEditor<E, C> dropWhileInPlace(@NotNull Predicate<? super E> predicate) {
         source.dropWhileInPlace(predicate);
         return this;
     }

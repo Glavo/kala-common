@@ -2,6 +2,7 @@ package asia.kala.function;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -34,7 +35,7 @@ public interface BooleanConsumer {
      */
     default @NotNull BooleanConsumer andThen(@NotNull BooleanConsumer after) {
         Objects.requireNonNull(after);
-        return (boolean t) -> {
+        return (BooleanConsumer & Serializable) (boolean t) -> {
             accept(t);
             after.accept(t);
         };

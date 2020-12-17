@@ -384,15 +384,6 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
 
     //region Serialization
 
-    private void writeObject(java.io.ObjectOutputStream out)
-            throws IOException {
-        out.writeDouble(loadFactor);
-        out.writeInt(size);
-        for (E e : this) {
-            out.writeObject(e);
-        }
-    }
-
     private void readObject(java.io.ObjectInputStream in)
             throws IOException, ClassNotFoundException {
         this.size = 0;
@@ -407,6 +398,15 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
         sizeHint(s);
         for (int i = 0; i < s; i++) {
             this.add((E) in.readObject());
+        }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out)
+            throws IOException {
+        out.writeDouble(loadFactor);
+        out.writeInt(size);
+        for (E e : this) {
+            out.writeObject(e);
         }
     }
 

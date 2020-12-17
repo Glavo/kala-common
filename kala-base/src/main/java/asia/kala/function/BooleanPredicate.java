@@ -26,29 +26,30 @@ package asia.kala.function;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @FunctionalInterface
 public interface BooleanPredicate {
 
-    BooleanPredicate IS_TRUE = b -> b;
+    BooleanPredicate IS_TRUE = new BooleanPredicates.IsTrue();
 
-    BooleanPredicate IS_FALSE = b -> !b;
+    BooleanPredicate IS_FALSE = new BooleanPredicates.IsFalse();
 
     boolean test(boolean v);
 
     default @NotNull BooleanPredicate and(BooleanPredicate other) {
         Objects.requireNonNull(other);
-        return b -> test(b) && other.test(b);
+        return (BooleanPredicate & Serializable) b -> test(b) && other.test(b);
     }
 
     default @NotNull BooleanPredicate negate() {
-        return b -> !test(b);
+        return (BooleanPredicate & Serializable) b -> !test(b);
     }
 
-    default BooleanPredicate or(BooleanPredicate other) {
+    default @NotNull BooleanPredicate or(@NotNull BooleanPredicate other) {
         Objects.requireNonNull(other);
-        return b -> test(b) || other.test(b);
+        return (BooleanPredicate & Serializable) b -> test(b) || other.test(b);
     }
 
     static @NotNull BooleanPredicate isEqual(boolean target) {

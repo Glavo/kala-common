@@ -3,6 +3,7 @@ package asia.kala.collection.immutable;
 import asia.kala.collection.IndexedSeq;
 import asia.kala.iterator.Iterators;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 import java.io.Serializable;
 import java.util.Iterator;
@@ -15,6 +16,11 @@ import java.util.stream.Stream;
 abstract class ImmutableSeqN<E> extends AbstractImmutableSeq<E> implements IndexedSeq<E>, Serializable {
     @Override
     public abstract int size();
+
+    @Override
+    public final int knownSize() {
+        return size();
+    }
 
     @Override
     public abstract E get(int index);
@@ -53,6 +59,21 @@ final class ImmutableSeq0<E> extends ImmutableSeqN<E> {
     }
 
     @Override
+    public final @NotNull Iterator<E> iterator() {
+        return Iterators.empty();
+    }
+
+    @Override
+    public final @NotNull Spliterator<E> spliterator() {
+        return Spliterators.emptySpliterator();
+    }
+
+    @Override
+    public final @NotNull Stream<E> stream() {
+        return Stream.empty();
+    }
+
+    @Override
     public final int size() {
         return 0;
     }
@@ -62,46 +83,21 @@ final class ImmutableSeq0<E> extends ImmutableSeqN<E> {
         throw new IndexOutOfBoundsException("Index out of range: " + index);
     }
 
-    @NotNull
     @Override
-    public final ImmutableSeq<E> appended(E element) {
-        return new ImmutableSeq1<>(element);
+    public final @NotNull ImmutableSeq<E> appended(E value) {
+        return new ImmutableSeq1<>(value);
     }
 
-    @NotNull
     @Override
-    public final ImmutableSeq<E> prepended(E element) {
-        return new ImmutableSeq1<>(element);
+    public final @NotNull ImmutableSeq<E> prepended(E value) {
+        return new ImmutableSeq1<>(value);
     }
 
-    @NotNull
     @Override
-    public final Iterator<E> iterator() {
-        return Iterators.empty();
-    }
-
-    @NotNull
-    @Override
-    public final Spliterator<E> spliterator() {
-        return Spliterators.emptySpliterator();
-    }
-
-    @NotNull
-    @Override
-    public final Stream<E> stream() {
-        return Stream.empty();
-    }
-
-    @NotNull
-    @Override
-    public final <U> ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+    public final <U> @NotNull ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
         return instance();
     }
-
-    //
-    // -- Serializable
-    //
 
     private Object readResolve() {
         return INSTANCE;
@@ -132,16 +128,16 @@ final class ImmutableSeq1<E> extends ImmutableSeqN<E> {
         throw new IndexOutOfBoundsException("Index out of range: " + index);
     }
 
-    @NotNull
+
     @Override
-    public final ImmutableSeq<E> appended(E element) {
-        return new ImmutableSeq2<>($0, element);
+    public final @NotNull ImmutableSeq<E> appended(E value) {
+        return new ImmutableSeq2<>($0, value);
     }
 
-    @NotNull
+
     @Override
-    public final ImmutableSeq<E> prepended(E element) {
-        return new ImmutableSeq2<>(element, $0);
+    public final @NotNull ImmutableSeq<E> prepended(E value) {
+        return new ImmutableSeq2<>(value, $0);
     }
 
     @NotNull
@@ -187,14 +183,14 @@ final class ImmutableSeq2<E> extends ImmutableSeqN<E> {
 
     @NotNull
     @Override
-    public final ImmutableSeq<E> appended(E element) {
-        return new ImmutableSeq3<>($0, $1, element);
+    public final ImmutableSeq<E> appended(E value) {
+        return new ImmutableSeq3<>($0, $1, value);
     }
 
     @NotNull
     @Override
-    public final ImmutableSeq<E> prepended(E element) {
-        return new ImmutableSeq3<>(element, $0, $1);
+    public final ImmutableSeq<E> prepended(E value) {
+        return new ImmutableSeq3<>(value, $0, $1);
     }
 
 
@@ -238,14 +234,14 @@ final class ImmutableSeq3<E> extends ImmutableSeqN<E> {
 
     @NotNull
     @Override
-    public final ImmutableSeq<E> appended(E element) {
-        return new ImmutableSeq4<>($0, $1, $2, element);
+    public final ImmutableSeq<E> appended(E value) {
+        return new ImmutableSeq4<>($0, $1, $2, value);
     }
 
     @NotNull
     @Override
-    public final ImmutableSeq<E> prepended(E element) {
-        return new ImmutableSeq4<>(element, $0, $1, $2);
+    public final ImmutableSeq<E> prepended(E value) {
+        return new ImmutableSeq4<>(value, $0, $1, $2);
     }
 
 
@@ -272,7 +268,7 @@ final class ImmutableSeq4<E> extends ImmutableSeqN<E> {
     }
 
     @Override
-    public int size() {
+    public final int size() {
         return 4;
     }
 
@@ -291,21 +287,18 @@ final class ImmutableSeq4<E> extends ImmutableSeqN<E> {
         throw new IndexOutOfBoundsException("Index out of range: " + index);
     }
 
-    @NotNull
     @Override
-    public final ImmutableSeq<E> appended(E element) {
-        return new ImmutableSeq5<>($0, $1, $2, $3, element);
+    public final @NotNull ImmutableSeq<E> appended(E value) {
+        return new ImmutableSeq5<>($0, $1, $2, $3, value);
     }
 
-    @NotNull
     @Override
-    public final ImmutableSeq<E> prepended(E element) {
-        return new ImmutableSeq5<>(element, $0, $1, $2, $3);
+    public final @NotNull ImmutableSeq<E> prepended(E value) {
+        return new ImmutableSeq5<>(value, $0, $1, $2, $3);
     }
 
-    @NotNull
     @Override
-    public final <U> ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+    public final <U> @NotNull ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
         return new ImmutableSeq4<>(mapper.apply($0), mapper.apply($1), mapper.apply($2), mapper.apply($3));
     }
 }
@@ -349,9 +342,8 @@ final class ImmutableSeq5<E> extends ImmutableSeqN<E> {
         throw new IndexOutOfBoundsException("Index out of range: " + index);
     }
 
-    @NotNull
     @Override
-    public final <U> ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+    public final <U> @NotNull ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
         return new ImmutableSeq5<>(mapper.apply($0), mapper.apply($1), mapper.apply($2), mapper.apply($3), mapper.apply($4));
     }
 }

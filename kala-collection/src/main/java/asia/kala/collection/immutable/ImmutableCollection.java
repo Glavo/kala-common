@@ -7,18 +7,19 @@ import asia.kala.collection.Collection;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+@SuppressWarnings("unchecked")
 public interface ImmutableCollection<@Covariant E> extends Collection<E> {
 
     //region Narrow method
 
     @Contract(value = "_ -> param1", pure = true)
-    @SuppressWarnings("unchecked")
     static <E> ImmutableCollection<E> narrow(ImmutableCollection<? extends E> collection) {
         return (ImmutableCollection<E>) collection;
     }
@@ -27,84 +28,109 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E> {
 
     //region Static Factories
 
-    @NotNull
-    static <E> CollectionFactory<E, ?, ? extends ImmutableCollection<E>> factory() {
+    static <E> @NotNull CollectionFactory<E, ?, ? extends ImmutableCollection<E>> factory() {
         return ImmutableSeq.factory();
     }
 
-    @NotNull
+    static <E> @NotNull ImmutableCollection<E> of() {
+        return ImmutableSeq.of();
+    }
+
+    static <E> @NotNull ImmutableCollection<E> of(E value1) {
+        return ImmutableSeq.of(value1);
+    }
+
+    static <E> @NotNull ImmutableCollection<E> of(E value1, E value2) {
+        return ImmutableSeq.of(value1, value2);
+    }
+
+    static <E> @NotNull ImmutableCollection<E> of(E value1, E value2, E value3) {
+        return ImmutableSeq.of(value1, value2, value3);
+    }
+
+    static <E> @NotNull ImmutableCollection<E> of(E value1, E value2, E value3, E value4) {
+        return ImmutableSeq.of(value1, value2, value3, value4);
+    }
+
+    static <E> @NotNull ImmutableCollection<E> of(E value1, E value2, E value3, E value4, E value5) {
+        return ImmutableSeq.of(value1, value2, value3, value4, value5);
+    }
+
     @SafeVarargs
-    static <E> ImmutableCollection<E> of(E... values) {
-        return ImmutableCollection.<E>factory().from(values);
+    static <E> @NotNull ImmutableCollection<E> of(E... values) {
+        return ImmutableSeq.from(values);
     }
 
-    @NotNull
-    static <E> ImmutableCollection<E> from(E @NotNull [] values) {
-        return ImmutableCollection.<E>factory().from(values);
+    static <E> @NotNull ImmutableCollection<E> from(E @NotNull [] values) {
+        return ImmutableSeq.from(values);
     }
 
-    @NotNull
-    static <E> ImmutableCollection<E> from(@NotNull Iterable<? extends E> values) {
-        return ImmutableCollection.<E>factory().from(values);
+    static <E> @NotNull ImmutableCollection<E> from(@NotNull Iterable<? extends E> values) {
+        return ImmutableSeq.from(values);
+    }
+
+    static <E> @NotNull ImmutableCollection<E> from(@NotNull Iterator<? extends E> it) {
+        return ImmutableSeq.from(it);
     }
 
     //endregion
+
+    //region Collection Operations
 
     @Override
     default String className() {
         return "ImmutableCollection";
     }
 
-    @NotNull
-    @Override
-    default Spliterator<E> spliterator() {
-        final int knownSize = knownSize();
-        if (knownSize != 0) {
-            return Spliterators.spliterator(iterator(), knownSize, Spliterator.IMMUTABLE);
-        }
-        return Spliterators.spliterator(iterator(), size(), Spliterator.IMMUTABLE);
-    }
-
-    @NotNull
     @Override
     @Contract(pure = true)
-    default <U> CollectionFactory<U, ?, ? extends ImmutableCollection<U>> iterableFactory() {
+    default <U> @NotNull CollectionFactory<U, ?, ? extends ImmutableCollection<U>> iterableFactory() {
         return factory();
     }
 
-    @NotNull
+    @Override
+    default @NotNull Spliterator<E> spliterator() {
+        final int knownSize = knownSize();
+        if (knownSize == 0) {
+            return Spliterators.emptySpliterator();
+        } else if (knownSize > 0) {
+            return Spliterators.spliterator(iterator(), knownSize, Spliterator.IMMUTABLE);
+        } else {
+            return Spliterators.spliteratorUnknownSize(iterator(), Spliterator.IMMUTABLE);
+        }
+    }
+
+    //endregion
+
     @Contract(pure = true)
-    default <U> ImmutableCollection<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+    default <U> @NotNull ImmutableCollection<U> map(@NotNull Function<? super E, ? extends U> mapper) {
         return AbstractImmutableCollection.map(this, mapper, this.<U>iterableFactory());
     }
 
-    @NotNull
     @Contract(pure = true)
-    default ImmutableCollection<E> filter(@NotNull Predicate<? super E> predicate) {
+    default @NotNull ImmutableCollection<E> filter(@NotNull Predicate<? super E> predicate) {
         return AbstractImmutableCollection.filter(this, predicate, iterableFactory());
     }
 
-    @NotNull
     @Contract(pure = true)
-    default ImmutableCollection<E> filterNot(@NotNull Predicate<? super E> predicate) {
+    default @NotNull ImmutableCollection<E> filterNot(@NotNull Predicate<? super E> predicate) {
         return AbstractImmutableCollection.filterNot(this, predicate, iterableFactory());
     }
 
-    @NotNull
     @Contract(pure = true)
-    default ImmutableCollection<@NotNull E> filterNotNull() {
+    default @NotNull ImmutableCollection<@NotNull E> filterNotNull() {
         return this.filter(Objects::nonNull);
     }
 
-    @NotNull
     @Contract(pure = true)
-    default <U> ImmutableCollection<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
+    default <U> @NotNull ImmutableCollection<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
         return AbstractImmutableCollection.flatMap(this, mapper, iterableFactory());
     }
 
-    @NotNull
     @Contract(pure = true)
-    default Tuple2<? extends ImmutableCollection<E>, ? extends ImmutableCollection<E>> span(@NotNull Predicate<? super E> predicate) {
+    default @NotNull Tuple2<@NotNull ? extends ImmutableCollection<E>, @NotNull ? extends ImmutableCollection<E>> span(
+            @NotNull Predicate<? super E> predicate
+    ) {
         return AbstractImmutableCollection.span(this, predicate, iterableFactory());
     }
 }

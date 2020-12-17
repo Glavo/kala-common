@@ -29,38 +29,57 @@ public final class AsJavaConvert {
         }
 
         @Override
-        public boolean isEmpty() {
+        public final boolean isEmpty() {
             return collection.isEmpty();
         }
 
         @Override
-        public boolean contains(Object o) {
-            try {
-                return collection.contains(o);
-            } catch (ClassCastException e) {
-                return false;
-            }
+        public final int size() {
+            return collection.size();
         }
 
         @Override
-        public boolean containsAll(@NotNull java.util.Collection<?> c) {
+        public final @NotNull Iterator<E> iterator() {
+            return collection.iterator();
+        }
+
+        @Override
+        public final @NotNull Spliterator<E> spliterator() {
+            return collection.spliterator();
+        }
+
+        @Override
+        public final @NotNull Stream<E> stream() {
+            return collection.stream();
+        }
+
+        @Override
+        public @NotNull Stream<E> parallelStream() {
+            return collection.parallelStream();
+        }
+
+        @Override
+        public final boolean contains(Object o) {
+            return collection.contains(o);
+        }
+
+        @Override
+        public final boolean containsAll(@NotNull java.util.Collection<?> c) {
             return collection.containsAll(c);
         }
 
-        public <T> T[] toArray(IntFunction<T[]> generator) {
-            return collection.toArray(generator);
-        }
-
-        @NotNull
         @Override
-        public Object[] toArray() {
+        public final Object @NotNull [] toArray() {
             return collection.toArray();
         }
 
-        @NotNull
+        public final <T> T @NotNull [] toArray(@NotNull IntFunction<T[]> generator) {
+            return collection.toArray(generator);
+        }
+
         @Override
         @SuppressWarnings("unchecked")
-        public final <T> T[] toArray(@NotNull T[] a) {
+        public final <T> T @NotNull [] toArray(T @NotNull [] a) {
             Objects.requireNonNull(a);
 
             T[] arr = toArray(i -> (T[]) Array.newInstance(a.getClass().getComponentType(), i));
@@ -71,40 +90,15 @@ public final class AsJavaConvert {
             return a;
         }
 
-        @NotNull
         @Override
-        public Iterator<E> iterator() {
-            return collection.iterator();
-        }
-
-        @Override
-        public Spliterator<E> spliterator() {
-            return collection.spliterator();
-        }
-
-        @Override
-        public Stream<E> stream() {
-            return collection.stream();
-        }
-
-        @Override
-        public Stream<E> parallelStream() {
-            return collection.parallelStream();
-        }
-
-        @Override
-        public void forEach(Consumer<? super E> action) {
+        public void forEach(@NotNull Consumer<? super E> action) {
             collection.forEach(action);
         }
 
-        @Override
-        public int size() {
-            return collection.size();
-        }
     }
 
     public static class SeqAsJava<E, C extends Seq<E>> extends AbstractList<E> implements List<E> {
-        protected final C collection;
+        public final C collection;
 
         public SeqAsJava(@NotNull C collection) {
             this.collection = collection;

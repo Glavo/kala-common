@@ -1,6 +1,7 @@
 package asia.kala.collection.immutable;
 
 import asia.kala.collection.internal.CollectionHelper;
+import asia.kala.comparator.Comparators;
 import asia.kala.traversable.Traversable;
 import asia.kala.Tuple2;
 import asia.kala.annotations.Covariant;
@@ -53,63 +54,52 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
 
     //region Static Factories
 
-    @NotNull
-    public static <E> CollectionFactory<E, ?, ImmutableArray<E>> factory() {
+    public static <E> @NotNull CollectionFactory<E, ?, ImmutableArray<E>> factory() {
         return (ImmutableArray.Factory<E>) FACTORY;
     }
 
-    @NotNull
-    public static <E> ImmutableArray<E> empty() {
+    public static <E> @NotNull ImmutableArray<E> empty() {
         return (ImmutableArray<E>) EMPTY;
     }
 
-    @NotNull
-    public static <E> ImmutableArray<E> of() {
+    public static <E> @NotNull ImmutableArray<E> of() {
         return (ImmutableArray<E>) EMPTY;
     }
 
-    @NotNull
-    public static <E> ImmutableArray<E> of(E value1) {
+    public static <E> @NotNull ImmutableArray<E> of(E value1) {
         return new ImmutableArray<>(new Object[]{value1});
     }
 
-    @NotNull
-    public static <E> ImmutableArray<E> of(E value1, E value2) {
+    public static <E> @NotNull ImmutableArray<E> of(E value1, E value2) {
         return new ImmutableArray<>(new Object[]{value1, value2});
     }
 
-    @NotNull
-    public static <E> ImmutableArray<E> of(E value1, E value2, E value3) {
+    public static <E> @NotNull ImmutableArray<E> of(E value1, E value2, E value3) {
         return new ImmutableArray<>(new Object[]{value1, value2, value3});
     }
 
-    @NotNull
-    public static <E> ImmutableArray<E> of(E value1, E value2, E value3, E value4) {
+    public static <E> @NotNull ImmutableArray<E> of(E value1, E value2, E value3, E value4) {
         return new ImmutableArray<>(new Object[]{value1, value2, value3, value4});
     }
 
-    @NotNull
-    public static <E> ImmutableArray<E> of(E value1, E value2, E value3, E value4, E value5) {
+    public static <E> @NotNull ImmutableArray<E> of(E value1, E value2, E value3, E value4, E value5) {
         return new ImmutableArray<>(new Object[]{value1, value2, value3, value4, value5});
     }
 
-    @NotNull
     @SafeVarargs
     @Contract("_ -> new")
-    public static <E> ImmutableArray<E> of(E... values) {
+    public static <E> @NotNull ImmutableArray<E> of(E... values) {
         return from(values);
     }
 
-    @NotNull
-    public static <E> ImmutableArray<E> from(E @NotNull [] values) {
-        if (values.length == 0) {
+    public static <E> @NotNull ImmutableArray<E> from(E @NotNull [] values) {
+        if (values.length == 0) { // implicit null check of values
             return empty();
         }
         return new ImmutableArray<>(values.clone());
     }
 
-    @NotNull
-    public static <E> ImmutableArray<E> from(@NotNull Traversable<? extends E> values) {
+    public static <E> @NotNull ImmutableArray<E> from(@NotNull Traversable<? extends E> values) {
         if (values instanceof ImmutableArray<?>) {
             return (ImmutableArray<E>) values;
         }
@@ -125,16 +115,14 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
         return new ImmutableArray<>(arr);
     }
 
-    @NotNull
-    public static <E> ImmutableArray<E> from(@NotNull java.util.Collection<? extends E> values) {
+    public static <E> @NotNull ImmutableArray<E> from(@NotNull java.util.Collection<? extends E> values) {
         if (values.size() == 0) {
             return empty();
         }
         return new ImmutableArray<>(values.toArray());
     }
 
-    @NotNull
-    public static <E> ImmutableArray<E> from(@NotNull Iterable<? extends E> values) {
+    public static <E> @NotNull ImmutableArray<E> from(@NotNull Iterable<? extends E> values) {
         Objects.requireNonNull(values);
 
         if (values instanceof Traversable<?>) {
@@ -147,8 +135,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
         return ArrayBuffer.<E>from(values).toImmutableArray();
     }
 
-    @NotNull
-    public static <E> ImmutableArray<E> from(@NotNull Iterator<? extends E> it) {
+    public static <E> @NotNull ImmutableArray<E> from(@NotNull Iterator<? extends E> it) {
         if (!it.hasNext()) {
             return empty();
         }
@@ -210,42 +197,130 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
 
     //endregion
 
-    //region ImmutableSeq members
+    //region Collection Operations
 
-    @NotNull
     @Override
-    public final ImmutableArray<E> updated(int index, E newValue) {
-        if (index < 0 || index >= array.length) {
-            throw new IndexOutOfBoundsException("Index out of range: " + index);
-        }
-        Object[] newValues = array.clone();
-        newValues[index] = newValue;
+    public final String className() {
+        return "ImmutableArray";
+    }
+
+    @Override
+    public final <U> @NotNull CollectionFactory<U, ?, ImmutableArray<U>> iterableFactory() {
+        return factory();
+    }
+
+    @Override
+    public final @NotNull Spliterator<E> spliterator() {
+        return Spliterators.spliterator(array, Spliterator.IMMUTABLE);
+    }
+
+    //endregion
+
+    //region Addition Operations
+
+    @Override
+    public final @NotNull ImmutableArray<E> appended(E value) {
+        final int size = array.length;
+
+        Object[] newValues = Arrays.copyOf(array, size + 1);
+        newValues[size] = value;
+
         return new ImmutableArray<>(newValues);
     }
 
-    @NotNull
     @Override
-    public final ImmutableArray<E> drop(int n) {
+    public final @NotNull ImmutableArray<E> appendedAll(E @NotNull [] postfix) {
+        if (postfix.length == 0) { // implicit null check of postfix
+            return this;
+        }
+
+        final Object[] array = this.array;
+        final int size = array.length;
+
+        Object[] newValues = new Object[postfix.length + size];
+
+        System.arraycopy(array, 0, newValues, 0, size);
+        System.arraycopy(postfix, 0, newValues, size, postfix.length);
+
+        return new ImmutableArray<>(newValues);
+    }
+
+    @Override
+    public final @NotNull ImmutableArray<E> appendedAll(@NotNull Iterable<? extends E> postfix) {
+        Objects.requireNonNull(postfix);
+
+        Object[] data = postfix instanceof ImmutableArray<?>
+                ? ((ImmutableArray<?>) postfix).array
+                : CollectionHelper.asArray(postfix);
+        Object[] newValues = new Object[data.length + array.length];
+
+        System.arraycopy(array, 0, newValues, 0, array.length);
+        System.arraycopy(data, 0, newValues, array.length, data.length);
+
+        return new ImmutableArray<>(newValues);
+    }
+
+    @Override
+    public final @NotNull ImmutableArray<E> prepended(E value) {
+        Object[] newValues = new Object[array.length + 1];
+        newValues[0] = value;
+        System.arraycopy(array, 0, newValues, 1, array.length);
+
+        return new ImmutableArray<>(newValues);
+    }
+
+    @Override
+    public final @NotNull ImmutableArray<E> prependedAll(E @NotNull [] prefix) {
+        if (prefix.length == 0) { // implicit null check of prefix
+            return this;
+        }
+
+        Object[] newValues = new Object[prefix.length + array.length];
+        System.arraycopy(prefix, 0, newValues, 0, prefix.length);
+        System.arraycopy(array, 0, newValues, prefix.length, array.length);
+
+        return new ImmutableArray<>(newValues);
+    }
+
+    @Override
+    public final @NotNull ImmutableArray<E> prependedAll(@NotNull Iterable<? extends E> prefix) {
+        Objects.requireNonNull(prefix);
+
+        Object[] data = prefix instanceof ImmutableArray<?> ?
+                ((ImmutableArray<?>) prefix).array : CollectionHelper.asArray(prefix);
+        Object[] newValues = new Object[data.length + array.length];
+
+        System.arraycopy(data, 0, newValues, 0, data.length);
+        System.arraycopy(array, 0, newValues, data.length, array.length);
+
+        return new ImmutableArray<>(newValues);
+    }
+
+
+    //endregion
+
+    @Override
+    public final @NotNull ImmutableArray<E> drop(int n) {
         if (n <= 0) {
             return this;
         }
 
-        if (n >= array.length) {
+        final int size = array.length;
+
+        if (n >= size) {
             return empty();
         }
 
-        return new ImmutableArray<>(Arrays.copyOfRange(array, n, array.length));
+        return new ImmutableArray<>(Arrays.copyOfRange(array, n, size));
     }
 
-    @NotNull
     @Override
-    public final ImmutableArray<E> dropLast(int n) {
+    public final @NotNull ImmutableArray<E> dropLast(int n) {
         return take(size() - n);
     }
 
-    @NotNull
     @Override
-    public final ImmutableArray<E> dropWhile(@NotNull Predicate<? super E> predicate) {
+    public final @NotNull ImmutableArray<E> dropWhile(@NotNull Predicate<? super E> predicate) {
         int idx = 0;
         while (idx < array.length && predicate.test((E) array[idx])) {
             ++idx;
@@ -257,9 +332,8 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
         return new ImmutableArray<>(Arrays.copyOfRange(array, idx, array.length));
     }
 
-    @NotNull
     @Override
-    public final ImmutableArray<E> take(int n) {
+    public final @NotNull ImmutableArray<E> take(int n) {
         if (n <= 0) {
             return empty();
         }
@@ -274,22 +348,19 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
         return new ImmutableArray<>(newValues);
     }
 
-    @NotNull
     @Override
-    public final ImmutableArray<E> takeLast(int n) {
+    public final @NotNull ImmutableArray<E> takeLast(int n) {
         return drop(size() - n);
     }
 
-    @NotNull
     @Override
-    public final ImmutableArray<E> takeWhile(@NotNull Predicate<? super E> predicate) {
-        Objects.requireNonNull(predicate);
+    public final @NotNull ImmutableArray<E> takeWhile(@NotNull Predicate<? super E> predicate) {
         if (array.length == 0) {
             return empty();
         }
 
         int count = 0;
-        while (count < array.length && predicate.test((E) array[count])) {
+        while (count < array.length && predicate.test((E) array[count])) { // implicit null check of predicate
             ++count;
         }
 
@@ -300,108 +371,63 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
         return new ImmutableArray<>(Arrays.copyOf(array, count));
     }
 
-    @NotNull
     @Override
-    public final ImmutableArray<E> concat(@NotNull Seq<? extends E> other) {
+    public final @NotNull ImmutableArray<E> updated(int index, E newValue) {
+        if (index < 0 || index >= array.length) {
+            throw new IndexOutOfBoundsException("Index out of range: " + index);
+        }
+        Object[] newValues = array.clone();
+        newValues[index] = newValue;
+        return new ImmutableArray<>(newValues);
+    }
+
+    @Override
+    public final @NotNull ImmutableArray<E> concat(@NotNull Seq<? extends E> other) {
         return appendedAll(other);
     }
 
-    @NotNull
+
     @Override
-    public final ImmutableArray<E> prepended(E element) {
-        Object[] newValues = new Object[array.length + 1];
-        newValues[0] = element;
-        System.arraycopy(array, 0, newValues, 1, array.length);
+    public final <U> @NotNull ImmutableArray<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+        final Object[] array = this.array;
+        final int length = array.length;
+
+        if (length == 0) {
+            return empty();
+        }
+
+        Object[] newValues = new Object[length];
+
+        for (int i = 0; i < length; i++) {
+            newValues[i] = mapper.apply((E) array[i]);
+        }
 
         return new ImmutableArray<>(newValues);
     }
 
-    @NotNull
     @Override
-    public final ImmutableArray<E> prependedAll(@NotNull Iterable<? extends E> prefix) {
-        Objects.requireNonNull(prefix);
+    public final <U> @NotNull ImmutableArray<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+        final Object[] array = this.array;
+        final int size = array.length;
 
-        Object[] data = prefix instanceof ImmutableArray<?> ?
-                ((ImmutableArray<?>) prefix).array : CollectionHelper.asArray(prefix);
-        Object[] newValues = new Object[data.length + array.length];
+        if (size == 0) {
+            return empty();
+        }
 
-        System.arraycopy(data, 0, newValues, 0, data.length);
-        System.arraycopy(array, 0, newValues, data.length, array.length);
-
-        return new ImmutableArray<>(newValues);
-    }
-
-    @NotNull
-    @Override
-    public final ImmutableArray<E> prependedAll(E @NotNull [] prefix) {
-        Objects.requireNonNull(prefix);
-
-        Object[] newValues = new Object[prefix.length + array.length];
-        System.arraycopy(prefix, 0, newValues, 0, prefix.length);
-        System.arraycopy(array, 0, newValues, prefix.length, array.length);
-
-        return new ImmutableArray<>(newValues);
-    }
-
-    @NotNull
-    @Override
-    public final ImmutableArray<E> appended(E element) {
-        Object[] newValues = Arrays.copyOf(array, array.length + 1);
-        newValues[array.length] = element;
-
-        return new ImmutableArray<>(newValues);
-    }
-
-    @NotNull
-    @Override
-    public final ImmutableArray<E> appendedAll(@NotNull Iterable<? extends E> postfix) {
-        Objects.requireNonNull(postfix);
-
-        Object[] data = postfix instanceof ImmutableArray<?>
-                ? ((ImmutableArray<?>) postfix).array
-                : CollectionHelper.asArray(postfix);
-        Object[] newValues = new Object[data.length + array.length];
-
-        System.arraycopy(array, 0, newValues, 0, array.length);
-        System.arraycopy(data, 0, newValues, array.length, data.length);
-
-        return new ImmutableArray<>(newValues);
-    }
-
-    @NotNull
-    @Override
-    public final ImmutableArray<E> appendedAll(E @NotNull [] postfix) {
-        Objects.requireNonNull(postfix);
-
-        Object[] newValues = new Object[postfix.length + array.length];
-
-        System.arraycopy(array, 0, newValues, 0, array.length);
-        System.arraycopy(postfix, 0, newValues, array.length, postfix.length);
-
-        return new ImmutableArray<>(newValues);
-    }
-
-    @NotNull
-    @Override
-    public final <U> ImmutableArray<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
-        Objects.requireNonNull(mapper);
-
-        Object[] newValues = new Object[array.length];
-        for (int i = 0; i < array.length; i++) {
+        Object[] newValues = new Object[size];
+        for (int i = 0; i < size; i++) {
             newValues[i] = mapper.apply(i, (E) array[i]);
         }
         return new ImmutableArray<>(newValues);
     }
 
-    @NotNull
     @Override
-    public final ImmutableArray<E> sorted() {
-        return sorted((Comparator<? super E>) Comparator.naturalOrder());
+    public final @NotNull ImmutableArray<E> sorted() {
+        return sorted(Comparators.naturalOrder());
     }
 
-    @NotNull
     @Override
-    public final ImmutableArray<E> sorted(@NotNull Comparator<? super E> comparator) {
+    public final @NotNull ImmutableArray<E> sorted(@NotNull Comparator<? super E> comparator) {
         final Object[] array = this.array;
         if (array.length == 0) {
             return this;
@@ -412,9 +438,8 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
         return new ImmutableArray<>(newValues);
     }
 
-    @NotNull
     @Override
-    public final ImmutableArray<E> reversed() {
+    public final @NotNull ImmutableArray<E> reversed() {
         final Object[] array = this.array;
         final int size = array.length;
         if (array.length == 0) {
@@ -427,55 +452,18 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
         return new ImmutableArray<>(res);
     }
 
-    //endregion
-
-    //region ImmutableCollection members
-
     @Override
-    public final String className() {
-        return "ImmutableArray";
-    }
-
-    @NotNull
-    @Override
-    public final Spliterator<E> spliterator() {
-        return Spliterators.spliterator(array, Spliterator.IMMUTABLE);
-    }
-
-    @NotNull
-    @Override
-    public final <U> ImmutableArray<U> map(@NotNull Function<? super E, ? extends U> mapper) {
-        Objects.requireNonNull(mapper);
-
-        final Object[] values = this.array;
-        final int length = values.length;
-
-        if (length == 0) {
-            return empty();
-        }
-
-        Object[] newValues = new Object[length];
-
-        for (int i = 0; i < length; i++) {
-            newValues[i] = mapper.apply((E) values[i]);
-        }
-
-        return new ImmutableArray<>(newValues);
-    }
-
-    @NotNull
-    @Override
-    public final ImmutableArray<E> filter(@NotNull Predicate<? super E> predicate) {
+    public final @NotNull ImmutableArray<E> filter(@NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
 
         final Object[] values = this.array;
-        final int length = values.length;
+        final int size = values.length;
 
-        if (length == 0) {
+        if (size == 0) {
             return this;
         }
 
-        Object[] temp = new Object[length];
+        Object[] temp = new Object[size];
         int c = 0;
 
         for (Object value : values) {
@@ -488,23 +476,25 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
         if (c == 0) {
             return empty();
         }
+        if (c == size) {
+            return this;
+        }
 
         return new ImmutableArray<>(Arrays.copyOf(temp, c));
     }
 
-    @NotNull
     @Override
-    public final ImmutableArray<E> filterNot(@NotNull Predicate<? super E> predicate) {
+    public final @NotNull ImmutableArray<E> filterNot(@NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
 
         final Object[] values = this.array;
-        final int length = values.length;
+        final int size = values.length;
 
-        if (length == 0) {
+        if (size == 0) {
             return this;
         }
 
-        Object[] temp = new Object[length];
+        Object[] temp = new Object[size];
         int c = 0;
 
         for (Object value : values) {
@@ -517,21 +507,23 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
         if (c == 0) {
             return empty();
         }
+        if (c == size) {
+            return this;
+        }
 
         return new ImmutableArray<>(Arrays.copyOf(temp, c));
     }
 
-    @NotNull
     @Override
-    public final ImmutableArray<@NotNull E> filterNotNull() {
+    public final @NotNull ImmutableArray<@NotNull E> filterNotNull() {
         final Object[] values = this.array;
-        final int length = values.length;
+        final int size = values.length;
 
-        if (length == 0) {
+        if (size == 0) {
             return this;
         }
 
-        Object[] temp = new Object[length];
+        Object[] temp = new Object[size];
         int c = 0;
 
         for (Object value : values) {
@@ -544,19 +536,20 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
         if (c == 0) {
             return empty();
         }
+        if (c == size) {
+            return this;
+        }
 
         return new ImmutableArray<>(Arrays.copyOf(temp, c));
     }
 
-    @NotNull
     @Override
-    public final <U> ImmutableArray<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
+    public final <U> @NotNull ImmutableArray<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
         return AbstractImmutableCollection.flatMap(this, mapper, iterableFactory());
     }
 
-    @NotNull
     @Override
-    public final Tuple2<ImmutableArray<E>, ImmutableArray<E>> span(@NotNull Predicate<? super E> predicate) {
+    public final @NotNull Tuple2<@NotNull ImmutableArray<E>, @NotNull ImmutableArray<E>> span(@NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
 
         final Object[] array = this.array;
@@ -590,19 +583,10 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
 
     }
 
-    @NotNull
     @Override
-    public final <U> CollectionFactory<U, ?, ImmutableArray<U>> iterableFactory() {
-        return factory();
-    }
-
-    @NotNull
-    @Override
-    public final ImmutableArray<E> toImmutableArray() {
+    public final @NotNull ImmutableArray<E> toImmutableArray() {
         return this;
     }
-
-    //endregion
 
     private static final class Factory<E> implements CollectionFactory<E, ArrayBuffer<E>, ImmutableArray<E>> {
         Factory() {

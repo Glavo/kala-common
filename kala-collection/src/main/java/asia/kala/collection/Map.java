@@ -13,11 +13,32 @@ import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
 public interface Map<K, V> extends Equals {
+
     int HASH_MAGIC = 124549981;
+
+    default @NotNull String className() {
+        return "Map";
+    }
 
     @NotNull MapIterator<K, V> iterator();
 
+    //region Size Info
+
+    default boolean isEmpty() {
+        int ks = knownSize();
+        if (ks < 0) {
+            return !iterator().hasNext();
+        } else {
+            return ks == 0;
+        }
+    }
+
     default int size() {
+        int ks = knownSize();
+        if (ks >= 0) {
+            return ks;
+        }
+
         int c = 0;
         MapIterator<K, V> it = iterator();
         while (it.hasNext()) {
@@ -31,13 +52,9 @@ public interface Map<K, V> extends Equals {
         return -1;
     }
 
-    @NotNull
-    default String className() {
-        return "Map";
-    }
+    //endregion
 
-    @NotNull
-    default Option<V> getOption(K key) {
+    default @NotNull Option<V> getOption(K key) {
         MapIterator<K, V> it = iterator();
         if (key == null) {
             while (it.hasNext()) {
@@ -59,8 +76,7 @@ public interface Map<K, V> extends Equals {
         return getOption(key).get();
     }
 
-    @Nullable
-    default V getOrNull(K key) {
+    default @Nullable V getOrNull(K key) {
         return getOption(key).getOrNull();
     }
 

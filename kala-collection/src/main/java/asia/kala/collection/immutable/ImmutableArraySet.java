@@ -7,6 +7,7 @@ import asia.kala.factory.CollectionFactory;
 import asia.kala.traversable.JavaArray;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 import java.io.Serializable;
 import java.util.*;
@@ -35,35 +36,30 @@ public final class ImmutableArraySet<E>
 
     //region Static Factories
 
-    @NotNull
-    public static <E extends Comparable<? super E>> CollectionFactory<E, ?, ImmutableArraySet<E>> factory() {
+    public static <E extends Comparable<? super E>> @NotNull CollectionFactory<E, ?, ImmutableArraySet<E>> factory() {
         return (ImmutableArraySet.Factory<E>) DEFAULT_FACTORY;
     }
 
-    @NotNull
-    public static <E> CollectionFactory<E, ?, ImmutableArraySet<E>> factory(Comparator<? super E> comparator) {
+    public static <E> @NotNull CollectionFactory<E, ?, ImmutableArraySet<E>> factory(Comparator<? super E> comparator) {
         if (comparator == null || comparator == Comparator.naturalOrder()) {
             return (ImmutableArraySet.Factory<E>) DEFAULT_FACTORY;
         }
         return new ImmutableArraySet.Factory<>(comparator);
     }
 
-    @NotNull
     @Contract(value = " -> new", pure = true)
-    public static <E extends Comparable<? super E>> ImmutableArraySet<@NotNull E> of() {
+    public static <E extends Comparable<? super E>> @NotNull ImmutableArraySet<@NotNull E> of() {
         return ((ImmutableArraySet<E>) DEFAULT_FACTORY.empty());
     }
 
-    @NotNull
     @Contract(value = "_ -> new", pure = true)
-    public static <E extends Comparable<? super E>> ImmutableArraySet<@NotNull E> of(@NotNull E value1) {
+    public static <E extends Comparable<? super E>> @NotNull ImmutableArraySet<@NotNull E> of(@NotNull E value1) {
         Objects.requireNonNull(value1);
         return new ImmutableArraySet<>(new Object[]{value1});
     }
 
-    @NotNull
     @Contract(value = "_, _ -> new", pure = true)
-    public static <E extends Comparable<? super E>> ImmutableArraySet<@NotNull E> of(
+    public static <E extends Comparable<? super E>> @NotNull ImmutableArraySet<@NotNull E> of(
             @NotNull E value1, @NotNull E value2
     ) {
         int c = value1.compareTo(Objects.requireNonNull(value2));
@@ -76,9 +72,8 @@ public final class ImmutableArraySet<E>
         return new ImmutableArraySet<>(new Object[]{value1});
     }
 
-    @NotNull
     @Contract(value = "_, _, _ -> new", pure = true)
-    public static <E extends Comparable<? super E>> ImmutableArraySet<@NotNull E> of(
+    public static <E extends Comparable<? super E>> @NotNull ImmutableArraySet<@NotNull E> of(
             @NotNull E value1, @NotNull E value2, @NotNull E value3
     ) {
         MutableTreeSet<E> s = new MutableTreeSet<>();
@@ -93,9 +88,8 @@ public final class ImmutableArraySet<E>
         }
     }
 
-    @NotNull
     @Contract(value = "_, _, _, _ -> new", pure = true)
-    public static <E extends Comparable<? super E>> ImmutableArraySet<@NotNull E> of(
+    public static <E extends Comparable<? super E>> @NotNull ImmutableArraySet<@NotNull E> of(
             @NotNull E value1, @NotNull E value2, @NotNull E value3, @NotNull E value4
     ) {
         MutableTreeSet<E> s = new MutableTreeSet<>();
@@ -111,9 +105,8 @@ public final class ImmutableArraySet<E>
         }
     }
 
-    @NotNull
     @Contract(value = "_, _, _, _, _ -> new", pure = true)
-    public static <E extends Comparable<? super E>> ImmutableArraySet<@NotNull E> of(
+    public static <E extends Comparable<? super E>> @NotNull ImmutableArraySet<@NotNull E> of(
             @NotNull E value1, @NotNull E value2, @NotNull E value3, @NotNull E value4, @NotNull E value5
     ) {
         MutableTreeSet<E> s = new MutableTreeSet<>();
@@ -130,38 +123,34 @@ public final class ImmutableArraySet<E>
         }
     }
 
-    @NotNull
     @Contract(value = "_ -> new", pure = true)
-    public static <E extends Comparable<? super E>> ImmutableArraySet<E> of(E... values) {
+    public static <E extends Comparable<? super E>> @NotNull ImmutableArraySet<E> of(E... values) {
         return from(values);
     }
 
-    @NotNull
     @Contract(value = "_ -> new", pure = true)
-    public static <E> ImmutableArraySet<E> of(Comparator<? super E> comparator) {
+    public static <E> @NotNull ImmutableArraySet<E> of(Comparator<? super E> comparator) {
         if (comparator == null || comparator == Comparator.naturalOrder()) {
             return ((ImmutableArraySet<E>) DEFAULT_FACTORY.empty());
         }
         return new ImmutableArraySet<>(comparator, JavaArray.EMPTY_OBJECT_ARRAY);
     }
 
-    @NotNull
     @Contract(value = "_, _ -> new", pure = true)
-    public static <E> ImmutableArraySet<E> of(
+    public static <E> @NotNull ImmutableArraySet<E> of(
             Comparator<? super E> comparator,
             E value1
     ) {
         if (comparator == null) {
             comparator = ((Comparator<E>) Comparator.naturalOrder());
         }
-        //noinspection ResultOfMethodCallIgnored
+        //noinspection ResultOfMethodCallIgnored,EqualsWithItself
         comparator.compare(value1, value1); // check value
         return new ImmutableArraySet<>(comparator, new Object[]{value1});
     }
 
-    @NotNull
     @Contract(value = "_, _, _ -> new", pure = true)
-    public static <E> ImmutableArraySet<E> of(
+    public static <E> @NotNull ImmutableArraySet<E> of(
             Comparator<? super E> comparator,
             E value1, E value2
     ) {
@@ -179,9 +168,8 @@ public final class ImmutableArraySet<E>
         return new ImmutableArraySet<>(comparator, new Object[]{value1});
     }
 
-    @NotNull
     @Contract(value = "_, _, _, _ -> new", pure = true)
-    public static <E> ImmutableArraySet<E> of(
+    public static <E> @NotNull ImmutableArraySet<E> of(
             Comparator<? super E> comparator,
             E value1, E value2, E value3) {
         MutableTreeSet<E> s = new MutableTreeSet<>(comparator);
@@ -196,9 +184,8 @@ public final class ImmutableArraySet<E>
         }
     }
 
-    @NotNull
     @Contract(value = "_, _, _, _, _ -> new", pure = true)
-    public static <E> ImmutableArraySet<E> of(
+    public static <E> @NotNull ImmutableArraySet<E> of(
             Comparator<? super E> comparator,
             E value1, E value2, E value3, E value4
     ) {
@@ -215,9 +202,8 @@ public final class ImmutableArraySet<E>
         }
     }
 
-    @NotNull
     @Contract(value = "_, _, _, _, _, _ -> new", pure = true)
-    public static <E> ImmutableArraySet<E> of(
+    public static <E> @NotNull ImmutableArraySet<E> of(
             Comparator<? super E> comparator,
             E value1, E value2, E value3, E value4, E value5
     ) {
@@ -235,16 +221,13 @@ public final class ImmutableArraySet<E>
         }
     }
 
-
-    @NotNull
     @Contract(value = "_, _ -> new", pure = true)
-    public static <E> ImmutableArraySet<E> of(Comparator<? super E> comparator, E... values) {
+    public static <E> @NotNull ImmutableArraySet<E> of(Comparator<? super E> comparator, E... values) {
         return from(comparator, values);
     }
 
-    @NotNull
     @Contract(value = "_ -> new", pure = true)
-    public static <E> ImmutableArraySet<E> from(@NotNull SortedSet<? extends E> values) {
+    public static <E> @NotNull ImmutableArraySet<E> from(@NotNull SortedSet<? extends E> values) {
         final Comparator<E> comparator = (Comparator<E>) values.comparator();
         if (values.isEmpty()) {
             return of(comparator);
@@ -252,9 +235,8 @@ public final class ImmutableArraySet<E>
         return new ImmutableArraySet<>(comparator, values.toArray());
     }
 
-    @NotNull
     @Contract(value = "_ -> new", pure = true)
-    public static <E> ImmutableArraySet<E> from(@NotNull java.util.SortedSet<? extends E> values) {
+    public static <E> @NotNull ImmutableArraySet<E> from(@NotNull java.util.SortedSet<? extends E> values) {
         final Comparator<E> comparator = (Comparator<E>) values.comparator();
         if (values.isEmpty()) {
             return of(comparator);
@@ -262,9 +244,18 @@ public final class ImmutableArraySet<E>
         return new ImmutableArraySet<>(comparator, values.toArray());
     }
 
-    @NotNull
     @Contract(value = "_ -> new", pure = true)
-    public static <E extends Comparable<? super E>> ImmutableArraySet<E> from(
+    public static <E extends Comparable<? super E>> @NotNull ImmutableArraySet<E> from(E @NotNull [] values) {
+        if (values.length == 0) { // implicit null check of values
+            return of();
+        }
+        MutableTreeSet<E> s = new MutableTreeSet<>();
+        s.addAll(values);
+        return new ImmutableArraySet<>(s.toArray());
+    }
+
+    @Contract(value = "_ -> new", pure = true)
+    public static <E extends Comparable<? super E>> @NotNull ImmutableArraySet<E> from(
             @NotNull Iterable<@NotNull ? extends E> values
     ) {
         Objects.requireNonNull(values);
@@ -299,20 +290,18 @@ public final class ImmutableArraySet<E>
         return new ImmutableArraySet<>(s.toArray());
     }
 
-    @NotNull
-    @Contract(value = "_ -> new", pure = true)
-    public static <E extends Comparable<? super E>> ImmutableArraySet<E> from(E @NotNull [] values) {
+    @Contract(value = "_, _ -> new", pure = true)
+    public static <E> @NotNull ImmutableArraySet<E> from(Comparator<? super E> comparator, E @NotNull [] values) {
         if (values.length == 0) {
-            return of();
+            return of(comparator);
         }
-        MutableTreeSet<E> s = new MutableTreeSet<>();
+        MutableTreeSet<E> s = new MutableTreeSet<>(comparator);
         s.addAll(values);
-        return new ImmutableArraySet<>(s.toArray());
+        return new ImmutableArraySet<>(comparator, s.toArray());
     }
 
-    @NotNull
     @Contract(value = "_, _ -> new", pure = true)
-    public static <E> ImmutableArraySet<E> from(Comparator<? super E> comparator, @NotNull Iterable<? extends E> values) {
+    public static <E> @NotNull ImmutableArraySet<E> from(Comparator<? super E> comparator, @NotNull Iterable<? extends E> values) {
         Iterator<? extends E> it = values.iterator();
         if (!it.hasNext()) {
             return of(comparator);
@@ -325,28 +314,50 @@ public final class ImmutableArraySet<E>
         return new ImmutableArraySet<>(comparator, s.toArray());
     }
 
-    @NotNull
-    @Contract(value = "_, _ -> new", pure = true)
-    public static <E> ImmutableArraySet<E> from(Comparator<? super E> comparator, E @NotNull [] values) {
-        if (values.length == 0) {
-            return of(comparator);
-        }
-        MutableTreeSet<E> s = new MutableTreeSet<>(comparator);
-        s.addAll(values);
-        return new ImmutableArraySet<>(comparator, s.toArray());
+    //endregion
+
+    //region Collection Operations
+
+    @Override
+    public final String className() {
+        return "ImmutableArraySet";
+    }
+
+    @Override
+    public final <U> @NotNull CollectionFactory<U, ?, ImmutableArraySet<U>> iterableFactory() {
+        return ((ImmutableArraySet.Factory<U>) DEFAULT_FACTORY);
+    }
+
+    @Override
+    public final <U> @NotNull CollectionFactory<U, ?, ImmutableArraySet<U>> iterableFactory(Comparator<? super U> comparator) {
+        return factory(comparator);
+    }
+
+    @Override
+    public final @NotNull Iterator<E> iterator() {
+        return (Iterator<E>) JavaArray.iterator(elements);
     }
 
     //endregion
 
-    @NotNull
     @Override
-    public final ImmutableArraySet<E> added(E value) {
+    public final int size() {
+        return elements.length;
+    }
+
+    @Override
+    public final int knownSize() {
+        return size();
+    }
+
+    @Override
+    public final @NotNull ImmutableArraySet<E> added(E value) {
         final Object[] elements = this.elements;
         final int size = elements.length;
         Comparator<? super E> comparator = this.comparator;
 
         if (size == 0) {
-            //noinspection ResultOfMethodCallIgnored
+            //noinspection ResultOfMethodCallIgnored,EqualsWithItself
             comparator.compare(value, value); // check value
             return new ImmutableArraySet<>(comparator, new Object[]{value});
         }
@@ -375,9 +386,9 @@ public final class ImmutableArraySet<E>
         }
     }
 
-    @NotNull
+
     @Override
-    public final ImmutableArraySet<E> addedAll(@NotNull Iterable<? extends E> values) {
+    public final @NotNull ImmutableArraySet<E> addedAll(@NotNull Iterable<? extends E> values) {
         final Iterator<? extends E> it = values.iterator();
         if (!it.hasNext()) {
             return this;
@@ -398,9 +409,8 @@ public final class ImmutableArraySet<E>
         return new ImmutableArraySet<>(comparator, builder.toArray());
     }
 
-    @NotNull
     @Override
-    public final ImmutableArraySet<E> addedAll(E @NotNull [] values) {
+    public final @NotNull ImmutableArraySet<E> addedAll(E @NotNull [] values) {
         final int arrayLength = values.length;
         if (arrayLength == 0) {
             return this;
@@ -442,40 +452,8 @@ public final class ImmutableArraySet<E>
         return (E) elements[size - 1];
     }
 
-    //region ImmutableCollection members
-
-
     @Override
-    public final String className() {
-        return "ImmutableArraySet";
-    }
-
-    @NotNull
-    @Override
-    public final Iterator<E> iterator() {
-        return (Iterator<E>) JavaArray.iterator(elements);
-    }
-
-    @NotNull
-    @Override
-    public final <U> CollectionFactory<U, ?, ImmutableArraySet<U>> iterableFactory() {
-        return ((ImmutableArraySet.Factory<U>) DEFAULT_FACTORY);
-    }
-
-    @NotNull
-    @Override
-    public final <U> CollectionFactory<U, ?, ImmutableArraySet<U>> iterableFactory(Comparator<? super U> comparator) {
-        return factory(comparator);
-    }
-
-    @Override
-    public final int size() {
-        return elements.length;
-    }
-
-    @NotNull
-    @Override
-    public final <A extends Appendable> A joinTo(
+    public final <A extends Appendable> @NotNull A joinTo(
             @NotNull A buffer,
             CharSequence separator, CharSequence prefix, CharSequence postfix
     ) {
@@ -489,8 +467,6 @@ public final class ImmutableArraySet<E>
             action.accept((E) e);
         }
     }
-
-    //endregion
 
     private static final class Factory<E> implements CollectionFactory<E, MutableTreeSet<E>, ImmutableArraySet<E>> {
         @NotNull

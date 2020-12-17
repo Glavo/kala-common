@@ -4,6 +4,7 @@ import asia.kala.collection.*;
 import asia.kala.collection.immutable.ImmutableArray;
 import asia.kala.collection.internal.CollectionHelper;
 import asia.kala.factory.CollectionFactory;
+import asia.kala.traversable.AnyTraversable;
 import asia.kala.traversable.JavaArray;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -26,15 +27,14 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
 
     //region Fields
 
-    @NotNull
-    private Object[] elements;
+    private Object @NotNull [] elements;
     private int size;
 
     //endregion
 
     //region Constructors
 
-    ArrayBuffer(@NotNull Object[] elements, int size) {
+    ArrayBuffer(Object @NotNull [] elements, int size) {
         this.elements = elements;
         this.size = size;
     }
@@ -56,37 +56,32 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
 
     //region Static Factories
 
-    @NotNull
-    public static <E> CollectionFactory<E, ?, ArrayBuffer<E>> factory() {
+    public static <E> @NotNull CollectionFactory<E, ?, ArrayBuffer<E>> factory() {
         return (Factory<E>) FACTORY;
     }
 
-    @NotNull
     @Contract("-> new")
-    public static <E> ArrayBuffer<E> of() {
+    public static <E> @NotNull ArrayBuffer<E> of() {
         return new ArrayBuffer<>();
     }
 
-    @NotNull
     @Contract("_ -> new")
-    public static <E> ArrayBuffer<E> of(E value1) {
+    public static <E> @NotNull ArrayBuffer<E> of(E value1) {
         Object[] arr = new Object[DEFAULT_CAPACITY];
         arr[0] = value1;
         return new ArrayBuffer<>(arr, 1);
     }
 
-    @NotNull
     @Contract("_, _ -> new")
-    public static <E> ArrayBuffer<E> of(E value1, E value2) {
+    public static <E> @NotNull ArrayBuffer<E> of(E value1, E value2) {
         Object[] arr = new Object[DEFAULT_CAPACITY];
         arr[0] = value1;
         arr[1] = value2;
         return new ArrayBuffer<>(arr, 2);
     }
 
-    @NotNull
     @Contract("_, _, _ -> new")
-    public static <E> ArrayBuffer<E> of(E value1, E value2, E value3) {
+    public static <E> @NotNull ArrayBuffer<E> of(E value1, E value2, E value3) {
         Object[] arr = new Object[DEFAULT_CAPACITY];
         arr[0] = value1;
         arr[1] = value2;
@@ -94,9 +89,8 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
         return new ArrayBuffer<>(arr, 3);
     }
 
-    @NotNull
     @Contract("_, _, _, _ -> new")
-    public static <E> ArrayBuffer<E> of(E value1, E value2, E value3, E value4) {
+    public static <E> @NotNull ArrayBuffer<E> of(E value1, E value2, E value3, E value4) {
         Object[] arr = new Object[DEFAULT_CAPACITY];
         arr[0] = value1;
         arr[1] = value2;
@@ -105,9 +99,8 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
         return new ArrayBuffer<>(arr, 4);
     }
 
-    @NotNull
     @Contract("_, _, _, _, _ -> new")
-    public static <E> ArrayBuffer<E> of(E value1, E value2, E value3, E value4, E value5) {
+    public static <E> @NotNull ArrayBuffer<E> of(E value1, E value2, E value3, E value4, E value5) {
         Object[] arr = new Object[DEFAULT_CAPACITY];
         arr[0] = value1;
         arr[1] = value2;
@@ -117,16 +110,14 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
         return new ArrayBuffer<>(arr, 5);
     }
 
-    @NotNull
     @Contract("_ -> new")
-    public static <E> ArrayBuffer<E> of(E... values) {
+    public static <E> @NotNull ArrayBuffer<E> of(E... values) {
         return from(values);
     }
 
-    @NotNull
     @Contract("_ -> new")
-    public static <E> ArrayBuffer<E> from(E @NotNull [] values) {
-        int length = values.length;
+    public static <E> @NotNull ArrayBuffer<E> from(E @NotNull [] values) {
+        int length = values.length; // implicit null check of values
         if (length == 0) {
             return new ArrayBuffer<>();
         }
@@ -135,15 +126,13 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
         return new ArrayBuffer<>(newValues, length);
     }
 
-    @NotNull
-    public static <E> ArrayBuffer<E> from(@NotNull Iterable<? extends E> values) {
+    public static <E> @NotNull ArrayBuffer<E> from(@NotNull Iterable<? extends E> values) {
         ArrayBuffer<E> buffer = new ArrayBuffer<>();
         buffer.appendAll(values);
         return buffer;
     }
 
-    @NotNull
-    public static <E> ArrayBuffer<E> from(@NotNull Iterator<? extends E> it) {
+    public static <E> @NotNull ArrayBuffer<E> from(@NotNull Iterator<? extends E> it) {
         ArrayBuffer<E> buffer = new ArrayBuffer<>();
         while (it.hasNext()) {
             buffer.append(it.next());
@@ -183,6 +172,10 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
         }
     }
 
+    Object @NotNull [] getArray() {
+        return this.elements;
+    }
+
     public void sizeHint(int s) {
         int len = elements.length;
         int size = this.size;
@@ -194,7 +187,64 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
 
     //endregion
 
-    //region Buffer members
+    //region Collection Operations
+
+    @Override
+    public final String className() {
+        return "ArrayBuffer";
+    }
+
+    @Override
+    public final <U> @NotNull CollectionFactory<U, ?, ArrayBuffer<U>> iterableFactory() {
+        return factory();
+    }
+
+    @Override
+    public final @NotNull Iterator<E> iterator() {
+        return (Iterator<E>) JavaArray.iterator(elements, 0, size);
+    }
+
+    @Override
+    public final @NotNull Spliterator<E> spliterator() {
+        return (Spliterator<E>) Arrays.spliterator(elements, 0, size);
+    }
+
+    @Override
+    public final @NotNull BufferEditor<E, ArrayBuffer<E>> edit() {
+        return new BufferEditor<>(this);
+    }
+
+    @Override
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
+    public final ArrayBuffer<E> clone() {
+        final Object[] elements = this.elements;
+        final int size = this.size;
+        return new ArrayBuffer<>(size == 0 ? JavaArray.EMPTY_OBJECT_ARRAY : elements.clone(), size);
+    }
+
+    //endregion
+
+    @Override
+    public final int size() {
+        return size;
+    }
+
+    @Override
+    public final E get(int index) {
+        checkInBound(index);
+        return (E) elements[index];
+    }
+
+    @Override
+    public final void set(int index, E newValue) {
+        checkInBound(index);
+        elements[index] = newValue;
+    }
+
+    @Override
+    public final void sort(Comparator<? super E> comparator) {
+        Arrays.sort(elements, 0, size, (Comparator<? super Object>) comparator);
+    }
 
     @Override
     public final void append(E value) {
@@ -208,7 +258,7 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
     public final void appendAll(@NotNull Iterable<? extends E> collection) {
         Objects.requireNonNull(collection);
 
-        int knowSize = CollectionHelper.knowSize(collection);
+        int knowSize = AnyTraversable.knownSize(collection);
         if (knowSize > 0 && size + knowSize > elements.length) {
             grow(size + knowSize);
         }
@@ -370,60 +420,6 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
         }
     }
 
-    //endregion
-
-    //region MutableSeq members
-
-    @Override
-    public final E get(int index) {
-        checkInBound(index);
-        return (E) elements[index];
-    }
-
-    @Override
-    public final void set(int index, E newValue) {
-        checkInBound(index);
-        elements[index] = newValue;
-    }
-
-    @Override
-    public final void sort(Comparator<? super E> comparator) {
-        Arrays.sort(elements, 0, size, (Comparator<? super Object>) comparator);
-    }
-
-    //endregion
-
-    //region MutableCollection
-
-    @Override
-    public final String className() {
-        return "ArrayBuffer";
-    }
-
-    @NotNull
-    @Override
-    public final <U> CollectionFactory<U, ?, ArrayBuffer<U>> iterableFactory() {
-        return factory();
-    }
-
-    @Override
-    public final int size() {
-        return size;
-    }
-
-    @NotNull
-    @Override
-    public final BufferEditor<E, ArrayBuffer<E>> edit() {
-        return new BufferEditor<>(this);
-    }
-
-    @NotNull
-    @Override
-    public final Iterator<E> iterator() {
-        return (Iterator<E>) JavaArray.iterator(elements, 0, size);
-    }
-
-    @NotNull
     @Override
     public final Object @NotNull [] toArray() {
         final int size = this.size;
@@ -432,19 +428,17 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
         return arr;
     }
 
-    @NotNull
     @Override
     @SuppressWarnings("SuspiciousSystemArraycopy")
-    public final <U> U[] toArray(@NotNull IntFunction<U[]> generator) {
+    public final <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
         final int size = this.size;
         U[] arr = generator.apply(size);
         System.arraycopy(elements, 0, arr, 0, size);
         return arr;
     }
 
-    @NotNull
     @Override
-    public final ImmutableArray<E> toImmutableArray() {
+    public final @NotNull ImmutableArray<E> toImmutableArray() {
         final int size = this.size;
         if (size == 0) {
             return ImmutableArray.empty();
@@ -453,14 +447,6 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
         System.arraycopy(elements, 0, arr, 0, size);
         return (ImmutableArray<E>) ImmutableArray.Unsafe.wrap(arr);
     }
-
-    @Override
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public final ArrayBuffer<E> clone() {
-        return new ArrayBuffer<>(elements == JavaArray.EMPTY_OBJECT_ARRAY ? elements : elements.clone(), size);
-    }
-
-    //endregion
 
     //region Serialization
 

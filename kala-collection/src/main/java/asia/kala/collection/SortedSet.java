@@ -10,8 +10,9 @@ import java.util.Iterator;
 
 public interface SortedSet<@Covariant E> extends Set<E> {
 
-    @NotNull
-    default Comparator<? super E> comparator() {
+    @NotNull <U> CollectionFactory<U, ?, ? extends SortedSet<U>> iterableFactory(Comparator<? super U> comparator);
+
+    default @NotNull Comparator<? super E> comparator() {
         @SuppressWarnings("unchecked") final Comparator<? super E> comparator =
                 (Comparator<? super E>) Comparator.naturalOrder();
         return comparator;
@@ -31,6 +32,4 @@ public interface SortedSet<@Covariant E> extends Set<E> {
         }
         return res;
     }
-
-    @NotNull <U> CollectionFactory<U, ?, ? extends SortedSet<U>> iterableFactory(Comparator<? super U> comparator);
 }

@@ -3,7 +3,7 @@ package asia.kala.collection.internal;
 import asia.kala.collection.ArraySeq;
 import asia.kala.collection.IndexedSeq;
 import asia.kala.collection.Seq;
-import asia.kala.traversable.Traversable ;
+import asia.kala.traversable.Traversable;
 import asia.kala.annotations.StaticClass;
 import asia.kala.collection.immutable.ImmutableArray;
 import asia.kala.collection.immutable.ImmutableSeq;
@@ -20,7 +20,6 @@ import java.util.*;
 @ApiStatus.Internal
 public final class CollectionHelper {
     public static Object[] asArray(@NotNull Iterable<?> it) {
-        assert it != null;
         if (it instanceof MutableArray<?>) {
             return ((MutableArray<?>) it).getArray();
         }
@@ -74,7 +73,7 @@ public final class CollectionHelper {
         return null;
     }
 
-    public static <E> asia.kala.collection.Collection<E> asTraversable(Object collection) {
+    public static <E> asia.kala.collection.Collection<E> asCollection(Object collection) {
         if (collection instanceof asia.kala.collection.Collection<?>) {
             return ((asia.kala.collection.Collection<E>) collection);
         }
@@ -109,10 +108,9 @@ public final class CollectionHelper {
         }
 
         if (collection instanceof java.util.List<?>) {
-            if (collection instanceof RandomAccess) {
-                return new FromJavaConvert.IndexedSeqFromJava<>((List<E>) collection);
-            }
-            return new FromJavaConvert.SeqFromJava<>((List<E>) collection);
+            return collection instanceof RandomAccess
+                    ? new FromJavaConvert.IndexedSeqFromJava<>((List<E>) collection)
+                    : new FromJavaConvert.SeqFromJava<>((List<E>) collection);
         }
 
         if (collection instanceof Object[]) {

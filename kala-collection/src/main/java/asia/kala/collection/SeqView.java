@@ -25,6 +25,22 @@ public interface SeqView<@Covariant E> extends Seq<E>, View<E> {
 
     //endregion
 
+    //region Collection Operations
+
+    @Override
+    default String className() {
+        return "SeqView";
+    }
+
+    @Override
+    @Contract(value = "-> this", pure = true)
+    default @NotNull SeqView<E> view() {
+        return this;
+    }
+
+
+    //endregion
+
     @NotNull
     default SeqView<E> updated(int index, E newValue) {
         return new SeqViews.Updated<>(this, index, newValue);
@@ -122,59 +138,40 @@ public interface SeqView<@Covariant E> extends Seq<E>, View<E> {
         return new SeqViews.Reversed<>(this);
     }
 
-    //region View members
-
-    @NotNull
-    @Override
-    @Contract(value = "-> this", pure = true)
-    default SeqView<E> view() {
-        return this;
-    }
-
-    @Override
-    default String className() {
-        return "SeqView";
-    }
 
     @Override
     default boolean canEqual(Object other) {
         return other instanceof SeqView<?>;
     }
 
-    @NotNull
     @Override
-    default <U> SeqView<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+    default <U> @NotNull SeqView<U> map(@NotNull Function<? super E, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
 
         return new SeqViews.Mapped<>(this, mapper);
     }
 
     @Override
-    @NotNull
-    default SeqView<E> filter(@NotNull Predicate<? super E> predicate) {
+    default @NotNull SeqView<E> filter(@NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
         return new SeqViews.Filter<>(this, predicate);
     }
 
     @Override
-    @NotNull
-    default SeqView<E> filterNot(@NotNull Predicate<? super E> predicate) {
+    default @NotNull SeqView<E> filterNot(@NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
         return new SeqViews.Filter<>(this, predicate.negate());
     }
 
     @Override
-    @NotNull
-    default <U> SeqView<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
+    default <U> @NotNull SeqView<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
         Objects.requireNonNull(mapper);
         return new SeqViews.FlatMapped<>(this, mapper);
     }
 
-    @NotNull
+
     @Override
-    default Tuple2<? extends SeqView<E>, ? extends SeqView<E>> span(@NotNull Predicate<? super E> predicate) {
+    default @NotNull Tuple2<? extends SeqView<E>, ? extends SeqView<E>> span(@NotNull Predicate<? super E> predicate) {
         return Tuple.of(takeWhile(predicate), dropWhile(predicate));
     }
-
-    //endregion
 }

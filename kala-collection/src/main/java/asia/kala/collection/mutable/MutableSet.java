@@ -97,7 +97,6 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E> {
     @Contract(mutates = "this")
     default boolean addAll(@Flow(sourceIsContainer = true, targetIsContainer = true) E @NotNull [] values) {
         Objects.requireNonNull(values);
-
         return addAll(ArraySeq.wrap(values));
     }
 
@@ -141,7 +140,7 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E> {
             return false;
         }
 
-        Collection<E> t = CollectionHelper.asTraversable(values);
+        Collection<E> t = CollectionHelper.asCollection(values);
         if (t.isEmpty()) {
             return false;
         }

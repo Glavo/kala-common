@@ -18,7 +18,9 @@
   * `view()`
   * `stream()`
   * `parallelStream()`
+  * `edit()`
   * `asJava()`
+  * `clone()`
 * Size Info
   * `isEmpty()`
   * `size()`
@@ -121,6 +123,7 @@
   * `filterNot(Predicate<E>)`
   * `filterNotNull()`
   * `map(Function<E, U>)`
+  * `mapIndexed(IndexedFunction<E, U>)`
   * `flatMap(Function<E, Iterable<U>>)`
   * `span(Predicate<E>)`
   * `chunked(int)`
@@ -171,6 +174,10 @@
   * `toArrayBuffer()`
   * `toLinkedBuffer()`
   * `toDoubleLinkedBuffer()`
+* Copy Operations
+  * `copyToArray(Object[])`
+  * `copyToArray(Object[], int)`
+  * `copyToArray(Object[], int, int)`
 * Traverse Operations
   * `forEach(Consumer<E>)`
   * `forEachPrimitive(T_CONSUMER)`

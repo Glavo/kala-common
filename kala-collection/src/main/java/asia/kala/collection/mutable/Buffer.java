@@ -20,87 +20,100 @@ public interface Buffer<E> extends MutableSeq<E> {
 
     //region Static Factories
 
-    @NotNull
-    static <E> CollectionFactory<E, ?, ? extends Buffer<E>> factory() {
+    static <E> @NotNull CollectionFactory<E, ?, ? extends Buffer<E>> factory() {
         return ArrayBuffer.factory();
     }
 
-    @NotNull
     @Contract("-> new")
-    static <E> Buffer<E> of() {
+    static <E> @NotNull Buffer<E> create() {
+        return new ArrayBuffer<>();
+    }
+
+    @Contract("-> new")
+    static <E> @NotNull Buffer<E> of() {
         return ArrayBuffer.of();
     }
 
-    @NotNull
     @Contract("_ -> new")
-    static <E> Buffer<E> of(E value1) {
+    static <E> @NotNull Buffer<E> of(E value1) {
         return ArrayBuffer.of(value1);
     }
 
-    @NotNull
     @Contract("_, _ -> new")
-    static <E> Buffer<E> of(E value1, E value2) {
+    static <E> @NotNull Buffer<E> of(E value1, E value2) {
         return ArrayBuffer.of(value1, value2);
     }
 
-    @NotNull
     @Contract("_, _, _ -> new")
-    static <E> Buffer<E> of(E value1, E value2, E value3) {
+    static <E> @NotNull Buffer<E> of(E value1, E value2, E value3) {
         return ArrayBuffer.of(value1, value2, value3);
     }
 
-    @NotNull
     @Contract("_, _, _, _ -> new")
-    static <E> Buffer<E> of(E value1, E value2, E value3, E value4) {
+    static <E> @NotNull Buffer<E> of(E value1, E value2, E value3, E value4) {
         return ArrayBuffer.of(value1, value2, value3, value4);
     }
 
-    @NotNull
     @Contract("_, _, _, _, _ -> new")
-    static <E> Buffer<E> of(E value1, E value2, E value3, E value4, E value5) {
+    static <E> @NotNull Buffer<E> of(E value1, E value2, E value3, E value4, E value5) {
         return ArrayBuffer.of(value1, value2, value3, value4, value5);
     }
 
-    @NotNull
     @SafeVarargs
-    static <E> Buffer<E> of(E... values) {
+    static <E> @NotNull Buffer<E> of(E... values) {
         return from(values);
     }
 
-    @NotNull
-    static <E> Buffer<E> from(E @NotNull [] values) {
+    static <E> @NotNull Buffer<E> from(E @NotNull [] values) {
         return ArrayBuffer.from(values);
     }
 
-    @NotNull
-    static <E> Buffer<E> from(@NotNull Iterable<? extends E> values) {
+    static <E> @NotNull Buffer<E> from(@NotNull Iterable<? extends E> values) {
         return ArrayBuffer.from(values);
     }
 
-    @NotNull
     @Contract("_ -> new")
-    static <E> Buffer<E> wrapJava(@NotNull List<E> list) {
+    static <E> @NotNull Buffer<E> wrapJava(@NotNull List<E> list) {
         Objects.requireNonNull(list);
-        if (list instanceof RandomAccess) {
-            return new FromJavaConvert.IndexedBufferFromJava<>(list);
+        if (list instanceof AsJavaConvert.BufferAsJava<?, ?>) {
+            return ((AsJavaConvert.BufferAsJava<E, Buffer<E>>) list).collection;
         }
-        return new FromJavaConvert.BufferFromJava<>(list);
+        return list instanceof RandomAccess
+                ? new FromJavaConvert.IndexedBufferFromJava<>(list)
+                : new FromJavaConvert.BufferFromJava<>(list);
+    }
+
+    //endregion
+
+    //region Collection Operations
+
+    @Override
+    default String className() {
+        return "Buffer";
+    }
+
+    @Override
+    default <U> @NotNull CollectionFactory<U, ?, ? extends Buffer<U>> iterableFactory() {
+        return factory();
+    }
+
+    @Override
+    default @NotNull BufferEditor<E, ? extends Buffer<E>> edit() {
+        return new BufferEditor<>(this);
+    }
+
+
+    @Override
+    default @NotNull List<E> asJava() {
+        return this instanceof IndexedSeq<?>
+                ? new AsJavaConvert.IndexedBufferAsJava<>((Buffer<E> & IndexedSeq<E>) this)
+                : new AsJavaConvert.BufferAsJava<>(this);
     }
 
     //endregion
 
     @Contract(mutates = "this")
     void append(@Flow(targetIsContainer = true) E value);
-
-    @Contract(mutates = "this")
-    default void appendAll(
-            @NotNull @Flow(sourceIsContainer = true, targetIsContainer = true) Iterable<? extends E> collection
-    ) {
-        Objects.requireNonNull(collection);
-        for (E e : collection) {
-            this.append(e);
-        }
-    }
 
     @Contract(mutates = "this")
     default void appendAll(@Flow(sourceIsContainer = true, targetIsContainer = true) E @NotNull [] values) {
@@ -115,7 +128,22 @@ public interface Buffer<E> extends MutableSeq<E> {
     }
 
     @Contract(mutates = "this")
+    default void appendAll(
+            @NotNull @Flow(sourceIsContainer = true, targetIsContainer = true) Iterable<? extends E> collection
+    ) {
+        Objects.requireNonNull(collection);
+        for (E e : collection) {
+            this.append(e);
+        }
+    }
+
+    @Contract(mutates = "this")
     void prepend(E value);
+
+    @Contract(mutates = "this")
+    default void prependAll(@Flow(sourceIsContainer = true, targetIsContainer = true) E @NotNull [] values) {
+        this.prependAll(ArraySeq.wrap(values));
+    }
 
     @Contract(mutates = "this")
     @SuppressWarnings("unchecked")
@@ -145,11 +173,6 @@ public interface Buffer<E> extends MutableSeq<E> {
         for (int i = cv.length - 1; i >= 0; i--) {
             prepend((E) cv[i]);
         }
-    }
-
-    @Contract(mutates = "this")
-    default void prependAll(@Flow(sourceIsContainer = true, targetIsContainer = true) E @NotNull [] values) {
-        this.prependAll(ArraySeq.wrap(values));
     }
 
     @Contract(mutates = "this")
@@ -232,33 +255,4 @@ public interface Buffer<E> extends MutableSeq<E> {
         }
     }
 
-    //region MutableCollection members
-
-    @Override
-    default String className() {
-        return "Buffer";
-    }
-
-    @Override
-    @NotNull
-    default <U> CollectionFactory<U, ?, ? extends Buffer<U>> iterableFactory() {
-        return factory();
-    }
-
-    @NotNull
-    @Override
-    default BufferEditor<E, ? extends Buffer<E>> edit() {
-        return new BufferEditor<>(this);
-    }
-
-    @NotNull
-    @Override
-    default List<E> asJava() {
-        if (this instanceof IndexedSeq<?>) {
-            return new AsJavaConvert.IndexedBufferAsJava<>((Buffer<E> & IndexedSeq<E>) this);
-        }
-        return new AsJavaConvert.BufferAsJava<>(this);
-    }
-
-    //endregion
 }

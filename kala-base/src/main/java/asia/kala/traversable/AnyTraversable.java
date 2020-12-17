@@ -41,11 +41,11 @@ public interface AnyTraversable<
     //region Size Info
 
     default boolean isEmpty() {
-        final int size = knownSize();
-        if (size < 0) {
+        final int knownSize = knownSize();
+        if (knownSize < 0) {
             return !iterator().hasNext();
         } else {
-            return size == 0;
+            return knownSize == 0;
         }
     }
 

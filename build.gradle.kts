@@ -59,10 +59,6 @@ allprojects {
             withSourcesJar()
             withJavadocJar()
         }
-
-        tasks.withType<Jar>().getByName("sourcesJar").apply {
-            exclude("module-info.class")
-        }
     }
 
     tasks.withType<Javadoc>().configureEach {

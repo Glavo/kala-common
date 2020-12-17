@@ -16,8 +16,29 @@ public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<
         throw new UnsupportedOperationException();// TODO
     }
 
-    @NotNull
-    default ImmutableSet<E> added(E value) {
+    @Override
+    default String className() {
+        return "ImmutableSet";
+    }
+
+    @Override
+    default <U> @NotNull CollectionFactory<U, ?, ? extends ImmutableSet<U>> iterableFactory() {
+        return factory();
+    }
+
+    @Override
+    default @NotNull Spliterator<E> spliterator() {
+        final int knownSize = knownSize();
+        if (knownSize == 0) {
+            return Spliterators.emptySpliterator();
+        } else if (knownSize > 0) {
+            return Spliterators.spliterator(iterator(), knownSize, Spliterator.DISTINCT | Spliterator.IMMUTABLE);
+        } else {
+            return Spliterators.spliteratorUnknownSize(iterator(), Spliterator.DISTINCT | Spliterator.IMMUTABLE);
+        }
+    }
+
+    default @NotNull ImmutableSet<E> added(E value) {
         if (contains(value)) {
             return this;
         }
@@ -32,8 +53,7 @@ public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<
         return AbstractImmutableSet.added(this, value, iterableFactory());
     }
 
-    @NotNull
-    default ImmutableSet<E> addedAll(@NotNull Iterable<? extends E> values) {
+    default @NotNull ImmutableSet<E> addedAll(@NotNull Iterable<? extends E> values) {
         if (this instanceof SortedSet<?>) {
             @SuppressWarnings("unchecked")
             CollectionFactory<E, ?, ? extends ImmutableSet<E>> factory =
@@ -45,33 +65,9 @@ public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<
         return AbstractImmutableSet.addedAll(this, values, iterableFactory());
     }
 
-    @NotNull
-    default ImmutableSet<E> addedAll(E @NotNull [] values) {
+    default @NotNull ImmutableSet<E> addedAll(E @NotNull [] values) {
         return addedAll(ArraySeq.wrap(values));
     }
 
-    //region ImmutableCollection members
 
-    @Override
-    default String className() {
-        return "ImmutableSet";
-    }
-
-    @NotNull
-    @Override
-    default <U> CollectionFactory<U, ?, ? extends ImmutableSet<U>> iterableFactory() {
-        return factory();
-    }
-
-    @NotNull
-    @Override
-    default Spliterator<E> spliterator() {
-        final int knownSize = knownSize();
-        if (knownSize != 0) {
-            return Spliterators.spliterator(iterator(), knownSize, Spliterator.DISTINCT | Spliterator.IMMUTABLE);
-        }
-        return Spliterators.spliteratorUnknownSize(iterator(), Spliterator.DISTINCT | Spliterator.IMMUTABLE);
-    }
-
-    //endregion
 }

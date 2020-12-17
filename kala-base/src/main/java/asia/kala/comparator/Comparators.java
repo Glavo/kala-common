@@ -11,13 +11,11 @@ public final class Comparators {
     private Comparators() {
     }
 
-    @NotNull
-    public static <T> Comparator<T> naturalOrder() {
+    public static <T> @NotNull Comparator<T> naturalOrder() {
         return (Comparator<T>) Comparator.naturalOrder();
     }
 
-    @NotNull
-    public static <T> Comparator<T> reverseOrder() {
+    public static <T> @NotNull Comparator<T> reverseOrder() {
         return (Comparator<T>) Comparator.reverseOrder();
     }
 }

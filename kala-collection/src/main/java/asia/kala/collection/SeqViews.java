@@ -5,6 +5,7 @@ import asia.kala.collection.mutable.ArrayBuffer;
 import asia.kala.control.Option;
 import asia.kala.annotations.Covariant;
 import asia.kala.function.IndexedConsumer;
+import asia.kala.iterator.AbstractIterator;
 import asia.kala.iterator.Iterators;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
@@ -228,9 +229,6 @@ final class SeqViews {
         private final Predicate<? super E> predicate;
 
         DropWhile(@NotNull SeqView<E> source, @NotNull Predicate<? super E> predicate) {
-            assert source != null;
-            assert predicate != null;
-
             this.source = source;
             this.predicate = predicate;
         }

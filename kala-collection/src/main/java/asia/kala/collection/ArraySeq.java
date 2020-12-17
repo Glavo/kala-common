@@ -27,87 +27,80 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     private static final ArraySeq.Factory<?> FACTORY = new ArraySeq.Factory<>();
 
-    @NotNull
-    protected final Object[] array;
+    protected final Object @NotNull [] array;
 
-    protected ArraySeq(@NotNull Object[] array) {
+    protected ArraySeq(Object @NotNull [] array) {
         this.array = array;
+    }
+
+    @Contract(value = "_ -> param1", pure = true)
+    @SuppressWarnings("unchecked")
+    public static <E> ArraySeq<E> narrow(ArraySeq<? extends E> seq) {
+        return (ArraySeq<E>) seq;
     }
 
     //region Static Factories
 
-    @NotNull
-    public static <E> CollectionFactory<E, ?, ? extends ArraySeq<E>> factory() {
+    public static <E> @NotNull CollectionFactory<E, ?, ? extends ArraySeq<E>> factory() {
         return (Factory<E>) FACTORY;
     }
 
-
-    @NotNull
     @Contract("_ -> new")
-    public static <E> ArraySeq<E> wrap(@NotNull E[] array) {
+    public static <E> @NotNull ArraySeq<E> wrap(@NotNull E[] array) {
         Objects.requireNonNull(array);
         return new ArraySeq<>(array);
     }
 
-    @NotNull
-    public static <E> ArraySeq<E> empty() {
+    public static <E> @NotNull ArraySeq<E> empty() {
         return (ArraySeq<E>) EMPTY;
     }
 
-    @NotNull
-    public static <E> ArraySeq<E> of() {
+    public static <E> @NotNull ArraySeq<E> of() {
         return empty();
     }
 
-    @NotNull
     @Contract(value = "_ -> new", pure = true)
-    public static <E> ArraySeq<E> of(E value1) {
+    public static <E> @NotNull ArraySeq<E> of(E value1) {
         return new ArraySeq<>(new Object[]{value1});
     }
 
-    @NotNull
     @Contract(value = "_, _ -> new", pure = true)
-    public static <E> ArraySeq<E> of(E value1, E value2) {
+    public static <E> @NotNull ArraySeq<E> of(E value1, E value2) {
         return new ArraySeq<>(new Object[]{value1, value2});
     }
 
-    @NotNull
     @Contract(value = "_, _, _ -> new", pure = true)
-    public static <E> ArraySeq<E> of(E value1, E value2, E value3) {
+    public static <E> @NotNull ArraySeq<E> of(E value1, E value2, E value3) {
         return new ArraySeq<>(new Object[]{value1, value2, value3});
     }
 
-    @NotNull
     @Contract(value = "_, _, _, _ -> new", pure = true)
-    public static <E> ArraySeq<E> of(E value1, E value2, E value3, E value4) {
+    public static <E> @NotNull ArraySeq<E> of(E value1, E value2, E value3, E value4) {
         return new ArraySeq<>(new Object[]{value1, value2, value3, value4});
     }
 
-    @NotNull
     @Contract(value = "_, _, _, _, _ -> new", pure = true)
-    public static <E> ArraySeq<E> of(E value1, E value2, E value3, E value4, E value5) {
+    public static <E> @NotNull ArraySeq<E> of(E value1, E value2, E value3, E value4, E value5) {
         return new ArraySeq<>(new Object[]{value1, value2, value3, value4, value5});
     }
 
-    @NotNull
     @SafeVarargs
     @Contract(pure = true)
-    public static <E> ArraySeq<E> of(E... values) {
+    public static <E> @NotNull ArraySeq<E> of(E... values) {
         return from(values);
     }
 
-    @NotNull
     @Contract(pure = true)
-    public static <E> ArraySeq<E> from(E @NotNull [] values) {
+    public static <E> @NotNull ArraySeq<E> from(E @NotNull [] values) {
         if (values.length == 0) {
             return empty();
         }
         return new ArraySeq<>(values.clone());
     }
 
-    @NotNull
-    public static <E> ArraySeq<E> from(@NotNull Traversable<? extends E> values) {
-        if (values instanceof ImmutableArray<?> || values.getClass() == ArraySeq.class) {
+    public static <E> @NotNull ArraySeq<E> from(@NotNull Traversable<? extends E> values) {
+        if (values instanceof ImmutableArray<?>
+                || values.getClass() == ArraySeq.class) { // implicit null check of values
             return (ArraySeq<E>) values;
         }
 
@@ -122,16 +115,14 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         return new ArraySeq<>(arr);
     }
 
-    @NotNull
-    public static <E> ArraySeq<E> from(@NotNull java.util.Collection<? extends E> values) {
+    public static <E> @NotNull ArraySeq<E> from(@NotNull java.util.Collection<? extends E> values) {
         if (values.size() == 0) {
             return empty();
         }
         return new ArraySeq<>(values.toArray());
     }
 
-    @NotNull
-    public static <E> ArraySeq<E> from(@NotNull Iterable<? extends E> values) {
+    public static <E> @NotNull ArraySeq<E> from(@NotNull Iterable<? extends E> values) {
         Objects.requireNonNull(values);
 
         if (values instanceof Traversable<?>) {
@@ -144,25 +135,16 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         return ArrayBuffer.<E>from(values).toImmutableArray();
     }
 
+    public static <E> @NotNull ArraySeq<E> from(@NotNull Iterator<? extends E> it) {
+        if (!it.hasNext()) { // implicit null check of it
+            return empty();
+        }
+        return ArrayBuffer.<E>from(it).toImmutableArray();
+    }
+
     //endregion
 
-    public final E get(int index) {
-        return (E) array[index];
-    }
-
-    @NotNull
-    @Override
-    public final Option<E> getOption(int index) {
-        if (index < 0 || index >= array.length) {
-            return Option.none();
-        }
-        return Option.some((E) array[index]);
-    }
-
-    @Override
-    public final int size() {
-        return array.length;
-    }
+    //region Size Info
 
     @Override
     public final boolean isEmpty() {
@@ -170,15 +152,25 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     }
 
     @Override
-    public final boolean isDefinedAt(int index) {
-        return index >= 0 && index < array.length;
+    public final int size() {
+        return array.length;
     }
+
+    //endregion
+
+    //region Positional Access Operations
+
+    public final E get(int index) {
+        return (E) array[index];
+    }
+
+    //endregion
 
     @Override
     public final E first() {
         try {
             return (E) array[0];
-        } catch (IndexOutOfBoundsException ignored) {
+        } catch (IndexOutOfBoundsException e) {
             throw new NoSuchElementException();
         }
     }
@@ -243,9 +235,8 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         return (E) JavaArray.max(array, (Comparator<Object>) comparator);
     }
 
-    @NotNull
     @Override
-    public final Option<E> maxOption() {
+    public final @NotNull Option<E> maxOption() {
         final Object[] array = this.array;
         if (array.length == 0) {
             return Option.none();
@@ -253,9 +244,8 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         return Option.some((E) JavaArray.Unsafe.max(array));
     }
 
-    @NotNull
     @Override
-    public final Option<E> maxOption(@NotNull Comparator<? super E> comparator) {
+    public final @NotNull Option<E> maxOption(@NotNull Comparator<? super E> comparator) {
         if (array.length == 0) {
             return Option.none();
         }
@@ -272,9 +262,8 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         return (E) JavaArray.min(array, (Comparator<Object>) comparator);
     }
 
-    @NotNull
     @Override
-    public final Option<E> minOption() {
+    public final @NotNull Option<E> minOption() {
         final Object[] array = this.array;
         if (array.length == 0) {
             return Option.none();
@@ -282,9 +271,8 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         return Option.some((E) JavaArray.Unsafe.min(array));
     }
 
-    @NotNull
     @Override
-    public final Option<E> minOption(@NotNull Comparator<? super E> comparator) {
+    public final @NotNull Option<E> minOption(@NotNull Comparator<? super E> comparator) {
         if (array.length == 0) {
             return Option.none();
         }
@@ -489,9 +477,8 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         return factory.build(builder);
     }
 
-    @NotNull
     @Override
-    public final Object[] toArray() {
+    public final Object @NotNull [] toArray() {
         final Object[] array = this.array;
         final int length = array.length;
 
@@ -502,12 +489,9 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         return res;
     }
 
-    @NotNull
     @Override
     @SuppressWarnings("SuspiciousSystemArraycopy")
-    public final <U> U[] toArray(@NotNull IntFunction<U[]> generator) {
-        assert generator != null;
-
+    public final <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
         final Object[] array = this.array;
         final int length = array.length;
 
@@ -523,21 +507,18 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         return "ArraySeq";
     }
 
-    @NotNull
     @Override
-    public final Iterator<E> iterator() {
+    public final @NotNull Iterator<E> iterator() {
         return (Iterator<E>) JavaArray.iterator(array);
     }
 
-    @NotNull
     @Override
-    public final Iterator<E> reverseIterator() {
+    public final @NotNull Iterator<E> reverseIterator() {
         return (Iterator<E>) JavaArray.reverseIterator(array);
     }
 
-    @NotNull
     @Override
-    public Spliterator<E> spliterator() {
+    public @NotNull Spliterator<E> spliterator() {
         return Spliterators.spliterator(array, 0);
     }
 

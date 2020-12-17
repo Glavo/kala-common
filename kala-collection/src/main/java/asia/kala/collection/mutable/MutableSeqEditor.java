@@ -11,37 +11,32 @@ public class MutableSeqEditor<E, C extends MutableSeq<E>> extends MutableCollect
         super(source);
     }
 
-    @NotNull
     @Contract("_, _ -> this")
-    public MutableSeqEditor<E, C> set(int index, E newValue) {
+    public @NotNull MutableSeqEditor<E, C> set(int index, E newValue) {
         source.set(index, newValue);
         return this;
     }
 
-    @NotNull
     @Contract("_ -> this")
-    public MutableSeqEditor<E, C> mapInPlace(@NotNull Function<? super E, ? extends E> mapper) {
+    public @NotNull MutableSeqEditor<E, C> mapInPlace(@NotNull Function<? super E, ? extends E> mapper) {
         source.mapInPlace(mapper);
         return this;
     }
 
-    @NotNull
     @Contract("-> this")
-    public MutableSeqEditor<E, C> reverse() {
+    public @NotNull MutableSeqEditor<E, C> reverse() {
         source.reverse();
         return this;
     }
 
-    @NotNull
     @Contract("-> this")
-    public MutableSeqEditor<E, C> sort() {
+    public @NotNull MutableSeqEditor<E, C> sort() {
         source.sort();
         return this;
     }
 
-    @NotNull
     @Contract("_ -> this")
-    public MutableSeqEditor<E, C> sort(@NotNull Comparator<? super E> comparator) {
+    public @NotNull MutableSeqEditor<E, C> sort(@NotNull Comparator<? super E> comparator) {
         source.sort(comparator);
         return this;
     }

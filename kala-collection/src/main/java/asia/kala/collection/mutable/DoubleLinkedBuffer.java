@@ -1,15 +1,13 @@
 package asia.kala.collection.mutable;
 
-import asia.kala.collection.AbstractIterator;
 import asia.kala.factory.CollectionFactory;
 import asia.kala.function.IndexedFunction;
+import asia.kala.iterator.AbstractIterator;
 import asia.kala.iterator.Iterators;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Range;
 
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
@@ -24,6 +22,8 @@ public final class DoubleLinkedBuffer<E>
 
     public DoubleLinkedBuffer() {
     }
+
+    //region Static Factories
 
     @SuppressWarnings("unchecked")
     public static <E> @NotNull CollectionFactory<E, ?, DoubleLinkedBuffer<E>> factory() {
@@ -109,6 +109,8 @@ public final class DoubleLinkedBuffer<E>
         return res;
     }
 
+    //endregion
+
     private Node<E> getNode(int index) {
         final int len = this.len;
         Node<E> x;
@@ -125,6 +127,43 @@ public final class DoubleLinkedBuffer<E>
         }
         return x;
     }
+
+    //region Collection Operations
+
+    @Override
+    public final String className() {
+        return "DoubleLinkedBuffer";
+    }
+
+    @Override
+    public final @NotNull <U> CollectionFactory<U, ?, ? extends Buffer<U>> iterableFactory() {
+        return DoubleLinkedBuffer.factory();
+    }
+
+    @Override
+    public final @NotNull Iterator<E> iterator() {
+        final Node<E> first = this.first;
+        return first == null ? Iterators.empty() : new Itr<>(first);
+    }
+
+    @Override
+    public final @NotNull BufferEditor<E, DoubleLinkedBuffer<E>> edit() {
+        return new BufferEditor<>(this);
+    }
+
+    @Override
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
+    public final @NotNull DoubleLinkedBuffer<E> clone() {
+        DoubleLinkedBuffer<E> res = new DoubleLinkedBuffer<>();
+        if (len != 0) {
+            for (E e : this) {
+                res.append(e);
+            }
+        }
+        return res;
+    }
+
+    //endregion
 
     @Override
     public final E get(int index) {
@@ -356,42 +395,9 @@ public final class DoubleLinkedBuffer<E>
     }
 
     @Override
-    public final @NotNull BufferEditor<E, DoubleLinkedBuffer<E>> edit() {
-        return new BufferEditor<>(this);
-    }
-
-    @Override
-    public final @NotNull Iterator<E> iterator() {
-        final Node<E> first = this.first;
-        return first == null ? Iterators.empty() : new Itr<>(first);
-    }
-
-    @Override
     public final @NotNull Iterator<E> reverseIterator() {
         final Node<E> last = this.last;
         return last == null ? Iterators.empty() : new ReverseItr<>(last);
-    }
-
-    @Override
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public final @NotNull DoubleLinkedBuffer<E> clone() {
-        DoubleLinkedBuffer<E> res = new DoubleLinkedBuffer<>();
-        if (len != 0) {
-            for (E e : this) {
-                res.append(e);
-            }
-        }
-        return res;
-    }
-
-    @Override
-    public final String className() {
-        return "DoubleLinkedBuffer";
-    }
-
-    @Override
-    public final @NotNull <U> CollectionFactory<U, ?, ? extends Buffer<U>> iterableFactory() {
-        return DoubleLinkedBuffer.factory();
     }
 
     private static final class Node<E> {

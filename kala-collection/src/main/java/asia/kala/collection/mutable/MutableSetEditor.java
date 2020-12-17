@@ -10,65 +10,56 @@ public class MutableSetEditor<E, C extends MutableSet<E>> extends MutableCollect
         super(source);
     }
 
-    @NotNull
     @Contract("_ -> this")
-    public MutableSetEditor<E, C> add(E value) {
+    public @NotNull MutableSetEditor<E, C> add(E value) {
         source.add(value);
         return this;
     }
 
-    @NotNull
     @Contract("_ -> this")
-    public MutableSetEditor<E, C> addAll(@NotNull Iterable<? extends E> values) {
+    public @NotNull MutableSetEditor<E, C> addAll(@NotNull Iterable<? extends E> values) {
         source.addAll(values);
         return this;
     }
 
-    @NotNull
     @Contract("_ -> this")
-    public MutableSetEditor<E, C> addAll(E @NotNull [] values) {
+    public @NotNull MutableSetEditor<E, C> addAll(E @NotNull [] values) {
         source.addAll(values);
         return this;
     }
 
-    @NotNull
     @Contract("_ -> this")
-    public MutableSetEditor<E, C> remove(E value) {
+    public @NotNull MutableSetEditor<E, C> remove(E value) {
         source.remove(value);
         return this;
     }
 
-    @NotNull
     @Contract("-> this")
-    public MutableSetEditor<E, C> clear() {
+    public @NotNull MutableSetEditor<E, C> clear() {
         source.clear();
         return this;
     }
 
-    @NotNull
     @Contract("_ -> this")
-    public MutableSetEditor<E, C> retainIf(@NotNull Predicate<? super E> predicate) {
+    public @NotNull MutableSetEditor<E, C> retainIf(@NotNull Predicate<? super E> predicate) {
         source.retainIf(predicate);
         return this;
     }
 
-    @NotNull
     @Contract("_ -> this")
-    public MutableSetEditor<E, C> retainAll(@NotNull Iterable<? super E> values) {
+    public @NotNull MutableSetEditor<E, C> retainAll(@NotNull Iterable<? super E> values) {
         source.retainAll(values);
         return this;
     }
 
-    @NotNull
     @Contract("_ -> this")
-    public MutableSetEditor<E, C> retainAll(E @NotNull [] values) {
+    public @NotNull MutableSetEditor<E, C> retainAll(E @NotNull [] values) {
         source.retainAll(values);
         return this;
     }
 
-    @NotNull
     @Contract("_ -> this")
-    public MutableSetEditor<E, C> filterInPlace(@NotNull Predicate<? super E> predicate) {
+    public @NotNull MutableSetEditor<E, C> filterInPlace(@NotNull Predicate<? super E> predicate) {
         source.filterInPlace(predicate);
         return this;
     }

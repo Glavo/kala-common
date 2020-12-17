@@ -1,5 +1,7 @@
 package asia.kala.iterator;
 
+import asia.kala.control.Try;
+import asia.kala.function.CheckedConsumer;
 import asia.kala.traversable.JavaArray;
 import asia.kala.Tuple;
 import asia.kala.Tuple2;
@@ -30,52 +32,27 @@ public final class Iterators {
         return (Iterator<E>) iterator;
     }
 
-    @NotNull
     @SuppressWarnings("unchecked")
-    public static <E> Iterator<E> empty() {
+    public static <E> @NotNull Iterator<E> empty() {
         return ((Iterator<E>) EMPTY);
     }
 
-    @NotNull
-    public static <E> Iterator<E> of() {
+    public static <E> @NotNull Iterator<E> of() {
         return empty();
     }
 
-    @NotNull
-    public static <E> Iterator<E> of(E value) {
-        return new AbstractIterator<E>() {
-            private boolean hasNext = true;
-
-            @Override
-            public final boolean hasNext() {
-                return hasNext;
-            }
-
-            @Override
-            public final E next() {
-                if (!hasNext) {
-                    throw new NoSuchElementException();
-                }
-                hasNext = false;
-                return value;
-            }
-        };
+    public static <E> @NotNull Iterator<E> of(E value) {
+        return value == null ? new Iterators.OfNull<>() : new Iterators.OfNotNull<>(value);
     }
 
-    @NotNull
     @SafeVarargs
-    public static <E> Iterator<E> of(E... values) {
-
+    public static <E> @NotNull Iterator<E> of(E... values) {
         return JavaArray.iterator(values);
     }
 
-    public static <E> Iterator<E> ofEnumeration(@NotNull java.util.Enumeration<? extends E> enumeration) {
+    public static <E> @NotNull Iterator<E> ofEnumeration(@NotNull java.util.Enumeration<? extends E> enumeration) {
         if (!enumeration.hasMoreElements()) {
             return Iterators.empty();
-        }
-
-        if (enumeration instanceof Iterator<?>) {
-            return (Iterator<E>) enumeration;
         }
 
         return new AbstractIterator<E>() {
@@ -91,28 +68,23 @@ public final class Iterators {
         };
     }
 
-    @NotNull
-    public static <E> Iterator<E> from(@NotNull Iterable<? extends E> values) {
-        return narrow(values.iterator());
-    }
-
-    @NotNull
-    public static <E> Iterator<E> from(E @NotNull [] values) {
+    public static <E> @NotNull Iterator<E> from(E @NotNull [] values) {
         return JavaArray.iterator(values);
     }
 
-    @NotNull
-    public static <E> Iterator<E> concat(@NotNull Iterator<? extends E>... its) {
+    public static <E> @NotNull Iterator<E> from(@NotNull Iterable<? extends E> values) {
+        return narrow(values.iterator());
+    }
+
+    public static <E> @NotNull Iterator<E> concat(@NotNull Iterator<? extends E>... its) {
         return new Concat<>(JavaArray.iterator(its));
     }
 
-    @NotNull
-    public static <E> Iterator<E> concat(@NotNull Iterable<? extends Iterator<? extends E>> its) {
-        return new Concat<>(its.iterator());
+    public static <E> @NotNull Iterator<E> concat(@NotNull Iterable<? extends Iterator<? extends E>> its) {
+        return new Concat<>(its.iterator()); // implicit null check of its
     }
 
-    @NotNull
-    public static <E> Iterator<E> concat(@NotNull Iterator<? extends Iterator<? extends E>> its) {
+    public static <E> @NotNull Iterator<E> concat(@NotNull Iterator<? extends Iterator<? extends E>> its) {
         Objects.requireNonNull(its);
         return new Concat<>(its);
     }
@@ -120,7 +92,7 @@ public final class Iterators {
     @Contract(mutates = "param1")
     public static int hash(@NotNull Iterator<?> it) {
         int ans = 0;
-        while (it.hasNext()) {
+        while (it.hasNext()) { // implicit null check of it
             ans = ans * 31 + Objects.hashCode(it.next());
         }
         return ans;
@@ -128,7 +100,7 @@ public final class Iterators {
 
     public static int size(@NotNull Iterator<?> it) {
         int i = 0;
-        while (it.hasNext()) {
+        while (it.hasNext()) { // implicit null check of it
             it.next();
             ++i;
         }
@@ -137,13 +109,13 @@ public final class Iterators {
 
     public static boolean contains(Iterator<?> it, Object value) {
         if (value == null) {
-            while (it.hasNext()) {
-                if (it.next() == null) {
+            while (it.hasNext()) { // implicit null check of it
+                if (null == it.next()) {
                     return true;
                 }
             }
         } else {
-            while (it.hasNext()) {
+            while (it.hasNext()) { // implicit null check of it
                 if (value.equals(it.next())) {
                     return true;
                 }
@@ -153,7 +125,7 @@ public final class Iterators {
     }
 
     public static boolean sameElements(@NotNull Iterator<?> it1, @NotNull Iterator<?> it2) {
-        while (it1.hasNext() && it2.hasNext()) {
+        while (it1.hasNext() && it2.hasNext()) { // implicit null check of it1 and it2
             if (!Objects.equals(it1.next(), it2.next())) {
                 return false;
             }
@@ -176,8 +148,8 @@ public final class Iterators {
 
     public static <E> int count(@NotNull Iterator<? extends E> it, @NotNull Predicate<? super E> predicate) {
         int c = 0;
-        while (it.hasNext()) {
-            if (predicate.test(it.next())) {
+        while (it.hasNext()) { // implicit null check of it
+            if (predicate.test(it.next())) { // implicit null check of predicate
                 ++c;
             }
         }
@@ -239,8 +211,7 @@ public final class Iterators {
         return e;
     }
 
-    @Nullable
-    public static <E extends Comparable<E>> E maxOrNull(@NotNull Iterator<? extends E> it) {
+    public static <E extends Comparable<E>> @Nullable E maxOrNull(@NotNull Iterator<? extends E> it) {
         if (!it.hasNext()) {
             return null;
         }
@@ -254,8 +225,7 @@ public final class Iterators {
         return e;
     }
 
-    @Nullable
-    public static <E> E maxOrNull(@NotNull Iterator<? extends E> it, @NotNull Comparator<? super E> comparator) {
+    public static <E> @Nullable E maxOrNull(@NotNull Iterator<? extends E> it, @NotNull Comparator<? super E> comparator) {
         if (!it.hasNext()) {
             return null;
         }
@@ -269,7 +239,7 @@ public final class Iterators {
         return e;
     }
 
-    public static <E extends Comparable<E>> Option<E> maxOption(@NotNull Iterator<? extends E> it) {
+    public static <E extends Comparable<E>> @NotNull Option<E> maxOption(@NotNull Iterator<? extends E> it) {
         if (!it.hasNext()) {
             return Option.none();
         }
@@ -283,7 +253,7 @@ public final class Iterators {
         return Option.some(e);
     }
 
-    public static <E> Option<E> maxOption(@NotNull Iterator<? extends E> it, @NotNull Comparator<? super E> comparator) {
+    public static <E> @NotNull Option<E> maxOption(@NotNull Iterator<? extends E> it, @NotNull Comparator<? super E> comparator) {
         if (!it.hasNext()) {
             return Option.none();
         }
@@ -325,8 +295,7 @@ public final class Iterators {
         return e;
     }
 
-    @Nullable
-    public static <E extends Comparable<E>> E minOrNull(@NotNull Iterator<? extends E> it) {
+    public static <E extends Comparable<E>> @Nullable E minOrNull(@NotNull Iterator<? extends E> it) {
         if (!it.hasNext()) {
             return null;
         }
@@ -340,8 +309,7 @@ public final class Iterators {
         return e;
     }
 
-    @Nullable
-    public static <E> E minOrNull(@NotNull Iterator<? extends E> it, @NotNull Comparator<? super E> comparator) {
+    public static <E> @Nullable E minOrNull(@NotNull Iterator<? extends E> it, @NotNull Comparator<? super E> comparator) {
         if (!it.hasNext()) {
             return null;
         }
@@ -355,7 +323,7 @@ public final class Iterators {
         return e;
     }
 
-    public static <E extends Comparable<E>> Option<E> minOption(@NotNull Iterator<? extends E> it) {
+    public static <E extends Comparable<E>> @NotNull Option<E> minOption(@NotNull Iterator<? extends E> it) {
         if (!it.hasNext()) {
             return Option.none();
         }
@@ -369,7 +337,7 @@ public final class Iterators {
         return Option.some(e);
     }
 
-    public static <E> Option<E> minOption(@NotNull Iterator<? extends E> it, @NotNull Comparator<? super E> comparator) {
+    public static <E> @NotNull Option<E> minOption(@NotNull Iterator<? extends E> it, @NotNull Comparator<? super E> comparator) {
         if (!it.hasNext()) {
             return Option.none();
         }
@@ -384,7 +352,7 @@ public final class Iterators {
     }
 
     @Contract(mutates = "param1")
-    public static <E> Iterator<E> drop(@NotNull Iterator<? extends E> it, int n) {
+    public static <E> @NotNull Iterator<E> drop(@NotNull Iterator<? extends E> it, int n) {
         while (n > 0 && it.hasNext()) {
             it.next();
             --n;
@@ -392,8 +360,7 @@ public final class Iterators {
         return ((Iterator<E>) it);
     }
 
-    @NotNull
-    public static <E> Iterator<E> dropWhile(@NotNull Iterator<? extends E> it, @NotNull Predicate<? super E> predicate) {
+    public static <E> @NotNull Iterator<E> dropWhile(@NotNull Iterator<? extends E> it, @NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
 
         if (!it.hasNext()) {
@@ -416,8 +383,7 @@ public final class Iterators {
         }
     }
 
-    @NotNull
-    public static <E> Iterator<E> take(@NotNull Iterator<? extends E> it, int n) {
+    public static <E> @NotNull Iterator<E> take(@NotNull Iterator<? extends E> it, int n) {
         if (!it.hasNext() || n <= 0) {
             return empty();
         }
@@ -441,8 +407,7 @@ public final class Iterators {
         };
     }
 
-    @NotNull
-    public static <E> Iterator<E> takeWhile(@NotNull Iterator<? extends E> it, @NotNull Predicate<? super E> predicate) {
+    public static <E> @NotNull Iterator<E> takeWhile(@NotNull Iterator<? extends E> it, @NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
 
         if (!it.hasNext()) {
@@ -451,8 +416,7 @@ public final class Iterators {
         return new TakeWhile<>(it, predicate);
     }
 
-    @NotNull
-    public static <E> Iterator<E> updated(@NotNull Iterator<? extends E> it, int n, E newValue) {
+    public static <E> @NotNull Iterator<E> updated(@NotNull Iterator<? extends E> it, int n, E newValue) {
         if (!it.hasNext() || n < 0) {
             return (Iterator<E>) it;
         }
@@ -482,8 +446,7 @@ public final class Iterators {
         };
     }
 
-    @NotNull
-    public static <E> Iterator<E> prepended(@NotNull Iterator<? extends E> it, E value) {
+    public static <E> @NotNull Iterator<E> prepended(@NotNull Iterator<? extends E> it, E value) {
         Objects.requireNonNull(it);
         return new AbstractIterator<E>() {
             private boolean flag = true;
@@ -505,8 +468,7 @@ public final class Iterators {
         };
     }
 
-    @NotNull
-    public static <E> Iterator<E> appended(@NotNull Iterator<? extends E> it, E value) {
+    public static <E> @NotNull Iterator<E> appended(@NotNull Iterator<? extends E> it, E value) {
         if (!it.hasNext()) {
             return Iterators.of(value);
         }
@@ -532,8 +494,7 @@ public final class Iterators {
         };
     }
 
-    @NotNull
-    public static <E> Iterator<E> filter(@NotNull Iterator<? extends E> it, @NotNull Predicate<? super E> predicate) {
+    public static <E> @NotNull Iterator<E> filter(@NotNull Iterator<? extends E> it, @NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
         if (!it.hasNext()) {
             return empty();
@@ -541,8 +502,7 @@ public final class Iterators {
         return new Filter<>(it, predicate, false);
     }
 
-    @NotNull
-    public static <E> Iterator<E> filterNot(@NotNull Iterator<? extends E> it, @NotNull Predicate<? super E> predicate) {
+    public static <E> @NotNull Iterator<E> filterNot(@NotNull Iterator<? extends E> it, @NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
         if (!it.hasNext()) {
             return empty();
@@ -550,22 +510,20 @@ public final class Iterators {
         return new Filter<>(it, predicate, true);
     }
 
-    @NotNull
-    public static <E> Iterator<@NotNull E> filterNotNull(@NotNull Iterator<? extends E> it) {
+    public static <E> @NotNull Iterator<@NotNull E> filterNotNull(@NotNull Iterator<? extends E> it) {
         if (!it.hasNext()) {
             return empty();
         }
         return new FilterNotNull<>(it);
     }
 
-    @NotNull
-    public static <E, U> Iterator<U> map(
+    public static <E, U> @NotNull Iterator<U> map(
             @NotNull Iterator<? extends E> it,
             @NotNull Function<? super E, ? extends U> mapper
     ) {
         Objects.requireNonNull(mapper);
         if (!it.hasNext()) {
-            return (Iterator<U>) it;
+            return Iterators.empty();
         }
         return new AbstractIterator<U>() {
             @Override
@@ -580,8 +538,7 @@ public final class Iterators {
         };
     }
 
-    @NotNull
-    public static <E, U> Iterator<U> flatMap(
+    public static <E, U> @NotNull Iterator<U> flatMap(
             @NotNull Iterator<? extends E> it,
             @NotNull Function<? super E, ? extends Iterable<? extends U>> mapper
     ) {
@@ -593,9 +550,8 @@ public final class Iterators {
         return new Concat<>(Iterators.map(Iterators.map(it, mapper), Iterable::iterator));
     }
 
-    @NotNull
-    public static <E> Tuple2<Iterator<E>, Iterator<E>> span(
-            @NotNull Iterator<E> it, @NotNull Predicate<? super E> predicate
+    public static <E> @NotNull Tuple2<Iterator<E>, Iterator<E>> span(
+            @NotNull Iterator<? extends E> it, @NotNull Predicate<? super E> predicate
     ) {
         if (!it.hasNext()) {
             return Tuple.of(empty(), empty());
@@ -613,7 +569,7 @@ public final class Iterators {
             }
         }
 
-        return new Tuple2<>(list.iterator(), it);
+        return new Tuple2<>(list.iterator(), Iterators.narrow(it));
     }
 
     public static <E> E fold(
@@ -742,6 +698,22 @@ public final class Iterators {
         return buffer.toArray(generator.apply(buffer.size()));
     }
 
+    public static <E, R, Builder> R collect(
+            @NotNull Iterator<? extends E> it,
+            @NotNull Collector<? super E, Builder, ? extends R> collector
+    ) {
+        Builder builder = collector.supplier().get();
+        if (!it.hasNext()) {
+            return collector.finisher().apply(builder);
+        }
+
+        final BiConsumer<Builder, ? super E> accumulator = collector.accumulator();
+        while (it.hasNext()) {
+            accumulator.accept(builder, it.next());
+        }
+        return collector.finisher().apply(builder);
+    }
+
     static <E, R, Builder> R collect(
             @NotNull Iterator<? extends E> it,
             @NotNull CollectionFactory<? super E, Builder, ? extends R> factory
@@ -756,26 +728,9 @@ public final class Iterators {
         return factory.build(builder);
     }
 
-    public static <E, R, Builder> R collect(
-            @NotNull Iterator<? extends E> it,
-            @NotNull Collector<? super E, Builder, ? extends R> collector
-    ) {
-        Builder builder = collector.supplier().get();
-        final Function<Builder, ? extends R> finisher = collector.finisher();
-        if (!it.hasNext()) {
-            return finisher.apply(builder);
-        }
-
-        final BiConsumer<Builder, ? super E> accumulator = collector.accumulator();
-        while (it.hasNext()) {
-            accumulator.accept(builder, it.next());
-        }
-        return finisher.apply(builder);
-    }
-
 
     @Contract(value = "_, _ -> param2", mutates = "param1, param2")
-    public static <A extends Appendable> A joinTo(
+    public static <A extends Appendable> @NotNull A joinTo(
             @NotNull Iterator<?> it,
             @NotNull A buffer
     ) {
@@ -783,7 +738,7 @@ public final class Iterators {
     }
 
     @Contract(value = "_, _, _ -> param2", mutates = "param1, param2")
-    public static <A extends Appendable> A joinTo(
+    public static <A extends Appendable> @NotNull A joinTo(
             @NotNull Iterator<?> it,
             @NotNull A buffer,
             CharSequence separator
@@ -792,7 +747,7 @@ public final class Iterators {
     }
 
     @Contract(value = "_, _, _, _, _ -> param2", mutates = "param1, param2")
-    public static <A extends Appendable> A joinTo(
+    public static <A extends Appendable> @NotNull A joinTo(
             @NotNull Iterator<?> it,
             @NotNull A buffer,
             CharSequence separator, CharSequence prefix, CharSequence postfix
@@ -812,21 +767,18 @@ public final class Iterators {
         return buffer;
     }
 
-    @NotNull
-    public static String joinToString(@NotNull Iterator<?> it) {
+    public static @NotNull String joinToString(@NotNull Iterator<?> it) {
         return joinTo(it, new StringBuilder()).toString();
     }
 
-    @NotNull
-    public static String joinToString(
+    public static @NotNull String joinToString(
             @NotNull Iterator<?> it,
             CharSequence separator
     ) {
         return joinTo(it, new StringBuilder(), separator).toString();
     }
 
-    @NotNull
-    public static String joinToString(
+    public static @NotNull String joinToString(
             @NotNull Iterator<?> it,
             CharSequence separator, CharSequence prefix, CharSequence postfix
     ) {
@@ -837,6 +789,30 @@ public final class Iterators {
     public static <E> void forEach(@NotNull Iterator<? extends E> it, @NotNull Consumer<? super E> action) {
         while (it.hasNext()) {
             action.accept(it.next());
+        }
+    }
+
+    public static <E, Ex extends Throwable> void forEachChecked(
+            @NotNull Iterator<? extends E> it, @NotNull CheckedConsumer<? super E, ? extends Ex> action
+    ) {
+        try {
+            while (it.hasNext()) {
+                action.acceptChecked(it.next());
+            }
+        } catch (Throwable e) {
+            Try.throwExceptionUnchecked(e);
+        }
+    }
+
+    public static <E> void forEachUnchecked(
+            @NotNull Iterator<? extends E> it, @NotNull CheckedConsumer<? super E, ?> action
+    ) {
+        try {
+            while (it.hasNext()) {
+                action.acceptChecked(it.next());
+            }
+        } catch (Throwable e) {
+            Try.throwExceptionUnchecked(e);
         }
     }
 
@@ -864,11 +840,52 @@ public final class Iterators {
         }
     };
 
+    static final class OfNotNull<@Covariant E> extends AbstractIterator<E> {
+        private @Nullable E value;
+
+        OfNotNull(@NotNull E value) {
+            this.value = value;
+        }
+
+        @Override
+        public final boolean hasNext() {
+            return value != null;
+        }
+
+        @Override
+        public final E next() {
+            final E v = this.value;
+            if (v == null) {
+                throw new NoSuchElementException();
+            }
+            this.value = null;
+            return v;
+        }
+    }
+
+    static final class OfNull<E> extends AbstractIterator<E> {
+        private boolean hasNext = true;
+
+        @Override
+        public final boolean hasNext() {
+            return hasNext;
+        }
+
+        @Override
+        public final E next() {
+            if (!hasNext) {
+                throw new NoSuchElementException();
+            }
+            hasNext = false;
+            return null;
+        }
+    }
+
     static final class Filter<@Covariant E> extends AbstractIterator<E> {
-        @NotNull
-        private final Iterator<? extends E> source;
-        @NotNull
-        private final Predicate<? super E> predicate;
+
+        private final @NotNull Iterator<? extends E> source;
+
+        private final @NotNull Predicate<? super E> predicate;
 
         private E nextValue = null;
         private boolean flag = false;
@@ -903,7 +920,6 @@ public final class Iterators {
         }
 
         @Override
-
         public final E next() {
             if (hasNext()) {
                 flag = false;
@@ -915,8 +931,8 @@ public final class Iterators {
     }
 
     static final class FilterNotNull<@Covariant E> extends AbstractIterator<E> {
-        @NotNull
-        private final Iterator<? extends E> source;
+
+        private final @NotNull Iterator<? extends E> source;
 
         private E nextValue = null;
         private boolean flag = false;
@@ -947,7 +963,6 @@ public final class Iterators {
         }
 
         @Override
-
         public final E next() {
             if (hasNext()) {
                 flag = false;
@@ -1004,8 +1019,8 @@ public final class Iterators {
     }
 
     static final class Concat<@Covariant E> extends AbstractIterator<E> {
-        @NotNull
-        private final Iterator<? extends Iterator<? extends E>> iterators;
+
+        private final @NotNull Iterator<? extends Iterator<? extends E>> iterators;
 
         private Iterator<? extends E> current = null;
 

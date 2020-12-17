@@ -35,73 +35,49 @@ public interface Collection<@Covariant E> extends Traversable<E>, Equals {
 
     //endregion
 
-    @NotNull
-    default Spliterator<E> spliterator() {
-        final int knownSize = knownSize();
-        if (knownSize != 0) {
-            return Spliterators.spliterator(iterator(), knownSize, 0);
-        } else {
-            return Spliterators.spliteratorUnknownSize(iterator(), 0);
-        }
-    }
-
-    @NotNull
-    default View<E> view() {
-        return new Views.Of<>(this);
-    }
+    //region Collection Operations
 
     default String className() {
         return "Traversable";
     }
 
-    @NotNull
-    default <U> CollectionFactory<U, ?, ? extends Collection<U>> iterableFactory() {
+    default <U> @NotNull CollectionFactory<U, ?, ? extends Collection<U>> iterableFactory() {
         return factory();
     }
 
-    @NotNull
-    default Stream<E> stream() {
-        return StreamSupport.stream(spliterator(), false);
+    default @NotNull View<E> view() {
+        return new Views.Of<>(this);
     }
 
-    @NotNull
-    default Stream<E> parallelStream() {
-        return stream().parallel();
-    }
-
-    @NotNull
-    default java.util.Collection<E> asJava() {
+    default @NotNull java.util.Collection<E> asJava() {
         return new AsJavaConvert.CollectionAsJava<>(this);
     }
+
+    //endregion
 
     @Override
     default boolean canEqual(Object other) {
         return other instanceof Collection<?>;
     }
 
-    @NotNull
-    default Seq<E> toSeq() {
+    default @NotNull Seq<E> toSeq() {
         return toImmutableSeq();
     }
 
-    @NotNull
-    default ImmutableSeq<E> toImmutableSeq() {
+    default @NotNull ImmutableSeq<E> toImmutableSeq() {
         return toImmutableVector();
     }
 
-    @NotNull
     @SuppressWarnings("unchecked")
-    default ImmutableArray<E> toImmutableArray() {
+    default @NotNull ImmutableArray<E> toImmutableArray() {
         return (ImmutableArray<E>) ImmutableArray.Unsafe.wrap(toArray());
     }
 
-    @NotNull
-    default ImmutableList<E> toImmutableList() {
+    default @NotNull ImmutableList<E> toImmutableList() {
         return ImmutableList.from(this);
     }
 
-    @NotNull
-    default ImmutableVector<E> toImmutableVector() {
+    default @NotNull ImmutableVector<E> toImmutableVector() {
         return ImmutableVector.from(this);
     }
 }

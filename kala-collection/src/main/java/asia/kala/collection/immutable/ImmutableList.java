@@ -11,6 +11,7 @@ import asia.kala.function.IndexedFunction;
 import asia.kala.iterator.Iterators;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 import java.io.Serializable;
 import java.util.*;
@@ -44,55 +45,45 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
         return (Factory<E>) FACTORY;
     }
 
-    @NotNull
     @SuppressWarnings("unchecked")
-    public static <E> ImmutableList<E> nil() {
+    public static <E> @NotNull ImmutableList<E> nil() {
         return (ImmutableList<E>) Nil.INSTANCE;
     }
 
-    @NotNull
-    public static <E> ImmutableList<E> empty() {
+    public static <E> @NotNull ImmutableList<E> empty() {
         return nil();
     }
 
-    @NotNull
-    public static <E> ImmutableList<E> of() {
+    public static <E> @NotNull ImmutableList<E> of() {
         return nil();
     }
 
-    @NotNull
-    public static <E> ImmutableList<E> of(E value1) {
+    public static <E> @NotNull ImmutableList<E> of(E value1) {
         return new ImmutableCons<>(value1, nil());
     }
 
-    @NotNull
-    public static <E> ImmutableList<E> of(E value1, E value2) {
+    public static <E> @NotNull ImmutableList<E> of(E value1, E value2) {
         return new ImmutableCons<>(value1, new ImmutableCons<>(value2, nil()));
     }
 
-    @NotNull
-    public static <E> ImmutableList<E> of(E value1, E value2, E value3) {
+    public static <E> @NotNull ImmutableList<E> of(E value1, E value2, E value3) {
         return new ImmutableCons<>(value1, new ImmutableCons<>(value2, new ImmutableCons<>(value3, nil())));
     }
 
-    @NotNull
-    public static <E> ImmutableList<E> of(E value1, E value2, E value3, E value4) {
+    public static <E> @NotNull ImmutableList<E> of(E value1, E value2, E value3, E value4) {
         return new ImmutableCons<>(value1, new ImmutableCons<>(value2, new ImmutableCons<>(value3, new ImmutableCons<>(value4, nil()))));
     }
 
-    @NotNull
-    public static <E> ImmutableList<E> of(E value1, E value2, E value3, E value4, E value5) {
+    public static <E> @NotNull ImmutableList<E> of(E value1, E value2, E value3, E value4, E value5) {
         return new ImmutableCons<>(value1, new ImmutableCons<>(value2, new ImmutableCons<>(value3, new ImmutableCons<>(value4, new ImmutableCons<>(value5, nil())))));
     }
 
-    @NotNull
     @SafeVarargs
-    public static <E> ImmutableList<E> of(E... values) {
+    public static <E> @NotNull ImmutableList<E> of(E... values) {
         return from(values);
     }
 
-    @NotNull
-    public static <E> ImmutableList<E> from(E @NotNull [] values) {
+    public static <E> @NotNull ImmutableList<E> from(E @NotNull [] values) {
         ImmutableList<E> list = nil();
         for (int i = values.length - 1; i >= 0; i--) {
             list = list.cons(values[i]);
@@ -101,8 +92,7 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
         return list;
     }
 
-    @NotNull
-    public static <E> ImmutableList<E> from(@NotNull IndexedSeq<? extends E> values) {
+    public static <E> @NotNull ImmutableList<E> from(@NotNull IndexedSeq<? extends E> values) {
         ImmutableList<E> res = nil();
         for (int i = values.size() - 1; i >= 0; i--) {
             res = res.cons(values.get(i));
@@ -110,8 +100,7 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
         return res;
     }
 
-    @NotNull
-    public static <E> ImmutableList<E> from(@NotNull java.util.List<? extends E> values) {
+    public static <E> @NotNull ImmutableList<E> from(@NotNull java.util.List<? extends E> values) {
         final int size = values.size();
         if (size == 0) {
             return empty();
@@ -124,9 +113,8 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
         return res;
     }
 
-    @NotNull
     @SuppressWarnings("unchecked")
-    public static <E> ImmutableList<E> from(@NotNull Iterable<? extends E> values) {
+    public static <E> @NotNull ImmutableList<E> from(@NotNull Iterable<? extends E> values) {
         Objects.requireNonNull(values);
 
         if (values instanceof ImmutableList<?>) {
@@ -136,13 +124,7 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
             return from((IndexedSeq<E>) values);
         }
         if (values instanceof java.util.List<?>) {
-            List<E> list = (List<E>) values;
-            ListIterator<E> iterator = list.listIterator(list.size());
-            ImmutableList<E> res = nil();
-            while (iterator.hasPrevious()) {
-                res = res.cons(iterator.previous());
-            }
-            return res;
+            return from((java.util.List<E>) values);
         }
 
         LinkedBuffer<E> buffer = new LinkedBuffer<>();
@@ -150,60 +132,73 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
         return buffer.toImmutableList();
     }
 
-    public static <E> ImmutableList<E> fill(int n, E value) {
-        return ImmutableList.<E>factory().fill(n, value);
+    public static <E> @NotNull ImmutableList<E> fill(int n, E value) {
+        ImmutableList<E> res = ImmutableList.nil();
+        while (n > 0) {
+            res = res.cons(value);
+            --n;
+        }
+        return res;
     }
 
-    public static <E> ImmutableList<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+    public static <E> @NotNull ImmutableList<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
         return ImmutableList.<E>factory().fill(n, supplier);
     }
 
-    public static <E> ImmutableList<E> fill(int n, @NotNull IntFunction<? extends E> supplier) {
+    public static <E> @NotNull ImmutableList<E> fill(int n, @NotNull IntFunction<? extends E> supplier) {
         return ImmutableList.<E>factory().fill(n, supplier);
+    }
+
+    //endregion
+
+    //region Collection Operations
+
+    @Override
+    public final @NotNull String className() {
+        return "ImmutableList";
+    }
+
+    @Override
+    public <U> @NotNull CollectionFactory<U, ?, ImmutableList<U>> iterableFactory() {
+        return factory();
     }
 
     //endregion
 
     public abstract E head();
 
-    @NotNull
-    public abstract Option<E> headOption();
+    public abstract @NotNull Option<E> headOption();
 
-    @NotNull
-    public abstract ImmutableList<E> tail();
+    public abstract @NotNull ImmutableList<E> tail();
 
-    @NotNull
-    public abstract Option<ImmutableList<E>> tailOption();
+    public abstract @NotNull Option<@NotNull ImmutableList<E>> tailOption();
 
-    @NotNull
     @Contract("_ -> new")
-    public final ImmutableList<E> cons(E element) {
+    public final @NotNull ImmutableList<E> cons(E element) {
         return new ImmutableCons<>(element, this);
     }
 
-    //region ImmutableSeq members
+    //region Positional Access Operations
 
+    //endregion
 
     @Override
     public final E first() {
         return head();
     }
 
-    @NotNull
     @Override
-    public final ImmutableList<E> updated(int index, E newValue) {
+    public final @NotNull ImmutableList<E> updated(int index, E newValue) {
         return updatedImpl(index, newValue);
     }
 
-    @NotNull
     @Override
-    public final ImmutableList<E> prepended(E element) {
-        return cons(element);
+    public final @NotNull ImmutableList<E> prepended(E value) {
+        return cons(value);
     }
 
-    @NotNull
     @Override
-    public final ImmutableList<E> prependedAll(@NotNull Iterable<? extends E> prefix) {
+    public final @NotNull ImmutableList<E> prependedAll(@NotNull Iterable<? extends E> prefix) {
         IndexedSeq<E> s = CollectionHelper.tryToIndexedSeq(prefix);
         if (s == null) {
             return prependedAllImpl(prefix);
@@ -218,38 +213,33 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
         return result;
     }
 
-    @NotNull
     @Override
-    public final ImmutableList<E> prependedAll(E @NotNull [] prefix) {
-        Objects.requireNonNull(prefix);
+    public final @NotNull ImmutableList<E> prependedAll(E @NotNull [] prefix) {
+        int prefixLength = prefix.length; // implicit null check of prefix
 
         ImmutableList<E> result = this;
-        for (int i = prefix.length - 1; i >= 0; i--) {
+        for (int i = prefixLength - 1; i >= 0; i--) {
             result = result.cons(prefix[i]);
         }
         return result;
     }
 
-    @NotNull
     @Override
-    public final ImmutableList<E> appended(E element) {
-        return appendedImpl(element);
+    public final @NotNull ImmutableList<E> appended(E value) {
+        return appendedImpl(value);
     }
 
-    @NotNull
     @Override
-    public final ImmutableList<E> appendedAll(@NotNull Iterable<? extends E> postfix) {
+    public final @NotNull ImmutableList<E> appendedAll(@NotNull Iterable<? extends E> postfix) {
         if (CollectionHelper.knowSize(postfix) == 0) {
             return this;
         }
         return appendedAllImpl(postfix);
     }
 
-    @NotNull
     @Override
-    public final ImmutableList<E> appendedAll(E @NotNull [] postfix) {
-        Objects.requireNonNull(postfix);
-        if (postfix.length == 0) {
+    public final @NotNull ImmutableList<E> appendedAll(E @NotNull [] postfix) {
+        if (postfix.length == 0) { // implicit null check of postfix
             return this;
         }
         if (isEmpty()) {
@@ -258,9 +248,8 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
         return appendedAllImpl(postfix);
     }
 
-    @NotNull
     @Override
-    public final ImmutableList<E> drop(int n) {
+    public final @NotNull ImmutableList<E> drop(int n) {
         ImmutableList<E> list = this;
         while (list != Nil.INSTANCE && n-- > 0) {
             list = list.tail();
@@ -268,15 +257,13 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
         return list;
     }
 
-    @NotNull
     @Override
-    public final ImmutableList<E> dropLast(int n) {
+    public final @NotNull ImmutableList<E> dropLast(int n) {
         return dropLastImpl(n);
     }
 
-    @NotNull
     @Override
-    public final ImmutableList<E> dropWhile(@NotNull Predicate<? super E> predicate) {
+    public final @NotNull ImmutableList<E> dropWhile(@NotNull Predicate<? super E> predicate) {
         ImmutableList<E> list = this;
         while (list != Nil.INSTANCE && predicate.test(list.head())) {
             list = list.tail();
@@ -284,51 +271,47 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
         return list;
     }
 
-    @NotNull
     @Override
-    public final ImmutableList<E> take(int n) {
+    public final @NotNull ImmutableList<E> take(int n) {
         return takeImpl(n);
     }
 
-    @NotNull
     @Override
-    public final ImmutableList<E> takeLast(int n) {
+    public final @NotNull ImmutableList<E> takeLast(int n) {
         return takeLastImpl(n);
     }
 
-    @NotNull
     @Override
-    public final ImmutableList<E> takeWhile(@NotNull Predicate<? super E> predicate) {
+    public final @NotNull ImmutableList<E> takeWhile(@NotNull Predicate<? super E> predicate) {
         return takeWhileImpl(predicate);
     }
 
-    @NotNull
     @Override
-    public final ImmutableList<E> concat(@NotNull Seq<? extends E> other) {
+    public final @NotNull ImmutableList<E> concat(@NotNull Seq<? extends E> other) {
         return concatImpl(other);
     }
 
-    @NotNull
     @Override
-    public final <U> ImmutableList<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
+    public final <U> @NotNull ImmutableList<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
         return flatMapImpl(mapper);
     }
 
-    @NotNull
     @Override
-    public final ImmutableList<E> sorted() {
+    public final @NotNull ImmutableList<E> sorted() {
         return sortedImpl();
     }
 
-    @NotNull
     @Override
-    public final ImmutableList<E> sorted(@NotNull Comparator<? super E> comparator) {
+    public final @NotNull ImmutableList<E> sorted(@NotNull Comparator<? super E> comparator) {
         return sortedImpl();
     }
 
-    @NotNull
     @Override
-    public final ImmutableList<E> reversed() {
+    public final @NotNull ImmutableList<E> reversed() {
+        if (this == Nil.INSTANCE || this.tail() == Nil.INSTANCE) {
+            return this;
+        }
+
         ImmutableList<? extends E> list = this;
         ImmutableList<E> ans = nil();
         while (list != Nil.INSTANCE) {
@@ -338,62 +321,39 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
         return ans;
     }
 
-    @NotNull
     @Override
-    public final <U> ImmutableList<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
-        return mapIndexedImpl(mapper);
-    }
-
-    //endregion
-
-    //region ImmutableCollection members
-
-    @Override
-    public final String className() {
-        return "ImmutableList";
-    }
-
-    @NotNull
-    @Override
-    public <U> CollectionFactory<U, ?, ImmutableList<U>> iterableFactory() {
-        return factory();
-    }
-
-    @NotNull
-    @Override
-    public final <U> ImmutableList<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+    public final <U> @NotNull ImmutableList<U> map(@NotNull Function<? super E, ? extends U> mapper) {
         return mapImpl(mapper);
     }
 
-    @NotNull
     @Override
-    public final ImmutableList<E> filter(@NotNull Predicate<? super E> predicate) {
+    public final <U> @NotNull ImmutableList<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+        return mapIndexedImpl(mapper);
+    }
+
+    @Override
+    public final @NotNull ImmutableList<E> filter(@NotNull Predicate<? super E> predicate) {
         return filterImpl(predicate);
     }
 
-    @NotNull
     @Override
-    public final ImmutableList<E> filterNot(@NotNull Predicate<? super E> predicate) {
+    public final @NotNull ImmutableList<E> filterNot(@NotNull Predicate<? super E> predicate) {
         return filterNotImpl(predicate);
     }
 
-    @NotNull
     @Override
-    public final ImmutableList<@NotNull E> filterNotNull() {
+    public final @NotNull ImmutableList<@NotNull E> filterNotNull() {
         return this.filter(Objects::nonNull);
     }
 
-    @NotNull
     @Override
-    public abstract Tuple2<ImmutableList<E>, ImmutableList<E>> span(@NotNull Predicate<? super E> predicate);
+    public abstract @NotNull Tuple2<@NotNull ImmutableList<E>, @NotNull ImmutableList<E>> span(@NotNull Predicate<? super E> predicate);
 
-    @NotNull
+
     @Override
-    public final ImmutableList<E> toImmutableList() {
+    public final @NotNull ImmutableList<E> toImmutableList() {
         return this;
     }
-
-    //endregion
 
     public static final class Nil extends ImmutableList<Object> {
         private static final long serialVersionUID = -7963313933036451568L;
@@ -401,54 +361,8 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
         static final Nil INSTANCE = new Nil();
 
         @Override
-        public final Object head() {
-            throw new NoSuchElementException("ImmutableList.Nil.head()");
-        }
-
-        @NotNull
-        @Override
-        public final Option<Object> headOption() {
-            return Option.none();
-        }
-
-        @NotNull
-        @Override
-        public final ImmutableList<Object> tail() {
-            throw new NoSuchElementException("ImmutableList.Nil.tail()");
-        }
-
-        @NotNull
-        @Override
-        public final Option<ImmutableList<Object>> tailOption() {
-            return Option.none();
-        }
-
-        //
-        // -- ImmutableSeq
-        //
-
-        @Override
-        public final Object get(int index) {
-            throw new NoSuchElementException();
-        }
-
-        @NotNull
-        @Override
-        public final Option<Object> getOption(int index) {
-            return Option.none();
-        }
-
-        @Override
-        public final Object last() {
-            throw new NoSuchElementException();
-        }
-
-        //region Traversable members
-
-        @NotNull
-        @Override
-        public final Tuple2<ImmutableList<Object>, ImmutableList<Object>> span(@NotNull Predicate<? super Object> predicate) {
-            return new Tuple2<>(ImmutableList.nil(), ImmutableList.nil());
+        public final @NotNull Iterator<Object> iterator() {
+            return Iterators.empty();
         }
 
         @Override
@@ -461,22 +375,50 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
             return 0;
         }
 
-        @NotNull
         @Override
-        public final Iterator<Object> iterator() {
-            return Iterators.empty();
+        public final Object head() {
+            throw new NoSuchElementException("ImmutableList.Nil.head()");
         }
 
         @Override
-        public final String toString() {
+        public final @NotNull Option<Object> headOption() {
+            return Option.none();
+        }
+
+        @Override
+        public final @NotNull ImmutableList<Object> tail() {
+            throw new NoSuchElementException("ImmutableList.Nil.tail()");
+        }
+
+        @Override
+        public final @NotNull Option<ImmutableList<Object>> tailOption() {
+            return Option.none();
+        }
+
+        @Override
+        public final Object get(int index) {
+            throw new NoSuchElementException();
+        }
+
+        @Override
+        public final @NotNull Option<Object> getOption(int index) {
+            return Option.none();
+        }
+
+        @Override
+        public final Object last() {
+            throw new NoSuchElementException();
+        }
+
+        @Override
+        public final @NotNull Tuple2<@NotNull ImmutableList<Object>, @NotNull ImmutableList<Object>> span(@NotNull Predicate<? super Object> predicate) {
+            return new Tuple2<>(ImmutableList.nil(), ImmutableList.nil());
+        }
+
+        @Override
+        public final @NotNull String toString() {
             return "ImmutableList[]";
         }
-
-        //endregion
-
-        //
-        // -- Serializable
-        //
 
         private Object readResolve() {
             return INSTANCE;
@@ -487,26 +429,9 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
         Cons() {
         }
 
-        @NotNull
         @Override
-        public final Option<E> headOption() {
-            return Option.some(head());
-        }
-
-        @NotNull
-        @Override
-        public final Option<ImmutableList<E>> tailOption() {
-            return Option.some(tail());
-        }
-
-        //
-        // -- ImmutableCollection
-        //
-
-        @NotNull
-        @Override
-        public final Tuple2<ImmutableList<E>, ImmutableList<E>> span(@NotNull Predicate<? super E> predicate) {
-            return spanImpl(predicate);
+        public final @NotNull Iterator<E> iterator() {
+            return new Itr<>(this);
         }
 
         @Override
@@ -514,11 +439,32 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
             return false;
         }
 
-        @NotNull
         @Override
-        public final Iterator<E> iterator() {
-            return new Itr<>(this);
+        public final int knownSize() {
+            int size = 0;
+            ImmutableList<E> list = this;
+            while (list != Nil.INSTANCE) {
+                list = list.tail();
+                ++size;
+            }
+            return size;
         }
+
+        @Override
+        public final @NotNull Option<E> headOption() {
+            return Option.some(head());
+        }
+
+        @Override
+        public final @NotNull Option<ImmutableList<E>> tailOption() {
+            return Option.some(tail());
+        }
+
+        @Override
+        public final @NotNull Tuple2<@NotNull ImmutableList<E>, @NotNull ImmutableList<E>> span(@NotNull Predicate<? super E> predicate) {
+            return spanImpl(predicate);
+        }
+
     }
 
     static final class MutableCons<E> extends Cons<E> {
@@ -526,8 +472,7 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
 
         E head;
 
-        @NotNull
-        ImmutableList<? extends E> tail;
+        @NotNull ImmutableList<? extends E> tail;
 
         MutableCons(E head, @NotNull ImmutableList<? extends E> tail) {
             this.head = head;
@@ -539,9 +484,8 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
             return head;
         }
 
-        @NotNull
         @Override
-        public final ImmutableList<E> tail() {
+        public final @NotNull ImmutableList<E> tail() {
             return ImmutableList.narrow(tail);
         }
     }
@@ -551,8 +495,7 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
 
         final E head;
 
-        @NotNull
-        final ImmutableList<? extends E> tail;
+        final @NotNull ImmutableList<? extends E> tail;
 
         ImmutableCons(E head, @NotNull ImmutableList<? extends E> tail) {
             this.head = head;
@@ -564,16 +507,15 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
             return head;
         }
 
-        @NotNull
         @Override
-        public final ImmutableList<E> tail() {
+        public final @NotNull ImmutableList<E> tail() {
             return ImmutableList.narrow(tail);
         }
     }
 
     static final class Itr<@Covariant E> implements Iterator<E> {
-        @NotNull
-        private ImmutableList<? extends E> list;
+
+        private @NotNull ImmutableList<? extends E> list;
 
         Itr(@NotNull ImmutableList<? extends E> list) {
             this.list = list;
@@ -606,7 +548,7 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
         }
 
         @Override
-        public final ImmutableList<E> from(@NotNull E[] values) {
+        public final ImmutableList<E> from(E @NotNull [] values) {
             return ImmutableList.from(values);
         }
 

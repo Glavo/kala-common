@@ -25,41 +25,40 @@ public interface Set<E> extends Collection<E> {
         return this::contains;
     }
 
-    //region Traversable members
+    //region Collection Operations
 
     @Override
     default String className() {
         return "Set";
     }
 
-    @NotNull
     @Override
-    default <U> CollectionFactory<U, ?, ? extends Set<U>> iterableFactory() {
+    default <U> @NotNull CollectionFactory<U, ?, ? extends Set<U>> iterableFactory() {
         return factory();
     }
 
-    @NotNull
     @Override
-    default SetView<E> view() {
+    default @NotNull Spliterator<E> spliterator() {
+        int knownSize = this.knownSize();
+        return knownSize >= 0
+                ? Spliterators.spliterator(iterator(), knownSize, Spliterator.DISTINCT)
+                : Spliterators.spliteratorUnknownSize(iterator(), Spliterator.DISTINCT);
+    }
+
+    @Override
+    default @NotNull SetView<E> view() {
         return new SetViews.Of<>(this);
     }
+
+    @Override
+    default @NotNull java.util.Set<E> asJava() {
+        return new AsJavaConvert.SetAsJava<>(this);
+    }
+
+    //endregion
 
     @Override
     default boolean canEqual(Object other) {
         return other instanceof Set<?>;
     }
-
-    @NotNull
-    @Override
-    default java.util.Set<E> asJava() {
-        return new AsJavaConvert.SetAsJava<>(this);
-    }
-
-    @NotNull
-    @Override
-    default Spliterator<E> spliterator() {
-        return Spliterators.spliterator(iterator(), size(), Spliterator.DISTINCT);
-    }
-
-    //endregion
 }

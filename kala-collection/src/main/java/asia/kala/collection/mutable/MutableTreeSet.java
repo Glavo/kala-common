@@ -1,7 +1,9 @@
 package asia.kala.collection.mutable;
 
+import asia.kala.comparator.Comparators;
 import asia.kala.factory.CollectionFactory;
 import asia.kala.collection.SortedSet;
+import asia.kala.iterator.Iterators;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,8 +26,7 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
 
     //region Fields
 
-    @NotNull
-    private final Comparator<? super E> comparator;
+    private final @NotNull Comparator<? super E> comparator;
 
     private transient Node<E> root;
     private transient int size = 0;
@@ -38,54 +39,47 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
         this(null);
     }
 
-    @SuppressWarnings("unchecked")
     public MutableTreeSet(Comparator<? super E> comparator) {
-        this.comparator = comparator == null ? (Comparator<? super E>) Comparator.naturalOrder() : comparator;
+        this.comparator = comparator == null ? Comparators.naturalOrder() : comparator;
     }
 
     //endregion
 
     //region Static Factories
 
-    @NotNull
-    public static <E extends Comparable<? super E>> CollectionFactory<E, ?, MutableTreeSet<E>> factory() {
+    public static <E extends Comparable<? super E>> @NotNull CollectionFactory<E, ?, MutableTreeSet<E>> factory() {
         return (Factory<E>) DEFAULT_FACTORY;
     }
 
-    @NotNull
-    public static <E> CollectionFactory<E, ?, MutableTreeSet<E>> factory(Comparator<? super E> comparator) {
+    public static <E> @NotNull CollectionFactory<E, ?, MutableTreeSet<E>> factory(Comparator<? super E> comparator) {
         if (comparator == null || comparator == Comparator.naturalOrder()) {
             return (Factory<E>) DEFAULT_FACTORY;
         }
         return new Factory<>(comparator);
     }
 
-    @NotNull
     @Contract(value = " -> new", pure = true)
-    public static <E extends Comparable<? super E>> MutableTreeSet<E> of() {
+    public static <E extends Comparable<? super E>> @NotNull MutableTreeSet<E> of() {
         return new MutableTreeSet<>();
     }
 
-    @NotNull
     @Contract(value = "_ -> new", pure = true)
-    public static <E extends Comparable<? super E>> MutableTreeSet<E> of(E value1) {
+    public static <E extends Comparable<? super E>> @NotNull MutableTreeSet<E> of(E value1) {
         MutableTreeSet<E> s = new MutableTreeSet<>();
         s.add(value1);
         return s;
     }
 
-    @NotNull
     @Contract(value = "_, _ -> new", pure = true)
-    public static <E extends Comparable<? super E>> MutableTreeSet<E> of(E value1, E value2) {
+    public static <E extends Comparable<? super E>> @NotNull MutableTreeSet<E> of(E value1, E value2) {
         MutableTreeSet<E> s = new MutableTreeSet<>();
         s.add(value1);
         s.add(value2);
         return s;
     }
 
-    @NotNull
     @Contract(value = "_, _, _ -> new", pure = true)
-    public static <E extends Comparable<? super E>> MutableTreeSet<E> of(E value1, E value2, E value3) {
+    public static <E extends Comparable<? super E>> @NotNull MutableTreeSet<E> of(E value1, E value2, E value3) {
         MutableTreeSet<E> s = new MutableTreeSet<>();
         s.add(value1);
         s.add(value2);
@@ -93,9 +87,8 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
         return s;
     }
 
-    @NotNull
     @Contract(value = "_, _, _, _ -> new", pure = true)
-    public static <E extends Comparable<? super E>> MutableTreeSet<E> of(E value1, E value2, E value3, E value4) {
+    public static <E extends Comparable<? super E>> @NotNull MutableTreeSet<E> of(E value1, E value2, E value3, E value4) {
         MutableTreeSet<E> s = new MutableTreeSet<>();
         s.add(value1);
         s.add(value2);
@@ -104,9 +97,8 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
         return s;
     }
 
-    @NotNull
     @Contract(value = "_, _, _, _, _ -> new", pure = true)
-    public static <E extends Comparable<? super E>> MutableTreeSet<E> of(E value1, E value2, E value3, E value4, E value5) {
+    public static <E extends Comparable<? super E>> @NotNull MutableTreeSet<E> of(E value1, E value2, E value3, E value4, E value5) {
         MutableTreeSet<E> s = new MutableTreeSet<>();
         s.add(value1);
         s.add(value2);
@@ -116,21 +108,18 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
         return s;
     }
 
-    @NotNull
     @Contract(value = "_ -> new", pure = true)
-    public static <E extends Comparable<? super E>> MutableTreeSet<E> of(E... values) {
+    public static <E extends Comparable<? super E>> @NotNull MutableTreeSet<E> of(E... values) {
         return from(values);
     }
 
-    @NotNull
     @Contract(value = "_ -> new", pure = true)
-    public static <E> MutableTreeSet<E> of(Comparator<? super E> comparator) {
+    public static <E> @NotNull MutableTreeSet<E> of(Comparator<? super E> comparator) {
         return new MutableTreeSet<>(comparator);
     }
 
-    @NotNull
     @Contract(value = "_, _ -> new", pure = true)
-    public static <E extends Comparable<? super E>> MutableTreeSet<E> of(
+    public static <E extends Comparable<? super E>> @NotNull MutableTreeSet<E> of(
             Comparator<? super E> comparator,
             E value1
     ) {
@@ -139,9 +128,8 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
         return s;
     }
 
-    @NotNull
     @Contract(value = "_, _, _ -> new", pure = true)
-    public static <E extends Comparable<? super E>> MutableTreeSet<E> of(
+    public static <E extends Comparable<? super E>> @NotNull MutableTreeSet<E> of(
             Comparator<? super E> comparator,
             E value1, E value2
     ) {
@@ -151,9 +139,8 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
         return s;
     }
 
-    @NotNull
     @Contract(value = "_, _, _, _ -> new", pure = true)
-    public static <E extends Comparable<? super E>> MutableTreeSet<E> of(
+    public static <E extends Comparable<? super E>> @NotNull MutableTreeSet<E> of(
             Comparator<? super E> comparator,
             E value1, E value2, E value3) {
         MutableTreeSet<E> s = new MutableTreeSet<>(comparator);
@@ -163,9 +150,8 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
         return s;
     }
 
-    @NotNull
     @Contract(value = "_, _, _, _, _ -> new", pure = true)
-    public static <E extends Comparable<? super E>> MutableTreeSet<E> of(
+    public static <E extends Comparable<? super E>> @NotNull MutableTreeSet<E> of(
             Comparator<? super E> comparator,
             E value1, E value2, E value3, E value4
     ) {
@@ -177,9 +163,8 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
         return s;
     }
 
-    @NotNull
     @Contract(value = "_, _, _, _, _, _ -> new", pure = true)
-    public static <E extends Comparable<? super E>> MutableTreeSet<E> of(
+    public static <E extends Comparable<? super E>> @NotNull MutableTreeSet<E> of(
             Comparator<? super E> comparator,
             E value1, E value2, E value3, E value4, E value5
     ) {
@@ -192,34 +177,37 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
         return s;
     }
 
-
-    @NotNull
     @Contract(value = "_, _ -> new", pure = true)
-    public static <E> MutableTreeSet<E> of(Comparator<? super E> comparator, E... values) {
+    public static <E> @NotNull MutableTreeSet<E> of(Comparator<? super E> comparator, E... values) {
         return from(comparator, values);
     }
 
-    @NotNull
     @Contract(value = "_ -> new", pure = true)
-    public static <E> MutableTreeSet<E> from(@NotNull SortedSet<? extends E> values) {
+    public static <E extends Comparable<? super E>> @NotNull MutableTreeSet<E> from(E @NotNull [] values) {
+        Objects.requireNonNull(values);
+        MutableTreeSet<E> s = new MutableTreeSet<>();
+        s.addAll(values);
+        return s;
+    }
+
+    @Contract(value = "_ -> new", pure = true)
+    public static <E> @NotNull MutableTreeSet<E> from(@NotNull SortedSet<? extends E> values) {
         final Comparator<E> comparator = (Comparator<E>) values.comparator();
         MutableTreeSet<E> s = new MutableTreeSet<>(comparator);
         s.addAll(values);
         return s;
     }
 
-    @NotNull
     @Contract(value = "_ -> new", pure = true)
-    public static <E> MutableTreeSet<E> from(@NotNull java.util.SortedSet<? extends E> values) {
+    public static <E> @NotNull MutableTreeSet<E> from(@NotNull java.util.SortedSet<? extends E> values) {
         final Comparator<E> comparator = (Comparator<E>) values.comparator();
         MutableTreeSet<E> s = new MutableTreeSet<>(comparator);
         s.addAll(values);
         return s;
     }
 
-    @NotNull
     @Contract(value = "_ -> new", pure = true)
-    public static <E extends Comparable<? super E>> MutableTreeSet<E> from(Iterable<? extends E> values) {
+    public static <E extends Comparable<? super E>> @NotNull MutableTreeSet<E> from(Iterable<? extends E> values) {
         Objects.requireNonNull(values);
         Comparator<? super E> comparator = null;
 
@@ -234,27 +222,16 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
         return s;
     }
 
-    @NotNull
-    @Contract(value = "_ -> new", pure = true)
-    public static <E extends Comparable<? super E>> MutableTreeSet<E> from(E @NotNull [] values) {
-        Objects.requireNonNull(values);
-        MutableTreeSet<E> s = new MutableTreeSet<>();
-        s.addAll(values);
-        return s;
-    }
-
-    @NotNull
     @Contract(value = "_, _ -> new", pure = true)
-    public static <E> MutableTreeSet<E> from(Comparator<? super E> comparator, @NotNull Iterable<? extends E> values) {
+    public static <E> @NotNull MutableTreeSet<E> from(Comparator<? super E> comparator, E @NotNull [] values) {
         Objects.requireNonNull(values);
         MutableTreeSet<E> s = new MutableTreeSet<>(comparator);
         s.addAll(values);
         return s;
     }
 
-    @NotNull
     @Contract(value = "_, _ -> new", pure = true)
-    public static <E> MutableTreeSet<E> from(Comparator<? super E> comparator, E @NotNull [] values) {
+    public static <E> @NotNull MutableTreeSet<E> from(Comparator<? super E> comparator, @NotNull Iterable<? extends E> values) {
         Objects.requireNonNull(values);
         MutableTreeSet<E> s = new MutableTreeSet<>(comparator);
         s.addAll(values);
@@ -535,7 +512,55 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
 
     //endregion
 
-    //region MutableSet members
+    //region Collection Operations
+
+    @Override
+    public final String className() {
+        return "MutableTreeSet";
+    }
+
+    @Override
+    public final <U> @NotNull CollectionFactory<U, ?, MutableTreeSet<U>> iterableFactory() {
+        return ((Factory<U>) DEFAULT_FACTORY);
+    }
+
+    @Override
+    public final <U> @NotNull CollectionFactory<U, ?, MutableTreeSet<U>> iterableFactory(Comparator<? super U> comparator) {
+        return factory(comparator);
+    }
+
+    @Override
+    public final @NotNull Iterator<E> iterator() {
+        final Node<E> firstNode = firstNode();
+        return firstNode == null ? Iterators.empty() : new MutableTreeSet.Itr<>(firstNode);
+    }
+
+    @Override
+    public final @NotNull MutableSetEditor<E, MutableTreeSet<E>> edit() {
+        return new MutableSetEditor<>(this);
+    }
+
+    @Override
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
+    public final @NotNull MutableTreeSet<E> clone() {
+        return MutableTreeSet.from(comparator, this); // need to optimize
+    }
+
+    //endregion
+
+    //region Size Info
+
+    @Override
+    public final int size() {
+        return size;
+    }
+
+    @Override
+    public final int knownSize() {
+        return size;
+    }
+
+    //endregion
 
     @Override
     public final boolean add(E value) {
@@ -544,7 +569,7 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
         Node<E> node = root;
 
         if (node == null) {
-            //noinspection ResultOfMethodCallIgnored
+            //noinspection ResultOfMethodCallIgnored,EqualsWithItself
             comparator.compare(value, value);
 
             root = new Node<>(value, null);
@@ -637,19 +662,14 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
         return getNode((E) value) != null;
     }
 
-    //endregion
-
-    //region SortedSet members
-
-    @NotNull
     @Override
-    public final Comparator<? super E> comparator() {
+    public final @NotNull Comparator<? super E> comparator() {
         return this.comparator;
     }
 
     @Override
     public final E first() {
-        Node<E> node = firstNode();
+        final Node<E> node = firstNode();
         if (node == null) {
             throw new NoSuchElementException();
         }
@@ -658,78 +678,14 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
 
     @Override
     public final E last() {
-        Node<E> node = lastNode();
+        final Node<E> node = lastNode();
         if (node == null) {
             throw new NoSuchElementException();
         }
         return node.value;
     }
 
-    //endregion
-
-    //region MutableCollection members
-
-    @Override
-    public final String className() {
-        return "MutableTreeSet";
-    }
-
-    @NotNull
-    @Override
-    public final <U> CollectionFactory<U, ?, MutableTreeSet<U>> iterableFactory() {
-        return ((Factory<U>) DEFAULT_FACTORY);
-    }
-
-    @NotNull
-    @Override
-    public <U> CollectionFactory<U, ?, MutableTreeSet<U>> iterableFactory(Comparator<? super U> comparator) {
-        return factory(comparator);
-    }
-
-    @NotNull
-    @Override
-    public final MutableSetEditor<E, MutableTreeSet<E>> edit() {
-        return new MutableSetEditor<>(this);
-    }
-
-    @NotNull
-    @Override
-    public final Iterator<E> iterator() {
-        return new MutableTreeSet.Itr<>(firstNode());
-    }
-
-    @Override
-    public final int size() {
-        return size;
-    }
-
-    @Override
-    public final int knownSize() {
-        return size;
-    }
-
-    //endregion
-
-    //region Object members
-
-    @Override
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public final @NotNull MutableTreeSet<E> clone() {
-        return MutableTreeSet.from(comparator, this); // need to optimize
-    }
-
-    //endregion
-
-    //region Serialization
-
-    private void writeObject(java.io.ObjectOutputStream out)
-            throws IOException {
-        out.defaultWriteObject();
-        out.writeInt(size);
-        for (E e : this) {
-            out.writeObject(e);
-        }
-    }
+    //region Serialization Operations
 
     private void readObject(java.io.ObjectInputStream in)
             throws IOException, ClassNotFoundException {
@@ -737,6 +693,15 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
         int n = in.readInt();
         for (int i = 0; i < n; i++) {
             this.add((E) in.readObject());
+        }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out)
+            throws IOException {
+        out.defaultWriteObject();
+        out.writeInt(size);
+        for (E e : this) {
+            out.writeObject(e);
         }
     }
 
@@ -800,8 +765,8 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
     }
 
     private static final class Factory<E> extends AbstractMutableSetFactory<E, MutableTreeSet<E>> {
-        @NotNull
-        private final Comparator<? super E> comparator;
+
+        private final @NotNull Comparator<? super E> comparator;
 
         Factory(@NotNull Comparator<? super E> comparator) {
             this.comparator = comparator;

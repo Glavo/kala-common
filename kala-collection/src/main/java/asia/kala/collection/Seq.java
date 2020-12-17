@@ -8,10 +8,7 @@ import asia.kala.factory.CollectionFactory;
 import asia.kala.function.CheckedIndexedConsumer;
 import asia.kala.function.IndexedConsumer;
 import org.intellij.lang.annotations.Flow;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
+import org.jetbrains.annotations.*;
 
 import java.util.Iterator;
 import java.util.List;
@@ -33,58 +30,86 @@ public interface Seq<@Covariant E> extends Collection<E> {
 
     //region Static Factories
 
-    @NotNull
-    static <E> CollectionFactory<E, ?, ? extends Seq<E>> factory() {
+    static <E> @NotNull CollectionFactory<E, ?, ? extends Seq<E>> factory() {
         return ImmutableSeq.factory();
     }
 
-    @NotNull
-    static <E> Seq<E> of() {
+    static <E> @NotNull Seq<E> of() {
         return ImmutableSeq.of();
     }
 
-    @NotNull
-    static <E> Seq<E> of(E value1) {
+    static <E> @NotNull Seq<E> of(E value1) {
         return ImmutableSeq.of(value1);
     }
 
-    @NotNull
-    static <E> Seq<E> of(E value1, E values2) {
+    static <E> @NotNull Seq<E> of(E value1, E values2) {
         return ImmutableSeq.of(value1, values2);
     }
 
-    @NotNull
-    static <E> Seq<E> of(E value1, E values2, E value3) {
+    static <E> @NotNull Seq<E> of(E value1, E values2, E value3) {
         return ImmutableSeq.of(value1, values2, value3);
     }
 
-    @NotNull
-    static <E> Seq<E> of(E value1, E values2, E value3, E value4) {
+    static <E> @NotNull Seq<E> of(E value1, E values2, E value3, E value4) {
         return ImmutableSeq.of(value1, values2, value3, value4);
     }
 
-    @NotNull
-    static <E> Seq<E> of(E value1, E values2, E value3, E value4, E value5) {
+    static <E> @NotNull Seq<E> of(E value1, E values2, E value3, E value4, E value5) {
         return ImmutableSeq.of(value1, values2, value3, value4, value5);
     }
 
-    @NotNull
     @SafeVarargs
-    static <E> Seq<E> of(E... values) {
+    static <E> @NotNull Seq<E> of(E... values) {
         return ImmutableSeq.from(values);
     }
 
-    @NotNull
-    static <E> Seq<E> from(E @NotNull [] values) {
+    static <E> @NotNull Seq<E> from(E @NotNull [] values) {
         return ImmutableSeq.from(values);
     }
 
-    @NotNull
-    static <E> Seq<E> from(@NotNull Iterable<? extends E> values) {
+    static <E> @NotNull Seq<E> from(@NotNull Iterable<? extends E> values) {
         return ImmutableSeq.from(values);
+    }
+
+    static <E> @NotNull Seq<E> from(@NotNull Iterator<? extends E> it) {
+        return ImmutableSeq.from(it);
     }
 
     //endregion
+
+    //region Collection Operations
+
+    @Override
+    default String className() {
+        return "Seq";
+    }
+
+    @Override
+    default <U> @NotNull CollectionFactory<U, ?, ? extends Seq<U>> iterableFactory() {
+        return Seq.factory();
+    }
+
+    @Override
+    default @NotNull SeqView<E> view() {
+        return new SeqViews.Of<>(this);
+    }
+
+    @Override
+    default @NotNull @UnmodifiableView List<E> asJava() {
+        if (this instanceof IndexedSeq<?>) {
+            return new AsJavaConvert.IndexedSeqAsJava<>((IndexedSeq<E>) this);
+        }
+        return new AsJavaConvert.SeqAsJava<>(this);
+    }
+
+    //endregion
+
+    //region Positional Access Operations
+
+    @Contract(pure = true)
+    default boolean isDefinedAt(int index) {
+        return index >= 0 && sizeGreaterThan(index);
+    }
 
     @Contract(pure = true)
     @Flow(sourceIsContainer = true)
@@ -92,10 +117,14 @@ public interface Seq<@Covariant E> extends Collection<E> {
         return getOption(index).getOrThrow(IndexOutOfBoundsException::new);
     }
 
-    @NotNull
+    @Contract(pure = true)
+    default @Nullable E getOrNull(int index) {
+        return getOption(index).getOrNull();
+    }
+
     @Contract(pure = true)
     @Flow(sourceIsContainer = true, targetIsContainer = true)
-    default Option<E> getOption(int index) {
+    default @NotNull Option<E> getOption(int index) {
         if (index < 0) {
             return Option.none();
         }
@@ -106,7 +135,6 @@ public interface Seq<@Covariant E> extends Collection<E> {
         }
 
         int i = index;
-
         for (E e : this) {
             if (i-- == 0) {
                 return Option.some(e);
@@ -115,41 +143,51 @@ public interface Seq<@Covariant E> extends Collection<E> {
         return Option.none();
     }
 
+    //endregion
+
+    //region Reversal Operations
+
+    default @NotNull Iterator<E> reverseIterator() {
+        ImmutableList<E> l = ImmutableList.nil();
+        for (E e : this) {
+            l = l.cons(e);
+        }
+        return l.iterator();
+    }
+
+    //endregion
+
+    //region Element Retrieval Operations
+
     default E first() {
         return iterator().next();
     }
 
     default E last() {
-        Iterator<E> it = iterator();
-        if (!it.hasNext()) {
-            throw new NoSuchElementException();
-        }
-        E last = null;
-        while (it.hasNext()) {
-            last = it.next();
-        }
-        return last;
+        return reverseIterator().next();
     }
 
-    @Nullable
-    @Contract(pure = true)
-    default E getOrNull(int index) {
-        return getOption(index).getOrNull();
-    }
+    //endregion
 
-    @Contract(pure = true)
-    default boolean isDefinedAt(int index) {
-        return index >= 0 && index < size();
-    }
+    //region Search Operations
 
     @Contract(pure = true)
     default int indexOf(Object value) {
         int idx = 0;
-        for (E e : this) {
-            if (Objects.equals(e, value)) {
-                return idx;
+        if (value == null) {
+            for (E e : this) {
+                if (null == e) {
+                    return idx;
+                }
+                ++idx;
             }
-            ++idx;
+        } else {
+            for (E e : this) {
+                if (value.equals(e)) {
+                    return idx;
+                }
+                ++idx;
+            }
         }
         return -1;
     }
@@ -157,22 +195,29 @@ public interface Seq<@Covariant E> extends Collection<E> {
     @Contract(pure = true)
     default int indexOf(Object value, int from) {
         int idx = 0;
-        for (E e : this) {
-            if (idx >= from && Objects.equals(e, value)) {
-                return idx;
+        if (value == null) {
+            for (E e : this) {
+                if (idx >= from && null == e) {
+                    return idx;
+                }
+                ++idx;
             }
-            ++idx;
+        } else {
+            for (E e : this) {
+                if (idx >= from && value.equals(e)) {
+                    return idx;
+                }
+                ++idx;
+            }
         }
         return -1;
     }
 
     @Contract(pure = true)
     default int indexWhere(@NotNull Predicate<? super E> predicate) {
-        Objects.requireNonNull(predicate);
-
         int idx = 0;
         for (E e : this) {
-            if (predicate.test(e)) {
+            if (predicate.test(e)) { // implicit null check of predicate
                 return idx;
             }
             ++idx;
@@ -182,11 +227,9 @@ public interface Seq<@Covariant E> extends Collection<E> {
 
     @Contract(pure = true)
     default int indexWhere(@NotNull Predicate<? super E> predicate, int from) {
-        Objects.requireNonNull(predicate);
-
         int idx = 0;
         for (E e : this) {
-            if (idx >= from && predicate.test(e)) {
+            if (idx >= from && predicate.test(e)) { // implicit null check of predicate
                 return idx;
             }
             ++idx;
@@ -198,11 +241,21 @@ public interface Seq<@Covariant E> extends Collection<E> {
     default int lastIndexOf(Object value) {
         int idx = size() - 1;
         Iterator<E> it = reverseIterator();
-        while (it.hasNext()) {
-            if (Objects.equals(value, it.next())) {
-                return idx;
+
+        if (value == null) {
+            while (it.hasNext()) {
+                if (null == it.next()) {
+                    return idx;
+                }
+                --idx;
             }
-            --idx;
+        } else {
+            while (it.hasNext()) {
+                if (value.equals(it.next())) {
+                    return idx;
+                }
+                --idx;
+            }
         }
         return -1;
     }
@@ -211,23 +264,31 @@ public interface Seq<@Covariant E> extends Collection<E> {
     default int lastIndexOf(Object value, int end) {
         int idx = size() - 1;
         Iterator<E> it = reverseIterator();
-        while (it.hasNext()) {
-            if (idx <= end && Objects.equals(value, it.next())) {
-                return idx;
+
+        if (value == null) {
+            while (it.hasNext()) {
+                if (idx <= end && null == it.next()) {
+                    return idx;
+                }
+                --idx;
             }
-            --idx;
+        } else {
+            while (it.hasNext()) {
+                if (idx <= end && value.equals(it.next())) {
+                    return idx;
+                }
+                --idx;
+            }
         }
         return -1;
     }
 
     @Contract(pure = true)
     default int lastIndexWhere(@NotNull Predicate<? super E> predicate) {
-        Objects.requireNonNull(predicate);
-
         int idx = size() - 1;
         Iterator<E> it = reverseIterator();
         while (it.hasNext()) {
-            if (predicate.test(it.next())) {
+            if (predicate.test(it.next())) { // implicit null check of predicate
                 return idx;
             }
             --idx;
@@ -237,18 +298,20 @@ public interface Seq<@Covariant E> extends Collection<E> {
 
     @Contract(pure = true)
     default int lastIndexWhere(@NotNull Predicate<? super E> predicate, int end) {
-        Objects.requireNonNull(predicate);
-
         int idx = size() - 1;
         Iterator<E> it = reverseIterator();
         while (it.hasNext()) {
-            if (idx <= end && predicate.test(it.next())) {
+            if (idx <= end && predicate.test(it.next())) { // implicit null check of predicate
                 return idx;
             }
             --idx;
         }
         return -1;
     }
+
+    //endregion
+
+    //region Copy Operations
 
     @Contract(pure = true)
     @Flow(sourceIsContainer = true, target = "array", targetIsContainer = true)
@@ -259,7 +322,7 @@ public interface Seq<@Covariant E> extends Collection<E> {
     @Contract(pure = true)
     @Flow(sourceIsContainer = true, target = "array", targetIsContainer = true)
     default int copyToArray(Object @NotNull [] array, int start) {
-        int arrayLength = array.length;
+        int arrayLength = array.length; // implicit null check of array
         Iterator<E> it = iterator();
 
         int i = start;
@@ -274,17 +337,21 @@ public interface Seq<@Covariant E> extends Collection<E> {
     default int copyToArray(Object @NotNull [] array, int start, int length) {
         Iterator<E> it = iterator();
         int i = start;
-        int end = start + Math.min(length, array.length - start);
+        int end = start + Math.min(length, array.length - start); // implicit null check of array
         while (i < end && it.hasNext()) {
             array[i++] = it.next();
         }
         return i - start;
     }
 
+    //endregion
+
+    //region Traversable Operations
+
     default void forEachIndexed(@NotNull IndexedConsumer<? super E> action) {
         int idx = 0;
         for (E e : this) {
-            action.accept(idx++, e);
+            action.accept(idx++, e); // implicit null check of action
         }
     }
 
@@ -297,48 +364,10 @@ public interface Seq<@Covariant E> extends Collection<E> {
         forEachIndexed(action);
     }
 
-    @NotNull
-    default Iterator<E> reverseIterator() {
-        ImmutableList<E> l = ImmutableList.nil();
-        for (E e : this) {
-            l = l.cons(e);
-        }
-
-        return l.iterator();
-    }
-
-    //region Traversable members
-
-    @Override
-    default String className() {
-        return "Seq";
-    }
-
-    @NotNull
-    @Override
-    default SeqView<E> view() {
-        return new SeqViews.Of<>(this);
-    }
-
-    @NotNull
-    @Override
-    default <U> CollectionFactory<U, ?, ? extends Seq<U>> iterableFactory() {
-        return factory();
-    }
+    //endregion
 
     @Override
     default boolean canEqual(Object other) {
         return other instanceof Seq<?>;
     }
-
-    @NotNull
-    @Override
-    default List<E> asJava() {
-        if (this instanceof IndexedSeq<?>) {
-            return new AsJavaConvert.IndexedSeqAsJava<>((IndexedSeq<E>) this);
-        }
-        return new AsJavaConvert.SeqAsJava<>(this);
-    }
-
-    //endregion
 }

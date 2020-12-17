@@ -2,6 +2,7 @@ package asia.kala.collection.mutable;
 
 import asia.kala.collection.internal.AsJavaConvert;
 import asia.kala.collection.internal.FromJavaConvert;
+import asia.kala.comparator.Comparators;
 import asia.kala.factory.CollectionFactory;
 import asia.kala.collection.IndexedSeq;
 import asia.kala.collection.Seq;
@@ -16,70 +17,89 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
 
     //region Static Factories
 
-    @NotNull
-    static <E> CollectionFactory<E, ?, ? extends MutableSeq<E>> factory() {
+    static <E> @NotNull CollectionFactory<E, ?, ? extends MutableSeq<E>> factory() {
         return MutableArray.factory();
     }
 
-    @NotNull
-    static <E> MutableSeq<E> of() {
+    static <E> @NotNull MutableSeq<E> of() {
         return MutableArray.of();
     }
 
-    @NotNull
     @Contract("_ -> new")
-    static <E> MutableSeq<E> of(E value1) {
+    static <E> @NotNull MutableSeq<E> of(E value1) {
         return MutableArray.of(value1);
     }
 
-    @NotNull
     @Contract("_, _ -> new")
-    static <E> MutableSeq<E> of(E value1, E value2) {
+    static <E> @NotNull MutableSeq<E> of(E value1, E value2) {
         return MutableArray.of(value1, value2);
     }
 
-    @NotNull
     @Contract("_, _, _ -> new")
-    static <E> MutableSeq<E> of(E value1, E value2, E value3) {
+    static <E> @NotNull MutableSeq<E> of(E value1, E value2, E value3) {
         return MutableArray.of(value1, value2, value3);
     }
 
-    @NotNull
     @Contract("_, _, _, _ -> new")
-    static <E> MutableSeq<E> of(E value1, E value2, E value3, E value4) {
+    static <E> @NotNull MutableSeq<E> of(E value1, E value2, E value3, E value4) {
         return MutableArray.of(value1, value2, value3, value4);
     }
 
-    @NotNull
     @Contract("_, _, _, _, _ -> new")
-    static <E> MutableSeq<E> of(E value1, E value2, E value3, E value4, E value5) {
+    static <E> @NotNull MutableSeq<E> of(E value1, E value2, E value3, E value4, E value5) {
         return MutableArray.of(value1, value2, value3, value4, value5);
     }
 
-    @NotNull
     @SafeVarargs
-    static <E> MutableSeq<E> of(E... values) {
+    static <E> @NotNull MutableSeq<E> of(E... values) {
         return from(values);
     }
 
-    @NotNull
-    static <E> MutableSeq<E> from(E @NotNull [] values) {
+    static <E> @NotNull MutableSeq<E> from(E @NotNull [] values) {
         return MutableArray.from(values);
     }
 
-    @NotNull
-    static <E> MutableSeq<E> from(@NotNull Iterable<? extends E> values) {
+    static <E> @NotNull MutableSeq<E> from(@NotNull Iterable<? extends E> values) {
         return MutableArray.from(values);
     }
 
-    @NotNull
+    static <E> @NotNull MutableSeq<E> from(@NotNull Iterator<? extends E> it) {
+        return MutableArray.from(it);
+    }
+
     @Contract("_ -> new")
-    static <E> MutableSeq<E> wrapJava(@NotNull List<E> list) {
+    static <E> @NotNull MutableSeq<E> wrapJava(@NotNull java.util.List<E> list) {
         Objects.requireNonNull(list);
-        if (list instanceof RandomAccess) {
-            return new FromJavaConvert.MutableIndexedSeqFromJava<>(list);
+        return list instanceof RandomAccess
+                ? new FromJavaConvert.MutableIndexedSeqFromJava<>(list)
+                : new FromJavaConvert.MutableSeqFromJava<>(list);
+    }
+
+    //endregion
+
+    //region Collection Operations
+
+    @Override
+    default String className() {
+        return "MutableSeq";
+    }
+
+    @Override
+    default <U> @NotNull CollectionFactory<U, ?, ? extends MutableSeq<U>> iterableFactory() {
+        return factory();
+    }
+
+    @Override
+    default @NotNull MutableSeqEditor<E, ? extends MutableSeq<E>> edit() {
+        return new MutableSeqEditor<>(this);
+    }
+
+    @Override
+    default @NotNull java.util.List<E> asJava() {
+        if (this instanceof IndexedSeq<?>) {
+            return new AsJavaConvert.MutableIndexedSeqAsJava<>((MutableSeq<E> & IndexedSeq<E>) this);
         }
-        return new FromJavaConvert.MutableSeqFromJava<>(list);
+        return new AsJavaConvert.MutableSeqAsJava<>(this);
     }
 
     //endregion
@@ -104,9 +124,8 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
     }
 
     @Contract(mutates = "this")
-    @SuppressWarnings("unchecked")
     default void sort() {
-        sort((Comparator<? super E>) Comparator.naturalOrder());
+        sort(Comparators.naturalOrder());
     }
 
     @Contract(mutates = "this")
@@ -134,29 +153,4 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
         }
     }
 
-    @Override
-    default String className() {
-        return "MutableSeq";
-    }
-
-    @NotNull
-    @Override
-    default <U> CollectionFactory<U, ?, ? extends MutableSeq<U>> iterableFactory() {
-        return factory();
-    }
-
-    @NotNull
-    @Override
-    default MutableSeqEditor<E, ? extends MutableSeq<E>> edit() {
-        return new MutableSeqEditor<>(this);
-    }
-
-    @NotNull
-    @Override
-    default List<E> asJava() {
-        if (this instanceof IndexedSeq<?>) {
-            return new AsJavaConvert.MutableIndexedSeqAsJava<>((MutableSeq<E> & IndexedSeq<E>) this);
-        }
-        return new AsJavaConvert.MutableSeqAsJava<>(this);
-    }
 }

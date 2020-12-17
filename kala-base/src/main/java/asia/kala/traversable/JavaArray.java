@@ -120,7 +120,7 @@ public final class JavaArray {
     //region Collection Operations
 
     public static <E> @NotNull Iterator<E> iterator(E @NotNull [] array) {
-        final int arrayLength = array.length;
+        final int arrayLength = array.length; // implicit null check of array
         if (arrayLength == 0) {
             return Iterators.empty();
         }
@@ -131,7 +131,7 @@ public final class JavaArray {
     }
 
     public static <E> @NotNull Iterator<E> iterator(E @NotNull [] array, int from) {
-        final int arrayLength = array.length;
+        final int arrayLength = array.length; // implicit null check of array
         if (from < 0 || from > arrayLength) {
             throw new IndexOutOfBoundsException();
         }
@@ -147,7 +147,7 @@ public final class JavaArray {
     }
 
     public static <E> @NotNull Iterator<E> iterator(E @NotNull [] array, int from, int to) {
-        final int arrayLength = array.length;
+        final int arrayLength = array.length; // implicit null check of array
         if (from < 0 || from > arrayLength) {
             throw new IndexOutOfBoundsException();
         }
@@ -857,7 +857,12 @@ public final class JavaArray {
 
         @Override
         public final E next() {
-            return array[index--];
+            try {
+
+                return array[index--];
+            } catch (ArrayIndexOutOfBoundsException ignored) {
+                throw new NoSuchElementException();
+            }
         }
     }
 }

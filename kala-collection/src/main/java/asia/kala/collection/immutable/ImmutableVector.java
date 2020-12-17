@@ -269,12 +269,28 @@ public final class ImmutableVector<@Covariant E> extends AbstractImmutableSeq<E>
 
     //endregion
 
-    //region ImmutableSeq members
+    //region Collection Operations
+
+    @Override
+    public final String className() {
+        return "ImmutableVector";
+    }
+
+    @Override
+    public final <U> @NotNull CollectionFactory<U, ?, ImmutableVector<U>> iterableFactory() {
+        return factory();
+    }
+
+    //endregion
+
+    //region Size Info
 
     @Override
     public final int size() {
         return length;
     }
+
+    //endregion
 
     public final E get(int index) {
         final Object leaf = getLeaf(index);
@@ -282,28 +298,24 @@ public final class ImmutableVector<@Covariant E> extends AbstractImmutableSeq<E>
         return (E) Array.get(leaf, leafIndex);
     }
 
-    @NotNull
     @Override
-    public final ImmutableVector<E> updated(int index, E newValue) {
+    public final @NotNull ImmutableVector<E> updated(int index, E newValue) {
         final Object root = modify(array, depthShift, offset + index, NodeModifier.COPY_NODE, updateLeafWith(newValue));
         return new ImmutableVector<>(root, offset, length, depthShift);
     }
 
-    @NotNull
     @Override
-    public final ImmutableVector<E> concat(@NotNull Seq<? extends E> other) {
+    public final @NotNull ImmutableVector<E> concat(@NotNull Seq<? extends E> other) {
         return concatImpl(other);
     }
 
-    @NotNull
     @Override
-    public final ImmutableVector<E> prepended(E element) {
-        return prependedAll(new ImmutableSeq1<>(element));
+    public final @NotNull ImmutableVector<E> prepended(E value) {
+        return prependedAll(new ImmutableSeq1<>(value));
     }
 
-    @NotNull
     @Override
-    public final ImmutableVector<E> prependedAll(@NotNull Iterable<? extends E> prefix) {
+    public final @NotNull ImmutableVector<E> prependedAll(@NotNull Iterable<? extends E> prefix) {
         Objects.requireNonNull(prefix);
 
         IndexedSeq<E> seq = CollectionHelper.asIndexedSeq(prefix);
@@ -333,21 +345,18 @@ public final class ImmutableVector<@Covariant E> extends AbstractImmutableSeq<E>
         return result;
     }
 
-    @NotNull
     @Override
-    public final ImmutableVector<E> prependedAll(E @NotNull [] prefix) {
+    public final @NotNull ImmutableVector<E> prependedAll(E @NotNull [] prefix) {
         return prependedAll(ArraySeq.wrap(prefix));
     }
 
-    @NotNull
     @Override
-    public final ImmutableVector<E> appended(E element) {
-        return appendedAll(new ImmutableSeq1<>(element));
+    public final @NotNull ImmutableVector<E> appended(E value) {
+        return appendedAll(new ImmutableSeq1<>(value));
     }
 
-    @NotNull
     @Override
-    public final ImmutableVector<E> appendedAll(@NotNull Iterable<? extends E> postfix) {
+    public final @NotNull ImmutableVector<E> appendedAll(@NotNull Iterable<? extends E> postfix) {
         Objects.requireNonNull(postfix);
 
         int size = CollectionHelper.knowSize(postfix);
@@ -380,16 +389,13 @@ public final class ImmutableVector<@Covariant E> extends AbstractImmutableSeq<E>
         return result;
     }
 
-    @NotNull
     @Override
-    public final ImmutableVector<E> appendedAll(E @NotNull [] postfix) {
+    public final @NotNull ImmutableVector<E> appendedAll(E @NotNull [] postfix) {
         return appendedAll(ArraySeq.wrap(postfix));
     }
 
-
-    @NotNull
     @Override
-    public final ImmutableVector<E> drop(int n) {
+    public final @NotNull ImmutableVector<E> drop(int n) {
         if (n <= 0) {
             return this;
         }
@@ -411,15 +417,13 @@ public final class ImmutableVector<@Covariant E> extends AbstractImmutableSeq<E>
         return collapsed(root, index, length - n, depthShift);
     }
 
-    @NotNull
     @Override
-    public final ImmutableVector<E> dropLast(int n) {
+    public final @NotNull ImmutableVector<E> dropLast(int n) {
         return take(size() - n);
     }
 
-    @NotNull
     @Override
-    public final ImmutableVector<E> dropWhile(@NotNull Predicate<? super E> predicate) {
+    public final @NotNull ImmutableVector<E> dropWhile(@NotNull Predicate<? super E> predicate) {
         if (this.isEmpty()) {
             return empty();
         }
@@ -435,9 +439,8 @@ public final class ImmutableVector<@Covariant E> extends AbstractImmutableSeq<E>
         return drop(count);
     }
 
-    @NotNull
     @Override
-    public final ImmutableVector<E> take(int n) {
+    public final @NotNull ImmutableVector<E> take(int n) {
         if (n <= 0) {
             return empty();
         }
@@ -459,15 +462,13 @@ public final class ImmutableVector<@Covariant E> extends AbstractImmutableSeq<E>
         return collapsed(root, offset, n, depthShift);
     }
 
-    @NotNull
     @Override
-    public final ImmutableVector<E> takeLast(int n) {
+    public final @NotNull ImmutableVector<E> takeLast(int n) {
         return drop(size() - n);
     }
 
-    @NotNull
     @Override
-    public final ImmutableVector<E> takeWhile(@NotNull Predicate<? super E> predicate) {
+    public final @NotNull ImmutableVector<E> takeWhile(@NotNull Predicate<? super E> predicate) {
         if (this.isEmpty()) {
             return empty();
         }
@@ -483,88 +484,60 @@ public final class ImmutableVector<@Covariant E> extends AbstractImmutableSeq<E>
         return take(count);
     }
 
-    @NotNull
     @Override
-    public final ImmutableVector<E> sorted() {
+    public final @NotNull ImmutableVector<E> sorted() {
         return sortedImpl();
     }
 
-    @NotNull
     @Override
-    public final ImmutableVector<E> sorted(@NotNull Comparator<? super E> comparator) {
+    public final @NotNull ImmutableVector<E> sorted(@NotNull Comparator<? super E> comparator) {
         return sortedImpl(comparator);
     }
 
-    @NotNull
     @Override
-    public final ImmutableVector<E> reversed() {
+    public final @NotNull ImmutableVector<E> reversed() {
         return reversedImpl();
     }
 
-    @NotNull
     @Override
-    public final <U> ImmutableVector<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+    public final <U> @NotNull ImmutableVector<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
         return mapIndexedImpl(mapper);
     }
 
-    //endregion
-
-    //region ImmutableCollection members
-
     @Override
-    public final String className() {
-        return "ImmutableVector";
-    }
-
-    @NotNull
-    @Override
-    public final <U> CollectionFactory<U, ?, ImmutableVector<U>> iterableFactory() {
-        return factory();
-    }
-
-    @NotNull
-    @Override
-    public final <U> ImmutableVector<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+    public final <U> @NotNull ImmutableVector<U> map(@NotNull Function<? super E, ? extends U> mapper) {
         return mapImpl(mapper);
     }
 
-    @NotNull
     @Override
-    public final ImmutableVector<E> filter(@NotNull Predicate<? super E> predicate) {
+    public final @NotNull ImmutableVector<E> filter(@NotNull Predicate<? super E> predicate) {
         return filterImpl(predicate);
     }
 
-    @NotNull
     @Override
-    public final ImmutableVector<E> filterNot(@NotNull Predicate<? super E> predicate) {
+    public final @NotNull ImmutableVector<E> filterNot(@NotNull Predicate<? super E> predicate) {
         return filterNotImpl(predicate);
     }
 
-    @NotNull
     @Override
-    public final ImmutableVector<@NotNull E> filterNotNull() {
+    public final @NotNull ImmutableVector<@NotNull E> filterNotNull() {
         return this.filter(Objects::nonNull);
     }
 
-    @NotNull
     @Override
-    public final <U> ImmutableVector<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
+    public final <U> @NotNull ImmutableVector<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
         return flatMapImpl(mapper);
     }
 
-    @NotNull
     @Override
-    public final Tuple2<ImmutableVector<E>, ImmutableVector<E>> span(@NotNull Predicate<? super E> predicate) {
+    public final @NotNull Tuple2<@NotNull ImmutableVector<E>, @NotNull ImmutableVector<E>> span(@NotNull Predicate<? super E> predicate) {
         return spanImpl(predicate);
     }
 
-    @NotNull
     @Override
-    public final ImmutableVector<E> toImmutableVector() {
+    public final @NotNull ImmutableVector<E> toImmutableVector() {
         return this;
     }
-
-    //endregion
 
     private static final class Builder<E> {
         ArrayBuffer<E> values;

@@ -260,6 +260,7 @@ public final class Tuple9<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      */
     @Override
     @Contract("_ -> new")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public final <H> @NotNull HList<H, Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9>> cons(H head) {
         Object[] arr = new Object[10];
         arr[0] = head;
@@ -272,7 +273,7 @@ public final class Tuple9<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
         arr[7] = _7;
         arr[8] = _8;
         arr[9] = _9;
-        return new TupleXXL(arr).cast();
+        return (HList) new TupleXXL(arr);
     }
 
     /**

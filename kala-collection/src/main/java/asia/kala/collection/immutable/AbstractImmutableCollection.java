@@ -19,9 +19,6 @@ public abstract class AbstractImmutableCollection<@Covariant E>
             @NotNull Function<? super E, ? extends U> mapper,
             @NotNull CollectionFactory<? super U, Builder, ? extends T> factory
     ) {
-        assert collection != null;
-        assert factory != null;
-
         Objects.requireNonNull(mapper);
 
         Builder builder = factory.newBuilder();
@@ -38,9 +35,6 @@ public abstract class AbstractImmutableCollection<@Covariant E>
             @NotNull ImmutableCollection<? extends E> collection,
             @NotNull Predicate<? super E> predicate,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory) {
-        assert collection != null;
-        assert factory != null;
-
         Objects.requireNonNull(predicate);
 
         Builder builder = factory.newBuilder();
@@ -58,9 +52,6 @@ public abstract class AbstractImmutableCollection<@Covariant E>
             @NotNull ImmutableCollection<? extends E> collection,
             @NotNull Predicate<? super E> predicate,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory) {
-        assert collection != null;
-        assert factory != null;
-
         Objects.requireNonNull(predicate);
 
         Builder builder = factory.newBuilder();
@@ -79,9 +70,6 @@ public abstract class AbstractImmutableCollection<@Covariant E>
             @NotNull Function<? super E, ? extends Iterable<? extends U>> mapper,
             @NotNull CollectionFactory<? super U, Builder, ? extends T> factory
     ) {
-        assert collection != null;
-        assert factory != null;
-
         Objects.requireNonNull(mapper);
 
         Builder builder = factory.newBuilder();
@@ -102,9 +90,6 @@ public abstract class AbstractImmutableCollection<@Covariant E>
             @NotNull ImmutableCollection<? extends E> collection,
             @NotNull Predicate<? super E> predicate,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory) {
-        assert collection != null;
-        assert factory != null;
-
         Objects.requireNonNull(predicate);
 
         Builder builder1 = factory.newBuilder();
@@ -128,28 +113,23 @@ public abstract class AbstractImmutableCollection<@Covariant E>
     }
 
 
-    @NotNull
-    protected final <U, To extends ImmutableCollection<U>> To mapImpl(@NotNull Function<? super E, ? extends U> mapper) {
+    protected final <U, To extends ImmutableCollection<U>> @NotNull To mapImpl(@NotNull Function<? super E, ? extends U> mapper) {
         return (To) AbstractImmutableCollection.map(this, mapper, iterableFactory());
     }
 
-    @NotNull
-    protected final <To extends ImmutableCollection<E>> To filterImpl(@NotNull Predicate<? super E> predicate) {
+    protected final <To extends ImmutableCollection<E>> @NotNull To filterImpl(@NotNull Predicate<? super E> predicate) {
         return (To) AbstractImmutableCollection.filter(this, predicate, iterableFactory());
     }
 
-    @NotNull
-    protected final <To extends ImmutableCollection<E>> To filterNotImpl(@NotNull Predicate<? super E> predicate) {
+    protected final <To extends ImmutableCollection<E>> @NotNull To filterNotImpl(@NotNull Predicate<? super E> predicate) {
         return (To) AbstractImmutableCollection.filterNot(this, predicate, iterableFactory());
     }
 
-    @NotNull
-    protected final <To extends ImmutableCollection<E>> To filterNotNullImpl() {
+    protected final <To extends ImmutableCollection<E>> @NotNull To filterNotNullImpl() {
         return (To) this.filter(Objects::nonNull);
     }
 
-    @NotNull
-    protected final <U, To extends ImmutableCollection<U>> To flatMapImpl(
+    protected final <U, To extends ImmutableCollection<U>> @NotNull To flatMapImpl(
             @NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
         return (To) AbstractImmutableCollection.flatMap(this, mapper, iterableFactory());
     }

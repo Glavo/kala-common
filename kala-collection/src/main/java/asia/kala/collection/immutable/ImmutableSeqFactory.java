@@ -11,6 +11,11 @@ final class ImmutableSeqFactory<E> implements CollectionFactory<E, ArrayBuffer<E
     }
 
     @Override
+    public final @NotNull ImmutableSeq<E> empty() {
+        return ImmutableSeq0.instance();
+    }
+
+    @Override
     public final ArrayBuffer<E> newBuilder() {
         return new ArrayBuffer<>();
     }

@@ -84,18 +84,13 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
     public static void runIgnoreException(@NotNull CheckedRunnable<?> runnable) {
         Objects.requireNonNull(runnable);
         try {
-            runnable.run();
+            runnable.runChecked();
         } catch (Throwable ignored) {
         }
     }
 
     public static void runUnchecked(@NotNull CheckedRunnable<?> runnable) {
-        Objects.requireNonNull(runnable);
-        try {
-            runnable.run();
-        } catch (Throwable e) {
-            Try.throwExceptionUnchecked(e);
-        }
+        runnable.run();
     }
 
     /**

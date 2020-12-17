@@ -12,6 +12,7 @@ import asia.kala.iterator.Iterators;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -64,24 +65,17 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
 
     int size();
 
-    //region Optimized collection members
+    //region Optimized Collection Operations
 
-    @NotNull
     @Override
-    default Option<E> getOption(int index) {
-        if (index < 0 || index >= size()) {
-            return Option.none();
-        }
-        return Option.some(get(index));
+    default boolean isEmpty() {
+        return size() == 0;
     }
 
-    @Nullable
     @Override
-    default E getOrNull(int index) {
-        if (index < 0 || index >= size()) {
-            return null;
-        }
-        return get(index);
+    @Range(from = -1, to = Integer.MAX_VALUE)
+    default int knownSize() {
+        return size();
     }
 
     @Override
@@ -90,18 +84,36 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
     }
 
     @Override
-    default boolean isEmpty() {
-        return size() == 0;
+    default @Nullable E getOrNull(int index) {
+        if (index < 0 || index >= size()) {
+            return null;
+        }
+        return get(index);
+    }
+
+    @Override
+    default @NotNull Option<E> getOption(int index) {
+        if (index < 0 || index >= size()) {
+            return Option.none();
+        }
+        return Option.some(get(index));
     }
 
     @Override
     default E first() {
+        if (size() == 0) {
+            throw new NoSuchElementException();
+        }
         return get(0);
     }
 
     @Override
     default E last() {
-        return get(size() - 1);
+        final int size = size();
+        if (size == 0) {
+            throw new NoSuchElementException();
+        }
+        return get(size - 1);
     }
 
     @Override
@@ -110,7 +122,7 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
 
         if (value == null) {
             for (int i = 0; i < size; i++) {
-                if (get(i) == null) {
+                if (null == get(i)) {
                     return i;
                 }
             }
@@ -134,7 +146,7 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
 
         if (value == null) {
             for (int i = Math.max(from, 0); i < size; i++) {
-                if (get(i) == null) {
+                if (null == get(i)) {
                     return i;
                 }
             }
@@ -153,7 +165,7 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
     default int indexWhere(@NotNull Predicate<? super E> predicate) {
         final int size = size();
         for (int i = 0; i < size; i++) {
-            if (predicate.test(get(i))) {
+            if (predicate.test(get(i))) { // implicit null check of predicate
                 return i;
             }
         }
@@ -169,7 +181,7 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
         }
 
         for (int i = Math.max(from, 0); i < size; i++) {
-            if (predicate.test(get(i))) {
+            if (predicate.test(get(i))) { // implicit null check of predicate
                 return i;
             }
         }
@@ -180,7 +192,7 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
     default int lastIndexOf(Object value) {
         if (value == null) {
             for (int i = size() - 1; i >= 0; i--) {
-                if (get(i) == null) {
+                if (null == get(i)) {
                     return i;
                 }
             }
@@ -199,10 +211,9 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
         if (end < 0) {
             return -1;
         }
-
         if (value == null) {
             for (int i = end; i >= 0; i--) {
-                if (get(i) == null) {
+                if (null == get(i)) {
                     return i;
                 }
             }
@@ -219,7 +230,7 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
     @Override
     default int lastIndexWhere(@NotNull Predicate<? super E> predicate) {
         for (int i = size() - 1; i >= 0; i--) {
-            if (predicate.test(get(i))) {
+            if (predicate.test(get(i))) { // implicit null check of predicate
                 return i;
             }
         }
@@ -231,9 +242,8 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
         if (end < 0) {
             return -1;
         }
-
         for (int i = end; i >= 0; i--) {
-            if (predicate.test(get(i))) {
+            if (predicate.test(get(i))) { // implicit null check of predicate
                 return i;
             }
         }
@@ -260,9 +270,8 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
         return res;
     }
 
-    @NotNull
     @Override
-    default Option<E> maxOption(@NotNull Comparator<? super E> comparator) {
+    default @NotNull Option<E> maxOption(@NotNull Comparator<? super E> comparator) {
         if (isEmpty()) {
             return Option.none();
         }
@@ -289,9 +298,8 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
         return res;
     }
 
-    @NotNull
     @Override
-    default Option<E> minOption(@NotNull Comparator<? super E> comparator) {
+    default @NotNull Option<E> minOption(@NotNull Comparator<? super E> comparator) {
         if (isEmpty()) {
             return Option.none();
         }
@@ -345,11 +353,6 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
     }
 
     @Override
-    default E fold(E zero, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-        return foldLeft(zero, op);
-    }
-
-    @Override
     default <U> U foldLeft(U zero, @NotNull BiFunction<? super U, ? super E, ? extends U> op) {
         final int size = size();
 
@@ -367,11 +370,6 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
             zero = op.apply(get(i), zero);
         }
         return zero;
-    }
-
-    @Override
-    default E reduce(@NotNull BiFunction<? super E, ? super E, ? extends E> op) throws NoSuchElementException {
-        return reduceLeft(op);
     }
 
     @Override
@@ -404,15 +402,8 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
         return e;
     }
 
-    @NotNull
     @Override
-    default Option<E> reduceOption(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-        return reduceLeftOption(op);
-    }
-
-    @NotNull
-    @Override
-    default Option<E> reduceLeftOption(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
+    default @NotNull Option<E> reduceLeftOption(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
         final int size = size();
 
         if (size == 0) {
@@ -426,9 +417,8 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
         return Option.some(e);
     }
 
-    @NotNull
     @Override
-    default Option<E> reduceRightOption(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
+    default @NotNull Option<E> reduceRightOption(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
         final int size = size();
 
         if (size == 0) {
@@ -486,7 +476,7 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
 
         if (value == null) {
             for (int i = 0; i < size; i++) {
-                if (get(i) == null) {
+                if (null == get(i)) {
                     return true;
                 }
             }
@@ -514,9 +504,8 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
         return c;
     }
 
-    @NotNull
     @Override
-    default Option<E> find(@NotNull Predicate<? super E> predicate) {
+    default @NotNull Option<E> find(@NotNull Predicate<? super E> predicate) {
         final int size = this.size();
 
         for (int i = 0; i < size; i++) {
@@ -528,9 +517,8 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
         return Option.none();
     }
 
-    @NotNull
     @Override
-    default Iterator<E> iterator() {
+    default @NotNull Iterator<E> iterator() {
         final int size = size();
 
         if (size == 0) {
@@ -555,9 +543,8 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
         };
     }
 
-    @NotNull
     @Override
-    default Iterator<E> reverseIterator() {
+    default @NotNull Iterator<E> reverseIterator() {
         return new Iterator<E>() {
             private int idx = size() - 1;
 
@@ -595,17 +582,26 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
     }
 
     @Override
-    @NotNull
-    default IndexedSeqView<E> view() {
+    default @NotNull IndexedSeqView<E> view() {
         return new IndexedSeqViews.Of<>(this);
     }
 
-    @NotNull
+    @Override
+    default Object @NotNull [] toArray() {
+        final int size = size();
+        Object[] arr = new Object[size];
+
+        for (int i = 0; i < size; i++) {
+            arr[i] = get(i);
+        }
+        return arr;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
-    default <U> U[] toArray(@NotNull IntFunction<U[]> generator) {
+    default <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
         final int size = size();
-        U[] arr = generator.apply(size);
+        U[] arr = generator.apply(size); // implicit null check of generator
 
         for (int i = 0; i < size; i++) {
             arr[i] = (U) get(i);
@@ -613,9 +609,8 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
         return arr;
     }
 
-    @NotNull
     @Override
-    default ImmutableList<E> toImmutableList() {
+    default @NotNull ImmutableList<E> toImmutableList() {
         final int size = size();
 
         ImmutableList<E> list = ImmutableList.nil();

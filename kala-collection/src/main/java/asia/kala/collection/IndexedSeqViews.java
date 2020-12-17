@@ -42,9 +42,8 @@ final class IndexedSeqViews {
             return source.get(index + n);
         }
 
-        @NotNull
         @Override
-        public final Option<E> getOption(int index) {
+        public final @NotNull Option<E> getOption(int index) {
             if (n <= 0) {
                 return source.getOption(index);
             }
@@ -66,9 +65,8 @@ final class IndexedSeqViews {
             throw new IndexOutOfBoundsException("Index out of range: " + index);
         }
 
-        @NotNull
         @Override
-        public final Option<E> getOption(int index) {
+        public final @NotNull Option<E> getOption(int index) {
             if (index >= 0 && index < size()) {
                 return source.getOption(index);
             }
@@ -96,9 +94,8 @@ final class IndexedSeqViews {
             return source.get(index);
         }
 
-        @NotNull
         @Override
-        public final Option<E> getOption(int index) {
+        public final @NotNull Option<E> getOption(int index) {
             if (index == source.size()) {
                 return Option.some(value);
             }

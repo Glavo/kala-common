@@ -96,6 +96,19 @@ public interface CollectionFactory<E, Builder, @Covariant R>
         return build(newBuilder());
     }
 
+    default R from(E @NotNull [] values) {
+        if (values.length == 0) {
+            return empty();
+        }
+
+        Builder builder = newBuilder();
+        sizeHint(builder, values.length);
+        for (E element : values) {
+            addToBuilder(builder, element);
+        }
+        return build(builder);
+    }
+
     default R from(@NotNull Iterable<? extends E> values) {
         Iterator<? extends E> iterator = values.iterator();
         if (!iterator.hasNext()) {
@@ -111,15 +124,15 @@ public interface CollectionFactory<E, Builder, @Covariant R>
         return build(builder);
     }
 
-    default R from(E @NotNull [] values) {
-        if (values.length == 0) {
+    default R from(@NotNull Iterator<? extends E> it) {
+        if (!it.hasNext()) {
             return empty();
         }
-
         Builder builder = newBuilder();
-        sizeHint(builder, values.length);
-        for (E element : values) {
-            addToBuilder(builder, element);
+
+        while (it.hasNext()) {
+            E e = it.next();
+            addToBuilder(builder, e);
         }
         return build(builder);
     }
