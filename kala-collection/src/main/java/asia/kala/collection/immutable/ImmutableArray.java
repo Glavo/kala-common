@@ -146,8 +146,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
         return buffer.toImmutableArray();
     }
 
-    @NotNull
-    public static <E> ImmutableArray<E> fill(int n, E value) {
+    public static <E> @NotNull ImmutableArray<E> fill(int n, E value) {
         if (n <= 0) {
             return empty();
         }
@@ -159,8 +158,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
         return new ImmutableArray<>(ans);
     }
 
-    @NotNull
-    public static <E> ImmutableArray<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+    public static <E> @NotNull ImmutableArray<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
         if (n <= 0) {
             return empty();
         }
@@ -172,8 +170,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
         return new ImmutableArray<>(ans);
     }
 
-    @NotNull
-    public static <E> ImmutableArray<E> fill(int n, @NotNull IntFunction<? extends E> supplier) {
+    public static <E> @NotNull ImmutableArray<E> fill(int n, @NotNull IntFunction<? extends E> supplier) {
         if (n <= 0) {
             return empty();
         }
@@ -187,9 +184,8 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
 
     @StaticClass
     public static class Unsafe {
-        @NotNull
         @Contract("_ -> new")
-        public static <E> ImmutableArray<E> wrap(E @NotNull [] array) {
+        public static <E> @NotNull ImmutableArray<E> wrap(E @NotNull [] array) {
             Objects.requireNonNull(array);
             return new ImmutableArray<>(array);
         }

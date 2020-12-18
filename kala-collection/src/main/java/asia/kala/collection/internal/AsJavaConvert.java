@@ -201,6 +201,7 @@ public final class AsJavaConvert {
         }
     }
 
+    @SuppressWarnings("NullableProblems")
     public static class SetAsJava<E, C extends asia.kala.collection.Set<E>> extends CollectionAsJava<E, C> implements java.util.Set<E> {
         public SetAsJava(@NotNull C collection) {
             super(collection);
@@ -324,13 +325,41 @@ public final class AsJavaConvert {
         }
     }
 
-    @SuppressWarnings("NullableProblems")
     public static class MutableSetAsJava<E, C extends MutableSet<E>>
-            extends MutableCollectionAsJava<E, C> implements java.util.Set<E> {
+            extends SetAsJava<E, C> implements java.util.Set<E> {
         public MutableSetAsJava(C collection) {
             super(collection);
         }
 
-        // TODO
+        @Override
+        public boolean add(E e) {
+            return collection.add(e);
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public boolean remove(Object o) {
+            return collection.remove((E) o);
+        }
+
+        @Override
+        public boolean addAll(@NotNull java.util.Collection<? extends E> c) {
+            return collection.addAll(c);
+        }
+
+        @Override
+        public boolean removeAll(java.util.Collection<?> c) {
+            return collection.removeAll(c);
+        }
+
+        @Override
+        public boolean retainAll(java.util.Collection<?> c) {
+            return super.retainAll(c);
+        }
+
+        @Override
+        public final void clear() {
+            collection.clear();
+        }
     }
 }

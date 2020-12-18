@@ -242,26 +242,26 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
 
     //region Red–black tree helpers
 
-    @Nullable
-    private Node<E> getNode(E value) {
-        final Comparator<? super E> comparator = this.comparator;
-        Node<E> n = this.root;
-        while (n != null) {
-            int c = comparator.compare(value, n.value);
-            if (c < 0) {
-                n = n.left;
-            } else if (c > 0) {
-                n = n.right;
-            } else {
-                return n;
+    private @Nullable Node<E> getNode(Object value) {
+        try {
+            final Comparator<? super E> comparator = this.comparator;
+            Node<E> n = this.root;
+            while (n != null) {
+                int c = comparator.compare((E) value, n.value);
+                if (c < 0) {
+                    n = n.left;
+                } else if (c > 0) {
+                    n = n.right;
+                } else {
+                    return n;
+                }
             }
+        } catch (ClassCastException ignored) {
         }
-
         return null;
     }
 
-    @Nullable
-    private Node<E> firstNode() {
+    private @Nullable Node<E> firstNode() {
         Node<E> node = root;
         if (node == null) {
             return null;
@@ -272,8 +272,7 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
         return node;
     }
 
-    @Nullable
-    private Node<E> lastNode() {
+    private @Nullable Node<E> lastNode() {
         Node<E> node = root;
         if (node == null) {
             return null;
@@ -605,7 +604,7 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
     }
 
     @Override
-    public final boolean remove(E value) {
+    public final boolean remove(Object value) {
         Node<E> node = getNode(value);
         if (node == null) {
             return false;

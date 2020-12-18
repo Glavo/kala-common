@@ -45,9 +45,11 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
     }
 
     public MutableHashSet(@Range(from = 0, to = MAXIMUM_CAPACITY) int initialCapacity, double loadFactor) {
+        //noinspection ConstantConditions
         if (initialCapacity < 0) {
             throw new IllegalArgumentException("Illegal initial capacity: " + initialCapacity);
         }
+        //noinspection ConstantConditions
         if (initialCapacity > MAXIMUM_CAPACITY) {
             initialCapacity = MAXIMUM_CAPACITY;
         }
@@ -143,6 +145,16 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
     public static <E> MutableHashSet<E> from(@NotNull Iterable<? extends E> values) {
         MutableHashSet<E> s = new MutableHashSet<>();
         s.addAll(values);
+        return s;
+    }
+
+    @NotNull
+    @Contract(value = "_ -> new", pure = true)
+    public static <E> MutableHashSet<E> from(@NotNull Iterator<? extends E> it) {
+        MutableHashSet<E> s = new MutableHashSet<>();
+        while (it.hasNext()) {
+            s.add(it.next());
+        }
         return s;
     }
 
@@ -307,7 +319,7 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
         return true;
     }
 
-    private boolean remove(E value, int hash) {
+    private boolean remove(Object value, int hash) {
         int idx = indexOf(hash);
         Node<E> n = table[idx];
         if (n == null) {
@@ -333,7 +345,7 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
     }
 
     @Override
-    public final boolean remove(E value) {
+    public final boolean remove(Object value) {
         return remove(value, hash(value));
     }
 

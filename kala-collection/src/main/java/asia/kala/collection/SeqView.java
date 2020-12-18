@@ -38,106 +38,84 @@ public interface SeqView<@Covariant E> extends Seq<E>, View<E> {
         return this;
     }
 
-
     //endregion
 
-    @NotNull
-    default SeqView<E> updated(int index, E newValue) {
+    default @NotNull SeqView<E> updated(int index, E newValue) {
         return new SeqViews.Updated<>(this, index, newValue);
     }
 
-    @NotNull
-    default SeqView<E> drop(int n) {
+    default @NotNull SeqView<E> drop(int n) {
         return new SeqViews.Drop<>(this, n);
     }
 
-    @NotNull
-    default SeqView<E> dropLast(int n) {
+    default @NotNull SeqView<E> dropLast(int n) {
         return new SeqViews.DropLast<>(this, n);
     }
 
-    @NotNull
-    default SeqView<E> dropWhile(@NotNull Predicate<? super E> predicate) {
+    default @NotNull SeqView<E> dropWhile(@NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
-
         return new SeqViews.DropWhile<>(this, predicate);
     }
 
-    @NotNull
-    default SeqView<E> take(int n) {
+    default @NotNull SeqView<E> take(int n) {
         return new SeqViews.Take<>(this, n);
     }
 
-    @NotNull
-    default SeqView<E> takeLast(int n) {
+    default @NotNull SeqView<E> takeLast(int n) {
         return new SeqViews.TakeLast<>(this, n);
     }
 
-    @NotNull
-    default SeqView<E> takeWhile(@NotNull Predicate<? super E> predicate) {
+    default @NotNull SeqView<E> takeWhile(@NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
-
         return new SeqViews.TakeWhile<>(this, predicate);
     }
 
-    @NotNull
-    default SeqView<E> concat(@NotNull Seq<? extends E> other) {
+    default @NotNull SeqView<E> concat(@NotNull Seq<? extends E> other) {
         Objects.requireNonNull(other);
-
         return new SeqViews.Concat<>(this, narrow(other.view()));
     }
 
-    @NotNull
-    default SeqView<E> prepended(E value) {
-        return new SeqViews.Prepended<>(this, value);
-    }
-
-    @NotNull
-    default SeqView<E> prependedAll(@NotNull Iterable<? extends E> prefix) {
-        Objects.requireNonNull(prefix);
-        return new SeqViews.Concat<>(CollectionHelper.asSeq(prefix), this);
-    }
-
-    @NotNull
-    default SeqView<E> prependedAll(E @NotNull [] prefix) {
-        Objects.requireNonNull(prefix);
-        return new SeqViews.Concat<>(ArraySeq.wrap(prefix), this);
-    }
-
-    @NotNull
-    default SeqView<E> appended(E value) {
+    default @NotNull SeqView<E> appended(E value) {
         return new SeqViews.Appended<>(this, value);
     }
 
-    @NotNull
-    default SeqView<E> appendedAll(@NotNull Iterable<? extends E> postfix) {
+    default @NotNull SeqView<E> appendedAll(@NotNull Iterable<? extends E> postfix) {
         Objects.requireNonNull(postfix);
         return new SeqViews.Concat<>(this, CollectionHelper.asSeq(postfix));
     }
 
-    @NotNull
-    default SeqView<E> appendedAll(E @NotNull [] postfix) {
+    default @NotNull SeqView<E> appendedAll(E @NotNull [] postfix) {
         Objects.requireNonNull(postfix);
         return new SeqViews.Concat<>(this, ArraySeq.wrap(postfix));
     }
 
-    @NotNull
-    default SeqView<E> sorted() {
+    default @NotNull SeqView<E> prepended(E value) {
+        return new SeqViews.Prepended<>(this, value);
+    }
+
+    default @NotNull SeqView<E> prependedAll(@NotNull Iterable<? extends E> prefix) {
+        Objects.requireNonNull(prefix);
+        return new SeqViews.Concat<>(CollectionHelper.asSeq(prefix), this);
+    }
+
+    default @NotNull SeqView<E> prependedAll(E @NotNull [] prefix) {
+        Objects.requireNonNull(prefix);
+        return new SeqViews.Concat<>(ArraySeq.wrap(prefix), this);
+    }
+
+    default@NotNull SeqView<E> sorted() {
         return sorted(Comparators.naturalOrder());
     }
 
-    @NotNull
-    default SeqView<E> sorted(@NotNull Comparator<? super E> comparator) {
+    default@NotNull SeqView<E> sorted(@NotNull Comparator<? super E> comparator) {
         Objects.requireNonNull(comparator);
 
         return new SeqViews.Sorted<>(this, comparator);
     }
 
-    @NotNull
-    default SeqView<E> reversed() {
+    default@NotNull SeqView<E> reversed() {
         return new SeqViews.Reversed<>(this);
     }
-
 
     @Override
     default boolean canEqual(Object other) {

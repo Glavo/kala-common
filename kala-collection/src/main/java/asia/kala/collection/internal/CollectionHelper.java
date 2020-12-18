@@ -63,16 +63,6 @@ public final class CollectionHelper {
         throw new IllegalArgumentException();
     }
 
-    public static <E> IndexedSeq<E> tryToIndexedSeq(Object collection) {
-        if (collection instanceof IndexedSeq<?>) {
-            return ((IndexedSeq<E>) collection);
-        }
-        if (collection instanceof List<?> && collection instanceof RandomAccess) {
-            return new FromJavaConvert.IndexedSeqFromJava<>(((List<E>) collection));
-        }
-        return null;
-    }
-
     public static <E> asia.kala.collection.Collection<E> asCollection(Object collection) {
         if (collection instanceof asia.kala.collection.Collection<?>) {
             return ((asia.kala.collection.Collection<E>) collection);
