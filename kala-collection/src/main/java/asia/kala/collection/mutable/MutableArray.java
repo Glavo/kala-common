@@ -154,13 +154,13 @@ public final class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>,
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     public final @NotNull MutableArray<E> clone() {
-        return new MutableArray<E>(this.array.clone(), isChecked);
+        return new MutableArray<E>(this.elements.clone(), isChecked);
     }
 
     //endregion
 
     public final Object @NotNull [] getArray() {
-        return array;
+        return elements;
     }
 
     public final boolean isChecked() {
@@ -170,7 +170,7 @@ public final class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>,
     @Override
     public final void set(int index, E newValue) {
         try {
-            array[index] = newValue;
+            elements[index] = newValue;
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new IndexOutOfBoundsException(e.getMessage());
         }
@@ -178,23 +178,23 @@ public final class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>,
 
     @Override
     public final void mapInPlace(@NotNull Function<? super E, ? extends E> mapper) {
-        final Object[] array = this.array;
-        for (int i = 0; i < array.length; i++) {
-            array[i] = mapper.apply((E) array[i]);
+        final Object[] elements = this.elements;
+        for (int i = 0; i < elements.length; i++) {
+            elements[i] = mapper.apply((E) elements[i]);
         }
     }
 
     @Override
     public final void mapInPlaceIndexed(@NotNull IndexedFunction<? super E, ? extends E> mapper) {
-        final Object[] array = this.array;
-        for (int i = 0; i < array.length; i++) {
-            array[i] = mapper.apply(i, (E) array[i]);
+        final Object[] elements = this.elements;
+        for (int i = 0; i < elements.length; i++) {
+            elements[i] = mapper.apply(i, (E) elements[i]);
         }
     }
 
     @Override
     public final void sort(@NotNull Comparator<? super E> comparator) {
-        Arrays.sort(array, (Comparator<? super Object>) comparator);
+        Arrays.sort(elements, (Comparator<? super Object>) comparator);
     }
 
 

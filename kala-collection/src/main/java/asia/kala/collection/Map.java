@@ -54,6 +54,14 @@ public interface Map<K, V> extends Equals {
 
     //endregion
 
+    default V get(K key) {
+        return getOption(key).get();
+    }
+
+    default @Nullable V getOrNull(K key) {
+        return getOption(key).getOrNull();
+    }
+
     default @NotNull Option<V> getOption(K key) {
         MapIterator<K, V> it = iterator();
         if (key == null) {
@@ -70,14 +78,6 @@ public interface Map<K, V> extends Equals {
             }
         }
         return Option.none();
-    }
-
-    default V get(K key) {
-        return getOption(key).get();
-    }
-
-    default @Nullable V getOrNull(K key) {
-        return getOption(key).getOrNull();
     }
 
     default V getOrDefault(K key, V defaultValue) {

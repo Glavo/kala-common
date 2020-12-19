@@ -6,10 +6,10 @@ import asia.kala.collection.immutable.ImmutableArray;
 import asia.kala.collection.mutable.ArrayBuffer;
 import asia.kala.factory.CollectionFactory;
 import asia.kala.function.IndexedConsumer;
-import asia.kala.iterator.Iterators;
 import asia.kala.traversable.JavaArray;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -18,6 +18,7 @@ import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @SuppressWarnings("unchecked")
 public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>, Serializable {
@@ -27,10 +28,10 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     private static final ArraySeq.Factory<?> FACTORY = new ArraySeq.Factory<>();
 
-    protected final Object @NotNull [] array;
+    protected final Object @NotNull [] elements;
 
-    protected ArraySeq(Object @NotNull [] array) {
-        this.array = array;
+    protected ArraySeq(Object @NotNull [] elements) {
+        this.elements = elements;
     }
 
     @Contract(value = "_ -> param1", pure = true)
@@ -92,19 +93,17 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Contract(pure = true)
     public static <E> @NotNull ArraySeq<E> from(E @NotNull [] values) {
-        if (values.length == 0) {
-            return empty();
-        }
-        return new ArraySeq<>(values.clone());
+        return values.length == 0
+                ? empty()
+                : new ArraySeq<>(values.clone());
     }
 
     public static <E> @NotNull ArraySeq<E> from(@NotNull Traversable<? extends E> values) {
-        if (values instanceof ImmutableArray<?>
-                || values.getClass() == ArraySeq.class) { // implicit null check of values
+        if (values instanceof ImmutableArray<?>) {
             return (ArraySeq<E>) values;
         }
 
-        if (values.knownSize() == 0) {
+        if (values.knownSize() == 0) { // implicit null check of values
             return empty();
         }
 
@@ -116,10 +115,9 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     }
 
     public static <E> @NotNull ArraySeq<E> from(@NotNull java.util.Collection<? extends E> values) {
-        if (values.size() == 0) {
-            return empty();
-        }
-        return new ArraySeq<>(values.toArray());
+        return values.size() == 0
+                ? empty()
+                : new ArraySeq<>(values.toArray());
     }
 
     public static <E> @NotNull ArraySeq<E> from(@NotNull Iterable<? extends E> values) {
@@ -144,16 +142,55 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     //endregion
 
+    //region Collection Operations
+
+    @Override
+    public String className() {
+        return "ArraySeq";
+    }
+
+    @Override
+    public <U> @NotNull CollectionFactory<U, ?, ? extends ArraySeq<U>> iterableFactory() {
+        return factory();
+    }
+
+    @Override
+    public final @NotNull Iterator<E> iterator() {
+        return (Iterator<E>) JavaArray.iterator(elements);
+    }
+
+    @Override
+    public @NotNull Spliterator<E> spliterator() {
+        return Spliterators.spliterator(elements, 0);
+    }
+
+    @Override
+    public final @NotNull Stream<E> stream() {
+        return StreamSupport.stream(spliterator(), false);
+    }
+
+    @Override
+    public final @NotNull Stream<E> parallelStream() {
+        return StreamSupport.stream(spliterator(), true);
+    }
+
+    //endregion
+
     //region Size Info
 
     @Override
     public final boolean isEmpty() {
-        return array.length == 0;
+        return elements.length == 0;
     }
 
     @Override
     public final int size() {
-        return array.length;
+        return elements.length;
+    }
+
+    @Override
+    public final int knownSize() {
+        return elements.length;
     }
 
     //endregion
@@ -161,7 +198,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     //region Positional Access Operations
 
     public final E get(int index) {
-        return (E) array[index];
+        return (E) elements[index];
     }
 
     //endregion
@@ -169,7 +206,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     @Override
     public final E first() {
         try {
-            return (E) array[0];
+            return (E) elements[0];
         } catch (IndexOutOfBoundsException e) {
             throw new NoSuchElementException();
         }
@@ -177,76 +214,76 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public final E last() {
-        final Object[] array = this.array;
-        final int size = array.length;
+        final Object[] elements = this.elements;
+        final int size = elements.length;
         if (size == 0) {
             throw new NoSuchElementException();
         }
-        return (E) array[size - 1];
+        return (E) elements[size - 1];
     }
 
     @Override
     public final int indexOf(Object value) {
-        return JavaArray.indexOf(array, value);
+        return JavaArray.indexOf(elements, value);
     }
 
     @Override
     public final int indexOf(Object value, int from) {
-        return JavaArray.indexOf(array, value, from);
+        return JavaArray.indexOf(elements, value, from);
     }
 
     @Override
     public final int indexWhere(@NotNull Predicate<? super E> predicate) {
-        return JavaArray.indexWhere(array, (Predicate<Object>) predicate);
+        return JavaArray.indexWhere(elements, (Predicate<Object>) predicate);
     }
 
     @Override
     public final int indexWhere(@NotNull Predicate<? super E> predicate, int from) {
-        return JavaArray.indexWhere(array, (Predicate<Object>) predicate, from);
+        return JavaArray.indexWhere(elements, (Predicate<Object>) predicate, from);
     }
 
     @Override
     public final int lastIndexOf(Object value) {
-        return JavaArray.lastIndexOf(array, value);
+        return JavaArray.lastIndexOf(elements, value);
     }
 
     @Override
     public final int lastIndexOf(Object value, int end) {
-        return JavaArray.lastIndexOf(array, value, end);
+        return JavaArray.lastIndexOf(elements, value, end);
     }
 
     @Override
     public final int lastIndexWhere(@NotNull Predicate<? super E> predicate) {
-        return JavaArray.lastIndexWhere(array, (Predicate<Object>) predicate);
+        return JavaArray.lastIndexWhere(elements, (Predicate<Object>) predicate);
     }
 
     @Override
     public final int lastIndexWhere(@NotNull Predicate<? super E> predicate, int end) {
-        return JavaArray.lastIndexWhere(array, (Predicate<Object>) predicate, end);
+        return JavaArray.lastIndexWhere(elements, (Predicate<Object>) predicate, end);
     }
 
     @Override
     public final E max() {
-        return (E) JavaArray.Unsafe.max(array);
+        return (E) JavaArray.Unsafe.max(elements);
     }
 
     @Override
     public final E max(@NotNull Comparator<? super E> comparator) {
-        return (E) JavaArray.max(array, (Comparator<Object>) comparator);
+        return (E) JavaArray.max(elements, (Comparator<Object>) comparator);
     }
 
     @Override
     public final @NotNull Option<E> maxOption() {
-        final Object[] array = this.array;
-        if (array.length == 0) {
+        final Object[] elements = this.elements;
+        if (elements.length == 0) {
             return Option.none();
         }
-        return Option.some((E) JavaArray.Unsafe.max(array));
+        return Option.some((E) JavaArray.Unsafe.max(elements));
     }
 
     @Override
     public final @NotNull Option<E> maxOption(@NotNull Comparator<? super E> comparator) {
-        if (array.length == 0) {
+        if (elements.length == 0) {
             return Option.none();
         }
         return Option.some(max(comparator));
@@ -254,26 +291,26 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public final E min() {
-        return (E) JavaArray.Unsafe.min(array);
+        return (E) JavaArray.Unsafe.min(elements);
     }
 
     @Override
     public final E min(@NotNull Comparator<? super E> comparator) {
-        return (E) JavaArray.min(array, (Comparator<Object>) comparator);
+        return (E) JavaArray.min(elements, (Comparator<Object>) comparator);
     }
 
     @Override
     public final @NotNull Option<E> minOption() {
-        final Object[] array = this.array;
-        if (array.length == 0) {
+        final Object[] elements = this.elements;
+        if (elements.length == 0) {
             return Option.none();
         }
-        return Option.some((E) JavaArray.Unsafe.min(array));
+        return Option.some((E) JavaArray.Unsafe.min(elements));
     }
 
     @Override
     public final @NotNull Option<E> minOption(@NotNull Comparator<? super E> comparator) {
-        if (array.length == 0) {
+        if (elements.length == 0) {
             return Option.none();
         }
         return Option.some(min(comparator));
@@ -281,55 +318,52 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public final E fold(E zero, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-        return (E) JavaArray.fold(array, zero, (BiFunction<Object, Object, ?>) op);
+        return (E) JavaArray.fold(elements, zero, (BiFunction<Object, Object, ?>) op);
     }
 
     @Override
     public final <U> U foldLeft(U zero, @NotNull BiFunction<? super U, ? super E, ? extends U> op) {
-        return JavaArray.foldLeft(array, zero, (BiFunction<U, Object, U>) op);
+        return JavaArray.foldLeft(elements, zero, (BiFunction<U, Object, U>) op);
     }
 
     @Override
     public final <U> U foldRight(U zero, @NotNull BiFunction<? super E, ? super U, ? extends U> op) {
-        return JavaArray.foldRight(array, zero, (BiFunction<Object, U, U>) op);
+        return JavaArray.foldRight(elements, zero, (BiFunction<Object, U, U>) op);
     }
 
     @Override
     public final E reduce(@NotNull BiFunction<? super E, ? super E, ? extends E> op) throws NoSuchElementException {
-        return (E) JavaArray.reduce(array, (BiFunction<Object, Object, ?>) op);
+        return (E) JavaArray.reduce(elements, (BiFunction<Object, Object, ?>) op);
     }
 
     @Override
     public final E reduceLeft(@NotNull BiFunction<? super E, ? super E, ? extends E> op) throws NoSuchElementException {
-        return (E) JavaArray.reduceLeft(array, (BiFunction<Object, Object, ?>) op);
+        return (E) JavaArray.reduceLeft(elements, (BiFunction<Object, Object, ?>) op);
     }
 
     @Override
     public final E reduceRight(@NotNull BiFunction<? super E, ? super E, ? extends E> op) throws NoSuchElementException {
-        return (E) JavaArray.reduceRight(array, (BiFunction<Object, Object, ?>) op);
+        return (E) JavaArray.reduceRight(elements, (BiFunction<Object, Object, ?>) op);
     }
 
-    @NotNull
     @Override
-    public final Option<E> reduceOption(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-        return (Option<E>) JavaArray.reduceOption(array, (BiFunction<Object, Object, ?>) op);
+    public final @NotNull Option<E> reduceOption(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
+        return (Option<E>) JavaArray.reduceOption(elements, (BiFunction<Object, Object, ?>) op);
     }
 
-    @NotNull
     @Override
-    public final Option<E> reduceLeftOption(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-        return (Option<E>) JavaArray.reduceLeftOption(array, (BiFunction<Object, Object, ?>) op);
+    public final @NotNull Option<E> reduceLeftOption(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
+        return (Option<E>) JavaArray.reduceLeftOption(elements, (BiFunction<Object, Object, ?>) op);
     }
 
-    @NotNull
     @Override
-    public final Option<E> reduceRightOption(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-        return (Option<E>) JavaArray.reduceRightOption(array, (BiFunction<Object, Object, ?>) op);
+    public final @NotNull Option<E> reduceRightOption(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
+        return (Option<E>) JavaArray.reduceRightOption(elements, (BiFunction<Object, Object, ?>) op);
     }
 
     @Override
     public final boolean anyMatch(@NotNull Predicate<? super E> predicate) {
-        for (Object e : array) {
+        for (Object e : elements) {
             if (predicate.test((E) e)) {
                 return true;
             }
@@ -339,7 +373,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public final boolean allMatch(@NotNull Predicate<? super E> predicate) {
-        for (Object e : array) {
+        for (Object e : elements) {
             if (!predicate.test((E) e)) {
                 return false;
             }
@@ -349,7 +383,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public final boolean noneMatch(@NotNull Predicate<? super E> predicate) {
-        for (Object e : array) {
+        for (Object e : elements) {
             if (predicate.test((E) e)) {
                 return false;
             }
@@ -359,19 +393,19 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public final boolean contains(Object value) {
-        final Object[] array = this.array;
+        final Object[] elements = this.elements;
 
-        if (array.length == 0) {
+        if (elements.length == 0) {
             return false;
         }
         if (value == null) {
-            for (Object e : array) {
-                if (e == null) {
+            for (Object e : elements) {
+                if (null == e) {
                     return true;
                 }
             }
         } else {
-            for (Object e : array) {
+            for (Object e : elements) {
                 if (value.equals(e)) {
                     return true;
                 }
@@ -394,20 +428,17 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     @Override
     public final int count(@NotNull Predicate<? super E> predicate) {
         int c = 0;
-
-        for (Object e : this.array) {
+        for (Object e : this.elements) {
             if (predicate.test(((E) e))) {
                 ++c;
             }
         }
-
         return c;
     }
 
-    @NotNull
     @Override
-    public final Option<E> find(@NotNull Predicate<? super E> predicate) {
-        for (Object e : array) {
+    public final @NotNull Option<E> find(@NotNull Predicate<? super E> predicate) {
+        for (Object e : elements) {
             if (predicate.test((E) e)) {
                 return Option.some((E) e);
             }
@@ -415,22 +446,21 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         return Option.none();
     }
 
-    @NotNull
     @Override
-    public final <A extends Appendable> A joinTo(
+    public final <A extends Appendable> @NotNull A joinTo(
             @NotNull A buffer,
             CharSequence separator, CharSequence prefix, CharSequence postfix
     ) {
-        final Object[] array = this.array;
-        final int length = array.length;
+        final Object[] elements = this.elements;
+        final int size = elements.length;
 
         try {
             buffer.append(prefix);
-            if (length > 0) {
-                buffer.append(Objects.toString(array[0]));
-                for (int i = 1; i < length; i++) {
+            if (size > 0) {
+                buffer.append(Objects.toString(elements[0]));
+                for (int i = 1; i < size; i++) {
                     buffer.append(separator);
-                    buffer.append(Objects.toString(array[i]));
+                    buffer.append(Objects.toString(elements[i]));
                 }
             }
             buffer.append(postfix);
@@ -447,14 +477,14 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
             return collect((CollectionFactory<? super E, Builder, ? extends R>) collector);
         }
 
-        final Object[] array = this.array;
+        final Object[] elements = this.elements;
 
         Builder builder = collector.supplier().get();
-        if (array.length == 0) {
+        if (elements.length == 0) {
             return collector.finisher().apply(builder);
         }
         final BiConsumer<Builder, ? super E> accumulator = collector.accumulator();
-        for (Object o : array) {
+        for (Object o : elements) {
             accumulator.accept(builder, (E) o);
         }
         return collector.finisher().apply(builder);
@@ -462,8 +492,8 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public final <R, Builder> R collect(@NotNull CollectionFactory<? super E, Builder, ? extends R> factory) {
-        final Object[] array = this.array;
-        final int length = array.length;
+        final Object[] elements = this.elements;
+        final int length = elements.length;
 
         if (length == 0) {
             return factory.empty();
@@ -471,7 +501,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
         Builder builder = factory.newBuilder();
         factory.sizeHint(builder, length);
-        for (Object e : array) {
+        for (Object e : elements) {
             factory.addToBuilder(builder, (E) e);
         }
         return factory.build(builder);
@@ -479,12 +509,12 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public final Object @NotNull [] toArray() {
-        final Object[] array = this.array;
-        final int length = array.length;
+        final Object[] elements = this.elements;
+        final int size = elements.length;
 
-        Object[] res = new Object[length];
-        if (length != 0) {
-            System.arraycopy(array, 0, res, 0, length);
+        Object[] res = new Object[size];
+        if (size != 0) {
+            System.arraycopy(elements, 0, res, 0, size);
         }
         return res;
     }
@@ -492,74 +522,41 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     @Override
     @SuppressWarnings("SuspiciousSystemArraycopy")
     public final <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
-        final Object[] array = this.array;
-        final int length = array.length;
+        final Object[] elements = this.elements;
+        final int size = elements.length;
 
-        U[] res = generator.apply(length);
-        if (length != 0) {
-            System.arraycopy(array, 0, res, 0, length);
+        U[] res = generator.apply(size);
+        if (size != 0) {
+            System.arraycopy(elements, 0, res, 0, size);
         }
         return res;
     }
 
     @Override
-    public String className() {
-        return "ArraySeq";
-    }
-
-    @Override
-    public final @NotNull Iterator<E> iterator() {
-        return (Iterator<E>) JavaArray.iterator(array);
-    }
-
-    @Override
     public final @NotNull Iterator<E> reverseIterator() {
-        return (Iterator<E>) JavaArray.reverseIterator(array);
-    }
-
-    @Override
-    public @NotNull Spliterator<E> spliterator() {
-        return Spliterators.spliterator(array, 0);
-    }
-
-    @NotNull
-    @Override
-    public final Stream<E> stream() {
-        return (Stream<E>) Arrays.stream(array);
-    }
-
-    @NotNull
-    @Override
-    public final Stream<E> parallelStream() {
-        return (Stream<E>) Arrays.stream(array).parallel();
-    }
-
-    @NotNull
-    @Override
-    public <U> CollectionFactory<U, ?, ? extends ArraySeq<U>> iterableFactory() {
-        return factory();
+        return (Iterator<E>) JavaArray.reverseIterator(elements);
     }
 
     @Override
     public final void forEach(@NotNull Consumer<? super E> action) {
-        for (Object e : this.array) {
+        for (Object e : this.elements) {
             action.accept((E) e);
         }
     }
 
     @Override
     public final void forEachIndexed(@NotNull IndexedConsumer<? super E> action) {
-        final Object[] array = this.array;
-        final int length = array.length;
+        final Object[] elements = this.elements;
+        final int length = elements.length;
         for (int i = 0; i < length; i++) {
-            action.accept(i, (E) array[i]);
+            action.accept(i, (E) elements[i]);
         }
     }
 
     @Override
     public final int hashCode() {
         int ans = 0;
-        for (Object o : array) {
+        for (Object o : elements) {
             ans = ans * 31 + Objects.hashCode(o);
         }
         return ans + Collection.SEQ_HASH_MAGIC;

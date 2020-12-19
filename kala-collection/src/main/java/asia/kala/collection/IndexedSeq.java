@@ -73,7 +73,6 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
     }
 
     @Override
-    @Range(from = -1, to = Integer.MAX_VALUE)
     default int knownSize() {
         return size();
     }
