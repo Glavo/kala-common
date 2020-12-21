@@ -15,7 +15,7 @@ plugins {
 
 allprojects {
     group = "asia.kala"
-    version = kalaVersion("0.10.0", release = false)
+    version = kalaVersion("0.10.0")
 
     apply {
         plugin("java-library")
@@ -137,4 +137,4 @@ dependencies {
     api(project(":kala-collection"))
 }
 
-fun kalaVersion(base: String, release: Boolean) = if (release) base else "$base-SNAPSHOT"
+fun kalaVersion(base: String) = if (System.getProperty("kala.release") == "true") base else "$base-SNAPSHOT"

@@ -125,6 +125,7 @@
   * `map(Function<E, U>)`
   * `mapIndexed(IndexedFunction<E, U>)`
   * `flatMap(Function<E, Iterable<U>>)`
+  * `zip(Iterable<U>)`
   * `span(Predicate<E>)`
   * `chunked(int)`
   * `windowed(int)`

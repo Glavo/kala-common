@@ -550,6 +550,12 @@ public final class Iterators {
         return new Concat<>(Iterators.map(Iterators.map(it, mapper), Iterable::iterator));
     }
 
+    public static <E, U> @NotNull Iterator<@NotNull Tuple2<E, U>> zip(@NotNull Iterator<? extends E> it1, Iterator<? extends U> it2) {
+        Objects.requireNonNull(it1);
+        Objects.requireNonNull(it2);
+        return new Zip<>(it1, it2);
+    }
+
     public static <E> @NotNull Tuple2<Iterator<E>, Iterator<E>> span(
             @NotNull Iterator<? extends E> it, @NotNull Predicate<? super E> predicate
     ) {
@@ -1042,6 +1048,29 @@ public final class Iterators {
                 return current.next();
             }
             throw new NoSuchElementException(this + ".next()");
+        }
+    }
+
+    static final class Zip<@Covariant E, @Covariant U> extends AbstractIterator<@NotNull Tuple2<E, U>> {
+        private final Iterator<? extends E> it1;
+        private final Iterator<? extends U> it2;
+
+        Zip(Iterator<? extends E> it1, Iterator<? extends U> it2) {
+            this.it1 = it1;
+            this.it2 = it2;
+        }
+
+        @Override
+        public final boolean hasNext() {
+            return it1.hasNext() && it2.hasNext();
+        }
+
+        @Override
+        public final @NotNull Tuple2<E, U> next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            return Tuple.of(it1.next(), it2.next());
         }
     }
 }

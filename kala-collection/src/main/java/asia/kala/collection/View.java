@@ -48,6 +48,10 @@ public interface View<@Covariant E> extends Collection<E> {
         return new Views.FlatMapped<>(this, mapper);
     }
 
+    default <U> @NotNull View<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
+        Objects.requireNonNull(other);
+        return new Views.Zip<>(this, other);
+    }
 
     default @NotNull Tuple2<? extends View<E>, ? extends View<E>> span(@NotNull Predicate<? super E> predicate) {
         throw new UnsupportedOperationException(); // TODO

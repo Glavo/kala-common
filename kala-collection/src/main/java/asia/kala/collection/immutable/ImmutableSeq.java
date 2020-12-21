@@ -214,6 +214,11 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     }
 
     @Override
+    default <U> @NotNull ImmutableSeq<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
+        return AbstractImmutableCollection.zip(this, other, this.<Tuple2<E, U>>iterableFactory());
+    }
+
+    @Override
     default @NotNull Tuple2<? extends ImmutableSeq<E>, ? extends ImmutableSeq<E>> span(@NotNull Predicate<? super E> predicate) {
         return AbstractImmutableCollection.span(this, predicate, iterableFactory());
     }

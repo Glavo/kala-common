@@ -1,5 +1,6 @@
 package asia.kala.collection;
 
+import asia.kala.Tuple2;
 import asia.kala.collection.immutable.ImmutableArray;
 import asia.kala.collection.immutable.ImmutableList;
 import asia.kala.collection.immutable.ImmutableSeq;
@@ -10,7 +11,6 @@ import asia.kala.factory.CollectionFactory;
 import asia.kala.iterator.Iterators;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 
 import java.util.Comparator;
 import java.util.Iterator;
@@ -422,6 +422,21 @@ final class Views {
         @Override
         public final @NotNull Iterator<E> iterator() {
             return Iterators.concat(source.map(it -> mapper.apply(it).iterator()));
+        }
+    }
+
+    static final class Zip<E, U> extends AbstractView<Tuple2<E, U>> {
+        private final @NotNull View<? extends E> source;
+        private final @NotNull Iterable<? extends U> other;
+
+        Zip(@NotNull View<? extends E> source, @NotNull Iterable<? extends U> other) {
+            this.source = source;
+            this.other = other;
+        }
+
+        @Override
+        public final @NotNull Iterator<Tuple2<E, U>> iterator() {
+            return Iterators.zip(source.iterator(), other.iterator());
         }
     }
 }

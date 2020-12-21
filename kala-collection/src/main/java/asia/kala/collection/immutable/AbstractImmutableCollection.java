@@ -1,11 +1,14 @@
 package asia.kala.collection.immutable;
 
+import asia.kala.Tuple;
 import asia.kala.Tuple2;
 import asia.kala.factory.CollectionFactory;
 import asia.kala.annotations.Covariant;
 import asia.kala.collection.AbstractCollection;
+import asia.kala.traversable.AnyTraversable;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -86,6 +89,25 @@ public abstract class AbstractImmutableCollection<@Covariant E>
         return factory.build(builder);
     }
 
+    static <E, U, T, Builder> T zip(
+            @NotNull ImmutableCollection<? extends E> collection,
+            @NotNull Iterable<? extends U> other,
+            @NotNull CollectionFactory<? super Tuple2<E, U>, Builder, ? extends T> factory
+    ) {
+        Objects.requireNonNull(other);
+        if (AnyTraversable.knownSize(collection) == 0 || AnyTraversable.knownSize(other) == 0) {
+            return factory.empty();
+        }
+
+        Builder builder = factory.newBuilder();
+        Iterator<? extends E> it1 = collection.iterator();
+        Iterator<? extends U> it2 = other.iterator();
+        while (it1.hasNext() && it2.hasNext()) {
+            factory.addToBuilder(builder, Tuple.of(it1.next(), it2.next()));
+        }
+        return factory.build(builder);
+    }
+
     static <E, T, Builder> Tuple2<T, T> span(
             @NotNull ImmutableCollection<? extends E> collection,
             @NotNull Predicate<? super E> predicate,
@@ -132,6 +154,11 @@ public abstract class AbstractImmutableCollection<@Covariant E>
     protected final <U, To extends ImmutableCollection<U>> @NotNull To flatMapImpl(
             @NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
         return (To) AbstractImmutableCollection.flatMap(this, mapper, iterableFactory());
+    }
+
+    protected final <U, To extends ImmutableCollection<Tuple2<E, U>>> @NotNull To zipImpl(
+            @NotNull Iterable<? extends U> other) {
+        return (To) AbstractImmutableCollection.zip(this, other, this.<Tuple2<E, U>>iterableFactory());
     }
 
     @SuppressWarnings("rawtypes")

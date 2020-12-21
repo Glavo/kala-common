@@ -16,4 +16,4 @@ jobs:
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
         with:
           dependencies-cache-enabled: true
-          arguments: bintrayUpload
+          arguments: bintrayUpload -Dkala.release=true
