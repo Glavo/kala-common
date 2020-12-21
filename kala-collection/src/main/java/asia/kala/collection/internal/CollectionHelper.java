@@ -119,15 +119,4 @@ public final class CollectionHelper {
 
         throw new IllegalArgumentException();
     }
-
-    public static int knowSize(@NotNull Object collection) {
-        if (collection instanceof Traversable<?>) {
-            return ((Traversable<?>) collection).knownSize();
-        }
-        if (collection instanceof java.util.Collection) {
-            return ((java.util.Collection<?>) collection).size();
-        }
-
-        return -1;
-    }
 }

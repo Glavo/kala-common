@@ -77,6 +77,19 @@ public interface Seq<@Covariant E> extends Collection<E> {
 
     //endregion
 
+    static void checkElementIndex(int index, int size) throws IndexOutOfBoundsException {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index: " + index + " Size: " + size);
+        }
+    }
+
+    static void checkPositionIndex(int index, int size) throws IndexOutOfBoundsException {
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException("Index: " + index + " Size: " + size);
+        }
+    }
+
+
     //region Collection Operations
 
     @Override
@@ -96,10 +109,9 @@ public interface Seq<@Covariant E> extends Collection<E> {
 
     @Override
     default @NotNull @UnmodifiableView List<E> asJava() {
-        if (this instanceof IndexedSeq<?>) {
-            return new AsJavaConvert.IndexedSeqAsJava<>((IndexedSeq<E>) this);
-        }
-        return new AsJavaConvert.SeqAsJava<>(this);
+        return this instanceof IndexedSeq<?>
+                ? new AsJavaConvert.IndexedSeqAsJava<>((IndexedSeq<E>) this)
+                : new AsJavaConvert.SeqAsJava<>(this);
     }
 
     //endregion

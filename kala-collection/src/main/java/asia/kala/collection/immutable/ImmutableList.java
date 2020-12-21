@@ -9,6 +9,7 @@ import asia.kala.collection.mutable.LinkedBuffer;
 import asia.kala.factory.CollectionFactory;
 import asia.kala.function.IndexedFunction;
 import asia.kala.iterator.Iterators;
+import asia.kala.traversable.AnyTraversable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -222,7 +223,7 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
 
     @Override
     public final @NotNull ImmutableList<E> appendedAll(@NotNull Iterable<? extends E> postfix) {
-        if (CollectionHelper.knowSize(postfix) == 0) {
+        if (AnyTraversable.knownSize(postfix) == 0) {
             return this;
         }
         if (isEmpty()) {

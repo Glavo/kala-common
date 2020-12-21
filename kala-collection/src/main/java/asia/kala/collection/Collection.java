@@ -38,7 +38,7 @@ public interface Collection<@Covariant E> extends Traversable<E>, Equals {
     //region Collection Operations
 
     default String className() {
-        return "Traversable";
+        return "Collection";
     }
 
     default <U> @NotNull CollectionFactory<U, ?, ? extends Collection<U>> iterableFactory() {
