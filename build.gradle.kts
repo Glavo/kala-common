@@ -15,7 +15,7 @@ plugins {
 
 allprojects {
     group = "asia.kala"
-    version = kalaVersion("0.10.0")
+    version = kalaVersion("0.10.1")
 
     apply {
         plugin("java-library")
@@ -57,7 +57,7 @@ allprojects {
     if (this != rootProject) {
         java {
             withSourcesJar()
-            withJavadocJar()
+            // withJavadocJar()
         }
     }
 
