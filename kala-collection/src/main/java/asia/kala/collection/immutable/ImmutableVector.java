@@ -12,19 +12,27 @@ import asia.kala.annotations.Covariant;
 import asia.kala.collection.*;
 import asia.kala.collection.mutable.ArrayBuffer;
 import asia.kala.factory.CollectionFactory;
+import asia.kala.function.IndexedFunction;
 import asia.kala.traversable.JavaArray;
+import asia.kala.traversable.Traversable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq<E>
         implements IndexedSeq<E>, Serializable {
 
-    ImmutableVector() {
+    final Object[] prefix1;
+
+    ImmutableVector(Object[] prefix1) {
+        this.prefix1 = prefix1;
     }
 
     //region Narrow method
@@ -81,15 +89,78 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
     }
 
     public static <E> @NotNull ImmutableVector<E> from(E @NotNull [] values) {
-        return ImmutableVector.<E>factory().from(values);
+        final int size = values.length; // implicit null check of values
+        if (size == 0) {
+            return empty();
+        }
+        if (size <= ImmutableVectors.WIDTH) {
+            Object[] res = new Object[size];
+            System.arraycopy(values, 0, res, 0, size);
+            return new ImmutableVectors.Vector1<>(res);
+        }
+        ImmutableVectors.VectorBuilder<E> builder = new ImmutableVectors.VectorBuilder<>();
+        builder.addAll(values);
+        return builder.build();
     }
 
+    public static <E> @NotNull ImmutableVector<E> from(@NotNull java.util.Collection<? extends E> values) {
+        final int size = values.size();
+        if (size == 0) {
+            return empty();
+        }
+        if (size <= ImmutableVectors.WIDTH) {
+            Object[] res = new Object[size];
+            res = values.toArray(res);
+            assert res.length == size;
+            return new ImmutableVectors.Vector1<>(res);
+        }
+        return from(values.iterator());
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <E> @NotNull ImmutableVector<E> from(@NotNull Traversable<? extends E> values) {
+        if (values instanceof ImmutableVector<?>) {
+            return ((ImmutableVector<E>) values);
+        }
+        final int knownSize = values.knownSize(); // implicit null check of values
+        if (knownSize == 0) {
+            return empty();
+        }
+        if (knownSize > 0 && knownSize <= ImmutableVectors.WIDTH) {
+            if (values instanceof ImmutableArray<?>) {
+                Object[] arr = ((ImmutableArray<? extends E>) values).getArray();
+                if (arr.getClass() == Object[].class) {
+                    return new ImmutableVectors.Vector1<>(arr);
+                }
+            }
+            Object[] arr = new Object[knownSize];
+            int cn = values.copyToArray(arr);
+            assert cn == knownSize;
+            return new ImmutableVectors.Vector1<>(arr);
+        }
+        return from(values.iterator());
+    }
+
+    @SuppressWarnings("unchecked")
     public static <E> @NotNull ImmutableVector<E> from(@NotNull Iterable<? extends E> values) {
-        return ImmutableVector.<E>factory().from(values);
+        if (values instanceof Traversable<?>) {
+            return from((Traversable<E>) values);
+        }
+        if (values instanceof java.util.Collection<?>) {
+            return from(((Collection<E>) values));
+        }
+        return from(values.iterator());
     }
 
     public static <E> @NotNull ImmutableVector<E> from(@NotNull Iterator<? extends E> it) {
-        return ImmutableVector.<E>factory().from(it);
+        if (!it.hasNext()) { // implicit null check of it
+            return empty();
+        }
+        ImmutableVectors.VectorBuilder<E> builder = new ImmutableVectors.VectorBuilder<>();
+        while (it.hasNext()) {
+            builder.add(it.next());
+        }
+        return builder.build();
     }
 
     //endregion
@@ -113,6 +184,106 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
     }
 
     //endregion
+
+    //region Addition Operations
+
+    @Override
+    public @NotNull ImmutableVector<E> appended(E value) {
+        ImmutableVectors.VectorBuilder<E> builder = new ImmutableVectors.VectorBuilder<>();
+        builder.initFrom(this);
+        builder.add(value);
+        return builder.build();
+    }
+
+    @Override
+    public @NotNull ImmutableVector<E> appendedAll(E @NotNull [] values) {
+        ImmutableVectors.VectorBuilder<E> builder = new ImmutableVectors.VectorBuilder<>();
+        builder.initFrom(this);
+        builder.addAll(values);
+        return builder.build();
+    }
+
+    @Override
+    public @NotNull ImmutableVector<E> appendedAll(@NotNull Iterable<? extends E> values) {
+        ImmutableVectors.VectorBuilder<E> builder = new ImmutableVectors.VectorBuilder<>();
+        builder.initFrom(this);
+        builder.addAll(values);
+        return builder.build();
+    }
+
+    @Override
+    public @NotNull ImmutableVector<E> prepended(E value) {
+        ImmutableVectors.VectorBuilder<E> builder = new ImmutableVectors.VectorBuilder<>();
+        builder.add(value);
+        builder.addVector(this);
+        return builder.build();
+    }
+
+    @Override
+    public @NotNull ImmutableVector<E> prependedAll(E @NotNull [] values) {
+        ImmutableVectors.VectorBuilder<E> builder = new ImmutableVectors.VectorBuilder<>();
+        builder.addAll(values);
+        builder.addVector(this);
+        return builder.build();
+    }
+
+    @Override
+    public @NotNull ImmutableVector<E> prependedAll(@NotNull Iterable<? extends E> values) {
+        ImmutableVectors.VectorBuilder<E> builder = new ImmutableVectors.VectorBuilder<>();
+        builder.addAll(values);
+        builder.addVector(this);
+        return builder.build();
+    }
+
+    //endregion
+
+
+    @Override
+    public @NotNull ImmutableVector<E> drop(int n) {
+        return dropImpl(n);
+    }
+
+    @Override
+    public @NotNull ImmutableVector<E> dropWhile(@NotNull Predicate<? super E> predicate) {
+        return dropWhileImpl(predicate);
+    }
+
+    @Override
+    public @NotNull ImmutableVector<E> take(int n) {
+        return takeImpl(n);
+    }
+
+    @Override
+    public @NotNull ImmutableVector<E> takeWhile(@NotNull Predicate<? super E> predicate) {
+        return takeWhileImpl(predicate);
+    }
+
+    @Override
+    public @NotNull ImmutableVector<E> updated(int index, E newValue) {
+        return updatedImpl(index, newValue);
+    }
+
+    abstract ImmutableVector<E> filterImpl(Predicate<? super E> predicate, boolean isFlipped);
+
+    @Override
+    public final @NotNull ImmutableVector<E> filter(@NotNull Predicate<? super E> predicate) {
+        return filterImpl(predicate, false);
+    }
+
+    @Override
+    public final @NotNull ImmutableVector<E> filterNot(@NotNull Predicate<? super E> predicate) {
+        return filterImpl(predicate, true);
+    }
+
+    @Override
+    public @NotNull <U> ImmutableVector<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+        return mapImpl(mapper);
+    }
+
+    @Override
+    public @NotNull <U> ImmutableVector<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+        return mapIndexedImpl(mapper);
+    }
 
     @Override
     public final @NotNull ImmutableVector<E> toImmutableVector() {
@@ -145,6 +316,21 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
         public final ImmutableVectors.VectorBuilder<E> mergeBuilder(ImmutableVectors.@NotNull VectorBuilder<E> builder1, ImmutableVectors.@NotNull VectorBuilder<E> builder2) {
             builder1.addVector(builder2.build());
             return builder1;
+        }
+
+        @Override
+        public final ImmutableVector<E> from(E @NotNull [] values) {
+            return ImmutableVector.from(values);
+        }
+
+        @Override
+        public final ImmutableVector<E> from(@NotNull Iterable<? extends E> values) {
+            return ImmutableVector.from(values);
+        }
+
+        @Override
+        public final ImmutableVector<E> from(@NotNull Iterator<? extends E> it) {
+            return ImmutableVector.from(it);
         }
     }
 

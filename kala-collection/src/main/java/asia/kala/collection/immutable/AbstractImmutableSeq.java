@@ -176,15 +176,17 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
 
     static <E, T, Builder> T prependedAll(
             @NotNull ImmutableSeq<? extends E> seq,
-            @NotNull Iterable<? extends E> prefix,
+            E @NotNull [] values,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
-        Objects.requireNonNull(prefix);
+        Objects.requireNonNull(values);
 
         Builder builder = factory.newBuilder();
 
-        factory.sizeHint(builder, prefix);
-        factory.addAllToBuilder(builder, prefix);
+        factory.sizeHint(builder, values.length);
+        for (E e : values) {
+            factory.addToBuilder(builder, e);
+        }
 
         factory.sizeHint(builder, seq);
         factory.addAllToBuilder(builder, seq);
@@ -194,17 +196,15 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
 
     static <E, T, Builder> T prependedAll(
             @NotNull ImmutableSeq<? extends E> seq,
-            E @NotNull [] prefix,
+            @NotNull Iterable<? extends E> values,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
-        Objects.requireNonNull(prefix);
+        Objects.requireNonNull(values);
 
         Builder builder = factory.newBuilder();
 
-        factory.sizeHint(builder, prefix.length);
-        for (E e : prefix) {
-            factory.addToBuilder(builder, e);
-        }
+        factory.sizeHint(builder, values);
+        factory.addAllToBuilder(builder, values);
 
         factory.sizeHint(builder, seq);
         factory.addAllToBuilder(builder, seq);
@@ -230,38 +230,38 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
 
     static <E, T, Builder> T appendedAll(
             @NotNull ImmutableSeq<? extends E> seq,
-            @NotNull Iterable<? extends E> postfix,
+            E @NotNull [] values,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
-        Objects.requireNonNull(postfix);
+        Objects.requireNonNull(values);
 
         Builder builder = factory.newBuilder();
 
         factory.sizeHint(builder, seq);
         factory.addAllToBuilder(builder, seq);
 
-        factory.sizeHint(builder, postfix);
-        factory.addAllToBuilder(builder, postfix);
+        factory.sizeHint(builder, values.length);
+        for (E e : values) {
+            factory.addToBuilder(builder, e);
+        }
 
         return factory.build(builder);
     }
 
     static <E, T, Builder> T appendedAll(
             @NotNull ImmutableSeq<? extends E> seq,
-            E @NotNull [] postfix,
+            @NotNull Iterable<? extends E> values,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
-        Objects.requireNonNull(postfix);
+        Objects.requireNonNull(values);
 
         Builder builder = factory.newBuilder();
 
         factory.sizeHint(builder, seq);
         factory.addAllToBuilder(builder, seq);
 
-        factory.sizeHint(builder, postfix.length);
-        for (E e : postfix) {
-            factory.addToBuilder(builder, e);
-        }
+        factory.sizeHint(builder, values);
+        factory.addAllToBuilder(builder, values);
 
         return factory.build(builder);
     }
@@ -349,33 +349,34 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
     }
 
     @NotNull
-    protected final <To extends ImmutableSeq<E>> To prependedImpl(E element) {
-        return (To) AbstractImmutableSeq.prepended(this, element, iterableFactory());
+    protected final <To extends ImmutableSeq<E>> To appendedImpl(E value) {
+        return (To) AbstractImmutableSeq.prepended(this, value, iterableFactory());
     }
 
     @NotNull
-    protected final <To extends ImmutableSeq<E>> To prependedAllImpl(@NotNull Iterable<? extends E> prefix) {
-        return (To) AbstractImmutableSeq.prependedAll(this, prefix, iterableFactory());
+    protected final <To extends ImmutableSeq<E>> To appendedAllImpl(@NotNull Iterable<? extends E> values) {
+        return (To) AbstractImmutableSeq.appendedAll(this, values, iterableFactory());
     }
 
     @NotNull
-    protected final <To extends ImmutableSeq<E>> To prependedAllImpl(E @NotNull [] prefix) {
-        return (To) AbstractImmutableSeq.prependedAll(this, prefix, iterableFactory());
+    protected final <To extends ImmutableSeq<E>> To appendedAllImpl(E @NotNull [] values) {
+        return (To) AbstractImmutableSeq.appendedAll(this, values, iterableFactory());
+    }
+
+
+    @NotNull
+    protected final <To extends ImmutableSeq<E>> To prependedImpl(E value) {
+        return (To) AbstractImmutableSeq.prepended(this, value, iterableFactory());
     }
 
     @NotNull
-    protected final <To extends ImmutableSeq<E>> To appendedImpl(E element) {
-        return (To) AbstractImmutableSeq.prepended(this, element, iterableFactory());
+    protected final <To extends ImmutableSeq<E>> To prependedAllImpl(@NotNull Iterable<? extends E> values) {
+        return (To) AbstractImmutableSeq.prependedAll(this, values, iterableFactory());
     }
 
     @NotNull
-    protected final <To extends ImmutableSeq<E>> To appendedAllImpl(@NotNull Iterable<? extends E> postfix) {
-        return (To) AbstractImmutableSeq.appendedAll(this, postfix, iterableFactory());
-    }
-
-    @NotNull
-    protected final <To extends ImmutableSeq<E>> To appendedAllImpl(E @NotNull [] postfix) {
-        return (To) AbstractImmutableSeq.appendedAll(this, postfix, iterableFactory());
+    protected final <To extends ImmutableSeq<E>> To prependedAllImpl(E @NotNull [] values) {
+        return (To) AbstractImmutableSeq.prependedAll(this, values, iterableFactory());
     }
 
     @NotNull

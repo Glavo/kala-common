@@ -323,41 +323,6 @@ public interface Seq<@Covariant E> extends Collection<E> {
 
     //endregion
 
-    //region Copy Operations
-
-    @Contract(pure = true)
-    @Flow(sourceIsContainer = true, target = "array", targetIsContainer = true)
-    default int copyToArray(Object @NotNull [] array) {
-        return copyToArray(array, 0);
-    }
-
-    @Contract(pure = true)
-    @Flow(sourceIsContainer = true, target = "array", targetIsContainer = true)
-    default int copyToArray(Object @NotNull [] array, int start) {
-        int arrayLength = array.length; // implicit null check of array
-        Iterator<E> it = iterator();
-
-        int i = start;
-        while (i < arrayLength && it.hasNext()) {
-            array[i++] = it.next();
-        }
-        return i - start;
-    }
-
-    @Contract(pure = true)
-    @Flow(sourceIsContainer = true, target = "array", targetIsContainer = true)
-    default int copyToArray(Object @NotNull [] array, int start, int length) {
-        Iterator<E> it = iterator();
-        int i = start;
-        int end = start + Math.min(length, array.length - start); // implicit null check of array
-        while (i < end && it.hasNext()) {
-            array[i++] = it.next();
-        }
-        return i - start;
-    }
-
-    //endregion
-
     //region Traversable Operations
 
     default void forEachIndexed(@NotNull IndexedConsumer<? super E> action) {

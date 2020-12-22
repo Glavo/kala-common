@@ -114,6 +114,7 @@
   * `lastIndexWhere(Predicate<E>)`
   * `lastIndexWhere(Predicate<E>, int)`
 * Misc Operations
+  * `slice(int, int)`
   * `drop(int)`
   * `dropWhile(Predicate<E>)`
   * `take(int)`

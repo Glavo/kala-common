@@ -5,6 +5,7 @@ import asia.kala.control.Option;
 import asia.kala.factory.CollectionFactory;
 import asia.kala.function.CheckedConsumer;
 import asia.kala.iterator.Iterators;
+import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -314,6 +315,41 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
      */
     default @NotNull Option<T> reduceRightOption(@NotNull BiFunction<? super T, ? super T, ? extends T> op) {
         return Iterators.reduceRightOption(iterator(), op);
+    }
+
+    //endregion
+
+    //region Copy Operations
+
+    @Contract(pure = true)
+    @Flow(sourceIsContainer = true, target = "array", targetIsContainer = true)
+    default int copyToArray(Object @NotNull [] array) {
+        return copyToArray(array, 0);
+    }
+
+    @Contract(pure = true)
+    @Flow(sourceIsContainer = true, target = "array", targetIsContainer = true)
+    default int copyToArray(Object @NotNull [] array, int start) {
+        int arrayLength = array.length; // implicit null check of array
+        Iterator<T> it = iterator();
+
+        int i = start;
+        while (i < arrayLength && it.hasNext()) {
+            array[i++] = it.next();
+        }
+        return i - start;
+    }
+
+    @Contract(pure = true)
+    @Flow(sourceIsContainer = true, target = "array", targetIsContainer = true)
+    default int copyToArray(Object @NotNull [] array, int start, int length) {
+        Iterator<T> it = iterator();
+        int i = start;
+        int end = start + Math.min(length, array.length - start); // implicit null check of array
+        while (i < end && it.hasNext()) {
+            array[i++] = it.next();
+        }
+        return i - start;
     }
 
     //endregion

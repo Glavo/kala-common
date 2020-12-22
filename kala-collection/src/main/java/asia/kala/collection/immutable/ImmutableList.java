@@ -211,25 +211,25 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
     }
 
     @Override
-    public final @NotNull ImmutableList<E> appendedAll(E @NotNull [] postfix) {
-        if (postfix.length == 0) { // implicit null check of postfix
+    public final @NotNull ImmutableList<E> appendedAll(E @NotNull [] values) {
+        if (values.length == 0) { // implicit null check of postfix
             return this;
         }
         if (isEmpty()) {
-            return from(postfix);
+            return from(values);
         }
-        return appendedAllImpl(postfix);
+        return appendedAllImpl(values);
     }
 
     @Override
-    public final @NotNull ImmutableList<E> appendedAll(@NotNull Iterable<? extends E> postfix) {
-        if (AnyTraversable.knownSize(postfix) == 0) {
+    public final @NotNull ImmutableList<E> appendedAll(@NotNull Iterable<? extends E> values) {
+        if (AnyTraversable.knownSize(values) == 0) {
             return this;
         }
         if (isEmpty()) {
-            return from(postfix);
+            return from(values);
         }
-        return appendedAllImpl(postfix);
+        return appendedAllImpl(values);
     }
 
     @Override
@@ -238,28 +238,28 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
     }
 
     @Override
-    public final @NotNull ImmutableList<E> prependedAll(E @NotNull [] prefix) {
-        int prefixLength = prefix.length; // implicit null check of prefix
+    public final @NotNull ImmutableList<E> prependedAll(E @NotNull [] values) {
+        int prefixLength = values.length; // implicit null check of prefix
         ImmutableList<E> result = this;
         for (int i = prefixLength - 1; i >= 0; i--) {
-            result = result.cons(prefix[i]);
+            result = result.cons(values[i]);
         }
         return result;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public final @NotNull ImmutableList<E> prependedAll(@NotNull Iterable<? extends E> prefix) {
-        if (prefix instanceof IndexedSeq<?>) {
-            IndexedSeq<E> seq = (IndexedSeq<E>) prefix;
+    public final @NotNull ImmutableList<E> prependedAll(@NotNull Iterable<? extends E> values) {
+        if (values instanceof IndexedSeq<?>) {
+            IndexedSeq<E> seq = (IndexedSeq<E>) values;
             ImmutableList<E> res = this;
             for (int i = seq.size() - 1; i >= 0; i--) {
                 res = res.cons(seq.get(i));
             }
             return res;
         }
-        if (prefix instanceof java.util.List<?>) {
-            final List<E> list = (List<E>) prefix;
+        if (values instanceof java.util.List<?>) {
+            final List<E> list = (List<E>) values;
             final int listSize = list.size();
 
             if (listSize == 0) {
@@ -279,7 +279,7 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
             }
             return res;
         }
-        Iterator<? extends E> it = prefix.iterator(); // implicit null check of prefix
+        Iterator<? extends E> it = values.iterator(); // implicit null check of prefix
         if (!it.hasNext()) {
             return this;
         }

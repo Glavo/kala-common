@@ -129,11 +129,18 @@ public interface Buffer<E> extends MutableSeq<E> {
 
     @Contract(mutates = "this")
     default void appendAll(
-            @NotNull @Flow(sourceIsContainer = true, targetIsContainer = true) Iterable<? extends E> collection
+            @NotNull @Flow(sourceIsContainer = true, targetIsContainer = true) Iterable<? extends E> values
     ) {
-        Objects.requireNonNull(collection);
-        for (E e : collection) {
-            this.append(e);
+        Objects.requireNonNull(values);
+        if (values == this) {
+            for (E e : this.toImmutableSeq()) { // avoid mutating under our own iterator
+                //noinspection ConstantConditions
+                this.append(e);
+            }
+        } else {
+            for (E e : values) {
+                this.append(e);
+            }
         }
     }
 
@@ -151,6 +158,15 @@ public interface Buffer<E> extends MutableSeq<E> {
             @NotNull @Flow(sourceIsContainer = true, targetIsContainer = true) Iterable<? extends E> values
     ) {
         Objects.requireNonNull(values);
+        if (values == this) {
+            Iterator<?> iterator = ((Seq<?>) values).toImmutableArray().reverseIterator(); // avoid mutating under our own iterator
+            while (iterator.hasNext()) {
+                //noinspection ConstantConditions
+                this.prepend((E) iterator.next());
+            }
+            return;
+        }
+
         if (values instanceof Seq<?>) {
             Iterator<?> iterator = ((Seq<?>) values).reverseIterator();
             while (iterator.hasNext()) {
@@ -181,20 +197,26 @@ public interface Buffer<E> extends MutableSeq<E> {
     @Contract(mutates = "this")
     default void insertAll(
             int index,
-            @NotNull @Flow(sourceIsContainer = true, targetIsContainer = true) Iterable<? extends E> values
-    ) {
-        Objects.requireNonNull(values);
-
-        for (E e : values) {
-            insert(index++, e);
-        }
+            @Flow(sourceIsContainer = true, targetIsContainer = true) E @NotNull [] values) {
+        insertAll(index, ArraySeq.wrap(values));
     }
 
     @Contract(mutates = "this")
     default void insertAll(
             int index,
-            @Flow(sourceIsContainer = true, targetIsContainer = true) E @NotNull [] values) {
-        insertAll(index, ArraySeq.wrap(values));
+            @NotNull @Flow(sourceIsContainer = true, targetIsContainer = true) Iterable<? extends E> values
+    ) {
+        Objects.requireNonNull(values);
+        if (values == this) {
+            for (E e : this.toImmutableSeq()) { // avoid mutating under our own iterator
+                //noinspection ConstantConditions
+                insert(index++, e);
+            }
+        } else {
+            for (E e : values) {
+                insert(index++, e);
+            }
+        }
     }
 
     @Contract(mutates = "this")

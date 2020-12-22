@@ -1,15 +1,18 @@
 package asia.kala.collection.immutable;
 
 import asia.kala.function.IndexedConsumer;
+import asia.kala.function.IndexedFunction;
 import asia.kala.iterator.AbstractIterator;
 import asia.kala.iterator.Iterators;
 import asia.kala.traversable.JavaArray;
+import asia.kala.traversable.Traversable;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static asia.kala.collection.Seq.checkElementIndex;
 import static java.util.Arrays.copyOf;
@@ -22,6 +25,7 @@ final class ImmutableVectors {
         static final Vector0 INSTANCE = new Vector0();
 
         private Vector0() {
+            super(JavaArray.EMPTY_OBJECT_ARRAY);
         }
 
         @Override
@@ -64,6 +68,45 @@ final class ImmutableVectors {
             throw new IndexOutOfBoundsException();
         }
 
+        //region Addition Operations
+
+        @Override
+        public final @NotNull ImmutableVector<Object> appendedAll(Object @NotNull [] values) {
+            return from(values);
+        }
+
+        @Override
+        public final @NotNull ImmutableVector<Object> appendedAll(@NotNull Iterable<?> values) {
+            return from(values);
+        }
+
+        @Override
+        public final @NotNull ImmutableVector<Object> prependedAll(@NotNull Iterable<?> values) {
+            return from(values);
+        }
+
+        @Override
+        public final @NotNull ImmutableVector<Object> prependedAll(Object @NotNull [] values) {
+            return from(values);
+        }
+
+        //endregion
+
+        @Override
+        final ImmutableVector<Object> filterImpl(Predicate<? super Object> predicate, boolean isFlipped) {
+            return this;
+        }
+
+        @Override
+        public final @NotNull <U> ImmutableVector<U> map(@NotNull Function<? super Object, ? extends U> mapper) {
+            return (ImmutableVector<U>) this;
+        }
+
+        @Override
+        public @NotNull <U> ImmutableVector<U> mapIndexed(@NotNull IndexedFunction<? super Object, ? extends U> mapper) {
+            return (ImmutableVector<U>) this;
+        }
+
         @Override
         public final void forEach(@NotNull Consumer<? super Object> action) {
             // do nothing
@@ -82,10 +125,8 @@ final class ImmutableVectors {
     final static class Vector1<E> extends ImmutableVector<E> {
         private static final long serialVersionUID = -2956354586637109936L;
 
-        private final Object @NotNull [] elements;
-
-        Vector1(Object @NotNull [] elements) {
-            this.elements = elements;
+        Vector1(Object[] prefix1) {
+            super(prefix1);
         }
 
         @Override
@@ -95,22 +136,22 @@ final class ImmutableVectors {
 
         @Override
         final Object[] vectorSlice(int idx) {
-            return elements;
+            return prefix1;
         }
 
         @Override
         final int vectorSlicePrefixLength(int idx) {
-            return elements.length;
+            return prefix1.length;
         }
 
         @Override
         public final @NotNull Iterator<E> iterator() {
-            return (Iterator<E>) JavaArray.iterator(elements);
+            return (Iterator<E>) JavaArray.iterator(prefix1);
         }
 
         @Override
         public final @NotNull Spliterator<E> spliterator() {
-            return (Spliterator<E>) Arrays.spliterator(elements);
+            return (Spliterator<E>) Arrays.spliterator(prefix1);
         }
 
         @Override
@@ -120,42 +161,183 @@ final class ImmutableVectors {
 
         @Override
         public final int size() {
-            return elements.length;
+            return prefix1.length;
         }
 
         @Override
         public final E get(int index) {
             try {
-                return (E) elements[index];
+                return (E) prefix1[index];
             } catch (ArrayIndexOutOfBoundsException e) {
                 throw new IndexOutOfBoundsException();
             }
         }
 
+        //region Addition Operations
+
+
+        @Override
+        public final @NotNull ImmutableVector<E> appended(E value) {
+            final Object[] prefix1 = this.prefix1;
+            final int len1 = prefix1.length;
+            if (len1 < WIDTH) {
+                return new Vector1(copyAppend1(prefix1, value));
+            } else {
+                return new Vector2(prefix1, WIDTH, empty2, wrap1(value), WIDTH + 1);
+            }
+        }
+
+        @Override
+        public final @NotNull ImmutableVector<E> appendedAll(E @NotNull [] values) {
+            final int vl = values.length;
+            if (vl == 0) {
+                return this;
+            }
+
+            final Object[] prefix1 = this.prefix1;
+            final int size = prefix1.length;
+
+            if (size + vl <= WIDTH) {
+                Object[] res = new Object[size + vl];
+                System.arraycopy(prefix1, 0, res, 0, size);
+                System.arraycopy(values, 0, res, size, vl);
+                return new Vector1<>(res);
+            }
+
+            VectorBuilder<E> builder = new VectorBuilder<>();
+            builder.initFrom(this);
+            builder.addAll(values);
+            return builder.build();
+        }
+
+        @Override
+        public final @NotNull ImmutableVector<E> prepended(E value) {
+            final Object[] prefix1 = this.prefix1;
+            ;
+            final int len1 = prefix1.length;
+            if (len1 < WIDTH) {
+                return new Vector1(copyPrepend1(value, prefix1));
+            } else {
+                return new Vector2(wrap1(value), 1, empty2, prefix1, len1 + 1);
+            }
+        }
+
+        @Override
+        public final @NotNull ImmutableVector<E> prependedAll(E @NotNull [] values) {
+            int vl = values.length;
+            if (vl == 0) {
+                return this;
+            }
+            final Object[] prefix1 = this.prefix1;
+            final int size = prefix1.length;
+
+            if (size + vl <= WIDTH) {
+                Object[] res = new Object[vl + size];
+                System.arraycopy(values, 0, res, 0, vl);
+                System.arraycopy(prefix1, 0, res, vl, size);
+                return new Vector1<>(res);
+            }
+
+            VectorBuilder<E> builder = new VectorBuilder<>();
+            builder.addAll(values);
+            builder.addVector(this);
+            return builder.build();
+        }
+
+        //endregion
+
+        @Override
+        public final E first() {
+            return (E) prefix1[0];
+        }
+
+        @Override
+        public final E last() {
+            return (E) prefix1[prefix1.length - 1];
+        }
+
+        @Override
+        public final @NotNull ImmutableVector<E> updated(int index, E newValue) {
+            final Object[] prefix1 = this.prefix1;
+            final int size = prefix1.length;
+            checkElementIndex(index, size);
+            Object[] res = prefix1.clone();
+            res[index] = newValue;
+            return new ImmutableVectors.Vector1<>(res);
+        }
+
+        @Override
+        final ImmutableVector<E> filterImpl(Predicate<? super E> predicate, boolean isFlipped) {
+            final Object[] prefix1 = this.prefix1;
+            final int size = prefix1.length;
+
+            Object[] temp = new Object[size];
+            int c = 0;
+
+            for (Object value : prefix1) {
+                E v = (E) value;
+                if (predicate.test(v) != isFlipped) {
+                    temp[c++] = v;
+                }
+            }
+
+            if (c == 0) {
+                return ImmutableVector.empty();
+            }
+            if (c == size) {
+                return this;
+            }
+
+            return new Vector1<>(Arrays.copyOf(temp, c));
+        }
+
+        @Override
+        public final @NotNull <U> ImmutableVector<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+            final Object[] prefix1 = this.prefix1;
+            final int size = prefix1.length;
+
+            Object[] res = new Object[size];
+            for (int i = 0; i < size; i++) {
+                res[i] = mapper.apply((E) prefix1[i]);
+            }
+            return new Vector1<>(res);
+        }
+
+        @Override
+        public final @NotNull <U> ImmutableVector<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+            final Object[] prefix1 = this.prefix1;
+            final int size = prefix1.length;
+
+            Object[] res = new Object[size];
+            for (int i = 0; i < size; i++) {
+                res[i] = mapper.apply(i, (E) prefix1[i]);
+            }
+            return new Vector1<>(res);
+        }
+
         @Override
         public final void forEach(@NotNull Consumer<? super E> action) {
-            for (Object element : elements) {
+            for (Object element : prefix1) {
                 action.accept((E) element);
             }
         }
 
         @Override
         public final void forEachIndexed(@NotNull IndexedConsumer<? super E> action) {
-            final Object[] elements = this.elements;
-            final int size = elements.length;
+            final Object[] prefix1 = this.prefix1;
+            final int size = prefix1.length;
             for (int i = 0; i < size; i++) {
-                action.accept(i, (E) elements[i]);
+                action.accept(i, (E) prefix1[i]);
             }
         }
     }
 
     static abstract class BigVector<E> extends ImmutableVector<E> {
-        final Object[] prefix1;
         final Object[] suffix1;
         final int length0;
 
         BigVector(Object[] prefix1, Object[] suffix1, int length0) {
-            this.prefix1 = prefix1;
+            super(prefix1);
             this.suffix1 = suffix1;
             this.length0 = length0;
         }
@@ -178,6 +360,68 @@ final class ImmutableVectors {
         @Override
         public final int size() {
             return length0;
+        }
+
+        @Override
+        public final E first() {
+            return (E) prefix1[0];
+        }
+
+        @Override
+        public final E last() {
+            return (E) suffix1[suffix1.length - 1];
+        }
+
+        @Override
+        final ImmutableVector<E> filterImpl(Predicate<? super E> predicate, boolean isFlipped) {
+            final Object[] prefix1 = this.prefix1;
+            int i = 0;
+            final int len = prefix1.length;
+            while (i != len) {
+                if (predicate.test((E) prefix1[i]) == isFlipped) {
+                    // each 1 bit indicates that index passes the filter.
+                    // all indices < i are also assumed to pass the filter
+                    int bitmap = 0;
+                    int j = i + 1;
+                    while (j < len) {
+                        if (predicate.test((E) prefix1[j]) != isFlipped) {
+                            bitmap |= (1 << j);
+                        }
+                        ++j;
+                    }
+                    final int newLen = i + Integer.bitCount(bitmap);
+
+                    VectorBuilder<E> b = new VectorBuilder<>();
+                    int k = 0;
+                    while (k < i) {
+                        b.add((E) prefix1[k]);
+                        ++k;
+                    }
+                    k = i + 1;
+                    while (i != newLen) {
+                        if (((1 << k) & bitmap) != 0) {
+                            b.add((E) prefix1[k]);
+                            i += 1;
+                        }
+                        ++k;
+                    }
+                    this.forEach((v) -> {
+                        if (predicate.test(v) != isFlipped) {
+                            b.add(v);
+                        }
+                    });
+                    return b.build();
+                }
+                ++i;
+            }
+            VectorBuilder<E> b = new VectorBuilder<>();
+            b.initFrom(prefix1);
+            this.forEach(v -> {
+                if (predicate.test(v) != isFlipped) {
+                    b.add(v);
+                }
+            });
+            return b.build();
         }
 
         @Override
@@ -328,7 +572,7 @@ final class ImmutableVectors {
         return ac;
     }
 
-    static Object[] copyPrepend1(Object[] a, Object elem) {
+    static Object[] copyPrepend1(Object elem, Object[] a) {
         Object[] ac = new Object[a.length + 1];
         System.arraycopy(a, 0, ac, 1, a.length);
         ac[0] = elem;
@@ -427,6 +671,25 @@ final class ImmutableVectors {
     }
 
     static Object[] append1IfSpace(Object[] suffix1, Iterable<?> xs) {
+        if (xs instanceof Traversable<?>) {
+            Traversable<?> it = (Traversable<?>) xs;
+            if (it.sizeCompare(WIDTH - suffix1.length) <= 0) {
+                int s = it.size();
+                if (s == 0) {
+                    return null;
+                }
+                if (s == 1) {
+                    return copyAppend(suffix1, it.iterator().next()); // TODO: opt
+                }
+
+                Object[] suffix1b = copyOf(suffix1, suffix1.length + s);
+                //noinspection ResultOfMethodCallIgnored
+                it.copyToArray(suffix1b, suffix1.length);
+                return suffix1b;
+            } else {
+                return null;
+            }
+        }
         return null; // TODO
     }
 
@@ -1026,8 +1289,8 @@ final class ImmutableVectors {
                 case 1: {
                     Vector1<?> v1 = (Vector1<?>) v;
                     depth = 1;
-                    setLen(v1.elements.length);
-                    a1 = copyOrUse(v1.elements, 0, WIDTH);
+                    setLen(v1.prefix1.length);
+                    a1 = copyOrUse(v1.prefix1, 0, WIDTH);
                     break;
                 }
                 case 3: {
@@ -1173,6 +1436,32 @@ final class ImmutableVectors {
                     forEachRec(dim - 2, slice, (Consumer<Object[]>) this::addArr1);
                 }
                 ++sliceIdx;
+            }
+        }
+
+        void addAll(Object[] xs) {
+            for (Object e : xs) {
+                add((E) e);
+            }
+        }
+
+        void addAll(Iterable<? extends E> xs) {
+            for (E e : xs) {
+                add(e);
+            }
+        }
+
+        void addAll(Traversable<? extends E> xs) {
+            if (xs instanceof ImmutableVector<?>) {
+                ImmutableVector<E> v = (ImmutableVector<E>) xs;
+                if (len1 == 0 && lenRest == 0) {
+                    initFrom(v);
+                } else {
+                    addVector(v);
+                }
+            }
+            for (E e : xs) {
+                add(e);
             }
         }
 

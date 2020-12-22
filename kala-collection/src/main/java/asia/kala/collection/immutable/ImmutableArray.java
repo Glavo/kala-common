@@ -192,6 +192,10 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
 
     //endregion
 
+    final Object @NotNull [] getArray() {
+        return elements;
+    }
+
     //region Collection Operations
 
     @Override
@@ -225,29 +229,29 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableArray<E> appendedAll(E @NotNull [] postfix) {
-        if (postfix.length == 0) { // implicit null check of postfix
+    public final @NotNull ImmutableArray<E> appendedAll(E @NotNull [] values) {
+        if (values.length == 0) { // implicit null check of postfix
             return this;
         }
 
         final Object[] elements = this.elements;
         final int size = elements.length;
 
-        Object[] newValues = new Object[postfix.length + size];
+        Object[] newValues = new Object[values.length + size];
 
         System.arraycopy(elements, 0, newValues, 0, size);
-        System.arraycopy(postfix, 0, newValues, size, postfix.length);
+        System.arraycopy(values, 0, newValues, size, values.length);
 
         return new ImmutableArray<>(newValues);
     }
 
     @Override
-    public final @NotNull ImmutableArray<E> appendedAll(@NotNull Iterable<? extends E> postfix) {
-        Objects.requireNonNull(postfix);
+    public final @NotNull ImmutableArray<E> appendedAll(@NotNull Iterable<? extends E> values) {
+        Objects.requireNonNull(values);
 
-        Object[] data = postfix instanceof ImmutableArray<?>
-                ? ((ImmutableArray<?>) postfix).elements
-                : CollectionHelper.asArray(postfix);
+        Object[] data = values instanceof ImmutableArray<?>
+                ? ((ImmutableArray<?>) values).elements
+                : CollectionHelper.asArray(values);
         Object[] newValues = new Object[data.length + elements.length];
 
         System.arraycopy(elements, 0, newValues, 0, elements.length);
@@ -266,24 +270,24 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableArray<E> prependedAll(E @NotNull [] prefix) {
-        if (prefix.length == 0) { // implicit null check of prefix
+    public final @NotNull ImmutableArray<E> prependedAll(E @NotNull [] values) {
+        if (values.length == 0) { // implicit null check of prefix
             return this;
         }
 
-        Object[] newValues = new Object[prefix.length + elements.length];
-        System.arraycopy(prefix, 0, newValues, 0, prefix.length);
-        System.arraycopy(elements, 0, newValues, prefix.length, elements.length);
+        Object[] newValues = new Object[values.length + elements.length];
+        System.arraycopy(values, 0, newValues, 0, values.length);
+        System.arraycopy(elements, 0, newValues, values.length, elements.length);
 
         return new ImmutableArray<>(newValues);
     }
 
     @Override
-    public final @NotNull ImmutableArray<E> prependedAll(@NotNull Iterable<? extends E> prefix) {
-        Objects.requireNonNull(prefix);
+    public final @NotNull ImmutableArray<E> prependedAll(@NotNull Iterable<? extends E> values) {
+        Objects.requireNonNull(values);
 
-        Object[] data = prefix instanceof ImmutableArray<?> ?
-                ((ImmutableArray<?>) prefix).elements : CollectionHelper.asArray(prefix);
+        Object[] data = values instanceof ImmutableArray<?> ?
+                ((ImmutableArray<?>) values).elements : CollectionHelper.asArray(values);
         Object[] newValues = new Object[data.length + elements.length];
 
         System.arraycopy(data, 0, newValues, 0, data.length);

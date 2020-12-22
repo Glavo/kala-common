@@ -255,15 +255,15 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
     }
 
     @Override
-    public final void appendAll(@NotNull Iterable<? extends E> collection) {
-        Objects.requireNonNull(collection);
+    public final void appendAll(@NotNull Iterable<? extends E> values) {
+        Objects.requireNonNull(values);
 
-        int knowSize = AnyTraversable.knownSize(collection);
+        int knowSize = AnyTraversable.knownSize(values);
         if (knowSize > 0 && size + knowSize > elements.length) {
             grow(size + knowSize);
         }
 
-        for (E e : collection) {
+        for (E e : values) {
             this.append(e);
         }
     }
@@ -281,38 +281,38 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
     }
 
     @Override
-    public final void prependAll(@NotNull Iterable<? extends E> collection) {
-        Objects.requireNonNull(collection);
-        if (collection instanceof IndexedSeq<?>) {
-            IndexedSeq<?> seq = (IndexedSeq<?>) collection;
+    public final void prependAll(@NotNull Iterable<? extends E> values) {
+        Objects.requireNonNull(values);
+        if (values instanceof IndexedSeq<?>) {
+            IndexedSeq<?> seq = (IndexedSeq<?>) values;
             int s = seq.size();
-            Object[] values = elements;
-            if (values.length < size + s) {
-                values = growArray(size + s);
+            Object[] elements = this.elements;
+            if (elements.length < size + s) {
+                elements = growArray(size + s);
             }
-            System.arraycopy(elements, 0, values, s, size);
+            System.arraycopy(this.elements, 0, elements, s, size);
             for (int i = 0; i < s; i++) {
-                values[i] = seq.get(i);
+                elements[i] = seq.get(i);
             }
-            elements = values;
+            this.elements = elements;
             size += s;
             return;
         }
 
 
-        Object[] cv = CollectionHelper.asArray(collection);
+        Object[] cv = CollectionHelper.asArray(values);
         if (cv.length == 0) {
             return;
         }
 
-        Object[] values = elements;
-        if (values.length < size + cv.length) {
-            values = growArray(size + cv.length);
+        Object[] elements = this.elements;
+        if (elements.length < size + cv.length) {
+            elements = growArray(size + cv.length);
         }
 
-        System.arraycopy(elements, 0, values, cv.length, size);
-        System.arraycopy(cv, 0, values, 0, cv.length);
-        elements = values;
+        System.arraycopy(this.elements, 0, elements, cv.length, size);
+        System.arraycopy(cv, 0, elements, 0, cv.length);
+        this.elements = elements;
         size += cv.length;
     }
 
