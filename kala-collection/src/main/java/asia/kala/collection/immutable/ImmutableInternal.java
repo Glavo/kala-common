@@ -244,7 +244,7 @@ public final class ImmutableInternal {
         @Override
         public final @NotNull ImmutableList<E> toImmutableList() {
             aliased = true;
-            return first;
+            return first == null ? ImmutableList.empty() : first;
         }
 
         @Override

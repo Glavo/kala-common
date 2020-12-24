@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class LinkedBufferTest implements BufferTestTemplate {
+public final class LinkedBufferTest implements BufferTestTemplate {
 
     @Override
     public final <E> CollectionFactory<E, ?, LinkedBuffer<E>> factory() {
