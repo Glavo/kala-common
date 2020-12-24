@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class OptionBooleanTest {
     @Test
-    public void testSerialization() {
+    public void serializationTest() {
         assertAll(Stream.of(OptionBoolean.True, OptionBoolean.False, OptionBoolean.None).map(opt -> () -> {
             ByteArrayOutputStream out = new ByteArrayOutputStream(512);
             new ObjectOutputStream(out).writeObject(opt);

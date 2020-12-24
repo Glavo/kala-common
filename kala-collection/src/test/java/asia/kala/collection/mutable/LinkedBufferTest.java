@@ -1,13 +1,19 @@
 package asia.kala.collection.mutable;
 
+import asia.kala.factory.CollectionFactory;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class LinkedBufferTest {
+class LinkedBufferTest implements BufferTestTemplate {
+
+    @Override
+    public final <E> CollectionFactory<E, ?, LinkedBuffer<E>> factory() {
+        return LinkedBuffer.factory();
+    }
 
     @Test
-    void testRemove() {
+    void removeTest() {
         var buffer1 = LinkedBuffer.of("A", "B", "C");
 
         assertEquals("A", buffer1.removeAt(0));

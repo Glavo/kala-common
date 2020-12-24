@@ -22,7 +22,7 @@ public class BooleanIteratorTest {
     }
 
     @Test
-    public void testOf() {
+    public void ofTest() {
         assertAll(
                 () -> assertIteratorElements(BooleanIterator.of()),
                 () -> assertIteratorElements(BooleanIterator.of(true), true),
@@ -36,7 +36,7 @@ public class BooleanIteratorTest {
     }
 
     @Test
-    public void testSize() {
+    public void sizeTest() {
         assertAll(
                 () -> assertEquals(0, BooleanIterator.empty().size()),
                 () -> assertEquals(1, BooleanIterator.of(true).size()),
@@ -48,7 +48,7 @@ public class BooleanIteratorTest {
 
     @Test
     @SuppressWarnings({"BooleanConstructorCall", "deprecation"})
-    public void testContains() {
+    public void containsTest() {
         assertAll(
                 () -> assertFalse(BooleanIterator.empty().contains(true)),
                 () -> assertFalse(BooleanIterator.empty().contains(false)),
@@ -75,7 +75,7 @@ public class BooleanIteratorTest {
     }
 
     @Test
-    public void testSameElements() {
+    public void sameElementsTest() {
         assertAll(
                 () -> assertTrue(BooleanIterator.empty().sameElements(BooleanIterator.empty())),
                 () -> assertTrue(BooleanIterator.empty().sameElements(Iterators.empty())),
@@ -88,7 +88,7 @@ public class BooleanIteratorTest {
     }
 
     @Test
-    public void testDrop() {
+    public void dropTest() {
         assertAll(
                 () -> assertIteratorElements(BooleanIterator.empty().drop(0)),
                 () -> assertIteratorElements(BooleanIterator.empty().drop(1)),
@@ -111,7 +111,7 @@ public class BooleanIteratorTest {
     }
 
     @Test
-    public void testDropWhile() {
+    public void dropWhileTest() {
         assertAll(
                 () -> assertIteratorElements(BooleanIterator.empty().dropWhile(BooleanPredicate.IS_TRUE)),
                 () -> assertIteratorElements(BooleanIterator.empty().dropWhile(BooleanPredicate.IS_FALSE)),
@@ -124,7 +124,7 @@ public class BooleanIteratorTest {
     }
 
     @Test
-    public void testTake() {
+    public void takeTest() {
         assertAll(
                 () -> assertIteratorElements(BooleanIterator.empty().take(0)),
                 () -> assertIteratorElements(BooleanIterator.empty().take(-1)),
@@ -150,7 +150,7 @@ public class BooleanIteratorTest {
     }
 
     @Test
-    public void testTakeWhile() {
+    public void takeWhileTest() {
         assertAll(
                 () -> assertIteratorElements(BooleanIterator.empty().takeWhile(BooleanPredicate.IS_TRUE)),
                 () -> assertIteratorElements(BooleanIterator.empty().takeWhile(BooleanPredicate.IS_FALSE)),
@@ -164,7 +164,7 @@ public class BooleanIteratorTest {
     }
 
     @Test
-    public void testUpdated() {
+    public void updatedTest() {
         assertAll(
                 () -> assertIteratorElements(BooleanIterator.empty().updated(0, true)),
                 () -> assertIteratorElements(BooleanIterator.empty().updated(0, false)),
@@ -190,7 +190,7 @@ public class BooleanIteratorTest {
     }
 
     @Test
-    public void testPrepended() {
+    public void prependedTest() {
         assertAll(
                 () -> assertIteratorElements(BooleanIterator.empty().prepended(true), true),
                 () -> assertIteratorElements(BooleanIterator.empty().prepended(true).prepended(false), false, true),
@@ -200,7 +200,7 @@ public class BooleanIteratorTest {
     }
 
     @Test
-    public void testAppended() {
+    public void appendedTest() {
         assertAll(
                 () -> assertIteratorElements(BooleanIterator.empty().appended(true), true),
                 () -> assertIteratorElements(BooleanIterator.empty().appended(true).appended(false), true, false),
@@ -210,7 +210,7 @@ public class BooleanIteratorTest {
     }
 
     @Test
-    public void testMap() {
+    public void mapTest() {
         assertAll(
                 () -> assertIteratorElements(BooleanIterator.empty().map(b -> b)),
                 () -> assertIteratorElements(BooleanIterator.empty().map(b -> !b)),
@@ -222,7 +222,7 @@ public class BooleanIteratorTest {
     }
 
     @Test
-    public void testMapToObj() {
+    public void mapToObjTest() {
         assertAll(
                 () -> IteratorsTest.assertIteratorElements(BooleanIterator.empty().mapToObj(String::valueOf)),
                 () -> IteratorsTest.assertIteratorElements(BooleanIterator.of(true).mapToObj(String::valueOf), "true"),
@@ -238,7 +238,7 @@ public class BooleanIteratorTest {
     }
 
     @Test
-    public void testSpan() {
+    public void spanTest() {
         assertAll(
                 () -> {
                     Tuple2<BooleanIterator, BooleanIterator> t = BooleanIterator.empty().span(b -> b);
@@ -261,6 +261,4 @@ public class BooleanIteratorTest {
                 }
         );
     }
-
-
 }

@@ -21,7 +21,7 @@ public class OptionTest {
     };
 
     @Test
-    public void testSerialization() {
+    public void serializationTest() {
         assertAll(Arrays.stream(opts).map(opt -> () -> {
             ByteArrayOutputStream out = new ByteArrayOutputStream(512);
             new ObjectOutputStream(out).writeObject(opt);

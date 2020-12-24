@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class JavaArrayTest {
     @Test
-    void testWindowed() {
+    void windowedTest() {
         String[] values = {"A", "B", "C", "D", "E", "F", "G", "H"};
 
         assertArrayEquals(

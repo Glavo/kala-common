@@ -22,7 +22,7 @@ public class IteratorsTest {
     }
 
     @Test
-    public void testOf() {
+    public void ofTest() {
         assertAll(
                 () -> assertIteratorElements(Iterators.of()),
                 () -> assertIteratorElements(Iterators.of("foo"), "foo"),
@@ -32,7 +32,7 @@ public class IteratorsTest {
 
     @Test
     @SuppressWarnings({"unchecked", "RedundantSuppression"})
-    public void testConcat() {
+    public void concatTest() {
         assertAll(
                 () -> assertIteratorElements(Iterators.concat()),
                 () -> assertIteratorElements(Iterators.concat(Iterators.of("A")), "A"),
@@ -43,7 +43,7 @@ public class IteratorsTest {
     }
 
     @Test
-    public void testSize() {
+    public void sizeTest() {
         assertAll(
                 () -> assertEquals(0, Iterators.size(Iterators.empty())),
                 () -> assertEquals(1, Iterators.size(Iterators.of("A"))),
@@ -53,7 +53,7 @@ public class IteratorsTest {
     }
 
     @Test
-    public void testContains() {
+    public void containsTest() {
         assertAll(
                 () -> assertFalse(Iterators.contains(Iterators.empty(), "A")),
                 () -> assertFalse(Iterators.contains(Iterators.empty(), 0)),
@@ -71,7 +71,7 @@ public class IteratorsTest {
     }
 
     @Test
-    public void testSameElements() {
+    public void sameElementsTest() {
         assertAll(
                 () -> assertTrue(Iterators.sameElements(Iterators.empty(), Iterators.empty())),
                 () -> assertFalse(Iterators.sameElements(Iterators.of("A"), Iterators.empty())),
@@ -83,7 +83,7 @@ public class IteratorsTest {
     }
 
     @Test
-    public void testDrop() {
+    public void dropTest() {
         assertAll(
                 () -> {
                     assertIteratorElements(Iterators.drop(Iterators.empty(), 0));
@@ -108,7 +108,7 @@ public class IteratorsTest {
     }
 
     @Test
-    public void testDropWhile() {
+    public void dropWhileTest() {
         assertAll(
                 () -> assertIteratorElements(Iterators.dropWhile(Iterators.empty(), t -> false)),
                 () -> assertIteratorElements(Iterators.dropWhile(Iterators.empty(), t -> true)),
@@ -119,7 +119,7 @@ public class IteratorsTest {
     }
 
     @Test
-    public void testTake() {
+    public void takeTest() {
         assertAll(
                 () -> assertIteratorElements(Iterators.take(Iterators.empty(), 0)),
                 () -> assertIteratorElements(Iterators.take(Iterators.empty(), -1)),
@@ -138,7 +138,7 @@ public class IteratorsTest {
     }
 
     @Test
-    public void testTakeWhile() {
+    public void takeWhileTest() {
         assertAll(
                 () -> assertIteratorElements(Iterators.takeWhile(Iterators.empty(), s -> true)),
                 () -> assertIteratorElements(Iterators.takeWhile(Iterators.empty(), s -> false)),
@@ -151,7 +151,7 @@ public class IteratorsTest {
     }
 
     @Test
-    public void testUpdated() {
+    public void updatedTest() {
         assertAll(
                 () -> assertIteratorElements(Iterators.updated(Iterators.empty(), 0, "foo")),
                 () -> assertIteratorElements(Iterators.updated(Iterators.empty(), -1, "foo")),
@@ -200,7 +200,7 @@ public class IteratorsTest {
     }
 
     @Test
-    public void testPrepended() {
+    public void prependedTest() {
         assertAll(
                 () -> assertIteratorElements(Iterators.prepended(Iterators.empty(), "A"), "A"),
                 () -> assertIteratorElements(Iterators.prepended(Iterators.of("foo"), "A"), "A", "foo"),
@@ -209,7 +209,7 @@ public class IteratorsTest {
     }
 
     @Test
-    public void testAppended() {
+    public void appendedTest() {
         assertAll(
                 () -> assertIteratorElements(Iterators.appended(Iterators.empty(), "A"), "A"),
                 () -> assertIteratorElements(Iterators.appended(Iterators.of("foo"), "A"), "foo", "A"),
@@ -218,7 +218,7 @@ public class IteratorsTest {
     }
 
     @Test
-    public void testFilter() {
+    public void filterTest() {
         assertAll(
                 () -> assertIteratorElements(Iterators.filter(Iterators.empty(), t -> false)),
                 () -> assertIteratorElements(Iterators.filter(Iterators.empty(), t -> true)),
@@ -231,7 +231,7 @@ public class IteratorsTest {
     }
 
     @Test
-    public void testFilterNot() {
+    public void filterNotTest() {
         assertAll(
                 () -> assertIteratorElements(Iterators.filterNot(Iterators.empty(), t -> false)),
                 () -> assertIteratorElements(Iterators.filterNot(Iterators.empty(), t -> true)),
@@ -244,7 +244,7 @@ public class IteratorsTest {
     }
 
     @Test
-    public void testFilterNotNull() {
+    public void filterNotNullTest() {
         assertAll(
                 () -> assertIteratorElements(Iterators.filterNotNull(Iterators.empty())),
                 () -> assertIteratorElements(Iterators.filterNotNull(Iterators.of("foo", "bar")), "foo", "bar"),
@@ -256,7 +256,7 @@ public class IteratorsTest {
     }
 
     @Test
-    public void testMap() {
+    public void mapTest() {
         assertAll(
                 () -> assertIteratorElements(Iterators.map(Iterators.empty(), t -> "A")),
                 () -> assertIteratorElements(Iterators.map(Iterators.of("A"), String::length), 1),
@@ -266,7 +266,7 @@ public class IteratorsTest {
     }
 
     @Test
-    public void testSpan() {
+    public void spanTest() {
         assertAll(
                 () -> {
                     Tuple2<Iterator<Object>, Iterator<Object>> t = Iterators.span(Iterators.empty(), e -> true);
