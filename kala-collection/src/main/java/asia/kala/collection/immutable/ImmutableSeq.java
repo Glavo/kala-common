@@ -12,7 +12,9 @@ import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<E> {
     //region Narrow method
@@ -28,54 +30,66 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     //region Static Factories
 
     @NotNull
-    @SuppressWarnings("unchecked")
-    static <E> CollectionFactory<E, ?, ? extends ImmutableSeq<E>> factory() {
-        return (CollectionFactory<E, ?, ? extends ImmutableSeq<E>>) ImmutableSeqFactory.INSTANCE;
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    static <E> CollectionFactory<E, ?, ImmutableSeq<E>> factory() {
+        return (CollectionFactory) ImmutableVector.factory();
     }
 
     static <E> @NotNull ImmutableSeq<E> empty() {
-        return ImmutableSeq0.instance();
+        return ImmutableVector.empty();
     }
 
     static <E> @NotNull ImmutableSeq<E> of() {
-        return empty();
+        return ImmutableVector.of();
     }
 
     static <E> @NotNull ImmutableSeq<E> of(E value1) {
-        return new ImmutableSeq1<>(value1);
+        return ImmutableVector.of(value1);
     }
 
     static <E> @NotNull ImmutableSeq<E> of(E value1, E values2) {
-        return new ImmutableSeq2<>(value1, values2);
+        return ImmutableVector.of(value1, values2);
     }
 
     static <E> @NotNull ImmutableSeq<E> of(E value1, E values2, E value3) {
-        return new ImmutableSeq3<>(value1, values2, value3);
+        return ImmutableVector.of(value1, values2, value3);
     }
 
     static <E> @NotNull ImmutableSeq<E> of(E value1, E values2, E value3, E value4) {
-        return new ImmutableSeq4<>(value1, values2, value3, value4);
+        return ImmutableVector.of(value1, values2, value3, value4);
     }
 
     static <E> @NotNull ImmutableSeq<E> of(E value1, E values2, E value3, E value4, E value5) {
-        return new ImmutableSeq5<>(value1, values2, value3, value4, value5);
+        return ImmutableVector.of(value1, values2, value3, value4, value5);
     }
 
     @SafeVarargs
     static <E> @NotNull ImmutableSeq<E> of(E... values) {
-        return ImmutableSeq.<E>factory().from(values);
+        return ImmutableVector.from(values);
     }
 
     static <E> @NotNull ImmutableSeq<E> from(E @NotNull [] values) {
-        return ImmutableSeq.<E>factory().from(values);
+        return ImmutableVector.from(values);
     }
 
     static <E> @NotNull ImmutableSeq<E> from(@NotNull Iterable<? extends E> values) {
-        return ImmutableSeq.<E>factory().from(values);
+        return ImmutableVector.from(values);
     }
 
     static <E> @NotNull ImmutableSeq<E> from(@NotNull Iterator<? extends E> it) {
-        return ImmutableSeq.<E>factory().from(it);
+        return ImmutableVector.from(it);
+    }
+
+    static <E> @NotNull ImmutableSeq<E> fill(int n, E value) {
+        return ImmutableVector.fill(n, value);
+    }
+
+    static <E> @NotNull ImmutableSeq<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+        return ImmutableVector.fill(n, supplier);
+    }
+
+    static <E> @NotNull ImmutableSeq<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+        return ImmutableVector.fill(n, init);
     }
 
     //endregion

@@ -11,6 +11,7 @@ buildscript {
 
 plugins {
     `java-library`
+    // jacoco
 }
 
 allprojects {
@@ -21,6 +22,7 @@ allprojects {
         plugin("java-library")
         plugin("maven-publish")
         plugin("com.jfrog.bintray")
+        // plugin("jacoco")
     }
 
     repositories {
@@ -53,6 +55,18 @@ allprojects {
             }
         }
     }
+
+    /*
+    tasks.jacocoTestReport {
+        dependsOn(tasks.test)
+        reports {
+            xml.isEnabled = false
+            csv.isEnabled = false
+            html.isEnabled = true
+            html.destination = buildDir.resolve("jacocoHtml")
+        }
+    }
+    */
 
     if (this != rootProject) {
         java {

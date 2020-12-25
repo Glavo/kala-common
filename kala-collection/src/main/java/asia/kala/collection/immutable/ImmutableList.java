@@ -116,25 +116,16 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
         return res;
     }
 
-
     @SuppressWarnings("unchecked")
     public static <E> @NotNull ImmutableList<E> from(@NotNull Iterable<? extends E> values) {
-        Objects.requireNonNull(values);
-
         if (values instanceof ImmutableList<?>) {
-            return (ImmutableList<E>) values;
+            return ((ImmutableList<E>) values);
         }
-        if (values instanceof IndexedSeq<?>) {
-            return from((IndexedSeq<E>) values);
-        }
-        if (values instanceof java.util.List<?> && values instanceof RandomAccess) {
-            return fromRandomAccess((java.util.List<E>) values);
-        }
-        return from(values.iterator());
+        return from(values.iterator()); // implicit null check of values
     }
 
     public static <E> @NotNull ImmutableList<E> from(@NotNull Iterator<? extends E> it) {
-        if (!it.hasNext()) {
+        if (!it.hasNext()) { // implicit null check of it
             return empty();
         }
         Cons<E> cons = new Cons<>(it.next());
@@ -144,19 +135,45 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
 
     public static <E> @NotNull ImmutableList<E> fill(int n, E value) {
         ImmutableList<E> res = ImmutableList.nil();
-        while (n > 0) {
+        while (n-- > 0) {
             res = res.cons(value);
-            --n;
         }
         return res;
     }
 
     public static <E> @NotNull ImmutableList<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
-        return ImmutableList.<E>factory().fill(n, supplier);
+        if (n <= 0) {
+            return nil();
+        }
+        final Cons<E> res = new Cons<>(supplier.get());
+        Cons<E> tail = res;
+
+        while (--n > 0) {
+            Cons<E> c = new Cons<>(supplier.get());
+            tail.tail = c;
+            tail = c;
+        }
+        tail.tail = nil();
+
+        return res;
     }
 
-    public static <E> @NotNull ImmutableList<E> fill(int n, @NotNull IntFunction<? extends E> supplier) {
-        return ImmutableList.<E>factory().fill(n, supplier);
+    public static <E> @NotNull ImmutableList<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+        if (n <= 0) {
+            return nil();
+        }
+        final Cons<E> res = new Cons<>(init.apply(0));
+        Cons<E> tail = res;
+
+        int i = 0;
+        while (--n > 0) {
+            Cons<E> c = new Cons<>(init.apply(++i));
+            tail.tail = c;
+            tail = c;
+        }
+        tail.tail = nil();
+
+        return res;
     }
 
     //endregion
@@ -601,6 +618,26 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
         @Override
         public final ImmutableList<E> from(@NotNull Iterable<? extends E> values) {
             return ImmutableList.from(values);
+        }
+
+        @Override
+        public final ImmutableList<E> from(@NotNull Iterator<? extends E> it) {
+            return ImmutableList.from(it);
+        }
+
+        @Override
+        public final ImmutableList<E> fill(int n, E value) {
+            return ImmutableList.fill(n, value);
+        }
+
+        @Override
+        public final ImmutableList<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+            return ImmutableList.fill(n, supplier);
+        }
+
+        @Override
+        public final ImmutableList<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+            return ImmutableList.fill(n, init);
         }
 
         @Override

@@ -163,7 +163,7 @@ public interface CollectionFactory<E, Builder, @Covariant R>
         return build(builder);
     }
 
-    default R fill(int n, @NotNull IntFunction<? extends E> supplier) {
+    default R fill(int n, @NotNull IntFunction<? extends E> init) {
         if (n <= 0) {
             return empty();
         }
@@ -171,7 +171,7 @@ public interface CollectionFactory<E, Builder, @Covariant R>
         Builder builder = newBuilder();
         sizeHint(builder, n);
         for (int i = 0; i < n; i++) {
-            addToBuilder(builder, supplier.apply(i));
+            addToBuilder(builder, init.apply(i));
         }
         return build(builder);
     }

@@ -9,7 +9,6 @@ import asia.kala.function.IndexedConsumer;
 import asia.kala.traversable.JavaArray;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Range;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -130,14 +129,50 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
             return from(((java.util.Collection<E>) values));
         }
 
-        return ArrayBuffer.<E>from(values).toImmutableArray();
+        return new ArraySeq<>(ArrayBuffer.<E>from(values).toArray());
     }
 
     public static <E> @NotNull ArraySeq<E> from(@NotNull Iterator<? extends E> it) {
         if (!it.hasNext()) { // implicit null check of it
             return empty();
         }
-        return ArrayBuffer.<E>from(it).toImmutableArray();
+        return new ArraySeq<>(ArrayBuffer.<E>from(it).toArray());
+    }
+
+    public static <E> @NotNull ArraySeq<E> fill(int n, E value) {
+        if (n <= 0) {
+            return empty();
+        }
+
+        Object[] ans = new Object[n];
+        if (value != null) {
+            Arrays.fill(ans, value);
+        }
+        return new ArraySeq<>(ans);
+    }
+
+    public static <E> @NotNull ArraySeq<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+        if (n <= 0) {
+            return empty();
+        }
+
+        Object[] ans = new Object[n];
+        for (int i = 0; i < n; i++) {
+            ans[i] = supplier.get();
+        }
+        return new ArraySeq<>(ans);
+    }
+
+    public static <E> @NotNull ArraySeq<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+        if (n <= 0) {
+            return empty();
+        }
+
+        Object[] ans = new Object[n];
+        for (int i = 0; i < n; i++) {
+            ans[i] = init.apply(i);
+        }
+        return new ArraySeq<>(ans);
     }
 
     //endregion
@@ -571,10 +606,32 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
         @Override
         public final ArraySeq<E> from(E @NotNull [] values) {
-            if (values.length == 0) {
-                return empty();
-            }
-            return new ArraySeq<>(values.clone());
+            return ArraySeq.from(values);
+        }
+
+        @Override
+        public final ArraySeq<E> from(@NotNull Iterable<? extends E> values) {
+            return ArraySeq.from(values);
+        }
+
+        @Override
+        public final ArraySeq<E> from(@NotNull Iterator<? extends E> it) {
+            return ArraySeq.from(it);
+        }
+
+        @Override
+        public final ArraySeq<E> fill(int n, E value) {
+            return ArraySeq.fill(n, value);
+        }
+
+        @Override
+        public final ArraySeq<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+            return ArraySeq.fill(n, supplier);
+        }
+
+        @Override
+        public final ArraySeq<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+            return ArraySeq.fill(n, init);
         }
 
         @Override

@@ -25,7 +25,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
 public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq<E>
@@ -161,6 +163,65 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
         ImmutableVectors.VectorBuilder<E> builder = new ImmutableVectors.VectorBuilder<>();
         while (it.hasNext()) {
             builder.add(it.next());
+        }
+        return builder.build();
+    }
+
+    public static <E> @NotNull ImmutableVector<E> fill(int n, E value) {
+        if (n <= 0) {
+            return empty();
+        }
+        if (n <= ImmutableVectors.WIDTH) {
+            Object[] arr = new Object[n];
+            if (value != null) {
+                Arrays.fill(arr, value);
+            }
+            return new ImmutableVectors.Vector1<>(arr);
+        }
+
+        ImmutableVectors.VectorBuilder<E> builder = new ImmutableVectors.VectorBuilder<>();
+        while (n-- > 0) {
+            builder.add(value);
+        }
+        return builder.build();
+    }
+
+    public static <E> @NotNull ImmutableVector<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+        if (n <= 0) {
+            return empty();
+        }
+
+        if (n <= ImmutableVectors.WIDTH) {
+            Object[] arr = new Object[n];
+            for (int i = 0; i < n; i++) {
+                arr[i] = supplier.get();
+            }
+            return new ImmutableVectors.Vector1<>(arr);
+        }
+
+        ImmutableVectors.VectorBuilder<E> builder = new ImmutableVectors.VectorBuilder<>();
+        while (n-- > 0) {
+            builder.add(supplier.get());
+        }
+        return builder.build();
+    }
+
+    public static <E> @NotNull ImmutableVector<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+        if (n <= 0) {
+            return empty();
+        }
+
+        if (n <= ImmutableVectors.WIDTH) {
+            Object[] arr = new Object[n];
+            for (int i = 0; i < n; i++) {
+                arr[i] = init.apply(i);
+            }
+            return new ImmutableVectors.Vector1<>(arr);
+        }
+
+        ImmutableVectors.VectorBuilder<E> builder = new ImmutableVectors.VectorBuilder<>();
+        for (int i = 0; i < n; i++) {
+            builder.add(init.apply(i));
         }
         return builder.build();
     }
@@ -369,6 +430,21 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
         @Override
         public final ImmutableVector<E> from(@NotNull Iterator<? extends E> it) {
             return ImmutableVector.from(it);
+        }
+
+        @Override
+        public final ImmutableVector<E> fill(int n, E value) {
+            return ImmutableVector.fill(n, value);
+        }
+
+        @Override
+        public final ImmutableVector<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+            return ImmutableVector.fill(n, supplier);
+        }
+
+        @Override
+        public final ImmutableVector<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+            return ImmutableVector.fill(n, init);
         }
     }
 

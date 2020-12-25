@@ -11,6 +11,8 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
 public final class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, IndexedSeq<E>, Serializable {
@@ -96,14 +98,14 @@ public final class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>,
     public static <E> @NotNull MutableArray<E> from(@NotNull Traversable<? extends E> values) {
         return values.knownSize() == 0 // implicit null check of values
                 ? empty()
-                : new MutableArray<E>(values.toArray());
+                : new MutableArray<>(values.toArray());
 
     }
 
     public static <E> @NotNull MutableArray<E> from(@NotNull java.util.Collection<? extends E> values) {
         return values.size() == 0 // implicit null check of values
                 ? empty()
-                : new MutableArray<E>(values.toArray());
+                : new MutableArray<>(values.toArray());
 
     }
 
@@ -130,6 +132,42 @@ public final class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>,
             buffer.append(it.next());
         }
         return new MutableArray<>(buffer.toArray());
+    }
+
+    public static <E> @NotNull MutableArray<E> fill(int n, E value) {
+        if (n <= 0) {
+            return empty();
+        }
+
+        Object[] ans = new Object[n];
+        if (value != null) {
+            Arrays.fill(ans, value);
+        }
+        return new MutableArray<>(ans);
+    }
+
+    public static <E> @NotNull MutableArray<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+        if (n <= 0) {
+            return empty();
+        }
+
+        Object[] ans = new Object[n];
+        for (int i = 0; i < n; i++) {
+            ans[i] = supplier.get();
+        }
+        return new MutableArray<>(ans);
+    }
+
+    public static <E> @NotNull MutableArray<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+        if (n <= 0) {
+            return empty();
+        }
+
+        Object[] ans = new Object[n];
+        for (int i = 0; i < n; i++) {
+            ans[i] = init.apply(i);
+        }
+        return new MutableArray<>(ans);
     }
 
     public static <E> @NotNull MutableArray<E> wrap(E @NotNull [] array) {
@@ -215,6 +253,21 @@ public final class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>,
         @Override
         public @NotNull MutableArray<E> from(@NotNull Iterator<? extends E> it) {
             return MutableArray.from(it);
+        }
+
+        @Override
+        public final MutableArray<E> fill(int n, E value) {
+            return MutableArray.fill(n, value);
+        }
+
+        @Override
+        public final MutableArray<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+            return MutableArray.fill(n, supplier);
+        }
+
+        @Override
+        public final MutableArray<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+            return MutableArray.fill(n, init);
         }
 
         @Override
