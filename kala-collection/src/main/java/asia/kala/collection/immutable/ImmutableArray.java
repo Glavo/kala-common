@@ -317,6 +317,9 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
 
     @Override
     public final @NotNull ImmutableArray<E> dropLast(int n) {
+        if (n <= 0) {
+            return this;
+        }
         return take(size() - n);
     }
 
@@ -398,7 +401,6 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     public final @NotNull ImmutableArray<E> concat(@NotNull Seq<? extends E> other) {
         return appendedAll(other);
     }
-
 
     @Override
     public final <U> @NotNull ImmutableArray<U> map(@NotNull Function<? super E, ? extends U> mapper) {

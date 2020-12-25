@@ -5,6 +5,7 @@ import asia.kala.iterator.Iterators;
 import asia.kala.traversable.JavaArray;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -72,6 +73,7 @@ public interface CollectionTestTemplate {
         assertElements(factory.fill(1, () -> "foo"), "foo");
         assertElements(factory.fill(10, new Supplier<Object>() {
             int i = 0;
+
             @Override
             public Object get() {
                 return i++;
@@ -129,7 +131,7 @@ public interface CollectionTestTemplate {
 
     @Test
     default void knownSizeTest() {
-        assertEquals(0, factory().empty().knownSize());
+        assertTrue( factory().empty().knownSize() == 0 || factory().empty().knownSize() == -1);
 
         for (Integer[] data : data1()) {
             int ks = factory().from(data).knownSize();
@@ -139,14 +141,59 @@ public interface CollectionTestTemplate {
 
     @Test
     default void containsTest() {
+        Collection<?> empty = factory().empty();
+        assertFalse(empty.contains(null));
+        assertFalse(empty.contains(0));
+
+        Collection<?> c = factory().from(Arrays.asList(null, 0, 1, 2));
+        assertTrue(c.contains(null));
+        assertTrue(c.contains(0));
+        assertTrue(c.contains(1));
+        assertTrue(c.contains(2));
+        assertFalse(c.contains(3));
+        assertFalse(c.contains("foo"));
+
         for (Integer[] data : data1()) {
-            Collection<? extends Integer> c = this.<Integer>factory().from(data);
+            c = this.<Integer>factory().from(data);
             assertFalse(c.contains(0));
+            assertFalse(c.contains(null));
             for (int d : data) {
                 assertTrue(c.contains(d));
                 assertFalse(c.contains(-d));
             }
         }
+    }
+
+    @Test
+    default void anyMatchTest() {
+        assertFalse(factory().empty().anyMatch(e -> true));
+        assertFalse(factory().empty().anyMatch(e -> false));
+
+        assertFalse(this.<Integer>factory().from(List.of(0, 1, 2, 3)).anyMatch(i -> i < 0));
+        assertTrue(this.<Integer>factory().from(List.of(0, 1, 2, 3)).anyMatch(i -> i > 0));
+        assertFalse(this.<Integer>factory().from(List.of(0, 1, 2, 3)).anyMatch(i -> i > 3));
+    }
+
+    @Test
+    default void allMatchTest() {
+        assertTrue(factory().empty().allMatch(e -> true));
+        assertTrue(factory().empty().allMatch(e -> false));
+
+        assertFalse(this.<Integer>factory().from(List.of(0, 1, 2, 3)).allMatch(i -> i < 0));
+        assertFalse(this.<Integer>factory().from(List.of(0, 1, 2, 3)).allMatch(i -> i > 0));
+        assertTrue(this.<Integer>factory().from(List.of(0, 1, 2, 3)).allMatch(i -> i >= 0));
+        assertFalse(this.<Integer>factory().from(List.of(0, 1, 2, 3)).allMatch(i -> i > 3));
+    }
+
+    @Test
+    default void noneMatchTest() {
+        assertTrue(factory().empty().noneMatch(e -> true));
+        assertTrue(factory().empty().noneMatch(e -> false));
+
+        assertTrue(this.<Integer>factory().from(List.of(0, 1, 2, 3)).noneMatch(i -> i < 0));
+        assertFalse(this.<Integer>factory().from(List.of(0, 1, 2, 3)).noneMatch(i -> i > 0));
+        assertFalse(this.<Integer>factory().from(List.of(0, 1, 2, 3)).noneMatch(i -> i >= 0));
+        assertTrue(this.<Integer>factory().from(List.of(0, 1, 2, 3)).noneMatch(i -> i > 3));
     }
 
     @Test
@@ -165,6 +212,23 @@ public interface CollectionTestTemplate {
                 assertSame(Integer[].class, ia.getClass());
                 assertArrayEquals(data, ia);
             }
+        }
+    }
+
+    @Test
+    default void forEachTest() {
+        ArrayList<Object> al = new ArrayList<>();
+        factory().empty().forEach(al::add);
+        assertIsEmpty(al);
+
+        factory().from(List.of(0, 1, 2)).forEach(al::add);
+        assertElements(al, 0, 1, 2);
+        al.clear();
+
+        for (Integer[] data : data1()) {
+            factory().from(data).forEach(al::add);
+            assertElements(al, (Object[]) data);
+            al.clear();
         }
     }
 }

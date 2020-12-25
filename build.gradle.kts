@@ -16,7 +16,7 @@ plugins {
 
 allprojects {
     group = "asia.kala"
-    version = kalaVersion("0.10.4")
+    version = kalaVersion("0.11.0")
 
     apply {
         plugin("java-library")
@@ -54,6 +54,10 @@ allprojects {
                 }
             }
         }
+    }
+
+    tasks.compileTestJava {
+        options.release.set(11)
     }
 
     /*

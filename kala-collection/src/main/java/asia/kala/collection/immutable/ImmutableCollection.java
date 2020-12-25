@@ -12,7 +12,9 @@ import java.util.Objects;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
 public interface ImmutableCollection<@Covariant E> extends Collection<E> {
@@ -71,6 +73,18 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E> {
 
     static <E> @NotNull ImmutableCollection<E> from(@NotNull Iterator<? extends E> it) {
         return ImmutableSeq.from(it);
+    }
+
+    static <E> @NotNull ImmutableCollection<E> fill(int n, E value) {
+        return ImmutableSeq.fill(n, value);
+    }
+
+    static <E> @NotNull ImmutableCollection<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+        return ImmutableSeq.fill(n, supplier);
+    }
+
+    static <E> @NotNull ImmutableCollection<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+        return ImmutableSeq.fill(n, init);
     }
 
     //endregion

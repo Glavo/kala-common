@@ -36,6 +36,11 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V> {
             V value = null;
 
             @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+
+            @Override
             public K nextKey() {
                 Map.Entry<K, V> next = it.next();
                 value = next.getValue();
@@ -45,11 +50,6 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V> {
             @Override
             public V getValue() {
                 return value;
-            }
-
-            @Override
-            public boolean hasNext() {
-                return it.hasNext();
             }
         };
     }

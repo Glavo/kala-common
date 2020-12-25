@@ -114,11 +114,6 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     //endregion
 
     @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> updated(int index, E newValue) {
-        return AbstractImmutableSeq.updated(this, index, newValue, iterableFactory());
-    }
-
-    @Contract(pure = true)
     default @NotNull ImmutableSeq<E> drop(int n) {
         return AbstractImmutableSeq.drop(this, n, iterableFactory());
     }
@@ -145,6 +140,11 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     @Contract(pure = true)
     default @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
         return AbstractImmutableSeq.takeWhile(this, predicate, iterableFactory());
+    }
+
+    @Contract(pure = true)
+    default @NotNull ImmutableSeq<E> updated(int index, E newValue) {
+        return AbstractImmutableSeq.updated(this, index, newValue, iterableFactory());
     }
 
     @Contract(pure = true)

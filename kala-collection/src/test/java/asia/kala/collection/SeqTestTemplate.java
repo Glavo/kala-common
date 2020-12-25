@@ -5,6 +5,7 @@ import asia.kala.factory.CollectionFactory;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -71,6 +72,21 @@ public interface SeqTestTemplate extends CollectionTestTemplate {
     }
 
     @Test
+    default void reversedIteratorTest() {
+        assertIsEmpty(factory().empty().reverseIterator());
+        assertElements(factory().from(List.of(0)).reverseIterator(), 0);
+        assertElements(factory().from(List.of(0, 1)).reverseIterator(), 1, 0);
+
+        for (Integer[] data : data1()) {
+            Integer[] rdata = new Integer[data.length];
+            for (int i = 0; i < data.length; i++) {
+                rdata[data.length - i - 1] = data[i];
+            }
+            assertElements(factory().from(data).reverseIterator(), (Object[]) rdata);
+        }
+    }
+
+    @Test
     default void firstTest() {
         assertThrows(NoSuchElementException.class, () -> factory().empty().first());
         for (Integer[] data : data1()) {
@@ -84,5 +100,41 @@ public interface SeqTestTemplate extends CollectionTestTemplate {
         for (Integer[] data : data1()) {
             assertSame(data[data.length - 1], factory().from(data).last());
         }
+    }
+
+    @Test
+    default void indexOfTest() {
+        assertEquals(-1, factory().empty().indexOf(0));
+        assertEquals(-1, factory().empty().indexOf(10));
+        assertEquals(-1, factory().empty().indexOf(0, 1));
+        assertEquals(-1, factory().empty().indexOf(10, 1));
+        assertEquals(-1, factory().empty().indexOf(0, -1));
+        assertEquals(-1, factory().empty().indexOf(10, -1));
+
+        CollectionFactory<String, ?, ? extends Seq<? extends String>> sf = this.<String>factory();
+
+        assertEquals(0, sf.from(List.of("foo")).indexOf("foo"));
+        assertEquals(-1, sf.from(List.of("foo")).indexOf("bar"));
+        assertEquals(-1, sf.from(List.of("foo")).indexOf(null));
+        assertEquals(0, sf.from(List.of("foo", "bar")).indexOf("foo"));
+        assertEquals(1, sf.from(List.of("foo", "bar")).indexOf("bar"));
+        assertEquals(-1, sf.from(List.of("foo", "bar")).indexOf("zzz"));
+        assertEquals(1, sf.from(List.of("foo", "bar", "zzz", "bar")).indexOf("bar"));
+    }
+
+    @Test
+    default void lastIndexOfTest() {
+        assertEquals(-1, factory().empty().lastIndexOf(0));
+        assertEquals(-1, factory().empty().lastIndexOf(10));
+
+        CollectionFactory<String, ?, ? extends Seq<? extends String>> sf = this.<String>factory();
+
+        assertEquals(0, sf.from(List.of("foo")).lastIndexOf("foo"));
+        assertEquals(-1, sf.from(List.of("foo")).lastIndexOf("bar"));
+        assertEquals(-1, sf.from(List.of("foo")).lastIndexOf(null));
+        assertEquals(0, sf.from(List.of("foo", "bar")).lastIndexOf("foo"));
+        assertEquals(1, sf.from(List.of("foo", "bar")).lastIndexOf("bar"));
+        assertEquals(-1, sf.from(List.of("foo", "bar")).lastIndexOf("zzz"));
+        assertEquals(3, sf.from(List.of("foo", "bar", "zzz", "bar")).lastIndexOf("bar"));
     }
 }
