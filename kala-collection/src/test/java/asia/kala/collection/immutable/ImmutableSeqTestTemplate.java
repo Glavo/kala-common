@@ -79,6 +79,28 @@ public interface ImmutableSeqTestTemplate extends ImmutableCollectionTestTemplat
     }
 
     @Test
+    default void takeLastTest() {
+        ImmutableSeq<?> empty = factory().empty();
+        assertIsEmpty(empty.takeLast(0));
+        assertIsEmpty(empty.takeLast(1));
+        assertIsEmpty(empty.takeLast(Integer.MAX_VALUE));
+        assertIsEmpty(empty.takeLast(-1));
+        assertIsEmpty(empty.takeLast(Integer.MIN_VALUE));
+
+        List<String> list = List.of("str1", "str2", "str3", "str4", "str5");
+        ImmutableSeq<String> seq = (ImmutableSeq<String>) factory().from(list);
+        assertIsEmpty(seq.takeLast(0));
+        assertIsEmpty(seq.takeLast(-1));
+        assertIsEmpty(seq.takeLast(Integer.MIN_VALUE));
+        assertIterableEquals(list, seq.takeLast(Integer.MAX_VALUE));
+        assertIterableEquals(list, seq.takeLast(5));
+        assertIterableEquals(list.subList(1, list.size()), seq.takeLast(4));
+        assertIterableEquals(list.subList(2, list.size()), seq.takeLast(3));
+        assertIterableEquals(list.subList(3, list.size()), seq.takeLast(2));
+        assertIterableEquals(list.subList(4, list.size()), seq.takeLast(1));
+    }
+
+    @Test
     default void updatedTest() {
         CollectionFactory<String, ?, ImmutableSeq<String>> sf = (CollectionFactory) this.factory();
 

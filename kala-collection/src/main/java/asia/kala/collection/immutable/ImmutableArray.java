@@ -360,6 +360,9 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
 
     @Override
     public final @NotNull ImmutableArray<E> takeLast(int n) {
+        if (n <= 0) {
+            return empty();
+        }
         return drop(size() - n);
     }
 
