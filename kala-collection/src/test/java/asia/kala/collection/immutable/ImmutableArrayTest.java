@@ -3,7 +3,11 @@ package asia.kala.collection.immutable;
 import asia.kala.factory.CollectionFactory;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static asia.kala.collection.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class ImmutableArrayTest implements ImmutableSeqTestTemplate {
     @Override
@@ -14,14 +18,14 @@ public final class ImmutableArrayTest implements ImmutableSeqTestTemplate {
     @Test
     public final void ofTest() {
         assertIsEmpty(ImmutableArray.of());
-        assertElements(ImmutableArray.of("str1"), "str1");
-        assertElements(ImmutableArray.of("str1", "str2"), "str1", "str2");
-        assertElements(ImmutableArray.of("str1", "str2", "str3"), "str1", "str2", "str3");
-        assertElements(ImmutableArray.of("str1", "str2", "str3", "str4"), "str1", "str2", "str3", "str4");
-        assertElements(ImmutableArray.of("str1", "str2", "str3", "str4", "str5"), "str1", "str2", "str3", "str4", "str5");
-        assertElements(ImmutableArray.of("str1", "str2", "str3", "str4", "str5", "str6"), "str1", "str2", "str3", "str4", "str5", "str6");
+        assertIterableEquals(List.of("str1"), ImmutableArray.of("str1"));
+        assertIterableEquals(List.of("str1", "str2"), ImmutableArray.of("str1", "str2"));
+        assertIterableEquals(List.of("str1", "str2", "str3"), ImmutableArray.of("str1", "str2", "str3"));
+        assertIterableEquals(List.of("str1", "str2", "str3", "str4"), ImmutableArray.of("str1", "str2", "str3", "str4"));
+        assertIterableEquals(List.of("str1", "str2", "str3", "str4", "str5"), ImmutableArray.of("str1", "str2", "str3", "str4", "str5"));
+        assertIterableEquals(List.of("str1", "str2", "str3", "str4", "str5", "str6"), ImmutableArray.of("str1", "str2", "str3", "str4", "str5", "str6"));
         for (Integer[] data : data1()) {
-            assertElements(ImmutableArray.of(data), (Object[]) data);
+            assertIterableEquals(Arrays.asList(data), ImmutableArray.of(data));
         }
     }
 }

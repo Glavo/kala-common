@@ -42,14 +42,14 @@ public final class ImmutableSeqTest implements ImmutableSeqTestTemplate {
     @Test
     public final void ofTest() {
         assertIsEmpty(ImmutableSeq.of());
-        assertElements(ImmutableSeq.of("str1"), "str1");
-        assertElements(ImmutableSeq.of("str1", "str2"), "str1", "str2");
-        assertElements(ImmutableSeq.of("str1", "str2", "str3"), "str1", "str2", "str3");
-        assertElements(ImmutableSeq.of("str1", "str2", "str3", "str4"), "str1", "str2", "str3", "str4");
-        assertElements(ImmutableSeq.of("str1", "str2", "str3", "str4", "str5"), "str1", "str2", "str3", "str4", "str5");
-        assertElements(ImmutableSeq.of("str1", "str2", "str3", "str4", "str5", "str6"), "str1", "str2", "str3", "str4", "str5", "str6");
+        assertIterableEquals(List.of("str1"), ImmutableSeq.of("str1"));
+        assertIterableEquals(List.of("str1", "str2"), ImmutableSeq.of("str1", "str2"));
+        assertIterableEquals(List.of("str1", "str2", "str3"), ImmutableSeq.of("str1", "str2", "str3"));
+        assertIterableEquals(List.of("str1", "str2", "str3", "str4"), ImmutableSeq.of("str1", "str2", "str3", "str4"));
+        assertIterableEquals(List.of("str1", "str2", "str3", "str4", "str5"), ImmutableSeq.of("str1", "str2", "str3", "str4", "str5"));
+        assertIterableEquals(List.of("str1", "str2", "str3", "str4", "str5", "str6"), ImmutableSeq.of("str1", "str2", "str3", "str4", "str5", "str6"));
         for (Integer[] data : data1()) {
-            assertElements(ImmutableSeq.of(data), (Object[]) data);
+            assertIterableEquals(Arrays.asList(data), ImmutableSeq.of(data));
         }
     }
 

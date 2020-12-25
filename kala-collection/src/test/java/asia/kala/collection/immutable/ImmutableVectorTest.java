@@ -4,6 +4,9 @@ package asia.kala.collection.immutable;
 import asia.kala.factory.CollectionFactory;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static asia.kala.collection.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,25 +20,25 @@ public final class ImmutableVectorTest implements ImmutableSeqTestTemplate {
     public final void ofTest() {
         assertIsEmpty(ImmutableVector.of());
 
-        assertElements(ImmutableVector.of("str1"), "str1");
+        assertIterableEquals(List.of("str1"), ImmutableVector.of("str1"));
         assertSame(ImmutableVectors.Vector1.class, ImmutableVector.of("str1").getClass());
 
-        assertElements(ImmutableVector.of("str1", "str2"), "str1", "str2");
+        assertIterableEquals(List.of("str1", "str2"), ImmutableVector.of("str1", "str2"));
         assertSame(ImmutableVectors.Vector1.class, ImmutableVector.of("str1", "str2").getClass());
 
-        assertElements(ImmutableVector.of("str1", "str2", "str3"), "str1", "str2", "str3");
+        assertIterableEquals(List.of("str1", "str2", "str3"), ImmutableVector.of("str1", "str2", "str3"));
         assertSame(ImmutableVectors.Vector1.class, ImmutableVector.of("str1", "str2", "str3").getClass());
 
-        assertElements(ImmutableVector.of("str1", "str2", "str3", "str4"), "str1", "str2", "str3", "str4");
+        assertIterableEquals(List.of("str1", "str2", "str3", "str4"), ImmutableVector.of("str1", "str2", "str3", "str4"));
         assertSame(ImmutableVectors.Vector1.class, ImmutableVector.of("str1", "str2", "str3", "str4").getClass());
 
-        assertElements(ImmutableVector.of("str1", "str2", "str3", "str4", "str5"), "str1", "str2", "str3", "str4", "str5");
+        assertIterableEquals(List.of("str1", "str2", "str3", "str4", "str5"), ImmutableVector.of("str1", "str2", "str3", "str4", "str5"));
         assertSame(ImmutableVectors.Vector1.class, ImmutableVector.of("str1", "str2", "str3", "str4", "str5").getClass());
 
-        assertElements(ImmutableVector.of("str1", "str2", "str3", "str4", "str5", "str6"), "str1", "str2", "str3", "str4", "str5", "str6");
+        assertIterableEquals(List.of("str1", "str2", "str3", "str4", "str5", "str6"), ImmutableVector.of("str1", "str2", "str3", "str4", "str5", "str6"));
         for (Integer[] data : data1()) {
             ImmutableVector<Integer> v = ImmutableVector.of(data);
-            assertElements(v, (Object[]) data);
+            assertIterableEquals(Arrays.asList(data), v );
             if (data.length == 0) {
                 assertSame(ImmutableVector.empty(), v);
             } else if (data.length <= ImmutableVectors.WIDTH) {

@@ -38,9 +38,9 @@ public interface CollectionTestTemplate {
         assertIsEmpty(factory.from(Iterators.empty()));
 
         for (Integer[] data : data1()) {
-            assertElements(factory.from(data), ((Object[]) data));
-            assertElements(factory.from(Arrays.asList(data)), ((Object[]) data));
-            assertElements(factory.from(Arrays.asList(data).iterator()), ((Object[]) data));
+            assertIterableEquals(Arrays.asList(data), factory.from(data));
+            assertIterableEquals(Arrays.asList(data), factory.from(Arrays.asList(data)));
+            assertIterableEquals(Arrays.asList(data), factory.from(Arrays.asList(data).iterator()));
         }
 
         assertIsEmpty(factory.build(factory.newBuilder()));
@@ -50,7 +50,7 @@ public interface CollectionTestTemplate {
             for (Integer i : data) {
                 factory.addToBuilder(builder, i);
             }
-            assertElements(factory.build(builder), (Object[]) data);
+            assertIterableEquals(Arrays.asList(data), factory.build(builder));
         }
 
         assertIsEmpty(factory.fill(0, "foo"));
@@ -65,24 +65,26 @@ public interface CollectionTestTemplate {
         assertIsEmpty(factory.fill(-1, i -> "foo"));
         assertIsEmpty(factory.fill(Integer.MIN_VALUE, i -> "foo"));
 
-        assertElements(factory.fill(1, "foo"), "foo");
-        assertElements(factory.fill(2, "foo"), "foo", "foo");
-        assertElements(factory.fill(10, "foo"), "foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo");
+        assertIterableEquals(List.of("foo"), factory.fill(1, "foo"));
+        assertIterableEquals(List.of("foo", "foo"), factory.fill(2, "foo"));
+        assertIterableEquals(List.of("foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo"), factory.fill(10, "foo"));
 
 
-        assertElements(factory.fill(1, () -> "foo"), "foo");
-        assertElements(factory.fill(10, new Supplier<Object>() {
-            int i = 0;
+        assertIterableEquals(List.of("foo"), factory.fill(1, () -> "foo"));
+        assertIterableEquals(List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+                factory.fill(10, new Supplier<>() {
+                    int i = 0;
 
-            @Override
-            public Object get() {
-                return i++;
-            }
-        }), 0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+                    @Override
+                    public Object get() {
+                        return i++;
+                    }
+                })
+        );
 
-        assertElements(factory.fill(1, i -> "foo: " + i), "foo: 0");
-        assertElements(factory.fill(2, i -> "foo: " + i), "foo: 0", "foo: 1");
-        assertElements(factory.fill(10, i -> i), 0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+        assertIterableEquals(List.of("foo: 0"), factory.fill(1, i -> "foo: " + i));
+        assertIterableEquals(List.of("foo: 0", "foo: 1"), factory.fill(2, i -> "foo: " + i));
+        assertIterableEquals(List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9), factory.fill(10, i -> i));
 
         Object b1;
         Object b2;
@@ -91,14 +93,14 @@ public interface CollectionTestTemplate {
             b1 = factory.newBuilder();
             b2 = factory.newBuilder();
             factory.addAllToBuilder(b1, List.of("foo", "bar"));
-            assertElements(factory.build(factory.mergeBuilder(b1, b2)), "foo", "bar");
+            assertIterableEquals(List.of("foo", "bar"), factory.build(factory.mergeBuilder(b1, b2)));
         }
 
         {
             b1 = factory.newBuilder();
             b2 = factory.newBuilder();
             factory.addAllToBuilder(b2, List.of("foo", "bar"));
-            assertElements(factory.build(factory.mergeBuilder(b1, b2)), "foo", "bar");
+            assertIterableEquals(List.of("foo", "bar"), factory.build(factory.mergeBuilder(b1, b2)));
         }
 
         {
@@ -106,7 +108,7 @@ public interface CollectionTestTemplate {
             b2 = factory.newBuilder();
             factory.addAllToBuilder(b1, List.of("foo", "bar"));
             factory.addAllToBuilder(b2, List.of("A", "B"));
-            assertElements(factory.build(factory.mergeBuilder(b1, b2)), "foo", "bar", "A", "B");
+            assertIterableEquals(List.of("foo", "bar", "A", "B"), factory.build(factory.mergeBuilder(b1, b2)));
         }
     }
 
@@ -131,7 +133,7 @@ public interface CollectionTestTemplate {
 
     @Test
     default void knownSizeTest() {
-        assertTrue( factory().empty().knownSize() == 0 || factory().empty().knownSize() == -1);
+        assertTrue(factory().empty().knownSize() == 0 || factory().empty().knownSize() == -1);
 
         for (Integer[] data : data1()) {
             int ks = factory().from(data).knownSize();
@@ -222,12 +224,12 @@ public interface CollectionTestTemplate {
         assertIsEmpty(al);
 
         factory().from(List.of(0, 1, 2)).forEach(al::add);
-        assertElements(al, 0, 1, 2);
+        assertIterableEquals(List.of(0, 1, 2), al);
         al.clear();
 
         for (Integer[] data : data1()) {
             factory().from(data).forEach(al::add);
-            assertElements(al, (Object[]) data);
+            assertIterableEquals(Arrays.asList(data), al);
             al.clear();
         }
     }

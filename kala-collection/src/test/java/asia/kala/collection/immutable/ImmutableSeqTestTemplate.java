@@ -57,6 +57,22 @@ public interface ImmutableSeqTestTemplate extends ImmutableCollectionTestTemplat
     }
 
     @Test
+    default void dropWhileTest() {
+        assertIsEmpty(factory().empty().dropWhile(o -> {
+            fail();
+            return true;
+        }));
+
+        ImmutableSeq<Integer> seq = (ImmutableSeq<Integer>) factory().from(List.of(0, 1, 2, 3, 4, 5, 6));
+        assertIsEmpty(seq.dropWhile(i -> true));
+        assertIterableEquals(List.of(0, 1, 2, 3, 4, 5, 6), seq.dropWhile(i -> i < 0));
+        assertIterableEquals(List.of(1, 2, 3, 4, 5, 6), seq.dropWhile(i -> i < 1));
+        assertIterableEquals(List.of(2, 3, 4, 5, 6), seq.dropWhile(i -> i < 2));
+        assertIterableEquals(List.of(6), seq.dropWhile(i -> i < 6));
+        assertIsEmpty(seq.dropWhile(i -> i < 7));
+    }
+
+    @Test
     default void takeTest() {
         ImmutableSeq<?> empty = factory().empty();
         assertIsEmpty(empty.take(0));
@@ -101,6 +117,23 @@ public interface ImmutableSeqTestTemplate extends ImmutableCollectionTestTemplat
     }
 
     @Test
+    default void takeWhileTest() {
+        assertIsEmpty(factory().empty().takeWhile(o -> {
+            fail();
+            return true;
+        }));
+
+        ImmutableSeq<Integer> seq = (ImmutableSeq<Integer>) factory().from(List.of(0, 1, 2, 3, 4, 5, 6));
+        assertIterableEquals(seq, seq.takeWhile(i -> true));
+        assertIsEmpty(seq.takeWhile(i -> i < 0));
+        assertIterableEquals(List.of(0), seq.takeWhile(i -> i < 1));
+        assertIterableEquals(List.of(0, 1), seq.takeWhile(i -> i < 2));
+        assertIterableEquals(List.of(0, 1, 2), seq.takeWhile(i -> i < 3));
+        assertIterableEquals(List.of(0, 1, 2, 3, 4, 5), seq.takeWhile(i -> i < 6));
+        assertIterableEquals(seq, seq.takeWhile(i -> i < 7));
+    }
+
+    @Test
     default void updatedTest() {
         CollectionFactory<String, ?, ImmutableSeq<String>> sf = (CollectionFactory) this.factory();
 
@@ -114,15 +147,15 @@ public interface ImmutableSeqTestTemplate extends ImmutableCollectionTestTemplat
 
         {
             ImmutableSeq<String> seq = sf.from(List.of("foo"));
-            assertElements(seq.updated(0, "bar"), "bar");
+            assertIterableEquals(List.of("bar"), seq.updated(0, "bar"));
             assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(1, "bar"));
             assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(-1, "bar"));
         }
 
         {
             ImmutableSeq<String> seq = sf.from(List.of("foo", "bar"));
-            assertElements(seq.updated(0, "zzz"), "zzz", "bar");
-            assertElements(seq.updated(1, "zzz"), "foo", "zzz");
+            assertIterableEquals(List.of("zzz", "bar"), seq.updated(0, "zzz"));
+            assertIterableEquals(List.of("foo", "zzz"), seq.updated(1, "zzz"));
             assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(2, "zzz"));
             assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(-1, "zzz"));
         }

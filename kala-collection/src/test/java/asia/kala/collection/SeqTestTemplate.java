@@ -1,5 +1,6 @@
 package asia.kala.collection;
 
+import asia.kala.collection.immutable.ImmutableSeq;
 import asia.kala.control.Option;
 import asia.kala.factory.CollectionFactory;
 import org.junit.jupiter.api.Test;
@@ -74,15 +75,16 @@ public interface SeqTestTemplate extends CollectionTestTemplate {
     @Test
     default void reversedIteratorTest() {
         assertIsEmpty(factory().empty().reverseIterator());
-        assertElements(factory().from(List.of(0)).reverseIterator(), 0);
-        assertElements(factory().from(List.of(0, 1)).reverseIterator(), 1, 0);
+        assertIterableEquals(List.of(0), ImmutableSeq.from(factory().from(List.of(0)).reverseIterator()));
+        assertIterableEquals(List.of(1, 0), ImmutableSeq.from(factory().from(List.of(0, 1)).reverseIterator()));
 
         for (Integer[] data : data1()) {
             Integer[] rdata = new Integer[data.length];
             for (int i = 0; i < data.length; i++) {
                 rdata[data.length - i - 1] = data[i];
             }
-            assertElements(factory().from(data).reverseIterator(), (Object[]) rdata);
+
+            assertIterableEquals(Arrays.asList(rdata), ImmutableSeq.from(factory().from(data).reverseIterator()));
         }
     }
 
@@ -111,7 +113,7 @@ public interface SeqTestTemplate extends CollectionTestTemplate {
         assertEquals(-1, factory().empty().indexOf(0, -1));
         assertEquals(-1, factory().empty().indexOf(10, -1));
 
-        CollectionFactory<String, ?, ? extends Seq<? extends String>> sf = this.<String>factory();
+        CollectionFactory<String, ?, ? extends Seq<? extends String>> sf = this.factory();
 
         assertEquals(0, sf.from(List.of("foo")).indexOf("foo"));
         assertEquals(-1, sf.from(List.of("foo")).indexOf("bar"));
@@ -127,7 +129,7 @@ public interface SeqTestTemplate extends CollectionTestTemplate {
         assertEquals(-1, factory().empty().lastIndexOf(0));
         assertEquals(-1, factory().empty().lastIndexOf(10));
 
-        CollectionFactory<String, ?, ? extends Seq<? extends String>> sf = this.<String>factory();
+        CollectionFactory<String, ?, ? extends Seq<? extends String>> sf = this.factory();
 
         assertEquals(0, sf.from(List.of("foo")).lastIndexOf("foo"));
         assertEquals(-1, sf.from(List.of("foo")).lastIndexOf("bar"));

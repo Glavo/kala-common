@@ -3,6 +3,9 @@ package asia.kala.collection.immutable;
 import asia.kala.factory.CollectionFactory;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static asia.kala.collection.Assertions.*;
 
@@ -15,14 +18,14 @@ public final class ImmutableListTest implements ImmutableSeqTestTemplate {
     @Test
     public final void ofTest() {
         assertIsEmpty(ImmutableList.of());
-        assertElements(ImmutableList.of("str1"), "str1");
-        assertElements(ImmutableList.of("str1", "str2"), "str1", "str2");
-        assertElements(ImmutableList.of("str1", "str2", "str3"), "str1", "str2", "str3");
-        assertElements(ImmutableList.of("str1", "str2", "str3", "str4"), "str1", "str2", "str3", "str4");
-        assertElements(ImmutableList.of("str1", "str2", "str3", "str4", "str5"), "str1", "str2", "str3", "str4", "str5");
-        assertElements(ImmutableList.of("str1", "str2", "str3", "str4", "str5", "str6"), "str1", "str2", "str3", "str4", "str5", "str6");
+        assertIterableEquals(List.of("str1"), ImmutableList.of("str1"));
+        assertIterableEquals(List.of("str1", "str2"), ImmutableList.of("str1", "str2"));
+        assertIterableEquals(List.of("str1", "str2", "str3"), ImmutableList.of("str1", "str2", "str3"));
+        assertIterableEquals(List.of("str1", "str2", "str3", "str4"), ImmutableList.of("str1", "str2", "str3", "str4"));
+        assertIterableEquals(List.of("str1", "str2", "str3", "str4", "str5"), ImmutableList.of("str1", "str2", "str3", "str4", "str5"));
+        assertIterableEquals(List.of("str1", "str2", "str3", "str4", "str5", "str6"), ImmutableList.of("str1", "str2", "str3", "str4", "str5", "str6"));
         for (Integer[] data : data1()) {
-            assertElements(ImmutableList.of(data), (Object[]) data);
+            assertIterableEquals(Arrays.asList(data), ImmutableList.of(data));
         }
     }
 }
