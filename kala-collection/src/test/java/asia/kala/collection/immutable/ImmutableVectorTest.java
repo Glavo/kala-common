@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
 
-import static asia.kala.collection.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class ImmutableVectorTest implements ImmutableSeqTestTemplate {
@@ -18,7 +17,7 @@ public final class ImmutableVectorTest implements ImmutableSeqTestTemplate {
 
     @Test
     public final void ofTest() {
-        assertIsEmpty(ImmutableVector.of());
+        assertIterableEquals(List.of(),ImmutableVector.of());
 
         assertIterableEquals(List.of("str1"), ImmutableVector.of("str1"));
         assertSame(ImmutableVectors.Vector1.class, ImmutableVector.of("str1").getClass());

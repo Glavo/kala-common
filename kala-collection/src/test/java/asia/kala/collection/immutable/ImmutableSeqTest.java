@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static asia.kala.collection.Assertions.*;
 
 public final class ImmutableSeqTest implements ImmutableSeqTestTemplate {
     @Override
@@ -41,7 +40,7 @@ public final class ImmutableSeqTest implements ImmutableSeqTestTemplate {
 
     @Test
     public final void ofTest() {
-        assertIsEmpty(ImmutableSeq.of());
+        assertIterableEquals(List.of(),ImmutableSeq.of());
         assertIterableEquals(List.of("str1"), ImmutableSeq.of("str1"));
         assertIterableEquals(List.of("str1", "str2"), ImmutableSeq.of("str1", "str2"));
         assertIterableEquals(List.of("str1", "str2", "str3"), ImmutableSeq.of("str1", "str2", "str3"));

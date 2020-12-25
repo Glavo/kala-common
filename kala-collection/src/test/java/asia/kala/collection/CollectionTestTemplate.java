@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static asia.kala.collection.Assertions.*;
 
 @SuppressWarnings("unchecked")
 public interface CollectionTestTemplate {
@@ -31,11 +30,11 @@ public interface CollectionTestTemplate {
     default void factoryTest() {
         CollectionFactory<Object, Object, Collection<?>> factory =
                 (CollectionFactory<Object, Object, Collection<?>>) factory();
-        assertIsEmpty(factory.empty());
-        assertIsEmpty(factory.from(JavaArray.EMPTY_OBJECT_ARRAY));
-        assertIsEmpty(factory.from(java.util.List.of()));
-        assertIsEmpty(factory.from(new Object[]{}));
-        assertIsEmpty(factory.from(Iterators.empty()));
+        assertIterableEquals(List.of(),factory.empty());
+        assertIterableEquals(List.of(),factory.from(JavaArray.EMPTY_OBJECT_ARRAY));
+        assertIterableEquals(List.of(),factory.from(java.util.List.of()));
+        assertIterableEquals(List.of(),factory.from(new Object[]{}));
+        assertIterableEquals(List.of(),factory.from(Iterators.empty()));
 
         for (Integer[] data : data1()) {
             assertIterableEquals(Arrays.asList(data), factory.from(data));
@@ -43,7 +42,7 @@ public interface CollectionTestTemplate {
             assertIterableEquals(Arrays.asList(data), factory.from(Arrays.asList(data).iterator()));
         }
 
-        assertIsEmpty(factory.build(factory.newBuilder()));
+        assertIterableEquals(List.of(),factory.build(factory.newBuilder()));
 
         for (Integer[] data : data1()) {
             Object builder = factory.newBuilder();
@@ -53,17 +52,17 @@ public interface CollectionTestTemplate {
             assertIterableEquals(Arrays.asList(data), factory.build(builder));
         }
 
-        assertIsEmpty(factory.fill(0, "foo"));
-        assertIsEmpty(factory.fill(-1, "foo"));
-        assertIsEmpty(factory.fill(Integer.MIN_VALUE, "foo"));
+        assertIterableEquals(List.of(),factory.fill(0, "foo"));
+        assertIterableEquals(List.of(),factory.fill(-1, "foo"));
+        assertIterableEquals(List.of(),factory.fill(Integer.MIN_VALUE, "foo"));
 
-        assertIsEmpty(factory.fill(0, () -> "foo"));
-        assertIsEmpty(factory.fill(-1, () -> "foo"));
-        assertIsEmpty(factory.fill(Integer.MIN_VALUE, () -> "foo"));
+        assertIterableEquals(List.of(),factory.fill(0, () -> "foo"));
+        assertIterableEquals(List.of(),factory.fill(-1, () -> "foo"));
+        assertIterableEquals(List.of(),factory.fill(Integer.MIN_VALUE, () -> "foo"));
 
-        assertIsEmpty(factory.fill(0, i -> "foo"));
-        assertIsEmpty(factory.fill(-1, i -> "foo"));
-        assertIsEmpty(factory.fill(Integer.MIN_VALUE, i -> "foo"));
+        assertIterableEquals(List.of(),factory.fill(0, i -> "foo"));
+        assertIterableEquals(List.of(),factory.fill(-1, i -> "foo"));
+        assertIterableEquals(List.of(),factory.fill(Integer.MIN_VALUE, i -> "foo"));
 
         assertIterableEquals(List.of("foo"), factory.fill(1, "foo"));
         assertIterableEquals(List.of("foo", "foo"), factory.fill(2, "foo"));
@@ -221,7 +220,7 @@ public interface CollectionTestTemplate {
     default void forEachTest() {
         ArrayList<Object> al = new ArrayList<>();
         factory().empty().forEach(al::add);
-        assertIsEmpty(al);
+        assertIterableEquals(List.of(),al);
 
         factory().from(List.of(0, 1, 2)).forEach(al::add);
         assertIterableEquals(List.of(0, 1, 2), al);

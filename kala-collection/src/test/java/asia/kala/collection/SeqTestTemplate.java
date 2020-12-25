@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static asia.kala.collection.Assertions.*;
 
 public interface SeqTestTemplate extends CollectionTestTemplate {
     @Override
@@ -74,7 +73,8 @@ public interface SeqTestTemplate extends CollectionTestTemplate {
 
     @Test
     default void reversedIteratorTest() {
-        assertIsEmpty(factory().empty().reverseIterator());
+        assertFalse(factory().empty().reverseIterator().hasNext());
+
         assertIterableEquals(List.of(0), ImmutableSeq.from(factory().from(List.of(0)).reverseIterator()));
         assertIterableEquals(List.of(1, 0), ImmutableSeq.from(factory().from(List.of(0, 1)).reverseIterator()));
 

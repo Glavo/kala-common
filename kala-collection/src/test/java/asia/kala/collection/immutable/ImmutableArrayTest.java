@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
 
-import static asia.kala.collection.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class ImmutableArrayTest implements ImmutableSeqTestTemplate {
@@ -17,7 +16,7 @@ public final class ImmutableArrayTest implements ImmutableSeqTestTemplate {
 
     @Test
     public final void ofTest() {
-        assertIsEmpty(ImmutableArray.of());
+        assertIterableEquals(List.of(),ImmutableArray.of());
         assertIterableEquals(List.of("str1"), ImmutableArray.of("str1"));
         assertIterableEquals(List.of("str1", "str2"), ImmutableArray.of("str1", "str2"));
         assertIterableEquals(List.of("str1", "str2", "str3"), ImmutableArray.of("str1", "str2", "str3"));
