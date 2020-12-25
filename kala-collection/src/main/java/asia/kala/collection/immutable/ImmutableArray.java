@@ -481,13 +481,13 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
             return this;
         }
 
-        Object[] temp = new Object[size];
+        Object[] tmp = new Object[size];
         int c = 0;
 
         for (Object value : elements) {
             E v = (E) value;
             if (predicate.test(v)) {
-                temp[c++] = v;
+                tmp[c++] = v;
             }
         }
 
@@ -498,7 +498,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
             return this;
         }
 
-        return new ImmutableArray<>(Arrays.copyOf(temp, c));
+        return new ImmutableArray<>(Arrays.copyOf(tmp, c));
     }
 
     @Override
@@ -512,13 +512,13 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
             return this;
         }
 
-        Object[] temp = new Object[size];
+        Object[] tmp = new Object[size];
         int c = 0;
 
         for (Object value : elements) {
             E v = (E) value;
             if (!predicate.test(v)) {
-                temp[c++] = v;
+                tmp[c++] = v;
             }
         }
 
@@ -529,7 +529,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
             return this;
         }
 
-        return new ImmutableArray<>(Arrays.copyOf(temp, c));
+        return new ImmutableArray<>(Arrays.copyOf(tmp, c));
     }
 
     @Override
@@ -541,13 +541,13 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
             return this;
         }
 
-        Object[] temp = new Object[size];
+        Object[] tmp = new Object[size];
         int c = 0;
 
         for (Object value : elements) {
             E v = (E) value;
             if (v != null) {
-                temp[c++] = v;
+                tmp[c++] = v;
             }
         }
 
@@ -558,7 +558,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
             return this;
         }
 
-        return new ImmutableArray<>(Arrays.copyOf(temp, c));
+        return new ImmutableArray<>(Arrays.copyOf(tmp, c));
     }
 
     @Override

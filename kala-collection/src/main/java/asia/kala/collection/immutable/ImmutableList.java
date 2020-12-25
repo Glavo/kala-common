@@ -215,11 +215,6 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
     }
 
     @Override
-    public final @NotNull ImmutableList<E> updated(int index, E newValue) {
-        return updatedImpl(index, newValue);
-    }
-
-    @Override
     public final @NotNull ImmutableList<E> appended(E value) {
         if (this == nil()) {
             return of(value);
@@ -232,7 +227,7 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
         if (values.length == 0) { // implicit null check of postfix
             return this;
         }
-        if (isEmpty()) {
+        if (this == nil()) {
             return from(values);
         }
         return appendedAllImpl(values);
@@ -275,7 +270,7 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
             }
             return res;
         }
-        if (values instanceof java.util.List<?>) {
+        if (values instanceof java.util.List<?> && values instanceof RandomAccess) {
             final List<E> list = (List<E>) values;
             final int listSize = list.size();
 
@@ -284,15 +279,8 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
             }
 
             ImmutableList<E> res = this;
-            if (list instanceof RandomAccess) {
-                for (int i = listSize - 1; i >= 0; i--) {
-                    res = res.cons(list.get(i));
-                }
-            } else {
-                ListIterator<E> it = list.listIterator(listSize);
-                while (it.hasPrevious()) {
-                    res = res.cons(it.previous());
-                }
+            for (int i = listSize - 1; i >= 0; i--) {
+                res = res.cons(list.get(i));
             }
             return res;
         }
@@ -341,6 +329,11 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
     @Override
     public final @NotNull ImmutableList<E> takeWhile(@NotNull Predicate<? super E> predicate) {
         return takeWhileImpl(predicate);
+    }
+
+    @Override
+    public final @NotNull ImmutableList<E> updated(int index, E newValue) {
+        return updatedImpl(index, newValue);
     }
 
     @Override

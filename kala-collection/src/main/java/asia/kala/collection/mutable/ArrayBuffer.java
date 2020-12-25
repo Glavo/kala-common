@@ -15,6 +15,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.IntFunction;
+import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
 public final class ArrayBuffer<E> extends AbstractBuffer<E>
@@ -138,6 +139,42 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
             buffer.append(it.next());
         }
         return buffer;
+    }
+
+    public static <E> @NotNull ArrayBuffer<E> fill(int n, E value) {
+        if (n <= 0) {
+            return new ArrayBuffer<>();
+        }
+
+        Object[] arr = new Object[Integer.max(DEFAULT_CAPACITY, n)];
+        if (value != null) {
+            Arrays.fill(arr, 0, n, value);
+        }
+        return new ArrayBuffer<>(arr, n);
+    }
+
+    public static <E> @NotNull ArrayBuffer<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+        if (n <= 0) {
+            return new ArrayBuffer<>();
+        }
+
+        Object[] arr = new Object[Integer.max(DEFAULT_CAPACITY, n)];
+        for (int i = 0; i < n; i++) {
+            arr[i] = supplier.get();
+        }
+        return new ArrayBuffer<>(arr, n);
+    }
+
+    public static <E> @NotNull ArrayBuffer<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+        if (n <= 0) {
+            return new ArrayBuffer<>();
+        }
+
+        Object[] arr = new Object[Integer.max(DEFAULT_CAPACITY, n)];
+        for (int i = 0; i < n; i++) {
+            arr[i] = init.apply(i);
+        }
+        return new ArrayBuffer<>(arr, n);
     }
 
     //endregion
@@ -479,6 +516,36 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
         @Override
         public void sizeHint(@NotNull ArrayBuffer<E> buffer, int size) {
             buffer.sizeHint(size);
+        }
+
+        @Override
+        public final ArrayBuffer<E> from(E @NotNull [] values) {
+            return ArrayBuffer.from(values);
+        }
+
+        @Override
+        public final ArrayBuffer<E> from(@NotNull Iterable<? extends E> values) {
+            return ArrayBuffer.from(values);
+        }
+
+        @Override
+        public final ArrayBuffer<E> from(@NotNull Iterator<? extends E> it) {
+            return ArrayBuffer.from(it);
+        }
+
+        @Override
+        public final ArrayBuffer<E> fill(int n, E value) {
+            return ArrayBuffer.fill(n, value);
+        }
+
+        @Override
+        public final ArrayBuffer<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+            return ArrayBuffer.fill(n, supplier);
+        }
+
+        @Override
+        public final ArrayBuffer<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+            return ArrayBuffer.fill(n, init);
         }
     }
 }

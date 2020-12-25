@@ -380,8 +380,8 @@ final class ImmutableVectors {
         @Override
         final ImmutableVector<E> filterImpl(Predicate<? super E> predicate, boolean isFlipped) {
             final Object[] prefix1 = this.prefix1;
-            int i = 0;
             final int len = prefix1.length;
+            int i = 0;
             while (i != len) {
                 if (predicate.test((E) prefix1[i]) == isFlipped) {
                     // each 1 bit indicates that index passes the filter.
@@ -410,7 +410,7 @@ final class ImmutableVectors {
                         }
                         ++k;
                     }
-                    this.forEach((v) -> {
+                    this.forEachRest(v -> {
                         if (predicate.test(v) != isFlipped) {
                             b.add(v);
                         }
@@ -421,7 +421,7 @@ final class ImmutableVectors {
             }
             VectorBuilder<E> b = new VectorBuilder<>();
             b.initFrom(prefix1);
-            this.forEach(v -> {
+            this.forEachRest(v -> {
                 if (predicate.test(v) != isFlipped) {
                     b.add(v);
                 }
@@ -433,6 +433,15 @@ final class ImmutableVectors {
         public final void forEach(@NotNull Consumer<? super E> action) {
             int c = vectorSliceCount();
             int i = 0;
+            while (i < c) {
+                forEachRec(vectorSliceDim(c, i) - 1, vectorSlice(i), action);
+                ++i;
+            }
+        }
+
+        private void forEachRest(@NotNull Consumer<? super E> action) {
+            int c = vectorSliceCount();
+            int i = 1;
             while (i < c) {
                 forEachRec(vectorSliceDim(c, i) - 1, vectorSlice(i), action);
                 ++i;

@@ -73,6 +73,10 @@ public interface Buffer<E> extends MutableSeq<E> {
         return ArrayBuffer.from(values);
     }
 
+    static <E> @NotNull Buffer<E> from(@NotNull Iterator<? extends E> it) {
+        return ArrayBuffer.from(it);
+    }
+
     @Contract("_ -> new")
     static <E> @NotNull Buffer<E> wrapJava(@NotNull List<E> list) {
         Objects.requireNonNull(list);

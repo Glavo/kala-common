@@ -197,16 +197,6 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
         return AbstractImmutableSeq.reversed(this, iterableFactory());
     }
 
-    @Contract(pure = true)
-    default <U> @NotNull ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
-        return AbstractImmutableSeq.mapIndexed(this, mapper, this.<U>iterableFactory());
-    }
-
-    @Override
-    default <U> @NotNull ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
-        return AbstractImmutableCollection.map(this, mapper, this.<U>iterableFactory());
-    }
-
     @Override
     default @NotNull ImmutableSeq<E> filter(@NotNull Predicate<? super E> predicate) {
         return AbstractImmutableCollection.filter(this, predicate, iterableFactory());
@@ -220,6 +210,16 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     @Override
     default @NotNull ImmutableSeq<@NotNull E> filterNotNull() {
         return this.filter(Objects::nonNull);
+    }
+
+    @Override
+    default <U> @NotNull ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+        return AbstractImmutableCollection.map(this, mapper, this.<U>iterableFactory());
+    }
+
+    @Contract(pure = true)
+    default <U> @NotNull ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+        return AbstractImmutableSeq.mapIndexed(this, mapper, this.<U>iterableFactory());
     }
 
     @Override
