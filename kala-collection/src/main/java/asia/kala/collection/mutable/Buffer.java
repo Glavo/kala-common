@@ -16,6 +16,7 @@ import java.util.Objects;
 import java.util.RandomAccess;
 import java.util.function.Predicate;
 
+@SuppressWarnings("unchecked")
 public interface Buffer<E> extends MutableSeq<E> {
 
     //region Static Factories
@@ -153,7 +154,6 @@ public interface Buffer<E> extends MutableSeq<E> {
     }
 
     @Contract(mutates = "this")
-    @SuppressWarnings("unchecked")
     default void prependAll(
             @NotNull @Flow(sourceIsContainer = true, targetIsContainer = true) Iterable<? extends E> values
     ) {

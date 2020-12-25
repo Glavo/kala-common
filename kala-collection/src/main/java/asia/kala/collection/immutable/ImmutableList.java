@@ -441,7 +441,7 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
 
         @Override
         public final Object get(int index) {
-            throw new NoSuchElementException();
+            throw new IndexOutOfBoundsException();
         }
 
         @Override

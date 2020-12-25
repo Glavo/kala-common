@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.TreeSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static asia.kala.collection.Assertions.*;
@@ -40,6 +41,7 @@ public interface CollectionTestTemplate {
         }
     }
 
+    @Test
     default void isEmptyTest() {
         assertTrue(factory().empty().isEmpty());
         assertTrue(factory().from(JavaArray.EMPTY_OBJECT_ARRAY).isEmpty());
@@ -50,4 +52,33 @@ public interface CollectionTestTemplate {
         }
     }
 
+    @Test
+    default void sizeTest() {
+        assertEquals(0, factory().empty().size());
+        for (Integer[] data : TestData.data1) {
+            assertEquals(data.length, factory().from(data).size());
+        }
+    }
+
+    @Test
+    default void knownSizeTest() {
+        assertEquals(0, factory().empty().knownSize());
+
+        for (Integer[] data : TestData.data1) {
+            int ks = factory().from(data).knownSize();
+            assertTrue(ks == data.length || ks == -1);
+        }
+    }
+
+    @Test
+    default void containsTest() {
+        for (Integer[] data : TestData.data1) {
+            Collection<? extends Integer> c = this.<Integer>factory().from(data);
+            assertFalse(c.contains(0));
+            for (int d : data) {
+                assertTrue(c.contains(d));
+                assertFalse(c.contains(-d));
+            }
+        }
+    }
 }

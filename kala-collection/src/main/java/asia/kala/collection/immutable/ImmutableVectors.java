@@ -54,11 +54,6 @@ final class ImmutableVectors {
         }
 
         @Override
-        public final boolean isEmpty() {
-            return true;
-        }
-
-        @Override
         public final int size() {
             return 0;
         }
@@ -70,9 +65,20 @@ final class ImmutableVectors {
 
         //region Addition Operations
 
+
+        @Override
+        public final @NotNull ImmutableVector<Object> appended(Object value) {
+            return new Vector1<>(new Object[]{value});
+        }
+
         @Override
         public final @NotNull ImmutableVector<Object> appendedAll(Object @NotNull [] values) {
             return from(values);
+        }
+
+        @Override
+        public final @NotNull ImmutableVector<Object> appendedAll(@NotNull ImmutableVector<?> values) {
+            return (ImmutableVector<Object>) Objects.requireNonNull(values);
         }
 
         @Override
@@ -81,8 +87,18 @@ final class ImmutableVectors {
         }
 
         @Override
+        public final @NotNull ImmutableVector<Object> prepended(Object value) {
+            return new Vector1<>(new Object[]{value});
+        }
+
+        @Override
         public final @NotNull ImmutableVector<Object> prependedAll(@NotNull Iterable<?> values) {
             return from(values);
+        }
+
+        @Override
+        public final @NotNull ImmutableVector<Object> prependedAll(@NotNull ImmutableVector<?> values) {
+            return (ImmutableVector<Object>) Objects.requireNonNull(values);
         }
 
         @Override
@@ -155,11 +171,6 @@ final class ImmutableVectors {
         }
 
         @Override
-        public final boolean isEmpty() {
-            return false;
-        }
-
-        @Override
         public final int size() {
             return prefix1.length;
         }
@@ -213,7 +224,6 @@ final class ImmutableVectors {
         @Override
         public final @NotNull ImmutableVector<E> prepended(E value) {
             final Object[] prefix1 = this.prefix1;
-            ;
             final int len1 = prefix1.length;
             if (len1 < WIDTH) {
                 return new Vector1(copyPrepend1(value, prefix1));
@@ -350,11 +360,6 @@ final class ImmutableVectors {
         @Override
         public final @NotNull Spliterator<E> spliterator() {
             return new Itr<>(this, length0, vectorSliceCount());
-        }
-
-        @Override
-        public final boolean isEmpty() {
-            return false;
         }
 
         @Override
@@ -1283,7 +1288,7 @@ final class ImmutableVectors {
         }
 
         void initFrom(ImmutableVector<?> v) {
-            switch (v.vectorSliceCount()) {
+            switch (v.vectorSliceCount()) { // implicit null check of v
                 case 0:
                     break;
                 case 1: {
@@ -1423,8 +1428,8 @@ final class ImmutableVectors {
             }
         }
 
-        void addVector(ImmutableVector<E> xs) {
-            final int sliceCount = xs.vectorSliceCount();
+        void addVector(ImmutableVector<? extends E> xs) {
+            final int sliceCount = xs.vectorSliceCount(); // implicit null check of xs
             int sliceIdx = 0;
             while (sliceIdx < sliceCount) {
                 Object[] slice = xs.vectorSlice(sliceIdx);

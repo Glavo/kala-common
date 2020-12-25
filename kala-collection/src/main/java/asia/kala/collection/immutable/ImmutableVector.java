@@ -13,6 +13,7 @@ import asia.kala.collection.*;
 import asia.kala.collection.mutable.ArrayBuffer;
 import asia.kala.factory.CollectionFactory;
 import asia.kala.function.IndexedFunction;
+import asia.kala.traversable.AnyTraversable;
 import asia.kala.traversable.JavaArray;
 import asia.kala.traversable.Traversable;
 import org.jetbrains.annotations.Contract;
@@ -26,6 +27,7 @@ import java.util.Iterator;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+@SuppressWarnings("unchecked")
 public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq<E>
         implements IndexedSeq<E>, Serializable {
 
@@ -185,6 +187,11 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
 
     //endregion
 
+    @Override
+    public final boolean isEmpty() {
+        return this == ImmutableVectors.Vector0.INSTANCE;
+    }
+
     //region Addition Operations
 
     @Override
@@ -203,8 +210,24 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
         return builder.build();
     }
 
+    public @NotNull ImmutableVector<E> appendedAll(@NotNull ImmutableVector<? extends E> values) {
+        if (values == ImmutableVectors.Vector0.INSTANCE) {
+            return this;
+        }
+        ImmutableVectors.VectorBuilder<E> builder = new ImmutableVectors.VectorBuilder<>();
+        builder.initFrom(this);
+        builder.addVector(values);
+        return builder.build();
+    }
+
     @Override
     public @NotNull ImmutableVector<E> appendedAll(@NotNull Iterable<? extends E> values) {
+        if (values instanceof ImmutableVector<?>) {
+            return appendedAll(((ImmutableVector<E>) values));
+        }
+        if (AnyTraversable.knownSize(values) == 0) {
+            return this;
+        }
         ImmutableVectors.VectorBuilder<E> builder = new ImmutableVectors.VectorBuilder<>();
         builder.initFrom(this);
         builder.addAll(values);
@@ -227,8 +250,24 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
         return builder.build();
     }
 
+    public @NotNull ImmutableVector<E> prependedAll(@NotNull ImmutableVector<? extends E> values) {
+        if (values == ImmutableVectors.Vector0.INSTANCE) {
+            return this;
+        }
+        ImmutableVectors.VectorBuilder<E> builder = new ImmutableVectors.VectorBuilder<>();
+        builder.initFrom(values);
+        builder.addVector(this);
+        return builder.build();
+    }
+
     @Override
     public @NotNull ImmutableVector<E> prependedAll(@NotNull Iterable<? extends E> values) {
+        if (values instanceof ImmutableVector<?>) {
+            return prependedAll(((ImmutableVector<E>) values));
+        }
+        if (AnyTraversable.knownSize(values) == 0) {
+            return this;
+        }
         ImmutableVectors.VectorBuilder<E> builder = new ImmutableVectors.VectorBuilder<>();
         builder.addAll(values);
         builder.addVector(this);
@@ -236,7 +275,6 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
     }
 
     //endregion
-
 
     @Override
     public @NotNull ImmutableVector<E> drop(int n) {
