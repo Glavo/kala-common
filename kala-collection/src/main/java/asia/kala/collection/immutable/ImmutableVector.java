@@ -402,11 +402,6 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
         }
 
         @Override
-        public final ImmutableVector<E> build(ImmutableVectors.@NotNull VectorBuilder<E> builder) {
-            return builder.build();
-        }
-
-        @Override
         public final void addToBuilder(ImmutableVectors.@NotNull VectorBuilder<E> builder, E value) {
             builder.add(value);
         }
@@ -415,6 +410,11 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
         public final ImmutableVectors.VectorBuilder<E> mergeBuilder(ImmutableVectors.@NotNull VectorBuilder<E> builder1, ImmutableVectors.@NotNull VectorBuilder<E> builder2) {
             builder1.addVector(builder2.build());
             return builder1;
+        }
+
+        @Override
+        public final ImmutableVector<E> build(ImmutableVectors.@NotNull VectorBuilder<E> builder) {
+            return builder.build();
         }
 
         @Override

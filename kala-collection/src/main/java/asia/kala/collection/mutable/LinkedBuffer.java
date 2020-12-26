@@ -11,6 +11,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.function.IntFunction;
+import java.util.function.Supplier;
 
 
 public final class LinkedBuffer<E> extends ImmutableInternal.LinkedBufferImpl<E>
@@ -106,6 +108,30 @@ public final class LinkedBuffer<E> extends ImmutableInternal.LinkedBufferImpl<E>
         return res;
     }
 
+    public static <E> @NotNull LinkedBuffer<E> fill(int n, E value) {
+        LinkedBuffer<E> res = new LinkedBuffer<>();
+        while (n-- > 0) {
+            res.append(value);
+        }
+        return res;
+    }
+
+    public static <E> @NotNull LinkedBuffer<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+        LinkedBuffer<E> res = new LinkedBuffer<>();
+        while (n-- > 0) {
+            res.append(supplier.get());
+        }
+        return res;
+    }
+
+    public static <E> @NotNull LinkedBuffer<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+        LinkedBuffer<E> res = new LinkedBuffer<>();
+        for (int i = 0; i < n; i++) {
+            res.append(init.apply(i));
+        }
+        return res;
+    }
+
     //endregion
 
     //region Collection Operations
@@ -173,6 +199,36 @@ public final class LinkedBuffer<E> extends ImmutableInternal.LinkedBufferImpl<E>
         @Override
         public final LinkedBuffer<E> newBuilder() {
             return new LinkedBuffer<>();
+        }
+
+        @Override
+        public final LinkedBuffer<E> from(E @NotNull [] values) {
+            return LinkedBuffer.from(values);
+        }
+
+        @Override
+        public final LinkedBuffer<E> from(@NotNull Iterable<? extends E> values) {
+            return LinkedBuffer.from(values);
+        }
+
+        @Override
+        public final LinkedBuffer<E> from(@NotNull Iterator<? extends E> it) {
+            return LinkedBuffer.from(it);
+        }
+
+        @Override
+        public final LinkedBuffer<E> fill(int n, E value) {
+            return LinkedBuffer.fill(n, value);
+        }
+
+        @Override
+        public final LinkedBuffer<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+            return LinkedBuffer.fill(n, supplier);
+        }
+
+        @Override
+        public final LinkedBuffer<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+            return LinkedBuffer.fill(n, init);
         }
     }
 }

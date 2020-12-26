@@ -5,6 +5,7 @@ import asia.kala.iterator.Iterators;
 import asia.kala.traversable.JavaArray;
 import org.junit.jupiter.api.Test;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,11 +31,11 @@ public interface CollectionTestTemplate {
     default void factoryTest() {
         CollectionFactory<Object, Object, Collection<?>> factory =
                 (CollectionFactory<Object, Object, Collection<?>>) factory();
-        assertIterableEquals(List.of(),factory.empty());
-        assertIterableEquals(List.of(),factory.from(JavaArray.EMPTY_OBJECT_ARRAY));
-        assertIterableEquals(List.of(),factory.from(java.util.List.of()));
-        assertIterableEquals(List.of(),factory.from(new Object[]{}));
-        assertIterableEquals(List.of(),factory.from(Iterators.empty()));
+        assertIterableEquals(List.of(), factory.empty());
+        assertIterableEquals(List.of(), factory.from(JavaArray.EMPTY_OBJECT_ARRAY));
+        assertIterableEquals(List.of(), factory.from(java.util.List.of()));
+        assertIterableEquals(List.of(), factory.from(new Object[]{}));
+        assertIterableEquals(List.of(), factory.from(Iterators.empty()));
 
         for (Integer[] data : data1()) {
             assertIterableEquals(Arrays.asList(data), factory.from(data));
@@ -42,7 +43,7 @@ public interface CollectionTestTemplate {
             assertIterableEquals(Arrays.asList(data), factory.from(Arrays.asList(data).iterator()));
         }
 
-        assertIterableEquals(List.of(),factory.build(factory.newBuilder()));
+        assertIterableEquals(List.of(), factory.build(factory.newBuilder()));
 
         for (Integer[] data : data1()) {
             Object builder = factory.newBuilder();
@@ -52,17 +53,17 @@ public interface CollectionTestTemplate {
             assertIterableEquals(Arrays.asList(data), factory.build(builder));
         }
 
-        assertIterableEquals(List.of(),factory.fill(0, "foo"));
-        assertIterableEquals(List.of(),factory.fill(-1, "foo"));
-        assertIterableEquals(List.of(),factory.fill(Integer.MIN_VALUE, "foo"));
+        assertIterableEquals(List.of(), factory.fill(0, "foo"));
+        assertIterableEquals(List.of(), factory.fill(-1, "foo"));
+        assertIterableEquals(List.of(), factory.fill(Integer.MIN_VALUE, "foo"));
 
-        assertIterableEquals(List.of(),factory.fill(0, () -> "foo"));
-        assertIterableEquals(List.of(),factory.fill(-1, () -> "foo"));
-        assertIterableEquals(List.of(),factory.fill(Integer.MIN_VALUE, () -> "foo"));
+        assertIterableEquals(List.of(), factory.fill(0, () -> "foo"));
+        assertIterableEquals(List.of(), factory.fill(-1, () -> "foo"));
+        assertIterableEquals(List.of(), factory.fill(Integer.MIN_VALUE, () -> "foo"));
 
-        assertIterableEquals(List.of(),factory.fill(0, i -> "foo"));
-        assertIterableEquals(List.of(),factory.fill(-1, i -> "foo"));
-        assertIterableEquals(List.of(),factory.fill(Integer.MIN_VALUE, i -> "foo"));
+        assertIterableEquals(List.of(), factory.fill(0, i -> "foo"));
+        assertIterableEquals(List.of(), factory.fill(-1, i -> "foo"));
+        assertIterableEquals(List.of(), factory.fill(Integer.MIN_VALUE, i -> "foo"));
 
         assertIterableEquals(List.of("foo"), factory.fill(1, "foo"));
         assertIterableEquals(List.of("foo", "foo"), factory.fill(2, "foo"));
@@ -220,7 +221,7 @@ public interface CollectionTestTemplate {
     default void forEachTest() {
         ArrayList<Object> al = new ArrayList<>();
         factory().empty().forEach(al::add);
-        assertIterableEquals(List.of(),al);
+        assertIterableEquals(List.of(), al);
 
         factory().from(List.of(0, 1, 2)).forEach(al::add);
         assertIterableEquals(List.of(0, 1, 2), al);
@@ -230,6 +231,22 @@ public interface CollectionTestTemplate {
             factory().from(data).forEach(al::add);
             assertIterableEquals(Arrays.asList(data), al);
             al.clear();
+        }
+    }
+
+    @Test
+    default void serializationTest() throws IOException, ClassNotFoundException {
+        try {
+            for (Integer[] data : data1()) {
+                Collection<?> c = factory().from(data);
+                ByteArrayOutputStream out = new ByteArrayOutputStream(4 * 128);
+                new ObjectOutputStream(out).writeObject(c);
+                byte[] buffer = out.toByteArray();
+                ByteArrayInputStream in = new ByteArrayInputStream(buffer);
+                Object obj = new ObjectInputStream(in).readObject();
+                assertIterableEquals(c, (Iterable<?>) obj);
+            }
+        } catch (NotSerializableException ignored) {
         }
     }
 }

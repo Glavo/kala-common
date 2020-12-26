@@ -76,7 +76,7 @@ public interface ImmutableCollectionTestTemplate extends CollectionTestTemplate 
         assertIterableEquals(List.of(), factory().empty().filterNotNull());
         assertIterableEquals(List.of(), factory().empty().filterNotNull());
 
-        assertIterableEquals(List.of(), factory().from(Collections.singletonList((Object) null)).filterNotNull());
+        assertIterableEquals(List.of(), factory().from(Collections.singletonList(null)).filterNotNull());
         assertIterableEquals(List.of(), factory().from(Arrays.asList(null, null)).filterNotNull());
         assertIterableEquals(List.of(), factory().from(Arrays.asList(null, null, null)).filterNotNull());
         assertIterableEquals(List.of("foo"), factory().from(List.of("foo")).filterNotNull());
@@ -105,5 +105,17 @@ public interface ImmutableCollectionTestTemplate extends CollectionTestTemplate 
 
             assertIterableEquals(Arrays.asList(d), sf.from(ds).map(Integer::parseInt));
         }
+    }
+
+    @Test
+    default void flatMapTest() {
+        assertIterableEquals(List.of(), factory().empty().flatMap(o -> List.of("foo")));
+
+        CollectionFactory<Integer, ?, ? extends ImmutableCollection<? extends Integer>> factory = factory();
+
+        assertIterableEquals(List.of(1, 2, 2), factory.from(List.of(0, 1, 2)).flatMap(i -> factory.fill(i, i)));
+        assertIterableEquals(List.of(1, 2, 2, 3, 3, 3), factory.from(List.of(0, 1, 2, 3)).flatMap(i -> factory.fill(i, i)));
+        assertIterableEquals(List.of(), factory.from(List.of(0, 1, 2, 3)).flatMap(i -> List.of()));
+        assertIterableEquals(List.of(0, 1, 2, 3), factory.from(List.of(0, 1, 2, 3)).flatMap(List::of));
     }
 }
