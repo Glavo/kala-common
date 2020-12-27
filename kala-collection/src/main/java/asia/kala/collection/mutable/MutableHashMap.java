@@ -12,8 +12,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 public final class MutableHashMap<K, V> extends FromJavaConvert.MutableMapFromJava<K, V> {
-    private final HashMap<K, V> data = new HashMap<>();
-
     public MutableHashMap() {
         super(new HashMap<>());
     }
