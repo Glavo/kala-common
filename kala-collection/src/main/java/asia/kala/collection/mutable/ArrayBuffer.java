@@ -295,6 +295,11 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
     public final void appendAll(@NotNull Iterable<? extends E> values) {
         Objects.requireNonNull(values);
 
+        if (values == this) {
+            appendThis();
+            return;
+        }
+
         int knowSize = AnyTraversable.knownSize(values);
         if (knowSize > 0 && size + knowSize > elements.length) {
             grow(size + knowSize);
@@ -320,22 +325,30 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
     @Override
     public final void prependAll(@NotNull Iterable<? extends E> values) {
         Objects.requireNonNull(values);
-        if (values instanceof IndexedSeq<?>) {
-            IndexedSeq<?> seq = (IndexedSeq<?>) values;
-            int s = seq.size();
-            Object[] elements = this.elements;
-            if (elements.length < size + s) {
-                elements = growArray(size + s);
-            }
-            System.arraycopy(this.elements, 0, elements, s, size);
-            for (int i = 0; i < s; i++) {
-                elements[i] = seq.get(i);
-            }
-            this.elements = elements;
-            size += s;
+        if (values == this) {
+            appendThis();
             return;
         }
 
+        final int size = this.size;
+        if (values instanceof IndexedSeq<?>) {
+            IndexedSeq<?> seq = (IndexedSeq<?>) values;
+            int s = seq.size();
+            if (s == 0) {
+                return;
+            }
+            Object[] arr = this.elements;
+            if (arr.length < size + s) {
+                arr = growArray(size + s);
+            }
+            System.arraycopy(this.elements, 0, arr, s, size);
+            for (int i = 0; i < s; i++) {
+                arr[i] = seq.get(i);
+            }
+            this.elements = arr;
+            this.size += s;
+            return;
+        }
 
         Object[] cv = CollectionHelper.asArray(values);
         if (cv.length == 0) {
@@ -350,7 +363,28 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
         System.arraycopy(this.elements, 0, elements, cv.length, size);
         System.arraycopy(cv, 0, elements, 0, cv.length);
         this.elements = elements;
-        size += cv.length;
+        this.size += cv.length;
+    }
+
+    private void appendThis() {
+        final int size = this.size;
+        if (size == 0) {
+            return;
+        }
+
+        if (size >= Integer.MAX_VALUE / 2) {
+            throw new AssertionError(); // TODO
+        }
+
+        final int newSize = size * 2;
+
+        if (elements.length < newSize) {
+            grow(newSize);
+        }
+
+        final Object[] elements = this.elements;
+        System.arraycopy(elements, 0, elements, size, size);
+        this.size = newSize;
     }
 
     @Override

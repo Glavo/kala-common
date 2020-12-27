@@ -141,7 +141,6 @@ public final class ImmutableInternal {
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         public final E removeAt(int index) {
             if (index < 0 || index >= len) {
                 throw new IndexOutOfBoundsException("Index out of range: " + index);
@@ -172,7 +171,6 @@ public final class ImmutableInternal {
             return v;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         public final void removeAt(int index, int count) {
             if (count < 0) {
@@ -296,7 +294,7 @@ public final class ImmutableInternal {
             while (n instanceof ImmutableList.Cons<?>) {
                 ImmutableList.Cons<E> c = (ImmutableList.Cons<E>) n;
                 c.head = mapper.apply(c.head);
-                n = (ImmutableList<E>) c.tail;
+                n = c.tail;
             }
         }
 

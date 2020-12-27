@@ -25,7 +25,6 @@ public final class LinkedBufferTest implements BufferTestTemplate {
         assertEquals("B", buffer1.removeAt(0));
         assertEquals(LinkedBuffer.of(), buffer1);
 
-
         var buffer2 = LinkedBuffer.of("A", "B", "C", "D", "E");
 
         buffer2.removeAt(0, 2);
