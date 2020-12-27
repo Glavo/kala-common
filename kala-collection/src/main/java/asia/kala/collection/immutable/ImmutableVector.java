@@ -8,6 +8,7 @@
 
 package asia.kala.collection.immutable;
 
+import asia.kala.Tuple2;
 import asia.kala.annotations.Covariant;
 import asia.kala.collection.*;
 import asia.kala.collection.mutable.ArrayBuffer;
@@ -382,6 +383,16 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
     @Override
     public @NotNull <U> ImmutableVector<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
         return mapIndexedImpl(mapper);
+    }
+
+    @Override
+    public @NotNull <U> ImmutableVector<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
+        return flatMapImpl(mapper);
+    }
+
+    @Override
+    public @NotNull <U> ImmutableVector<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
+        return zipImpl(other);
     }
 
     @Override

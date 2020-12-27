@@ -382,6 +382,11 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
     }
 
     @Override
+    public final @NotNull <U> ImmutableList<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
+        return zipImpl(other);
+    }
+
+    @Override
     public final @NotNull ImmutableList<E> filter(@NotNull Predicate<? super E> predicate) {
         return filterImpl(predicate);
     }

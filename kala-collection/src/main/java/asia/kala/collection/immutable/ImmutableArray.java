@@ -567,6 +567,29 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
+    public final @NotNull <U> ImmutableArray<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
+        Iterator<? extends U> it = other.iterator(); // implicit null check of other
+        if (!it.hasNext()) {
+            return empty();
+        }
+
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+        Object[] tmp = new Object[size];
+
+        int i = 0;
+        while (it.hasNext() && i < size) {
+            tmp[i] = new Tuple2<>(elements[i], it.next());
+            ++i;
+        }
+
+        if (i < size) {
+            tmp = Arrays.copyOf(tmp, i);
+        }
+        return new ImmutableArray<>(tmp);
+    }
+
+    @Override
     public final @NotNull Tuple2<@NotNull ImmutableArray<E>, @NotNull ImmutableArray<E>> span(@NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
 

@@ -1,5 +1,7 @@
 package asia.kala.collection.immutable;
 
+import asia.kala.Tuple;
+import asia.kala.Tuple2;
 import asia.kala.collection.CollectionTestTemplate;
 import asia.kala.factory.CollectionFactory;
 import org.junit.jupiter.api.Test;
@@ -117,5 +119,26 @@ public interface ImmutableCollectionTestTemplate extends CollectionTestTemplate 
         assertIterableEquals(List.of(1, 2, 2, 3, 3, 3), factory.from(List.of(0, 1, 2, 3)).flatMap(i -> factory.fill(i, i)));
         assertIterableEquals(List.of(), factory.from(List.of(0, 1, 2, 3)).flatMap(i -> List.of()));
         assertIterableEquals(List.of(0, 1, 2, 3), factory.from(List.of(0, 1, 2, 3)).flatMap(List::of));
+    }
+
+    @Test
+    default void zipTest() {
+        assertIterableEquals(List.of(), factory().empty().zip(List.of()));
+        assertIterableEquals(List.of(), factory().empty().zip(List.of("str")));
+
+        assertIterableEquals(List.of(), factory().from(List.of(0)).zip(List.of()));
+
+        Integer[][] data1 = data1();
+        for (int i = 0; i < data1.length - 1; i++) {
+            Integer[] d1 = data1[i];
+            Integer[] d2 = data1[i + 1];
+
+            Tuple2<Integer, Integer>[] d12 = new Tuple2[Math.min(d1.length, d2.length)];
+            for (int j = 0; j < d12.length; j++) {
+                d12[j] = Tuple.of(d1[j], d2[j]);
+            }
+
+            assertIterableEquals(Arrays.asList(d12), factory().from(d1).zip(Arrays.asList(d2)));
+        }
     }
 }

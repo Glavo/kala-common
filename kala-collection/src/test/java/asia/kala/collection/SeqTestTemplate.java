@@ -1,6 +1,11 @@
 package asia.kala.collection;
 
+import asia.kala.collection.immutable.ImmutableArray;
+import asia.kala.collection.immutable.ImmutableList;
 import asia.kala.collection.immutable.ImmutableSeq;
+import asia.kala.collection.immutable.ImmutableVector;
+import asia.kala.collection.mutable.ArrayBuffer;
+import asia.kala.collection.mutable.MutableArray;
 import asia.kala.control.Option;
 import asia.kala.factory.CollectionFactory;
 import org.junit.jupiter.api.Test;
@@ -138,5 +143,29 @@ public interface SeqTestTemplate extends CollectionTestTemplate {
         assertEquals(1, sf.from(List.of("foo", "bar")).lastIndexOf("bar"));
         assertEquals(-1, sf.from(List.of("foo", "bar")).lastIndexOf("zzz"));
         assertEquals(3, sf.from(List.of("foo", "bar", "zzz", "bar")).lastIndexOf("bar"));
+    }
+
+    @Test
+    default void equalsTest() {
+        assertEquals(ImmutableArray.empty(), factory().empty());
+        assertEquals(ImmutableVector.empty(), factory().empty());
+        assertEquals(ImmutableList.empty(), factory().empty());
+        assertEquals(MutableArray.empty(), factory().empty());
+
+        Seq<?> foo = factory().from(List.of("foo"));
+        assertNotEquals(ImmutableArray.empty(), foo);
+        assertNotEquals(ImmutableVector.empty(), foo);
+        assertNotEquals(MutableArray.empty(), foo);
+        assertEquals(ImmutableArray.of("foo"), foo);
+        assertEquals(ImmutableVector.of("foo"), foo);
+        assertEquals(MutableArray.of("foo"), foo);
+
+        for (Integer[] data : data1()) {
+            assertEquals(ImmutableArray.from(data), factory().from(data));
+            assertEquals(ImmutableVector.from(data), factory().from(data));
+            assertEquals(MutableArray.from(data), factory().from(data));
+        }
+
+
     }
 }
