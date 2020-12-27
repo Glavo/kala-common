@@ -10,41 +10,17 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 
+@SuppressWarnings("unchecked")
 public interface MapIterator<K, V> extends Iterator<Tuple2<K, V>> {
-    @SuppressWarnings("unchecked")
-    static <K, V> @NotNull MapIterator<K, V> ofIterator(@NotNull Iterator<? extends Tuple2<? extends K, ? extends V>> it) {
-        Objects.requireNonNull(it);
-        if (it instanceof MapIterator<?, ?>) {
-            return ((MapIterator<K, V>) it);
+    static <K, V> @NotNull MapIterator<K, V> empty() {
+        return (MapIterator<K, V>) MapIterators.EMPTY;
+    }
+
+    static <K, V> @NotNull MapIterator<K, V> ofIterator(@NotNull Iterator<? extends java.util.Map.Entry<? extends K, ? extends V>> it) {
+        if (!it.hasNext()) { // implicit null check of it
+            return empty();
         }
-
-        return new MapIterator<K, V>() {
-            private V value = null;
-
-            @Override
-            public final Tuple2<K, V> next() {
-                Tuple2<K, V> res = (Tuple2<K, V>) it.next();
-                value = res._2;
-                return res;
-            }
-
-            @Override
-            public final K nextKey() {
-                Tuple2<? extends K, ? extends V> res = it.next();
-                value = res._2;
-                return res._1;
-            }
-
-            @Override
-            public final V getValue() {
-                return value;
-            }
-
-            @Override
-            public final boolean hasNext() {
-                return it.hasNext();
-            }
-        };
+        return new MapIterators.OfIterator<>(it);
     }
 
     K nextKey();
