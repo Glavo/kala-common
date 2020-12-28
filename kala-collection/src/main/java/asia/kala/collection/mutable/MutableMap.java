@@ -26,5 +26,13 @@ public interface MutableMap<K, V> extends Map<K, V> {
         set(kv.getKey(), kv.getValue());
     }
 
+    default void putAll(@NotNull java.util.Map<? extends K, ? extends V> m) {
+        m.forEach(this::set);
+    }
+
+    default void putAll(@NotNull Map<? extends K, ? extends V> m) {
+        m.forEach(this::set);
+    }
+
     @NotNull Option<V> remove(K key);
 }

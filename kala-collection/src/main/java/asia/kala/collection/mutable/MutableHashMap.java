@@ -184,4 +184,9 @@ public final class MutableHashMap<K, V> extends FromJavaConvert.MutableMapFromJa
     }
 
     //endregion
+
+    @Override
+    public final @NotNull String className() {
+        return "MutableHashMap";
+    }
 }

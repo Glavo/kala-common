@@ -5,6 +5,7 @@ import asia.kala.collection.*;
 import asia.kala.collection.AbstractCollection;
 import asia.kala.collection.AbstractMap;
 import asia.kala.collection.Collection;
+import asia.kala.collection.Map;
 import asia.kala.collection.mutable.Buffer;
 import asia.kala.collection.mutable.MutableMap;
 import asia.kala.collection.mutable.MutableSeq;
@@ -252,7 +253,6 @@ public final class FromJavaConvert {
 
         //endregion
 
-
         @Override
         public V get(K key) {
             if (!source.containsKey(key)) {
@@ -304,6 +304,11 @@ public final class FromJavaConvert {
         @Override
         public void set(K key, V value) {
             source.put(key, value);
+        }
+
+        @Override
+        public void putAll(@NotNull java.util.Map<? extends K, ? extends V> m) {
+            source.putAll(m);
         }
 
         @Override
