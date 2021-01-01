@@ -662,7 +662,7 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
     }
 
     @Override
-    public final @NotNull Comparator<? super E> comparator() {
+    public final Comparator<? super E> comparator() {
         return this.comparator;
     }
 

@@ -1,6 +1,7 @@
 package asia.kala.collection;
 
 import asia.kala.annotations.Covariant;
+import asia.kala.comparator.Comparators;
 import asia.kala.factory.CollectionFactory;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -12,10 +13,8 @@ public interface SortedSet<@Covariant E> extends Set<E> {
 
     @NotNull <U> CollectionFactory<U, ?, ? extends SortedSet<U>> iterableFactory(Comparator<? super U> comparator);
 
-    default @NotNull Comparator<? super E> comparator() {
-        @SuppressWarnings("unchecked") final Comparator<? super E> comparator =
-                (Comparator<? super E>) Comparator.naturalOrder();
-        return comparator;
+    default Comparator<? super E> comparator() {
+        return Comparators.naturalOrder();
     }
 
     @Contract(pure = true)
