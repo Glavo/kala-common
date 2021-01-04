@@ -1,10 +1,10 @@
-## `asia.kala`
+## `org.glavo.kala`
 
 ### `Tuple`
 
 提供聚合任意多个值的不可变类型，支持序列化。
 
-`EmptyTuple` 代表不包含元素的空元组，唯一实例为 `EmptyTuple.INSTANCE`。
+`Unit` 代表不包含元素的空元组，唯一实例为 `Unit.INSTANCE`。
 
 非空元组继承自 `HList<H, T>` 及 `NonEmtpyTuple`。`Tuple1` ~ `Tupl9` 分别代表具有 1 ~ 9 个元素的元组，
 更多元素的元组由 `TupleXXL` 表示，实现上会将所有元素打包至一个数组中。
@@ -49,7 +49,7 @@ var ans2 = v.get(); // no output, and ans2 is "Foo"
 v.isReady(); // true
 ```
 
-## `asia.kala.control`
+## `org.glavo.kala.control`
 
 ### `Option`
 

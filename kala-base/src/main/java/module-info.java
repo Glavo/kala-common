@@ -1,14 +1,14 @@
-module asia.kala.base {
+module org.glavo.kala.base {
     requires static org.jetbrains.annotations;
 
-    exports asia.kala;
-    exports asia.kala.annotations;
-    exports asia.kala.comparator;
-    exports asia.kala.control;
-    exports asia.kala.factory;
-    exports asia.kala.function;
-    exports asia.kala.io;
-    exports asia.kala.iterator;
-    exports asia.kala.ref;
-    exports asia.kala.traversable;
+    exports org.glavo.kala;
+    exports org.glavo.kala.annotations;
+    exports org.glavo.kala.comparator;
+    exports org.glavo.kala.control;
+    exports org.glavo.kala.factory;
+    exports org.glavo.kala.function;
+    exports org.glavo.kala.io;
+    exports org.glavo.kala.iterator;
+    exports org.glavo.kala.ref;
+    exports org.glavo.kala.traversable;
 }

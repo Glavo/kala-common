@@ -29,7 +29,7 @@ Then add dependencies:
 Maven:
 ```xml
 <dependency>
-  <groupId>asia.kala</groupId>
+  <groupId>org.glavo.kala</groupId>
   <artifactId>kala-collection</artifactId>
   <version>${kala_collection_version}</version>
 </dependency>
@@ -37,5 +37,5 @@ Maven:
 
 Gradle:
 ```groovy
-implementation group: 'asia.kala', name: 'kala-collection', version: kala-collection_version
+implementation group: 'org.glavo.kala', name: 'kala-collection', version: kala-collection_version
 ```

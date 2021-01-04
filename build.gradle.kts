@@ -15,7 +15,7 @@ plugins {
 }
 
 allprojects {
-    group = "asia.kala"
+    group = "org.glavo"
     version = kalaVersion("0.11.0")
 
     apply {

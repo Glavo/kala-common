@@ -1,4 +1,4 @@
-module asia.kala.common {
-    requires transitive asia.kala.base;
-    requires transitive asia.kala.collection;
+module org.glavo.kala.common {
+    requires transitive org.glavo.kala.base;
+    requires transitive org.glavo.kala.collection;
 }

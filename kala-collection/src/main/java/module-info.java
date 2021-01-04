@@ -1,9 +1,9 @@
-module asia.kala.collection {
+module org.glavo.kala.collection {
     requires static org.jetbrains.annotations;
 
-    requires transitive asia.kala.base;
+    requires transitive org.glavo.kala.base;
 
-    exports asia.kala.collection;
-    exports asia.kala.collection.mutable;
-    exports asia.kala.collection.immutable;
+    exports org.glavo.kala.collection;
+    exports org.glavo.kala.collection.mutable;
+    exports org.glavo.kala.collection.immutable;
 }
