@@ -16,7 +16,7 @@ plugins {
 
 allprojects {
     group = "org.glavo"
-    version = kalaVersion("0.11.0")
+    version = kalaVersion("0.11.1")
 
     apply {
         plugin("java-library")
@@ -135,7 +135,7 @@ allprojects {
         setPublications("maven")
 
         pkg.apply {
-            repo = "maven"
+            repo = "public"
             name = project.name
             publicDownloadNumbers = true
             vcsUrl = "https://github.com/Glavo/kala-common.git"
