@@ -9,7 +9,7 @@ import org.glavo.kala.traversable.Traversable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-public interface Collection<@Covariant E> extends Traversable<E>, Equals {
+public interface Collection<@Covariant E> extends Traversable<E>, CollectionLike<E>, Equals {
 
     int SEQ_HASH_MAGIC = -1140647423;
 
@@ -55,24 +55,4 @@ public interface Collection<@Covariant E> extends Traversable<E>, Equals {
         return other instanceof Collection<?>;
     }
 
-    default @NotNull Seq<E> toSeq() {
-        return toImmutableSeq();
-    }
-
-    default @NotNull ImmutableSeq<E> toImmutableSeq() {
-        return toImmutableVector();
-    }
-
-    @SuppressWarnings("unchecked")
-    default @NotNull ImmutableArray<E> toImmutableArray() {
-        return (ImmutableArray<E>) ImmutableArray.Unsafe.wrap(toArray());
-    }
-
-    default @NotNull ImmutableList<E> toImmutableList() {
-        return ImmutableList.from(this);
-    }
-
-    default @NotNull ImmutableVector<E> toImmutableVector() {
-        return ImmutableVector.from(this);
-    }
 }

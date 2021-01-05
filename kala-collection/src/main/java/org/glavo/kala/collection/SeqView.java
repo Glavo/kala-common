@@ -13,7 +13,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public interface SeqView<@Covariant E> extends Seq<E>, View<E> {
+public interface SeqView<@Covariant E> extends View<E>, SeqLike<E> {
 
     //region Narrow method
 
@@ -30,12 +30,6 @@ public interface SeqView<@Covariant E> extends Seq<E>, View<E> {
     @Override
     default String className() {
         return "SeqView";
-    }
-
-    @Override
-    @Contract(value = "-> this", pure = true)
-    default @NotNull SeqView<E> view() {
-        return this;
     }
 
     //endregion
@@ -103,23 +97,18 @@ public interface SeqView<@Covariant E> extends Seq<E>, View<E> {
         return new SeqViews.Concat<>(ArraySeq.wrap(prefix), this);
     }
 
-    default@NotNull SeqView<E> sorted() {
+    default @NotNull SeqView<E> sorted() {
         return sorted(Comparators.naturalOrder());
     }
 
-    default@NotNull SeqView<E> sorted(@NotNull Comparator<? super E> comparator) {
+    default @NotNull SeqView<E> sorted(@NotNull Comparator<? super E> comparator) {
         Objects.requireNonNull(comparator);
 
         return new SeqViews.Sorted<>(this, comparator);
     }
 
-    default@NotNull SeqView<E> reversed() {
+    default @NotNull SeqView<E> reversed() {
         return new SeqViews.Reversed<>(this);
-    }
-
-    @Override
-    default boolean canEqual(Object other) {
-        return other instanceof SeqView<?>;
     }
 
     @Override

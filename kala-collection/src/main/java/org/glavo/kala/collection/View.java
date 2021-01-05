@@ -2,26 +2,18 @@ package org.glavo.kala.collection;
 
 import org.glavo.kala.Tuple2;
 import org.glavo.kala.annotations.Covariant;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public interface View<@Covariant E> extends Collection<E> {
+public interface View<@Covariant E> extends CollectionLike<E> {
 
     //region Collection Operations
 
-    @Override
     default String className() {
         return "View";
-    }
-
-    @Override
-    @Contract(value = "-> this", pure = true)
-    default @NotNull View<E> view() {
-        return this;
     }
 
     //endregion
@@ -55,10 +47,5 @@ public interface View<@Covariant E> extends Collection<E> {
 
     default @NotNull Tuple2<? extends View<E>, ? extends View<E>> span(@NotNull Predicate<? super E> predicate) {
         throw new UnsupportedOperationException(); // TODO
-    }
-
-    @Override
-    default boolean canEqual(Object other) {
-        return other instanceof View<?>;
     }
 }

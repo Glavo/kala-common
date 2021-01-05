@@ -389,12 +389,12 @@ final class SeqViews {
 
     static class Concat<@Covariant E> extends AbstractSeqView<E> {
         @NotNull
-        private final Seq<E> seq1;
+        private final SeqLike<E> seq1;
 
         @NotNull
-        private final Seq<E> seq2;
+        private final SeqLike<E> seq2;
 
-        Concat(@NotNull Seq<E> seq1, @NotNull Seq<E> seq2) {
+        Concat(@NotNull SeqLike<E> seq1, @NotNull SeqLike<E> seq2) {
             this.seq1 = seq1;
             this.seq2 = seq2;
         }

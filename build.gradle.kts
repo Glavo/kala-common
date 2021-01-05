@@ -135,7 +135,7 @@ allprojects {
         setPublications("maven")
 
         pkg.apply {
-            repo = "public"
+            repo = "maven"
             name = project.name
             publicDownloadNumbers = true
             vcsUrl = "https://github.com/Glavo/kala-common.git"
