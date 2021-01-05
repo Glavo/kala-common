@@ -108,33 +108,6 @@ public abstract class AbstractImmutableCollection<@Covariant E>
         return factory.build(builder);
     }
 
-    static <E, T, Builder> Tuple2<T, T> span(
-            @NotNull ImmutableCollection<? extends E> collection,
-            @NotNull Predicate<? super E> predicate,
-            @NotNull CollectionFactory<? super E, Builder, ? extends T> factory) {
-        Objects.requireNonNull(predicate);
-
-        Builder builder1 = factory.newBuilder();
-        Builder builder2 = factory.newBuilder();
-
-        boolean flag = true;
-
-        for (E e : collection) {
-            if (flag) {
-                if (predicate.test(e)) {
-                    factory.addToBuilder(builder1, e);
-                } else {
-                    factory.addToBuilder(builder2, e);
-                    flag = false;
-                }
-            } else {
-                factory.addToBuilder(builder2, e);
-            }
-        }
-        return new Tuple2<>(factory.build(builder1), factory.build(builder2));
-    }
-
-
     protected final <U, To extends ImmutableCollection<U>> @NotNull To mapImpl(@NotNull Function<? super E, ? extends U> mapper) {
         return (To) AbstractImmutableCollection.map(this, mapper, iterableFactory());
     }
@@ -161,8 +134,4 @@ public abstract class AbstractImmutableCollection<@Covariant E>
         return (To) AbstractImmutableCollection.zip(this, other, this.<Tuple2<E, U>>iterableFactory());
     }
 
-    @SuppressWarnings("rawtypes")
-    protected final <To extends ImmutableCollection<E>> Tuple2<To, To> spanImpl(@NotNull Predicate<? super E> predicate) {
-        return (Tuple2) AbstractImmutableCollection.span(this, predicate, iterableFactory());
-    }
 }

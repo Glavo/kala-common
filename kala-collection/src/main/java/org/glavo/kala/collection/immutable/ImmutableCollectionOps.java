@@ -1,24 +1,7 @@
 package org.glavo.kala.collection.immutable;
 
-import org.glavo.kala.Tuple2;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
+import org.glavo.kala.collection.internal.FullCollectionOps;
 
-import java.util.function.Function;
-import java.util.function.Predicate;
-
-public interface ImmutableCollectionOps<E, CC extends ImmutableCollection<?>, COLL extends ImmutableCollection<E>> {
-
-    @NotNull COLL filter(@NotNull Predicate<? super E> predicate);
-
-    @NotNull COLL filterNot(@NotNull Predicate<? super E> predicate);
-
-    @NotNull COLL filterNotNull();
-
-    @NotNull <U> CC map(@NotNull Function<? super E, ? extends U> mapper);
-
-    @Contract(pure = true)
-    <U> @NotNull CC flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper);
-
-    @NotNull Tuple2<? extends COLL, ? extends COLL> span(@NotNull Predicate<? super E> predicate);
+public interface ImmutableCollectionOps<E, CC extends ImmutableCollection<?>, COLL extends ImmutableCollection<E>>
+        extends FullCollectionOps<E, CC, COLL> {
 }

@@ -144,11 +144,4 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E> {
     default <U> @NotNull ImmutableCollection<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
         return AbstractImmutableCollection.zip(this, other, this.<Tuple2<E, U>>iterableFactory());
     }
-
-    @Contract(pure = true)
-    default @NotNull Tuple2<@NotNull ? extends ImmutableCollection<E>, @NotNull ? extends ImmutableCollection<E>> span(
-            @NotNull Predicate<? super E> predicate
-    ) {
-        return AbstractImmutableCollection.span(this, predicate, iterableFactory());
-    }
 }

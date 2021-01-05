@@ -136,8 +136,6 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E> {
         return new SeqViews.FlatMapped<>(this, mapper);
     }
 
-
-    @Override
     default @NotNull Tuple2<? extends SeqView<E>, ? extends SeqView<E>> span(@NotNull Predicate<? super E> predicate) {
         return Tuple.of(takeWhile(predicate), dropWhile(predicate));
     }

@@ -5,21 +5,16 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.RandomAccess;
 import java.util.function.Function;
 
-public interface IndexedSeqView<@Covariant E> extends SeqView<E>, IndexedSeq<E> {
+public interface IndexedSeqView<@Covariant E> extends SeqView<E>, RandomAccess {
 
     //region Collection Operations
 
     @Override
     default String className() {
         return "IndexedSeqView";
-    }
-
-    @Override
-    @Contract(value = "-> this", pure = true)
-    default @NotNull IndexedSeqView<E> view() {
-        return this;
     }
 
     //endregion

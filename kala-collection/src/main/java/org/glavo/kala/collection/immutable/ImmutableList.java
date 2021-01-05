@@ -402,9 +402,6 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
     }
 
     @Override
-    public abstract @NotNull Tuple2<@NotNull ImmutableList<E>, @NotNull ImmutableList<E>> span(@NotNull Predicate<? super E> predicate);
-
-    @Override
     public final @NotNull ImmutableList<E> toImmutableList() {
         return this;
     }
@@ -467,13 +464,6 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
         @Override
         public final Object last() {
             throw new NoSuchElementException();
-        }
-
-        @Override
-        public final @NotNull Tuple2<@NotNull ImmutableList<Object>, @NotNull ImmutableList<Object>> span(
-                @NotNull Predicate<? super Object> predicate
-        ) {
-            return new Tuple2<>(ImmutableList.nil(), ImmutableList.nil());
         }
 
         @Override
@@ -555,11 +545,6 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
                 node = node.tail();
             }
             return node.head();
-        }
-
-        @Override
-        public final @NotNull Tuple2<@NotNull ImmutableList<E>, @NotNull ImmutableList<E>> span(@NotNull Predicate<? super E> predicate) {
-            return spanImpl(predicate);
         }
 
         final Cons<E> appendIterator(@NotNull Iterator<? extends E> it) {

@@ -591,7 +591,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
         return new ImmutableArray<>(tmp);
     }
 
-    @Override
+    //@Override
     public final @NotNull Tuple2<@NotNull ImmutableArray<E>, @NotNull ImmutableArray<E>> span(@NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
 

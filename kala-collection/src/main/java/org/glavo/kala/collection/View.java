@@ -44,8 +44,4 @@ public interface View<@Covariant E> extends CollectionLike<E> {
         Objects.requireNonNull(other);
         return new Views.Zip<>(this, other);
     }
-
-    default @NotNull Tuple2<? extends View<E>, ? extends View<E>> span(@NotNull Predicate<? super E> predicate) {
-        throw new UnsupportedOperationException(); // TODO
-    }
 }

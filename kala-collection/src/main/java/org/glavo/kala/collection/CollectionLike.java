@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 
 public interface CollectionLike<E> extends Traversable<E> {
 
-
     default @NotNull Seq<E> toSeq() {
         return toImmutableSeq();
     }
