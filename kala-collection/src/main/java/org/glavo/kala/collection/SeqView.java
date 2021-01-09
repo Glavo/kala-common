@@ -4,7 +4,9 @@ import org.glavo.kala.Tuple;
 import org.glavo.kala.Tuple2;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.internal.CollectionHelper;
+import org.glavo.kala.collection.internal.FullSeqOps;
 import org.glavo.kala.comparator.Comparators;
+import org.glavo.kala.function.IndexedFunction;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,7 +15,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public interface SeqView<@Covariant E> extends View<E>, SeqLike<E> {
+public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqOps<E, SeqView<?>, SeqView<E>> {
 
     //region Narrow method
 
@@ -119,6 +121,13 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E> {
     }
 
     @Override
+    default <U> @NotNull SeqView<?> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+        Objects.requireNonNull(mapper);
+
+        return new SeqViews.MapIndexed<U, E>(this, mapper);
+    }
+
+    @Override
     default @NotNull SeqView<E> filter(@NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
         return new SeqViews.Filter<>(this, predicate);
@@ -128,6 +137,11 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E> {
     default @NotNull SeqView<E> filterNot(@NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
         return new SeqViews.Filter<>(this, predicate.negate());
+    }
+
+    @Override
+    default @NotNull SeqView<E> filterNotNull() {
+        return filter(Objects::nonNull);
     }
 
     @Override

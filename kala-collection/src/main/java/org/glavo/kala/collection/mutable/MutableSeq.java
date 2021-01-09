@@ -68,7 +68,7 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
     }
 
     @Contract("_ -> new")
-    static <E> @NotNull MutableSeq<E> wrapJava(@NotNull java.util.List<E> list) {
+    static <E> @NotNull MutableSeq<E> wrapJava(java.util.@NotNull List<E> list) {
         Objects.requireNonNull(list);
         return list instanceof RandomAccess
                 ? new FromJavaConvert.MutableIndexedSeqFromJava<>(list)

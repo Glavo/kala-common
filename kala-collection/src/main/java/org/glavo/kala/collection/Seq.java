@@ -2,13 +2,17 @@ package org.glavo.kala.collection;
 
 import org.glavo.kala.collection.internal.AsJavaConvert;
 import org.glavo.kala.annotations.Covariant;
+import org.glavo.kala.collection.internal.FromJavaConvert;
 import org.glavo.kala.factory.CollectionFactory;
 import org.glavo.kala.collection.immutable.ImmutableSeq;
 import org.jetbrains.annotations.*;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
+import java.util.RandomAccess;
 
+@SuppressWarnings("unchecked")
 public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E> {
 
     //region Narrow method
@@ -68,6 +72,16 @@ public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E> {
         return ImmutableSeq.from(it);
     }
 
+    static <E> @NotNull Seq<E> wrapJava(java.util.@NotNull List<? extends E> source) {
+        Objects.requireNonNull(source);
+        if (source instanceof AsJavaConvert.SeqAsJava<?, ?>) {
+            return ((AsJavaConvert.SeqAsJava<E, ?>) source).collection;
+        }
+        return source instanceof RandomAccess
+                ? new FromJavaConvert.IndexedSeqFromJava<>((List<E>) source)
+                : new FromJavaConvert.SeqFromJava<>((List<E>) source);
+    }
+
     //endregion
 
     static void checkElementIndex(int index, int size) throws IndexOutOfBoundsException {
@@ -81,7 +95,6 @@ public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E> {
             throw new IndexOutOfBoundsException("Index: " + index + " Size: " + size);
         }
     }
-
 
     //region Collection Operations
 
@@ -108,7 +121,6 @@ public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E> {
     }
 
     //endregion
-
 
 
     @Override

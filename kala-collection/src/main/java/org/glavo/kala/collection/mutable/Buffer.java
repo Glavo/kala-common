@@ -109,7 +109,6 @@ public interface Buffer<E> extends MutableSeq<E> {
         return new BufferEditor<>(this);
     }
 
-
     @Override
     default @NotNull List<E> asJava() {
         return this instanceof IndexedSeq<?>

@@ -5,6 +5,7 @@ import org.glavo.kala.collection.mutable.ArrayBuffer;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.function.IndexedConsumer;
+import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.iterator.AbstractIterator;
 import org.glavo.kala.iterator.Iterators;
 import org.jetbrains.annotations.NotNull;
@@ -557,6 +558,41 @@ final class SeqViews {
         @Override
         public final Iterator<E> iterator() {
             return Iterators.map(source.iterator(), mapper);
+        }
+    }
+
+    static class MapIndexed<@Covariant E, T> extends AbstractSeqView<E> {
+        @NotNull
+        private final SeqView<T> source;
+
+        @NotNull
+        private final IndexedFunction<? super T, ? extends E> mapper;
+
+        public MapIndexed(@NotNull SeqView<T> source, @NotNull IndexedFunction<? super T, ? extends E> mapper) {
+            this.source = source;
+            this.mapper = mapper;
+        }
+
+        @Override
+        public final int size() {
+            return source.size();
+        }
+
+        @Override
+        public final E get(int index) {
+            return mapper.apply(index, source.get(index));
+        }
+
+        @NotNull
+        @Override
+        public final Option<E> getOption(int index) {
+            return source.getOption(index).map(a -> mapper.apply(index, a));
+        }
+
+        @NotNull
+        @Override
+        public final Iterator<E> iterator() {
+            return Iterators.mapIndexed(source.iterator(), mapper);
         }
     }
 

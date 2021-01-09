@@ -2,6 +2,7 @@ package org.glavo.kala.iterator;
 
 import org.glavo.kala.control.Try;
 import org.glavo.kala.function.CheckedConsumer;
+import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.traversable.JavaArray;
 import org.glavo.kala.Tuple;
 import org.glavo.kala.Tuple2;
@@ -534,6 +535,29 @@ public final class Iterators {
             @Override
             public final U next() {
                 return mapper.apply(it.next());
+            }
+        };
+    }
+
+    public static <E, U> @NotNull Iterator<U> mapIndexed(
+            @NotNull Iterator<? extends E> it,
+            @NotNull IndexedFunction<? super E, ? extends U> mapper
+    ) {
+        Objects.requireNonNull(mapper);
+        if (!it.hasNext()) {
+            return Iterators.empty();
+        }
+        return new AbstractIterator<U>() {
+            private int idx = 0;
+
+            @Override
+            public final boolean hasNext() {
+                return it.hasNext();
+            }
+
+            @Override
+            public final U next() {
+                return mapper.apply(idx++, it.next());
             }
         };
     }
