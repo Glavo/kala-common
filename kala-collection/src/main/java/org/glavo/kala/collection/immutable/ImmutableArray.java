@@ -301,6 +301,31 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
 
     //endregion
 
+
+    @Override
+    public final @NotNull ImmutableArray<E> slice(int fromIndex, int toIndex) {
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+        Seq.checkElementIndex(fromIndex, size);
+        Seq.checkPositionIndex(toIndex, size);
+
+        if (fromIndex > toIndex) {
+            throw new IllegalArgumentException("fromIndex(" + fromIndex + ") > toIndex(" + toIndex + ")");
+        }
+
+        final int ns = toIndex - fromIndex;
+        if (ns == 0) {
+            return empty();
+        }
+        if (ns == size) {
+            return this;
+        }
+
+        Object[] newArr = new Object[ns];
+        System.arraycopy(elements, fromIndex, newArr, 0, ns);
+        return new ImmutableArray<>(newArr);
+    }
+
     @Override
     public final @NotNull ImmutableArray<E> drop(int n) {
         if (n <= 0) {

@@ -1,6 +1,7 @@
 package org.glavo.kala.collection.immutable;
 
 import org.glavo.kala.annotations.Covariant;
+import org.glavo.kala.collection.IndexedSeq;
 import org.glavo.kala.factory.CollectionFactory;
 import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.iterator.Iterators;
@@ -41,6 +42,36 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
             }
         }
 
+        return factory.build(builder);
+    }
+
+    static <E, T extends ImmutableSeq<? extends E>, Builder> T slice(
+            @NotNull ImmutableSeq<? extends E> seq,
+            int fromIndex,
+            int toIndex,
+            @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
+    ) {
+        final int size = seq.size();
+        Seq.checkElementIndex(fromIndex, size);
+        Seq.checkPositionIndex(toIndex, size);
+
+        int ns = toIndex - fromIndex;
+        if (ns == 0) {
+            return factory.empty();
+        }
+        Builder builder = factory.newBuilder();
+        factory.sizeHint(builder, ns);
+
+        if (seq instanceof IndexedSeq<?>) {
+            for (int i = fromIndex; i < toIndex; i++) {
+                factory.addToBuilder(builder, seq.get(i));
+            }
+        } else {
+            Iterator<? extends E> it = Iterators.take(Iterators.drop(seq.iterator(), fromIndex), ns);
+            while (it.hasNext()) {
+                factory.addToBuilder(builder, it.next());
+            }
+        }
         return factory.build(builder);
     }
 
@@ -312,6 +343,11 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
     @NotNull
     protected final <To extends ImmutableSeq<E>> To updatedImpl(int index, E newValue) {
         return (To) AbstractImmutableSeq.updated(this, index, newValue, iterableFactory());
+    }
+
+    @NotNull
+    protected final <To extends ImmutableSeq<E>> To sliceImpl(int from, int to) {
+        return (To) AbstractImmutableSeq.slice(this, from, to, iterableFactory());
     }
 
     @NotNull

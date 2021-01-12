@@ -294,6 +294,53 @@ public abstract class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E
     }
 
     @Override
+    public final @NotNull ImmutableList<E> slice(int fromIndex, int toIndex) {
+        if (fromIndex < 0) {
+            throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
+        }
+        if (toIndex < 0) {
+            throw new IndexOutOfBoundsException("toIndex = " + toIndex);
+        }
+        if (fromIndex > toIndex) {
+            throw new IllegalArgumentException("fromIndex(" + fromIndex + ") > toIndex(" + toIndex + ")");
+        }
+        if (fromIndex == toIndex) {
+            return empty();
+        }
+        if (fromIndex == 0) {
+            return take(toIndex);
+        }
+
+        final int ns = toIndex - fromIndex;
+
+        int i = 0;
+
+        ImmutableList<E> list = this;
+        while (list != Nil.INSTANCE && i < fromIndex) {
+            list = list.tail();
+            ++i;
+        }
+        if (i != fromIndex) {
+            throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
+        }
+        if (ns == 1) {
+            return ImmutableList.of(list.head());
+        }
+
+        i = 0;
+        LinkedBuffer<E> buffer = new LinkedBuffer<>();
+        while (list != Nil.INSTANCE && i < ns) {
+            buffer.append(list.head());
+            list = list.tail();
+            ++i;
+        }
+        if (i != ns) {
+            throw new IndexOutOfBoundsException("toIndex = " + toIndex);
+        }
+        return buffer.toImmutableList();
+    }
+
+    @Override
     public final @NotNull ImmutableList<E> drop(int n) {
         ImmutableList<E> list = this;
         while (list != Nil.INSTANCE && n-- > 0) {

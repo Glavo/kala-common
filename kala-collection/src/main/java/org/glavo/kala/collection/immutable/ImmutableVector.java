@@ -335,6 +335,12 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
 
     //endregion
 
+
+    @Override
+    public final @NotNull ImmutableVector<E> slice(int fromIndex, int toIndex) {
+        return sliceImpl(fromIndex, toIndex);
+    }
+
     @Override
     public @NotNull ImmutableVector<E> drop(int n) {
         return dropImpl(n);
