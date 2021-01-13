@@ -23,8 +23,8 @@ public final class ImmutableInternal {
      */
     @SuppressWarnings("unchecked")
     public static abstract class LinkedBufferImpl<E> extends AbstractBuffer<E> {
-        ImmutableList.Cons<E> first = null;
-        ImmutableList.Cons<E> last = null;
+        ImmutableList<E> first = null;
+        ImmutableList<E> last = null;
 
         int len = 0;
 
@@ -67,7 +67,7 @@ public final class ImmutableInternal {
 
         @Override
         public final E first() {
-            ImmutableList.Cons<E> first = this.first;
+            ImmutableList<E> first = this.first;
             if (first == null) {
                 throw new NoSuchElementException();
             } else {
@@ -77,7 +77,7 @@ public final class ImmutableInternal {
 
         @Override
         public final E last() {
-            ImmutableList.Cons<E> last = this.last;
+            ImmutableList<E> last = this.last;
             if (last == null) {
                 throw new NoSuchElementException();
             } else {
@@ -92,7 +92,7 @@ public final class ImmutableInternal {
 
         @Override
         public final void append(E value) {
-            ImmutableList.Cons<E> i = new ImmutableList.Cons<>(value, ImmutableList.nil());
+            ImmutableList<E> i = ImmutableList.of(value);
             if (len == 0) {
                 first = i;
             } else {
@@ -109,7 +109,7 @@ public final class ImmutableInternal {
                 append(value);
                 return;
             }
-            first = new ImmutableList.Cons<>(value, first);
+            first = first.cons(value);
             ++len;
         }
 
@@ -136,7 +136,7 @@ public final class ImmutableInternal {
                 i = i.tail();
             }
 
-            ((ImmutableList.Cons<E>) i).tail = new ImmutableList.Cons<>(value, i.tail());
+            i.tail = i.tail().cons(value);
             ++len;
         }
 
@@ -152,7 +152,7 @@ public final class ImmutableInternal {
                     first = last = null;
                     aliased = false;
                 } else {
-                    first = (ImmutableList.Cons<E>) first.tail;
+                    first = first.tail;
                 }
                 --len;
                 return v;
@@ -166,7 +166,7 @@ public final class ImmutableInternal {
                 i = i.tail();
             }
             E v = i.tail().head();
-            ((ImmutableList.Cons<E>) i).tail = i.tail().tail();
+            i.tail = i.tail().tail();
             --len;
             return v;
         }
@@ -194,7 +194,7 @@ public final class ImmutableInternal {
             if (index == 0) {
                 int c = count;
                 while (c-- > 0) {
-                    first = (ImmutableList.Cons<E>) first.tail;
+                    first = first.tail;
                 }
                 len -= count;
                 return;
@@ -213,7 +213,7 @@ public final class ImmutableInternal {
                 t = t.tail();
             }
 
-            ((ImmutableList.Cons<E>) i).tail = t;
+            i.tail = t;
             len -= count;
         }
 
@@ -227,7 +227,7 @@ public final class ImmutableInternal {
                 first = last = null;
                 aliased = false;
             } else {
-                first = (ImmutableList.Cons<E>) first.tail;
+                first = first.tail;
             }
             --len;
             return v;
@@ -262,7 +262,7 @@ public final class ImmutableInternal {
             while (--index >= 0) {
                 l = l.tail();
             }
-            ((ImmutableList.Cons<E>) l).head = newValue;
+            l.head = newValue;
         }
 
         @Override
@@ -274,25 +274,22 @@ public final class ImmutableInternal {
             Arrays.sort(values, (Comparator<? super Object>) comparator);
 
             ensureUnaliased();
-            ImmutableList.Cons<E> c = first;
+            ImmutableList<E> c = first;
             for (Object value : values) {
-                //noinspection ConstantConditions
                 c.head = (E) value;
-                c = c.tail instanceof ImmutableList.Cons<?>
-                        ? (ImmutableList.Cons<E>) c.tail
-                        : null;
+                c = c.tail;
             }
         }
 
         @Override
         public final void mapInPlace(@NotNull Function<? super E, ? extends E> mapper) {
             ImmutableList<E> n = first;
-            if (n == null || n == ImmutableList.nil()) {
+            if (n == null || n == ImmutableList.NIL) {
                 return;
             }
             ensureUnaliased();
-            while (n instanceof ImmutableList.Cons<?>) {
-                ImmutableList.Cons<E> c = (ImmutableList.Cons<E>) n;
+            while (n != ImmutableList.NIL) {
+                ImmutableList<E> c = n;
                 c.head = mapper.apply(c.head);
                 n = c.tail;
             }
@@ -300,7 +297,7 @@ public final class ImmutableInternal {
 
         @Override
         public final void reverse() {
-            if (len == 0) {
+            if (len <= 1) {
                 return;
             }
             LinkedBufferImpl<E> newBuffer = new LinkedBuffer<>();
@@ -324,10 +321,8 @@ public final class ImmutableInternal {
 
         @Override
         public final @NotNull Iterator<E> iterator() {
-            if (len == 0) {
-                return Iterators.empty();
-            }
-            return first.iterator();
+            final ImmutableList<E> first = this.first;
+            return first == null ? Iterators.empty() : first.iterator();
         }
     }
 }
