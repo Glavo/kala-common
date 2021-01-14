@@ -2,6 +2,7 @@ package org.glavo.kala.control;
 
 import org.glavo.kala.Tuple2;
 import org.glavo.kala.annotations.Covariant;
+import org.glavo.kala.iterator.Iterators;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -27,19 +28,21 @@ import java.util.function.Predicate;
  */
 public final class Option<@Covariant T> extends OptionAny<T>
         implements OptionContainer<T>, Serializable {
-    private static final long serialVersionUID = -4962768465676381896L;
+    private static final long serialVersionUID = 4055633765420871779L;
 
     private static final int HASH_MAGIC = -1623337737;
+    private static final int NONE_HASH = 1937147281;
 
     /**
      * The single instance of empty {@code Option}.
      */
-    public static final Option<?> None = new Option<>(InternalEmptyTag.INSTANCE);
+    public static final Option<?> None = new Option<>();
 
-    /**
-     * The value if this {@code Option} is not empty, otherwise {@link InternalEmptyTag#INSTANCE}.
-     */
     private final T value;
+
+    private Option() {
+        this.value = null;
+    }
 
     private Option(T value) {
         this.value = value;
@@ -107,6 +110,11 @@ public final class Option<@Covariant T> extends OptionAny<T>
         return this != None;
     }
 
+    @Override
+    public final boolean isEmpty() {
+        return this == None;
+    }
+
     /**
      * Returns the {@code Option}'s value.
      *
@@ -115,7 +123,7 @@ public final class Option<@Covariant T> extends OptionAny<T>
      */
     @Flow(sourceIsContainer = true)
     public final T get() {
-        if (isEmpty()) {
+        if (this == None) {
             throw new NoSuchElementException("Option.None");
         }
         return value;
@@ -164,14 +172,12 @@ public final class Option<@Covariant T> extends OptionAny<T>
     }
 
     public final @NotNull Tuple2<@NotNull Option<T>, @NotNull Option<T>> span(@NotNull Predicate<? super T> predicate) {
-        if (isDefined()) {
-            if (predicate.test(value)) {
-                return new Tuple2<>(this, none());
-            } else {
-                return new Tuple2<>(none(), this);
-            }
-        } else {
+        if (isEmpty()) {
             return new Tuple2<>(none(), none());
+        } else if (predicate.test(value)) {
+            return new Tuple2<>(this, none());
+        } else {
+            return new Tuple2<>(none(), this);
         }
     }
 
@@ -181,7 +187,7 @@ public final class Option<@Covariant T> extends OptionAny<T>
     @Override
     @Contract(pure = true)
     public final boolean contains(Object value) {
-        return Objects.equals(this.value, value);
+        return Objects.equals(this.value, value) && this != None;
     }
 
     /**
@@ -199,17 +205,12 @@ public final class Option<@Covariant T> extends OptionAny<T>
      * @throws NullPointerException if {@link #isDefined()} but value is {@code null}
      */
     public final @NotNull Optional<T> asJava() {
-        return isEmpty() ? Optional.empty() : Optional.of(Objects.requireNonNull(value));
+        return this == None ? Optional.empty() : Optional.of(Objects.requireNonNull(value));
     }
 
     @Override
     public final @NotNull Iterator<T> iterator() {
-        return new OptionContainerIterator<>(value);
-    }
-
-    @Override
-    public final @NotNull Spliterator<T> spliterator() {
-        return new OptionContainerIterator<>(value);
+        return this == None ? Iterators.empty() : Iterators.of(value);
     }
 
     /**
@@ -223,8 +224,9 @@ public final class Option<@Covariant T> extends OptionAny<T>
         if (!(o instanceof Option<?>)) {
             return false;
         }
-        Option<?> other = (Option<?>) o;
-        return Objects.equals(value, other.value);
+        return Objects.equals(value, ((Option<?>) o).value)
+                && this != None
+                && o != None;
     }
 
     /**
@@ -232,7 +234,7 @@ public final class Option<@Covariant T> extends OptionAny<T>
      */
     @Override
     public final int hashCode() {
-        return Objects.hashCode(value) + HASH_MAGIC;
+        return this == None ? NONE_HASH : Objects.hashCode(value) + HASH_MAGIC;
     }
 
     /**
@@ -244,15 +246,26 @@ public final class Option<@Covariant T> extends OptionAny<T>
     public final String toString() {
         if (this == None) {
             return "Option.None";
+        } else {
+            return "Option[" + value + "]";
         }
-        return "Option[" + value + "]";
     }
 
-    private Object readResolve() {
-        if (value == InternalEmptyTag.INSTANCE) {
-            return None;
+    private Object writeReplace() {
+        return this == None ? NoneReplaced.INSTANCE : this;
+    }
+
+    static final class NoneReplaced implements Serializable {
+        private static final long serialVersionUID = 0L;
+
+        static final NoneReplaced INSTANCE = new NoneReplaced();
+
+        private NoneReplaced() {
         }
-        return this;
+
+        private Object readResolve() {
+            return Option.None;
+        }
     }
 }
 

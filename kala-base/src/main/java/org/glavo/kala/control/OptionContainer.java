@@ -1,5 +1,6 @@
 package org.glavo.kala.control;
 
+import org.glavo.kala.iterator.Iterators;
 import org.glavo.kala.traversable.Mappable;
 import org.glavo.kala.traversable.Traversable;
 import org.glavo.kala.annotations.Covariant;
@@ -7,10 +8,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Spliterator;
+import java.util.*;
 import java.util.function.*;
 import java.util.function.Consumer;
 import java.util.stream.Collector;
@@ -23,6 +21,7 @@ import java.util.stream.Stream;
  * @author Glavo
  */
 interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>, Traversable<T> {
+
 
     /**
      * Returns {@code true} if the container contain a value, otherwise return {@code false}.
@@ -38,6 +37,22 @@ interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>, Traver
      */
     default boolean isEmpty() {
         return !isDefined();
+    }
+
+    default @NotNull Stream<T> stream() {
+        return isDefined() ? Stream.of(get()) : Stream.empty();
+    }
+
+    default @NotNull Stream<T> parallelStream() {
+        return stream().parallel();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    default @NotNull Iterator<T> iterator() {
+        return isDefined() ? Iterators.of(get()) : Iterators.empty();
     }
 
     /**
@@ -77,8 +92,7 @@ interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>, Traver
      * @return the value of the container if the container {@link #isDefined()},
      * or the {@code null} if the container {@link #isEmpty()}
      */
-    @Nullable
-    default T getOrNull() {
+    default @Nullable T getOrNull() {
         return isDefined() ? get() : null;
     }
 
@@ -89,8 +103,8 @@ interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>, Traver
      * @throws E if no value is present
      */
     default <E extends Throwable> T getOrThrowException(@NotNull E exception) throws E {
-        Objects.requireNonNull(exception);
         if (isEmpty()) {
+            Objects.requireNonNull(exception);
             throw exception;
         }
         return get();
@@ -103,8 +117,8 @@ interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>, Traver
      * @throws E if no value is present
      */
     default <E extends Throwable> T getOrThrow(@NotNull Supplier<? extends E> supplier) throws E {
-        Objects.requireNonNull(supplier);
         if (isEmpty()) {
+            Objects.requireNonNull(supplier);
             throw supplier.get();
         }
         return get();
@@ -257,47 +271,10 @@ interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>, Traver
     @Override
     @NotNull
     default Option<T> find(@NotNull Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate);
-        return isDefined() && predicate.test(get()) ? Option.some(get()) : Option.none();
+        return isDefined() && predicate.test(get()) // implicit null check of predicate
+                ? Option.some(get())
+                : Option.none();
     }
-
-    @NotNull
-    default Stream<T> stream() {
-        if (isEmpty()) {
-            return Stream.empty();
-        }
-        return Stream.of(get());
-    }
-
-    @NotNull
-    default Stream<T> parallelStream() {
-        return stream().parallel();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @NotNull
-    @Override
-    default Iterator<T> iterator() {
-        if (isDefined()) {
-            return new OptionContainerIterator<>(get());
-        }
-        return new OptionContainerIterator<>(InternalEmptyTag.INSTANCE);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @NotNull
-    @Override
-    default Spliterator<T> spliterator() {
-        if (isDefined()) {
-            return new OptionContainerIterator<>(get());
-        }
-        return new OptionContainerIterator<>(InternalEmptyTag.INSTANCE);
-    }
-
 
     /**
      * {@inheritDoc}
