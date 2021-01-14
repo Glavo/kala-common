@@ -1,6 +1,7 @@
 package org.glavo.kala.collection.immutable;
 
 import org.glavo.kala.collection.IndexedSeq;
+import org.glavo.kala.control.Conditions;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.Tuple2;
 import org.glavo.kala.annotations.Covariant;
@@ -268,7 +269,7 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
     //region Size Compare Operations
 
     @Override
-    public int sizeCompare(int otherSize) {
+    public final int sizeCompare(int otherSize) {
         if (otherSize < 0) {
             return 1;
         }
@@ -279,10 +280,10 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
                 return 1;
             }
             list = list.tail;
+            ++i;
         }
         return i - otherSize;
     }
-
 
     //endregion
 
@@ -290,21 +291,21 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
 
     @Override
     public final @NotNull ImmutableList<E> reversed() {
-        if (this == NIL || this.tail() == NIL) {
+        if (this == NIL || this.tail == NIL) {
             return this;
         }
 
         ImmutableList<? extends E> list = this;
         ImmutableList<E> ans = nil();
         while (list != NIL) {
-            ans = new ImmutableList<>(list.head(), ans);
-            list = list.tail();
+            ans = new ImmutableList<>(list.head, ans);
+            list = list.tail;
         }
         return ans;
     }
 
     @Override
-    public @NotNull Iterator<E> reverseIterator() {
+    public final @NotNull Iterator<E> reverseIterator() {
         return reversed().iterator();
     }
 
@@ -454,6 +455,9 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
             return nil();
         }
         if (beginIndex == 0) {
+            if (this == NIL) {
+                throw new IndexOutOfBoundsException("endIndex(" + endIndex + ") > size(0)");
+            }
             return take(endIndex);
         }
 

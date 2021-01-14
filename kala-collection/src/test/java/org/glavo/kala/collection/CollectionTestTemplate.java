@@ -142,6 +142,15 @@ public interface CollectionTestTemplate {
     }
 
     @Test
+    default void sizeCompareTest() {
+        assertEquals(0, factory().empty().sizeCompare(0));
+        assertTrue(factory().empty().sizeCompare(1) < 0);
+        assertTrue(factory().empty().sizeCompare(Integer.MAX_VALUE) < 0);
+        assertTrue(factory().empty().sizeCompare(-1) > 0);
+        assertTrue(factory().empty().sizeCompare(Integer.MIN_VALUE) > 0);
+    }
+
+    @Test
     default void containsTest() {
         Collection<?> empty = factory().empty();
         assertFalse(empty.contains(null));

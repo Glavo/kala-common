@@ -76,10 +76,9 @@ public interface AnyTraversable<
             return Integer.compare(knownSize, otherSize);
         }
         int i = 0;
-        for (Iterator<?> it = this.iterator(); it.hasNext(); ) {
-            it.next();
+        for (T t : this) {
             if (i == otherSize) {
-                return it.hasNext() ? 1 : 0;
+                return 1;
             }
             ++i;
         }
