@@ -84,18 +84,6 @@ public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E> {
 
     //endregion
 
-    static void checkElementIndex(int index, int size) throws IndexOutOfBoundsException {
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Index: " + index + " Size: " + size);
-        }
-    }
-
-    static void checkPositionIndex(int index, int size) throws IndexOutOfBoundsException {
-        if (index < 0 || index > size) {
-            throw new IndexOutOfBoundsException("Index: " + index + " Size: " + size);
-        }
-    }
-
     //region Collection Operations
 
     @Override

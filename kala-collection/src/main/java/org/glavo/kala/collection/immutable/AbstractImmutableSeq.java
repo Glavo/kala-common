@@ -2,6 +2,7 @@ package org.glavo.kala.collection.immutable;
 
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.IndexedSeq;
+import org.glavo.kala.control.Conditions;
 import org.glavo.kala.factory.CollectionFactory;
 import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.iterator.Iterators;
@@ -47,15 +48,14 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
 
     static <E, T extends ImmutableSeq<? extends E>, Builder> T slice(
             @NotNull ImmutableSeq<? extends E> seq,
-            int fromIndex,
-            int toIndex,
+            int beginIndex,
+            int endIndex,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
         final int size = seq.size();
-        Seq.checkElementIndex(fromIndex, size);
-        Seq.checkPositionIndex(toIndex, size);
+        Conditions.checkPositionIndices(beginIndex, endIndex, size);
 
-        int ns = toIndex - fromIndex;
+        int ns = endIndex - beginIndex;
         if (ns == 0) {
             return factory.empty();
         }
@@ -63,11 +63,11 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
         factory.sizeHint(builder, ns);
 
         if (seq instanceof IndexedSeq<?>) {
-            for (int i = fromIndex; i < toIndex; i++) {
+            for (int i = beginIndex; i < endIndex; i++) {
                 factory.addToBuilder(builder, seq.get(i));
             }
         } else {
-            Iterator<? extends E> it = Iterators.take(Iterators.drop(seq.iterator(), fromIndex), ns);
+            Iterator<? extends E> it = Iterators.take(Iterators.drop(seq.iterator(), beginIndex), ns);
             while (it.hasNext()) {
                 factory.addToBuilder(builder, it.next());
             }

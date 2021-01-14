@@ -4,6 +4,9 @@ import org.glavo.kala.collection.SeqTestTemplate;
 import org.glavo.kala.factory.CollectionFactory;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,6 +15,34 @@ import static org.junit.jupiter.api.Assertions.*;
 public interface ImmutableSeqTestTemplate extends ImmutableCollectionTestTemplate, SeqTestTemplate {
     @Override
     <E> CollectionFactory<E, ?, ? extends ImmutableSeq<? extends E>> factory();
+
+    @Test
+    default void reversedTest() {
+        assertIterableEquals(List.of(), factory().empty().reversed());
+        assertIterableEquals(List.of("str1"), factory().from(List.of("str1")).reversed());
+        assertIterableEquals(List.of("str2", "str1"), factory().from(List.of("str1", "str2")).reversed());
+        assertIterableEquals(List.of("str3", "str2", "str1"), factory().from(List.of("str1", "str2", "str3")).reversed());
+
+        for (Integer[] data : data1()) {
+            ArrayList<Integer> l = new ArrayList<>(Arrays.asList(data));
+            Collections.reverse(l);
+            assertIterableEquals(l, factory().from(data).reversed());
+        }
+    }
+
+    @Test
+    default void sliceTest() {
+        assertIterableEquals(List.of(), factory().empty().slice(0, 0));
+        assertThrows(IndexOutOfBoundsException.class, () -> factory().empty().slice(-1, 0));
+        assertThrows(IndexOutOfBoundsException.class, () -> factory().empty().slice(0, 1));
+        assertThrows(IndexOutOfBoundsException.class, () -> factory().empty().slice(-1, 1));
+        assertThrows(IndexOutOfBoundsException.class, () -> factory().empty().slice(Integer.MIN_VALUE, 0));
+        assertThrows(IndexOutOfBoundsException.class, () -> factory().empty().slice(Integer.MIN_VALUE, 1));
+
+        for (Integer[] data : data1()) {
+            assertIterableEquals(Arrays.asList(data), factory().from(data).slice(0, data.length));
+        }
+    }
 
     @Test
     default void dropTest() {

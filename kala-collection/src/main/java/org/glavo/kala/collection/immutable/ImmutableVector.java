@@ -10,6 +10,7 @@ package org.glavo.kala.collection.immutable;
 
 import org.glavo.kala.Tuple2;
 import org.glavo.kala.annotations.Covariant;
+import org.glavo.kala.collection.Seq;
 import org.glavo.kala.factory.CollectionFactory;
 import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.traversable.AnyTraversable;
@@ -335,10 +336,9 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
 
     //endregion
 
-
     @Override
-    public final @NotNull ImmutableVector<E> slice(int fromIndex, int toIndex) {
-        return sliceImpl(fromIndex, toIndex);
+    public final @NotNull ImmutableVector<E> slice(int beginIndex, int endIndex) {
+        return sliceImpl(beginIndex, endIndex);
     }
 
     @Override

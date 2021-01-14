@@ -241,5 +241,4 @@ public interface SeqLike<E> extends CollectionLike<E> {
     }
 
     //endregion
-
 }

@@ -23,6 +23,9 @@ import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static org.glavo.kala.control.Conditions.checkPositionIndex;
+import static org.glavo.kala.control.Conditions.checkPositionIndices;
+
 @SuppressWarnings("unchecked")
 public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
         implements ImmutableSeq<E>, ImmutableSeqOps<E, ImmutableArray<?>, ImmutableArray<E>>, IndexedSeq<E>, Serializable {
@@ -303,17 +306,12 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
 
 
     @Override
-    public final @NotNull ImmutableArray<E> slice(int fromIndex, int toIndex) {
+    public final @NotNull ImmutableArray<E> slice(int beginIndex, int endIndex) {
         final Object[] elements = this.elements;
         final int size = elements.length;
-        Seq.checkElementIndex(fromIndex, size);
-        Seq.checkPositionIndex(toIndex, size);
+        checkPositionIndices(beginIndex, endIndex, size);
 
-        if (fromIndex > toIndex) {
-            throw new IllegalArgumentException("fromIndex(" + fromIndex + ") > toIndex(" + toIndex + ")");
-        }
-
-        final int ns = toIndex - fromIndex;
+        final int ns = endIndex - beginIndex;
         if (ns == 0) {
             return empty();
         }
@@ -322,7 +320,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
         }
 
         Object[] newArr = new Object[ns];
-        System.arraycopy(elements, fromIndex, newArr, 0, ns);
+        System.arraycopy(elements, beginIndex, newArr, 0, ns);
         return new ImmutableArray<>(newArr);
     }
 

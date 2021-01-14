@@ -53,8 +53,8 @@
   * `removeAt(int)`
   * `removeAt(int, int)`
 * Reversal Operations
-  * `reverseIterator()`
   * `reversed()`
+  * `reverseIterator()`
 * Modification Operations
   * `append(E)`
   * `appendAll(E[])`

@@ -114,8 +114,8 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     //endregion
 
     @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> slice(int fromIndex, int toIndex) {
-        return AbstractImmutableSeq.slice(this, fromIndex, toIndex, iterableFactory());
+    default @NotNull ImmutableSeq<E> slice(int beginIndex, int endIndex) {
+        return AbstractImmutableSeq.slice(this, beginIndex, endIndex, iterableFactory());
     }
 
     @Contract(pure = true)
