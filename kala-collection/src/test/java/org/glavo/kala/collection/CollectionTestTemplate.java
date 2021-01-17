@@ -1,5 +1,6 @@
 package org.glavo.kala.collection;
 
+import org.glavo.kala.collection.immutable.ImmutableList;
 import org.glavo.kala.factory.CollectionFactory;
 import org.glavo.kala.iterator.Iterators;
 import org.glavo.kala.traversable.JavaArray;
@@ -148,6 +149,35 @@ public interface CollectionTestTemplate {
         assertTrue(factory().empty().sizeCompare(Integer.MAX_VALUE) < 0);
         assertTrue(factory().empty().sizeCompare(-1) > 0);
         assertTrue(factory().empty().sizeCompare(Integer.MIN_VALUE) > 0);
+
+        for (Integer[] data : data1()) {
+            Collection<?> c = factory().from(data);
+            List<Integer> dl = Arrays.asList(data);
+
+            assertEquals(0, c.sizeCompare(data.length));
+            assertEquals(0, c.sizeCompare(dl));
+            assertEquals(0, c.sizeCompare(new SimpleIterable<>(dl)));
+            assertEquals(0, c.sizeCompare(ArraySeq.wrap(data)));
+            assertEquals(0, c.sizeCompare(ImmutableList.from(data)));
+
+            List<Integer> dl1 = dl.subList(0, data.length - 1);
+
+            assertTrue(c.sizeCompare(data.length - 1) > 0);
+            assertTrue(c.sizeCompare(dl1) > 0);
+            assertTrue(c.sizeCompare(new SimpleIterable<>(dl1)) > 0);
+            assertTrue(c.sizeCompare(ArraySeq.from(dl1)) > 0);
+            assertTrue(c.sizeCompare(ImmutableList.from(dl1)) > 0);
+
+
+            ArrayList<Integer> dl2 = new ArrayList<>(dl);
+            dl2.add(0);
+
+            assertTrue(c.sizeCompare(data.length + 1) < 0);
+            assertTrue(c.sizeCompare(dl2) < 0);
+            assertTrue(c.sizeCompare(new SimpleIterable<>(dl2)) < 0);
+            assertTrue(c.sizeCompare(ArraySeq.from(dl2)) < 0);
+            assertTrue(c.sizeCompare(ImmutableList.from(dl2)) < 0);
+        }
     }
 
     @Test

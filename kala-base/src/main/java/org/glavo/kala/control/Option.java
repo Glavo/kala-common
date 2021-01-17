@@ -36,13 +36,9 @@ public final class Option<@Covariant T> extends OptionAny<T>
     /**
      * The single instance of empty {@code Option}.
      */
-    public static final Option<?> None = new Option<>();
+    public static final Option<?> None = new Option<>(null);
 
     private final T value;
-
-    private Option() {
-        this.value = null;
-    }
 
     private Option(T value) {
         this.value = value;

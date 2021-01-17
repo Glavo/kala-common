@@ -32,21 +32,18 @@ public final class OptionInt extends OptionAny<Integer> implements IntTraversabl
         this.value = value;
     }
 
-    @NotNull
-    public static OptionInt some(int value) {
+    public static @NotNull OptionInt some(int value) {
         if (value >= -128 && value <= 127) {
             return CACHE[value + 128];
         }
         return new OptionInt(value);
     }
 
-    @NotNull
-    public static OptionInt none() {
+    public static @NotNull OptionInt none() {
         return None;
     }
 
-    @NotNull
-    public static OptionInt of(@Nullable Integer value) {
+    public static @NotNull OptionInt of(@Nullable Integer value) {
         return value == null ? None : some(value);
     }
 
@@ -83,13 +80,8 @@ public final class OptionInt extends OptionAny<Integer> implements IntTraversabl
         return this == None ? "OptionInt.None" : "OptionInt[" + value + "]";
     }
 
-    private Object writeReplace() {
-        return new Data(this == None ? null : value);
-    }
-
-    @NotNull
     @Override
-    public final IntIterator iterator() {
+    public final @NotNull IntIterator iterator() {
         return isDefined() ? IntIterator.of(value) : IntIterator.empty();
     }
 
@@ -98,6 +90,10 @@ public final class OptionInt extends OptionAny<Integer> implements IntTraversabl
         if (isDefined()) {
             action.accept(value);
         }
+    }
+
+    private Object writeReplace() {
+        return new Data(this == None ? null : value);
     }
 
     private static final class Data implements Serializable {
