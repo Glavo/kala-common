@@ -6,6 +6,7 @@ import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.internal.CollectionHelper;
 import org.glavo.kala.collection.internal.FullSeqOps;
 import org.glavo.kala.comparator.Comparators;
+import org.glavo.kala.control.Conditions;
 import org.glavo.kala.function.IndexedFunction;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -36,8 +37,16 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqOps<E
 
     //endregion
 
-    default @NotNull SeqView<E> updated(int index, E newValue) {
-        return new SeqViews.Updated<>(this, index, newValue);
+    @Override
+    default @NotNull SeqView<E> slice(int beginIndex, int endIndex) {
+        if (beginIndex < 0) {
+            throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") < 0");
+        }
+        if (beginIndex > endIndex) {
+            throw new IllegalArgumentException("beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
+        }
+
+        return new SeqViews.Slice<>(this, beginIndex, endIndex);
     }
 
     default @NotNull SeqView<E> drop(int n) {
@@ -64,6 +73,10 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqOps<E
     default @NotNull SeqView<E> takeWhile(@NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
         return new SeqViews.TakeWhile<>(this, predicate);
+    }
+
+    default @NotNull SeqView<E> updated(int index, E newValue) {
+        return new SeqViews.Updated<>(this, index, newValue);
     }
 
     default @NotNull SeqView<E> concat(@NotNull Seq<? extends E> other) {

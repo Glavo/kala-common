@@ -79,17 +79,73 @@ final class SeqViews {
         }
     }
 
+    static class Slice<E> extends AbstractSeqView<E> {
+        private final @NotNull SeqView<E> source;
+        private final int beginIndex;
+        private final int endIndex;
+
+        Slice(@NotNull SeqView<E> source, int beginIndex, int endIndex) {
+            assert beginIndex >= 0;
+            assert endIndex >= beginIndex;
+            this.source = source;
+            this.beginIndex = beginIndex;
+            this.endIndex = endIndex;
+        }
+
+
+        @Override
+        public final @NotNull Iterator<E> iterator() {
+            return this.new Itr();
+        }
+
+        private final class Itr extends AbstractIterator<E> {
+            private int idx;
+            private final Iterator<E> it;
+
+            Itr() {
+                Iterator<E> it = source.iterator();
+                int i = beginIndex;
+                while (i > 0) {
+                    try {
+                        it.next();
+                    } catch (NoSuchElementException e) {
+                        throw new IllegalStateException(e);
+                    }
+                    --i;
+                }
+                idx = beginIndex;
+                this.it = it;
+            }
+
+            @Override
+            public final boolean hasNext() {
+                return idx < endIndex;
+            }
+
+            @Override
+            public final E next() {
+                if (idx >= endIndex) {
+                    throw new NoSuchElementException();
+                }
+                try {
+                    E next = it.next();
+                    ++idx;
+                    return next;
+                } catch (NoSuchElementException e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+        }
+    }
+
     static class Updated<@Covariant E> extends AbstractSeqView<E> {
-        @NotNull
-        private final SeqView<E> source;
+        private final @NotNull SeqView<E> source;
 
         private final int index;
 
         private final E newValue;
 
         Updated(@NotNull SeqView<E> source, int index, E newValue) {
-            assert source != null;
-
             this.source = source;
             this.index = index;
             this.newValue = newValue;

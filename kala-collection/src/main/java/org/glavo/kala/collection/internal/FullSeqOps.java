@@ -9,7 +9,8 @@ import java.util.Comparator;
 import java.util.function.Predicate;
 
 public interface FullSeqOps<E, CC extends SeqLike<?>, COLL extends SeqLike<E>> extends FullCollectionOps<E, CC, COLL> {
-    @NotNull COLL updated(int index, E newValue);
+
+    @NotNull COLL slice(int beginIndex, int endIndex);
 
     @NotNull COLL drop(int n);
 
@@ -22,6 +23,8 @@ public interface FullSeqOps<E, CC extends SeqLike<?>, COLL extends SeqLike<E>> e
     @NotNull COLL takeLast(int n);
 
     @NotNull COLL takeWhile(@NotNull Predicate<? super E> predicate);
+
+    @NotNull COLL updated(int index, E newValue);
 
     @NotNull COLL concat(@NotNull Seq<? extends E> other);
 

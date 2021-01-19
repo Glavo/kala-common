@@ -304,7 +304,6 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
 
     //endregion
 
-
     @Override
     public final @NotNull ImmutableArray<E> slice(int beginIndex, int endIndex) {
         final Object[] elements = this.elements;
