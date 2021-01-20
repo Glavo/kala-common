@@ -1,6 +1,7 @@
 package org.glavo.kala.collection;
 
 import org.glavo.kala.annotations.Covariant;
+import org.glavo.kala.control.Conditions;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,6 +33,13 @@ public interface IndexedSeqView<@Covariant E> extends SeqView<E>, RandomAccess {
     }
 
     //endregion
+
+
+    @Override
+    default @NotNull IndexedSeqView<E> slice(int beginIndex, int endIndex) {
+        Conditions.checkPositionIndices(beginIndex, endIndex, size());
+        return new IndexedSeqViews.Slice<>(this, beginIndex, endIndex);
+    }
 
     @Override
     default @NotNull IndexedSeqView<E> drop(int n) {

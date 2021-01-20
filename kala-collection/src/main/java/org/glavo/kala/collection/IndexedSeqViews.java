@@ -1,7 +1,10 @@
 package org.glavo.kala.collection;
 
+import org.glavo.kala.control.Conditions;
 import org.glavo.kala.control.Option;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.util.function.Function;
 
@@ -21,6 +24,50 @@ final class IndexedSeqViews {
     static class Mapped<E, T> extends SeqViews.Mapped<E, T> implements IndexedSeqView<E> {
         Mapped(@NotNull SeqView<T> source, @NotNull Function<? super T, ? extends E> mapper) {
             super(source, mapper);
+        }
+    }
+
+    static class Slice<E> extends SeqViews.Slice<E> implements IndexedSeqView<E> {
+        private final int size;
+
+        Slice(@NotNull SeqView<E> source, int beginIndex, int endIndex) {
+            super(source, beginIndex, endIndex);
+            this.size = endIndex - beginIndex;
+        }
+
+        @Override
+        public final boolean isEmpty() {
+            return size == 0;
+        }
+
+        @Override
+        public final int size() {
+            return size;
+        }
+
+        @Override
+        public final @Range(from = -1, to = Integer.MAX_VALUE) int knownSize() {
+            return size;
+        }
+
+        @Override
+        public final E get(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
+            Conditions.checkElementIndex(index, size);
+            return source.get(index + beginIndex);
+        }
+
+        @Override
+        public final @Nullable E getOrNull(int index) {
+            return index < 0 || index >= size
+                    ? null
+                    : source.get(index + beginIndex);
+        }
+
+        @Override
+        public @NotNull Option<E> getOption(int index) {
+            return index < 0 || index >= size
+                    ? Option.none()
+                    : Option.some(source.get(index + beginIndex));
         }
     }
 

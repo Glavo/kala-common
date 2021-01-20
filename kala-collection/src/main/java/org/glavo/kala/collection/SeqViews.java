@@ -80,9 +80,9 @@ final class SeqViews {
     }
 
     static class Slice<E> extends AbstractSeqView<E> {
-        private final @NotNull SeqView<E> source;
-        private final int beginIndex;
-        private final int endIndex;
+        protected final @NotNull SeqView<E> source;
+        protected final int beginIndex;
+        protected final int endIndex;
 
         Slice(@NotNull SeqView<E> source, int beginIndex, int endIndex) {
             assert beginIndex >= 0;
