@@ -1231,6 +1231,29 @@ final class ImmutableVectors {
         }
     }
 
+    static final class VectorSliceBuilder {
+        private final int lo;
+        private final int hi;
+
+        private final Object[][] slices = new Object[11][];
+        private int len = 0;
+        private int pos = 0;
+        private int maxDim = 0;
+
+        VectorSliceBuilder(int lo, int hi) {
+            this.lo = lo;
+            this.hi = hi;
+        }
+
+        private int prefixIdx(int n) {
+            return n - 1;
+        }
+
+        private int suffixIdx(int n) {
+            return 11 - n;
+        }
+    }
+
     static final class VectorBuilder<E> {
         private Object[][][][][][] a6;
         private Object[][][][][] a5;
