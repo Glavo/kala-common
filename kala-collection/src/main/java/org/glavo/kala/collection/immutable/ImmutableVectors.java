@@ -65,7 +65,6 @@ final class ImmutableVectors {
 
         //region Addition Operations
 
-
         @Override
         public final @NotNull ImmutableVector<Object> appended(Object value) {
             return new Vector1<>(new Object[]{value});
@@ -1252,6 +1251,261 @@ final class ImmutableVectors {
         private int suffixIdx(int n) {
             return 11 - n;
         }
+
+        public final <T> void consider(int n, T[] a) {
+            //println(s"*****   consider($n, /${a.length})")
+            final int count = a.length * (1 << (BITS * (n - 1)));
+            final int lo0 = Math.max(lo - pos, 0);
+            final int hi0 = Math.min(hi - pos, count);
+            if (hi0 > lo0) {
+                addSlice(n, a, lo0, hi0);
+                len += (hi0 - lo0);
+            }
+            pos += count;
+        }
+
+        private <T> void addSlice(int n, T[] a, int lo, int hi) {
+            //println(s"*****     addSlice($n, /${a.length}, $lo, $hi)")
+            if (n == 1) {
+                add(1, copyOrUse(a, lo, hi));
+            } else {
+                int bitsN = BITS * (n - 1);
+                int widthN = 1 << bitsN;
+                int loN = lo >>> bitsN;
+                int hiN = hi >>> bitsN;
+                int loRest = lo & (widthN - 1);
+                int hiRest = hi & (widthN - 1);
+                //println(s"*****       bitsN=$bitsN, loN=$loN, hiN=$hiN, loRest=$loRest, hiRest=$hiRest")
+                if (loRest == 0) {
+                    if (hiRest == 0) {
+                        add(n, copyOrUse(a, loN, hiN));
+                    } else {
+                        if (hiN > loN) {
+                            add(n, copyOrUse(a, loN, hiN));
+                        }
+                        addSlice(n - 1, (Object[]) a[hiN], 0, hiRest);
+                    }
+                } else {
+                    if (hiN == loN) {
+                        addSlice(n - 1, (Object[]) a[loN], loRest, hiRest);
+                    } else {
+                        addSlice(n - 1, (Object[]) a[loN], loRest, widthN);
+                        if (hiRest == 0) {
+                            if (hiN > loN + 1) add(n, copyOrUse(a, loN + 1, hiN));
+                        } else {
+                            if (hiN > loN + 1) add(n, copyOrUse(a, loN + 1, hiN));
+                            addSlice(n - 1, (Object[]) a[hiN], 0, hiRest);
+                        }
+                    }
+                }
+            }
+        }
+
+        private <T> void add(int n, T[] a) {
+            int idx;
+            if (n <= maxDim) {
+                idx = suffixIdx(n);
+            } else {
+                maxDim = n;
+                idx = prefixIdx(n);
+            }
+            slices[idx] = a;
+        }
+
+        public final <T> ImmutableVector<T> build() {
+            //println(s"*****   result: $len, $maxDim")
+            if (len <= 32) {
+                if (len == 0) {
+                    return ImmutableVector.empty();
+                } else {
+                    Object[] prefix1 = slices[prefixIdx(1)];
+                    Object[] suffix1 = slices[suffixIdx(1)];
+                    //println(s"*****     prefix1: ${if(prefix1 == null) "null" else prefix1.mkString("[", ",", "]")}, suffix1: ${if(suffix1 == null) "null" else suffix1.mkString("[", ",", "]")}")
+                    Object[] a;
+                    if (prefix1 != null) {
+                        if (suffix1 != null) {
+                            a = concatArrays(prefix1, suffix1);
+                        } else {
+                            a = prefix1;
+                        }
+
+                    } else if (suffix1 != null) {
+                        a = suffix1;
+                    } else {
+                        Object[][] prefix2 = (Object[][]) slices[prefixIdx(2)];
+                        if (prefix2 != null) {
+                            a = prefix2[0];
+                        } else {
+                            Object[][] suffix2 = (Object[][]) slices[suffixIdx(2)];
+                            a = suffix2[0];
+                        }
+                    }
+                    return new Vector1(a);
+                }
+            } else {
+                balancePrefix(1);
+                balanceSuffix(1);
+                int resultDim = maxDim;
+                if (resultDim < 6) {
+                    Object[] pre = slices[prefixIdx(maxDim)];
+                    Object[] suf = slices[suffixIdx(maxDim)];
+                    if ((pre != null) && (suf != null)) {
+                        // The highest-dimensional data consists of two slices: concatenate if they fit into the main data array,
+                        // otherwise increase the dimension
+                        if (pre.length + suf.length <= WIDTH - 2) {
+                            slices[prefixIdx(maxDim)] = concatArrays(pre, suf);
+                            slices[suffixIdx(maxDim)] = null;
+                        } else {
+                            resultDim += 1;
+                        }
+                    } else {
+                        // A single highest-dimensional slice could have length WIDTH-1 if it came from a prefix or suffix but we
+                        // only allow WIDTH-2 for the main data, so increase the dimension in this case
+                        Object[] one = (pre != null) ? pre : suf;
+                        if (one.length > WIDTH - 2) {
+                            resultDim += 1;
+                        }
+                    }
+                }
+                Object[] prefix1 = slices[prefixIdx(1)];
+                Object[] suffix1 = slices[suffixIdx(1)];
+                int len1 = prefix1.length;
+                switch (resultDim) {
+                    case 2: {
+                        Object[][] data2 = dataOr(2, empty2);
+                        return new Vector2<>(prefix1, len1, data2, suffix1, len);
+                    }
+                    case 3: {
+                        Object[][] prefix2 = prefixOr(2, empty2);
+                        Object[][][] data3 = dataOr(3, empty3);
+                        Object[][] suffix2 = suffixOr(2, empty2);
+                        int len12 = len1 + (prefix2.length * WIDTH);
+                        return new Vector3<>(prefix1, len1, prefix2, len12, data3, suffix2, suffix1, len);
+                    }
+                    case 4: {
+                        Object[][] prefix2 = prefixOr(2, empty2);
+                        Object[][][] prefix3 = prefixOr(3, empty3);
+                        Object[][][][] data4 = dataOr(4, empty4);
+                        Object[][][] suffix3 = suffixOr(3, empty3);
+                        Object[][] suffix2 = suffixOr(2, empty2);
+                        int len12 = len1 + (prefix2.length * WIDTH);
+                        int len123 = len12 + (prefix3.length * WIDTH2);
+                        return new Vector4<>(prefix1, len1, prefix2, len12, prefix3, len123, data4, suffix3, suffix2, suffix1, len);
+                    }
+                    case 5: {
+                        Object[][] prefix2 = prefixOr(2, empty2);
+                        Object[][][] prefix3 = prefixOr(3, empty3);
+                        Object[][][][] prefix4 = prefixOr(4, empty4);
+                        Object[][][][][] data5 = dataOr(5, empty5);
+                        Object[][][][] suffix4 = suffixOr(4, empty4);
+                        Object[][][] suffix3 = suffixOr(3, empty3);
+                        Object[][] suffix2 = suffixOr(2, empty2);
+                        int len12 = len1 + (prefix2.length * WIDTH);
+                        int len123 = len12 + (prefix3.length * WIDTH2);
+                        int len1234 = len123 + (prefix4.length * WIDTH3);
+                        return new Vector5<>(prefix1, len1, prefix2, len12, prefix3, len123, prefix4, len1234, data5, suffix4, suffix3, suffix2, suffix1, len);
+                    }
+                    case 6: {
+                        Object[][] prefix2 = prefixOr(2, empty2);
+                        Object[][][] prefix3 = prefixOr(3, empty3);
+                        Object[][][][] prefix4 = prefixOr(4, empty4);
+                        Object[][][][][] prefix5 = prefixOr(5, empty5);
+                        Object[][][][][][] data6 = dataOr(6, empty6);
+                        Object[][][][][] suffix5 = suffixOr(5, empty5);
+                        Object[][][][] suffix4 = suffixOr(4, empty4);
+                        Object[][][] suffix3 = suffixOr(3, empty3);
+                        Object[][] suffix2 = suffixOr(2, empty2);
+                        int len12 = len1 + (prefix2.length * WIDTH);
+                        int len123 = len12 + (prefix3.length * WIDTH2);
+                        int len1234 = len123 + (prefix4.length * WIDTH3);
+                        int len12345 = len1234 + (prefix5.length * WIDTH4);
+                        return new Vector6<>(prefix1, len1, prefix2, len12, prefix3, len123, prefix4, len1234, prefix5, len12345, data6, suffix5, suffix4, suffix3, suffix2, suffix1, len);
+                    }
+                    default:
+                        throw new AssertionError();
+                }
+            }
+        }
+
+        private <T> T[] prefixOr(int n, T[] a) {
+            Object[] p = slices[prefixIdx(n)];
+            if (p != null) {
+                return (T[]) p;
+            } else {
+                return a;
+            }
+        }
+
+        private <T> T[] suffixOr(int n, T[] a) {
+            Object[] s = slices[suffixIdx(n)];
+            if (s != null) {
+                return (T[]) s;
+            } else {
+                return a;
+            }
+        }
+
+        private <T> T[] dataOr(int n, T[] a) {
+            Object[] p = slices[prefixIdx(n)];
+            if (p != null) return (T[]) p;
+            else {
+                Object[] s = slices[suffixIdx(n)];
+                if (s != null) return (T[]) s;
+                else return a;
+            }
+        }
+
+        /**
+         * Ensure prefix is not empty
+         */
+        private void balancePrefix(int n) {
+            if (slices[prefixIdx(n)] == null) {
+                if (n == maxDim) {
+                    slices[prefixIdx(n)] = slices[suffixIdx(n)];
+                    slices[suffixIdx(n)] = null;
+                } else {
+                    balancePrefix(n + 1);
+                    Object[][] preN1 = (Object[][]) slices[prefixIdx(n + 1)];
+                    //assert(preN1 ne null)
+                    slices[prefixIdx(n)] = preN1[0];
+                    if (preN1.length == 1) {
+                        slices[prefixIdx(n + 1)] = null;
+                        if ((maxDim == n + 1) && (slices[suffixIdx(n + 1)] == null)) {
+                            maxDim = n;
+                        }
+                    } else {
+                        slices[prefixIdx(n + 1)] = Arrays.copyOfRange(preN1, 1, preN1.length);
+                    }
+                }
+            }
+        }
+
+        /**
+         * Ensure suffix is not empty
+         */
+        private void balanceSuffix(int n) {
+            if (slices[suffixIdx(n)] == null) {
+                if (n == maxDim) {
+                    slices[suffixIdx(n)] = slices[prefixIdx(n)];
+                    slices[prefixIdx(n)] = null;
+                } else {
+                    balanceSuffix(n + 1);
+                    Object[][] sufN1 = (Object[][]) slices[suffixIdx(n + 1)];
+                    //assert(sufN1 ne null, s"n=$n, maxDim=$maxDim, slices=${slices.mkString(",")}")
+                    slices[suffixIdx(n)] = sufN1[sufN1.length - 1];
+                    if (sufN1.length == 1) {
+                        slices[suffixIdx(n + 1)] = null;
+                        if ((maxDim == n + 1) && (slices[prefixIdx(n + 1)] == null)) {
+                            maxDim = n;
+                        }
+                    } else {
+                        slices[suffixIdx(n + 1)] = Arrays.copyOfRange(sufN1, 0, sufN1.length - 1);
+                    }
+                }
+            }
+        }
+
+
     }
 
     static final class VectorBuilder<E> {
