@@ -337,7 +337,7 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
     //endregion
 
     @Override
-    public final @NotNull ImmutableVector<E> slice(int beginIndex, int endIndex) {
+    public @NotNull ImmutableVector<E> slice(int beginIndex, int endIndex) {
         return sliceImpl(beginIndex, endIndex);
     }
 

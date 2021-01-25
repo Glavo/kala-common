@@ -1,5 +1,6 @@
 package org.glavo.kala.collection.immutable;
 
+import org.glavo.kala.control.Conditions;
 import org.glavo.kala.function.IndexedConsumer;
 import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.iterator.AbstractIterator;
@@ -266,6 +267,24 @@ final class ImmutableVectors {
         }
 
         @Override
+        public final @NotNull ImmutableVector<E> slice(int beginIndex, int endIndex) {
+            final Object[] elements = this.prefix1;
+            final int size = elements.length;
+            Conditions.checkPositionIndices(beginIndex, endIndex, size);
+            final int newSize = endIndex - beginIndex;
+            if (newSize == 0) {
+                return ImmutableVector.empty();
+            }
+            if (newSize == size) {
+                return this;
+            }
+
+            Object[] res = new Object[newSize];
+            System.arraycopy(elements, beginIndex, res, 0, newSize);
+            return new Vector1<>(res);
+        }
+
+        @Override
         public final @NotNull ImmutableVector<E> updated(int index, E newValue) {
             final Object[] prefix1 = this.prefix1;
             final int size = prefix1.length;
@@ -374,6 +393,23 @@ final class ImmutableVectors {
         @Override
         public final E last() {
             return (E) suffix1[suffix1.length - 1];
+        }
+
+        @Override
+        public final @NotNull ImmutableVector<E> slice(int beginIndex, int endIndex) {
+            final int size = this.length0;
+            Conditions.checkPositionIndices(beginIndex, endIndex, size);
+
+            final int newSize = endIndex - beginIndex;
+
+            if (newSize == 0) {
+                return ImmutableVector.empty();
+            }
+            if (newSize == size) {
+                return this;
+            }
+
+            return super.slice(beginIndex, endIndex); // TODO
         }
 
         @Override
