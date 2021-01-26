@@ -108,6 +108,12 @@ final class ImmutableVectors {
 
         //endregion
 
+
+        @Override
+        final @NotNull ImmutableVector<Object> slice0(int lo, int hi) {
+            throw new AssertionError();
+        }
+
         @Override
         final ImmutableVector<Object> filterImpl(Predicate<? super Object> predicate, boolean isFlipped) {
             return this;
@@ -267,20 +273,14 @@ final class ImmutableVectors {
         }
 
         @Override
-        public final @NotNull ImmutableVector<E> slice(int beginIndex, int endIndex) {
+        final @NotNull ImmutableVector<E> slice0(int lo, int hi) {
             final Object[] elements = this.prefix1;
             final int size = elements.length;
-            Conditions.checkPositionIndices(beginIndex, endIndex, size);
-            final int newSize = endIndex - beginIndex;
-            if (newSize == 0) {
-                return ImmutableVector.empty();
-            }
-            if (newSize == size) {
-                return this;
-            }
+
+            final int newSize = hi - lo;
 
             Object[] res = new Object[newSize];
-            System.arraycopy(elements, beginIndex, res, 0, newSize);
+            System.arraycopy(elements, lo, res, 0, newSize);
             return new Vector1<>(res);
         }
 
@@ -393,23 +393,6 @@ final class ImmutableVectors {
         @Override
         public final E last() {
             return (E) suffix1[suffix1.length - 1];
-        }
-
-        @Override
-        public final @NotNull ImmutableVector<E> slice(int beginIndex, int endIndex) {
-            final int size = this.length0;
-            Conditions.checkPositionIndices(beginIndex, endIndex, size);
-
-            final int newSize = endIndex - beginIndex;
-
-            if (newSize == 0) {
-                return ImmutableVector.empty();
-            }
-            if (newSize == size) {
-                return this;
-            }
-
-            return super.slice(beginIndex, endIndex); // TODO
         }
 
         @Override
@@ -802,6 +785,15 @@ final class ImmutableVectors {
                 return (E) prefix1[index];
             }
         }
+
+        @Override
+        final @NotNull ImmutableVector<E> slice0(int lo, int hi) {
+            VectorSliceBuilder b = new VectorSliceBuilder(lo, hi);
+            b.consider(1, prefix1);
+            b.consider(2, data2);
+            b.consider(1, suffix1);
+            return b.build();
+        }
     }
 
     static final class Vector3<E> extends BigVector<E> {
@@ -879,6 +871,17 @@ final class ImmutableVectors {
             } else {
                 return (E) prefix1[index];
             }
+        }
+
+        @Override
+        final @NotNull ImmutableVector<E> slice0(int lo, int hi) {
+            VectorSliceBuilder b = new VectorSliceBuilder(lo, hi);
+            b.consider(1, prefix1);
+            b.consider(2, prefix2);
+            b.consider(3, data3);
+            b.consider(2, suffix2);
+            b.consider(1, suffix1);
+            return b.build();
         }
     }
 
@@ -985,6 +988,19 @@ final class ImmutableVectors {
             } else {
                 return (E) prefix1[index];
             }
+        }
+
+        @Override
+        final @NotNull ImmutableVector<E> slice0(int lo, int hi) {
+            VectorSliceBuilder b = new VectorSliceBuilder(lo, hi);
+            b.consider(1, prefix1);
+            b.consider(2, prefix2);
+            b.consider(3, prefix3);
+            b.consider(4, data4);
+            b.consider(3, suffix3);
+            b.consider(2, suffix2);
+            b.consider(1, suffix1);
+            return b.build();
         }
     }
 
@@ -1113,6 +1129,21 @@ final class ImmutableVectors {
             } else {
                 return (E) prefix1[index];
             }
+        }
+
+        @Override
+        final @NotNull ImmutableVector<E> slice0(int lo, int hi) {
+            VectorSliceBuilder b = new VectorSliceBuilder(lo, hi);
+            b.consider(1, prefix1);
+            b.consider(2, prefix2);
+            b.consider(3, prefix3);
+            b.consider(4, prefix4);
+            b.consider(5, data5);
+            b.consider(4, suffix4);
+            b.consider(3, suffix3);
+            b.consider(2, suffix2);
+            b.consider(1, suffix1);
+            return b.build();
         }
     }
 
@@ -1263,6 +1294,23 @@ final class ImmutableVectors {
             } else {
                 return (E) prefix1[index];
             }
+        }
+
+        @Override
+        final @NotNull ImmutableVector<E> slice0(int lo, int hi) {
+            VectorSliceBuilder b = new VectorSliceBuilder(lo, hi);
+            b.consider(1, prefix1);
+            b.consider(2, prefix2);
+            b.consider(3, prefix3);
+            b.consider(4, prefix4);
+            b.consider(5, prefix5);
+            b.consider(6, data6);
+            b.consider(5, suffix5);
+            b.consider(4, suffix4);
+            b.consider(3, suffix3);
+            b.consider(2, suffix2);
+            b.consider(1, suffix1);
+            return b.build();
         }
     }
 

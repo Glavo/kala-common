@@ -11,6 +11,7 @@ package org.glavo.kala.collection.immutable;
 import org.glavo.kala.Tuple2;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.Seq;
+import org.glavo.kala.control.Conditions;
 import org.glavo.kala.factory.CollectionFactory;
 import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.traversable.AnyTraversable;
@@ -336,9 +337,20 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
 
     //endregion
 
+    abstract @NotNull ImmutableVector<E> slice0(int lo, int hi);
+
     @Override
-    public @NotNull ImmutableVector<E> slice(int beginIndex, int endIndex) {
-        return sliceImpl(beginIndex, endIndex);
+    public final @NotNull ImmutableVector<E> slice(int beginIndex, int endIndex) {
+        final int size = this.size();
+        Conditions.checkPositionIndices(beginIndex, endIndex, size);
+        final int newSize = endIndex - beginIndex;
+        if (newSize == 0) {
+            return ImmutableVector.empty();
+        }
+        if (newSize == size) {
+            return this;
+        }
+        return slice0(beginIndex, endIndex);
     }
 
     @Override
