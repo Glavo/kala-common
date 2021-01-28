@@ -40,7 +40,19 @@ public interface ImmutableSeqTestTemplate extends ImmutableCollectionTestTemplat
         assertThrows(IndexOutOfBoundsException.class, () -> factory().empty().slice(Integer.MIN_VALUE, 1));
 
         for (Integer[] data : data1()) {
+            int dl = data.length;
             assertIterableEquals(Arrays.asList(data), factory().from(data).slice(0, data.length));
+
+            if (dl >= 1) {
+                assertIterableEquals(
+                        Arrays.asList(Arrays.copyOfRange(data, 1, dl)),
+                        factory().from(data).slice(1, dl)
+                );
+                assertIterableEquals(
+                        Arrays.asList(Arrays.copyOfRange(data, 0, dl - 1)),
+                        factory().from(data).slice(0, dl - 1)
+                );
+            }
         }
     }
 
