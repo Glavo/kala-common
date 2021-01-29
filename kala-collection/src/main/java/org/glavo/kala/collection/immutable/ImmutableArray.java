@@ -5,6 +5,7 @@ import org.glavo.kala.collection.IndexedSeq;
 import org.glavo.kala.collection.Seq;
 import org.glavo.kala.collection.internal.CollectionHelper;
 import org.glavo.kala.comparator.Comparators;
+import org.glavo.kala.control.Conditions;
 import org.glavo.kala.traversable.Traversable;
 import org.glavo.kala.Tuple2;
 import org.glavo.kala.annotations.Covariant;
@@ -416,9 +417,8 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
         final Object[] elements = this.elements;
         final int size = elements.length;
 
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Index out of range: " + index);
-        }
+        Conditions.checkElementIndex(index, size);
+
         Object[] newValues = elements.clone();
         newValues[index] = newValue;
         return new ImmutableArray<>(newValues);
@@ -465,7 +465,14 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
 
     @Override
     public final @NotNull ImmutableArray<E> sorted() {
-        return sorted(Comparators.naturalOrder());
+        final Object[] elements = this.elements;
+        if (elements.length == 0) {
+            return this;
+        }
+
+        Object[] newValues = elements.clone();
+        Arrays.sort(newValues);
+        return new ImmutableArray<>(newValues);
     }
 
     @Override
@@ -522,7 +529,9 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
             return this;
         }
 
-        return new ImmutableArray<>(Arrays.copyOf(tmp, c));
+        Object[] res = new Object[c];
+        System.arraycopy(tmp, 0, res, 0, c);
+        return new ImmutableArray<>(res);
     }
 
     @Override
@@ -553,7 +562,9 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
             return this;
         }
 
-        return new ImmutableArray<>(Arrays.copyOf(tmp, c));
+        Object[] res = new Object[c];
+        System.arraycopy(tmp, 0, res, 0, c);
+        return new ImmutableArray<>(res);
     }
 
     @Override
@@ -569,9 +580,8 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
         int c = 0;
 
         for (Object value : elements) {
-            E v = (E) value;
-            if (v != null) {
-                tmp[c++] = v;
+            if (value != null) {
+                tmp[c++] = value;
             }
         }
 
@@ -582,12 +592,24 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
             return this;
         }
 
-        return new ImmutableArray<>(Arrays.copyOf(tmp, c));
+        Object[] res = new Object[c];
+        System.arraycopy(tmp, 0, res, 0, c);
+        return new ImmutableArray<>(res);
     }
 
     @Override
     public final <U> @NotNull ImmutableArray<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
-        return AbstractImmutableCollection.flatMap(this, mapper, iterableFactory());
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+        if (size == 0) {
+            return empty();
+        }
+
+        ArrayBuffer<U> builder = new ArrayBuffer<>();
+        for (Object value : elements) {
+            builder.appendAll(mapper.apply((E) value));
+        }
+        return builder.toImmutableArray();
     }
 
     @Override

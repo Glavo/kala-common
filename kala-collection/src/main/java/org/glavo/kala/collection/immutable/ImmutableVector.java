@@ -354,8 +354,16 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
     }
 
     @Override
-    public @NotNull ImmutableVector<E> drop(int n) {
-        return dropImpl(n);
+    public final @NotNull ImmutableVector<E> drop(int n) {
+        if (n <= 0) {
+            return this;
+        }
+        final int size = this.size();
+        if (n >= size) {
+            return ImmutableVector.empty();
+        }
+
+        return slice0(n, size);
     }
 
     @Override
@@ -364,8 +372,15 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
     }
 
     @Override
-    public @NotNull ImmutableVector<E> take(int n) {
-        return takeImpl(n);
+    public final @NotNull ImmutableVector<E> take(int n) {
+        if (n <= 0) {
+            return ImmutableVector.empty();
+        }
+        final int size = this.size();
+        if (n >= size) {
+            return this;
+        }
+        return slice0(0, n);
     }
 
     @Override
@@ -392,17 +407,33 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
 
     @Override
     public @NotNull <U> ImmutableVector<U> map(@NotNull Function<? super E, ? extends U> mapper) {
-        return mapImpl(mapper);
+        ImmutableVectors.VectorBuilder<U> builder = new ImmutableVectors.VectorBuilder<>();
+        for (E e : this) {
+            builder.add(mapper.apply(e));
+        }
+        return builder.build();
     }
 
     @Override
     public @NotNull <U> ImmutableVector<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
-        return mapIndexedImpl(mapper);
+        ImmutableVectors.VectorBuilder<U> builder = new ImmutableVectors.VectorBuilder<>();
+        int idx = 0;
+        for (E e : this) {
+            builder.add(mapper.apply(idx++, e));
+        }
+        return builder.build();
     }
 
     @Override
     public @NotNull <U> ImmutableVector<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
-        return flatMapImpl(mapper);
+        if (this == ImmutableVectors.Vector0.INSTANCE) {
+            return ImmutableVector.empty();
+        }
+        ImmutableVectors.VectorBuilder<U> builder = new ImmutableVectors.VectorBuilder<>();
+        for (E e : this) {
+            builder.addAll(mapper.apply(e));
+        }
+        return builder.build();
     }
 
     @Override
