@@ -47,20 +47,20 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
         return ImmutableVector.of(value1);
     }
 
-    static <E> @NotNull ImmutableSeq<E> of(E value1, E values2) {
-        return ImmutableVector.of(value1, values2);
+    static <E> @NotNull ImmutableSeq<E> of(E value1, E value2) {
+        return ImmutableVector.of(value1, value2);
     }
 
-    static <E> @NotNull ImmutableSeq<E> of(E value1, E values2, E value3) {
-        return ImmutableVector.of(value1, values2, value3);
+    static <E> @NotNull ImmutableSeq<E> of(E value1, E value2, E value3) {
+        return ImmutableVector.of(value1, value2, value3);
     }
 
-    static <E> @NotNull ImmutableSeq<E> of(E value1, E values2, E value3, E value4) {
-        return ImmutableVector.of(value1, values2, value3, value4);
+    static <E> @NotNull ImmutableSeq<E> of(E value1, E value2, E value3, E value4) {
+        return ImmutableVector.of(value1, value2, value3, value4);
     }
 
-    static <E> @NotNull ImmutableSeq<E> of(E value1, E values2, E value3, E value4, E value5) {
-        return ImmutableVector.of(value1, values2, value3, value4, value5);
+    static <E> @NotNull ImmutableSeq<E> of(E value1, E value2, E value3, E value4, E value5) {
+        return ImmutableVector.of(value1, value2, value3, value4, value5);
     }
 
     @SafeVarargs
