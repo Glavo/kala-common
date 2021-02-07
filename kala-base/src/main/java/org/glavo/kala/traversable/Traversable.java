@@ -329,27 +329,27 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
 
     @Contract(pure = true)
     @Flow(sourceIsContainer = true, target = "array", targetIsContainer = true)
-    default int copyToArray(Object @NotNull [] array, int start) {
+    default int copyToArray(Object @NotNull [] array, int beginIndex) {
         int arrayLength = array.length; // implicit null check of array
         Iterator<T> it = iterator();
 
-        int i = start;
+        int i = beginIndex;
         while (i < arrayLength && it.hasNext()) {
             array[i++] = it.next();
         }
-        return i - start;
+        return i - beginIndex;
     }
 
     @Contract(pure = true)
     @Flow(sourceIsContainer = true, target = "array", targetIsContainer = true)
-    default int copyToArray(Object @NotNull [] array, int start, int length) {
+    default int copyToArray(Object @NotNull [] array, int beginIndex, int length) {
         Iterator<T> it = iterator();
-        int i = start;
-        int end = start + Math.min(length, array.length - start); // implicit null check of array
+        int i = beginIndex;
+        int end = beginIndex + Math.min(length, array.length - beginIndex); // implicit null check of array
         while (i < end && it.hasNext()) {
             array[i++] = it.next();
         }
-        return i - start;
+        return i - beginIndex;
     }
 
     //endregion

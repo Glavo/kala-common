@@ -810,25 +810,25 @@ public final class JavaArray {
     static final class Itr<@Covariant E> implements Iterator<E> {
         @NotNull
         private final E[] array;
-        private final int end;
+        private final int endIndex;
 
         private int index;
 
-        Itr(E @NotNull [] array, int start, int end) {
+        Itr(E @NotNull [] array, int beginIndex, int endIndex) {
             this.array = array;
-            this.index = start;
-            this.end = end;
+            this.index = beginIndex;
+            this.endIndex = endIndex;
         }
 
 
         @Override
         public final boolean hasNext() {
-            return index < end;
+            return index < endIndex;
         }
 
         @Override
         public final E next() {
-            if (index >= end) {
+            if (index >= endIndex) {
                 throw new NoSuchElementException(this + ".next()");
             }
             return array[index++];
