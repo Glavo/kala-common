@@ -1,5 +1,6 @@
 import java.io.RandomAccessFile
 
+/*
 buildscript {
     repositories {
         maven(url = "https://plugins.gradle.org/m2/")
@@ -8,15 +9,17 @@ buildscript {
         classpath("com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5")
     }
 }
+ */
 
 plugins {
     `java-library`
     // jacoco
 }
 
+
 allprojects {
     group = "org.glavo"
-    version = kalaVersion("0.11.1")
+    version = kalaVersion("0.12.0")
 
     apply {
         plugin("java-library")
@@ -125,6 +128,7 @@ allprojects {
         testLogging.showStandardStreams = true
     }
 
+    /*
     configure<com.jfrog.bintray.gradle.BintrayExtension> {
         user = if (project.hasProperty("bintrayUser"))
             project.property("bintrayUser").toString() else System.getenv("BINTRAY_USER")
@@ -147,6 +151,8 @@ allprojects {
             }
         }
     }
+
+     */
 
 }
 
