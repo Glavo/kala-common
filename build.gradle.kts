@@ -20,11 +20,10 @@ plugins {
 allprojects {
     group = "org.glavo"
     version = kalaVersion("0.12.0")
-
     apply {
         plugin("java-library")
         plugin("maven-publish")
-        plugin("com.jfrog.bintray")
+        //plugin("com.jfrog.bintray")
         // plugin("jacoco")
     }
 
