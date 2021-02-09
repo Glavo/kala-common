@@ -1,9 +1,8 @@
 package org.glavo.kala.collection.internal;
 
+import org.glavo.kala.Tuple2;
 import org.glavo.kala.annotations.StaticClass;
-import org.glavo.kala.collection.mutable.Buffer;
-import org.glavo.kala.collection.mutable.MutableMap;
-import org.glavo.kala.collection.mutable.MutableSeq;
+import org.glavo.kala.collection.mutable.*;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.iterator.MapIterator;
 import org.glavo.kala.collection.IndexedSeq;
@@ -62,51 +61,51 @@ public final class FromJavaConvert {
 
     public static class SeqFromJava<E> implements Seq<E> {
         @NotNull
-        protected final List<E> list;
+        protected final List<E> source;
 
-        public SeqFromJava(@NotNull List<E> list) {
-            this.list = list;
+        public SeqFromJava(@NotNull List<E> source) {
+            this.source = source;
         }
 
         @Override
         public E get(int index) {
-            return list.get(index);
+            return source.get(index);
         }
 
         @Override
         public int size() {
-            return list.size();
+            return source.size();
         }
 
         @Override
         @SuppressWarnings("SuspiciousMethodCalls")
         public int indexOf(Object value) {
-            return list.indexOf(value);
+            return source.indexOf(value);
         }
 
         @Override
         @SuppressWarnings("SuspiciousMethodCalls")
         public int lastIndexOf(Object value) {
-            return list.lastIndexOf(value);
+            return source.lastIndexOf(value);
         }
 
         @Override
         @SuppressWarnings("SuspiciousMethodCalls")
         public boolean contains(Object value) {
-            return list.contains(value);
+            return source.contains(value);
         }
 
         @NotNull
         @Override
         public final Iterator<E> iterator() {
-            return list.iterator();
+            return source.iterator();
         }
 
         @NotNull
         @Override
         public Iterator<E> reverseIterator() {
             return new Iterator<E>() {
-                private final java.util.ListIterator<E> it = list.listIterator(list.size());
+                private final java.util.ListIterator<E> it = source.listIterator(source.size());
 
                 @Override
                 public final boolean hasNext() {
@@ -123,25 +122,25 @@ public final class FromJavaConvert {
         @NotNull
         @Override
         public final Spliterator<E> spliterator() {
-            return list.spliterator();
+            return source.spliterator();
         }
 
         @NotNull
         @Override
         public final Stream<E> stream() {
-            return list.stream();
+            return source.stream();
         }
 
         @NotNull
         @Override
         public final Stream<E> parallelStream() {
-            return list.parallelStream();
+            return source.parallelStream();
         }
 
         @NotNull
         @Override
         public List<E> asJava() {
-            return list;
+            return source;
         }
     }
 
@@ -160,12 +159,12 @@ public final class FromJavaConvert {
 
         @Override
         public void set(int index, E newValue) {
-            list.set(index, newValue);
+            source.set(index, newValue);
         }
 
         @Override
         public void sort(Comparator<? super E> comparator) {
-            list.sort(comparator);
+            source.sort(comparator);
         }
     }
 
@@ -184,27 +183,27 @@ public final class FromJavaConvert {
 
         @Override
         public void append(E value) {
-            list.add(value);
+            source.add(value);
         }
 
         @Override
         public void prepend(E value) {
-            list.add(0, value);
+            source.add(0, value);
         }
 
         @Override
         public void insert(int index, E value) {
-            list.add(index, value);
+            source.add(index, value);
         }
 
         @Override
         public E removeAt(int index) {
-            return list.remove(index);
+            return source.remove(index);
         }
 
         @Override
         public void clear() {
-            list.clear();
+            source.clear();
         }
     }
 
@@ -212,6 +211,50 @@ public final class FromJavaConvert {
             extends BufferFromJava<E> implements IndexedSeq<E> {
         public IndexedBufferFromJava(@NotNull List<E> list) {
             super(list);
+        }
+    }
+
+    public static class SetFromJava<E> extends org.glavo.kala.collection.AbstractSet<E>
+            implements org.glavo.kala.collection.Set<E> {
+
+        protected final @NotNull java.util.Set<E> source;
+
+        public SetFromJava(@NotNull java.util.Set<E> source) {
+            this.source = source;
+        }
+
+        @Override
+        public final @NotNull Iterator<E> iterator() {
+            return source.iterator();
+        }
+
+        @Override
+        @SuppressWarnings("SuspiciousMethodCalls")
+        public final boolean contains(Object value) {
+            return source.contains(value);
+        }
+    }
+
+    public static class MutableSetFromJava<E> extends SetFromJava<E> implements MutableSet<E> {
+
+        public MutableSetFromJava(@NotNull Set<E> source) {
+            super(source);
+        }
+
+        @Override
+        public final boolean add(E value) {
+            return source.add(value);
+        }
+
+        @Override
+        public final boolean remove(Object value) {
+            //noinspection SuspiciousMethodCalls
+            return source.remove(value);
+        }
+
+        @Override
+        public final void clear() {
+            source.clear();
         }
     }
 
@@ -316,5 +359,44 @@ public final class FromJavaConvert {
             return Option.none();
         }
 
+        @Override
+        public final void clear() {
+            source.clear();
+        }
+
+        @Override
+        public final @NotNull MutableSet<Tuple2<K, V>> asMutableSet() {
+            return new AbstractMutableSet<Tuple2<K, V>>() {
+                @Override
+                public final boolean add(@NotNull Tuple2<K, V> value) {
+                    return MutableMapFromJava.this.put(value._1, value._2).isDefined();
+                }
+
+                @Override
+                @SuppressWarnings("unchecked")
+                public final boolean remove(Object value) {
+                    if (!(value instanceof Tuple2)) {
+                        return false;
+                    }
+                    Tuple2<K, V> tuple = (Tuple2<K, V>) value;
+                    if (MutableMapFromJava.this.getOption(tuple._1).contains(tuple._2)) {
+                        source.remove(tuple._1);
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+
+                @Override
+                public final void clear() {
+                    source.clear();
+                }
+
+                @Override
+                public final @NotNull Iterator<Tuple2<K, V>> iterator() {
+                    return MutableMapFromJava.this.iterator();
+                }
+            };
+        }
     }
 }
