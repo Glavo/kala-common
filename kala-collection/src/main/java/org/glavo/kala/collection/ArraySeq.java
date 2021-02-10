@@ -568,6 +568,29 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     }
 
     @Override
+    public final int copyToArray(int srcPos, Object @NotNull [] dest, int destPos, int limit) {
+        if (srcPos < 0) {
+            throw new IllegalArgumentException("srcPos(" + destPos + ") < 0");
+        }
+        if (destPos < 0) {
+            throw new IllegalArgumentException("destPos(" + destPos + ") < 0");
+        }
+
+        final Object[] elements = this.elements;
+
+        final int dl = dest.length;
+        final int size = elements.length;
+
+        if (destPos >= dl || srcPos >= size) {
+            return 0;
+        }
+
+        final int n = Math.min(Math.min(size - srcPos, dl - destPos), limit);
+        System.arraycopy(elements, srcPos, dest, destPos, n);
+        return n;
+    }
+
+    @Override
     public final @NotNull Iterator<E> reverseIterator() {
         return (Iterator<E>) JavaArray.reverseIterator(elements);
     }

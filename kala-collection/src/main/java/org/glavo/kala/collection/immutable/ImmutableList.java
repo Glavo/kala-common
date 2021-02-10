@@ -449,7 +449,7 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
             throw new IndexOutOfBoundsException("endIndex(" + endIndex + ") < 0");
         }
         if (beginIndex > endIndex) {
-            throw new IllegalArgumentException("beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
+            throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
         }
         if (beginIndex == endIndex) {
             if (sizeLessThan(beginIndex)) {

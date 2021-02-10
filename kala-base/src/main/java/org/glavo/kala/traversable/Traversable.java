@@ -1,6 +1,8 @@
 package org.glavo.kala.traversable;
 
 import org.glavo.kala.annotations.Covariant;
+import org.glavo.kala.annotations.DeprecatedReplaceWith;
+import org.glavo.kala.control.Conditions;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.factory.CollectionFactory;
 import org.glavo.kala.function.CheckedConsumer;
@@ -321,35 +323,78 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
 
     //region Copy Operations
 
-    @Contract(pure = true)
-    @Flow(sourceIsContainer = true, target = "array", targetIsContainer = true)
-    default int copyToArray(Object @NotNull [] array) {
-        return copyToArray(array, 0);
+    @Contract(mutates = "param1")
+    @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
+    default int copyToArray(Object @NotNull [] dest) {
+        return copyToArray(0, dest, 0, Integer.MAX_VALUE);
     }
 
-    @Contract(pure = true)
-    @Flow(sourceIsContainer = true, target = "array", targetIsContainer = true)
-    default int copyToArray(Object @NotNull [] array, int beginIndex) {
-        int arrayLength = array.length; // implicit null check of array
-        Iterator<T> it = iterator();
-
-        int i = beginIndex;
-        while (i < arrayLength && it.hasNext()) {
-            array[i++] = it.next();
-        }
-        return i - beginIndex;
+    @Contract(mutates = "param1")
+    @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
+    default int copyToArray(Object @NotNull [] dest, int destPos) {
+        return copyToArray(0, dest, destPos, Integer.MAX_VALUE);
     }
 
-    @Contract(pure = true)
-    @Flow(sourceIsContainer = true, target = "array", targetIsContainer = true)
-    default int copyToArray(Object @NotNull [] array, int beginIndex, int length) {
-        Iterator<T> it = iterator();
-        int i = beginIndex;
-        int end = beginIndex + Math.min(length, array.length - beginIndex); // implicit null check of array
-        while (i < end && it.hasNext()) {
-            array[i++] = it.next();
+    @Contract(mutates = "param1")
+    @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
+    default int copyToArray(Object @NotNull [] dest, int destPos, int limit) {
+        return copyToArray(0, dest, destPos, limit);
+    }
+
+    @Contract(mutates = "param2")
+    @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
+    default int copyToArray(int srcPos, Object @NotNull [] dest) {
+        return copyToArray(srcPos, dest, 0, Integer.MAX_VALUE);
+    }
+
+    @Contract(mutates = "param2")
+    @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
+    default int copyToArray(int srcPos, Object @NotNull [] dest, int destPos) {
+        return copyToArray(srcPos, dest, destPos, Integer.MAX_VALUE);
+    }
+
+    @Contract(mutates = "param2")
+    @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
+    default int copyToArray(int srcPos, Object @NotNull [] dest, int destPos, int limit) {
+        if (srcPos < 0) {
+            throw new IllegalArgumentException("srcPos(" + srcPos + ") < 0");
         }
-        return i - beginIndex;
+        if (destPos < 0) {
+            throw new IllegalArgumentException("destPos(" + destPos + ") < 0");
+        }
+
+        if (limit <= 0) {
+            return 0;
+        }
+
+        final int dl = dest.length; //implicit null check of dest
+        if (destPos > dl) {
+            return 0;
+        }
+
+        final int kn = this.knownSize();
+        if (kn >= 0 && srcPos >= kn) {
+            return 0;
+        }
+
+        int end = Math.min(dl - destPos, limit) + destPos;
+
+        int n = 0;
+        Iterator<T> it = this.iterator();
+        while (n++ < srcPos) {
+            if (it.hasNext()) {
+                it.next();
+            } else {
+                return 0;
+            }
+        }
+
+        int idx = destPos;
+        while (it.hasNext() && idx < end) {
+            dest[idx++] = it.next();
+        }
+        return idx - destPos;
+
     }
 
     //endregion

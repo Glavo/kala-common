@@ -81,7 +81,7 @@ public final class Conditions {
             throw new IndexOutOfBoundsException("endIndex(" + endIndex + ") > size(" + size + ")");
         }
         if (beginIndex > endIndex) {
-            throw new IllegalArgumentException("beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
+            throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
         }
 
         throw new AssertionError("checkPositionIndicesFailed");

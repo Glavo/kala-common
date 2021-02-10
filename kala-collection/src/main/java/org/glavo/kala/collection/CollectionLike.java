@@ -29,4 +29,6 @@ public interface CollectionLike<E> extends Traversable<E> {
     default @NotNull ImmutableVector<E> toImmutableVector() {
         return ImmutableVector.from(this);
     }
+
+
 }

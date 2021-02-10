@@ -302,22 +302,25 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
     }
 
     @Override
-    default int copyToArray(Object @NotNull [] array, int beginIndex) {
-        if (beginIndex < 0) {
-            throw new IllegalArgumentException("beginIndex: " + beginIndex);
+    default int copyToArray(int srcPos, Object @NotNull [] dest, int destPos, int limit) {
+        if (srcPos < 0) {
+            throw new IllegalArgumentException("srcPos(" + destPos + ") < 0");
+        }
+        if (destPos < 0) {
+            throw new IllegalArgumentException("destPos(" + destPos + ") < 0");
         }
 
+        final int dl = dest.length;
         final int size = size();
-        final int arrayLength = array.length;
 
-        if (beginIndex > arrayLength || size == 0) {
+        if (destPos >= dl || srcPos >= size) {
             return 0;
         }
 
-        final int n = Math.min(size, arrayLength - beginIndex);
+        final int n = Math.min(Math.min(size - srcPos, dl - destPos), limit);
 
         for (int i = 0; i < n; i++) {
-            array[i + beginIndex] = get(i);
+            dest[i + destPos] = get(i + srcPos);
         }
 
         return n;

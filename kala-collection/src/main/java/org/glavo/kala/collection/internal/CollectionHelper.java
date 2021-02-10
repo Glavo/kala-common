@@ -119,4 +119,5 @@ public final class CollectionHelper {
 
         throw new IllegalArgumentException();
     }
+
 }
