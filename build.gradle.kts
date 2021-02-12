@@ -1,16 +1,5 @@
 import java.io.RandomAccessFile
 
-/*
-buildscript {
-    repositories {
-        maven(url = "https://plugins.gradle.org/m2/")
-    }
-    dependencies {
-        classpath("com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5")
-    }
-}
- */
-
 plugins {
     `java-library`
     // jacoco
@@ -23,8 +12,6 @@ allprojects {
     apply {
         plugin("java-library")
         plugin("maven-publish")
-        //plugin("com.jfrog.bintray")
-        // plugin("jacoco")
     }
 
     repositories {
@@ -61,18 +48,6 @@ allprojects {
     tasks.compileTestJava {
         options.release.set(11)
     }
-
-    /*
-    tasks.jacocoTestReport {
-        dependsOn(tasks.test)
-        reports {
-            xml.isEnabled = false
-            csv.isEnabled = false
-            html.isEnabled = true
-            html.destination = buildDir.resolve("jacocoHtml")
-        }
-    }
-    */
 
     if (this != rootProject) {
         java {
@@ -126,33 +101,6 @@ allprojects {
         useJUnitPlatform()
         testLogging.showStandardStreams = true
     }
-
-    /*
-    configure<com.jfrog.bintray.gradle.BintrayExtension> {
-        user = if (project.hasProperty("bintrayUser"))
-            project.property("bintrayUser").toString() else System.getenv("BINTRAY_USER")
-
-        key = if (project.hasProperty("bintrayApiKey"))
-            project.property("bintrayApiKey").toString() else System.getenv("BINTRAY_API_KEY")
-
-        setPublications("maven")
-
-        pkg.apply {
-            repo = "maven"
-            name = project.name
-            publicDownloadNumbers = true
-            vcsUrl = "https://github.com/Glavo/kala-common.git"
-
-            version.apply {
-                name = this@allprojects.version.toString()
-                desc = "${this@allprojects.name} ${this@allprojects.version}"
-                vcsTag = this@allprojects.version.toString()
-            }
-        }
-    }
-
-     */
-
 }
 
 dependencies {

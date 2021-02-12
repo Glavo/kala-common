@@ -436,9 +436,15 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
     default <U /*super E*/> U @NotNull [] toArray(U @NotNull [] array) {
         final int size = this.size();
         final int arrayLength = array.length;
-        U[] res = arrayLength > size
-                ? array
-                : (U[]) Array.newInstance(array.getClass().getComponentType(), size);
+        U[] res;
+        if (arrayLength > size) {
+            res = array;
+        } else {
+            Class<? extends Object[]> cls = array.getClass();
+            res = (U[]) (cls == Object[].class
+                    ? new Object[size]
+                    : Array.newInstance(cls.getComponentType(), size));
+        }
 
         Iterator<T> it = iterator();
         for (int i = 0; i < res.length; i++) {

@@ -158,6 +158,10 @@
   * `reduceRight(BiFunction<E, E>)`
   * `reduceRightOrNull(BiFunction<E, E>)`
   * `reduceRightOption(BiFunction<E, E>)`
+* Copy Operations
+  * `copyToArray(Object[])`
+  * `copyToArray(Object[], int)`
+  * `copyToArray(Object[], int, int)`
 * Conversion Operations
   * `collect(Collector)`
   * `collect(CollectionFactory)`
@@ -176,10 +180,6 @@
   * `toArrayBuffer()`
   * `toLinkedBuffer()`
   * `toDoubleLinkedBuffer()`
-* Copy Operations
-  * `copyToArray(Object[])`
-  * `copyToArray(Object[], int)`
-  * `copyToArray(Object[], int, int)`
 * Traverse Operations
   * `forEach(Consumer<E>)`
   * `forEachPrimitive(T_CONSUMER)`
