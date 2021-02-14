@@ -2,7 +2,6 @@ import java.io.RandomAccessFile
 
 plugins {
     `java-library`
-    // jacoco
 }
 
 

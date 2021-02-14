@@ -43,7 +43,7 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqOps<E
             throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") < 0");
         }
         if (beginIndex > endIndex) {
-            throw new IllegalArgumentException("beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
+            throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
         }
 
         return new SeqViews.Slice<>(this, beginIndex, endIndex);
