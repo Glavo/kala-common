@@ -1,7 +1,7 @@
 package org.glavo.kala.internal;
 
-import org.glavo.kala.iterator.AbstractBooleanIterator;
-import org.glavo.kala.iterator.BooleanIterator;
+import org.glavo.kala.traversable.AbstractBooleanIterator;
+import org.glavo.kala.traversable.BooleanIterator;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.NoSuchElementException;

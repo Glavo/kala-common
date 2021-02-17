@@ -4,7 +4,6 @@ import org.glavo.kala.control.OptionBoolean;
 import org.glavo.kala.function.BooleanConsumer;
 import org.glavo.kala.function.BooleanPredicate;
 import org.glavo.kala.function.CheckedBooleanConsumer;
-import org.glavo.kala.iterator.BooleanIterator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;

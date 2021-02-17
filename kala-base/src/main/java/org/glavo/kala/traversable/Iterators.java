@@ -1,9 +1,8 @@
-package org.glavo.kala.iterator;
+package org.glavo.kala.traversable;
 
 import org.glavo.kala.control.Try;
 import org.glavo.kala.function.CheckedConsumer;
 import org.glavo.kala.function.IndexedFunction;
-import org.glavo.kala.traversable.JavaArray;
 import org.glavo.kala.Tuple;
 import org.glavo.kala.Tuple2;
 import org.glavo.kala.annotations.Covariant;

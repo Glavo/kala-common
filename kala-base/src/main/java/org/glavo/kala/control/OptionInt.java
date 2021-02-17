@@ -1,6 +1,6 @@
 package org.glavo.kala.control;
 
-import org.glavo.kala.iterator.IntIterator;
+import org.glavo.kala.traversable.IntIterator;
 import org.glavo.kala.traversable.IntTraversable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

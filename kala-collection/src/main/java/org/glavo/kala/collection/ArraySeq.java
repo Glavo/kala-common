@@ -604,6 +604,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public final void forEachIndexed(@NotNull IndexedConsumer<? super E> action) {
+        
         final Object[] elements = this.elements;
         final int length = elements.length;
         for (int i = 0; i < length; i++) {

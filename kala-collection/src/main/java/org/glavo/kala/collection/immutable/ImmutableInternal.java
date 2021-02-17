@@ -3,7 +3,7 @@ package org.glavo.kala.collection.immutable;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.collection.mutable.AbstractBuffer;
 import org.glavo.kala.collection.mutable.LinkedBuffer;
-import org.glavo.kala.iterator.Iterators;
+import org.glavo.kala.traversable.Iterators;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 

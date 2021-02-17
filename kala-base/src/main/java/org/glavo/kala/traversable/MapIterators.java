@@ -1,4 +1,4 @@
-package org.glavo.kala.iterator;
+package org.glavo.kala.traversable;
 
 import java.util.Iterator;
 import java.util.Map;

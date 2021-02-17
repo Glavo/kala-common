@@ -1,7 +1,7 @@
 package org.glavo.kala.internal;
 
-import org.glavo.kala.iterator.AbstractIntIterator;
-import org.glavo.kala.iterator.IntIterator;
+import org.glavo.kala.traversable.AbstractIntIterator;
+import org.glavo.kala.traversable.IntIterator;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.NoSuchElementException;

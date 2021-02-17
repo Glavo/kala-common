@@ -1,10 +1,9 @@
 package org.glavo.kala.collection.immutable;
 
-import org.glavo.kala.control.Conditions;
 import org.glavo.kala.function.IndexedConsumer;
 import org.glavo.kala.function.IndexedFunction;
-import org.glavo.kala.iterator.AbstractIterator;
-import org.glavo.kala.iterator.Iterators;
+import org.glavo.kala.traversable.AbstractIterator;
+import org.glavo.kala.traversable.Iterators;
 import org.glavo.kala.traversable.JavaArray;
 import org.glavo.kala.traversable.Traversable;
 import org.jetbrains.annotations.NotNull;

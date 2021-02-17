@@ -1,6 +1,6 @@
 package org.glavo.kala.control;
 
-import org.glavo.kala.iterator.Iterators;
+import org.glavo.kala.traversable.Iterators;
 import org.glavo.kala.traversable.Mappable;
 import org.glavo.kala.traversable.Traversable;
 import org.glavo.kala.annotations.Covariant;

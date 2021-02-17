@@ -1,7 +1,6 @@
 package org.glavo.kala.collection.immutable;
 
 import org.glavo.kala.collection.IndexedSeq;
-import org.glavo.kala.control.Conditions;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.Tuple2;
 import org.glavo.kala.annotations.Covariant;
@@ -9,7 +8,7 @@ import org.glavo.kala.collection.mutable.LinkedBuffer;
 import org.glavo.kala.factory.CollectionFactory;
 import org.glavo.kala.function.IndexedConsumer;
 import org.glavo.kala.function.IndexedFunction;
-import org.glavo.kala.iterator.Iterators;
+import org.glavo.kala.traversable.Iterators;
 import org.glavo.kala.traversable.AnyTraversable;
 import org.glavo.kala.collection.Seq;
 import org.jetbrains.annotations.Contract;

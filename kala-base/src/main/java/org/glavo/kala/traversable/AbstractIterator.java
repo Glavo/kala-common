@@ -1,4 +1,4 @@
-package org.glavo.kala.iterator;
+package org.glavo.kala.traversable;
 
 import org.glavo.kala.annotations.Covariant;
 

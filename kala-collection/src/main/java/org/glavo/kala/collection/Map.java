@@ -3,7 +3,7 @@ package org.glavo.kala.collection;
 import org.glavo.kala.Equals;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.function.CheckedBiConsumer;
-import org.glavo.kala.iterator.MapIterator;
+import org.glavo.kala.traversable.MapIterator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

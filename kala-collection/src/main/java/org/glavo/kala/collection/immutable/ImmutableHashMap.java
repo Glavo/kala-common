@@ -3,7 +3,7 @@ package org.glavo.kala.collection.immutable;
 import org.glavo.kala.Tuple2;
 import org.glavo.kala.collection.Map;
 import org.glavo.kala.collection.internal.FromJavaConvert;
-import org.glavo.kala.iterator.MapIterator;
+import org.glavo.kala.traversable.MapIterator;
 import org.jetbrains.annotations.NotNull;
 
 public final class ImmutableHashMap<K, V> extends FromJavaConvert.MapFromJava<K, V> implements ImmutableMap<K, V> {

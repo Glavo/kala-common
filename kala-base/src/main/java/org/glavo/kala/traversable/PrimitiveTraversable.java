@@ -2,7 +2,6 @@ package org.glavo.kala.traversable;
 
 import org.glavo.kala.annotations.DeprecatedReplaceWith;
 import org.glavo.kala.control.OptionAny;
-import org.glavo.kala.iterator.PrimIterator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

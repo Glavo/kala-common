@@ -1,12 +1,9 @@
 package org.glavo.kala.traversable;
 
 import org.glavo.kala.annotations.Covariant;
-import org.glavo.kala.annotations.DeprecatedReplaceWith;
-import org.glavo.kala.control.Conditions;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.factory.CollectionFactory;
 import org.glavo.kala.function.CheckedConsumer;
-import org.glavo.kala.iterator.Iterators;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

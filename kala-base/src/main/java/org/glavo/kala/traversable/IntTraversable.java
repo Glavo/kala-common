@@ -3,7 +3,6 @@ package org.glavo.kala.traversable;
 import org.glavo.kala.annotations.DeprecatedReplaceWith;
 import org.glavo.kala.control.OptionInt;
 import org.glavo.kala.function.CheckedIntConsumer;
-import org.glavo.kala.iterator.IntIterator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;

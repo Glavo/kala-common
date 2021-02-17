@@ -3,7 +3,7 @@ package org.glavo.kala.collection;
 import org.glavo.kala.collection.internal.AsJavaConvert;
 import org.glavo.kala.collection.immutable.ImmutableSet;
 import org.glavo.kala.factory.CollectionFactory;
-import org.glavo.kala.iterator.Iterators;
+import org.glavo.kala.traversable.Iterators;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Spliterator;

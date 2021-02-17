@@ -1,6 +1,6 @@
 package org.glavo.kala.collection;
 
-import org.glavo.kala.iterator.Iterators;
+import org.glavo.kala.traversable.Iterators;
 
 public abstract class AbstractSet<E> extends AbstractCollection<E> {
     @Override

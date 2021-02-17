@@ -5,7 +5,7 @@ import org.glavo.kala.collection.IndexedSeq;
 import org.glavo.kala.control.Conditions;
 import org.glavo.kala.factory.CollectionFactory;
 import org.glavo.kala.function.IndexedFunction;
-import org.glavo.kala.iterator.Iterators;
+import org.glavo.kala.traversable.Iterators;
 import org.glavo.kala.collection.Collection;
 import org.glavo.kala.collection.Seq;
 import org.jetbrains.annotations.NotNull;
