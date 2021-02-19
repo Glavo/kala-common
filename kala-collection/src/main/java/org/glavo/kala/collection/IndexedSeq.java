@@ -4,7 +4,7 @@ import org.glavo.kala.control.Option;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.immutable.ImmutableList;
 import org.glavo.kala.collection.immutable.ImmutableVector;
-import org.glavo.kala.factory.CollectionFactory;
+import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.function.IndexedConsumer;
 import org.glavo.kala.collection.base.Iterators;
 import org.jetbrains.annotations.Contract;

@@ -5,7 +5,7 @@ import org.glavo.kala.collection.IndexedSeq;
 import org.glavo.kala.collection.internal.AsJavaConvert;
 import org.glavo.kala.collection.internal.FromJavaConvert;
 import org.glavo.kala.collection.internal.CollectionHelper;
-import org.glavo.kala.factory.CollectionFactory;
+import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.Seq;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;

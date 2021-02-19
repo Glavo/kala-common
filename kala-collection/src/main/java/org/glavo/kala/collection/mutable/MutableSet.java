@@ -2,7 +2,7 @@ package org.glavo.kala.collection.mutable;
 
 import org.glavo.kala.collection.internal.AsJavaConvert;
 import org.glavo.kala.collection.internal.CollectionHelper;
-import org.glavo.kala.factory.CollectionFactory;
+import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.ArraySeq;
 import org.glavo.kala.collection.Collection;
 import org.glavo.kala.collection.Set;

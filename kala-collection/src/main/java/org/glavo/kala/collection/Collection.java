@@ -4,7 +4,7 @@ import org.glavo.kala.Equals;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.immutable.*;
 import org.glavo.kala.collection.internal.AsJavaConvert;
-import org.glavo.kala.factory.CollectionFactory;
+import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.base.Traversable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

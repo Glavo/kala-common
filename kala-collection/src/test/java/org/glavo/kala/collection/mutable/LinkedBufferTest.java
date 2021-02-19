@@ -1,6 +1,6 @@
 package org.glavo.kala.collection.mutable;
 
-import org.glavo.kala.factory.CollectionFactory;
+import org.glavo.kala.collection.factory.CollectionFactory;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

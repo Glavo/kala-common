@@ -1,7 +1,7 @@
 package org.glavo.kala.collection.immutable;
 
 
-import org.glavo.kala.factory.CollectionFactory;
+import org.glavo.kala.collection.factory.CollectionFactory;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;

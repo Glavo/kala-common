@@ -1,6 +1,6 @@
 package org.glavo.kala.collection.mutable;
 
-import org.glavo.kala.factory.CollectionFactory;
+import org.glavo.kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractBufferFactory<E, B extends Buffer<E>> implements CollectionFactory<E, B, B> {

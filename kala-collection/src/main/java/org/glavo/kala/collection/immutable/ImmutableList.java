@@ -5,7 +5,7 @@ import org.glavo.kala.control.Option;
 import org.glavo.kala.Tuple2;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.mutable.LinkedBuffer;
-import org.glavo.kala.factory.CollectionFactory;
+import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.function.IndexedConsumer;
 import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.collection.base.Iterators;

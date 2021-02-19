@@ -5,9 +5,9 @@ module org.glavo.kala.base {
     exports org.glavo.kala.annotations;
     exports org.glavo.kala.comparator;
     exports org.glavo.kala.control;
-    exports org.glavo.kala.factory;
     exports org.glavo.kala.function;
     exports org.glavo.kala.io;
     exports org.glavo.kala.ref;
     exports org.glavo.kala.collection.base;
+    exports org.glavo.kala.collection.factory;
 }

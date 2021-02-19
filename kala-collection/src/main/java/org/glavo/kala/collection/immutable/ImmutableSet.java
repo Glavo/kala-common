@@ -3,7 +3,7 @@ package org.glavo.kala.collection.immutable;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.ArraySeq;
 import org.glavo.kala.collection.SortedSet;
-import org.glavo.kala.factory.CollectionFactory;
+import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.Set;
 import org.jetbrains.annotations.NotNull;
 

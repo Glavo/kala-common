@@ -1,4 +1,4 @@
-package org.glavo.kala.factory;
+package org.glavo.kala.collection.factory;
 
 import org.glavo.kala.annotations.Covariant;
 import org.jetbrains.annotations.Contract;
@@ -179,7 +179,33 @@ public interface CollectionFactory<E, Builder, @Covariant R>
 
     default <U> @NotNull CollectionFactory<E, Builder, U> mapResult(@NotNull Function<? super R, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
-        return new MappedCollectionFactory<>(this, mapper);
+        class MappedFactory implements CollectionFactory<E, Builder, U> {
+            @Override
+            public final Builder newBuilder() {
+                return CollectionFactory.this.newBuilder();
+            }
+
+            @Override
+            public final U build(@NotNull Builder builder) {
+                return mapper.apply(CollectionFactory.this.build(builder));
+            }
+
+            @Override
+            public final void addToBuilder(@NotNull Builder builder, E value) {
+                CollectionFactory.this.addToBuilder(builder, value);
+            }
+
+            @Override
+            public final Builder mergeBuilder(@NotNull Builder builder1, @NotNull Builder builder2) {
+                return CollectionFactory.this.mergeBuilder(builder1, builder2);
+            }
+
+            @Override
+            public final void sizeHint(@NotNull Builder builder, int size) {
+                CollectionFactory.this.sizeHint(builder, size);
+            }
+        }
+        return new MappedFactory();
     }
 
     @Override

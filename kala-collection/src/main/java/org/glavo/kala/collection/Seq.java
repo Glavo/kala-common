@@ -3,7 +3,7 @@ package org.glavo.kala.collection;
 import org.glavo.kala.collection.internal.AsJavaConvert;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.internal.FromJavaConvert;
-import org.glavo.kala.factory.CollectionFactory;
+import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.immutable.ImmutableSeq;
 import org.jetbrains.annotations.*;
 

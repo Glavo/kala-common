@@ -1,6 +1,6 @@
 package org.glavo.kala.collection;
 
-import org.glavo.kala.factory.CollectionFactory;
+import org.glavo.kala.collection.factory.CollectionFactory;
 
 public class ArraySeqTest implements SeqTestTemplate {
     @Override

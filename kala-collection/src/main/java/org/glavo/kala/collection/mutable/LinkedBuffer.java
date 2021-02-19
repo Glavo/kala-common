@@ -1,6 +1,6 @@
 package org.glavo.kala.collection.mutable;
 
-import org.glavo.kala.factory.CollectionFactory;
+import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.immutable.ImmutableInternal;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

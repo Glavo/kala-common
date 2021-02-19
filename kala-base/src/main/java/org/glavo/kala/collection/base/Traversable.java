@@ -2,7 +2,7 @@ package org.glavo.kala.collection.base;
 
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.control.Option;
-import org.glavo.kala.factory.CollectionFactory;
+import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.function.CheckedConsumer;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;

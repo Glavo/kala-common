@@ -3,7 +3,7 @@ package org.glavo.kala.collection.base;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.annotations.StaticClass;
-import org.glavo.kala.factory.CollectionFactory;
+import org.glavo.kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

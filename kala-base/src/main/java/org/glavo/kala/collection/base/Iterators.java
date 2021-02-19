@@ -8,7 +8,7 @@ import org.glavo.kala.Tuple2;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.annotations.StaticClass;
 import org.glavo.kala.control.Option;
-import org.glavo.kala.factory.CollectionFactory;
+import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.function.IndexedConsumer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

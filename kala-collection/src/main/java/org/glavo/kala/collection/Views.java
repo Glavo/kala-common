@@ -7,7 +7,7 @@ import org.glavo.kala.collection.immutable.ImmutableSeq;
 import org.glavo.kala.collection.immutable.ImmutableVector;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.annotations.Covariant;
-import org.glavo.kala.factory.CollectionFactory;
+import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.base.Iterators;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

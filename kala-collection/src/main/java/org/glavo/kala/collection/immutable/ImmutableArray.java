@@ -10,7 +10,7 @@ import org.glavo.kala.Tuple2;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.annotations.StaticClass;
 import org.glavo.kala.collection.mutable.ArrayBuffer;
-import org.glavo.kala.factory.CollectionFactory;
+import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.collection.base.JavaArray;
 import org.jetbrains.annotations.Contract;

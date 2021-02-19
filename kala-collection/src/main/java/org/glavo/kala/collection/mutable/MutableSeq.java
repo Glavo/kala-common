@@ -3,7 +3,7 @@ package org.glavo.kala.collection.mutable;
 import org.glavo.kala.collection.internal.AsJavaConvert;
 import org.glavo.kala.collection.internal.FromJavaConvert;
 import org.glavo.kala.comparator.Comparators;
-import org.glavo.kala.factory.CollectionFactory;
+import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.IndexedSeq;
 import org.glavo.kala.collection.Seq;
 import org.glavo.kala.function.IndexedFunction;

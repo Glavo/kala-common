@@ -1,6 +1,6 @@
 package org.glavo.kala.collection.mutable;
 
-import org.glavo.kala.factory.CollectionFactory;
+import org.glavo.kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractMutableSetFactory<E, S extends MutableSet<E>> implements CollectionFactory<E, S, S> {

@@ -2,7 +2,7 @@ package org.glavo.kala.collection;
 
 import org.glavo.kala.collection.internal.AsJavaConvert;
 import org.glavo.kala.collection.immutable.ImmutableSet;
-import org.glavo.kala.factory.CollectionFactory;
+import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.base.Iterators;
 import org.jetbrains.annotations.NotNull;
 

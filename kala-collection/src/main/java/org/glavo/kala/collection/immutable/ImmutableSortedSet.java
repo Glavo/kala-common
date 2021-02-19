@@ -1,7 +1,7 @@
 package org.glavo.kala.collection.immutable;
 
 import org.glavo.kala.collection.SortedSet;
-import org.glavo.kala.factory.CollectionFactory;
+import org.glavo.kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
