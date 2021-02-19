@@ -1,6 +1,6 @@
 package org.glavo.kala.collection;
 
-import org.glavo.kala.traversable.Iterators;
+import org.glavo.kala.collection.base.Iterators;
 
 public abstract class AbstractSeq<E> extends AbstractCollection<E> implements Seq<E> {
     @Override

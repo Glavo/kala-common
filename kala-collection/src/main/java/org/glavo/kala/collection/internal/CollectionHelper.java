@@ -3,7 +3,7 @@ package org.glavo.kala.collection.internal;
 import org.glavo.kala.collection.ArraySeq;
 import org.glavo.kala.collection.IndexedSeq;
 import org.glavo.kala.collection.Seq;
-import org.glavo.kala.traversable.Traversable;
+import org.glavo.kala.collection.base.Traversable;
 import org.glavo.kala.annotations.StaticClass;
 import org.glavo.kala.collection.immutable.ImmutableArray;
 import org.glavo.kala.collection.immutable.ImmutableSeq;

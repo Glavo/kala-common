@@ -1,7 +1,7 @@
 package org.glavo.kala.collection.mutable;
 
 import org.glavo.kala.factory.CollectionFactory;
-import org.glavo.kala.traversable.JavaArray;
+import org.glavo.kala.collection.base.JavaArray;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package org.glavo.kala.collection.mutable;
 
-import org.glavo.kala.traversable.Iterators;
+import org.glavo.kala.collection.base.Iterators;
 import org.glavo.kala.collection.Collection;
 
 public abstract class AbstractMutableSeq<E> extends AbstractMutableCollection<E> implements MutableSeq<E> {

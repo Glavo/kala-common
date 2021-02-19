@@ -2,7 +2,7 @@ package org.glavo.kala.collection;
 
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.factory.CollectionFactory;
-import org.glavo.kala.traversable.Iterators;
+import org.glavo.kala.collection.base.Iterators;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;

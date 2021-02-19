@@ -1,4 +1,4 @@
-package org.glavo.kala.traversable;
+package org.glavo.kala.collection.base;
 
 import org.jetbrains.annotations.NotNull;
 

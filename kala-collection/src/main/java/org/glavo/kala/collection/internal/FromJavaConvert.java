@@ -4,7 +4,7 @@ import org.glavo.kala.Tuple2;
 import org.glavo.kala.annotations.StaticClass;
 import org.glavo.kala.collection.mutable.*;
 import org.glavo.kala.control.Option;
-import org.glavo.kala.traversable.MapIterator;
+import org.glavo.kala.collection.base.MapIterator;
 import org.glavo.kala.collection.IndexedSeq;
 import org.glavo.kala.collection.Seq;
 import org.jetbrains.annotations.NotNull;

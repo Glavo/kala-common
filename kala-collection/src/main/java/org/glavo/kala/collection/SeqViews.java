@@ -6,8 +6,8 @@ import org.glavo.kala.control.Option;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.function.IndexedConsumer;
 import org.glavo.kala.function.IndexedFunction;
-import org.glavo.kala.traversable.AbstractIterator;
-import org.glavo.kala.traversable.Iterators;
+import org.glavo.kala.collection.base.AbstractIterator;
+import org.glavo.kala.collection.base.Iterators;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 

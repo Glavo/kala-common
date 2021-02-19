@@ -5,12 +5,10 @@ import org.glavo.kala.collection.immutable.ImmutableList;
 import org.glavo.kala.collection.immutable.ImmutableSeq;
 import org.glavo.kala.collection.immutable.ImmutableVector;
 import org.glavo.kala.collection.mutable.MutableArray;
-import org.glavo.kala.traversable.Traversable;
+import org.glavo.kala.collection.base.Traversable;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Iterator;
 
 public interface CollectionLike<E> extends Traversable<E> {
 

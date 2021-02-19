@@ -9,5 +9,5 @@ module org.glavo.kala.base {
     exports org.glavo.kala.function;
     exports org.glavo.kala.io;
     exports org.glavo.kala.ref;
-    exports org.glavo.kala.traversable;
+    exports org.glavo.kala.collection.base;
 }

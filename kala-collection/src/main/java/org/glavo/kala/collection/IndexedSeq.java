@@ -6,7 +6,7 @@ import org.glavo.kala.collection.immutable.ImmutableList;
 import org.glavo.kala.collection.immutable.ImmutableVector;
 import org.glavo.kala.factory.CollectionFactory;
 import org.glavo.kala.function.IndexedConsumer;
-import org.glavo.kala.traversable.Iterators;
+import org.glavo.kala.collection.base.Iterators;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

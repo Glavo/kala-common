@@ -1,4 +1,4 @@
-package org.glavo.kala.traversable;
+package org.glavo.kala.collection.base;
 
 import org.glavo.kala.function.BooleanPredicate;
 import org.jetbrains.annotations.NotNull;

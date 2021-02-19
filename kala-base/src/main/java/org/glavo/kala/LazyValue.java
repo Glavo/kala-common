@@ -1,9 +1,9 @@
 package org.glavo.kala;
 
 import org.glavo.kala.annotations.Covariant;
-import org.glavo.kala.traversable.AbstractIterator;
-import org.glavo.kala.traversable.Mappable;
-import org.glavo.kala.traversable.Traversable;
+import org.glavo.kala.collection.base.AbstractIterator;
+import org.glavo.kala.collection.base.Mappable;
+import org.glavo.kala.collection.base.Traversable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 

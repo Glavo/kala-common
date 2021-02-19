@@ -4,16 +4,15 @@ import org.glavo.kala.collection.ArraySeq;
 import org.glavo.kala.collection.IndexedSeq;
 import org.glavo.kala.collection.Seq;
 import org.glavo.kala.collection.internal.CollectionHelper;
-import org.glavo.kala.comparator.Comparators;
 import org.glavo.kala.control.Conditions;
-import org.glavo.kala.traversable.Traversable;
+import org.glavo.kala.collection.base.Traversable;
 import org.glavo.kala.Tuple2;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.annotations.StaticClass;
 import org.glavo.kala.collection.mutable.ArrayBuffer;
 import org.glavo.kala.factory.CollectionFactory;
 import org.glavo.kala.function.IndexedFunction;
-import org.glavo.kala.traversable.JavaArray;
+import org.glavo.kala.collection.base.JavaArray;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,7 +23,6 @@ import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static org.glavo.kala.control.Conditions.checkPositionIndex;
 import static org.glavo.kala.control.Conditions.checkPositionIndices;
 
 @SuppressWarnings("unchecked")

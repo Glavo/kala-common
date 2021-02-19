@@ -10,12 +10,11 @@ package org.glavo.kala.collection.immutable;
 
 import org.glavo.kala.Tuple2;
 import org.glavo.kala.annotations.Covariant;
-import org.glavo.kala.collection.Seq;
 import org.glavo.kala.control.Conditions;
 import org.glavo.kala.factory.CollectionFactory;
 import org.glavo.kala.function.IndexedFunction;
-import org.glavo.kala.traversable.AnyTraversable;
-import org.glavo.kala.traversable.Traversable;
+import org.glavo.kala.collection.base.AnyTraversable;
+import org.glavo.kala.collection.base.Traversable;
 import org.glavo.kala.collection.IndexedSeq;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

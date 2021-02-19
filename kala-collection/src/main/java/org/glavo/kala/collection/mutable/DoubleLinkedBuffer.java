@@ -2,8 +2,8 @@ package org.glavo.kala.collection.mutable;
 
 import org.glavo.kala.factory.CollectionFactory;
 import org.glavo.kala.function.IndexedFunction;
-import org.glavo.kala.traversable.AbstractIterator;
-import org.glavo.kala.traversable.Iterators;
+import org.glavo.kala.collection.base.AbstractIterator;
+import org.glavo.kala.collection.base.Iterators;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 

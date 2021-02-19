@@ -5,7 +5,7 @@ import org.glavo.kala.Tuple2;
 import org.glavo.kala.factory.CollectionFactory;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.AbstractCollection;
-import org.glavo.kala.traversable.AnyTraversable;
+import org.glavo.kala.collection.base.AnyTraversable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;

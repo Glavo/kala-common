@@ -1,7 +1,7 @@
 package org.glavo.kala.control;
 
-import org.glavo.kala.traversable.BooleanIterator;
-import org.glavo.kala.traversable.BooleanTraversable;
+import org.glavo.kala.collection.base.BooleanIterator;
+import org.glavo.kala.collection.base.BooleanTraversable;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

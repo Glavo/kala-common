@@ -6,7 +6,7 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 
 import org.glavo.kala.annotations.Covariant;
-import org.glavo.kala.traversable.Mappable;
+import org.glavo.kala.collection.base.Mappable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 

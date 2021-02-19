@@ -2,7 +2,7 @@ package org.glavo.kala.control;
 
 import org.glavo.kala.Tuple2;
 import org.glavo.kala.annotations.Covariant;
-import org.glavo.kala.traversable.Iterators;
+import org.glavo.kala.collection.base.Iterators;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

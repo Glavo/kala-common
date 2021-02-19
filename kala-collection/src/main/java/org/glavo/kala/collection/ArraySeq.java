@@ -1,12 +1,12 @@
 package org.glavo.kala.collection;
 
-import org.glavo.kala.traversable.Traversable;
+import org.glavo.kala.collection.base.Traversable;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.collection.immutable.ImmutableArray;
 import org.glavo.kala.collection.mutable.ArrayBuffer;
 import org.glavo.kala.factory.CollectionFactory;
 import org.glavo.kala.function.IndexedConsumer;
-import org.glavo.kala.traversable.JavaArray;
+import org.glavo.kala.collection.base.JavaArray;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 

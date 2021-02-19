@@ -1,4 +1,4 @@
-package org.glavo.kala.traversable;
+package org.glavo.kala.collection.base;
 
 import org.glavo.kala.annotations.DeprecatedReplaceWith;
 import org.glavo.kala.control.OptionAny;

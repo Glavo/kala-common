@@ -1,4 +1,4 @@
-package org.glavo.kala.traversable;
+package org.glavo.kala.collection.base;
 
 import org.glavo.kala.control.OptionBoolean;
 import org.glavo.kala.function.BooleanConsumer;
