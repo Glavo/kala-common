@@ -1,6 +1,6 @@
 package org.glavo.kala.collection.mutable;
 
-import org.glavo.kala.Tuple2;
+import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.collection.Map;
 import org.glavo.kala.collection.internal.FromJavaConvert;
 import org.glavo.kala.collection.base.MapIterator;

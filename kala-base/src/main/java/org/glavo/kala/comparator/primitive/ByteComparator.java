@@ -1,4 +1,4 @@
-package org.glavo.kala.comparator;
+package org.glavo.kala.comparator.primitive;
 
 import org.jetbrains.annotations.NotNull;
 

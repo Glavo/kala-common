@@ -1,12 +1,11 @@
 package org.glavo.kala.collection;
 
-import org.glavo.kala.Tuple;
-import org.glavo.kala.Tuple2;
+import org.glavo.kala.tuple.Tuple;
+import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.internal.CollectionHelper;
 import org.glavo.kala.collection.internal.FullSeqOps;
 import org.glavo.kala.comparator.Comparators;
-import org.glavo.kala.control.Conditions;
 import org.glavo.kala.function.IndexedFunction;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

@@ -1,4 +1,4 @@
-package org.glavo.kala.control;
+package org.glavo.kala;
 
 import org.glavo.kala.annotations.StaticClass;
 import org.jetbrains.annotations.Contract;

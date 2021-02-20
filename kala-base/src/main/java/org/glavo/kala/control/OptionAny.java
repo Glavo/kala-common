@@ -7,5 +7,4 @@ import java.io.Serializable;
 public abstract class OptionAny<@Covariant T> implements Serializable {
     OptionAny() {
     }
-
 }

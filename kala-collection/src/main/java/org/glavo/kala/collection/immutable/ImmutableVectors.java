@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static org.glavo.kala.control.Conditions.*;
+import static org.glavo.kala.Conditions.*;
 import static java.util.Arrays.copyOf;
 
 @SuppressWarnings({"unchecked", "rawtypes"})

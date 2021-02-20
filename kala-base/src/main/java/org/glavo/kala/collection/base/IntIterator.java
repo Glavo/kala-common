@@ -1,7 +1,7 @@
 package org.glavo.kala.collection.base;
 
-import org.glavo.kala.Tuple;
-import org.glavo.kala.Tuple2;
+import org.glavo.kala.tuple.Tuple;
+import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.annotations.DeprecatedReplaceWith;
 import org.glavo.kala.control.OptionInt;
 import org.glavo.kala.internal.InternalIntLinkedBuffer;

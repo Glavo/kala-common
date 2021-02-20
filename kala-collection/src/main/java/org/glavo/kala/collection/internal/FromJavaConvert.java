@@ -1,6 +1,6 @@
 package org.glavo.kala.collection.internal;
 
-import org.glavo.kala.Tuple2;
+import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.annotations.StaticClass;
 import org.glavo.kala.collection.mutable.*;
 import org.glavo.kala.control.Option;

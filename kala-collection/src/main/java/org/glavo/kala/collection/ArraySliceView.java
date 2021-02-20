@@ -1,6 +1,6 @@
 package org.glavo.kala.collection;
 
-import org.glavo.kala.control.Conditions;
+import org.glavo.kala.Conditions;
 import org.glavo.kala.collection.base.JavaArray;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;

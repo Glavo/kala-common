@@ -1,6 +1,6 @@
 package org.glavo.kala.collection;
 
-import org.glavo.kala.Tuple2;
+import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.annotations.Covariant;
 import org.jetbrains.annotations.NotNull;
 

@@ -1,4 +1,4 @@
-package org.glavo.kala;
+package org.glavo.kala.tuple;
 
 import java.io.Serializable;
 import java.util.function.IntFunction;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Glavo
  * @see HList
  */
-public abstract class Tuple implements Serializable {
+public abstract class Tuple implements AnyTuple, Serializable {
     static final int HASH_MAGIC = 427632945;
 
     Tuple() {

@@ -1,6 +1,5 @@
 package org.glavo.kala.collection.internal;
 
-import org.glavo.kala.Tuple2;
 import org.glavo.kala.collection.CollectionLike;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

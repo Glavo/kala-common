@@ -1,4 +1,4 @@
-package org.glavo.kala;
+package org.glavo.kala.tuple;
 
 import java.io.Serializable;
 import java.util.Objects;

@@ -1,6 +1,6 @@
 package org.glavo.kala.collection.base;
 
-import org.glavo.kala.Tuple2;
+import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.function.BooleanPredicate;
 import org.junit.jupiter.api.*;
 

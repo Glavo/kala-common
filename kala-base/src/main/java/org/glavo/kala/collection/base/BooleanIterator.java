@@ -1,8 +1,8 @@
 package org.glavo.kala.collection.base;
 
 import org.glavo.kala.internal.InternalBooleanLinkedBuffer;
-import org.glavo.kala.Tuple;
-import org.glavo.kala.Tuple2;
+import org.glavo.kala.tuple.Tuple;
+import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.control.OptionBoolean;
 import org.glavo.kala.function.*;
 import org.jetbrains.annotations.Contract;

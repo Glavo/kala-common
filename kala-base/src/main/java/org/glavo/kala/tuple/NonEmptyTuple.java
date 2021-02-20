@@ -1,4 +1,4 @@
-package org.glavo.kala;
+package org.glavo.kala.tuple;
 
 import org.jetbrains.annotations.NotNull;
 

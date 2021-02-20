@@ -1,6 +1,6 @@
 package org.glavo.kala.collection.immutable;
 
-import org.glavo.kala.Tuple2;
+import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.Collection;

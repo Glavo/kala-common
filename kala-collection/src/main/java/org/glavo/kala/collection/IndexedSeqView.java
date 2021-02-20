@@ -1,8 +1,7 @@
 package org.glavo.kala.collection;
 
 import org.glavo.kala.annotations.Covariant;
-import org.glavo.kala.control.Conditions;
-import org.jetbrains.annotations.Contract;
+import org.glavo.kala.Conditions;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;

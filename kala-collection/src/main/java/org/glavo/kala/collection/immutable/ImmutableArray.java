@@ -4,9 +4,9 @@ import org.glavo.kala.collection.ArraySeq;
 import org.glavo.kala.collection.IndexedSeq;
 import org.glavo.kala.collection.Seq;
 import org.glavo.kala.collection.internal.CollectionHelper;
-import org.glavo.kala.control.Conditions;
+import org.glavo.kala.Conditions;
 import org.glavo.kala.collection.base.Traversable;
-import org.glavo.kala.Tuple2;
+import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.annotations.StaticClass;
 import org.glavo.kala.collection.mutable.ArrayBuffer;
@@ -23,7 +23,7 @@ import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static org.glavo.kala.control.Conditions.checkPositionIndices;
+import static org.glavo.kala.Conditions.checkPositionIndices;
 
 @SuppressWarnings("unchecked")
 public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
