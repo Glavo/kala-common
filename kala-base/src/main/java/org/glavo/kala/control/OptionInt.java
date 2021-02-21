@@ -1,7 +1,7 @@
 package org.glavo.kala.control;
 
-import org.glavo.kala.collection.base.IntIterator;
-import org.glavo.kala.collection.base.IntTraversable;
+import org.glavo.kala.collection.base.primitive.IntIterator;
+import org.glavo.kala.collection.base.primitive.IntTraversable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -1,4 +1,4 @@
-package org.glavo.kala.collection.base;
+package org.glavo.kala.collection.base.primitive;
 
 import org.glavo.kala.annotations.DeprecatedReplaceWith;
 import org.glavo.kala.control.OptionInt;

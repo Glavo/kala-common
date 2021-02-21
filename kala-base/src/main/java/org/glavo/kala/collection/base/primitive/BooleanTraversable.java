@@ -1,4 +1,4 @@
-package org.glavo.kala.collection.base;
+package org.glavo.kala.collection.base.primitive;
 
 import org.glavo.kala.control.OptionBoolean;
 import org.glavo.kala.function.BooleanConsumer;

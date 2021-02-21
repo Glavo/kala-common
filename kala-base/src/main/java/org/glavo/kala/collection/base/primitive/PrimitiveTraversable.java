@@ -1,6 +1,7 @@
-package org.glavo.kala.collection.base;
+package org.glavo.kala.collection.base.primitive;
 
 import org.glavo.kala.annotations.DeprecatedReplaceWith;
+import org.glavo.kala.collection.base.AnyTraversable;
 import org.glavo.kala.control.OptionAny;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

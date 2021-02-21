@@ -1,5 +1,8 @@
-package org.glavo.kala.collection.base;
+package org.glavo.kala.collection.base.primitive;
 
+import org.glavo.kala.collection.base.AbstractIntIterator;
+import org.glavo.kala.collection.base.AbstractIterator;
+import org.glavo.kala.collection.base.Iterators;
 import org.glavo.kala.tuple.Tuple;
 import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.annotations.DeprecatedReplaceWith;

@@ -1,5 +1,6 @@
-package org.glavo.kala.collection.base;
+package org.glavo.kala.collection.base.primitive;
 
+import org.glavo.kala.collection.base.AbstractBooleanIterator;
 import org.glavo.kala.function.BooleanPredicate;
 import org.jetbrains.annotations.NotNull;
 
