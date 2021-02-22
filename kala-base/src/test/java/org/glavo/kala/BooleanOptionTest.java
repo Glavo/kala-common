@@ -1,6 +1,6 @@
 package org.glavo.kala;
 
-import org.glavo.kala.control.OptionBoolean;
+import org.glavo.kala.control.primitive.BooleanOption;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -11,10 +11,10 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class OptionBooleanTest {
+public class BooleanOptionTest {
     @Test
     public void serializationTest() {
-        assertAll(Stream.of(OptionBoolean.True, OptionBoolean.False, OptionBoolean.None).map(opt -> () -> {
+        assertAll(Stream.of(BooleanOption.True, BooleanOption.False, BooleanOption.None).map(opt -> () -> {
             ByteArrayOutputStream out = new ByteArrayOutputStream(512);
             new ObjectOutputStream(out).writeObject(opt);
             byte[] buffer = out.toByteArray();

@@ -1,6 +1,6 @@
 package org.glavo.kala.collection.base;
 
-import org.glavo.kala.control.OptionAny;
+import org.glavo.kala.control.AnyOption;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,7 +14,7 @@ public interface AnyTraversable<
         T,
         T_ITERATOR extends Iterator<T>,
         T_ARRAY,
-        T_OPTION extends OptionAny<T>,
+        T_OPTION extends AnyOption<T>,
         T_CONSUMER,
         T_PREDICATE
         > extends Iterable<T> {

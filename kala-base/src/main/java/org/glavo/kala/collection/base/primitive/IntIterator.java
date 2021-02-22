@@ -6,7 +6,7 @@ import org.glavo.kala.collection.base.Iterators;
 import org.glavo.kala.tuple.Tuple;
 import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.annotations.DeprecatedReplaceWith;
-import org.glavo.kala.control.OptionInt;
+import org.glavo.kala.control.primitive.IntOption;
 import org.glavo.kala.internal.InternalIntLinkedBuffer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +22,7 @@ import java.util.function.*;
 
 public interface IntIterator
         extends
-        PrimIterator<Integer, IntIterator, int[], OptionInt, IntConsumer, IntPredicate>, PrimitiveIterator.OfInt {
+        PrimIterator<Integer, IntIterator, int[], IntOption, IntConsumer, IntPredicate>, PrimitiveIterator.OfInt {
 
     static @NotNull IntIterator empty() {
         return IntIterators.EMPTY;
@@ -88,14 +88,14 @@ public interface IntIterator
     }
 
     @Override
-    default @NotNull OptionInt find(@NotNull IntPredicate predicate) {
+    default @NotNull IntOption find(@NotNull IntPredicate predicate) {
         while (hasNext()) {
             int value = nextInt();
             if (predicate.test(value)) {
-                return OptionInt.some(value);
+                return IntOption.some(value);
             }
         }
-        return OptionInt.None;
+        return IntOption.None;
     }
 
     //region Element Conditions
@@ -382,16 +382,16 @@ public interface IntIterator
     }
 
     @Override
-    default @NotNull OptionInt maxOption() {
+    default @NotNull IntOption maxOption() {
         if (!hasNext()) {
-            return OptionInt.None;
+            return IntOption.None;
         }
 
         int value = nextInt();
         while (hasNext()) {
             value = Math.max(value, nextInt());
         }
-        return OptionInt.some(value);
+        return IntOption.some(value);
     }
 
     default int min() {
@@ -419,16 +419,16 @@ public interface IntIterator
     }
 
     @Override
-    default @NotNull OptionInt minOption() {
+    default @NotNull IntOption minOption() {
         if (!hasNext()) {
-            return OptionInt.None;
+            return IntOption.None;
         }
 
         int value = nextInt();
         while (hasNext()) {
             value = Math.min(value, nextInt());
         }
-        return OptionInt.some(value);
+        return IntOption.some(value);
     }
 
     //endregion

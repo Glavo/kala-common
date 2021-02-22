@@ -2,7 +2,7 @@ package org.glavo.kala.collection.base.primitive;
 
 import org.glavo.kala.annotations.DeprecatedReplaceWith;
 import org.glavo.kala.collection.base.AnyTraversable;
-import org.glavo.kala.control.OptionAny;
+import org.glavo.kala.control.AnyOption;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,7 +13,7 @@ public interface PrimitiveTraversable<
         T_TRAVERSABLE extends PrimitiveTraversable<T, T_TRAVERSABLE, T_ITERATOR, T_ARRAY, T_OPTION, T_CONSUMER, T_PREDICATE>,
         T_ITERATOR extends PrimIterator<T, T_ITERATOR, T_ARRAY, T_OPTION, T_CONSUMER, T_PREDICATE>,
         T_ARRAY,
-        T_OPTION extends OptionAny<T>,
+        T_OPTION extends AnyOption<T>,
         T_CONSUMER,
         T_PREDICATE
         > extends AnyTraversable<T, T_ITERATOR, T_ARRAY, T_OPTION, T_CONSUMER, T_PREDICATE> {

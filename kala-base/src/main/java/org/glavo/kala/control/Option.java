@@ -26,7 +26,7 @@ import java.util.function.Predicate;
  * @author Glavo
  * @see Optional
  */
-public final class Option<@Covariant T> extends OptionAny<T>
+public final class Option<@Covariant T> extends AnyOption<T>
         implements OptionContainer<T>, Serializable {
     private static final long serialVersionUID = 4055633765420871779L;
 

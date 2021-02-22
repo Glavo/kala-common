@@ -1,7 +1,7 @@
 package org.glavo.kala.collection.base.primitive;
 
 import org.glavo.kala.annotations.DeprecatedReplaceWith;
-import org.glavo.kala.control.OptionInt;
+import org.glavo.kala.control.primitive.IntOption;
 import org.glavo.kala.function.CheckedIntConsumer;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,7 +11,7 @@ import java.util.function.IntConsumer;
 import java.util.function.IntPredicate;
 
 public interface IntTraversable
-        extends PrimitiveTraversable<Integer, IntTraversable, IntIterator, int[], OptionInt, IntConsumer, IntPredicate> {
+        extends PrimitiveTraversable<Integer, IntTraversable, IntIterator, int[], IntOption, IntConsumer, IntPredicate> {
 
     @Override
     @NotNull IntIterator iterator();

@@ -20,7 +20,7 @@ import java.util.stream.Stream;
  * @param <T> the type of value
  * @author Glavo
  */
-interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>, Traversable<T> {
+public interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>, Traversable<T> {
 
 
     /**

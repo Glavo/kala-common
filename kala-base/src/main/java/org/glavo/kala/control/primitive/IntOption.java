@@ -1,4 +1,4 @@
-package org.glavo.kala.control;
+package org.glavo.kala.control.primitive;
 
 import org.glavo.kala.collection.base.primitive.IntIterator;
 import org.glavo.kala.collection.base.primitive.IntTraversable;
@@ -8,42 +8,42 @@ import org.jetbrains.annotations.Nullable;
 import java.io.Serializable;
 import java.util.function.IntConsumer;
 
-public final class OptionInt extends OptionAny<Integer> implements IntTraversable {
+public final class IntOption extends PrimitiveOption<Integer> implements IntTraversable {
     private static final long serialVersionUID = -8990024629462620023L;
     private static final int HASH_MAGIC = -818206074;
 
-    public static final OptionInt None = new OptionInt();
+    public static final IntOption None = new IntOption();
 
-    private static final OptionInt[] CACHE = new OptionInt[256];
+    private static final IntOption[] CACHE = new IntOption[256];
 
     static {
         for (int i = 0; i < 256; i++) {
-            CACHE[i] = new OptionInt(i - 128);
+            CACHE[i] = new IntOption(i - 128);
         }
     }
 
     private final int value;
 
-    private OptionInt() {
+    private IntOption() {
         this.value = 0;
     }
 
-    private OptionInt(int value) {
+    private IntOption(int value) {
         this.value = value;
     }
 
-    public static @NotNull OptionInt some(int value) {
+    public static @NotNull IntOption some(int value) {
         if (value >= -128 && value <= 127) {
             return CACHE[value + 128];
         }
-        return new OptionInt(value);
+        return new IntOption(value);
     }
 
-    public static @NotNull OptionInt none() {
+    public static @NotNull IntOption none() {
         return None;
     }
 
-    public static @NotNull OptionInt of(@Nullable Integer value) {
+    public static @NotNull IntOption of(@Nullable Integer value) {
         return value == null ? None : some(value);
     }
 
@@ -60,14 +60,14 @@ public final class OptionInt extends OptionAny<Integer> implements IntTraversabl
         if (o == this) {
             return true;
         }
-        if (!(o instanceof OptionInt)) {
+        if (!(o instanceof IntOption)) {
             return false;
         }
         if (this == None || o == None) {
             return false;
         }
 
-        return value == ((OptionInt) o).value;
+        return value == ((IntOption) o).value;
     }
 
     @Override

@@ -6,7 +6,7 @@ import org.glavo.kala.collection.base.Iterators;
 import org.glavo.kala.internal.InternalBooleanLinkedBuffer;
 import org.glavo.kala.tuple.Tuple;
 import org.glavo.kala.tuple.Tuple2;
-import org.glavo.kala.control.OptionBoolean;
+import org.glavo.kala.control.primitive.BooleanOption;
 import org.glavo.kala.function.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +19,7 @@ import java.util.function.Consumer;
 
 @SuppressWarnings("ConstantConditions")
 public interface BooleanIterator
-        extends PrimIterator<Boolean, BooleanIterator, boolean[], OptionBoolean, BooleanConsumer, BooleanPredicate> {
+        extends PrimIterator<Boolean, BooleanIterator, boolean[], BooleanOption, BooleanConsumer, BooleanPredicate> {
 
 
     static @NotNull BooleanIterator empty() {
@@ -320,15 +320,15 @@ public interface BooleanIterator
     //endregion
 
     @Override
-    default @NotNull OptionBoolean find(@NotNull BooleanPredicate predicate) {
+    default @NotNull BooleanOption find(@NotNull BooleanPredicate predicate) {
         while (hasNext()) {
             boolean v = nextBoolean();
             if (predicate.test(v)) {
-                return OptionBoolean.of(v);
+                return BooleanOption.of(v);
             }
         }
 
-        return OptionBoolean.None;
+        return BooleanOption.None;
     }
 
     //region Addition Operations
@@ -384,17 +384,17 @@ public interface BooleanIterator
         return false;
     }
 
-    default @NotNull OptionBoolean maxOption() {
+    default @NotNull BooleanOption maxOption() {
         if (!hasNext()) {
-            return OptionBoolean.None;
+            return BooleanOption.None;
         }
 
         while (hasNext()) {
             if (nextBoolean()) {
-                return OptionBoolean.True;
+                return BooleanOption.True;
             }
         }
-        return OptionBoolean.False;
+        return BooleanOption.False;
     }
 
     default boolean min() {
@@ -423,17 +423,17 @@ public interface BooleanIterator
         return true;
     }
 
-    default @NotNull OptionBoolean minOption() {
+    default @NotNull BooleanOption minOption() {
         if (!hasNext()) {
-            return OptionBoolean.None;
+            return BooleanOption.None;
         }
 
         while (hasNext()) {
             if (!nextBoolean()) {
-                return OptionBoolean.False;
+                return BooleanOption.False;
             }
         }
-        return OptionBoolean.True;
+        return BooleanOption.True;
     }
 
     //endregion

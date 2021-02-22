@@ -1,60 +1,61 @@
-package org.glavo.kala.control;
+package org.glavo.kala.control.primitive;
 
 import org.glavo.kala.collection.base.primitive.BooleanIterator;
 import org.glavo.kala.collection.base.primitive.BooleanTraversable;
+import org.glavo.kala.control.Option;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.NoSuchElementException;
 
-public final class OptionBoolean extends OptionAny<Boolean> implements BooleanTraversable {
+public final class BooleanOption extends PrimitiveOption<Boolean> implements BooleanTraversable {
     private static final long serialVersionUID = 3226319253753655469L;
     private static final int HASH_MAGIC = 773806848;
 
-    public static final OptionBoolean True = new OptionBoolean(true);
-    public static final OptionBoolean False = new OptionBoolean(false);
-    public static final OptionBoolean None = new OptionBoolean();
+    public static final BooleanOption True = new BooleanOption(true);
+    public static final BooleanOption False = new BooleanOption(false);
+    public static final BooleanOption None = new BooleanOption();
 
     private final boolean isDefined;
     private final boolean value;
     private final transient int hashCode;
     private final transient String name;
 
-    private OptionBoolean() {
+    private BooleanOption() {
         this.isDefined = false;
         this.value = false;
         this.name = "OptionBoolean.None";
         this.hashCode = HASH_MAGIC;
     }
 
-    private OptionBoolean(boolean value) {
+    private BooleanOption(boolean value) {
         this.isDefined = true;
         this.value = value;
         this.name = value ? "OptionBoolean.True" : "OptionBoolean.False";
         this.hashCode = HASH_MAGIC + Boolean.hashCode(value);
     }
 
-    public static @NotNull OptionBoolean some(boolean value) {
+    public static @NotNull BooleanOption some(boolean value) {
         return value ? True : False;
     }
 
-    public static @NotNull OptionBoolean none() {
+    public static @NotNull BooleanOption none() {
         return None;
     }
 
-    public static @NotNull OptionBoolean of(boolean value) {
+    public static @NotNull BooleanOption of(boolean value) {
         return value ? True : False;
     }
 
-    public static @NotNull OptionBoolean of(@Nullable Boolean value) {
+    public static @NotNull BooleanOption of(@Nullable Boolean value) {
         if (value == null) {
             return None;
         }
         return value ? True : False;
     }
 
-    public static @NotNull OptionBoolean fromOption(@NotNull Option<? extends Boolean> option) {
+    public static @NotNull BooleanOption fromOption(@NotNull Option<? extends Boolean> option) {
         if (option.isDefined()) {
             return of(option.get());
         } else {

@@ -1,6 +1,6 @@
 package org.glavo.kala.collection.base.primitive;
 
-import org.glavo.kala.control.OptionBoolean;
+import org.glavo.kala.control.primitive.BooleanOption;
 import org.glavo.kala.function.BooleanConsumer;
 import org.glavo.kala.function.BooleanPredicate;
 import org.glavo.kala.function.CheckedBooleanConsumer;
@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 public interface BooleanTraversable
-        extends PrimitiveTraversable<Boolean, BooleanTraversable, BooleanIterator, boolean[], OptionBoolean, BooleanConsumer, BooleanPredicate> {
+        extends PrimitiveTraversable<Boolean, BooleanTraversable, BooleanIterator, boolean[], BooleanOption, BooleanConsumer, BooleanPredicate> {
     @Override
     @NotNull BooleanIterator iterator();
 
@@ -74,8 +74,8 @@ public interface BooleanTraversable
     //endregion
 
     @Override
-    default @NotNull OptionBoolean find(@NotNull BooleanPredicate predicate) {
-        return knownSize() == 0 ? OptionBoolean.None : iterator().find(predicate);
+    default @NotNull BooleanOption find(@NotNull BooleanPredicate predicate) {
+        return knownSize() == 0 ? BooleanOption.None : iterator().find(predicate);
     }
 
     default boolean max() {
