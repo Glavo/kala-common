@@ -6,6 +6,7 @@ module org.glavo.kala.base {
     exports org.glavo.kala.comparator;
     exports org.glavo.kala.comparator.primitive;
     exports org.glavo.kala.control;
+    exports org.glavo.kala.control.primitive;
     exports org.glavo.kala.function;
     exports org.glavo.kala.io;
     exports org.glavo.kala.ref;

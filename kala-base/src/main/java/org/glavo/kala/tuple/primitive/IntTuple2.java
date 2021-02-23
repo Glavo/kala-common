@@ -16,6 +16,10 @@ public final class IntTuple2 implements PrimitiveTuple {
         _2 = i2;
     }
 
+    public static @NotNull IntTuple2 of(int i1, int i2) {
+        return new IntTuple2(i1, i2);
+    }
+
     @Override
     public final int arity() {
         return 2;

@@ -18,6 +18,10 @@ public final class IntObjTuple2<T> implements PrimitiveTuple {
         _2 = t;
     }
 
+    public static <T> @NotNull IntObjTuple2<T> of(int i, T t) {
+        return new IntObjTuple2<>(i, t);
+    }
+
     @Override
     public final int arity() {
         return 2;

@@ -18,9 +18,13 @@ public final class IntTuple3 implements PrimitiveTuple {
         _3 = i3;
     }
 
+    public static @NotNull IntTuple3 of(int i1, int i2, int i3) {
+        return new IntTuple3(i1, i2, i3);
+    }
+
     @Override
     public final int arity() {
-        return 2;
+        return 3;
     }
 
     public final int component1() {
