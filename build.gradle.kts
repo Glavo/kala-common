@@ -107,4 +107,8 @@ dependencies {
     api(project(":kala-collection"))
 }
 
-fun kalaVersion(base: String) = if (System.getProperty("kala.release") == "true") base else "$base-SNAPSHOT"
+fun kalaVersion(base: String) =
+        if (System.getProperty("kala.release") == "true" || System.getenv("JITPACK") == "true")
+            base
+        else
+            "$base-SNAPSHOT"
