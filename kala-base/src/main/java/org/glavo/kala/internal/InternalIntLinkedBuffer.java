@@ -1,6 +1,6 @@
 package org.glavo.kala.internal;
 
-import org.glavo.kala.collection.base.AbstractIntIterator;
+import org.glavo.kala.collection.base.primitive.AbstractIntIterator;
 import org.glavo.kala.collection.base.primitive.IntIterator;
 import org.jetbrains.annotations.ApiStatus;
 

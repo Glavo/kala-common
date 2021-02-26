@@ -1,6 +1,5 @@
 package org.glavo.kala.collection.base.primitive;
 
-import org.glavo.kala.collection.base.AbstractBooleanIterator;
 import org.glavo.kala.collection.base.AbstractIterator;
 import org.glavo.kala.collection.base.Iterators;
 import org.glavo.kala.internal.InternalBooleanLinkedBuffer;

@@ -1,6 +1,5 @@
 package org.glavo.kala.collection.base.primitive;
 
-import org.glavo.kala.collection.base.AbstractIntIterator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;
