@@ -1,4 +1,4 @@
-package org.glavo.kala;
+package org.glavo.kala.value;
 
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.base.AbstractIterator;
@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public final class LazyValue<@Covariant T> implements Traversable<T>, Mappable<T>, Serializable {
+public final class LazyValue<@Covariant T> implements Traversable<T>, Mappable<T>, Value<T>, Serializable {
     private static final long serialVersionUID = 7403692951772568981L;
 
     private transient volatile Supplier<? extends T> supplier;

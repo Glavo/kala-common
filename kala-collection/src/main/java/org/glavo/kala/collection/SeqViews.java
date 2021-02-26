@@ -1,6 +1,6 @@
 package org.glavo.kala.collection;
 
-import org.glavo.kala.LazyValue;
+import org.glavo.kala.value.LazyValue;
 import org.glavo.kala.collection.mutable.ArrayBuffer;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.annotations.Covariant;
