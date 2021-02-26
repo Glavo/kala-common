@@ -37,6 +37,7 @@ public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Index
         return (Factory<E>) FACTORY;
     }
 
+    @Contract("_ -> new")
     public static <E> @NotNull MutableArray<E> create(int size) {
         return new MutableArray<>(new Object[size]);
     }
