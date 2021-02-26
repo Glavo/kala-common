@@ -29,16 +29,16 @@ public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Index
         super(array);
     }
 
-    public MutableArray(int size) throws NegativeArraySizeException {
-        this(new Object[size]);
-    }
-
     //endregion
 
     //region Static Factories
 
     public static <E> @NotNull CollectionFactory<E, ?, MutableArray<E>> factory() {
         return (Factory<E>) FACTORY;
+    }
+
+    public static <E> @NotNull MutableArray<E> create(int size) {
+        return new MutableArray<>(new Object[size]);
     }
 
     public static <E> @NotNull MutableArray<E> empty() {
