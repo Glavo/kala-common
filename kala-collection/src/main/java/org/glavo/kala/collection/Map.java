@@ -1,6 +1,6 @@
 package org.glavo.kala.collection;
 
-import org.glavo.kala.Equals;
+import org.glavo.kala.Equatable;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.function.CheckedBiConsumer;
 import org.glavo.kala.collection.base.MapIterator;
@@ -11,7 +11,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
-public interface Map<K, V> extends Equals {
+public interface Map<K, V> extends Equatable {
 
     int HASH_MAGIC = 124549981;
 

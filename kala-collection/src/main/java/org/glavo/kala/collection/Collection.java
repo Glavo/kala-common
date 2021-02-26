@@ -1,6 +1,6 @@
 package org.glavo.kala.collection;
 
-import org.glavo.kala.Equals;
+import org.glavo.kala.Equatable;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.immutable.*;
 import org.glavo.kala.collection.internal.AsJavaConvert;
@@ -9,7 +9,7 @@ import org.glavo.kala.collection.base.Traversable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-public interface Collection<@Covariant E> extends Traversable<E>, CollectionLike<E>, Equals {
+public interface Collection<@Covariant E> extends Traversable<E>, CollectionLike<E>, Equatable {
 
     int SEQ_HASH_MAGIC = -1140647423;
 
