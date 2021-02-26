@@ -1,18 +1,28 @@
-package org.glavo.kala.ref;
+package org.glavo.kala.value.primitive;
 
 import java.io.Serializable;
 
-public final class LongRef implements Serializable {
+public final class SimpleMutableLongValue implements MutableLongValue, Serializable {
     private static final long serialVersionUID = 0L;
 
     private static final int HASH_MAGIC = 1556644513;
 
     public long value;
 
-    public LongRef() {
+    public SimpleMutableLongValue() {
     }
 
-    public LongRef(long value) {
+    public SimpleMutableLongValue(long value) {
+        this.value = value;
+    }
+
+    @Override
+    public final long get() {
+        return value;
+    }
+
+    @Override
+    public final void set(long value) {
         this.value = value;
     }
 
@@ -21,10 +31,10 @@ public final class LongRef implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof LongRef)) {
+        if (!(o instanceof SimpleMutableLongValue)) {
             return false;
         }
-        return value == ((LongRef) o).value;
+        return value == ((SimpleMutableLongValue) o).value;
     }
 
     @Override

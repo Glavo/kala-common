@@ -1,18 +1,28 @@
-package org.glavo.kala.ref;
+package org.glavo.kala.value.primitive;
 
 import java.io.Serializable;
 
-public final class CharRef implements Serializable {
+public final class SimpleMutableCharValue implements MutableCharValue, Serializable {
     private static final long serialVersionUID = 0L;
 
     private static final int HASH_MAGIC = -492503597;
 
     public char value;
 
-    public CharRef() {
+    public SimpleMutableCharValue() {
     }
 
-    public CharRef(char value) {
+    public SimpleMutableCharValue(char value) {
+        this.value = value;
+    }
+
+    @Override
+    public final char get() {
+        return value;
+    }
+
+    @Override
+    public final void set(char value) {
         this.value = value;
     }
 
@@ -21,10 +31,10 @@ public final class CharRef implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof CharRef)) {
+        if (!(o instanceof SimpleMutableCharValue)) {
             return false;
         }
-        return value == ((CharRef) o).value;
+        return value == ((SimpleMutableCharValue) o).value;
     }
 
     @Override

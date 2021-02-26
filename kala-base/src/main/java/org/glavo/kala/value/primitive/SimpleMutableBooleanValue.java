@@ -1,18 +1,28 @@
-package org.glavo.kala.ref;
+package org.glavo.kala.value.primitive;
 
 import java.io.Serializable;
 
-public final class BooleanRef implements Serializable {
+public final class SimpleMutableBooleanValue implements MutableBooleanValue, Serializable {
     private static final long serialVersionUID = 0L;
 
     private static final int HASH_MAGIC = -1071790882;
 
     public boolean value;
 
-    public BooleanRef() {
+    public SimpleMutableBooleanValue() {
     }
 
-    public BooleanRef(boolean value) {
+    public SimpleMutableBooleanValue(boolean value) {
+        this.value = value;
+    }
+
+    @Override
+    public final boolean get() {
+        return value;
+    }
+
+    @Override
+    public final void set(boolean value) {
         this.value = value;
     }
 
@@ -21,10 +31,10 @@ public final class BooleanRef implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof BooleanRef)) {
+        if (!(o instanceof SimpleMutableBooleanValue)) {
             return false;
         }
-        return value == ((BooleanRef) o).value;
+        return value == ((SimpleMutableBooleanValue) o).value;
     }
 
     @Override

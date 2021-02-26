@@ -1,19 +1,29 @@
-package org.glavo.kala.ref;
+package org.glavo.kala.value;
 
 import java.io.Serializable;
 import java.util.Objects;
 
-public final class Ref<T> implements Serializable {
+public final class SimpleMutableValue<T> implements MutableValue<T>, Serializable {
     private static final long serialVersionUID = 0L;
 
     private static final int HASH_MAGIC = 1281759194;
 
     public T value;
 
-    public Ref() {
+    public SimpleMutableValue() {
     }
 
-    public Ref(T value) {
+    public SimpleMutableValue(T value) {
+        this.value = value;
+    }
+
+    @Override
+    public final T get() {
+        return value;
+    }
+
+    @Override
+    public final void set(T value) {
         this.value = value;
     }
 
@@ -22,10 +32,10 @@ public final class Ref<T> implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Ref<?>)) {
+        if (!(o instanceof SimpleMutableValue<?>)) {
             return false;
         }
-        Ref<?> other = (Ref<?>) o;
+        SimpleMutableValue<?> other = (SimpleMutableValue<?>) o;
         return Objects.equals(value, other.value);
     }
 
