@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
+import java.util.function.BiFunction;
 
 public interface MutableMap<K, V> extends Map<K, V> {
 
@@ -41,6 +42,8 @@ public interface MutableMap<K, V> extends Map<K, V> {
 
     @Contract(mutates = "this")
     void clear();
+
+    void updateAll(@NotNull BiFunction<? super K, ? super V, ? extends V> updater);
 
     default @NotNull MutableSet<Tuple2<K, V>> asMutableSet() {
         return new MutableSet<Tuple2<K, V>>() {

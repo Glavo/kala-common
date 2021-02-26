@@ -211,8 +211,6 @@ final class SeqViews {
         protected final int n;
 
         Drop(@NotNull SeqView<E> source, int n) {
-            assert source != null;
-
             this.source = source;
             this.n = n;
         }
