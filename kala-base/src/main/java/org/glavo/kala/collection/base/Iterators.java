@@ -586,7 +586,7 @@ public final class Iterators {
             return Tuple.of(empty(), empty());
         }
 
-        LinkedList<E> list = new LinkedList<>();
+        ArrayList<E> list = new ArrayList<>();
 
         while (it.hasNext()) {
             E e = it.next();
@@ -629,12 +629,12 @@ public final class Iterators {
         if (!it.hasNext()) {
             return zero;
         }
-        LinkedList<E> list = new LinkedList<>();
+        ArrayList<E> list = new ArrayList<>();
         while (it.hasNext()) {
-            list.addFirst(it.next());
+            list.add(it.next());
         }
-        for (E u : list) {
-            zero = op.apply(u, zero);
+        for (int i = list.size() - 1; i >= 0; i--) {
+            zero = op.apply(list.get(i), zero);
         }
         return zero;
     }
@@ -665,14 +665,15 @@ public final class Iterators {
         if (!it.hasNext()) {
             throw new NoSuchElementException();
         }
-        LinkedList<E> list = new LinkedList<>();
+        ArrayList<E> list = new ArrayList<>();
         while (it.hasNext()) {
-            list.addFirst(it.next());
+            list.add(it.next());
         }
-        it = list.iterator();
-        E e = it.next();
-        if (it.hasNext()) {
-            e = op.apply(it.next(), e);
+        assert !list.isEmpty();
+        E e = list.get(list.size() - 1);
+
+        for (int i = list.size() - 2; i >= 0; i--) {
+            e = op.apply(list.get(i), e);
         }
         return e;
     }
@@ -703,14 +704,15 @@ public final class Iterators {
         if (!it.hasNext()) {
             return Option.none();
         }
-        LinkedList<E> list = new LinkedList<>();
+        ArrayList<E> list = new ArrayList<>();
         while (it.hasNext()) {
-            list.addFirst(it.next());
+            list.add(it.next());
         }
-        it = list.iterator();
-        E e = it.next();
-        if (it.hasNext()) {
-            e = op.apply(it.next(), e);
+        assert !list.isEmpty();
+        E e = list.get(list.size() - 1);
+
+        for (int i = list.size() - 2; i >= 0; i--) {
+            e = op.apply(list.get(i), e);
         }
         return Option.some(e);
     }
