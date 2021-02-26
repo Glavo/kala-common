@@ -16,27 +16,20 @@ import java.util.function.IntFunction;
 import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
-public final class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, IndexedSeq<E>, Serializable {
-    private static final long serialVersionUID = 6278999671163491762L;
+public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, IndexedSeq<E>, Serializable {
+    private static final long serialVersionUID = 8060307722127719792L;
 
     public static final MutableArray<?> EMPTY = new MutableArray<>(JavaArray.EMPTY_OBJECT_ARRAY);
 
     private static final MutableArray.Factory<?> FACTORY = new Factory<>();
 
-    private final boolean isChecked;
-
     //region Constructors
 
     MutableArray(@NotNull Object[] array) {
-        this(array, false);
-    }
-
-    MutableArray(@NotNull Object[] array, boolean isChecked) {
         super(array);
-        this.isChecked = isChecked;
     }
 
-    public MutableArray(int size) {
+    public MutableArray(int size) throws NegativeArraySizeException {
         this(new Object[size]);
     }
 
@@ -173,7 +166,7 @@ public final class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>,
 
     public static <E> @NotNull MutableArray<E> wrap(E @NotNull [] array) {
         Objects.requireNonNull(array);
-        return new MutableArray<>(array, true);
+        return new Checked<>(array);
     }
 
     //endregion
@@ -192,8 +185,8 @@ public final class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>,
 
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public final @NotNull MutableArray<E> clone() {
-        return new MutableArray<E>(this.elements.clone(), isChecked);
+    public @NotNull MutableArray<E> clone() {
+        return new MutableArray<>(this.elements.clone());
     }
 
     //endregion
@@ -202,8 +195,8 @@ public final class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>,
         return elements;
     }
 
-    public final boolean isChecked() {
-        return isChecked;
+    public boolean isChecked() {
+        return false;
     }
 
     @Override
@@ -236,6 +229,23 @@ public final class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>,
         Arrays.sort(elements, (Comparator<? super Object>) comparator);
     }
 
+    private static final class Checked<E> extends MutableArray<E> {
+        private static final long serialVersionUID = 3903230112786321463L;
+
+        Checked(@NotNull Object[] array) {
+            super(array);
+        }
+
+        @Override
+        public final boolean isChecked() {
+            return true;
+        }
+
+        @Override
+        public final @NotNull MutableArray<E> clone() {
+            return new Checked<>(this.elements.clone());
+        }
+    }
 
     private static final class Factory<E> implements CollectionFactory<E, ArrayBuffer<E>, MutableArray<E>> {
         Factory() {
