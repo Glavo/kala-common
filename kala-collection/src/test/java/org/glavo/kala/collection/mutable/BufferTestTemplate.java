@@ -1,7 +1,7 @@
 package org.glavo.kala.collection.mutable;
 
 import org.glavo.kala.collection.factory.CollectionFactory;
-import org.glavo.kala.collection.base.JavaArray;
+import org.glavo.kala.collection.base.GenericArrays;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public interface BufferTestTemplate extends MutableSeqTestTemplate {
         b.appendAll(List.of());
         assertIterableEquals(List.of(), b);
 
-        b.appendAll(JavaArray.EMPTY_OBJECT_ARRAY);
+        b.appendAll(GenericArrays.EMPTY_OBJECT_ARRAY);
         assertIterableEquals(List.of(), b);
 
         b.appendAll(List.of("str1"));
@@ -127,7 +127,7 @@ public interface BufferTestTemplate extends MutableSeqTestTemplate {
         b.prependAll(List.of());
         assertIterableEquals(List.of(), b);
 
-        b.prependAll(JavaArray.EMPTY_OBJECT_ARRAY);
+        b.prependAll(GenericArrays.EMPTY_OBJECT_ARRAY);
         assertIterableEquals(List.of(), b);
 
         b.prependAll(List.of("str1"));

@@ -1,7 +1,7 @@
 package org.glavo.kala.collection;
 
 import org.glavo.kala.Conditions;
-import org.glavo.kala.collection.base.JavaArray;
+import org.glavo.kala.collection.base.GenericArrays;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
@@ -37,6 +37,6 @@ public class ArraySliceView<E> extends AbstractIndexedSeqView<E> {
 
     @Override
     public @NotNull Iterator<E> iterator() {
-        return (Iterator<E>) JavaArray.iterator(array, beginIndex, beginIndex + size);
+        return (Iterator<E>) GenericArrays.iterator(array, beginIndex, beginIndex + size);
     }
 }

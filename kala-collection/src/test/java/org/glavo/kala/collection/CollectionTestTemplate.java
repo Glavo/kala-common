@@ -3,7 +3,7 @@ package org.glavo.kala.collection;
 import org.glavo.kala.collection.immutable.ImmutableList;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.base.Iterators;
-import org.glavo.kala.collection.base.JavaArray;
+import org.glavo.kala.collection.base.GenericArrays;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
@@ -33,7 +33,7 @@ public interface CollectionTestTemplate {
         CollectionFactory<Object, Object, Collection<?>> factory =
                 (CollectionFactory<Object, Object, Collection<?>>) factory();
         assertIterableEquals(List.of(), factory.empty());
-        assertIterableEquals(List.of(), factory.from(JavaArray.EMPTY_OBJECT_ARRAY));
+        assertIterableEquals(List.of(), factory.from(GenericArrays.EMPTY_OBJECT_ARRAY));
         assertIterableEquals(List.of(), factory.from(java.util.List.of()));
         assertIterableEquals(List.of(), factory.from(new Object[]{}));
         assertIterableEquals(List.of(), factory.from(Iterators.empty()));
@@ -116,7 +116,7 @@ public interface CollectionTestTemplate {
     @Test
     default void isEmptyTest() {
         assertTrue(factory().empty().isEmpty());
-        assertTrue(factory().from(JavaArray.EMPTY_OBJECT_ARRAY).isEmpty());
+        assertTrue(factory().from(GenericArrays.EMPTY_OBJECT_ARRAY).isEmpty());
         assertTrue(factory().from(Collections.emptyList()).isEmpty());
 
         for (Integer[] data : data1()) {
@@ -239,7 +239,7 @@ public interface CollectionTestTemplate {
 
     @Test
     default void toArrayTest() {
-        assertArrayEquals(JavaArray.EMPTY_OBJECT_ARRAY, factory().empty().toArray());
+        assertArrayEquals(GenericArrays.EMPTY_OBJECT_ARRAY, factory().empty().toArray());
         for (Integer[] data : data1()) {
             Object[] oa = factory().from(data).toArray();
             assertSame(Object[].class, oa.getClass());

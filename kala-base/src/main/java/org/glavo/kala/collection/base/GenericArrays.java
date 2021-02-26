@@ -16,8 +16,8 @@ import java.util.function.*;
 
 @StaticClass
 @SuppressWarnings("unchecked")
-public final class JavaArray {
-    private JavaArray() {
+public final class GenericArrays {
+    private GenericArrays() {
     }
 
     public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
@@ -38,7 +38,7 @@ public final class JavaArray {
     @Contract(pure = true)
     public static <E> @NotNull CollectionFactory<E, ?, E[]> factory(@NotNull IntFunction<E[]> generator) {
         Objects.requireNonNull(generator);
-        return new JavaArray.Factory<>(generator);
+        return new GenericArrays.Factory<>(generator);
     }
 
     @Contract(value = "_ -> param1", pure = true)

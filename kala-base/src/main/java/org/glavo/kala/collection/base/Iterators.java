@@ -47,7 +47,7 @@ public final class Iterators {
 
     @SafeVarargs
     public static <E> @NotNull Iterator<E> of(E... values) {
-        return JavaArray.iterator(values);
+        return GenericArrays.iterator(values);
     }
 
     public static <E> @NotNull Iterator<E> ofEnumeration(@NotNull java.util.Enumeration<? extends E> enumeration) {
@@ -69,7 +69,7 @@ public final class Iterators {
     }
 
     public static <E> @NotNull Iterator<E> from(E @NotNull [] values) {
-        return JavaArray.iterator(values);
+        return GenericArrays.iterator(values);
     }
 
     public static <E> @NotNull Iterator<E> from(@NotNull Iterable<? extends E> values) {
@@ -77,7 +77,7 @@ public final class Iterators {
     }
 
     public static <E> @NotNull Iterator<E> concat(@NotNull Iterator<? extends E>... its) {
-        return new Concat<>(JavaArray.iterator(its));
+        return new Concat<>(GenericArrays.iterator(its));
     }
 
     public static <E> @NotNull Iterator<E> concat(@NotNull Iterable<? extends Iterator<? extends E>> its) {

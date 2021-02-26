@@ -4,7 +4,7 @@ import org.glavo.kala.function.IndexedConsumer;
 import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.collection.base.AbstractIterator;
 import org.glavo.kala.collection.base.Iterators;
-import org.glavo.kala.collection.base.JavaArray;
+import org.glavo.kala.collection.base.GenericArrays;
 import org.glavo.kala.collection.base.Traversable;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +25,7 @@ final class ImmutableVectors {
         static final Vector0 INSTANCE = new Vector0();
 
         private Vector0() {
-            super(JavaArray.EMPTY_OBJECT_ARRAY);
+            super(GenericArrays.EMPTY_OBJECT_ARRAY);
         }
 
         @Override
@@ -167,7 +167,7 @@ final class ImmutableVectors {
 
         @Override
         public final @NotNull Iterator<E> iterator() {
-            return (Iterator<E>) JavaArray.iterator(prefix1);
+            return (Iterator<E>) GenericArrays.iterator(prefix1);
         }
 
         @Override

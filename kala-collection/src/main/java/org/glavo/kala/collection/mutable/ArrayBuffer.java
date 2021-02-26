@@ -5,7 +5,7 @@ import org.glavo.kala.collection.immutable.ImmutableArray;
 import org.glavo.kala.collection.internal.CollectionHelper;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.base.AnyTraversable;
-import org.glavo.kala.collection.base.JavaArray;
+import org.glavo.kala.collection.base.GenericArrays;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,7 +41,7 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
     }
 
     public ArrayBuffer() {
-        this(JavaArray.EMPTY_OBJECT_ARRAY, 0);
+        this(GenericArrays.EMPTY_OBJECT_ARRAY, 0);
     }
 
     public ArrayBuffer(int initialCapacity) {
@@ -49,7 +49,7 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
             throw new IllegalArgumentException("illegal initialCapacity: " + initialCapacity);
         }
 
-        this.elements = initialCapacity == 0 ? JavaArray.EMPTY_OBJECT_ARRAY : new Object[initialCapacity];
+        this.elements = initialCapacity == 0 ? GenericArrays.EMPTY_OBJECT_ARRAY : new Object[initialCapacity];
         this.size = 0;
     }
 
@@ -238,7 +238,7 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
 
     @Override
     public final @NotNull Iterator<E> iterator() {
-        return (Iterator<E>) JavaArray.iterator(elements, 0, size);
+        return (Iterator<E>) GenericArrays.iterator(elements, 0, size);
     }
 
     @Override
@@ -256,7 +256,7 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
     public final ArrayBuffer<E> clone() {
         final Object[] elements = this.elements;
         final int size = this.size;
-        return new ArrayBuffer<>(size == 0 ? JavaArray.EMPTY_OBJECT_ARRAY : elements.clone(), size);
+        return new ArrayBuffer<>(size == 0 ? GenericArrays.EMPTY_OBJECT_ARRAY : elements.clone(), size);
     }
 
     //endregion
@@ -533,7 +533,7 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         final int size = this.size = in.readInt();
         if (size == 0) {
-            elements = JavaArray.EMPTY_OBJECT_ARRAY;
+            elements = GenericArrays.EMPTY_OBJECT_ARRAY;
         } else {
             elements = (Object[]) in.readObject();
         }

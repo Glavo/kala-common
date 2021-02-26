@@ -12,7 +12,7 @@ import org.glavo.kala.annotations.StaticClass;
 import org.glavo.kala.collection.mutable.ArrayBuffer;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.function.IndexedFunction;
-import org.glavo.kala.collection.base.JavaArray;
+import org.glavo.kala.collection.base.GenericArrays;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,7 +37,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     //region Constructors
 
     private ImmutableArray() {
-        this(JavaArray.EMPTY_OBJECT_ARRAY);
+        this(GenericArrays.EMPTY_OBJECT_ARRAY);
     }
 
     private ImmutableArray(Object[] array) {

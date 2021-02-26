@@ -6,7 +6,7 @@ import org.glavo.kala.collection.immutable.ImmutableArray;
 import org.glavo.kala.collection.mutable.ArrayBuffer;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.function.IndexedConsumer;
-import org.glavo.kala.collection.base.JavaArray;
+import org.glavo.kala.collection.base.GenericArrays;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,7 +23,7 @@ import java.util.stream.StreamSupport;
 public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>, Serializable {
     private static final long serialVersionUID = 4981379062449237945L;
 
-    public static final ArraySeq<?> EMPTY = new ArraySeq<>(JavaArray.EMPTY_OBJECT_ARRAY);
+    public static final ArraySeq<?> EMPTY = new ArraySeq<>(GenericArrays.EMPTY_OBJECT_ARRAY);
 
     private static final ArraySeq.Factory<?> FACTORY = new ArraySeq.Factory<>();
 
@@ -191,7 +191,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public final @NotNull Iterator<E> iterator() {
-        return (Iterator<E>) JavaArray.iterator(elements);
+        return (Iterator<E>) GenericArrays.iterator(elements);
     }
 
     @Override
@@ -259,52 +259,52 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public final int indexOf(Object value) {
-        return JavaArray.indexOf(elements, value);
+        return GenericArrays.indexOf(elements, value);
     }
 
     @Override
     public final int indexOf(Object value, int from) {
-        return JavaArray.indexOf(elements, value, from);
+        return GenericArrays.indexOf(elements, value, from);
     }
 
     @Override
     public final int indexWhere(@NotNull Predicate<? super E> predicate) {
-        return JavaArray.indexWhere(elements, (Predicate<Object>) predicate);
+        return GenericArrays.indexWhere(elements, (Predicate<Object>) predicate);
     }
 
     @Override
     public final int indexWhere(@NotNull Predicate<? super E> predicate, int from) {
-        return JavaArray.indexWhere(elements, (Predicate<Object>) predicate, from);
+        return GenericArrays.indexWhere(elements, (Predicate<Object>) predicate, from);
     }
 
     @Override
     public final int lastIndexOf(Object value) {
-        return JavaArray.lastIndexOf(elements, value);
+        return GenericArrays.lastIndexOf(elements, value);
     }
 
     @Override
     public final int lastIndexOf(Object value, int end) {
-        return JavaArray.lastIndexOf(elements, value, end);
+        return GenericArrays.lastIndexOf(elements, value, end);
     }
 
     @Override
     public final int lastIndexWhere(@NotNull Predicate<? super E> predicate) {
-        return JavaArray.lastIndexWhere(elements, (Predicate<Object>) predicate);
+        return GenericArrays.lastIndexWhere(elements, (Predicate<Object>) predicate);
     }
 
     @Override
     public final int lastIndexWhere(@NotNull Predicate<? super E> predicate, int end) {
-        return JavaArray.lastIndexWhere(elements, (Predicate<Object>) predicate, end);
+        return GenericArrays.lastIndexWhere(elements, (Predicate<Object>) predicate, end);
     }
 
     @Override
     public final E max() {
-        return (E) JavaArray.Unsafe.max(elements);
+        return (E) GenericArrays.Unsafe.max(elements);
     }
 
     @Override
     public final E max(@NotNull Comparator<? super E> comparator) {
-        return (E) JavaArray.max(elements, (Comparator<Object>) comparator);
+        return (E) GenericArrays.max(elements, (Comparator<Object>) comparator);
     }
 
     @Override
@@ -313,7 +313,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         if (elements.length == 0) {
             return Option.none();
         }
-        return Option.some((E) JavaArray.Unsafe.max(elements));
+        return Option.some((E) GenericArrays.Unsafe.max(elements));
     }
 
     @Override
@@ -326,12 +326,12 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public final E min() {
-        return (E) JavaArray.Unsafe.min(elements);
+        return (E) GenericArrays.Unsafe.min(elements);
     }
 
     @Override
     public final E min(@NotNull Comparator<? super E> comparator) {
-        return (E) JavaArray.min(elements, (Comparator<Object>) comparator);
+        return (E) GenericArrays.min(elements, (Comparator<Object>) comparator);
     }
 
     @Override
@@ -340,7 +340,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         if (elements.length == 0) {
             return Option.none();
         }
-        return Option.some((E) JavaArray.Unsafe.min(elements));
+        return Option.some((E) GenericArrays.Unsafe.min(elements));
     }
 
     @Override
@@ -353,47 +353,47 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public final E fold(E zero, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-        return (E) JavaArray.fold(elements, zero, (BiFunction<Object, Object, ?>) op);
+        return (E) GenericArrays.fold(elements, zero, (BiFunction<Object, Object, ?>) op);
     }
 
     @Override
     public final <U> U foldLeft(U zero, @NotNull BiFunction<? super U, ? super E, ? extends U> op) {
-        return JavaArray.foldLeft(elements, zero, (BiFunction<U, Object, U>) op);
+        return GenericArrays.foldLeft(elements, zero, (BiFunction<U, Object, U>) op);
     }
 
     @Override
     public final <U> U foldRight(U zero, @NotNull BiFunction<? super E, ? super U, ? extends U> op) {
-        return JavaArray.foldRight(elements, zero, (BiFunction<Object, U, U>) op);
+        return GenericArrays.foldRight(elements, zero, (BiFunction<Object, U, U>) op);
     }
 
     @Override
     public final E reduce(@NotNull BiFunction<? super E, ? super E, ? extends E> op) throws NoSuchElementException {
-        return (E) JavaArray.reduce(elements, (BiFunction<Object, Object, ?>) op);
+        return (E) GenericArrays.reduce(elements, (BiFunction<Object, Object, ?>) op);
     }
 
     @Override
     public final E reduceLeft(@NotNull BiFunction<? super E, ? super E, ? extends E> op) throws NoSuchElementException {
-        return (E) JavaArray.reduceLeft(elements, (BiFunction<Object, Object, ?>) op);
+        return (E) GenericArrays.reduceLeft(elements, (BiFunction<Object, Object, ?>) op);
     }
 
     @Override
     public final E reduceRight(@NotNull BiFunction<? super E, ? super E, ? extends E> op) throws NoSuchElementException {
-        return (E) JavaArray.reduceRight(elements, (BiFunction<Object, Object, ?>) op);
+        return (E) GenericArrays.reduceRight(elements, (BiFunction<Object, Object, ?>) op);
     }
 
     @Override
     public final @NotNull Option<E> reduceOption(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-        return (Option<E>) JavaArray.reduceOption(elements, (BiFunction<Object, Object, ?>) op);
+        return (Option<E>) GenericArrays.reduceOption(elements, (BiFunction<Object, Object, ?>) op);
     }
 
     @Override
     public final @NotNull Option<E> reduceLeftOption(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-        return (Option<E>) JavaArray.reduceLeftOption(elements, (BiFunction<Object, Object, ?>) op);
+        return (Option<E>) GenericArrays.reduceLeftOption(elements, (BiFunction<Object, Object, ?>) op);
     }
 
     @Override
     public final @NotNull Option<E> reduceRightOption(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-        return (Option<E>) JavaArray.reduceRightOption(elements, (BiFunction<Object, Object, ?>) op);
+        return (Option<E>) GenericArrays.reduceRightOption(elements, (BiFunction<Object, Object, ?>) op);
     }
 
     @Override
@@ -592,7 +592,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public final @NotNull Iterator<E> reverseIterator() {
-        return (Iterator<E>) JavaArray.reverseIterator(elements);
+        return (Iterator<E>) GenericArrays.reverseIterator(elements);
     }
 
     @Override

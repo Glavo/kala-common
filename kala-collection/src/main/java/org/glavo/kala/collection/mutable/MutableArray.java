@@ -3,7 +3,7 @@ package org.glavo.kala.collection.mutable;
 import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.collection.base.Traversable;
 import org.glavo.kala.collection.factory.CollectionFactory;
-import org.glavo.kala.collection.base.JavaArray;
+import org.glavo.kala.collection.base.GenericArrays;
 import org.glavo.kala.collection.ArraySeq;
 import org.glavo.kala.collection.IndexedSeq;
 import org.jetbrains.annotations.Contract;
@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, IndexedSeq<E>, Serializable {
     private static final long serialVersionUID = 8060307722127719792L;
 
-    public static final MutableArray<?> EMPTY = new MutableArray<>(JavaArray.EMPTY_OBJECT_ARRAY);
+    public static final MutableArray<?> EMPTY = new MutableArray<>(GenericArrays.EMPTY_OBJECT_ARRAY);
 
     private static final MutableArray.Factory<?> FACTORY = new Factory<>();
 

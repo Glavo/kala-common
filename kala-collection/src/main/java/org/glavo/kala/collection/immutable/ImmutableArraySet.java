@@ -2,7 +2,7 @@ package org.glavo.kala.collection.immutable;
 
 import org.glavo.kala.collection.mutable.MutableTreeSet;
 import org.glavo.kala.collection.factory.CollectionFactory;
-import org.glavo.kala.collection.base.JavaArray;
+import org.glavo.kala.collection.base.GenericArrays;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -130,7 +130,7 @@ public final class ImmutableArraySet<E>
         if (comparator == null || comparator == Comparator.naturalOrder()) {
             return ((ImmutableArraySet<E>) DEFAULT_FACTORY.empty());
         }
-        return new ImmutableArraySet<>(comparator, JavaArray.EMPTY_OBJECT_ARRAY);
+        return new ImmutableArraySet<>(comparator, GenericArrays.EMPTY_OBJECT_ARRAY);
     }
 
     @Contract(value = "_, _ -> new", pure = true)
@@ -332,7 +332,7 @@ public final class ImmutableArraySet<E>
 
     @Override
     public final @NotNull Iterator<E> iterator() {
-        return (Iterator<E>) JavaArray.iterator(elements);
+        return (Iterator<E>) GenericArrays.iterator(elements);
     }
 
     //endregion
@@ -454,7 +454,7 @@ public final class ImmutableArraySet<E>
             @NotNull A buffer,
             CharSequence separator, CharSequence prefix, CharSequence postfix
     ) {
-        return JavaArray.joinTo(elements, buffer, separator, prefix, postfix);
+        return GenericArrays.joinTo(elements, buffer, separator, prefix, postfix);
     }
 
     @Override
@@ -473,7 +473,7 @@ public final class ImmutableArraySet<E>
 
         Factory(@NotNull Comparator<? super E> comparator) {
             this.comparator = comparator;
-            this.empty = new ImmutableArraySet<>(comparator, JavaArray.EMPTY_OBJECT_ARRAY);
+            this.empty = new ImmutableArraySet<>(comparator, GenericArrays.EMPTY_OBJECT_ARRAY);
         }
 
         @Override

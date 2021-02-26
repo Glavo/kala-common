@@ -468,7 +468,7 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
     }
 
     default <U /*super E*/> U @NotNull [] toArray(@NotNull Class<U> type) {
-        return toArray(JavaArray.generator(type));
+        return toArray(GenericArrays.generator(type));
     }
 
     //endregion
