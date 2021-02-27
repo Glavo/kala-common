@@ -38,10 +38,21 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
         }
     }
 
+    /**
+     * Returns a sequential {@link Stream} with this as its source.
+     *
+     * @return a sequential {@link Stream} over the elements in this {@code Traversable}
+     */
     default @NotNull Stream<T> stream() {
         return StreamSupport.stream(spliterator(), false);
     }
 
+    /**
+     * Returns a possibly parallel {@code Stream} with this as its source.
+     * It is allowable for this method to return a sequential stream.
+     *
+     * @return a possibly parallel {@code Stream} over the elements in this
+     */
     default @NotNull Stream<T> parallelStream() {
         return StreamSupport.stream(spliterator(), true);
     }
