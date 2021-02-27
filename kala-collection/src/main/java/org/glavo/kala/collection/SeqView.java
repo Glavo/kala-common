@@ -34,6 +34,11 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqOps<E
         return "SeqView";
     }
 
+    @Override
+    default @NotNull SeqView<E> view() {
+        return this;
+    }
+
     //endregion
 
     @Override

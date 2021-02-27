@@ -14,6 +14,11 @@ public interface SetView<@Covariant E> extends View<E>, SetLike<E> {
     }
 
     @Override
+    default @NotNull SetView<E> view() {
+        return this;
+    }
+
+    @Override
     default @NotNull SetView<E> filter(@NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
         return new SetViews.Filter<>(this, predicate);

@@ -12,6 +12,8 @@ import org.jetbrains.annotations.NotNull;
 
 public interface CollectionLike<E> extends Traversable<E> {
 
+    @NotNull View<E> view();
+
     //region Copy Operations
 
     @Contract(mutates = "param1")

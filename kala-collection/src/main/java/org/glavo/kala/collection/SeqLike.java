@@ -14,6 +14,8 @@ import java.util.Iterator;
 import java.util.function.Predicate;
 
 public interface SeqLike<E> extends CollectionLike<E> {
+    @Override
+    @NotNull SeqView<E> view();
 
     //region Positional Access Operations
 

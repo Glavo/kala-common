@@ -17,6 +17,11 @@ public interface IndexedSeqView<@Covariant E> extends SeqView<E>, RandomAccess {
         return "IndexedSeqView";
     }
 
+    @Override
+    default @NotNull IndexedSeqView<E> view() {
+        return this;
+    }
+
     //endregion
 
     //region Addition Operations

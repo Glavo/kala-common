@@ -16,6 +16,11 @@ public interface View<@Covariant E> extends CollectionLike<E> {
         return "View";
     }
 
+    @Override
+    default @NotNull View<E> view() {
+        return this;
+    }
+
     //endregion
 
     default @NotNull View<E> filter(@NotNull Predicate<? super E> predicate) {
