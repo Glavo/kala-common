@@ -10,7 +10,7 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Predicate;
 
-public interface Set<E> extends Collection<E> {
+public interface Set<E> extends Collection<E>, SetLike<E> {
 
     static <E> CollectionFactory<E, ?, ? extends Set<E>> factory() {
         return ImmutableSet.factory();
