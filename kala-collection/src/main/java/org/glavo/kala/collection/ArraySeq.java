@@ -1,5 +1,6 @@
 package org.glavo.kala.collection;
 
+import org.glavo.kala.collection.base.ObjectArrays;
 import org.glavo.kala.collection.base.Traversable;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.collection.immutable.ImmutableArray;
@@ -299,7 +300,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public final E max() {
-        return (E) GenericArrays.Unsafe.max(elements);
+        return (E) ObjectArrays.max(elements);
     }
 
     @Override
@@ -313,7 +314,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         if (elements.length == 0) {
             return Option.none();
         }
-        return Option.some((E) GenericArrays.Unsafe.max(elements));
+        return Option.some((E) ObjectArrays.max(elements));
     }
 
     @Override
@@ -326,7 +327,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public final E min() {
-        return (E) GenericArrays.Unsafe.min(elements);
+        return (E) ObjectArrays.min(elements);
     }
 
     @Override
@@ -340,7 +341,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         if (elements.length == 0) {
             return Option.none();
         }
-        return Option.some((E) GenericArrays.Unsafe.min(elements));
+        return Option.some((E) ObjectArrays.min(elements));
     }
 
     @Override

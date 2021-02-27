@@ -392,7 +392,7 @@ public final class GenericArrays {
 
     @Contract(pure = true)
     public static <E extends Comparable<E>> E max(E @NotNull [] array) {
-        return (E) Unsafe.max(array);
+        return (E) ObjectArrays.max(array);
     }
 
     @Contract(pure = true)
@@ -410,7 +410,7 @@ public final class GenericArrays {
 
     @Contract(pure = true)
     public static <E extends Comparable<E>> @Nullable E maxOrNull(E @NotNull [] array) {
-        return (E) Unsafe.maxOrNull(array);
+        return (E) ObjectArrays.maxOrNull(array);
     }
 
     @Contract(pure = true)
@@ -434,7 +434,7 @@ public final class GenericArrays {
         if (array.length == 0) {
             return Option.none();
         }
-        return Option.some((E) Unsafe.max(array));
+        return Option.some((E) ObjectArrays.max(array));
     }
 
     @Contract(pure = true)
@@ -447,7 +447,7 @@ public final class GenericArrays {
 
     @Contract(pure = true)
     public static <E extends Comparable<E>> E min(E @NotNull [] array) {
-        return (E) Unsafe.min(array);
+        return (E) ObjectArrays.min(array);
     }
 
     @Contract(pure = true)
@@ -465,7 +465,7 @@ public final class GenericArrays {
 
     @Contract(pure = true)
     public static <E extends Comparable<E>> @Nullable E minOrNull(E @NotNull [] array) {
-        return (E) Unsafe.minOrNull(array);
+        return (E) ObjectArrays.minOrNull(array);
     }
 
     @Contract(pure = true)
@@ -490,7 +490,7 @@ public final class GenericArrays {
         if (array.length == 0) {
             return Option.none();
         }
-        return Option.some((E) Unsafe.min(array));
+        return Option.some((E) ObjectArrays.min(array));
     }
 
     @Contract(pure = true)
@@ -692,74 +692,6 @@ public final class GenericArrays {
     }
 
     //endregion
-
-    public static final class Unsafe {
-        public static Object max(Object @NotNull [] array) {
-            final int length = array.length;
-            if (length == 0) {
-                throw new NoSuchElementException();
-            }
-
-            Object e = array[0];
-            for (int i = 1; i < length; i++) {
-                Object v = array[i];
-                if (((Comparable<Object>) e).compareTo(v) < 0) {
-                    e = v;
-                }
-            }
-            return e;
-        }
-
-        @Nullable
-        public static Object maxOrNull(Object @NotNull [] array) {
-            final int length = array.length;
-            if (length == 0) {
-                return null;
-            }
-
-            Object e = array[0];
-            for (int i = 1; i < length; i++) {
-                Object v = array[i];
-                if (((Comparable<Object>) e).compareTo(v) < 0) {
-                    e = v;
-                }
-            }
-            return e;
-        }
-
-        public static Object min(Object @NotNull [] array) {
-            final int length = array.length;
-            if (length == 0) {
-                throw new NoSuchElementException();
-            }
-
-            Object e = array[0];
-            for (int i = 1; i < length; i++) {
-                Object v = array[i];
-                if (((Comparable<Object>) e).compareTo(v) > 0) {
-                    e = v;
-                }
-            }
-            return e;
-        }
-
-        @Nullable
-        public static Object minOrNull(Object @NotNull [] array) {
-            final int length = array.length;
-            if (length == 0) {
-                return null;
-            }
-
-            Object e = array[0];
-            for (int i = 1; i < length; i++) {
-                Object v = array[i];
-                if (((Comparable<Object>) e).compareTo(v) > 0) {
-                    e = v;
-                }
-            }
-            return e;
-        }
-    }
 
     private static final class Factory<E> implements CollectionFactory<E, ArrayList<E>, E[]> {
         @NotNull
