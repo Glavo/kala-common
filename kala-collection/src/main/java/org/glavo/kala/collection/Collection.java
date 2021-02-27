@@ -24,8 +24,8 @@ public interface Collection<@Covariant E> extends Traversable<E>, CollectionLike
     }
 
     @Contract(pure = true)
-    static <E> @NotNull CollectionFactory<E, ?, ? extends Collection<E>> factory() {
-        return ImmutableCollection.factory();
+    static <E> @NotNull CollectionFactory<E, ?, Collection<E>> factory() {
+        return CollectionFactory.narrow(ImmutableCollection.factory());
     }
 
     //endregion

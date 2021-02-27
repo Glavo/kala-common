@@ -11,7 +11,7 @@ public interface MutableCollection<E> extends Collection<E> {
     //region Static Factories
 
     static <E> @NotNull CollectionFactory<E, ?, ? extends MutableCollection<E>> factory() {
-        return MutableSeq.factory();
+        return CollectionFactory.narrow(MutableSeq.factory());
     }
 
     static <E> @NotNull MutableCollection<E> of() {

@@ -18,8 +18,8 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E> {
     //region Static Factories
 
     @Contract(pure = true)
-    static <E> @NotNull CollectionFactory<E, ?, ? extends MutableSet<E>> factory() {
-        return MutableHashSet.factory();
+    static <E> @NotNull CollectionFactory<E, ?, MutableSet<E>> factory() {
+        return CollectionFactory.narrow(MutableHashSet.factory());
     }
 
     @Contract(value = "-> new", pure = true)

@@ -27,8 +27,8 @@ public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E> {
 
     //region Static Factories
 
-    static <E> @NotNull CollectionFactory<E, ?, ? extends Seq<E>> factory() {
-        return ImmutableSeq.factory();
+    static <E> @NotNull CollectionFactory<E, ?, Seq<E>> factory() {
+        return CollectionFactory.narrow(ImmutableSeq.factory());
     }
 
     static <E> @NotNull Seq<E> of() {

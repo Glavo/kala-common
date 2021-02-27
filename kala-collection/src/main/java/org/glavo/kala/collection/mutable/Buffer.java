@@ -23,8 +23,8 @@ public interface Buffer<E> extends MutableSeq<E> {
 
     //region Static Factories
 
-    static <E> @NotNull CollectionFactory<E, ?, ? extends Buffer<E>> factory() {
-        return ArrayBuffer.factory();
+    static <E> @NotNull CollectionFactory<E, ?, Buffer<E>> factory() {
+        return CollectionFactory.narrow(ArrayBuffer.factory());
     }
 
     @Contract("-> new")

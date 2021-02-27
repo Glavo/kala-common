@@ -29,10 +29,8 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
 
     //region Static Factories
 
-    @NotNull
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    static <E> CollectionFactory<E, ?, ImmutableSeq<E>> factory() {
-        return (CollectionFactory) ImmutableVector.factory();
+    static <E> @NotNull CollectionFactory<E, ?, ImmutableSeq<E>> factory() {
+        return CollectionFactory.narrow(ImmutableVector.factory());
     }
 
     static <E> @NotNull ImmutableSeq<E> empty() {

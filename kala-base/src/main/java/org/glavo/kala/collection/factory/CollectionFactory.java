@@ -11,6 +11,11 @@ import java.util.stream.Collector;
 public interface CollectionFactory<E, Builder, @Covariant R>
         extends Factory<Builder, R>, Collector<E, Builder, R> {
 
+    @SuppressWarnings("unchecked")
+    static <E, Builder, R> CollectionFactory<E, Builder, R> narrow(CollectionFactory<E, Builder, ? extends R> factory) {
+        return (CollectionFactory<E, Builder, R>) factory;
+    }
+
     @Contract(pure = true)
     static <E, Builder, R> @NotNull CollectionFactory<E, Builder, R> ofCollector(
             @NotNull Collector<E, Builder, R> collector

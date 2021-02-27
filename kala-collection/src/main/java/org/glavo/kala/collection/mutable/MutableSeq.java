@@ -17,8 +17,8 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
 
     //region Static Factories
 
-    static <E> @NotNull CollectionFactory<E, ?, ? extends MutableSeq<E>> factory() {
-        return MutableArray.factory();
+    static <E> @NotNull CollectionFactory<E, ?, MutableSeq<E>> factory() {
+        return CollectionFactory.narrow(MutableArray.factory());
     }
 
     static <E> @NotNull MutableSeq<E> of() {

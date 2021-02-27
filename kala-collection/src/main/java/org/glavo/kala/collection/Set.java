@@ -12,8 +12,8 @@ import java.util.function.Predicate;
 
 public interface Set<E> extends Collection<E>, SetLike<E> {
 
-    static <E> CollectionFactory<E, ?, ? extends Set<E>> factory() {
-        return ImmutableSet.factory();
+    static <E> CollectionFactory<E, ?, Set<E>> factory() {
+        return CollectionFactory.narrow(ImmutableSet.factory());
     }
 
     @Override

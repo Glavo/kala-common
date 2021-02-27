@@ -30,8 +30,8 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E> {
 
     //region Static Factories
 
-    static <E> @NotNull CollectionFactory<E, ?, ? extends ImmutableCollection<E>> factory() {
-        return ImmutableSeq.factory();
+    static <E> @NotNull CollectionFactory<E, ?, ImmutableCollection<E>> factory() {
+        return CollectionFactory.narrow(ImmutableSeq.factory());
     }
 
     static <E> @NotNull ImmutableCollection<E> of() {
