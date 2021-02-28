@@ -7,7 +7,7 @@ plugins {
 
 allprojects {
     group = "org.glavo"
-    version = kalaVersion("0.12.2")
+    version = kalaVersion("0.13.0")
     apply {
         plugin("java-library")
         plugin("maven-publish")

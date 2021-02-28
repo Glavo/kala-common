@@ -2,27 +2,27 @@ package org.glavo.kala.value.primitive;
 
 import java.io.Serializable;
 
-public final class SimpleMutableIntValue implements MutableIntValue, Serializable {
+public final class ShortRef implements MutableShortValue, Serializable {
     private static final long serialVersionUID = 0L;
 
-    private static final int HASH_MAGIC = 1278657047;
+    private static final int HASH_MAGIC = 1553970454;
 
-    public int value;
+    public short value;
 
-    public SimpleMutableIntValue() {
+    public ShortRef() {
     }
 
-    public SimpleMutableIntValue(int value) {
+    public ShortRef(short value) {
         this.value = value;
     }
 
     @Override
-    public final int get() {
+    public final short get() {
         return value;
     }
 
     @Override
-    public final void set(int value) {
+    public final void set(short value) {
         this.value = value;
     }
 
@@ -31,10 +31,10 @@ public final class SimpleMutableIntValue implements MutableIntValue, Serializabl
         if (this == o) {
             return true;
         }
-        if (!(o instanceof SimpleMutableIntValue)) {
+        if (!(o instanceof ShortRef)) {
             return false;
         }
-        return value == ((SimpleMutableIntValue) o).value;
+        return value == ((ShortRef) o).value;
     }
 
     @Override
@@ -44,6 +44,6 @@ public final class SimpleMutableIntValue implements MutableIntValue, Serializabl
 
     @Override
     public final String toString() {
-        return "IntRef[" + value + "]";
+        return "ShortRef[" + value + "]";
     }
 }

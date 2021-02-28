@@ -2,17 +2,17 @@ package org.glavo.kala.value.primitive;
 
 import java.io.Serializable;
 
-public final class SimpleMutableCharValue implements MutableCharValue, Serializable {
+public final class CharRef implements MutableCharValue, Serializable {
     private static final long serialVersionUID = 0L;
 
     private static final int HASH_MAGIC = -492503597;
 
     public char value;
 
-    public SimpleMutableCharValue() {
+    public CharRef() {
     }
 
-    public SimpleMutableCharValue(char value) {
+    public CharRef(char value) {
         this.value = value;
     }
 
@@ -31,10 +31,10 @@ public final class SimpleMutableCharValue implements MutableCharValue, Serializa
         if (this == o) {
             return true;
         }
-        if (!(o instanceof SimpleMutableCharValue)) {
+        if (!(o instanceof CharRef)) {
             return false;
         }
-        return value == ((SimpleMutableCharValue) o).value;
+        return value == ((CharRef) o).value;
     }
 
     @Override

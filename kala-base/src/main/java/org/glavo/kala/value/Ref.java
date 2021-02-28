@@ -3,17 +3,17 @@ package org.glavo.kala.value;
 import java.io.Serializable;
 import java.util.Objects;
 
-public final class SimpleMutableValue<T> implements MutableValue<T>, Serializable {
+public final class Ref<T> implements MutableValue<T>, Serializable {
     private static final long serialVersionUID = 0L;
 
     private static final int HASH_MAGIC = 1281759194;
 
     public T value;
 
-    public SimpleMutableValue() {
+    public Ref() {
     }
 
-    public SimpleMutableValue(T value) {
+    public Ref(T value) {
         this.value = value;
     }
 
@@ -32,10 +32,10 @@ public final class SimpleMutableValue<T> implements MutableValue<T>, Serializabl
         if (this == o) {
             return true;
         }
-        if (!(o instanceof SimpleMutableValue<?>)) {
+        if (!(o instanceof Ref<?>)) {
             return false;
         }
-        SimpleMutableValue<?> other = (SimpleMutableValue<?>) o;
+        Ref<?> other = (Ref<?>) o;
         return Objects.equals(value, other.value);
     }
 

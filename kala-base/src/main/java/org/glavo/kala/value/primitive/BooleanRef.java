@@ -2,27 +2,27 @@ package org.glavo.kala.value.primitive;
 
 import java.io.Serializable;
 
-public final class SimpleMutableShortValue implements MutableShortValue, Serializable {
+public final class BooleanRef implements MutableBooleanValue, Serializable {
     private static final long serialVersionUID = 0L;
 
-    private static final int HASH_MAGIC = 1553970454;
+    private static final int HASH_MAGIC = -1071790882;
 
-    public short value;
+    public boolean value;
 
-    public SimpleMutableShortValue() {
+    public BooleanRef() {
     }
 
-    public SimpleMutableShortValue(short value) {
+    public BooleanRef(boolean value) {
         this.value = value;
     }
 
     @Override
-    public final short get() {
+    public final boolean get() {
         return value;
     }
 
     @Override
-    public final void set(short value) {
+    public final void set(boolean value) {
         this.value = value;
     }
 
@@ -31,19 +31,19 @@ public final class SimpleMutableShortValue implements MutableShortValue, Seriali
         if (this == o) {
             return true;
         }
-        if (!(o instanceof SimpleMutableShortValue)) {
+        if (!(o instanceof BooleanRef)) {
             return false;
         }
-        return value == ((SimpleMutableShortValue) o).value;
+        return value == ((BooleanRef) o).value;
     }
 
     @Override
     public final int hashCode() {
-        return value + HASH_MAGIC;
+        return Boolean.hashCode(value) + HASH_MAGIC;
     }
 
     @Override
     public final String toString() {
-        return "ShortRef[" + value + "]";
+        return "BooleanRef[" + value + "]";
     }
 }

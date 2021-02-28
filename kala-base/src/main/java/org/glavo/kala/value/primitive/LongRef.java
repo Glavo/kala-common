@@ -2,27 +2,27 @@ package org.glavo.kala.value.primitive;
 
 import java.io.Serializable;
 
-public final class SimpleMutableByteValue implements MutableByteValue, Serializable {
+public final class LongRef implements MutableLongValue, Serializable {
     private static final long serialVersionUID = 0L;
 
-    private static final int HASH_MAGIC = 1781207501;
+    private static final int HASH_MAGIC = 1556644513;
 
-    public byte value;
+    public long value;
 
-    public SimpleMutableByteValue() {
+    public LongRef() {
     }
 
-    public SimpleMutableByteValue(byte value) {
+    public LongRef(long value) {
         this.value = value;
     }
 
     @Override
-    public final byte get() {
+    public final long get() {
         return value;
     }
 
     @Override
-    public void set(byte value) {
+    public final void set(long value) {
         this.value = value;
     }
 
@@ -31,19 +31,19 @@ public final class SimpleMutableByteValue implements MutableByteValue, Serializa
         if (this == o) {
             return true;
         }
-        if (!(o instanceof SimpleMutableByteValue)) {
+        if (!(o instanceof LongRef)) {
             return false;
         }
-        return value == ((SimpleMutableByteValue) o).value;
+        return value == ((LongRef) o).value;
     }
 
     @Override
     public final int hashCode() {
-        return value + HASH_MAGIC;
+        return Long.hashCode(value) + HASH_MAGIC;
     }
 
     @Override
     public final String toString() {
-        return "ByteRef[" + value + "]";
+        return "LongRef[" + value + "]";
     }
 }
