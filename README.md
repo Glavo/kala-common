@@ -29,7 +29,7 @@ Then add dependencies (replace `kala_version` with the current kala version):
 Maven:
 ```xml
 <dependency>
-  <groupId>org.glavo.kala</groupId>
+  <groupId>org.glavo</groupId>
   <artifactId>kala-common</artifactId>
   <version>kala_version</version>
 </dependency>
@@ -37,5 +37,5 @@ Maven:
 
 Gradle:
 ```groovy
-implementation group: 'org.glavo.kala', name: 'kala-common', version: kala_version
+implementation group: 'org.glavo', name: 'kala-common', version: kala_version
 ```
