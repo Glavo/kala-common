@@ -5,6 +5,7 @@ import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.immutable.ImmutableList;
 import org.glavo.kala.collection.immutable.ImmutableVector;
 import org.glavo.kala.collection.factory.CollectionFactory;
+import org.glavo.kala.function.IndexedBiFunction;
 import org.glavo.kala.function.IndexedConsumer;
 import org.glavo.kala.collection.base.Iterators;
 import org.jetbrains.annotations.Contract;
@@ -366,6 +367,26 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
 
         for (int i = size - 1; i >= 0; i--) {
             zero = op.apply(get(i), zero);
+        }
+        return zero;
+    }
+
+    @Override
+    default <U> U foldLeftIndexed(U zero, @NotNull IndexedBiFunction<? super U, ? super E, ? extends U> op) {
+        final int size = size();
+
+        for (int i = 0; i < size; i++) {
+            zero = op.apply(i, zero, get(i));
+        }
+        return zero;
+    }
+
+    @Override
+    default <U> U foldRightIndexed(U zero, @NotNull IndexedBiFunction<? super E, ? super U, ? extends U> op) {
+        final int size = size();
+
+        for (int i = size - 1; i >= 0; i--) {
+            zero = op.apply(i, get(i), zero); // fixme
         }
         return zero;
     }

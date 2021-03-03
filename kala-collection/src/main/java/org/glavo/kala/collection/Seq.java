@@ -114,7 +114,6 @@ public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E> {
 
     //endregion
 
-
     @Override
     default boolean canEqual(Object other) {
         return other instanceof Seq<?>;

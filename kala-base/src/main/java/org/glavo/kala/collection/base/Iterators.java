@@ -2,6 +2,7 @@ package org.glavo.kala.collection.base;
 
 import org.glavo.kala.control.Try;
 import org.glavo.kala.function.CheckedConsumer;
+import org.glavo.kala.function.IndexedBiFunction;
 import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.tuple.Tuple;
 import org.glavo.kala.tuple.Tuple2;
@@ -635,6 +636,46 @@ public final class Iterators {
         }
         for (int i = list.size() - 1; i >= 0; i--) {
             zero = op.apply(list.get(i), zero);
+        }
+        return zero;
+    }
+
+    public static <E> E foldIndexed(
+            @NotNull Iterator<? extends E> it,
+            E zero, @NotNull IndexedBiFunction<? super E, ? super E, ? extends E> op
+    ) {
+        int idx = 0;
+        while (it.hasNext()) {
+            zero = op.apply(idx++, zero, it.next());
+        }
+        return zero;
+    }
+
+    public static <E, U> U foldLeftIndexed(
+            @NotNull Iterator<? extends E> it,
+            U zero, @NotNull IndexedBiFunction<? super U, ? super E, ? extends U> op
+    ) {
+        int idx = 0;
+        while (it.hasNext()) {
+            zero = op.apply(idx++, zero, it.next());
+        }
+        return zero;
+    }
+
+    public static <E, U> U foldRightIndexed(
+            @NotNull Iterator<? extends E> it,
+            U zero, @NotNull IndexedBiFunction<? super E, ? super U, ? extends U> op
+    ) {
+        if (!it.hasNext()) {
+            return zero;
+        }
+        ArrayList<E> list = new ArrayList<>();
+        while (it.hasNext()) {
+            list.add(it.next());
+        }
+
+        for (int i = list.size() - 1; i >= 0; i--) {
+            zero = op.apply(i, list.get(i), zero);
         }
         return zero;
     }

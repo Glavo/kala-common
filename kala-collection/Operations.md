@@ -149,6 +149,9 @@
   * `fold(E, BiFunction<E, E, E>)`
   * `foldLeft(U, BiFunction<U, E, U>)`
   * `foldRight(U, BiFunction<E, U, U>)`
+  * `foldIndexed(E, IndexedBiFunction<E, E, E>)`
+  * `foldLeftIndexed(U, IndexedBiFunction<U, E, U>)`
+  * `foldRightIndexed(U, IndexedBiFunction<E, U, U>)`
   * `reduce(BiFunction<E, E>)`
   * `reduceOrNull(BiFunction<E, E>)`
   * `reduceOption(BiFunction<E, E>)`
