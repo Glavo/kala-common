@@ -401,16 +401,8 @@ public final class FromJavaConvert {
         }
 
         @Override
-        public final void updateAll(@NotNull BiFunction<? super K, ? super V, ? extends V> updater) {
-            for (Map.Entry<K, V> entry : source.entrySet()) {
-                K key = entry.getKey();
-                V value = entry.getValue();
-
-                V newValue = updater.apply(key, value);
-                if (newValue != value) {
-                    entry.setValue(newValue);
-                }
-            }
+        public final void replaceAll(@NotNull BiFunction<? super K, ? super V, ? extends V> function) {
+            source.replaceAll(function);
         }
     }
 }

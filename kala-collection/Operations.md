@@ -76,11 +76,17 @@
   * `getOrNull(K)`
   * `getOption(K)`
   * `getOrDefault(K, V)`
-  * `getOrElseGet(K, Supplier<V>)`
-  * `put(K, V)`
+  * `getOrElse(K, Supplier<V>)`
+  * `getOrPut(K, Supplier<V>)`
+  * `getOrThrow(Supplier<Ex>)`
+  * `getOrThrowException(Ex)`
   * `set(K, V)`
+  * `put(K, V)`
+  * `putIfAbsent(K, V)`
+  * `putAll(...)`
   * `remove(K)`
   * `removeIfExists(K)`
+  * `replace(K, V)`
 * Element Retrieval Operations
   * `find(Predicate<E>)`
   * `first()`

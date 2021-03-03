@@ -347,12 +347,12 @@ public final class AsJavaConvert {
         }
 
         @Override
-        public boolean removeAll(java.util.Collection<?> c) {
+        public boolean removeAll(java.util.@NotNull Collection<?> c) {
             return collection.removeAll(c);
         }
 
         @Override
-        public boolean retainAll(java.util.Collection<?> c) {
+        public boolean retainAll(java.util.@NotNull Collection<?> c) {
             return super.retainAll(c);
         }
 
@@ -361,4 +361,19 @@ public final class AsJavaConvert {
             collection.clear();
         }
     }
+
+    /*
+    public static class MapAsJava<K, V, C extends org.glavo.kala.collection.Map<K, V>> extends AbstractMap<K, V> {
+
+        protected final C source;
+
+        public MapAsJava(@NotNull C source) {
+            this.source = source;
+        }
+
+        @Override
+        public @NotNull Set<Entry<K, V>> entrySet() {
+        }
+    }
+    */
 }

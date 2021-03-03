@@ -6,6 +6,7 @@ import org.glavo.kala.function.CheckedBiConsumer;
 import org.glavo.kala.collection.base.MapIterator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
@@ -83,7 +84,7 @@ public interface Map<K, V> extends Equatable {
         return getOption(key).getOrDefault(defaultValue);
     }
 
-    default V getOrElseGet(K key, @NotNull Supplier<? extends V> supplier) {
+    default V getOrElse(K key, @NotNull Supplier<? extends V> supplier) {
         return getOption(key).getOrElse(supplier);
     }
 

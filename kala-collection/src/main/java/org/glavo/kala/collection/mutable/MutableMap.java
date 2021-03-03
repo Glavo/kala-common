@@ -7,13 +7,26 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 public interface MutableMap<K, V> extends Map<K, V> {
 
     @Override
     default @NotNull String className() {
         return "MutableMap";
+    }
+
+    default V getOrPut(K key, @NotNull Supplier<? extends V> defaultValue) {
+        Option<V> res = getOption(key);
+        if (res.isDefined()) {
+            return res.get();
+        } else {
+            V v = defaultValue.get();
+            set(key, v);
+            return v;
+        }
     }
 
     @NotNull Option<V> put(K key, V value);
@@ -30,6 +43,14 @@ public interface MutableMap<K, V> extends Map<K, V> {
         set(kv.getKey(), kv.getValue());
     }
 
+    default @NotNull Option<V> putIfAbsent(K key, V value) {
+        Option<V> v = getOption(key);
+        if (v.isEmpty()) {
+            v = put(key, value);
+        }
+        return v;
+    }
+
     default void putAll(@NotNull java.util.Map<? extends K, ? extends V> m) {
         m.forEach(this::set);
     }
@@ -43,12 +64,31 @@ public interface MutableMap<K, V> extends Map<K, V> {
     @Contract(mutates = "this")
     void clear();
 
-    void updateAll(@NotNull BiFunction<? super K, ? super V, ? extends V> updater);
+    default Option<V> replace(K key, V value) {
+        Option<V> v = getOption(key);
+        if (v.isDefined()) {
+            return put(key, value);
+        } else {
+            return Option.none();
+        }
+    }
+
+    default boolean replace(K key, V oldValue, V newValue) {
+        if (getOption(key).contains(oldValue)) {
+            set(key, newValue);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    void replaceAll(@NotNull BiFunction<? super K, ? super V, ? extends V> function);
 
     default @NotNull MutableSet<Tuple2<K, V>> asMutableSet() {
         return new MutableSet<Tuple2<K, V>>() {
             @Override
             public final boolean add(@NotNull Tuple2<K, V> value) {
+
                 return !put(value._1, value._2).isEmpty();
             }
 
