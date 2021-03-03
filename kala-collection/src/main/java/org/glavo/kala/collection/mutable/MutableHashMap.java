@@ -32,6 +32,10 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V> {
         this(DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR);
     }
 
+    public MutableHashMap(int initialCapacity) {
+        this(initialCapacity, DEFAULT_LOAD_FACTOR);
+    }
+
     public MutableHashMap(int initialCapacity, double loadFactor) {
         if (initialCapacity < 0) {
             throw new IllegalArgumentException("Illegal initial capacity: " + initialCapacity);
