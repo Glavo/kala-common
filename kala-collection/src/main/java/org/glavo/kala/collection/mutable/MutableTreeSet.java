@@ -1,5 +1,7 @@
 package org.glavo.kala.collection.mutable;
 
+import org.glavo.kala.collection.Collection;
+import org.glavo.kala.collection.Set;
 import org.glavo.kala.comparator.Comparators;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.SortedSet;
@@ -18,7 +20,7 @@ import java.util.Objects;
 import static org.glavo.kala.collection.mutable.RedBlackTree.*;
 
 @SuppressWarnings("unchecked")
-public final class MutableTreeSet<E> extends AbstractMutableSet<E>
+public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node<E>>
         implements MutableSet<E>, SortedSet<E>, Cloneable, Serializable {
 
     private static final long serialVersionUID = 6211626172352429615L;
@@ -26,14 +28,6 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
     private static final MutableTreeSet.Factory<? extends Comparable<?>> DEFAULT_FACTORY =
             new Factory<>(Comparator.naturalOrder());
 
-    //region Fields
-
-    private final @NotNull Comparator<? super E> comparator;
-
-    private transient Node<E> root;
-    private transient int size = 0;
-
-    //endregion
 
     //region Constructors
 
@@ -42,7 +36,7 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
     }
 
     public MutableTreeSet(Comparator<? super E> comparator) {
-        this.comparator = comparator == null ? Comparators.naturalOrder() : comparator;
+        super(comparator);
     }
 
     //endregion
@@ -242,195 +236,6 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
 
     //endregion
 
-    //region Red–black tree helpers
-
-    private @Nullable Node<E> getNode(Object value) {
-        try {
-            final Comparator<? super E> comparator = this.comparator;
-            Node<E> n = this.root;
-            while (n != null) {
-                int c = comparator.compare((E) value, n.value);
-                if (c < 0) {
-                    n = n.left;
-                } else if (c > 0) {
-                    n = n.right;
-                } else {
-                    return n;
-                }
-            }
-        } catch (ClassCastException ignored) {
-        }
-        return null;
-    }
-
-    private @Nullable Node<E> firstNode() {
-        Node<E> node = root;
-        if (node == null) {
-            return null;
-        }
-        while (node.left != null) {
-            node = node.left;
-        }
-        return node;
-    }
-
-    private @Nullable Node<E> lastNode() {
-        Node<E> node = root;
-        if (node == null) {
-            return null;
-        }
-        while (node.right != null) {
-            node = node.right;
-        }
-        return node;
-    }
-
-    private void rotateLeft(Node<E> node) {
-        if (node == null) {
-            return;
-        }
-        Node<E> r = node.right;
-        node.right = r.left;
-        if (r.left != null) {
-            r.left.parent = node;
-        }
-        r.parent = node.parent;
-        if (node.parent == null) {
-            root = r;
-        } else if (node.parent.left == node) {
-            node.parent.left = r;
-        } else {
-            node.parent.right = r;
-        }
-        r.left = node;
-        node.parent = r;
-    }
-
-    private void rotateRight(Node<E> node) {
-        if (node == null) {
-            return;
-        }
-        Node<E> l = node.left;
-        node.left = l.right;
-        if (l.right != null) {
-            l.right.parent = node;
-        }
-        l.parent = node.parent;
-        if (node.parent == null) {
-            root = l;
-        } else if (node.parent.right == node) {
-            node.parent.right = l;
-        } else {
-            node.parent.left = l;
-        }
-        l.right = node;
-        node.parent = l;
-    }
-
-    private void fixAfterInsert(Node<E> x) {
-        x.color = RedBlackTree.RED;
-
-        while (x != null && x != root && x.parent.color == RedBlackTree.RED) {
-            if (parentOrNull(x) == leftOrNull(parentOrNull(parentOrNull(x)))) {
-                Node<E> y = rightOrNull(parentOrNull(parentOrNull(x)));
-                if (colorOf(y) == RedBlackTree.RED) {
-                    setColor(parentOrNull(x), RedBlackTree.BLACK);
-                    setColor(y, RedBlackTree.BLACK);
-                    setColor(parentOrNull(parentOrNull(x)), RedBlackTree.RED);
-                    x = parentOrNull(parentOrNull(x));
-                } else {
-                    if (x == rightOrNull(parentOrNull(x))) {
-                        x = parentOrNull(x);
-                        rotateLeft(x);
-                    }
-                    setColor(parentOrNull(x), RedBlackTree.BLACK);
-                    setColor(parentOrNull(parentOrNull(x)), RedBlackTree.RED);
-                    rotateRight(parentOrNull(parentOrNull(x)));
-                }
-            } else {
-                Node<E> y = leftOrNull(parentOrNull(parentOrNull(x)));
-                if (colorOf(y) == RedBlackTree.RED) {
-                    setColor(parentOrNull(x), RedBlackTree.BLACK);
-                    setColor(y, RedBlackTree.BLACK);
-                    setColor(parentOrNull(parentOrNull(x)), RedBlackTree.RED);
-                    x = parentOrNull(parentOrNull(x));
-                } else {
-                    if (x == leftOrNull(parentOrNull(x))) {
-                        x = parentOrNull(x);
-                        rotateRight(x);
-                    }
-                    setColor(parentOrNull(x), RedBlackTree.BLACK);
-                    setColor(parentOrNull(parentOrNull(x)), RedBlackTree.RED);
-                    rotateLeft(parentOrNull(parentOrNull(x)));
-                }
-            }
-        }
-        root.color = RedBlackTree.BLACK;
-    }
-
-    private void fixAfterDelete(Node<E> x) {
-        while (x != root && colorOf(x) == RedBlackTree.BLACK) {
-            if (x == leftOrNull(parentOrNull(x))) {
-                Node<E> sib = rightOrNull(parentOrNull(x));
-                if (colorOf(sib) == RedBlackTree.RED) {
-                    setColor(sib, RedBlackTree.BLACK);
-                    setColor(parentOrNull(x), RedBlackTree.RED);
-                    rotateLeft(parentOrNull(x));
-                    sib = rightOrNull(parentOrNull(x));
-                }
-
-                if (colorOf(leftOrNull(sib)) == RedBlackTree.BLACK &&
-                        colorOf(rightOrNull(sib)) == RedBlackTree.BLACK) {
-                    setColor(sib, RedBlackTree.RED);
-                    x = parentOrNull(x);
-                } else {
-                    if (colorOf(rightOrNull(sib)) == RedBlackTree.BLACK) {
-                        setColor(leftOrNull(sib), RedBlackTree.BLACK);
-                        setColor(sib, RedBlackTree.RED);
-                        rotateRight(sib);
-                        sib = rightOrNull(parentOrNull(x));
-                    }
-                    setColor(sib, colorOf(parentOrNull(x)));
-                    setColor(parentOrNull(x), RedBlackTree.BLACK);
-                    setColor(rightOrNull(sib), RedBlackTree.BLACK);
-                    rotateLeft(parentOrNull(x));
-                    x = root;
-                }
-            } else {
-                Node<E> sib = leftOrNull(parentOrNull(x));
-
-                if (colorOf(sib) == RedBlackTree.RED) {
-                    setColor(sib, RedBlackTree.BLACK);
-                    setColor(parentOrNull(x), RedBlackTree.RED);
-                    rotateRight(parentOrNull(x));
-                    sib = leftOrNull(parentOrNull(x));
-                }
-
-                if (colorOf(rightOrNull(sib)) == RedBlackTree.BLACK &&
-                        colorOf(leftOrNull(sib)) == RedBlackTree.BLACK) {
-                    setColor(sib, RedBlackTree.RED);
-                    x = parentOrNull(x);
-                } else {
-                    if (colorOf(leftOrNull(sib)) == RedBlackTree.BLACK) {
-                        setColor(rightOrNull(sib), RedBlackTree.BLACK);
-                        setColor(sib, RedBlackTree.RED);
-                        rotateLeft(sib);
-                        sib = leftOrNull(parentOrNull(x));
-                    }
-                    setColor(sib, colorOf(parentOrNull(x)));
-                    setColor(parentOrNull(x), RedBlackTree.BLACK);
-                    setColor(leftOrNull(sib), RedBlackTree.BLACK);
-                    rotateRight(parentOrNull(x));
-                    x = root;
-                }
-            }
-        }
-
-        setColor(x, RedBlackTree.BLACK);
-    }
-
-    //endregion
-
     //region Collection Operations
 
     @Override
@@ -501,7 +306,7 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
 
         do {
             parent = node;
-            c = comparator.compare(value, node.value);
+            c = comparator.compare(value, node.getValue());
             if (c < 0) {
                 node = node.left;
             } else if (c > 0) {
@@ -531,7 +336,7 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
         }
         if (node.left != null && node.right != null) {
             Node<E> s = successor(node);
-            node.value = s.value;
+            node.setValue(s.getValue());
             node = s;
         }
 
@@ -592,7 +397,7 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
         if (node == null) {
             throw new NoSuchElementException();
         }
-        return node.value;
+        return node.getValue();
     }
 
     @Override
@@ -601,7 +406,29 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
         if (node == null) {
             throw new NoSuchElementException();
         }
-        return node.value;
+        return node.getValue();
+    }
+
+    @Override
+    public final int hashCode() {
+        return Iterators.hash(iterator()) + Collection.SET_HASH_MAGIC;
+    }
+
+    @Override
+    public final boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof Set<?>)
+                || !(((Collection<?>) obj).canEqual(this))) {
+            return false;
+        }
+        return sameElements(((Collection<?>) obj));
+    }
+
+    @Override
+    public final String toString() {
+        return joinToString(", ", "MutableTreeSet[", "]");
     }
 
     //region Serialization Operations
@@ -626,12 +453,17 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
 
     //endregion
 
-    static final class Node<E> extends RedBlackTree.TreeNode<Node<E>> {
-        E value;
-
+     static final class Node<E> extends RedBlackTree.TreeNode<E, Node<E>> {
         Node(E value, Node<E> parent) {
-            super(parent);
-            this.value = value;
+            super(value, parent);
+        }
+
+        final void setValue(E newValue) {
+            this.key = newValue;
+        }
+
+        final E getValue() {
+            return key;
         }
     }
 
@@ -671,7 +503,7 @@ public final class MutableTreeSet<E> extends AbstractMutableSet<E>
                 this.node = n;
             }
 
-            return node.value;
+            return node.getValue();
         }
     }
 
