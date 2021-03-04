@@ -26,7 +26,7 @@ public interface FullSeqOps<E, CC extends SeqLike<?>, COLL extends SeqLike<E>> e
 
     @NotNull COLL updated(int index, E newValue);
 
-    @NotNull COLL concat(@NotNull Seq<? extends E> other);
+    @NotNull COLL concat(@NotNull SeqLike<? extends E> other);
 
     @NotNull COLL prepended(E element);
 

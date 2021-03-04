@@ -2,6 +2,7 @@ package org.glavo.kala.collection.mutable;
 
 import org.glavo.kala.collection.Collection;
 import org.glavo.kala.collection.Set;
+import org.glavo.kala.collection.base.AbstractIterator;
 import org.glavo.kala.comparator.Comparators;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.SortedSet;
@@ -16,6 +17,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import static org.glavo.kala.collection.mutable.RedBlackTree.*;
 
@@ -376,14 +378,8 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     }
 
     @Override
-    public final void clear() {
-        root = null;
-        size = 0;
-    }
-
-    @Override
     public final boolean contains(Object value) {
-        return getNode((E) value) != null;
+        return getNode(value) != null;
     }
 
     @Override
@@ -431,6 +427,11 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
         return joinToString(", ", "MutableTreeSet[", "]");
     }
 
+    @Override
+    public final void forEach(@NotNull Consumer<? super E> action) {
+        forEachKey0(action);
+    }
+
     //region Serialization Operations
 
     private void readObject(java.io.ObjectInputStream in)
@@ -453,7 +454,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
 
     //endregion
 
-     static final class Node<E> extends RedBlackTree.TreeNode<E, Node<E>> {
+    static final class Node<E> extends RedBlackTree.TreeNode<E, Node<E>> {
         Node(E value, Node<E> parent) {
             super(value, parent);
         }
@@ -465,9 +466,17 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
         final E getValue() {
             return key;
         }
+
+        @Override
+        public final String toString() {
+            return String.format(
+                    "MutableTreeSet.Node[value=%s, color=%s, parent=%s, left=%s, right=%s]",
+                    key, color == RED ? "RED" : "BLACK", parent, left, right
+            );
+        }
     }
 
-    private static final class Itr<E> implements Iterator<E> {
+    private static final class Itr<E> extends AbstractIterator<E> {
         private Node<E> node;
 
         Itr(Node<E> node) {
@@ -486,22 +495,22 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
                 throw new NoSuchElementException();
             }
 
+            Node<E> n;
             if (node.right != null) {
-                Node<E> n = node.right;
+                n = node.right;
                 while (n.left != null) {
                     n = n.left;
                 }
-                this.node = n;
             } else {
-                Node<E> n = node.parent;
+                n = node.parent;
                 Node<E> c = node;
 
                 while (n != null && c == n.right) {
                     c = n;
                     n = n.parent;
                 }
-                this.node = n;
             }
+            this.node = n;
 
             return node.getValue();
         }

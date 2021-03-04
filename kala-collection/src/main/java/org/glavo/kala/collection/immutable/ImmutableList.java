@@ -1,6 +1,7 @@
 package org.glavo.kala.collection.immutable;
 
 import org.glavo.kala.collection.IndexedSeq;
+import org.glavo.kala.collection.SeqLike;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.annotations.Covariant;
@@ -545,7 +546,7 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableList<E> concat(@NotNull Seq<? extends E> other) {
+    public final @NotNull ImmutableList<E> concat(@NotNull SeqLike<? extends E> other) {
         return concatImpl(other);
     }
 

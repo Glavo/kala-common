@@ -3,6 +3,7 @@ package org.glavo.kala.collection.immutable;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.IndexedSeq;
 import org.glavo.kala.Conditions;
+import org.glavo.kala.collection.SeqLike;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.collection.base.Iterators;
@@ -175,7 +176,7 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
 
     static <E, T extends ImmutableSeq<? extends E>, Builder> T concat(
             @NotNull ImmutableSeq<? extends E> seq,
-            @NotNull Seq<? extends E> other,
+            @NotNull SeqLike<? extends E> other,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
         Objects.requireNonNull(other);
@@ -381,7 +382,7 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
     }
 
     @NotNull
-    protected final <To extends ImmutableSeq<E>> To concatImpl(@NotNull Seq<? extends E> other) {
+    protected final <To extends ImmutableSeq<E>> To concatImpl(@NotNull SeqLike<? extends E> other) {
         return (To) AbstractImmutableSeq.concat(this, other, iterableFactory());
     }
 

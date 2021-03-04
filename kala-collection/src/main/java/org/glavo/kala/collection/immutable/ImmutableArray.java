@@ -3,6 +3,7 @@ package org.glavo.kala.collection.immutable;
 import org.glavo.kala.collection.ArraySeq;
 import org.glavo.kala.collection.IndexedSeq;
 import org.glavo.kala.collection.Seq;
+import org.glavo.kala.collection.SeqLike;
 import org.glavo.kala.collection.internal.CollectionHelper;
 import org.glavo.kala.Conditions;
 import org.glavo.kala.collection.base.Traversable;
@@ -423,7 +424,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableArray<E> concat(@NotNull Seq<? extends E> other) {
+    public final @NotNull ImmutableArray<E> concat(@NotNull SeqLike<? extends E> other) {
         return appendedAll(other);
     }
 

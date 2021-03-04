@@ -83,7 +83,7 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqOps<E
         return new SeqViews.Updated<>(this, index, newValue);
     }
 
-    default @NotNull SeqView<E> concat(@NotNull Seq<? extends E> other) {
+    default @NotNull SeqView<E> concat(@NotNull SeqLike<? extends E> other) {
         Objects.requireNonNull(other);
         return new SeqViews.Concat<>(this, narrow(other.view()));
     }

@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
+import java.util.function.Consumer;
 
 abstract class RedBlackTree<A, N extends RedBlackTree.TreeNode<A, N>> {
     static final boolean RED = true;
@@ -20,7 +21,7 @@ abstract class RedBlackTree<A, N extends RedBlackTree.TreeNode<A, N>> {
     }
 
     @SuppressWarnings("unchecked")
-    @Nullable N getNode(Object key) {
+    final @Nullable N getNode(Object key) {
         try {
             final Comparator<? super A> comparator = this.comparator;
             N n = this.root;
@@ -39,7 +40,7 @@ abstract class RedBlackTree<A, N extends RedBlackTree.TreeNode<A, N>> {
         return null;
     }
 
-    @Nullable N firstNode() {
+    final @Nullable N firstNode() {
         N node = root;
         if (node == null) {
             return null;
@@ -50,7 +51,7 @@ abstract class RedBlackTree<A, N extends RedBlackTree.TreeNode<A, N>> {
         return node;
     }
 
-    @Nullable N lastNode() {
+    final @Nullable N lastNode() {
         N node = root;
         if (node == null) {
             return null;
@@ -60,7 +61,6 @@ abstract class RedBlackTree<A, N extends RedBlackTree.TreeNode<A, N>> {
         }
         return node;
     }
-
 
     static boolean colorOf(TreeNode<?, ?> p) {
         return p == null ? RedBlackTree.BLACK : p.color;
@@ -144,7 +144,7 @@ abstract class RedBlackTree<A, N extends RedBlackTree.TreeNode<A, N>> {
         return p;
     }
 
-    void rotateLeft(N node) {
+    final void rotateLeft(N node) {
         if (node == null) {
             return;
         }
@@ -165,7 +165,7 @@ abstract class RedBlackTree<A, N extends RedBlackTree.TreeNode<A, N>> {
         node.parent = r;
     }
 
-    void rotateRight(N node) {
+    final void rotateRight(N node) {
         if (node == null) {
             return;
         }
@@ -186,7 +186,7 @@ abstract class RedBlackTree<A, N extends RedBlackTree.TreeNode<A, N>> {
         node.parent = l;
     }
 
-    void fixAfterInsert(N x) {
+    final void fixAfterInsert(N x) {
         x.color = RedBlackTree.RED;
 
         while (x != null && x != root && x.parent.color == RedBlackTree.RED) {
@@ -227,7 +227,7 @@ abstract class RedBlackTree<A, N extends RedBlackTree.TreeNode<A, N>> {
         root.color = RedBlackTree.BLACK;
     }
 
-    void fixAfterDelete(N x) {
+    final void fixAfterDelete(N x) {
         while (x != root && colorOf(x) == RedBlackTree.BLACK) {
             if (x == leftOrNull(parentOrNull(x))) {
                 N sib = rightOrNull(parentOrNull(x));
@@ -288,6 +288,76 @@ abstract class RedBlackTree<A, N extends RedBlackTree.TreeNode<A, N>> {
         setColor(x, RedBlackTree.BLACK);
     }
 
+    final void remove0(N node) {
+        if (node.left != null && node.right != null) {
+            N s = successor(node);
+            node.key = s.key;
+            node = s;
+        }
+
+        N replacement = node.left != null ? node.left : node.right;
+
+        if (replacement != null) {
+            replacement.parent = node.parent;
+            if (node.parent == null) {
+                root = replacement;
+            } else if (node == node.parent.left) {
+                node.parent.left = replacement;
+            } else {
+                node.parent.right = replacement;
+            }
+            node.left = node.right = node.parent = null;
+
+            if (node.color == RedBlackTree.BLACK) {
+                fixAfterDelete(replacement);
+            }
+        } else if (node.parent == null) {
+            root = null;
+        } else {
+            if (node.color == RedBlackTree.BLACK) {
+                fixAfterDelete(node);
+            }
+
+            if (node.parent != null) {
+                if (node == node.parent.left) {
+                    node.parent.left = null;
+                } else if (node == node.parent.right) {
+                    node.parent.right = null;
+                }
+                node.parent = null;
+            }
+        }
+    }
+
+    final void forEachKey0(@NotNull Consumer<? super A> consumer) {
+        N node = this.root;
+        while (node != null) {
+            consumer.accept(node.key);
+
+            N n;
+            if (node.right != null) {
+                n = node.right;
+                while (n.left != null) {
+                    n = n.left;
+                }
+            } else {
+                n = node.parent;
+                N c = node;
+
+                while (n != null && c == n.right) {
+                    c = n;
+                    n = n.parent;
+                }
+            }
+            node = n;
+        }
+    }
+
+    public final void clear() {
+        root = null;
+        size = 0;
+    }
+
     static class TreeNode<A, T extends TreeNode<A, T>> {
         A key;
 
@@ -301,7 +371,5 @@ abstract class RedBlackTree<A, N extends RedBlackTree.TreeNode<A, N>> {
             this.key = key;
             this.parent = parent;
         }
-
-
     }
 }
