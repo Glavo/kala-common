@@ -2,6 +2,7 @@ package org.glavo.kala.collection.immutable;
 
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.ArraySeq;
+import org.glavo.kala.collection.Set;
 import org.glavo.kala.collection.SortedSet;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.NotNull;
@@ -33,6 +34,25 @@ public abstract class AbstractImmutableSet<@Covariant E> extends AbstractImmutab
         factory.addAllToBuilder(builder, values);
 
         return factory.build(builder);
+    }
+
+    @Override
+    public int hashCode() {
+        int h = SET_HASH_MAGIC;
+        for (E e : this) {
+            if (e != null) {
+                h += e.hashCode();
+            }
+        }
+        return h;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Set<?>) || !canEqual(obj) || !((Set<?>) obj).canEqual(this)) {
+            return false;
+        }
+        return containsAll(((Set<?>) obj));
     }
 
     protected final <To extends ImmutableSet<E>> To addedImpl(E value) {
