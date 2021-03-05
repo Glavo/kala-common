@@ -6,6 +6,7 @@ import org.glavo.kala.collection.immutable.*;
 import org.glavo.kala.collection.internal.AsJavaConvert;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.base.Traversable;
+import org.glavo.kala.collection.internal.view.Views;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 

@@ -4,6 +4,7 @@ import org.glavo.kala.collection.internal.AsJavaConvert;
 import org.glavo.kala.collection.immutable.ImmutableSet;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.base.Iterators;
+import org.glavo.kala.collection.internal.view.SetViews;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Spliterator;

@@ -5,6 +5,7 @@ import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.internal.FromJavaConvert;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.immutable.ImmutableSeq;
+import org.glavo.kala.collection.internal.view.SeqViews;
 import org.jetbrains.annotations.*;
 
 import java.util.Iterator;

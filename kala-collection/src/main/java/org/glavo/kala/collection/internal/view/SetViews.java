@@ -1,20 +1,25 @@
-package org.glavo.kala.collection;
+package org.glavo.kala.collection.internal.view;
 
 import org.glavo.kala.annotations.Covariant;
+import org.glavo.kala.collection.AbstractSetView;
+import org.glavo.kala.collection.Set;
+import org.glavo.kala.collection.SetView;
+import org.glavo.kala.collection.View;
 import org.glavo.kala.collection.base.Iterators;
+import org.glavo.kala.collection.internal.view.Views;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.function.Predicate;
 
-final class SetViews {
-    static class Of<@Covariant E, C extends Set<E>> extends Views.Of<E, C> implements SetView<E> {
-        Of(@NotNull C collection) {
+public final class SetViews {
+    public static class Of<@Covariant E, C extends Set<E>> extends Views.Of<E, C> implements SetView<E> {
+        public Of(@NotNull C collection) {
             super(collection);
         }
     }
 
-    static final class Filter<@Covariant E> extends AbstractSetView<E> {
+    public static final class Filter<@Covariant E> extends AbstractSetView<E> {
 
         private final @NotNull View<E> source;
 

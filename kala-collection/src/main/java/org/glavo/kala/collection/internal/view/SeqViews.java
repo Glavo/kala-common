@@ -1,5 +1,8 @@
-package org.glavo.kala.collection;
+package org.glavo.kala.collection.internal.view;
 
+import org.glavo.kala.Conditions;
+import org.glavo.kala.collection.*;
+import org.glavo.kala.collection.internal.view.Views;
 import org.glavo.kala.value.LazyValue;
 import org.glavo.kala.collection.mutable.ArrayBuffer;
 import org.glavo.kala.control.Option;
@@ -17,9 +20,9 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.*;
 
-final class SeqViews {
-    static class Of<@Covariant E, C extends Seq<E>> extends Views.Of<E, C> implements SeqView<E> {
-        Of(@NotNull C source) {
+public final class SeqViews {
+    public static class Of<@Covariant E, C extends Seq<E>> extends Views.Of<E, C> implements SeqView<E> {
+        public Of(@NotNull C source) {
             super(source);
         }
 
@@ -72,19 +75,18 @@ final class SeqViews {
             source.forEachIndexed(action);
         }
 
-        @NotNull
         @Override
-        public Iterator<E> reverseIterator() {
+        public @NotNull Iterator<E> reverseIterator() {
             return source.reverseIterator();
         }
     }
 
-    static class Slice<E> extends AbstractSeqView<E> {
+    public static class Slice<E> extends AbstractSeqView<E> {
         protected final @NotNull SeqView<E> source;
         protected final int beginIndex;
         protected final int endIndex;
 
-        Slice(@NotNull SeqView<E> source, int beginIndex, int endIndex) {
+        public Slice(@NotNull SeqView<E> source, int beginIndex, int endIndex) {
             assert beginIndex >= 0;
             assert endIndex >= beginIndex;
             this.source = source;
@@ -138,14 +140,14 @@ final class SeqViews {
         }
     }
 
-    static class Updated<@Covariant E> extends AbstractSeqView<E> {
+    public static class Updated<@Covariant E> extends AbstractSeqView<E> {
         private final @NotNull SeqView<E> source;
 
         private final int index;
 
         private final E newValue;
 
-        Updated(@NotNull SeqView<E> source, int index, E newValue) {
+        public Updated(@NotNull SeqView<E> source, int index, E newValue) {
             this.source = source;
             this.index = index;
             this.newValue = newValue;
@@ -154,6 +156,11 @@ final class SeqViews {
         @Override
         public final int size() {
             return source.size();
+        }
+
+        @Override
+        public int knownSize() {
+            return source.knownSize();
         }
 
         @Override
@@ -204,13 +211,13 @@ final class SeqViews {
         }
     }
 
-    static class Drop<@Covariant E> extends AbstractSeqView<E> {
+    public static class Drop<@Covariant E> extends AbstractSeqView<E> {
         @NotNull
         protected final SeqView<E> source;
 
         protected final int n;
 
-        Drop(@NotNull SeqView<E> source, int n) {
+        public Drop(@NotNull SeqView<E> source, int n) {
             this.source = source;
             this.n = n;
         }
@@ -227,6 +234,20 @@ final class SeqViews {
             return s - n;
         }
 
+        @Override
+        public int knownSize() {
+            final int sks = source.knownSize();
+            final int n = this.n;
+
+            if (sks < 0) {
+                return -1;
+            }
+            if (n <= 0) {
+                return sks;
+            }
+            return Integer.max(0, sks - n);
+        }
+
         @NotNull
         @Override
         public final Iterator<E> iterator() {
@@ -234,75 +255,97 @@ final class SeqViews {
         }
     }
 
-    static class DropLast<@Covariant E> extends AbstractSeqView<E> {
+    public static class DropLast<@Covariant E> extends AbstractSeqView<E> {
         @NotNull
         protected final SeqView<E> source;
 
-
         private final int n;
-        private final int len;
 
-        DropLast(@NotNull SeqView<E> source, int n) {
+        public DropLast(@NotNull SeqView<E> source, int n) {
             this.source = source;
-            this.n = Integer.max(n, 0);
-            this.len = Integer.max(source.size() - this.n, 0);
+            this.n = n;
         }
 
         @Override
-        public final E get(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
-            //noinspection ConstantConditions
-            if (index < 0 || index >= len) {
-                throw new IndexOutOfBoundsException();
+        public final E get(int index) {
+            if(index < 0) {
+                throw new IndexOutOfBoundsException("Index(" + index + ") < 0");
             }
-            return source.get(index);
+
+            final SeqView<E> source = this.source;
+            final int n = this.n;
+
+            if(n <= 0) {
+                return this.source.get(index);
+            }
+
+            final int size = Integer.max(source.size() - n, 0);
+            Conditions.checkElementIndex(index, size);
+
+            return this.source.get(index);
         }
 
         @Override
         public final int size() {
-            return len;
+            return Integer.max(source.size() - Integer.max(this.n, 0), 0);
         }
 
         @Override
         public final int knownSize() {
-            return len;
+            final int sks = source.knownSize();
+            if (sks < 0) {
+                return -1;
+            }
+            final int normalN = Integer.max(this.n, 0);
+            if (normalN >= sks) {
+                return 0;
+            }
+
+            return sks - normalN;
         }
 
-        @NotNull
         @Override
-        public final Iterator<E> iterator() {
+        public final @NotNull Iterator<E> iterator() {
+            final SeqView<E> source = this.source;
+            final int n = this.n;
+
             if (n <= 0) {
                 return source.iterator();
             }
-            return Iterators.take(source.iterator(), len);
+
+            final int ss = source.size();
+            if (n >= ss) {
+                return Iterators.empty();
+            }
+
+            return Iterators.take(this.source.iterator(), ss - n);
         }
     }
 
-    static class DropWhile<@Covariant E> extends AbstractSeqView<E> {
-        @NotNull
-        private final SeqView<E> source;
+    public static class DropWhile<@Covariant E> extends AbstractSeqView<E> {
 
-        @NotNull
-        private final Predicate<? super E> predicate;
+        private final @NotNull SeqView<E> source;
 
-        DropWhile(@NotNull SeqView<E> source, @NotNull Predicate<? super E> predicate) {
+        private final @NotNull Predicate<? super E> predicate;
+
+        public DropWhile(@NotNull SeqView<E> source, @NotNull Predicate<? super E> predicate) {
             this.source = source;
             this.predicate = predicate;
         }
 
-        @NotNull
         @Override
-        public final Iterator<E> iterator() {
+        public final @NotNull Iterator<E> iterator() {
             return Iterators.dropWhile(source.iterator(), predicate);
         }
     }
 
-    static class Take<@Covariant E> extends AbstractSeqView<E> {
+    public static class Take<@Covariant E> extends AbstractSeqView<E> {
         @NotNull
         protected final SeqView<E> source;
 
         private final int n;
 
-        Take(@NotNull SeqView<E> source, int n) {
+        public Take(@NotNull SeqView<E> source, int n) {
             this.source = source;
             this.n = n;
         }
@@ -323,7 +366,7 @@ final class SeqViews {
         }
     }
 
-    static class TakeLast<@Covariant E> extends AbstractSeqView<E> {
+    public static class TakeLast<@Covariant E> extends AbstractSeqView<E> {
         @NotNull
         protected final SeqView<E> source;
 
@@ -331,7 +374,7 @@ final class SeqViews {
         private final int n;
         private final int delta;
 
-        TakeLast(@NotNull SeqView<E> source, int n) {
+        public TakeLast(@NotNull SeqView<E> source, int n) {
             this.source = source;
             this.n = Integer.max(n, 0);
             this.delta = Integer.max(0, source.size() - Integer.max(0, n));
@@ -424,14 +467,14 @@ final class SeqViews {
         }
     }
 
-    static class TakeWhile<@Covariant E> extends AbstractSeqView<E> {
+    public static class TakeWhile<@Covariant E> extends AbstractSeqView<E> {
         @NotNull
         private final SeqView<E> source;
 
         @NotNull
         private final Predicate<? super E> predicate;
 
-        TakeWhile(@NotNull SeqView<E> source, @NotNull Predicate<? super E> predicate) {
+        public TakeWhile(@NotNull SeqView<E> source, @NotNull Predicate<? super E> predicate) {
             this.source = source;
             this.predicate = predicate;
         }
@@ -443,14 +486,14 @@ final class SeqViews {
         }
     }
 
-    static class Concat<@Covariant E> extends AbstractSeqView<E> {
+    public static class Concat<@Covariant E> extends AbstractSeqView<E> {
         @NotNull
         private final SeqLike<E> seq1;
 
         @NotNull
         private final SeqLike<E> seq2;
 
-        Concat(@NotNull SeqLike<E> seq1, @NotNull SeqLike<E> seq2) {
+        public Concat(@NotNull SeqLike<E> seq1, @NotNull SeqLike<E> seq2) {
             this.seq1 = seq1;
             this.seq2 = seq2;
         }
@@ -468,13 +511,13 @@ final class SeqViews {
         }
     }
 
-    static class Prepended<@Covariant E> extends AbstractSeqView<E> {
+    public static class Prepended<@Covariant E> extends AbstractSeqView<E> {
         @NotNull
         private final SeqView<E> source;
 
         private final E value;
 
-        Prepended(@NotNull SeqView<E> source, E value) {
+        public Prepended(@NotNull SeqView<E> source, E value) {
             this.source = source;
             this.value = value;
         }
@@ -508,13 +551,13 @@ final class SeqViews {
         }
     }
 
-    static class Appended<@Covariant E> extends AbstractSeqView<E> {
+    public static class Appended<@Covariant E> extends AbstractSeqView<E> {
         @NotNull
         protected final SeqView<E> source;
 
         protected final E value;
 
-        Appended(@NotNull SeqView<E> source, E value) {
+        public Appended(@NotNull SeqView<E> source, E value) {
             this.source = source;
             this.value = value;
         }
@@ -531,11 +574,11 @@ final class SeqViews {
         }
     }
 
-    static class Reversed<@Covariant E> extends AbstractSeqView<E> {
+    public static class Reversed<@Covariant E> extends AbstractSeqView<E> {
         @NotNull
         protected final SeqView<E> source;
 
-        Reversed(@NotNull SeqView<E> source) {
+        public Reversed(@NotNull SeqView<E> source) {
             this.source = source;
         }
 
@@ -579,7 +622,7 @@ final class SeqViews {
         }
     }
 
-    static class Mapped<@Covariant E, T> extends AbstractSeqView<E> {
+    public static class Mapped<@Covariant E, T> extends AbstractSeqView<E> {
         @NotNull
         private final SeqView<T> source;
 
@@ -614,7 +657,7 @@ final class SeqViews {
         }
     }
 
-    static class MapIndexed<@Covariant E, T> extends AbstractSeqView<E> {
+    public static class MapIndexed<@Covariant E, T> extends AbstractSeqView<E> {
         @NotNull
         private final SeqView<T> source;
 
@@ -649,7 +692,7 @@ final class SeqViews {
         }
     }
 
-    static final class Filter<@Covariant E> extends AbstractSeqView<E> {
+    public static final class Filter<@Covariant E> extends AbstractSeqView<E> {
         @NotNull
         private final SeqView<E> source;
 
@@ -668,7 +711,7 @@ final class SeqViews {
         }
     }
 
-    static final class FlatMapped<@Covariant E, T> extends AbstractSeqView<E> {
+    public static final class FlatMapped<@Covariant E, T> extends AbstractSeqView<E> {
         @NotNull
         private final SeqView<? extends T> source;
         @NotNull
@@ -688,12 +731,12 @@ final class SeqViews {
         }
     }
 
-    static final class Sorted<@Covariant E> extends AbstractSeqView<E> {
+    public static final class Sorted<@Covariant E> extends AbstractSeqView<E> {
         private final SeqView<E> source;
         private final LazyValue<Seq<E>> sortedSeq;
 
         @SuppressWarnings("unchecked")
-        Sorted(@NotNull SeqView<E> source, @NotNull Comparator<? super E> comparator) {
+        public Sorted(@NotNull SeqView<E> source, @NotNull Comparator<? super E> comparator) {
             this.source = source;
             this.sortedSeq = LazyValue.of(() -> {
                 Object[] arr = source.toArray();

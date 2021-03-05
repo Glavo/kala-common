@@ -1,5 +1,9 @@
-package org.glavo.kala.collection;
+package org.glavo.kala.collection.internal.view;
 
+import org.glavo.kala.collection.AbstractView;
+import org.glavo.kala.collection.Collection;
+import org.glavo.kala.collection.Seq;
+import org.glavo.kala.collection.View;
 import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.collection.immutable.ImmutableArray;
 import org.glavo.kala.collection.immutable.ImmutableList;
@@ -20,11 +24,11 @@ import java.util.function.*;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
-final class Views {
-    static class Of<@Covariant E, C extends Collection<E>> implements View<E> {
+public final class Views {
+    public static class Of<@Covariant E, C extends Collection<E>> implements View<E> {
         protected final @NotNull C source;
 
-        Of(@NotNull C source) {
+        public Of(@NotNull C source) {
             this.source = source;
         }
 
@@ -339,7 +343,7 @@ final class Views {
 
     }
 
-    static final class Mapped<@Covariant E, T> extends AbstractView<E> {
+    public static final class Mapped<@Covariant E, T> extends AbstractView<E> {
 
         private final @NotNull View<T> source;
 
@@ -389,7 +393,7 @@ final class Views {
         //endregion
     }
 
-    static final class Filter<@Covariant E> extends AbstractView<E> {
+    public static final class Filter<@Covariant E> extends AbstractView<E> {
 
         private final @NotNull View<E> source;
 
@@ -406,7 +410,7 @@ final class Views {
         }
     }
 
-    static final class FlatMapped<@Covariant E, T> extends AbstractView<E> {
+    public static final class FlatMapped<@Covariant E, T> extends AbstractView<E> {
 
         private final @NotNull View<? extends T> source;
 
@@ -425,11 +429,11 @@ final class Views {
         }
     }
 
-    static final class Zip<E, U> extends AbstractView<Tuple2<E, U>> {
+    public static final class Zip<E, U> extends AbstractView<Tuple2<E, U>> {
         private final @NotNull View<? extends E> source;
         private final @NotNull Iterable<? extends U> other;
 
-        Zip(@NotNull View<? extends E> source, @NotNull Iterable<? extends U> other) {
+        public Zip(@NotNull View<? extends E> source, @NotNull Iterable<? extends U> other) {
             this.source = source;
             this.other = other;
         }

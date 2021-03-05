@@ -1,6 +1,7 @@
 package org.glavo.kala.collection;
 
 import org.glavo.kala.annotations.Covariant;
+import org.glavo.kala.collection.internal.view.SetViews;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
