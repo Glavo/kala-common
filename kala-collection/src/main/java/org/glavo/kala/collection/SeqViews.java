@@ -463,7 +463,7 @@ final class SeqViews {
         @Override
         @SuppressWarnings("unchecked")
         public final Iterator<E> iterator() {
-            return Iterators.concat(seq1.iterator(), seq1.iterator());
+            return Iterators.concat(seq1.iterator(), seq2.iterator());
         }
     }
 
@@ -514,8 +514,6 @@ final class SeqViews {
         protected final E value;
 
         Appended(@NotNull SeqView<E> source, E value) {
-            assert source != null;
-
             this.source = source;
             this.value = value;
         }

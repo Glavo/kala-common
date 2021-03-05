@@ -3,6 +3,7 @@ package org.glavo.kala.collection;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.Conditions;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 import java.util.Objects;
 import java.util.RandomAccess;
@@ -23,6 +24,13 @@ public interface IndexedSeqView<@Covariant E> extends SeqView<E>, RandomAccess {
     }
 
     //endregion
+
+    @Override
+    @Range(from = -1, to = Integer.MAX_VALUE)
+    default int knownSize() {
+        return size();
+    }
+
 
     //region Addition Operations
 
