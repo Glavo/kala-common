@@ -22,32 +22,32 @@ import java.util.stream.Stream;
 
 final class Views {
     static class Of<@Covariant E, C extends Collection<E>> implements View<E> {
-        protected final @NotNull C collection;
+        protected final @NotNull C source;
 
-        Of(@NotNull C collection) {
-            this.collection = collection;
+        Of(@NotNull C source) {
+            this.source = source;
         }
 
         //region Collection Operations
 
         @Override
         public final @NotNull Iterator<E> iterator() {
-            return collection.iterator();
+            return source.iterator();
         }
 
         @Override
         public final @NotNull Spliterator<E> spliterator() {
-            return collection.spliterator();
+            return source.spliterator();
         }
 
         @Override
         public final @NotNull Stream<E> stream() {
-            return collection.stream();
+            return source.stream();
         }
 
         @Override
         public final @NotNull Stream<E> parallelStream() {
-            return collection.parallelStream();
+            return source.parallelStream();
         }
 
         //endregion
@@ -56,66 +56,66 @@ final class Views {
 
         @Override
         public final boolean isEmpty() {
-            return collection.isEmpty();
+            return source.isEmpty();
         }
 
         @Override
         public final int size() {
-            return collection.size();
+            return source.size();
         }
 
         @Override
         public final int knownSize() {
-            return collection.knownSize();
+            return source.knownSize();
         }
 
         //endregion
 
         @Override
         public final @NotNull Option<E> find(@NotNull Predicate<? super E> predicate) {
-            return collection.find(predicate);
+            return source.find(predicate);
         }
 
         //region Element Conditions
 
         @Override
         public final boolean contains(Object value) {
-            return collection.contains(value);
+            return source.contains(value);
         }
 
         @Override
         public final boolean containsAll(Object @NotNull [] values) {
-            return collection.containsAll(values);
+            return source.containsAll(values);
         }
 
         @Override
         public final boolean containsAll(@NotNull Iterable<?> values) {
-            return collection.containsAll(values);
+            return source.containsAll(values);
         }
 
         @Override
         public final boolean sameElements(@NotNull Iterable<?> other) {
-            return collection.sameElements(other);
+            return source.sameElements(other);
         }
 
         @Override
         public final boolean sameElements(@NotNull Iterable<?> other, boolean identity) {
-            return collection.sameElements(other, identity);
+            return source.sameElements(other, identity);
         }
 
         @Override
         public final boolean anyMatch(@NotNull Predicate<? super E> predicate) {
-            return collection.anyMatch(predicate);
+            return source.anyMatch(predicate);
         }
 
         @Override
         public final boolean allMatch(@NotNull Predicate<? super E> predicate) {
-            return collection.allMatch(predicate);
+            return source.allMatch(predicate);
         }
 
         @Override
         public final boolean noneMatch(@NotNull Predicate<? super E> predicate) {
-            return collection.noneMatch(predicate);
+            return source.noneMatch(predicate);
         }
 
         //endregion
@@ -124,112 +124,112 @@ final class Views {
 
         @Override
         public final int count(@NotNull Predicate<? super E> predicate) {
-            return collection.count(predicate);
+            return source.count(predicate);
         }
 
         @Override
         public final E max() {
-            return collection.max();
+            return source.max();
         }
 
         @Override
         public final E max(@NotNull Comparator<? super E> comparator) {
-            return collection.max(comparator);
+            return source.max(comparator);
         }
 
         @Override
         public @Nullable E maxOrNull() {
-            return collection.maxOrNull();
+            return source.maxOrNull();
         }
 
         @Override
         public @Nullable E maxOrNull(@NotNull Comparator<? super E> comparator) {
-            return collection.maxOrNull(comparator);
+            return source.maxOrNull(comparator);
         }
 
         @Override
         public final @NotNull Option<E> maxOption() {
-            return collection.maxOption();
+            return source.maxOption();
         }
 
         @Override
         public final @NotNull Option<E> maxOption(@NotNull Comparator<? super E> comparator) {
-            return collection.maxOption(comparator);
+            return source.maxOption(comparator);
         }
 
         @Override
         public final E min() {
-            return collection.min();
+            return source.min();
         }
 
         @Override
         public final E min(@NotNull Comparator<? super E> comparator) {
-            return collection.min(comparator);
+            return source.min(comparator);
         }
 
         @Override
         public @Nullable E minOrNull() {
-            return collection.minOrNull();
+            return source.minOrNull();
         }
 
         @Override
         public @Nullable E minOrNull(@NotNull Comparator<? super E> comparator) {
-            return collection.minOrNull(comparator);
+            return source.minOrNull(comparator);
         }
 
         @Override
         public final @NotNull Option<E> minOption() {
-            return collection.minOption();
+            return source.minOption();
         }
 
         @Override
         public final @NotNull Option<E> minOption(@NotNull Comparator<? super E> comparator) {
-            return collection.minOption(comparator);
+            return source.minOption(comparator);
         }
 
         @Override
         public final E fold(E zero, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-            return collection.fold(zero, op);
+            return source.fold(zero, op);
         }
 
         @Override
         public final <U> U foldLeft(U zero, @NotNull BiFunction<? super U, ? super E, ? extends U> op) {
-            return collection.foldLeft(zero, op);
+            return source.foldLeft(zero, op);
         }
 
         @Override
         public final <U> U foldRight(U zero, @NotNull BiFunction<? super E, ? super U, ? extends U> op) {
-            return collection.foldRight(zero, op);
+            return source.foldRight(zero, op);
         }
 
         @Override
         public final E reduce(@NotNull BiFunction<? super E, ? super E, ? extends E> op) throws NoSuchElementException {
-            return collection.reduce(op);
+            return source.reduce(op);
         }
 
         @Override
         public final @NotNull Option<E> reduceOption(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-            return collection.reduceOption(op);
+            return source.reduceOption(op);
         }
 
         @Override
         public final E reduceLeft(@NotNull BiFunction<? super E, ? super E, ? extends E> op) throws NoSuchElementException {
-            return collection.reduceLeft(op);
+            return source.reduceLeft(op);
         }
 
         @Override
         public final @NotNull Option<E> reduceLeftOption(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-            return collection.reduceLeftOption(op);
+            return source.reduceLeftOption(op);
         }
 
         @Override
         public final E reduceRight(@NotNull BiFunction<? super E, ? super E, ? extends E> op) throws NoSuchElementException {
-            return collection.reduceRight(op);
+            return source.reduceRight(op);
         }
 
         @Override
         public final @NotNull Option<E> reduceRightOption(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-            return collection.reduceRightOption(op);
+            return source.reduceRightOption(op);
         }
 
         //endregion
@@ -238,52 +238,52 @@ final class Views {
 
         @Override
         public final <R, Builder> R collect(@NotNull Collector<? super E, Builder, ? extends R> collector) {
-            return collection.collect(collector);
+            return source.collect(collector);
         }
 
         @Override
         public final <R, Builder> R collect(@NotNull CollectionFactory<? super E, Builder, ? extends R> factory) {
-            return collection.collect(factory);
+            return source.collect(factory);
         }
 
         @Override
         public final Object @NotNull [] toArray() {
-            return collection.toArray();
+            return source.toArray();
         }
 
         @Override
         public final <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
-            return collection.toArray(generator);
+            return source.toArray(generator);
         }
 
         @Override
         public final <U> U @NotNull [] toArray(@NotNull Class<U> type) {
-            return collection.toArray(type);
+            return source.toArray(type);
         }
 
         @Override
         public final @NotNull Seq<E> toSeq() {
-            return collection.toSeq();
+            return source.toSeq();
         }
 
         @Override
         public final @NotNull ImmutableSeq<E> toImmutableSeq() {
-            return collection.toImmutableSeq();
+            return source.toImmutableSeq();
         }
 
         @Override
         public final @NotNull ImmutableArray<E> toImmutableArray() {
-            return collection.toImmutableArray();
+            return source.toImmutableArray();
         }
 
         @Override
         public final @NotNull ImmutableList<E> toImmutableList() {
-            return collection.toImmutableList();
+            return source.toImmutableList();
         }
 
         @Override
         public final @NotNull ImmutableVector<E> toImmutableVector() {
-            return collection.toImmutableVector();
+            return source.toImmutableVector();
         }
 
         //endregion
@@ -292,7 +292,7 @@ final class Views {
 
         @Override
         public final void forEach(@NotNull Consumer<? super E> action) {
-            collection.forEach(action);
+            source.forEach(action);
         }
 
         //endregion
@@ -301,32 +301,32 @@ final class Views {
 
         @Override
         public final <A extends Appendable> @NotNull A joinTo(@NotNull A buffer) {
-            return collection.joinTo(buffer);
+            return source.joinTo(buffer);
         }
 
         @Override
         public final <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, @NotNull CharSequence separator) {
-            return collection.joinTo(buffer, separator);
+            return source.joinTo(buffer, separator);
         }
 
         @Override
         public final <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, @NotNull CharSequence separator, @NotNull CharSequence prefix, @NotNull CharSequence postfix) {
-            return collection.joinTo(buffer, separator, prefix, postfix);
+            return source.joinTo(buffer, separator, prefix, postfix);
         }
 
         @Override
         public final @NotNull String joinToString() {
-            return collection.joinToString();
+            return source.joinToString();
         }
 
         @Override
         public final @NotNull String joinToString(@NotNull CharSequence separator) {
-            return collection.joinToString(separator);
+            return source.joinToString(separator);
         }
 
         @Override
         public final @NotNull String joinToString(@NotNull CharSequence separator, @NotNull CharSequence prefix, @NotNull CharSequence postfix) {
-            return collection.joinToString(separator, prefix, postfix);
+            return source.joinToString(separator, prefix, postfix);
         }
 
 

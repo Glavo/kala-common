@@ -19,63 +19,63 @@ import java.util.function.*;
 
 final class SeqViews {
     static class Of<@Covariant E, C extends Seq<E>> extends Views.Of<E, C> implements SeqView<E> {
-        Of(@NotNull C collection) {
-            super(collection);
+        Of(@NotNull C source) {
+            super(source);
         }
 
         public E get(int index) {
-            return collection.get(index);
+            return source.get(index);
         }
 
         @NotNull
         public Option<E> getOption(int index) {
-            return collection.getOption(index);
+            return source.getOption(index);
         }
 
         public boolean isDefinedAt(int index) {
-            return collection.isDefinedAt(index);
+            return source.isDefinedAt(index);
         }
 
         public int indexOf(Object value) {
-            return collection.indexOf(value);
+            return source.indexOf(value);
         }
 
         public int indexOf(Object value, int from) {
-            return collection.indexOf(value, from);
+            return source.indexOf(value, from);
         }
 
         public int indexWhere(@NotNull Predicate<? super E> predicate) {
-            return collection.indexWhere(predicate);
+            return source.indexWhere(predicate);
         }
 
         public int indexWhere(@NotNull Predicate<? super E> predicate, int from) {
-            return collection.indexWhere(predicate, from);
+            return source.indexWhere(predicate, from);
         }
 
         public int lastIndexOf(Object value) {
-            return collection.lastIndexOf(value);
+            return source.lastIndexOf(value);
         }
 
         public int lastIndexOf(Object value, int end) {
-            return collection.lastIndexOf(value, end);
+            return source.lastIndexOf(value, end);
         }
 
         public int lastIndexWhere(@NotNull Predicate<? super E> predicate) {
-            return collection.lastIndexWhere(predicate);
+            return source.lastIndexWhere(predicate);
         }
 
         public int lastIndexWhere(@NotNull Predicate<? super E> predicate, int end) {
-            return collection.lastIndexWhere(predicate, end);
+            return source.lastIndexWhere(predicate, end);
         }
 
         public void forEachIndexed(@NotNull IndexedConsumer<? super E> action) {
-            collection.forEachIndexed(action);
+            source.forEachIndexed(action);
         }
 
         @NotNull
         @Override
         public Iterator<E> reverseIterator() {
-            return collection.reverseIterator();
+            return source.reverseIterator();
         }
     }
 
@@ -250,6 +250,7 @@ final class SeqViews {
 
         @Override
         public final E get(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
+            //noinspection ConstantConditions
             if (index < 0 || index >= len) {
                 throw new IndexOutOfBoundsException();
             }
