@@ -15,6 +15,7 @@ import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.base.Iterators;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.util.Comparator;
 import java.util.Iterator;
@@ -24,7 +25,75 @@ import java.util.function.*;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
+@SuppressWarnings("unchecked")
 public final class Views {
+    public static class Empty<E> implements View<E> {
+        public static final Empty<?> INSTANCE = new Empty<Object>();
+
+        @Override
+        public final @NotNull Iterator<E> iterator() {
+            return Iterators.empty();
+        }
+
+        //region Size Info
+
+        @Override
+        public final boolean isEmpty() {
+            return true;
+        }
+
+        @Override
+        public final int size() {
+            return 0;
+        }
+
+        @Override
+        public final int knownSize() {
+            return 0;
+        }
+
+        //endregion
+
+        @Override
+        public @NotNull View<E> filter(@NotNull Predicate<? super E> predicate) {
+            return this;
+        }
+
+        @Override
+        public @NotNull View<E> filterNot(@NotNull Predicate<? super E> predicate) {
+            return this;
+        }
+
+        @Override
+        public @NotNull <U> View<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+            return ((View<U>) this);
+        }
+
+        @Override
+        public @NotNull <U> View<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
+            return ((View<U>) this);
+        }
+
+        @Override
+        public final Object @NotNull [] toArray() {
+            return new Object[0];
+        }
+
+        @Override
+        public final @NotNull ImmutableVector<E> toImmutableVector() {
+            return ImmutableVector.empty();
+        }
+
+        @Override
+        public String toString() {
+            return className() + "[]";
+        }
+    }
+
+    public static <E> View<E> empty() {
+        return (View<E>) Empty.INSTANCE;
+    }
+
     public static class Of<@Covariant E, C extends Collection<E>> implements View<E> {
         protected final @NotNull C source;
 
@@ -59,17 +128,17 @@ public final class Views {
         //region Size Info
 
         @Override
-        public final boolean isEmpty() {
+        public boolean isEmpty() {
             return source.isEmpty();
         }
 
         @Override
-        public final int size() {
+        public int size() {
             return source.size();
         }
 
         @Override
-        public final int knownSize() {
+        public int knownSize() {
             return source.knownSize();
         }
 

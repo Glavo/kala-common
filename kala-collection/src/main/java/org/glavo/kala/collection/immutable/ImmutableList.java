@@ -2,6 +2,8 @@ package org.glavo.kala.collection.immutable;
 
 import org.glavo.kala.collection.IndexedSeq;
 import org.glavo.kala.collection.SeqLike;
+import org.glavo.kala.collection.SeqView;
+import org.glavo.kala.collection.internal.view.SeqViews;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.annotations.Covariant;
@@ -11,7 +13,6 @@ import org.glavo.kala.function.IndexedConsumer;
 import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.collection.base.Iterators;
 import org.glavo.kala.collection.base.AnyTraversable;
-import org.glavo.kala.collection.Seq;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
@@ -230,6 +231,11 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
     @Override
     public final @NotNull Iterator<E> iterator() {
         return this == NIL ? Iterators.empty() : new Itr<>(this);
+    }
+
+    @Override
+    public final @NotNull SeqView<E> view() {
+        return this == NIL ? SeqViews.empty() : new SeqViews.WithCachedSize<>(this);
     }
 
     //endregion

@@ -64,13 +64,13 @@
   * `prependAll(Iterable<E>)`
   * `clear()`
 * Addition Operations
+  * `prepended(E)`
+  * `prependedAll(E[])`
+  * `prependedAll(Iterable<E>)`
   * `added(E)`
   * `appended(E)`
   * `appendedAll(E[])`
   * `appendedAll(Iterable<E>)`
-  * `prepended(E)`
-  * `prependedAll(E[])`
-  * `prependedAll(Iterable<E>)`
 * Map Operations
   * `get(K)`
   * `getOrNull(K)`
@@ -121,6 +121,7 @@
   * `lastIndexWhere(Predicate<E>, int)`
 * Misc Operations
   * `slice(int, int)`
+  * `sliceView(int, int)`
   * `drop(int)`
   * `dropWhile(Predicate<E>)`
   * `take(int)`

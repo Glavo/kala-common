@@ -102,9 +102,7 @@ public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E> {
         return new SeqViews.Of<>(this);
     }
 
-    default @NotNull SeqView<E> sliceView(int beginIndex, int endIndex) {
-        return view().slice(beginIndex, endIndex);
-    }
+
 
     @Override
     default @NotNull @UnmodifiableView List<E> asJava() {

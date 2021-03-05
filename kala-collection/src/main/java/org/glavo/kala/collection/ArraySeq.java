@@ -1,5 +1,6 @@
 package org.glavo.kala.collection;
 
+import org.glavo.kala.Conditions;
 import org.glavo.kala.collection.base.ObjectArrays;
 import org.glavo.kala.collection.base.Traversable;
 import org.glavo.kala.control.Option;
@@ -296,6 +297,12 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     @Override
     public final int lastIndexWhere(@NotNull Predicate<? super E> predicate, int end) {
         return GenericArrays.lastIndexWhere(elements, (Predicate<Object>) predicate, end);
+    }
+
+    @Override
+    public @NotNull ArraySliceView<E> sliceView(int beginIndex, int endIndex) {
+        Conditions.checkPositionIndices(beginIndex, endIndex, elements.length);
+        return new ArraySliceView<>(elements, beginIndex, endIndex);
     }
 
     @Override
@@ -605,7 +612,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public final void forEachIndexed(@NotNull IndexedConsumer<? super E> action) {
-        
+
         final Object[] elements = this.elements;
         final int length = elements.length;
         for (int i = 0; i < length; i++) {

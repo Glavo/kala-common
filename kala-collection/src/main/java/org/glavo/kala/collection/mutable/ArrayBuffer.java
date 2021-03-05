@@ -1,6 +1,7 @@
 package org.glavo.kala.collection.mutable;
 
 import org.glavo.kala.collection.IndexedSeq;
+import org.glavo.kala.collection.SeqLike;
 import org.glavo.kala.collection.immutable.ImmutableArray;
 import org.glavo.kala.collection.internal.CollectionHelper;
 import org.glavo.kala.collection.factory.CollectionFactory;
@@ -331,8 +332,8 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
         }
 
         final int size = this.size;
-        if (values instanceof IndexedSeq<?>) {
-            IndexedSeq<?> seq = (IndexedSeq<?>) values;
+        if (values instanceof SeqLike<?> && values instanceof RandomAccess) {
+            SeqLike<?> seq = (SeqLike<?>) values;
             int s = seq.size();
             if (s == 0) {
                 return;

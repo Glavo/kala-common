@@ -1,5 +1,6 @@
 package org.glavo.kala.collection.base;
 
+import org.glavo.kala.Conditions;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.annotations.StaticClass;
@@ -145,15 +146,10 @@ public final class GenericArrays {
         return new Itr<>(array, from, arrayLength);
     }
 
-    public static <E> @NotNull Iterator<E> iterator(E @NotNull [] array, int from, int to) {
+    public static <E> @NotNull Iterator<E> iterator(E @NotNull [] array, int beginIndex, int endIndex) {
         final int arrayLength = array.length; // implicit null check of array
-        if (from < 0 || from > arrayLength) {
-            throw new IndexOutOfBoundsException();
-        }
-        if (to < from || to > arrayLength) {
-            throw new IndexOutOfBoundsException();
-        }
-        final int len = to - from;
+        Conditions.checkPositionIndices(beginIndex, endIndex, arrayLength);
+        final int len = endIndex - beginIndex;
 
         if (len == 0) {
             return Iterators.empty();
@@ -161,7 +157,7 @@ public final class GenericArrays {
         if (len == 1) {
             return Iterators.of(array[0]);
         }
-        return new Itr<>(array, from, to);
+        return new Itr<>(array, beginIndex, endIndex);
     }
 
     //endregion
@@ -750,7 +746,6 @@ public final class GenericArrays {
             this.index = beginIndex;
             this.endIndex = endIndex;
         }
-
 
         @Override
         public final boolean hasNext() {

@@ -1,5 +1,6 @@
 package org.glavo.kala.collection;
 
+import org.glavo.kala.collection.internal.view.IndexedSeqViews;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.immutable.ImmutableList;

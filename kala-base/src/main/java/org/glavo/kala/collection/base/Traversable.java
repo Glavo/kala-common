@@ -428,10 +428,7 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
             return generator.apply(0);
         } else if (s > 0) {
             U[] arr = generator.apply(s);
-            int i = 0;
-            for (T t : this) {
-                arr[i++] = (U) t;
-            }
+            this.copyToArray(arr);
             return arr;
         } else {
             return Iterators.toArray((Iterator<U>) iterator(), generator);

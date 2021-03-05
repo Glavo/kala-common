@@ -1,5 +1,6 @@
 package org.glavo.kala.collection;
 
+import org.glavo.kala.Conditions;
 import org.glavo.kala.collection.internal.view.SeqViews;
 import org.glavo.kala.tuple.Tuple;
 import org.glavo.kala.tuple.Tuple2;
@@ -44,11 +45,16 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqOps<E
 
     @Override
     default @NotNull SeqView<E> slice(int beginIndex, int endIndex) {
-        if (beginIndex < 0) {
-            throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") < 0");
-        }
-        if (beginIndex > endIndex) {
-            throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
+        final int ks = this.knownSize();
+        if (ks >= 0) {
+            Conditions.checkPositionIndices(beginIndex, endIndex, ks);
+        } else {
+            if (beginIndex < 0) {
+                throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") < 0");
+            }
+            if (beginIndex > endIndex) {
+                throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
+            }
         }
 
         return new SeqViews.Slice<>(this, beginIndex, endIndex);
@@ -81,6 +87,14 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqOps<E
     }
 
     default @NotNull SeqView<E> updated(int index, E newValue) {
+        final int ks = this.knownSize();
+        if (ks < 0) {
+            if (index < 0) {
+                throw new IndexOutOfBoundsException("index(" + index + ") < 0");
+            }
+        } else {
+            Conditions.checkElementIndex(index, ks);
+        }
         return new SeqViews.Updated<>(this, index, newValue);
     }
 

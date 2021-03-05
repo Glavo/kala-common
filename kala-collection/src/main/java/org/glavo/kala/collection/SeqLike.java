@@ -17,8 +17,18 @@ import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 public interface SeqLike<E> extends CollectionLike<E> {
+    @Contract(value = "_ -> param1", pure = true)
+    @SuppressWarnings("unchecked")
+    static <E> SeqLike<E> narrow(SeqLike<? extends E> view) {
+        return (SeqLike<E>) view;
+    }
+
     @Override
     @NotNull SeqView<E> view();
+
+    default @NotNull SeqView<E> sliceView(int beginIndex, int endIndex) {
+        return view().slice(beginIndex, endIndex);
+    }
 
     //region Positional Access Operations
 

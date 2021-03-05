@@ -2,6 +2,9 @@ package org.glavo.kala.collection;
 
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.Conditions;
+import org.glavo.kala.collection.internal.view.IndexedSeqViews;
+import org.glavo.kala.collection.internal.view.SeqViews;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
@@ -10,6 +13,12 @@ import java.util.RandomAccess;
 import java.util.function.Function;
 
 public interface IndexedSeqView<@Covariant E> extends SeqView<E>, RandomAccess {
+
+    @Contract(value = "_ -> param1", pure = true)
+    @SuppressWarnings("unchecked")
+    static <E> IndexedSeqView<E> narrow(IndexedSeqView<? extends E> view) {
+        return (IndexedSeqView<E>) view;
+    }
 
     //region Collection Operations
 
@@ -31,6 +40,14 @@ public interface IndexedSeqView<@Covariant E> extends SeqView<E>, RandomAccess {
         return size();
     }
 
+    @Override
+    default @NotNull SeqView<E> concat(@NotNull SeqLike<? extends E> other) {
+        Objects.requireNonNull(other);
+        return other instanceof RandomAccess
+                ? new IndexedSeqViews.Concat<>(this, other)
+                : new SeqViews.Concat<>(this, other);
+    }
+
 
     //region Addition Operations
 
@@ -45,7 +62,6 @@ public interface IndexedSeqView<@Covariant E> extends SeqView<E>, RandomAccess {
     }
 
     //endregion
-
 
     @Override
     default @NotNull IndexedSeqView<E> slice(int beginIndex, int endIndex) {
@@ -65,6 +81,7 @@ public interface IndexedSeqView<@Covariant E> extends SeqView<E>, RandomAccess {
 
     @Override
     default @NotNull IndexedSeqView<E> updated(int index, E newValue) {
+        Conditions.checkElementIndex(index, this.size());
         return new IndexedSeqViews.Updated<>(this, index, newValue);
     }
 
