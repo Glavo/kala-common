@@ -1,4 +1,4 @@
-package org.glavo.kala.collection.internal;
+package org.glavo.kala.collection.internal.convert;
 
 import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.annotations.StaticClass;

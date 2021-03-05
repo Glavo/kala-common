@@ -1,8 +1,8 @@
 package org.glavo.kala.collection;
 
-import org.glavo.kala.collection.internal.AsJavaConvert;
+import org.glavo.kala.collection.internal.convert.AsJavaConvert;
 import org.glavo.kala.annotations.Covariant;
-import org.glavo.kala.collection.internal.FromJavaConvert;
+import org.glavo.kala.collection.internal.convert.FromJavaConvert;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.immutable.ImmutableSeq;
 import org.glavo.kala.collection.internal.view.SeqViews;

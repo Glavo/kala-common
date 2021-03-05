@@ -3,7 +3,7 @@ package org.glavo.kala.collection;
 import org.glavo.kala.Equatable;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.immutable.*;
-import org.glavo.kala.collection.internal.AsJavaConvert;
+import org.glavo.kala.collection.internal.convert.AsJavaConvert;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.base.Traversable;
 import org.glavo.kala.collection.internal.view.Views;

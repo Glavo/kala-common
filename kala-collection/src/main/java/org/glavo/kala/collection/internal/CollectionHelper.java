@@ -7,6 +7,7 @@ import org.glavo.kala.collection.base.Traversable;
 import org.glavo.kala.annotations.StaticClass;
 import org.glavo.kala.collection.immutable.ImmutableArray;
 import org.glavo.kala.collection.immutable.ImmutableSeq;
+import org.glavo.kala.collection.internal.convert.FromJavaConvert;
 import org.glavo.kala.collection.mutable.ArrayBuffer;
 import org.glavo.kala.collection.mutable.LinkedBuffer;
 import org.glavo.kala.collection.mutable.MutableArray;

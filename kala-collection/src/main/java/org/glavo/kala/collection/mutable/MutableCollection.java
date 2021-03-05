@@ -1,6 +1,6 @@
 package org.glavo.kala.collection.mutable;
 
-import org.glavo.kala.collection.internal.AsJavaConvert;
+import org.glavo.kala.collection.internal.convert.AsJavaConvert;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.Collection;
 import org.jetbrains.annotations.Contract;

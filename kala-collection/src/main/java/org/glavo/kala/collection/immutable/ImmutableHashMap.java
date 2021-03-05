@@ -2,7 +2,7 @@ package org.glavo.kala.collection.immutable;
 
 import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.collection.Map;
-import org.glavo.kala.collection.internal.FromJavaConvert;
+import org.glavo.kala.collection.internal.convert.FromJavaConvert;
 import org.glavo.kala.collection.base.MapIterator;
 import org.jetbrains.annotations.NotNull;
 
