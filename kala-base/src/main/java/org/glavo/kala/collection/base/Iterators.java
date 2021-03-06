@@ -958,11 +958,13 @@ public final class Iterators {
         public final E next() {
             if (source.hasNext()) {
                 return source.next();
-            } else {
-                final E l = this.last;
-                this.last = null;
-                return l;
             }
+            if (last == null) {
+                throw new NoSuchElementException();
+            }
+            final E l = this.last;
+            this.last = null;
+            return l;
         }
     }
 
