@@ -9,7 +9,7 @@ allprojects {
     group = "org.glavo"
     version = kalaVersion("0.14.0")
 
-    if(this == project(":benchmark")) {
+    if (this == project(":benchmark")) {
         return@allprojects
     }
 
@@ -47,10 +47,6 @@ allprojects {
                 }
             }
         }
-    }
-
-    tasks.compileTestJava {
-        options.release.set(11)
     }
 
     if (this != rootProject) {
@@ -100,16 +96,28 @@ allprojects {
             }
         }
     }
-
-    tasks.test {
-        useJUnitPlatform()
-        testLogging.showStandardStreams = true
-    }
 }
 
 dependencies {
     api(project(":kala-base"))
     api(project(":kala-collection"))
+}
+
+sourceSets {
+    test {
+        java {
+            setSrcDirs(listOf("src/test/java", "src/test/template"))
+        }
+    }
+}
+
+tasks.compileTestJava {
+    options.release.set(11)
+}
+
+tasks.test {
+    useJUnitPlatform()
+    testLogging.showStandardStreams = true
 }
 
 fun kalaVersion(base: String) =
