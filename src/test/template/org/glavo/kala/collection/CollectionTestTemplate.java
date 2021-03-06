@@ -5,12 +5,14 @@ import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.base.Iterators;
 import org.glavo.kala.collection.base.GenericArrays;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.commons.util.StringUtils;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -206,6 +208,39 @@ public interface CollectionTestTemplate {
     }
 
     @Test
+    default void containsAllTest() {
+        Collection<?> empty = factory().empty();
+        assertTrue(empty.containsAll(List.of()));
+        assertFalse(empty.containsAll(List.of("foo")));
+        assertTrue(empty.containsAll(new Object[0]));
+        assertTrue(empty.containsAll(new String[0]));
+        assertFalse(empty.containsAll(new Object[]{"foo"}));
+        assertFalse(empty.containsAll(new String[]{"foo"}));
+
+
+        Collection<? extends String> c1 = this.<String>factory().from(List.of(
+                "str1", "str2", "str3", "str4", "str5"
+        ));
+
+        assertTrue(c1.containsAll(List.of()));
+        assertTrue(c1.containsAll(new String[0]));
+        assertTrue(c1.containsAll(List.of("str1")));
+        assertTrue(c1.containsAll(new String[]{"str1"}));
+        assertTrue(c1.containsAll(List.of("str1", "str2")));
+        assertTrue(c1.containsAll(new String[]{"str1", "str2"}));
+        assertTrue(c1.containsAll(List.of("str2", "str5", "str4")));
+        assertTrue(c1.containsAll(new String[]{"str2", "str5", "str4"}));
+        assertFalse(c1.containsAll(Collections.singletonList((String) null)));
+        assertFalse(c1.containsAll(new String[]{null}));
+        assertFalse(c1.containsAll(Arrays.asList(null, "str1")));
+        assertFalse(c1.containsAll(new String[]{null, "str1"}));
+        assertFalse(c1.containsAll(Arrays.asList("", "str1")));
+        assertFalse(c1.containsAll(new String[]{"", "str1"}));
+        assertFalse(c1.containsAll(Arrays.asList("other", "str1")));
+        assertFalse(c1.containsAll(new String[]{"other", "str1"}));
+    }
+
+    @Test
     default void anyMatchTest() {
         assertFalse(factory().empty().anyMatch(e -> true));
         assertFalse(factory().empty().anyMatch(e -> false));
@@ -235,6 +270,29 @@ public interface CollectionTestTemplate {
         assertFalse(this.<Integer>factory().from(List.of(0, 1, 2, 3)).noneMatch(i -> i > 0));
         assertFalse(this.<Integer>factory().from(List.of(0, 1, 2, 3)).noneMatch(i -> i >= 0));
         assertTrue(this.<Integer>factory().from(List.of(0, 1, 2, 3)).noneMatch(i -> i > 3));
+    }
+
+    @Test
+    default void countTest() {
+        Collection<?> empty = factory().empty();
+        assertEquals(0, empty.count(Predicate.isEqual(true)));
+        assertEquals(0, empty.count(Predicate.isEqual(false)));
+
+        CollectionFactory<Integer, ?, ? extends Collection<? extends Integer>> factory = factory();
+        List<Predicate<Integer>> predicates = List.of(
+                it -> it > 0,
+                it -> it <= 0,
+                it -> it % 3 == 0
+        );
+
+        for (Integer[] data : data1()) {
+            for (Predicate<Integer> predicate : predicates) {
+                assertEquals(
+                        Arrays.stream(data).filter(predicate).count(),
+                        factory.from(data).count(predicate)
+                );
+            }
+        }
     }
 
     @Test
