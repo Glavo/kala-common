@@ -1,5 +1,6 @@
 package org.glavo.kala.collection.mutable;
 
+import org.glavo.kala.collection.internal.convert.AsJavaConvert;
 import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.collection.Map;
 import org.glavo.kala.control.Option;
@@ -16,6 +17,11 @@ public interface MutableMap<K, V> extends Map<K, V> {
     @Override
     default @NotNull String className() {
         return "MutableMap";
+    }
+
+    @Override
+    default java.util.@NotNull Map<K, V> asJava() {
+        return new AsJavaConvert.MutableMapAsJava<>(this);
     }
 
     default V getOrPut(K key, @NotNull Supplier<? extends V> defaultValue) {

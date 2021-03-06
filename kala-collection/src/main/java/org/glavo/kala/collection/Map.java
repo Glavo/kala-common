@@ -1,6 +1,7 @@
 package org.glavo.kala.collection;
 
 import org.glavo.kala.Equatable;
+import org.glavo.kala.collection.internal.convert.AsJavaConvert;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.function.CheckedBiConsumer;
 import org.glavo.kala.collection.base.MapIterator;
@@ -21,6 +22,10 @@ public interface Map<K, V> extends Equatable {
     }
 
     @NotNull MapIterator<K, V> iterator();
+
+    default java.util.@NotNull @UnmodifiableView Map<K, V> asJava() {
+        return new AsJavaConvert.MapAsJava<>(this);
+    }
 
     //region Size Info
 

@@ -3,6 +3,7 @@ package org.glavo.kala.collection.mutable;
 import org.glavo.kala.collection.SortedMap;
 import org.glavo.kala.collection.base.AbstractIterator;
 import org.glavo.kala.collection.base.AbstractMapIterator;
+import org.glavo.kala.collection.base.Iterators;
 import org.glavo.kala.collection.base.MapIterator;
 import org.glavo.kala.collection.internal.convert.AsJavaConvert;
 import org.glavo.kala.control.Option;
@@ -34,8 +35,12 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
         return node == null ? MapIterator.empty() : new Itr<>(node);
     }
 
-    //endregion
+    @Override
+    public final @NotNull Map<K, V> asJava() {
+        return new AsJava<>(this);
+    }
 
+    //endregion
 
     @Override
     public final V get(K key) {
@@ -372,6 +377,10 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
     static final class NodeItr<K, V> extends AbstractIterator<Node<K, V>> {
         private Node<K, V> node;
 
+        NodeItr(Node<K, V> node) {
+            this.node = node;
+        }
+
         @Override
         public boolean hasNext() {
             return node != null;
@@ -409,5 +418,21 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
             super(source);
         }
 
+        @Override
+        public @NotNull Set<Entry<K, V>> entrySet() {
+            return new EntrySet<>(source);
+        }
+
+        static final class EntrySet<K, V> extends AsJavaConvert.MapAsJava.EntrySet<K, V, MutableTreeMap<K, V>> {
+            EntrySet(MutableTreeMap<K, V> source) {
+                super(source);
+            }
+
+            @Override
+            @SuppressWarnings({"unchecked", "rawtypes"})
+            public @NotNull Iterator<Entry<K, V>> iterator() {
+                return source.root == null ? Iterators.empty() : (Iterator) new NodeItr<>(source.root);
+            }
+        }
     }
 }
