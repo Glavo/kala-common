@@ -12,7 +12,12 @@ import java.util.function.Supplier;
 import static org.junit.jupiter.api.Assertions.*;
 
 // See also: https://github.com/scala/scala/blob/8cc248dc1305df4c17bb6b5738b700b60c9b5437/test/junit/scala/collection/mutable/HashMapTest.scala
-public class MutableHashMapTest {
+public class MutableHashMapTest implements MutableMapTestTemplate {
+    @Override
+    public <K, V> MutableHashMap<K, V> create() {
+        return new MutableHashMap<>();
+    }
+
     @Test
     void ofTest() {
         assertEquals(0, MutableHashMap.of().size());
