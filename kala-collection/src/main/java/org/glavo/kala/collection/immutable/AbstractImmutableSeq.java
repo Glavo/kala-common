@@ -439,6 +439,11 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
 
     @Override
     public int hashCode() {
-        return Iterators.hash(iterator()) + Collection.SEQ_HASH_MAGIC;
+        return Seq.hashCode(this);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Seq<?> && Seq.equals(this, (Seq<?>) obj);
     }
 }

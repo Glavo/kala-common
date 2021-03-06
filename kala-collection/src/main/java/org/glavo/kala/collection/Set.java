@@ -7,6 +7,7 @@ import org.glavo.kala.collection.base.Iterators;
 import org.glavo.kala.collection.internal.view.SetViews;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Predicate;
@@ -17,13 +18,30 @@ public interface Set<E> extends Collection<E>, SetLike<E> {
         return CollectionFactory.narrow(ImmutableSet.factory());
     }
 
+    static int hashCode(@NotNull Set<?> set) {
+        int h = SET_HASH_MAGIC;
+        for (Object e : set) {
+            if (e != null) {
+                h += e.hashCode();
+            }
+        }
+        return h;
+    }
+
+    static boolean equals(@NotNull Set<?> set1, @NotNull Set<?> set2) {
+        if (!set1.canEqual(set2) || !set2.canEqual(set1)) {
+            return false;
+        }
+        return set1.size() == set2.size() && set1.containsAll(set2);
+    }
+
     @Override
     default boolean contains(Object value) {
         return Iterators.contains(iterator(), value);
     }
 
     default Predicate<E> asPredicate() {
-        return this::contains;
+        return (Predicate<E> & Serializable) this::contains;
     }
 
     //region Collection Operations
@@ -52,7 +70,7 @@ public interface Set<E> extends Collection<E>, SetLike<E> {
     }
 
     @Override
-    default @NotNull java.util.Set<E> asJava() {
+    default java.util.@NotNull Set<E> asJava() {
         return new AsJavaConvert.SetAsJava<>(this);
     }
 

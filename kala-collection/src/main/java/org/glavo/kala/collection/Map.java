@@ -17,6 +17,32 @@ public interface Map<K, V> extends Equatable {
 
     int HASH_MAGIC = 124549981;
 
+    static int hashCode(@NotNull Map<?, ?> map) {
+        return map.iterator().hash() + Map.HASH_MAGIC;
+    }
+
+    @SuppressWarnings("unchecked")
+    static boolean equals(@NotNull Map<?, ?> map1, @NotNull Map<?, ?> map2) {
+        if (!map1.canEqual(map2) || !map2.canEqual(map1)) {
+            return false;
+        }
+        if (map1.size() != map2.size()) {
+            return false;
+        }
+
+        MapIterator<?, ?> it = map1.iterator();
+        try {
+            while (it.hasNext()) {
+                if (!((Map<Object, ?>) map2).getOption(it.nextKey()).contains(it.getValue())) {
+                    return false;
+                }
+            }
+        } catch (ClassCastException e) {
+            return false;
+        }
+        return true;
+    }
+
     default @NotNull String className() {
         return "Map";
     }

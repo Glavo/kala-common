@@ -36,25 +36,6 @@ public abstract class AbstractImmutableSet<@Covariant E> extends AbstractImmutab
         return factory.build(builder);
     }
 
-    @Override
-    public int hashCode() {
-        int h = SET_HASH_MAGIC;
-        for (E e : this) {
-            if (e != null) {
-                h += e.hashCode();
-            }
-        }
-        return h;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof Set<?>) || !canEqual(obj) || !((Set<?>) obj).canEqual(this)) {
-            return false;
-        }
-        return containsAll(((Set<?>) obj));
-    }
-
     protected final <To extends ImmutableSet<E>> To addedImpl(E value) {
         if (contains(value)) {
             return (To) this;
@@ -80,5 +61,15 @@ public abstract class AbstractImmutableSet<@Covariant E> extends AbstractImmutab
 
     protected final <To extends ImmutableSet<E>> To addedAllImpl(E @NotNull [] values) {
         return addedAllImpl(ArraySeq.wrap(values));
+    }
+
+    @Override
+    public int hashCode() {
+        return Set.hashCode(this);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Set<?> && Set.equals(this, ((Set<?>) obj));
     }
 }
