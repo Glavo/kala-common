@@ -1,7 +1,7 @@
 package org.glavo.kala.collection.mutable;
 
 import org.glavo.kala.collection.factory.CollectionFactory;
-import org.glavo.kala.collection.immutable.ImmutableInternal;
+import org.glavo.kala.collection.immutable.ImmutableList;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,7 +14,7 @@ import java.util.function.IntFunction;
 import java.util.function.Supplier;
 
 
-public final class LinkedBuffer<E> extends ImmutableInternal.LinkedBufferImpl<E>
+public final class LinkedBuffer<E> extends ImmutableList.Builder<E>
         implements MutableSeqOps<E, LinkedBuffer<?>, LinkedBuffer<E>>, MutableStack<E>, Serializable {
 
     private static final long serialVersionUID = 4403781063629141093L;
