@@ -4,18 +4,18 @@ import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.annotations.StaticClass;
 import org.glavo.kala.collection.IndexedSeq;
 import org.glavo.kala.collection.Seq;
-import org.glavo.kala.collection.mutable.Buffer;
-import org.glavo.kala.collection.mutable.MutableCollection;
-import org.glavo.kala.collection.mutable.MutableSeq;
-import org.glavo.kala.collection.mutable.MutableSet;
+import org.glavo.kala.collection.mutable.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import java.util.stream.Stream;
 
+@SuppressWarnings("ALL")
 @StaticClass
 public final class AsJavaConvert {
     public static class CollectionAsJava<@Covariant E, C extends org.glavo.kala.collection.Collection<E>>
@@ -362,7 +362,6 @@ public final class AsJavaConvert {
         }
     }
 
-    /*
     public static class MapAsJava<K, V, C extends org.glavo.kala.collection.Map<K, V>> extends AbstractMap<K, V> {
 
         protected final C source;
@@ -372,8 +371,120 @@ public final class AsJavaConvert {
         }
 
         @Override
+        public final boolean isEmpty() {
+            return source.isEmpty();
+        }
+
+        @Override
+        public final int size() {
+            return source.size();
+        }
+
+        @Override
+        public final boolean containsKey(Object key) {
+            try {
+                return source.containsKey((K) key);
+            } catch (ClassCastException ignored) {
+                return false;
+            }
+        }
+
+        @Override
+        public boolean containsValue(Object value) {
+            try {
+                return source.containsValue((V) value);
+            } catch (ClassCastException ignored) {
+                return false;
+            }
+        }
+
+        @Override
+        public final V get(Object key) {
+            try {
+                return source.getOrNull((K) key);
+            } catch (ClassCastException ignored) {
+                return null;
+            }
+        }
+
+
+        @Override
         public @NotNull Set<Entry<K, V>> entrySet() {
+            return new EntrySet<>(source);
+        }
+
+        @SuppressWarnings({"unchecked", "rawtypes"})
+        public static class EntrySet<K, V, M extends org.glavo.kala.collection.Map<K, V>>
+                extends AbstractSet<Entry<K, V>> {
+            protected final M source;
+
+            public EntrySet(M source) {
+                this.source = source;
+            }
+
+            @Override
+            public @NotNull Iterator<Entry<K, V>> iterator() {
+                return ((Iterator) source.iterator());
+            }
+
+            @Override
+            public final boolean isEmpty() {
+                return source.isEmpty();
+            }
+
+            @Override
+            public final int size() {
+                return source.size();
+            }
+
+            @Override
+            public final boolean contains(Object o) {
+                if (!(o instanceof Entry<?, ?>)) {
+                    return false;
+                }
+                Entry<?, ?> entry = (Entry<?, ?>) o;
+                try {
+                    return source.getOption((K) entry.getKey()).contains(entry.getValue());
+                } catch (Throwable e) {
+                    return false;
+                }
+            }
         }
     }
-    */
+
+    public static class MutableMapAsJava<K, V, C extends MutableMap<K, V>> extends MapAsJava<K, V, C> {
+        public MutableMapAsJava(@NotNull C source) {
+            super(source);
+        }
+
+        @Override
+        public @Nullable V put(K key, V value) {
+            return source.put(key, value).getOrNull();
+        }
+
+        @Override
+        public void putAll(@NotNull Map<? extends K, ? extends V> m) {
+            source.putAll(m);
+        }
+
+        @Override
+        public V remove(Object key) {
+            return source.remove(((K) key)).getOrNull();
+        }
+
+        @Override
+        public void clear() {
+            source.clear();
+        }
+
+        @Override
+        public boolean replace(K key, V oldValue, V newValue) {
+            return source.replace(key, oldValue, newValue);
+        }
+
+        @Override
+        public void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
+            source.replaceAll(function);
+        }
+    }
 }

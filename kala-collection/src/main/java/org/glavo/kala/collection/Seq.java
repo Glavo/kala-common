@@ -1,5 +1,6 @@
 package org.glavo.kala.collection;
 
+import org.glavo.kala.collection.base.Iterators;
 import org.glavo.kala.collection.internal.convert.AsJavaConvert;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.internal.convert.FromJavaConvert;
@@ -85,6 +86,18 @@ public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E> {
 
     //endregion
 
+    static int hashCode(@NotNull Seq<?> seq) {
+        return Iterators.hash(seq.iterator()) + SEQ_HASH_MAGIC;
+    }
+
+    static boolean equals(@NotNull Seq<?> seq1, @NotNull Seq<?> seq2) {
+        if (!seq1.canEqual(seq2) || !seq2.canEqual(seq1)) {
+            return false;
+        }
+
+        return seq1.sameElements(seq2);
+    }
+
     //region Collection Operations
 
     @Override
@@ -101,8 +114,6 @@ public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E> {
     default @NotNull SeqView<E> view() {
         return new SeqViews.Of<>(this);
     }
-
-
 
     @Override
     default @NotNull @UnmodifiableView List<E> asJava() {

@@ -8,6 +8,11 @@ plugins {
 allprojects {
     group = "org.glavo"
     version = kalaVersion("0.14.0")
+
+    if(this == project(":benchmark")) {
+        return@allprojects
+    }
+
     apply {
         plugin("java-library")
         plugin("maven-publish")
