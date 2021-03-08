@@ -9,6 +9,7 @@ import org.glavo.kala.collection.base.Traversable;
 import org.glavo.kala.collection.internal.view.Views;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnmodifiableView;
 
 public interface Collection<@Covariant E> extends Traversable<E>, CollectionLike<E>, Equatable {
 
@@ -45,7 +46,7 @@ public interface Collection<@Covariant E> extends Traversable<E>, CollectionLike
         return new Views.Of<>(this);
     }
 
-    default @NotNull java.util.Collection<E> asJava() {
+    default java.util.@NotNull @UnmodifiableView Collection<E> asJava() {
         return new AsJavaConvert.CollectionAsJava<>(this);
     }
 

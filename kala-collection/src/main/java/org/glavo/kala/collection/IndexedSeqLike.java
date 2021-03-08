@@ -21,7 +21,6 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
 
     //region Collection Operations
 
-
     @Override
     default @NotNull Iterator<E> iterator() {
         final int size = size();
@@ -663,7 +662,6 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
 
         return buffer;
     }
-
 
     @Override
     default void forEach(@NotNull Consumer<? super E> action) {

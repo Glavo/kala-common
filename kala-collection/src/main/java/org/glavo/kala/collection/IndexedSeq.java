@@ -51,7 +51,6 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, IndexedSeqLike<E>, Ran
         return IndexedSeq.<E>factory().from(values);
     }
 
-
     //endregion
 
     @Override

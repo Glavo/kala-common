@@ -77,7 +77,7 @@ public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E> {
     static <E> @NotNull Seq<E> wrapJava(java.util.@NotNull List<? extends E> source) {
         Objects.requireNonNull(source);
         if (source instanceof AsJavaConvert.SeqAsJava<?, ?>) {
-            return ((AsJavaConvert.SeqAsJava<E, ?>) source).collection;
+            return ((AsJavaConvert.SeqAsJava<E, ?>) source).source;
         }
         return source instanceof RandomAccess
                 ? new FromJavaConvert.IndexedSeqFromJava<>((List<E>) source)

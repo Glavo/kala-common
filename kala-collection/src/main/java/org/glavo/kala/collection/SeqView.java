@@ -61,6 +61,11 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqOps<E
         return new SeqViews.Slice<>(this, beginIndex, endIndex);
     }
 
+    @Override
+    default @NotNull SeqView<E> sliceView(int beginIndex, int endIndex) {
+        return slice(beginIndex, endIndex);
+    }
+
     default @NotNull SeqView<E> drop(int n) {
         return new SeqViews.Drop<>(this, n);
     }

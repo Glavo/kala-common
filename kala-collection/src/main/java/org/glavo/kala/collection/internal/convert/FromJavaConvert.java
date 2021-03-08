@@ -17,41 +17,40 @@ import java.util.stream.Stream;
 @StaticClass
 public final class FromJavaConvert {
     public static class CollectionFromJava<E> extends org.glavo.kala.collection.AbstractCollection<E> implements org.glavo.kala.collection.Collection<E> {
+        protected final @NotNull java.util.Collection<E> source;
 
-        protected final @NotNull java.util.Collection<E> collection;
-
-        public CollectionFromJava(@NotNull java.util.Collection<E> collection) {
-            this.collection = collection;
+        public CollectionFromJava(@NotNull java.util.Collection<E> source) {
+            this.source = source;
         }
 
         @Override
         public @NotNull Iterator<E> iterator() {
-            return collection.iterator();
+            return source.iterator();
         }
 
         @Override
         public @NotNull Spliterator<E> spliterator() {
-            return collection.spliterator();
+            return source.spliterator();
         }
 
         @Override
         public @NotNull Stream<E> stream() {
-            return collection.stream();
+            return source.stream();
         }
 
         @Override
         public @NotNull Stream<E> parallelStream() {
-            return collection.parallelStream();
+            return source.parallelStream();
         }
 
         @Override
         public @NotNull java.util.Collection<E> asJava() {
-            return collection;
+            return source;
         }
 
         @Override
         public int size() {
-            return collection.size();
+            return source.size();
         }
 
         @Override
@@ -61,8 +60,7 @@ public final class FromJavaConvert {
     }
 
     public static class SeqFromJava<E> implements Seq<E> {
-        @NotNull
-        protected final List<E> source;
+        protected @NotNull final List<E> source;
 
         public SeqFromJava(@NotNull List<E> source) {
             this.source = source;

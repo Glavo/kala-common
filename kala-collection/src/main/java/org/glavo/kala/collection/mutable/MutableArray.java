@@ -1,5 +1,6 @@
 package org.glavo.kala.collection.mutable;
 
+import org.glavo.kala.collection.ArraySliceView;
 import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.collection.base.Traversable;
 import org.glavo.kala.collection.factory.CollectionFactory;
@@ -207,6 +208,11 @@ public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Index
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new IndexOutOfBoundsException(e.getMessage());
         }
+    }
+
+    @Override
+    public final @NotNull MutableArraySliceView<E> sliceView(int beginIndex, int endIndex) {
+        return new MutableArraySliceView<>(elements, beginIndex, endIndex);
     }
 
     @Override

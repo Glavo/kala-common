@@ -20,60 +20,59 @@ import java.util.stream.Stream;
 public final class AsJavaConvert {
     public static class CollectionAsJava<@Covariant E, C extends org.glavo.kala.collection.Collection<E>>
             extends java.util.AbstractCollection<E> {
-        @NotNull
-        protected final C collection;
+        protected final @NotNull C source;
 
-        public CollectionAsJava(@NotNull C collection) {
-            this.collection = collection;
+        public CollectionAsJava(@NotNull C source) {
+            this.source = source;
         }
 
         @Override
         public final boolean isEmpty() {
-            return collection.isEmpty();
+            return source.isEmpty();
         }
 
         @Override
         public final int size() {
-            return collection.size();
+            return source.size();
         }
 
         @Override
         public final @NotNull Iterator<E> iterator() {
-            return collection.iterator();
+            return source.iterator();
         }
 
         @Override
         public final @NotNull Spliterator<E> spliterator() {
-            return collection.spliterator();
+            return source.spliterator();
         }
 
         @Override
         public final @NotNull Stream<E> stream() {
-            return collection.stream();
+            return source.stream();
         }
 
         @Override
         public @NotNull Stream<E> parallelStream() {
-            return collection.parallelStream();
+            return source.parallelStream();
         }
 
         @Override
         public final boolean contains(Object o) {
-            return collection.contains(o);
+            return source.contains(o);
         }
 
         @Override
         public final boolean containsAll(@NotNull java.util.Collection<?> c) {
-            return collection.containsAll(c);
+            return source.containsAll(c);
         }
 
         @Override
         public final Object @NotNull [] toArray() {
-            return collection.toArray();
+            return source.toArray();
         }
 
         public final <T> T @NotNull [] toArray(@NotNull IntFunction<T[]> generator) {
-            return collection.toArray(generator);
+            return source.toArray(generator);
         }
 
         @Override
@@ -91,16 +90,16 @@ public final class AsJavaConvert {
 
         @Override
         public void forEach(@NotNull Consumer<? super E> action) {
-            collection.forEach(action);
+            source.forEach(action);
         }
 
     }
 
     public static class SeqAsJava<E, C extends Seq<E>> extends AbstractList<E> implements List<E> {
-        public final C collection;
+        public final C source;
 
-        public SeqAsJava(@NotNull C collection) {
-            this.collection = collection;
+        public SeqAsJava(@NotNull C source) {
+            this.source = source;
         }
 
         @Override
@@ -110,53 +109,51 @@ public final class AsJavaConvert {
 
         @Override
         public E get(int index) {
-            return collection.get(index);
+            return source.get(index);
         }
 
         @Override
         public int indexOf(Object o) {
-            return collection.indexOf(o);
+            return source.indexOf(o);
         }
 
         @Override
         public int lastIndexOf(Object o) {
-            return collection.lastIndexOf(o);
+            return source.lastIndexOf(o);
         }
 
         @Override
         public int size() {
-            return collection.size();
+            return source.size();
         }
 
         @Override
         public boolean isEmpty() {
-            return collection.isEmpty();
+            return source.isEmpty();
         }
 
         @Override
         public boolean contains(Object o) {
-            return collection.contains(o);
+            return source.contains(o);
         }
 
         @Override
         public boolean containsAll(@NotNull java.util.Collection<?> c) {
-            return collection.containsAll((c));
+            return source.containsAll((c));
         }
 
         public <T> T[] toArray(IntFunction<T[]> generator) {
-            return collection.toArray(generator);
+            return source.toArray(generator);
         }
 
-        @NotNull
         @Override
-        public Object[] toArray() {
-            return collection.toArray();
+        public Object @NotNull [] toArray() {
+            return source.toArray();
         }
 
-        @NotNull
         @Override
         @SuppressWarnings("unchecked")
-        public final <T> T[] toArray(@NotNull T[] a) {
+        public final <T> T @NotNull [] toArray(@NotNull T[] a) {
             Objects.requireNonNull(a);
 
             T[] arr = toArray(i -> (T[]) Array.newInstance(a.getClass().getComponentType(), i));
@@ -167,34 +164,33 @@ public final class AsJavaConvert {
             return a;
         }
 
-        @NotNull
         @Override
-        public Iterator<E> iterator() {
-            return collection.iterator();
+        public @NotNull Iterator<E> iterator() {
+            return source.iterator();
         }
 
         @Override
         public Spliterator<E> spliterator() {
-            return collection.spliterator();
+            return source.spliterator();
         }
 
         @Override
         public Stream<E> stream() {
-            return collection.stream();
+            return source.stream();
         }
 
         @Override
         public Stream<E> parallelStream() {
-            return collection.parallelStream();
+            return source.parallelStream();
         }
 
         @Override
         public void forEach(Consumer<? super E> action) {
-            collection.forEach(action);
+            source.forEach(action);
         }
     }
 
-    public static class IndexedSeqAsJava<E, C extends IndexedSeq<E>> extends SeqAsJava<E, C> implements RandomAccess {
+    public static class IndexedSeqAsJava<E, C extends Seq<E>> extends SeqAsJava<E, C> implements RandomAccess {
         public IndexedSeqAsJava(@NotNull C collection) {
             super(collection);
         }
@@ -215,140 +211,140 @@ public final class AsJavaConvert {
 
     public static class MutableCollectionAsJava<E, C extends MutableCollection<E>>
             extends java.util.AbstractCollection<E> {
-        protected final C collection;
+        protected final C source;
 
-        public MutableCollectionAsJava(C collection) {
-            this.collection = collection;
+        public MutableCollectionAsJava(C source) {
+            this.source = source;
         }
 
         @Override
         public int size() {
-            return collection.size();
+            return source.size();
         }
 
         public <T> T[] toArray(IntFunction<T[]> generator) {
-            return collection.toArray(generator);
+            return source.toArray(generator);
         }
 
         @NotNull
         @Override
         public Iterator<E> iterator() {
-            return collection.iterator();
+            return source.iterator();
         }
 
         @Override
         public Spliterator<E> spliterator() {
-            return collection.spliterator();
+            return source.spliterator();
         }
 
         @Override
         public Stream<E> stream() {
-            return collection.stream();
+            return source.stream();
         }
 
         @Override
         public Stream<E> parallelStream() {
-            return collection.parallelStream();
+            return source.parallelStream();
         }
 
         @Override
         public void forEach(Consumer<? super E> action) {
-            collection.forEach(action);
+            source.forEach(action);
         }
     }
 
     public static class MutableSeqAsJava<E, C extends MutableSeq<E>>
             extends SeqAsJava<E, C> {
-        public MutableSeqAsJava(@NotNull C collection) {
-            super(collection);
+        public MutableSeqAsJava(@NotNull C source) {
+            super(source);
         }
 
         @Override
         public E set(int index, E element) {
-            E ans = collection.get(index);
-            collection.set(index, element);
+            E ans = source.get(index);
+            source.set(index, element);
             return ans;
         }
 
         @Override
         public void sort(Comparator<? super E> c) {
-            collection.sort(c);
+            source.sort(c);
         }
 
     }
 
     public static class MutableIndexedSeqAsJava<E, C extends MutableSeq<E> & IndexedSeq<E>>
             extends MutableSeqAsJava<E, C> implements RandomAccess {
-        public MutableIndexedSeqAsJava(@NotNull C collection) {
-            super(collection);
+        public MutableIndexedSeqAsJava(@NotNull C source) {
+            super(source);
         }
     }
 
     public static class BufferAsJava<E, C extends Buffer<E>> extends MutableSeqAsJava<E, C> {
-        public BufferAsJava(@NotNull C collection) {
-            super(collection);
+        public BufferAsJava(@NotNull C source) {
+            super(source);
         }
 
         @Override
         public boolean add(E e) {
-            collection.append(e);
+            source.append(e);
             return true;
         }
 
         @Override
         public void add(int index, E element) {
-            collection.insert(index, element);
+            source.insert(index, element);
         }
 
         @Override
         public boolean addAll(int index, @NotNull java.util.Collection<? extends E> c) {
-            collection.insertAll(index, c);
+            source.insertAll(index, c);
             return !c.isEmpty();
         }
 
         @Override
         public E remove(int index) {
-            return collection.removeAt(index);
+            return source.removeAt(index);
         }
 
         @Override
         public void clear() {
-            collection.clear();
+            source.clear();
         }
     }
 
     public static class IndexedBufferAsJava<E, C extends Buffer<E> & IndexedSeq<E>>
             extends BufferAsJava<E, C> implements RandomAccess {
-        public IndexedBufferAsJava(@NotNull C collection) {
-            super(collection);
+        public IndexedBufferAsJava(@NotNull C source) {
+            super(source);
         }
     }
 
     public static class MutableSetAsJava<E, C extends MutableSet<E>>
             extends SetAsJava<E, C> implements java.util.Set<E> {
-        public MutableSetAsJava(C collection) {
-            super(collection);
+        public MutableSetAsJava(C source) {
+            super(source);
         }
 
         @Override
         public boolean add(E e) {
-            return collection.add(e);
+            return source.add(e);
         }
 
         @Override
         @SuppressWarnings("unchecked")
         public boolean remove(Object o) {
-            return collection.remove((E) o);
+            return source.remove((E) o);
         }
 
         @Override
         public boolean addAll(@NotNull java.util.Collection<? extends E> c) {
-            return collection.addAll(c);
+            return source.addAll(c);
         }
 
         @Override
         public boolean removeAll(java.util.@NotNull Collection<?> c) {
-            return collection.removeAll(c);
+            return source.removeAll(c);
         }
 
         @Override
@@ -358,7 +354,7 @@ public final class AsJavaConvert {
 
         @Override
         public final void clear() {
-            collection.clear();
+            source.clear();
         }
     }
 

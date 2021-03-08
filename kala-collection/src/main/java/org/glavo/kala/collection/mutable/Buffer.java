@@ -84,7 +84,7 @@ public interface Buffer<E> extends MutableSeq<E>, Growable<E> {
     static <E> @NotNull Buffer<E> wrapJava(@NotNull List<E> list) {
         Objects.requireNonNull(list);
         if (list instanceof AsJavaConvert.BufferAsJava<?, ?>) {
-            return ((AsJavaConvert.BufferAsJava<E, Buffer<E>>) list).collection;
+            return ((AsJavaConvert.BufferAsJava<E, Buffer<E>>) list).source;
         }
         return list instanceof RandomAccess
                 ? new FromJavaConvert.IndexedBufferFromJava<>(list)

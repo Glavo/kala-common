@@ -63,6 +63,11 @@ public interface IndexedSeqView<@Covariant E> extends SeqView<E>, IndexedSeqLike
     }
 
     @Override
+    default @NotNull IndexedSeqView<E> sliceView(int beginIndex, int endIndex) {
+        return slice(beginIndex, endIndex);
+    }
+
+    @Override
     default @NotNull IndexedSeqView<E> drop(int n) {
         return new IndexedSeqViews.Drop<>(this, n);
     }
