@@ -1,5 +1,6 @@
 package org.glavo.kala.collection.mutable;
 
+import org.glavo.kala.Conditions;
 import org.glavo.kala.collection.ArraySliceView;
 import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.collection.base.Traversable;
@@ -212,6 +213,7 @@ public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Index
 
     @Override
     public final @NotNull MutableArraySliceView<E> sliceView(int beginIndex, int endIndex) {
+        Conditions.checkPositionIndices(beginIndex, endIndex, elements.length);
         return new MutableArraySliceView<>(elements, beginIndex, endIndex);
     }
 
