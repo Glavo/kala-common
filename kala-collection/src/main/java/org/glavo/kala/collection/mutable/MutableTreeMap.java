@@ -7,6 +7,7 @@ import org.glavo.kala.collection.base.Iterators;
 import org.glavo.kala.collection.base.MapIterator;
 import org.glavo.kala.collection.internal.convert.AsJavaConvert;
 import org.glavo.kala.control.Option;
+import org.glavo.kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,9 +19,360 @@ import java.util.function.Supplier;
 
 public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.Node<K, V>>
         implements MutableMap<K, V>, SortedMap<K, V> {
+
+    public MutableTreeMap() {
+        this(null);
+    }
+
     public MutableTreeMap(Comparator<? super K> comparator) {
         super(comparator);
     }
+
+    //region Static Factories
+
+    public static <K extends Comparable<? super K>, V> @NotNull MutableTreeMap<K, V> of() {
+        return new MutableTreeMap<>();
+    }
+
+    public static <K extends Comparable<? super K>, V> @NotNull MutableTreeMap<K, V> of(K k1, V v1) {
+        MutableTreeMap<K, V> m = new MutableTreeMap<>();
+        m.set(k1, v1);
+        return m;
+    }
+
+    public static <K extends Comparable<? super K>, V> @NotNull MutableTreeMap<K, V> of(
+            K k1, V v1,
+            K k2, V v2
+    ) {
+        MutableTreeMap<K, V> m = new MutableTreeMap<>();
+        m.set(k1, v1);
+        m.set(k2, v2);
+        return m;
+    }
+
+    public static <K extends Comparable<? super K>, V> @NotNull MutableTreeMap<K, V> of(
+            K k1, V v1,
+            K k2, V v2,
+            K k3, V v3
+    ) {
+        MutableTreeMap<K, V> m = new MutableTreeMap<>();
+        m.set(k1, v1);
+        m.set(k2, v2);
+        m.set(k3, v3);
+        return m;
+    }
+
+    public static <K extends Comparable<? super K>, V> @NotNull MutableTreeMap<K, V> of(
+            K k1, V v1,
+            K k2, V v2,
+            K k3, V v3,
+            K k4, V v4
+    ) {
+        MutableTreeMap<K, V> m = new MutableTreeMap<>();
+        m.set(k1, v1);
+        m.set(k2, v2);
+        m.set(k3, v3);
+        m.set(k4, v4);
+        return m;
+    }
+
+    public static <K extends Comparable<? super K>, V> @NotNull MutableTreeMap<K, V> of(
+            K k1, V v1,
+            K k2, V v2,
+            K k3, V v3,
+            K k4, V v4,
+            K k5, V v5
+    ) {
+        MutableTreeMap<K, V> m = new MutableTreeMap<>();
+        m.set(k1, v1);
+        m.set(k2, v2);
+        m.set(k3, v3);
+        m.set(k4, v4);
+        m.set(k5, v5);
+        return m;
+    }
+
+    public static <K, V> @NotNull MutableTreeMap<K, V> of(Comparator<? super K> comparator) {
+        return new MutableTreeMap<>(comparator);
+    }
+
+    public static <K, V> @NotNull MutableTreeMap<K, V> of(Comparator<? super K> comparator, K k1, V v1) {
+        MutableTreeMap<K, V> m = new MutableTreeMap<>(comparator);
+        m.set(k1, v1);
+        return m;
+    }
+
+    public static <K, V> @NotNull MutableTreeMap<K, V> of(
+            Comparator<? super K> comparator,
+            K k1, V v1,
+            K k2, V v2
+    ) {
+        MutableTreeMap<K, V> m = new MutableTreeMap<>(comparator);
+        m.set(k1, v1);
+        m.set(k2, v2);
+        return m;
+    }
+
+    public static <K, V> @NotNull MutableTreeMap<K, V> of(
+            Comparator<? super K> comparator,
+            K k1, V v1,
+            K k2, V v2,
+            K k3, V v3
+    ) {
+        MutableTreeMap<K, V> m = new MutableTreeMap<>(comparator);
+        m.set(k1, v1);
+        m.set(k2, v2);
+        m.set(k3, v3);
+        return m;
+    }
+
+    public static <K, V> @NotNull MutableTreeMap<K, V> of(
+            Comparator<? super K> comparator,
+            K k1, V v1,
+            K k2, V v2,
+            K k3, V v3,
+            K k4, V v4
+    ) {
+        MutableTreeMap<K, V> m = new MutableTreeMap<>(comparator);
+        m.set(k1, v1);
+        m.set(k2, v2);
+        m.set(k3, v3);
+        m.set(k4, v4);
+        return m;
+    }
+
+    public static <K, V> @NotNull MutableTreeMap<K, V> of(
+            Comparator<? super K> comparator,
+            K k1, V v1,
+            K k2, V v2,
+            K k3, V v3,
+            K k4, V v4,
+            K k5, V v5
+    ) {
+        MutableTreeMap<K, V> m = new MutableTreeMap<>(comparator);
+        m.set(k1, v1);
+        m.set(k2, v2);
+        m.set(k3, v3);
+        m.set(k4, v4);
+        m.set(k5, v5);
+        return m;
+    }
+
+    public static <K extends Comparable<? super K>, V> @NotNull MutableTreeMap<K, V> ofEntries() {
+        return new MutableTreeMap<>();
+    }
+
+    public static <K extends Comparable<? super K>, V> @NotNull MutableTreeMap<K, V> ofEntries(
+            @NotNull Tuple2<? extends K, ? extends V> entry1
+    ) {
+        MutableTreeMap<K, V> res = new MutableTreeMap<>();
+        res.set(entry1);
+        return res;
+    }
+
+    public static <K extends Comparable<? super K>, V> @NotNull MutableTreeMap<K, V> ofEntries(
+            @NotNull Tuple2<? extends K, ? extends V> entry1,
+            @NotNull Tuple2<? extends K, ? extends V> entry2
+    ) {
+        MutableTreeMap<K, V> res = new MutableTreeMap<>();
+        res.set(entry1);
+        res.set(entry2);
+        return res;
+    }
+
+    public static <K extends Comparable<? super K>, V> @NotNull MutableTreeMap<K, V> ofEntries(
+            @NotNull Tuple2<? extends K, ? extends V> entry1,
+            @NotNull Tuple2<? extends K, ? extends V> entry2,
+            @NotNull Tuple2<? extends K, ? extends V> entry3
+    ) {
+        MutableTreeMap<K, V> res = new MutableTreeMap<>();
+        res.set(entry1);
+        res.set(entry2);
+        res.set(entry3);
+        return res;
+    }
+
+    public static <K extends Comparable<? super K>, V> @NotNull MutableTreeMap<K, V> ofEntries(
+            @NotNull Tuple2<? extends K, ? extends V> entry1,
+            @NotNull Tuple2<? extends K, ? extends V> entry2,
+            @NotNull Tuple2<? extends K, ? extends V> entry3,
+            @NotNull Tuple2<? extends K, ? extends V> entry4
+    ) {
+        MutableTreeMap<K, V> res = new MutableTreeMap<>();
+        res.set(entry1);
+        res.set(entry2);
+        res.set(entry3);
+        res.set(entry4);
+        return res;
+    }
+
+    public static <K extends Comparable<? super K>, V> @NotNull MutableTreeMap<K, V> ofEntries(
+            @NotNull Tuple2<? extends K, ? extends V> entry1,
+            @NotNull Tuple2<? extends K, ? extends V> entry2,
+            @NotNull Tuple2<? extends K, ? extends V> entry3,
+            @NotNull Tuple2<? extends K, ? extends V> entry4,
+            @NotNull Tuple2<? extends K, ? extends V> entry5
+    ) {
+        MutableTreeMap<K, V> res = new MutableTreeMap<>();
+        res.set(entry1);
+        res.set(entry2);
+        res.set(entry3);
+        res.set(entry4);
+        res.set(entry5);
+        return res;
+    }
+
+    @SafeVarargs
+    public static <K extends Comparable<? super K>, V> @NotNull MutableTreeMap<K, V> ofEntries(Tuple2<? extends K, ? extends V> @NotNull ... entries) {
+        MutableTreeMap<K, V> res = new MutableTreeMap<>();
+        for (Tuple2<? extends K, ? extends V> entry : entries) {
+            res.set(entry);
+        }
+        return res;
+    }
+
+    public static <K, V> @NotNull MutableTreeMap<K, V> ofEntries(Comparator<? super K> comparator) {
+        return new MutableTreeMap<>(comparator);
+    }
+
+    public static <K, V> @NotNull MutableTreeMap<K, V> ofEntries(
+            Comparator<? super K> comparator,
+            @NotNull Tuple2<? extends K, ? extends V> entry1
+    ) {
+        MutableTreeMap<K, V> res = new MutableTreeMap<>(comparator);
+        res.set(entry1);
+        return res;
+    }
+
+    public static <K, V> @NotNull MutableTreeMap<K, V> ofEntries(
+            Comparator<? super K> comparator,
+            @NotNull Tuple2<? extends K, ? extends V> entry1,
+            @NotNull Tuple2<? extends K, ? extends V> entry2
+    ) {
+        MutableTreeMap<K, V> res = new MutableTreeMap<>(comparator);
+        res.set(entry1);
+        res.set(entry2);
+        return res;
+    }
+
+    public static <K, V> @NotNull MutableTreeMap<K, V> ofEntries(
+            Comparator<? super K> comparator,
+            @NotNull Tuple2<? extends K, ? extends V> entry1,
+            @NotNull Tuple2<? extends K, ? extends V> entry2,
+            @NotNull Tuple2<? extends K, ? extends V> entry3
+    ) {
+        MutableTreeMap<K, V> res = new MutableTreeMap<>(comparator);
+        res.set(entry1);
+        res.set(entry2);
+        res.set(entry3);
+        return res;
+    }
+
+    public static <K, V> @NotNull MutableTreeMap<K, V> ofEntries(
+            Comparator<? super K> comparator,
+            @NotNull Tuple2<? extends K, ? extends V> entry1,
+            @NotNull Tuple2<? extends K, ? extends V> entry2,
+            @NotNull Tuple2<? extends K, ? extends V> entry3,
+            @NotNull Tuple2<? extends K, ? extends V> entry4
+    ) {
+        MutableTreeMap<K, V> res = new MutableTreeMap<>(comparator);
+        res.set(entry1);
+        res.set(entry2);
+        res.set(entry3);
+        res.set(entry4);
+        return res;
+    }
+
+    public static <K, V> @NotNull MutableTreeMap<K, V> ofEntries(
+            Comparator<? super K> comparator,
+            @NotNull Tuple2<? extends K, ? extends V> entry1,
+            @NotNull Tuple2<? extends K, ? extends V> entry2,
+            @NotNull Tuple2<? extends K, ? extends V> entry3,
+            @NotNull Tuple2<? extends K, ? extends V> entry4,
+            @NotNull Tuple2<? extends K, ? extends V> entry5
+    ) {
+        MutableTreeMap<K, V> res = new MutableTreeMap<>(comparator);
+        res.set(entry1);
+        res.set(entry2);
+        res.set(entry3);
+        res.set(entry4);
+        res.set(entry5);
+        return res;
+    }
+
+    @SafeVarargs
+    public static <K, V> @NotNull MutableTreeMap<K, V> ofEntries(Comparator<? super K> comparator, Tuple2<? extends K, ? extends V> @NotNull ... entries) {
+        MutableTreeMap<K, V> res = new MutableTreeMap<>(comparator);
+        for (Tuple2<? extends K, ? extends V> entry : entries) {
+            res.set(entry);
+        }
+        return res;
+    }
+
+    public static <K extends Comparable<? super K>, V> @NotNull MutableTreeMap<K, V> from(java.util.@NotNull Map<? extends K, ? extends V> values) {
+        MutableTreeMap<K, V> m = new MutableTreeMap<>();
+        m.putAll(values);
+        return m;
+    }
+
+    public static <K extends Comparable<? super K>, V> @NotNull MutableTreeMap<K, V> from(@NotNull org.glavo.kala.collection.Map<? extends K, ? extends V> values) {
+        MutableTreeMap<K, V> m = new MutableTreeMap<>();
+        m.putAll(values);
+        return m;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <K, V> @NotNull MutableTreeMap<K, V> from(java.util.@NotNull SortedMap<? extends K, ? extends V> values) {
+        MutableTreeMap<K, V> m = new MutableTreeMap<>((Comparator<K>) values.comparator());
+        m.putAll(values);
+        return m;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <K, V> @NotNull MutableTreeMap<K, V> from(@NotNull SortedMap<? extends K, ? extends V> values) {
+        MutableTreeMap<K, V> m = new MutableTreeMap<>((Comparator<K>) values.comparator());
+        m.putAll(values);
+        return m;
+    }
+
+    public static <K extends Comparable<? super K>, V> @NotNull MutableTreeMap<K, V> from(java.util.Map.Entry<? extends K, ? extends V> @NotNull [] values) {
+        MutableTreeMap<K, V> m = new MutableTreeMap<>();
+        for (java.util.Map.Entry<? extends K, ? extends V> value : values) {
+            m.set(value.getKey(), value.getValue());
+        }
+        return m;
+    }
+
+    public static <K extends Comparable<? super K>, V> @NotNull MutableTreeMap<K, V> from(@NotNull Iterable<? extends java.util.Map.Entry<? extends K, ? extends V>> values) {
+        MutableTreeMap<K, V> m = new MutableTreeMap<>();
+        for (java.util.Map.Entry<? extends K, ? extends V> value : values) {
+            m.set(value.getKey(), value.getValue());
+        }
+        return m;
+    }
+
+    public static <K, V> @NotNull MutableTreeMap<K, V> from(
+            Comparator<? super K> comparator,
+            java.util.Map.Entry<? extends K, ? extends V> @NotNull [] values
+            ) {
+        MutableTreeMap<K, V> m = new MutableTreeMap<>(comparator);
+        for (java.util.Map.Entry<? extends K, ? extends V> value : values) {
+            m.set(value.getKey(), value.getValue());
+        }
+        return m;
+    }
+
+    public static <K , V> @NotNull MutableTreeMap<K, V> from(
+            Comparator<? super K> comparator,
+            @NotNull Iterable<? extends java.util.Map.Entry<? extends K, ? extends V>> values) {
+        MutableTreeMap<K, V> m = new MutableTreeMap<>(comparator);
+        for (java.util.Map.Entry<? extends K, ? extends V> value : values) {
+            m.set(value.getKey(), value.getValue());
+        }
+        return m;
+    }
+
+    //endregion
 
     //region Collection Operations
 

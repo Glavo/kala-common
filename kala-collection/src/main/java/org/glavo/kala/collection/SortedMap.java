@@ -4,7 +4,7 @@ import org.glavo.kala.comparator.Comparators;
 
 import java.util.Comparator;
 
-public interface SortedMap<K, V> {
+public interface SortedMap<K, V> extends Map<K, V> {
     default Comparator<? super K> comparator() {
         return Comparators.naturalOrder();
     }

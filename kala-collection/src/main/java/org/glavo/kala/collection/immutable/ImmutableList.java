@@ -1,6 +1,7 @@
 package org.glavo.kala.collection.immutable;
 
 import org.glavo.kala.collection.IndexedSeq;
+import org.glavo.kala.collection.Seq;
 import org.glavo.kala.collection.SeqLike;
 import org.glavo.kala.collection.SeqView;
 import org.glavo.kala.collection.internal.view.SeqViews;
@@ -415,30 +416,32 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public final @NotNull ImmutableList<E> prependedAll(@NotNull Iterable<? extends E> values) {
-        if (values instanceof IndexedSeq<?>) {
-            IndexedSeq<E> seq = (IndexedSeq<E>) values;
-            ImmutableList<E> res = this;
-            for (int i = seq.size() - 1; i >= 0; i--) {
-                res = res.cons(seq.get(i));
+        if (values instanceof RandomAccess) {
+            if (values instanceof Seq<?>) {
+                Seq<E> seq = (Seq<E>) values;
+                ImmutableList<E> res = this;
+                for (int i = seq.size() - 1; i >= 0; i--) {
+                    res = res.cons(seq.get(i));
+                }
+                return res;
             }
-            return res;
-        }
-        if (values instanceof java.util.List<?> && values instanceof RandomAccess) {
-            final List<E> list = (List<E>) values;
-            final int listSize = list.size();
+            if (values instanceof java.util.List<?>) {
+                final List<E> list = (List<E>) values;
+                final int listSize = list.size();
 
-            if (listSize == 0) {
-                return this;
-            }
+                if (listSize == 0) {
+                    return this;
+                }
 
-            ImmutableList<E> res = this;
-            for (int i = listSize - 1; i >= 0; i--) {
-                res = res.cons(list.get(i));
+                ImmutableList<E> res = this;
+                for (int i = listSize - 1; i >= 0; i--) {
+                    res = res.cons(list.get(i));
+                }
+                return res;
             }
-            return res;
         }
+
         Iterator<? extends E> it = values.iterator(); // implicit null check of values
         if (!it.hasNext()) {
             return this;
