@@ -1,6 +1,5 @@
 package org.glavo.kala.collection.internal;
 
-import org.glavo.kala.collection.Seq;
 import org.glavo.kala.collection.SeqLike;
 import org.glavo.kala.function.IndexedFunction;
 import org.jetbrains.annotations.NotNull;

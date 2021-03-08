@@ -116,26 +116,6 @@ public final class ObjectArrays {
 
     //endregion
 
-    //region Arrays
-
-    public static Object @NotNull [] copyOf(Object @NotNull [] array, int newLength) {
-        Object[] res = new Object[newLength];
-        System.arraycopy(array, 0, res, 0, Integer.min(array.length, newLength));
-        return res;
-    }
-
-    public static Object @NotNull [] copyOfRange(Object @NotNull [] array, int beginIndex, int endIndex) {
-        int newLength = endIndex - beginIndex;
-        if (newLength < 0) {
-            throw new IllegalArgumentException("beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
-        }
-        Object[] res = new Object[newLength];
-        System.arraycopy(array, beginIndex, res, 0, Integer.min(array.length - beginIndex, newLength));
-        return res;
-    }
-
-    //endregion
-
     //region Collection Operations
 
     public static @NotNull String className(Object @NotNull [] array) {
@@ -510,7 +490,7 @@ public final class ObjectArrays {
         if (n >= length) {
             return EMPTY;
         }
-        return copyOfRange(array, n, array.length);
+        return Arrays.copyOfRange(array, n, array.length);
     }
 
     public static Object @NotNull [] dropLast(Object @NotNull [] array, int n) {
@@ -530,7 +510,7 @@ public final class ObjectArrays {
 
         return idx >= length
                 ? EMPTY
-                : copyOfRange(array, idx, length);
+                : Arrays.copyOfRange(array, idx, length);
     }
 
     public static Object @NotNull [] take(Object @NotNull [] array, int n) {
@@ -541,7 +521,7 @@ public final class ObjectArrays {
         if (n >= length) {
             return array.clone();
         }
-        return copyOfRange(array, 0, n);
+        return Arrays.copyOfRange(array, 0, n);
     }
 
     public static Object @NotNull [] takeLast(Object @NotNull [] array, int n) {
@@ -567,7 +547,7 @@ public final class ObjectArrays {
             return EMPTY;
         }
 
-        return copyOf(array, count);
+        return Arrays.copyOf(array, count);
     }
 
     public static Object @NotNull [] updated(Object @NotNull [] array, int index, Object newValue) {
@@ -600,7 +580,7 @@ public final class ObjectArrays {
         if (count == length) {
             return tmp;
         }
-        return copyOf(array, count);
+        return Arrays.copyOf(array, count);
     }
 
     public static Object @NotNull [] filterNot(Object @NotNull [] array, @NotNull Predicate<?> predicate) {
@@ -623,7 +603,7 @@ public final class ObjectArrays {
         if (count == length) {
             return tmp;
         }
-        return copyOf(array, count);
+        return Arrays.copyOf(array, count);
     }
 
     public static @NotNull Object @NotNull [] filterNotNull(Object @NotNull [] array) {
@@ -727,10 +707,10 @@ public final class ObjectArrays {
         Object[][] res = new Object[r == 0 ? x : x + 1][];
 
         for (int i = 0; i < x; i++) {
-            res[i] = copyOfRange(array, i * size, (i + 1) * size);
+            res[i] = Arrays.copyOfRange(array, i * size, (i + 1) * size);
         }
         if (r != 0) {
-            res[x] = copyOfRange(array, x * size, x * size + r);
+            res[x] = Arrays.copyOfRange(array, x * size, x * size + r);
         }
 
         return res;

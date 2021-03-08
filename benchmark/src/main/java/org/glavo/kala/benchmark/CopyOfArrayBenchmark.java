@@ -1,6 +1,5 @@
 package org.glavo.kala.benchmark;
 
-import org.glavo.kala.collection.base.ObjectArrays;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
@@ -23,6 +22,22 @@ public class CopyOfArrayBenchmark {
         }
     }
 
+    public static Object[] copyOfObjectArray(Object[] array, int newLength) {
+        Object[] res = new Object[newLength];
+        System.arraycopy(array, 0, res, 0, Integer.min(array.length, newLength));
+        return res;
+    }
+
+    public static Object[] copyOfRange(Object[] array, int beginIndex, int endIndex) {
+        int newLength = endIndex - beginIndex;
+        if (newLength < 0) {
+            throw new IllegalArgumentException("beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
+        }
+        Object[] res = new Object[newLength];
+        System.arraycopy(array, beginIndex, res, 0, Integer.min(array.length - beginIndex, newLength));
+        return res;
+    }
+
     @Benchmark
     public Object[] copyOfHalfGenericArrayTest() {
         return Arrays.copyOf(array, N / 2);
@@ -30,7 +45,7 @@ public class CopyOfArrayBenchmark {
 
     @Benchmark
     public Object[] copyOfHalfObjectArrayTest() {
-        return ObjectArrays.copyOf(array, N / 2);
+        return copyOfObjectArray(array, N / 2);
     }
 
     @Benchmark
@@ -40,7 +55,7 @@ public class CopyOfArrayBenchmark {
 
     @Benchmark
     public Object[] copyOfTwiceObjectArrayTest() {
-        return ObjectArrays.copyOf(array, N * 2);
+        return copyOfObjectArray(array, N * 2);
     }
 
     public static void main(String[] args) throws RunnerException {
