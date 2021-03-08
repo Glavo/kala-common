@@ -71,6 +71,32 @@ public final class SeqViews {
         return (SeqView<E>) Empty.INSTANCE;
     }
 
+    public static class Single<E> extends Views.Single<E> implements SeqView<E> {
+        public Single(E value) {
+            super(value);
+        }
+
+        @Override
+        public @NotNull SeqView<E> filter(@NotNull Predicate<? super E> predicate) {
+            return predicate.test(value) ? this : empty();
+        }
+
+        @Override
+        public @NotNull SeqView<E> filterNot(@NotNull Predicate<? super E> predicate) {
+            return predicate.test(value) ? empty() : this;
+        }
+
+        @Override
+        public @NotNull SeqView<@NotNull E> filterNotNull() {
+            return value != null ? this : empty();
+        }
+
+        @Override
+        public @NotNull <U> SeqView<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+            return new Single<>(mapper.apply(value));
+        }
+    }
+
     public static class Of<E, C extends Seq<E>> extends Views.Of<E, C> implements SeqView<E> {
         public Of(@NotNull C source) {
             super(source);

@@ -238,7 +238,13 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
 
     @Override
     public final @NotNull SeqView<E> view() {
-        return this == NIL ? SeqViews.empty() : new SeqViews.WithCachedSize<>(this);
+        if(this == NIL) {
+            return SeqViews.empty();
+        }
+        if(tail == null) {
+            return new SeqViews.Single<>(head);
+        }
+        return new SeqViews.WithCachedSize<>(this);
     }
 
     //endregion

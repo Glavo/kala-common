@@ -22,6 +22,17 @@ public final class IndexedSeqViews {
         }
     }
 
+    public static class Single<E> extends SeqViews.Single<E> implements IndexedSeqView<E> {
+        public Single(E value) {
+            super(value);
+        }
+
+        @Override
+        public @NotNull <U> IndexedSeqView<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+            return new Single<>(mapper.apply(value));
+        }
+    }
+
     public static class Concat<E> extends SeqViews.Concat<E> implements IndexedSeqView<E> {
         public Concat(@NotNull SeqLike<? extends E> seq1, @NotNull SeqLike<? extends E> seq2) {
             super(seq1, seq2);

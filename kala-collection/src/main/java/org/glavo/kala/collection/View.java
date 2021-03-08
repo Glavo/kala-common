@@ -29,12 +29,14 @@ public interface View<@Covariant E> extends CollectionLike<E> {
         return new Views.Filter<>(this, predicate);
     }
 
-
     default @NotNull View<E> filterNot(@NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
         return new Views.Filter<>(this, predicate.negate());
     }
 
+    default @NotNull View<@NotNull E> filterNotNull() {
+        return filter(Objects::nonNull); // TODO
+    }
 
     default <U> @NotNull View<U> map(@NotNull Function<? super E, ? extends U> mapper) {
         Objects.requireNonNull(mapper);

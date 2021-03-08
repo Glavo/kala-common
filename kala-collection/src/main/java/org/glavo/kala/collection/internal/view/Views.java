@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 public final class Views {
-    public static class Empty<E> implements View<E> {
+    public static class Empty<E> extends AbstractView<E> {
         public static final Empty<?> INSTANCE = new Empty<Object>();
 
         @Override
@@ -94,7 +94,64 @@ public final class Views {
         return (View<E>) Empty.INSTANCE;
     }
 
-    public static class Of<@Covariant E, C extends Collection<E>> implements View<E> {
+    public static class Single<E> extends AbstractView<E> {
+        protected final E value;
+
+        public Single(E value) {
+            this.value = value;
+        }
+
+        @Override
+        public final @NotNull Iterator<E> iterator() {
+            return Iterators.of(value);
+        }
+
+        @Override
+        public @NotNull Stream<E> stream() {
+            return Stream.of(value);
+        }
+
+        //region Size Info
+
+        @Override
+        public final boolean isEmpty() {
+            return false;
+        }
+
+        @Override
+        public final int size() {
+            return 1;
+        }
+
+        @Override
+        public final int knownSize() {
+            return 1;
+        }
+
+        //endregion
+        
+        @Override
+        public @NotNull View<E> filter(@NotNull Predicate<? super E> predicate) {
+            return predicate.test(value) ? this : empty();
+        }
+
+        @Override
+        public @NotNull View<E> filterNot(@NotNull Predicate<? super E> predicate) {
+            return predicate.test(value) ? empty() : this;
+        }
+
+        @Override
+        public @NotNull View<@NotNull E> filterNotNull() {
+            return value != null ? this : empty();
+        }
+
+        @Override
+        public @NotNull <U> View<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+            return new Single<>(mapper.apply(value));
+        }
+    }
+
+    public static class Of<@Covariant E, C extends Collection<E>> extends AbstractView<E> {
         protected final @NotNull C source;
 
         public Of(@NotNull C source) {
