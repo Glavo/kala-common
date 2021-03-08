@@ -1,7 +1,9 @@
 package org.glavo.kala.collection;
 
 import org.glavo.kala.Equatable;
+import org.glavo.kala.collection.factory.MapFactory;
 import org.glavo.kala.collection.internal.convert.AsJavaConvert;
+import org.glavo.kala.collection.internal.convert.FromJavaConvert;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.function.CheckedBiConsumer;
 import org.glavo.kala.collection.base.MapIterator;
@@ -43,8 +45,20 @@ public interface Map<K, V> extends Equatable {
         return true;
     }
 
+    //region Static Factories
+
+    static <K, V> Map<K, V> wrapJava(java.util.@NotNull @UnmodifiableView Map<K, V> map) {
+        return new FromJavaConvert.MapFromJava<>(map);
+    }
+
+    //endregion
+
     default @NotNull String className() {
         return "Map";
+    }
+
+    default <NK, NV> @NotNull MapFactory<NK, NV, ?, ? extends Map<NK, NV>> mapFactory() {
+        throw new UnsupportedOperationException(); // TODO
     }
 
     @NotNull MapIterator<K, V> iterator();

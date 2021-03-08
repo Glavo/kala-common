@@ -3,6 +3,7 @@ package org.glavo.kala.collection.mutable;
 import org.glavo.kala.collection.Map;
 import org.glavo.kala.collection.base.AbstractMapIterator;
 import org.glavo.kala.collection.base.MapIterator;
+import org.glavo.kala.collection.factory.MapFactory;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
@@ -18,6 +19,8 @@ import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
 public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V> {
+    private static final Factory<?, ?> FACTORY = new Factory<>();
+
     public static final int DEFAULT_INITIAL_CAPACITY = 16;
     public static final double DEFAULT_LOAD_FACTOR = 0.75;
 
@@ -53,6 +56,10 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V> {
     }
 
     //region Static Factories
+
+    public static <K, V> @NotNull MapFactory<K, V, ?, MutableHashMap<K, V>> factory() {
+        return (Factory<K, V>) FACTORY;
+    }
 
     public static <K, V> @NotNull MutableHashMap<K, V> of() {
         return new MutableHashMap<>();
@@ -322,6 +329,11 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V> {
     }
 
     @Override
+    public final @NotNull <NK, NV> MapFactory<NK, NV, ?, MutableHashMap<NK, NV>> mapFactory() {
+        return MutableHashMap.factory();
+    }
+
+    @Override
     public final @NotNull MapIterator<K, V> iterator() {
         return new Itr<>(table);
     }
@@ -574,6 +586,13 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V> {
             if (fn != null) {
                 fn.forEach(consumer);
             }
+        }
+    }
+
+    private static final class Factory<K, V> extends AbstractMutableMapFactory<K, V, MutableHashMap<K, V>> {
+        @Override
+        public final MutableHashMap<K, V> newBuilder() {
+            return new MutableHashMap<>();
         }
     }
 

@@ -5,7 +5,9 @@ import org.glavo.kala.collection.base.AbstractIterator;
 import org.glavo.kala.collection.base.AbstractMapIterator;
 import org.glavo.kala.collection.base.Iterators;
 import org.glavo.kala.collection.base.MapIterator;
+import org.glavo.kala.collection.factory.MapFactory;
 import org.glavo.kala.collection.internal.convert.AsJavaConvert;
+import org.glavo.kala.comparator.Comparators;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
@@ -17,8 +19,10 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 
+@SuppressWarnings("unchecked")
 public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.Node<K, V>>
         implements MutableMap<K, V>, SortedMap<K, V> {
+    private static final Factory<?, ?> DEFAULT_FACTORY = new Factory<>();
 
     public MutableTreeMap() {
         this(null);
@@ -29,6 +33,16 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
     }
 
     //region Static Factories
+
+    public static <K extends Comparable<? super K>, V> @NotNull MapFactory<K, V, ?, MutableTreeMap<K, V>> factory() {
+        return (Factory<K, V>) DEFAULT_FACTORY;
+    }
+
+    public static <K, V> @NotNull MapFactory<K, V, ?, MutableTreeMap<K, V>> factory(Comparator<? super K> comparator) {
+        return comparator == null || comparator == Comparators.naturalOrder()
+                ? (Factory<K, V>) DEFAULT_FACTORY
+                : new Factory<>(comparator);
+    }
 
     public static <K extends Comparable<? super K>, V> @NotNull MutableTreeMap<K, V> of() {
         return new MutableTreeMap<>();
@@ -354,7 +368,7 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
     public static <K, V> @NotNull MutableTreeMap<K, V> from(
             Comparator<? super K> comparator,
             java.util.Map.Entry<? extends K, ? extends V> @NotNull [] values
-            ) {
+    ) {
         MutableTreeMap<K, V> m = new MutableTreeMap<>(comparator);
         for (java.util.Map.Entry<? extends K, ? extends V> value : values) {
             m.set(value.getKey(), value.getValue());
@@ -362,7 +376,7 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
         return m;
     }
 
-    public static <K , V> @NotNull MutableTreeMap<K, V> from(
+    public static <K, V> @NotNull MutableTreeMap<K, V> from(
             Comparator<? super K> comparator,
             @NotNull Iterable<? extends java.util.Map.Entry<? extends K, ? extends V>> values) {
         MutableTreeMap<K, V> m = new MutableTreeMap<>(comparator);
@@ -379,6 +393,16 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
     @Override
     public final @NotNull String className() {
         return "MutableTreeMap";
+    }
+
+    @Override
+    public final @NotNull <NK, NV> MapFactory<NK, NV, ?, MutableTreeMap<NK, NV>> mapFactory() {
+        return (Factory<NK, NV>) factory();
+    }
+
+    @Override
+    public final @NotNull <NK, NV> MapFactory<NK, NV, ?, MutableTreeMap<NK, NV>> mapFactory(Comparator<? super NK> comparator) {
+        return MutableTreeMap.factory(comparator);
     }
 
     @Override
@@ -649,6 +673,23 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
                 }
             }
             node = n;
+        }
+    }
+
+    private static final class Factory<K, V> extends AbstractMutableMapFactory<K, V, MutableTreeMap<K, V>> {
+        private final Comparator<? super K> comparator;
+
+        Factory() {
+            this(Comparators.naturalOrder());
+        }
+
+        Factory(Comparator<? super K> comparator) {
+            this.comparator = comparator;
+        }
+
+        @Override
+        public final MutableTreeMap<K, V> newBuilder() {
+            return new MutableTreeMap<>(comparator);
         }
     }
 
