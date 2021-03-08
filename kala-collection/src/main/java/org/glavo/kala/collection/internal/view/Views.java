@@ -1,9 +1,6 @@
 package org.glavo.kala.collection.internal.view;
 
-import org.glavo.kala.collection.AbstractView;
-import org.glavo.kala.collection.Collection;
-import org.glavo.kala.collection.Seq;
-import org.glavo.kala.collection.View;
+import org.glavo.kala.collection.*;
 import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.collection.immutable.ImmutableArray;
 import org.glavo.kala.collection.immutable.ImmutableList;
@@ -129,7 +126,7 @@ public final class Views {
         }
 
         //endregion
-        
+
         @Override
         public @NotNull View<E> filter(@NotNull Predicate<? super E> predicate) {
             return predicate.test(value) ? this : empty();
@@ -151,7 +148,7 @@ public final class Views {
         }
     }
 
-    public static class Of<@Covariant E, C extends Collection<E>> extends AbstractView<E> {
+    public static class Of<@Covariant E, C extends CollectionLike<E>> extends AbstractView<E> {
         protected final @NotNull C source;
 
         public Of(@NotNull C source) {

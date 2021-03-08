@@ -97,7 +97,7 @@ public final class SeqViews {
         }
     }
 
-    public static class Of<E, C extends Seq<E>> extends Views.Of<E, C> implements SeqView<E> {
+    public static class Of<E, C extends SeqLike<E>> extends Views.Of<E, C> implements SeqView<E> {
         public Of(@NotNull C source) {
             super(source);
         }

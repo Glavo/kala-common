@@ -1,10 +1,7 @@
 package org.glavo.kala.collection.internal.view;
 
 import org.glavo.kala.Conditions;
-import org.glavo.kala.collection.IndexedSeq;
-import org.glavo.kala.collection.IndexedSeqView;
-import org.glavo.kala.collection.SeqLike;
-import org.glavo.kala.collection.SeqView;
+import org.glavo.kala.collection.*;
 import org.glavo.kala.collection.internal.view.SeqViews;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.tuple.primitive.IntObjTuple2;
@@ -16,7 +13,7 @@ import java.util.function.Function;
 
 public final class IndexedSeqViews {
 
-    public static class Of<E, C extends IndexedSeq<E>> extends SeqViews.Of<E, C> implements IndexedSeqView<E> {
+    public static class Of<E, C extends IndexedSeqLike<E>> extends SeqViews.Of<E, C> implements IndexedSeqView<E> {
         public Of(@NotNull C source) {
             super(source);
         }
