@@ -3,12 +3,17 @@ package org.glavo.kala.collection.internal.view;
 import org.glavo.kala.Conditions;
 import org.glavo.kala.collection.*;
 import org.glavo.kala.collection.base.GenericArrays;
+import org.glavo.kala.collection.base.ObjectArrays;
+import org.glavo.kala.collection.immutable.ImmutableArray;
 import org.glavo.kala.collection.mutable.ArrayBuffer;
+import org.glavo.kala.collection.mutable.MutableArray;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.function.IndexedConsumer;
 import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.collection.base.AbstractIterator;
 import org.glavo.kala.collection.base.Iterators;
+import org.glavo.kala.tuple.primitive.IntObjTuple2;
+import org.glavo.kala.tuple.primitive.PrimitiveTuple;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -18,6 +23,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.*;
+import java.util.stream.Stream;
 
 @SuppressWarnings("ALL")
 public final class SeqViews {
@@ -79,7 +85,7 @@ public final class SeqViews {
             return source.getOrNull(index);
         }
 
-        public@NotNull Option<E> getOption(int index) {
+        public @NotNull Option<E> getOption(int index) {
             return source.getOption(index);
         }
 
@@ -756,6 +762,42 @@ public final class SeqViews {
         }
     }
 
+    public static final class Filter<E> extends AbstractSeqView<E> {
+        private final @NotNull SeqView<E> source;
+
+        private final @NotNull Predicate<? super E> predicate;
+
+        public Filter(@NotNull SeqView<E> source, @NotNull Predicate<? super E> predicate) {
+            this.source = source;
+            this.predicate = predicate;
+        }
+
+
+        @Override
+        public final @NotNull Iterator<E> iterator() {
+            return Iterators.filter(source.iterator(), predicate);
+        }
+    }
+
+    public static final class FlatMapped<E, T> extends AbstractSeqView<E> {
+        private final @NotNull SeqView<? extends T> source;
+
+        private final @NotNull Function<? super T, ? extends Iterable<? extends E>> mapper;
+
+        public FlatMapped(
+                @NotNull SeqView<? extends T> source,
+                @NotNull Function<? super T, ? extends Iterable<? extends E>> mapper) {
+            this.source = source;
+            this.mapper = mapper;
+        }
+
+
+        @Override
+        public final @NotNull Iterator<E> iterator() {
+            return Iterators.concat(source.map(it -> mapper.apply(it).iterator()));
+        }
+    }
+
     public static class Mapped<E, T> extends AbstractSeqView<E> {
         private final @NotNull SeqView<T> source;
 
@@ -827,40 +869,185 @@ public final class SeqViews {
         }
     }
 
-    public static final class Filter<E> extends AbstractSeqView<E> {
-        private final @NotNull SeqView<E> source;
+    static abstract class WithIndexBase<E> extends AbstractSeqView<IntObjTuple2<E>> {
+        protected final SeqLike<E> source;
 
-        private final @NotNull Predicate<? super E> predicate;
-
-        public Filter(@NotNull SeqView<E> source, @NotNull Predicate<? super E> predicate) {
+        public WithIndexBase(SeqLike<E> source) {
             this.source = source;
-            this.predicate = predicate;
         }
 
+        //region Size Info
 
         @Override
-        public final @NotNull Iterator<E> iterator() {
-            return Iterators.filter(source.iterator(), predicate);
+        public final boolean isEmpty() {
+            return source.isEmpty();
+        }
+
+        @Override
+        public final int size() {
+            return source.size();
+        }
+
+        @Override
+        public final int knownSize() {
+            return source.knownSize();
+        }
+
+        //endregion
+
+        @Override
+        public final boolean isDefinedAt(int index) {
+            return source.isDefinedAt(index);
         }
     }
 
-    public static final class FlatMapped<E, T> extends AbstractSeqView<E> {
-        private final @NotNull SeqView<? extends T> source;
-
-        private final @NotNull Function<? super T, ? extends Iterable<? extends E>> mapper;
-
-        public FlatMapped(
-                @NotNull SeqView<? extends T> source,
-                @NotNull Function<? super T, ? extends Iterable<? extends E>> mapper) {
-            this.source = source;
-            this.mapper = mapper;
+    public static class WithIndex<E> extends WithIndexBase<E> {
+        public WithIndex(SeqLike<E> source) {
+            super(source);
         }
-
 
         @Override
-        public final @NotNull Iterator<E> iterator() {
-            return Iterators.concat(source.map(it -> mapper.apply(it).iterator()));
+        public @NotNull Iterator<IntObjTuple2<E>> iterator() {
+            return Iterators.withIndex(source.iterator());
         }
+
+
+        //region Positional Access Operations
+
+        @Override
+        public final IntObjTuple2<E> get(int index) {
+            E e = source.get(index);
+            return IntObjTuple2.of(index, e);
+        }
+
+        @Override
+        public @Nullable IntObjTuple2<E> getOrNull(int index) {
+            Option<E> opt = source.getOption(index);
+            return opt.isEmpty() ? null : IntObjTuple2.of(index, opt.get());
+        }
+
+        @Override
+        public @NotNull Option<IntObjTuple2<E>> getOption(int index) {
+            Option<E> opt = source.getOption(index);
+            return opt.isEmpty() ? Option.none() : Option.of(IntObjTuple2.of(index, opt.get()));
+        }
+
+        //endregion
+
+        //region Reversal Operations
+
+        @Override
+        public @NotNull SeqView<IntObjTuple2<E>> reversed() {
+            return new WithIndexReversed<>(source);
+        }
+
+        @Override
+        public @NotNull Iterator<IntObjTuple2<E>> reverseIterator() {
+            return reversed().iterator();
+        }
+
+        //endregion
+    }
+
+    public static class WithIndexReversed<E> extends WithIndexBase<E> {
+        public WithIndexReversed(SeqLike<E> source) {
+            super(source);
+        }
+
+        @Override
+        public @NotNull Iterator<IntObjTuple2<E>> iterator() {
+            final int sks = source.knownSize();
+            if (sks > 0) {
+                Iterator<E> it = source.reverseIterator();
+                return new AbstractIterator<IntObjTuple2<E>>() {
+                    private int idx = sks - 1;
+
+                    @Override
+                    public boolean hasNext() {
+                        return it.hasNext();
+                    }
+
+                    @Override
+                    public IntObjTuple2<E> next() {
+                        final E e = it.next();
+                        return PrimitiveTuple.of(idx--, e);
+                    }
+                };
+
+            } else if (sks == 0) {
+                return Iterators.empty();
+            } else {
+                Iterator<E> it = source.iterator();
+                if (!it.hasNext()) {
+                    return Iterators.empty();
+                }
+                Object[] arr = ObjectArrays.from(it);
+
+                return new AbstractIterator<IntObjTuple2<E>>() {
+                    private int index = arr.length - 1;
+
+                    @Override
+                    public final boolean hasNext() {
+                        return index >= 0;
+                    }
+
+                    @Override
+                    public final IntObjTuple2<E> next() {
+                        final int oldIndex = this.index;
+                        if (oldIndex < 0) {
+                            throw new NoSuchElementException();
+                        }
+                        IntObjTuple2<E> res = IntObjTuple2.of(oldIndex, (E) arr[oldIndex]);
+                        this.index = oldIndex - 1;
+                        return res;
+                    }
+                };
+            }
+        }
+
+        //region Positional Access Operations
+
+        @Override
+        public final IntObjTuple2<E> get(int index) {
+            final int size = source.size();
+            Conditions.checkElementIndex(index, size);
+            final int ridx = size - index - 1;
+            return IntObjTuple2.of(ridx, source.get(ridx));
+        }
+
+        @Override
+        public @Nullable IntObjTuple2<E> getOrNull(int index) {
+            final int size = source.size();
+            final int ridx = size - index - 1;
+            return index >= 0 && index < size
+                    ? null
+                    : IntObjTuple2.of(ridx, source.get(ridx));
+        }
+
+        @Override
+        public @NotNull Option<IntObjTuple2<E>> getOption(int index) {
+            final int size = source.size();
+            final int ridx = size - index - 1;
+            return index >= 0 && index < size
+                    ? Option.none()
+                    : Option.some(IntObjTuple2.of(ridx, source.get(ridx)));
+        }
+
+        //endregion
+
+        //region Reversal Operations
+
+        @Override
+        public @NotNull SeqView<IntObjTuple2<E>> reversed() {
+            return new WithIndex<>(source);
+        }
+
+        @Override
+        public @NotNull Iterator<IntObjTuple2<E>> reverseIterator() {
+            return Iterators.withIndex(source.iterator());
+        }
+
+        //endregion
     }
 
     public static final class Sorted<E> extends AbstractSeqView<E> {

@@ -1,5 +1,6 @@
 package org.glavo.kala.tuple.primitive;
 
+import org.glavo.kala.annotations.DeprecatedReplaceWith;
 import org.glavo.kala.tuple.Tuple;
 import org.glavo.kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +23,8 @@ public final class BooleanTuple2 implements PrimitiveTuple {
     public final boolean _1;
     public final boolean _2;
 
+    @Deprecated
+    @DeprecatedReplaceWith("of(b1, b2)")
     public BooleanTuple2(boolean b1, boolean b2) {
         _1 = b1;
         _2 = b2;

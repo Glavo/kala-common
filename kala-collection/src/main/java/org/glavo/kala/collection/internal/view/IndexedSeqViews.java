@@ -7,6 +7,7 @@ import org.glavo.kala.collection.SeqLike;
 import org.glavo.kala.collection.SeqView;
 import org.glavo.kala.collection.internal.view.SeqViews;
 import org.glavo.kala.control.Option;
+import org.glavo.kala.tuple.primitive.IntObjTuple2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -210,6 +211,18 @@ public final class IndexedSeqViews {
                 return Option.some(value);
             }
             return source.getOption(index);
+        }
+    }
+
+    public static class WithIndex<E> extends SeqViews.WithIndex<E> implements IndexedSeqView<IntObjTuple2<E>> {
+        public WithIndex(SeqLike<E> source) {
+            super(source);
+        }
+    }
+
+    public static class WithIndexReversed<E> extends SeqViews.WithIndexReversed<E> implements IndexedSeqView<IntObjTuple2<E>> {
+        public WithIndexReversed(SeqLike<E> source) {
+            super(source);
         }
     }
 }

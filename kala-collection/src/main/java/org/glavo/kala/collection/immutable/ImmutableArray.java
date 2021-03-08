@@ -528,9 +528,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
             return this;
         }
 
-        Object[] res = new Object[c];
-        System.arraycopy(tmp, 0, res, 0, c);
-        return new ImmutableArray<>(res);
+        return new ImmutableArray<>(Arrays.copyOf(tmp, c));
     }
 
     @Override
@@ -561,9 +559,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
             return this;
         }
 
-        Object[] res = new Object[c];
-        System.arraycopy(tmp, 0, res, 0, c);
-        return new ImmutableArray<>(res);
+        return new ImmutableArray<>(Arrays.copyOf(tmp, c));
     }
 
     @Override
@@ -591,9 +587,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
             return this;
         }
 
-        Object[] res = new Object[c];
-        System.arraycopy(tmp, 0, res, 0, c);
-        return new ImmutableArray<>(res);
+        return new ImmutableArray<>(Arrays.copyOf(tmp, c));
     }
 
     @Override

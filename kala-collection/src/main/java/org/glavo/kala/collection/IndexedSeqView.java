@@ -4,6 +4,7 @@ import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.Conditions;
 import org.glavo.kala.collection.internal.view.IndexedSeqViews;
 import org.glavo.kala.collection.internal.view.SeqViews;
+import org.glavo.kala.tuple.primitive.IntObjTuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
@@ -48,7 +49,6 @@ public interface IndexedSeqView<@Covariant E> extends SeqView<E>, RandomAccess {
                 : new SeqViews.Concat<>(this, other);
     }
 
-
     //region Addition Operations
 
     @Override
@@ -89,5 +89,10 @@ public interface IndexedSeqView<@Covariant E> extends SeqView<E>, RandomAccess {
     default <U> @NotNull IndexedSeqView<U> map(@NotNull Function<? super E, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
         return new IndexedSeqViews.Mapped<>(this, mapper);
+    }
+
+    @Override
+    default @NotNull IndexedSeqView<IntObjTuple2<E>> withIndex() {
+        return new IndexedSeqViews.WithIndex<>(this);
     }
 }

@@ -1,5 +1,6 @@
 package org.glavo.kala.tuple.primitive;
 
+import org.glavo.kala.annotations.DeprecatedReplaceWith;
 import org.glavo.kala.tuple.Tuple;
 import org.glavo.kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
@@ -11,6 +12,9 @@ public final class IntTuple2 implements PrimitiveTuple {
     public final int _1;
     public final int _2;
 
+    @Deprecated
+    @DeprecatedReplaceWith("of(i1, i2)")
+    @SuppressWarnings("DeprecatedIsStillUsed")
     public IntTuple2(int i1, int i2) {
         _1 = i1;
         _2 = i2;

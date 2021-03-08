@@ -181,7 +181,6 @@ public interface CollectionFactory<E, Builder, @Covariant R>
         return build(builder);
     }
 
-
     default <U> @NotNull CollectionFactory<E, Builder, U> mapResult(@NotNull Function<? super R, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
         class MappedFactory implements CollectionFactory<E, Builder, U> {

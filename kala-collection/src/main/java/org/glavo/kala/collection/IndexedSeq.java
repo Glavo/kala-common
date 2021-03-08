@@ -9,6 +9,7 @@ import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.function.IndexedBiFunction;
 import org.glavo.kala.function.IndexedConsumer;
 import org.glavo.kala.collection.base.Iterators;
+import org.glavo.kala.tuple.primitive.IntObjTuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -581,6 +582,11 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
                 return get(idx--);
             }
         };
+    }
+
+    @Override
+    default @NotNull IndexedSeqView<IntObjTuple2<E>> withIndex() {
+        return view().withIndex();
     }
 
     @Override

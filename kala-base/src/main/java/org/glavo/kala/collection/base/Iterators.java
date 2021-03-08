@@ -10,6 +10,7 @@ import org.glavo.kala.annotations.StaticClass;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.function.IndexedConsumer;
+import org.glavo.kala.tuple.primitive.IntObjTuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -127,6 +128,17 @@ public final class Iterators {
             ++i;
         }
         return i;
+    }
+
+    public static <E> Iterator<E> reversed(@NotNull Iterator<? extends E> source) {
+        if (!source.hasNext()) {
+            return (Iterator<E>) source;
+        }
+        ArrayList<E> list = new ArrayList<>();
+        while (source.hasNext()) {
+            list.add(source.next());
+        }
+        return (Iterator<E>) GenericArrays.reverseIterator(list.toArray());
     }
 
     public static boolean contains(Iterator<?> it, Object value) {
@@ -559,6 +571,26 @@ public final class Iterators {
         }
 
         return new ConcatAll<>(Iterators.map(Iterators.map(it, mapper), Iterable::iterator));
+    }
+
+    public static <E> @NotNull Iterator<IntObjTuple2<E>> withIndex(@NotNull Iterator<? extends E> it) {
+        if (!it.hasNext()) {
+            return Iterators.empty();
+        }
+        return new AbstractIterator<IntObjTuple2<E>>() {
+            private int index = 0;
+
+            @Override
+            public final boolean hasNext() {
+                return it.hasNext();
+            }
+
+            @Override
+            public final IntObjTuple2<E> next() {
+                final E nextValue = it.next();
+                return IntObjTuple2.of(index++, nextValue);
+            }
+        };
     }
 
     public static <E, U> @NotNull Iterator<@NotNull Tuple2<E, U>> zip(@NotNull Iterator<? extends E> it1, Iterator<? extends U> it2) {

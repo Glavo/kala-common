@@ -81,6 +81,17 @@ public final class ObjectArrays {
         }
     }
 
+    public static Object @NotNull [] from(@NotNull Iterator<?> it) {
+        if (!it.hasNext()) {
+            return EMPTY;
+        }
+        ArrayList<Object> list = new ArrayList<>();
+        while (it.hasNext()) {
+            list.add(it.next());
+        }
+        return list.toArray();
+    }
+
     public static Object @NotNull [] fill(int n, Object value) {
         if (n <= 0) {
             return EMPTY;

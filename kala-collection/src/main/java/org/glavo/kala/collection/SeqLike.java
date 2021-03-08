@@ -1,11 +1,14 @@
 package org.glavo.kala.collection;
 
+import org.glavo.kala.collection.base.GenericArrays;
 import org.glavo.kala.collection.base.Iterators;
 import org.glavo.kala.collection.immutable.ImmutableList;
+import org.glavo.kala.collection.mutable.ArrayBuffer;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.function.CheckedIndexedConsumer;
 import org.glavo.kala.function.IndexedBiFunction;
 import org.glavo.kala.function.IndexedConsumer;
+import org.glavo.kala.tuple.primitive.IntObjTuple2;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -74,11 +77,24 @@ public interface SeqLike<E> extends CollectionLike<E> {
     //region Reversal Operations
 
     default @NotNull Iterator<E> reverseIterator() {
-        ImmutableList<E> l = ImmutableList.nil();
-        for (E e : this) {
-            l = l.cons(e);
+        final int ks = this.knownSize();
+        if (ks == 0) {
+            return Iterators.empty();
         }
-        return l.iterator();
+        Iterator<E> it = this.iterator();
+        if (!it.hasNext()) {
+            return it;
+        }
+        ArrayBuffer<E> buffer = ks > 0
+                ? new ArrayBuffer<>(ks)
+                : new ArrayBuffer<>();
+        while (it.hasNext()) {
+            buffer.append(it.next());
+        }
+
+        @SuppressWarnings("unchecked")
+        Iterator<E> res = (Iterator<E>) GenericArrays.reverseIterator(buffer.toArray());
+        return res;
     }
 
     //endregion
@@ -236,6 +252,10 @@ public interface SeqLike<E> extends CollectionLike<E> {
     }
 
     //endregion
+
+    default @NotNull SeqView<IntObjTuple2<E>> withIndex() {
+        return view().withIndex();
+    }
 
     //region Aggregate Operations
 

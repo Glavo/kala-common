@@ -9,6 +9,7 @@ import org.glavo.kala.collection.internal.CollectionHelper;
 import org.glavo.kala.collection.internal.FullSeqOps;
 import org.glavo.kala.comparator.Comparators;
 import org.glavo.kala.function.IndexedFunction;
+import org.glavo.kala.tuple.primitive.IntObjTuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -146,20 +147,6 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqOps<E
     }
 
     @Override
-    default <U> @NotNull SeqView<U> map(@NotNull Function<? super E, ? extends U> mapper) {
-        Objects.requireNonNull(mapper);
-
-        return new SeqViews.Mapped<>(this, mapper);
-    }
-
-    @Override
-    default <U> @NotNull SeqView<?> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
-        Objects.requireNonNull(mapper);
-
-        return new SeqViews.MapIndexed<U, E>(this, mapper);
-    }
-
-    @Override
     default @NotNull SeqView<E> filter(@NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
         return new SeqViews.Filter<>(this, predicate);
@@ -174,6 +161,25 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqOps<E
     @Override
     default @NotNull SeqView<E> filterNotNull() {
         return filter(Objects::nonNull);
+    }
+
+    @Override
+    default <U> @NotNull SeqView<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+        Objects.requireNonNull(mapper);
+
+        return new SeqViews.Mapped<>(this, mapper);
+    }
+
+    @Override
+    default <U> @NotNull SeqView<?> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+        Objects.requireNonNull(mapper);
+
+        return new SeqViews.MapIndexed<U, E>(this, mapper);
+    }
+
+    @Override
+    default @NotNull SeqView<IntObjTuple2<E>> withIndex() {
+        return new SeqViews.WithIndex<>(this);
     }
 
     @Override
