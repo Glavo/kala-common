@@ -309,38 +309,15 @@ public final class GenericArrays {
     //region Element Conditions
 
     public static boolean contains(Object @NotNull [] array, Object value) {
-        if (value == null) {
-            for (Object o : array) {
-                if (null == o) {
-                    return true;
-                }
-            }
-        } else {
-            for (Object o : array) {
-                if (value.equals(o)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return ObjectArrays.contains(array, value);
     }
 
     public static boolean containsAll(Object @NotNull [] array, Object @NotNull [] values) {
-        for (Object value : values) {
-            if (!contains(array, value)) {
-                return false;
-            }
-        }
-        return true;
+        return ObjectArrays.containsAll(array, values);
     }
 
     public static boolean containsAll(Object @NotNull [] array, @NotNull Iterable<?> values) {
-        for (Object value : values) {
-            if (!contains(array, value)) {
-                return false;
-            }
-        }
-        return true;
+        return ObjectArrays.containsAll(array, values);
     }
 
     public static <E> boolean anyMatch(E @NotNull [] array, @NotNull Predicate<? super E> predicate) {
@@ -376,144 +353,43 @@ public final class GenericArrays {
 
     @Contract(pure = true)
     public static int indexOf(Object @NotNull [] array, Object value) {
-        final int length = array.length;
-
-        if (value == null) {
-            for (int i = 0; i < length; i++) {
-                if (array[i] == null) {
-                    return i;
-                }
-            }
-        } else {
-            for (int i = 0; i < length; i++) {
-                if (value.equals(array[i])) {
-                    return i;
-                }
-            }
-        }
-        return -1;
+        return ObjectArrays.indexOf(array, value);
     }
 
     @Contract(pure = true)
     public static int indexOf(Object @NotNull [] array, Object value, int beginIndex) {
-        final int length = array.length;
-
-        if (beginIndex >= length) {
-            return -1;
-        }
-
-        if (value == null) {
-            for (int i = Math.max(beginIndex, 0); i < length; i++) {
-                if (array[i] == null) {
-                    return i;
-                }
-            }
-        } else {
-            for (int i = Math.max(beginIndex, 0); i < length; i++) {
-                if (value.equals(array[i])) {
-                    return i;
-                }
-            }
-        }
-
-        return -1;
+        return ObjectArrays.indexOf(array, value, beginIndex);
     }
 
     @Contract(pure = true)
     public static <E> int indexWhere(E @NotNull [] array, @NotNull Predicate<? super E> predicate) {
-        final int length = array.length;
-        for (int i = 0; i < length; i++) {
-            if (predicate.test(array[i])) {
-                return i;
-            }
-        }
-        return -1;
+        return ObjectArrays.indexWhere(array, predicate);
     }
 
     @Contract(pure = true)
     public static <E> int indexWhere(E @NotNull [] array, @NotNull Predicate<? super E> predicate, int beginIndex) {
-        final int length = array.length;
-
-        if (beginIndex >= length) {
-            return -1;
-        }
-
-        for (int i = Math.max(beginIndex, 0); i < length; i++) {
-            if (predicate.test(array[i])) {
-                return i;
-            }
-        }
-        return -1;
+        return ObjectArrays.indexWhere(array, predicate, beginIndex);
     }
 
     @Contract(pure = true)
     public static int lastIndexOf(Object @NotNull [] array, Object value) {
-        if (value == null) {
-            for (int i = array.length - 1; i >= 0; i--) {
-                if (array[i] == null) {
-                    return i;
-                }
-            }
-        } else {
-            for (int i = array.length - 1; i >= 0; i--) {
-                if (value.equals(array[i])) {
-                    return i;
-                }
-            }
-        }
-
-        return -1;
+        return ObjectArrays.lastIndexOf(array, value);
     }
 
     @Contract(pure = true)
     public static int lastIndexOf(Object @NotNull [] array, Object value, int endIndex) {
-        if (endIndex < 0) {
-            return -1;
-        }
-
-        if (value == null) {
-            for (int i = endIndex; i >= 0; i--) {
-                if (array[i] == null) {
-                    return i;
-                }
-            }
-        } else {
-            for (int i = endIndex; i >= 0; i--) {
-                if (value.equals(array[i])) {
-                    return i;
-                }
-            }
-        }
-
-        return -1;
+        return ObjectArrays.lastIndexOf(array, value, endIndex);
     }
 
     @Contract(pure = true)
     public static <E> int lastIndexWhere(E @NotNull [] array, @NotNull Predicate<? super E> predicate) {
-        for (int i = array.length - 1; i >= 0; i--) {
-            if (predicate.test(array[i])) {
-                return i;
-            }
-        }
-
-        return -1;
+        return ObjectArrays.lastIndexWhere(array, predicate);
     }
 
     @Contract(pure = true)
     public static <E> int lastIndexWhere(E @NotNull [] array, @NotNull Predicate<? super E> predicate, int endIndex) {
-        if (endIndex < 0) {
-            return -1;
-        }
-
-        for (int i = endIndex; i >= 0; i--) {
-            if (predicate.test(array[i])) {
-                return i;
-            }
-        }
-
-        return -1;
+        return ObjectArrays.lastIndexWhere(array, predicate, endIndex);
     }
-
 
     //endregion
 
@@ -1014,7 +890,7 @@ public final class GenericArrays {
             @NotNull Object[] array,
             @NotNull A buffer
     ) {
-        return joinTo(array, buffer, ", ", "", "");
+        return ObjectArrays.joinTo(array, buffer, ", ", "", "");
     }
 
     public static <A extends Appendable> @NotNull A joinTo(
@@ -1022,7 +898,7 @@ public final class GenericArrays {
             @NotNull A buffer,
             CharSequence separator
     ) {
-        return joinTo(array, buffer, separator, "", "");
+        return ObjectArrays.joinTo(array, buffer, separator, "", "");
     }
 
     public static <A extends Appendable> @NotNull A joinTo(
@@ -1030,42 +906,27 @@ public final class GenericArrays {
             @NotNull A buffer,
             CharSequence separator, CharSequence prefix, CharSequence postfix
     ) {
-        final int length = array.length;
-        try {
-            if (length == 0) {
-                buffer.append(prefix).append(postfix);
-                return buffer;
-            }
-            buffer.append(prefix).append(Objects.toString(array[0]));
-            for (int i = 1; i < length; i++) {
-                buffer.append(separator);
-                buffer.append(Objects.toString(array[i]));
-            }
-            buffer.append(postfix);
-            return buffer;
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+        return ObjectArrays.joinTo(array, buffer, separator, prefix, postfix);
     }
 
     public static @NotNull String joinToString(
             @NotNull Object[] array
     ) {
-        return joinTo(array, new StringBuilder()).toString();
+        return ObjectArrays.joinTo(array, new StringBuilder()).toString();
     }
 
     public static @NotNull String joinToString(
             @NotNull Object[] array,
             CharSequence separator
     ) {
-        return joinTo(array, new StringBuilder(), separator).toString();
+        return ObjectArrays.joinTo(array, new StringBuilder(), separator).toString();
     }
 
     public static @NotNull String joinToString(
             @NotNull Object[] array,
             CharSequence separator, CharSequence prefix, CharSequence postfix
     ) {
-        return joinTo(array, new StringBuilder(), separator, prefix, postfix).toString();
+        return ObjectArrays.joinTo(array, new StringBuilder(), separator, prefix, postfix).toString();
     }
 
     //endregion
