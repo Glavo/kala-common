@@ -1,8 +1,6 @@
 package org.glavo.kala.collection;
 
-import org.glavo.kala.collection.internal.IndexedSeqLike;
 import org.glavo.kala.collection.internal.view.IndexedSeqViews;
-import org.glavo.kala.collection.mutable.Growable;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.immutable.ImmutableList;
@@ -11,7 +9,6 @@ import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.function.IndexedBiFunction;
 import org.glavo.kala.function.IndexedConsumer;
 import org.glavo.kala.collection.base.Iterators;
-import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.tuple.primitive.IntObjTuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
