@@ -117,6 +117,21 @@ public interface Buffer<E> extends MutableSeq<E>, Growable<E> {
                 : new AsJavaConvert.BufferAsJava<>(this);
     }
 
+    @Override
+    default @NotNull Buffer<E> asSynchronized() {
+        return this instanceof IndexedSeq<?>
+                ? new Synchronized.SynchronizedIndexedBuffer<>((Buffer<E> & IndexedSeq<E>) this)
+                : new Synchronized.SynchronizedBuffer<>(this);
+    }
+
+    @Override
+    default @NotNull Buffer<E> asSynchronized(@NotNull Object mutex) {
+        Objects.requireNonNull(mutex);
+        return this instanceof IndexedSeq<?>
+                ? new Synchronized.SynchronizedIndexedBuffer<>((Buffer<E> & IndexedSeq<E>) this, mutex)
+                : new Synchronized.SynchronizedBuffer<>(this, mutex);
+    }
+
     //endregion
 
     @Contract(mutates = "this")

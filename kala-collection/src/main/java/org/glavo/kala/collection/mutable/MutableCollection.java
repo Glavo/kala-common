@@ -6,6 +6,8 @@ import org.glavo.kala.collection.Collection;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 public interface MutableCollection<E> extends Collection<E> {
 
     //region Static Factories
@@ -77,6 +79,15 @@ public interface MutableCollection<E> extends Collection<E> {
     @Override
     default @NotNull java.util.Collection<E> asJava() {
         return new AsJavaConvert.MutableCollectionAsJava<>(this);
+    }
+
+    default @NotNull MutableCollection<E> asSynchronized() {
+        return new Synchronized.SynchronizedCollection<>(this);
+    }
+
+    default @NotNull MutableCollection<E> asSynchronized(@NotNull Object mutex) {
+        Objects.requireNonNull(mutex);
+        return new Synchronized.SynchronizedCollection<>(this, mutex);
     }
 
     //endregion

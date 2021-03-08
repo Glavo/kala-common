@@ -553,13 +553,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     @Override
     public final Object @NotNull [] toArray() {
         final Object[] elements = this.elements;
-        final int size = elements.length;
-
-        Object[] res = new Object[size];
-        if (size != 0) {
-            System.arraycopy(elements, 0, res, 0, size);
-        }
-        return res;
+        return Arrays.copyOf(elements, elements.length, Object[].class);
     }
 
     @Override

@@ -93,6 +93,17 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
         return new AsJavaConvert.MutableSetAsJava<>(this);
     }
 
+    @Override
+    default @NotNull MutableSet<E> asSynchronized() {
+        return new Synchronized.SynchronizedSet<>(this);
+    }
+
+    @Override
+    default @NotNull MutableSet<E> asSynchronized(@NotNull Object mutex) {
+        Objects.requireNonNull(mutex);
+        return new Synchronized.SynchronizedSet<>(this, mutex);
+    }
+
     //endregion
 
     @Contract(mutates = "this")

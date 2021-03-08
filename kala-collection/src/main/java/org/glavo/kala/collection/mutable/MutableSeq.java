@@ -102,6 +102,21 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
         return new AsJavaConvert.MutableSeqAsJava<>(this);
     }
 
+    @Override
+    default @NotNull MutableSeq<E> asSynchronized() {
+        return this instanceof IndexedSeq<?>
+                ? new Synchronized.SynchronizedIndexedSeq<>((MutableSeq<E> & IndexedSeq<E>) this)
+                : new Synchronized.SynchronizedSeq<>(this);
+    }
+
+    @Override
+    default @NotNull MutableSeq<E> asSynchronized(@NotNull Object mutex) {
+        Objects.requireNonNull(mutex);
+        return this instanceof IndexedSeq<?>
+                ? new Synchronized.SynchronizedIndexedSeq<>((MutableSeq<E> & IndexedSeq<E>) this, mutex)
+                : new Synchronized.SynchronizedSeq<>(this, mutex);
+    }
+
     //endregion
 
     @Contract(mutates = "this")
