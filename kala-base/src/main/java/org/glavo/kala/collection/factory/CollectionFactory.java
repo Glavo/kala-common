@@ -54,7 +54,7 @@ public interface CollectionFactory<E, Builder, @Covariant R>
 
     Builder newBuilder();
 
-    R build(@NotNull Builder builder);
+    R build(Builder builder);
 
     void addToBuilder(@NotNull Builder builder, E value);
 
@@ -183,7 +183,7 @@ public interface CollectionFactory<E, Builder, @Covariant R>
 
     default <U> @NotNull CollectionFactory<E, Builder, U> mapResult(@NotNull Function<? super R, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
-        class MappedFactory implements CollectionFactory<E, Builder, U> {
+        final class MappedFactory implements CollectionFactory<E, Builder, U> {
             @Override
             public final Builder newBuilder() {
                 return CollectionFactory.this.newBuilder();

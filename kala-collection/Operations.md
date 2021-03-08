@@ -193,6 +193,9 @@
   * `toArrayBuffer()`
   * `toLinkedBuffer()`
   * `toDoubleLinkedBuffer()`
+  * `associate(Function)`
+  * `associateBy(Function)`
+  * `associateBy(Function, Function)`
 * Traverse Operations
   * `forEach(Consumer<E>)`
   * `forEachPrimitive(T_CONSUMER)`

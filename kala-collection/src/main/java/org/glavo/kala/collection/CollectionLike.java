@@ -1,14 +1,14 @@
 package org.glavo.kala.collection;
 
-import org.glavo.kala.collection.immutable.ImmutableArray;
-import org.glavo.kala.collection.immutable.ImmutableList;
-import org.glavo.kala.collection.immutable.ImmutableSeq;
-import org.glavo.kala.collection.immutable.ImmutableVector;
+import org.glavo.kala.collection.immutable.*;
 import org.glavo.kala.collection.mutable.MutableArray;
 import org.glavo.kala.collection.base.Traversable;
+import org.glavo.kala.tuple.Tuple2;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.function.Function;
 
 public interface CollectionLike<E> extends Traversable<E> {
 
@@ -73,6 +73,10 @@ public interface CollectionLike<E> extends Traversable<E> {
 
     default @NotNull ImmutableVector<E> toImmutableVector() {
         return ImmutableVector.from(this);
+    }
+
+    default <K, V> @NotNull Map<K, V> associate(@NotNull Function<? super E, ? extends Tuple2<? extends K, ? extends V>> transform) {
+        throw new UnsupportedOperationException(); // TODO
     }
 
 }
