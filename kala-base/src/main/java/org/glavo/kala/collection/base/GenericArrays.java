@@ -5,6 +5,9 @@ import org.glavo.kala.control.Option;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.annotations.StaticClass;
 import org.glavo.kala.collection.factory.CollectionFactory;
+import org.glavo.kala.function.IndexedFunction;
+import org.glavo.kala.tuple.Tuple;
+import org.glavo.kala.tuple.Tuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,6 +17,7 @@ import java.io.UncheckedIOException;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.*;
+import java.util.stream.Stream;
 
 @StaticClass
 @SuppressWarnings("unchecked")
@@ -47,8 +51,19 @@ public final class GenericArrays {
         return values;
     }
 
+    public static <E> E @NotNull [] of(@NotNull IntFunction<E[]> generator, E... values) {
+        return from(generator, values);
+    }
+
     public static <E> E @NotNull [] from(E @NotNull [] values) {
         return values.clone();
+    }
+
+    public static <E> E @NotNull [] from(@NotNull IntFunction<E[]> generator, E[] values) {
+        final int length = values.length; // implicit null check of values
+        E[] res = generator.apply(length);
+        System.arraycopy(values, 0, res, 0, length);
+        return res;
     }
 
     public static <E> E @NotNull [] from(@NotNull IntFunction<E[]> generator, @NotNull Iterable<? extends E> values) {
@@ -119,60 +134,240 @@ public final class GenericArrays {
 
     //region Collection Operations
 
+    public static @NotNull String className(Object @NotNull [] array) {
+        return "Array<" + array.getClass().getComponentType().getSimpleName() + ">";
+    }
+
     public static <E> @NotNull Iterator<E> iterator(E @NotNull [] array) {
         final int arrayLength = array.length; // implicit null check of array
-        if (arrayLength == 0) {
-            return Iterators.empty();
-        }
-        if (arrayLength == 1) {
-            return Iterators.of(array[0]);
+
+        switch (arrayLength) {
+            case 0:
+                return Iterators.empty();
+            case 1:
+                return Iterators.of(array[0]);
         }
         return new Itr<>(array, 0, arrayLength);
     }
 
-    public static <E> @NotNull Iterator<E> iterator(E @NotNull [] array, int from) {
+    public static <E> @NotNull Iterator<E> iterator(E @NotNull [] array, int beginIndex) {
         final int arrayLength = array.length; // implicit null check of array
-        if (from < 0 || from > arrayLength) {
-            throw new IndexOutOfBoundsException();
-        }
-        final int len = arrayLength - from;
+        Conditions.checkPositionIndex(beginIndex, arrayLength);
 
-        if (len == 0) {
-            return Iterators.empty();
+        switch (arrayLength - beginIndex) {
+            case 0:
+                return Iterators.empty();
+            case 1:
+                return Iterators.of(array[0]);
         }
-        if (len == 1) {
-            return Iterators.of(array[0]);
-        }
-        return new Itr<>(array, from, arrayLength);
+        return new Itr<>(array, beginIndex, arrayLength);
     }
 
     public static <E> @NotNull Iterator<E> iterator(E @NotNull [] array, int beginIndex, int endIndex) {
         final int arrayLength = array.length; // implicit null check of array
         Conditions.checkPositionIndices(beginIndex, endIndex, arrayLength);
-        final int len = endIndex - beginIndex;
 
-        if (len == 0) {
-            return Iterators.empty();
-        }
-        if (len == 1) {
-            return Iterators.of(array[0]);
+        switch (endIndex - beginIndex) {
+            case 0:
+                return Iterators.empty();
+            case 1:
+                return Iterators.of(array[0]);
         }
         return new Itr<>(array, beginIndex, endIndex);
+    }
+
+    public static <E> @NotNull Spliterator<E> spliterator(E[] array) {
+        return Arrays.spliterator(array);
+    }
+
+    public static <E> @NotNull Stream<E> stream(E @NotNull [] array) {
+        return Arrays.stream(array);
+    }
+
+    public static <E> @NotNull Stream<E> parallelStream(E @NotNull [] array) {
+        return Arrays.stream(array).parallel();
+    }
+
+    //endregion
+
+    //region Size Info
+
+    public static boolean isEmpty(Object @NotNull [] array) {
+        return array.length == 0;
+    }
+
+    public static int size(Object @NotNull [] array) {
+        return array.length;
+    }
+
+    public static int knownSize(Object @NotNull [] array) {
+        return array.length;
+    }
+
+    //endregion
+
+    //region Positional Access Operations
+
+    public static boolean isDefineAt(Object @NotNull [] array, int index) {
+        return index >= 0 && index <= array.length;
+    }
+
+    public static <E> E get(E @NotNull [] array, int index) {
+        try {
+            return array[index];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException(e.getMessage());
+        }
+    }
+
+    public static <E> @Nullable E getOrNull(E @NotNull [] array, int index) {
+        return index >= 0 && index <= array.length
+                ? array[index]
+                : null;
+    }
+
+    public static <E> @NotNull Option<E> getOption(E @NotNull [] array, int index) {
+        return index >= 0 && index <= array.length
+                ? Option.some(array[index])
+                : Option.none();
+    }
+
+    public static <E> void set(E @NotNull [] array, int index, E value) {
+        try {
+            array[index] = value;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException(e.getMessage());
+        }
     }
 
     //endregion
 
     //region Reversal Operations
 
+    public static <E> E @NotNull [] reversed(E @NotNull [] array) {
+        final int length = array.length;
+        switch (length) {
+            case 0:
+                return array;
+            case 1:
+                return array.clone();
+        }
+
+        E[] res = array.getClass() == Object[].class
+                ? (E[]) new Object[length]
+                : (E[]) Array.newInstance(array.getClass().getComponentType(), length);
+
+        for (int i = 0; i < length; i++) {
+            res[i] = array[length - i - 1];
+        }
+        return res;
+    }
+
     public static <E> @NotNull Iterator<E> reverseIterator(E @NotNull [] array) {
         final int length = array.length;
-        if (length == 0) {
-            return Iterators.empty();
-        }
-        if (length == 1) {
-            return Iterators.of(array[0]);
+        switch (length) {
+            case 0:
+                return Iterators.empty();
+            case 1:
+                return Iterators.of(array[0]);
         }
         return new ReverseItr<>(array, length - 1);
+    }
+
+    //endregion
+
+    //region Element Retrieval Operations
+
+    public static <E> @NotNull Option<E> find(E @NotNull [] array, @NotNull Predicate<? super E> predicate) {
+        for (E e : array) {
+            if (predicate.test(e)) {
+                return Option.some(e);
+            }
+        }
+        return Option.none();
+    }
+
+    public static <E> E first(E @NotNull [] array) {
+        try {
+            return array[0];
+        } catch (ArrayIndexOutOfBoundsException ignored) {
+            throw new NoSuchElementException();
+        }
+    }
+
+    public static <E> E last(E @NotNull [] array) {
+        final int length = array.length;
+        if (length == 0) {
+            throw new NoSuchElementException();
+        }
+        return array[length - 1];
+    }
+
+
+    //endregion
+
+    //region Element Conditions
+
+    public static boolean contains(Object @NotNull [] array, Object value) {
+        if (value == null) {
+            for (Object o : array) {
+                if (null == o) {
+                    return true;
+                }
+            }
+        } else {
+            for (Object o : array) {
+                if (value.equals(o)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean containsAll(Object @NotNull [] array, Object @NotNull [] values) {
+        for (Object value : values) {
+            if (!contains(array, value)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean containsAll(Object @NotNull [] array, @NotNull Iterable<?> values) {
+        for (Object value : values) {
+            if (!contains(array, value)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static <E> boolean anyMatch(E @NotNull [] array, @NotNull Predicate<? super E> predicate) {
+        for (Object e : array) {
+            if (predicate.test((E) e)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static <E> boolean allMatch(E @NotNull [] array, @NotNull Predicate<? super E> predicate) {
+        for (Object e : array) {
+            if (!predicate.test((E) e)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static <E> boolean noneMatch(E @NotNull [] array, @NotNull Predicate<? super E> predicate) {
+        for (Object e : array) {
+            if (predicate.test((E) e)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     //endregion
@@ -200,21 +395,21 @@ public final class GenericArrays {
     }
 
     @Contract(pure = true)
-    public static int indexOf(Object @NotNull [] array, Object value, int from) {
+    public static int indexOf(Object @NotNull [] array, Object value, int beginIndex) {
         final int length = array.length;
 
-        if (from >= length) {
+        if (beginIndex >= length) {
             return -1;
         }
 
         if (value == null) {
-            for (int i = Math.max(from, 0); i < length; i++) {
+            for (int i = Math.max(beginIndex, 0); i < length; i++) {
                 if (array[i] == null) {
                     return i;
                 }
             }
         } else {
-            for (int i = Math.max(from, 0); i < length; i++) {
+            for (int i = Math.max(beginIndex, 0); i < length; i++) {
                 if (value.equals(array[i])) {
                     return i;
                 }
@@ -236,14 +431,14 @@ public final class GenericArrays {
     }
 
     @Contract(pure = true)
-    public static <E> int indexWhere(E @NotNull [] array, @NotNull Predicate<? super E> predicate, int from) {
+    public static <E> int indexWhere(E @NotNull [] array, @NotNull Predicate<? super E> predicate, int beginIndex) {
         final int length = array.length;
 
-        if (from >= length) {
+        if (beginIndex >= length) {
             return -1;
         }
 
-        for (int i = Math.max(from, 0); i < length; i++) {
+        for (int i = Math.max(beginIndex, 0); i < length; i++) {
             if (predicate.test(array[i])) {
                 return i;
             }
@@ -271,19 +466,19 @@ public final class GenericArrays {
     }
 
     @Contract(pure = true)
-    public static int lastIndexOf(Object @NotNull [] array, Object value, int end) {
-        if (end < 0) {
+    public static int lastIndexOf(Object @NotNull [] array, Object value, int endIndex) {
+        if (endIndex < 0) {
             return -1;
         }
 
         if (value == null) {
-            for (int i = end; i >= 0; i--) {
+            for (int i = endIndex; i >= 0; i--) {
                 if (array[i] == null) {
                     return i;
                 }
             }
         } else {
-            for (int i = end; i >= 0; i--) {
+            for (int i = endIndex; i >= 0; i--) {
                 if (value.equals(array[i])) {
                     return i;
                 }
@@ -305,12 +500,12 @@ public final class GenericArrays {
     }
 
     @Contract(pure = true)
-    public static <E> int lastIndexWhere(E @NotNull [] array, @NotNull Predicate<? super E> predicate, int end) {
-        if (end < 0) {
+    public static <E> int lastIndexWhere(E @NotNull [] array, @NotNull Predicate<? super E> predicate, int endIndex) {
+        if (endIndex < 0) {
             return -1;
         }
 
-        for (int i = end; i >= 0; i--) {
+        for (int i = endIndex; i >= 0; i--) {
             if (predicate.test(array[i])) {
                 return i;
             }
@@ -323,6 +518,223 @@ public final class GenericArrays {
     //endregion
 
     //region Misc Operations
+
+    public static <E> E @NotNull [] slice(E @NotNull [] array, int beginIndex, int endIndex) {
+        return Arrays.copyOfRange(array, beginIndex, endIndex);
+    }
+
+    public static <E> E @NotNull [] drop(E @NotNull [] array, int n) {
+        if (n <= 0) {
+            return array.clone();
+        }
+        final int length = array.length;
+        if (n >= length) {
+            return newArrayByOldType(array, 0);
+        }
+        return Arrays.copyOfRange(array, n, array.length);
+    }
+
+    public static <E> E @NotNull [] dropLast(E @NotNull [] array, int n) {
+        if (n <= 0) {
+            return array.clone();
+        }
+        return take(array, array.length - n);
+    }
+
+    public static <E> E @NotNull [] dropWhile(E @NotNull [] array, @NotNull Predicate<? super E> predicate) {
+        final int length = array.length;
+
+        int idx = 0;
+        while (idx < length && predicate.test(array[idx])) {
+            ++idx;
+        }
+
+        return idx >= length
+                ? newArrayByOldType(array, 0)
+                : Arrays.copyOfRange(array, idx, length);
+    }
+
+    public static <E> E @NotNull [] take(E @NotNull [] array, int n) {
+        if (n <= 0) {
+            return newArrayByOldType(array, 0);
+        }
+        final int length = array.length;
+        if (n >= length) {
+            return array.clone();
+        }
+        return Arrays.copyOfRange(array, 0, n);
+    }
+
+    public static <E> E @NotNull [] takeLast(E @NotNull [] array, int n) {
+        if (n <= 0) {
+            return newArrayByOldType(array, 0);
+        }
+        return drop(array, array.length - n);
+    }
+
+    public static <E> E @NotNull [] takeWhile(E @NotNull [] array, @NotNull Predicate<? super E> predicate) {
+        final int size = array.length;
+
+        if (size == 0) {
+            return array.clone();
+        }
+
+        int count = 0;
+        while (count < size && predicate.test(array[count])) { // implicit null check of predicate
+            ++count;
+        }
+
+        if (count == 0) {
+            return newArrayByOldType(array, 0);
+        }
+
+        return Arrays.copyOf(array, count);
+    }
+
+    public static <E> E @NotNull [] updated(E @NotNull [] array, int index, E newValue) {
+        final int size = array.length;
+
+        Conditions.checkElementIndex(index, size);
+
+        E[] newValues = array.clone();
+        newValues[index] = newValue;
+        return newValues;
+    }
+
+    public static <E> E @NotNull [] filter(E @NotNull [] array, @NotNull Predicate<? super E> predicate) {
+        final int length = array.length;
+        if (length == 0) {
+            return array.clone();
+        }
+
+        E[] tmp = newArrayByOldType(array, array.length);
+        int count = 0;
+        for (E e : array) {
+            if (predicate.test(e)) {
+                tmp[count++] = e;
+            }
+        }
+
+        if (count == 0) {
+            return newArrayByOldType(array, 0);
+        }
+        if (count == length) {
+            return tmp;
+        }
+        return Arrays.copyOf(array, count);
+    }
+
+    public static <E> E @NotNull [] filterNot(E @NotNull [] array, @NotNull Predicate<? super E> predicate) {
+        final int length = array.length;
+        if (length == 0) {
+            return array.clone();
+        }
+
+        E[] tmp = newArrayByOldType(array, array.length);
+        int count = 0;
+        for (E e : array) {
+            if (!predicate.test(e)) {
+                tmp[count++] = e;
+            }
+        }
+
+        if (count == 0) {
+            return newArrayByOldType(array, 0);
+        }
+        if (count == length) {
+            return tmp;
+        }
+        return Arrays.copyOf(array, count);
+    }
+
+    public static <E> @NotNull E @NotNull [] filterNotNull(E @NotNull [] array) {
+        final int length = array.length;
+        if (length == 0) {
+            return array.clone();
+        }
+
+        E[] tmp = newArrayByOldType(array, array.length);
+        int count = 0;
+        for (E e : array) {
+            if (e != null) {
+                tmp[count++] = e;
+            }
+        }
+
+        if (count == 0) {
+            return newArrayByOldType(array, 0);
+        }
+        if (count == length) {
+            return tmp;
+        }
+        return Arrays.copyOf(array, count);
+    }
+
+    public static <E, U> U @NotNull [] map(E @NotNull [] array, @NotNull IntFunction<U[]> generator, @NotNull Function<? super E, ? extends U> mapper) {
+        final int length = array.length;
+        final U[] res = generator.apply(length);
+        for (int i = 0; i < length; i++) {
+            res[i] = mapper.apply(array[i]);
+        }
+        return res;
+    }
+
+    public static <E, U> U @NotNull [] mapIndexed(
+            E @NotNull [] array,
+            @NotNull IntFunction<U[]> generator,
+            @NotNull IndexedFunction<? super E, ? extends U> mapper) {
+        final int length = array.length;
+        final U[] res = generator.apply(length);
+        for (int i = 0; i < length; i++) {
+            res[i] = mapper.apply(i, array[i]);
+        }
+        return res;
+    }
+
+    public static <E, U> U @NotNull [] flatMap(
+            E @NotNull [] array,
+            @NotNull IntFunction<U[]> generator,
+            @NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
+        if (array.length == 0) {
+            return generator.apply(0);
+        }
+        ArrayList<U> tmp = new ArrayList<>();
+        for (E e : array) {
+            for (U u : mapper.apply(e)) {
+                tmp.add(u);
+            }
+        }
+
+        U[] res = generator.apply(tmp.size());
+        tmp.toArray(res);
+        return res;
+    }
+
+    public static <E, U> Tuple2<E, U> @NotNull [] zip(E @NotNull [] array, U @NotNull [] other) {
+        final int length = Integer.min(array.length, other.length);
+        Tuple2<E, U>[] res = (Tuple2<E, U>[]) new Tuple2<?, ?>[length];
+        for (int i = 0; i < length; i++) {
+            res[i] = Tuple.of(array[i], other[i]);
+        }
+        return res;
+    }
+
+    public static <E, U> Tuple2<E, U> @NotNull [] zip(E @NotNull [] array, Iterable<? extends U> other) {
+        final int length = array.length;
+        Tuple2<E, U>[] tmp = (Tuple2<E, U>[]) new Tuple2<?, ?>[length];
+        if (length == 0) {
+            return tmp;
+        }
+
+        int count = 0;
+        Iterator<? extends U> it = other.iterator();
+        while (count < length && it.hasNext()) {
+            tmp[count] = Tuple.of(array[count], it.next());
+            count += 1;
+        }
+
+        return count == length ? tmp : Arrays.copyOf(tmp, count);
+    }
 
     public static <E> E @NotNull [] @NotNull [] chunked(E @NotNull [] array, int size) {
         if (size <= 0) {
@@ -596,37 +1008,6 @@ public final class GenericArrays {
 
     //endregion
 
-    //region Element Conditions
-
-    public static <E> boolean anyMatch(E @NotNull [] array, @NotNull Predicate<? super E> predicate) {
-        for (Object e : array) {
-            if (predicate.test((E) e)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static <E> boolean allMatch(E @NotNull [] array, @NotNull Predicate<? super E> predicate) {
-        for (Object e : array) {
-            if (!predicate.test((E) e)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static <E> boolean noneMatch(E @NotNull [] array, @NotNull Predicate<? super E> predicate) {
-        for (Object e : array) {
-            if (predicate.test((E) e)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    //endregion
-
     //region String Representation
 
     public static <A extends Appendable> @NotNull A joinTo(
@@ -688,6 +1069,12 @@ public final class GenericArrays {
     }
 
     //endregion
+
+    private static <E> E[] newArrayByOldType(E @NotNull [] old, int newLength) {
+        return old.getClass() == Object[].class
+                ? (E[]) new Object[newLength]
+                : (E[]) Array.newInstance(old.getClass().getComponentType(), newLength);
+    }
 
     private static final class Factory<E> implements CollectionFactory<E, ArrayList<E>, E[]> {
         @NotNull
@@ -762,8 +1149,7 @@ public final class GenericArrays {
     }
 
     static final class ReverseItr<@Covariant E> implements Iterator<E> {
-        @NotNull
-        private final E[] array;
+        private final E @NotNull [] array;
 
         private int index;
 
@@ -784,7 +1170,6 @@ public final class GenericArrays {
         @Override
         public final E next() {
             try {
-
                 return array[index--];
             } catch (ArrayIndexOutOfBoundsException ignored) {
                 throw new NoSuchElementException();

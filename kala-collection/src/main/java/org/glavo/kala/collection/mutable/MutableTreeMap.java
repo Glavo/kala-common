@@ -541,7 +541,6 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
         return Option.none();
     }
 
-
     @Override
     public final @NotNull Option<V> remove(K key) {
         Node<K, V> node = getNode(key);

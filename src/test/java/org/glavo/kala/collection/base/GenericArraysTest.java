@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GenericArraysTest {
+
+
+
     @Test
     void windowedTest() {
         String[] values = {"A", "B", "C", "D", "E", "F", "G", "H"};

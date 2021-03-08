@@ -103,7 +103,7 @@
   * `lastOption(Predicate<E>)`
 * Element Conditions
   * `contains(Object)`
-  * `containsAll(E[])`
+  * `containsAll(Object[])`
   * `containsAll(Iterable<?>)`
   * `sameElements(Iterable<?>)`
   * `sameElements(Iterable<?>, boolean)`
@@ -123,8 +123,10 @@
   * `slice(int, int)`
   * `sliceView(int, int)`
   * `drop(int)`
+  * `dropLast(int)`
   * `dropWhile(Predicate<E>)`
   * `take(int)`
+  * `takeLast(int)`
   * `takeWhile(Predicate<E>)`
   * `updated(int, E)`
   * `filter(Predicate<E>)`
