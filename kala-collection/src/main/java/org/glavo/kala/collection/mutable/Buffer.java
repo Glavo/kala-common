@@ -1,5 +1,6 @@
 package org.glavo.kala.collection.mutable;
 
+import org.glavo.kala.annotations.DeprecatedReplaceWith;
 import org.glavo.kala.collection.ArraySeq;
 import org.glavo.kala.collection.IndexedSeq;
 import org.glavo.kala.collection.internal.convert.AsJavaConvert;
@@ -19,7 +20,7 @@ import java.util.RandomAccess;
 import java.util.function.Predicate;
 
 @SuppressWarnings("unchecked")
-public interface Buffer<E> extends MutableSeq<E> {
+public interface Buffer<E> extends MutableSeq<E>, Growable<E> {
 
     //region Static Factories
 
@@ -148,6 +149,28 @@ public interface Buffer<E> extends MutableSeq<E> {
                 this.append(e);
             }
         }
+    }
+
+
+    @Override
+    @Deprecated
+    @DeprecatedReplaceWith("append(value)")
+    default void addValue(E value) {
+        append(value);
+    }
+
+    @Override
+    @Deprecated
+    @DeprecatedReplaceWith("appendAll(values)")
+    default void addValues(E @NotNull [] values) {
+        appendAll(values);
+    }
+
+    @Override
+    @Deprecated
+    @DeprecatedReplaceWith("appendAll(values)")
+    default void addValues(@NotNull Iterable<? extends E> values) {
+        appendAll(values);
     }
 
     @Contract(mutates = "this")

@@ -1,5 +1,6 @@
 package org.glavo.kala.collection.mutable;
 
+import org.glavo.kala.annotations.DeprecatedReplaceWith;
 import org.glavo.kala.collection.internal.convert.AsJavaConvert;
 import org.glavo.kala.collection.internal.CollectionHelper;
 import org.glavo.kala.collection.factory.CollectionFactory;
@@ -13,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-public interface MutableSet<E> extends MutableCollection<E>, Set<E> {
+public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E> {
 
     //region Static Factories
 
@@ -114,6 +115,27 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E> {
             }
         }
         return m;
+    }
+
+    @Override
+    @Deprecated
+    @DeprecatedReplaceWith("add(value)")
+    default void addValue(E value) {
+        add(value);
+    }
+
+    @Override
+    @Deprecated
+    @DeprecatedReplaceWith("addAll(values)")
+    default void addValues(E @NotNull [] values) {
+        addAll(values);
+    }
+
+    @Override
+    @Deprecated
+    @DeprecatedReplaceWith("addAll(values)")
+    default void addValues(@NotNull Iterable<? extends E> values) {
+        addAll(values);
     }
 
     @Contract(mutates = "this")

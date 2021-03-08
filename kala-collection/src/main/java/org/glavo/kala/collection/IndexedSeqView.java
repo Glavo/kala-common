@@ -2,6 +2,7 @@ package org.glavo.kala.collection;
 
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.Conditions;
+import org.glavo.kala.collection.internal.IndexedSeqLike;
 import org.glavo.kala.collection.internal.view.IndexedSeqViews;
 import org.glavo.kala.collection.internal.view.SeqViews;
 import org.glavo.kala.tuple.primitive.IntObjTuple2;
@@ -13,7 +14,7 @@ import java.util.Objects;
 import java.util.RandomAccess;
 import java.util.function.Function;
 
-public interface IndexedSeqView<@Covariant E> extends SeqView<E>, RandomAccess {
+public interface IndexedSeqView<@Covariant E> extends SeqView<E>, IndexedSeqLike<E>, RandomAccess {
 
     @Contract(value = "_ -> param1", pure = true)
     @SuppressWarnings("unchecked")
@@ -34,12 +35,6 @@ public interface IndexedSeqView<@Covariant E> extends SeqView<E>, RandomAccess {
     }
 
     //endregion
-
-    @Override
-    @Range(from = -1, to = Integer.MAX_VALUE)
-    default int knownSize() {
-        return size();
-    }
 
     @Override
     default @NotNull SeqView<E> concat(@NotNull SeqLike<? extends E> other) {

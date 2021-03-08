@@ -1,6 +1,7 @@
 package org.glavo.kala.collection;
 
 import org.glavo.kala.collection.immutable.*;
+import org.glavo.kala.collection.mutable.Growable;
 import org.glavo.kala.collection.mutable.MutableArray;
 import org.glavo.kala.collection.base.Traversable;
 import org.glavo.kala.tuple.Tuple2;
@@ -9,10 +10,49 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public interface CollectionLike<E> extends Traversable<E> {
 
     @NotNull View<E> view();
+
+    @Contract(value = "_, _ -> param1", mutates = "param1")
+    default <G extends Growable<? super E>> @NotNull G filterTo(@NotNull G destination, @NotNull Predicate<? super E> predicate) {
+        for (E e : this) {
+            if (predicate.test(e)) {
+                destination.addValue(e);
+            }
+        }
+        return destination;
+    }
+
+    @Contract(value = "_, _ -> param1", mutates = "param1")
+    default <G extends Growable<? super E>> @NotNull G filterNotTo(@NotNull G destination, @NotNull Predicate<? super E> predicate) {
+        for (E e : this) {
+            if (!predicate.test(e)) {
+                destination.addValue(e);
+            }
+        }
+        return destination;
+    }
+
+    @Contract(value = "_ -> param1", mutates = "param1")
+    default <G extends Growable<? super E>> @NotNull G filterNotNullTo(@NotNull G destination) {
+        for (E e : this) {
+            if (e != null) {
+                destination.addValue(e);
+            }
+        }
+        return destination;
+    }
+
+    @Contract(value = "_, _ -> param1", mutates = "param1")
+    default <U, G extends Growable<? super U>> @NotNull G mapTo(@NotNull G destination, @NotNull Function<? super E, ? extends U> mapper) {
+        for (E e : this) {
+            destination.addValue(mapper.apply(e));
+        }
+        return destination;
+    }
 
     //region Copy Operations
 

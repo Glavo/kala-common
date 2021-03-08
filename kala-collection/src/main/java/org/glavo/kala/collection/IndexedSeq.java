@@ -1,6 +1,8 @@
 package org.glavo.kala.collection;
 
+import org.glavo.kala.collection.internal.IndexedSeqLike;
 import org.glavo.kala.collection.internal.view.IndexedSeqViews;
+import org.glavo.kala.collection.mutable.Growable;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.immutable.ImmutableList;
@@ -9,6 +11,7 @@ import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.function.IndexedBiFunction;
 import org.glavo.kala.function.IndexedConsumer;
 import org.glavo.kala.collection.base.Iterators;
+import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.tuple.primitive.IntObjTuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -17,12 +20,9 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.IntFunction;
-import java.util.function.Predicate;
+import java.util.function.*;
 
-public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
+public interface IndexedSeq<@Covariant E> extends Seq<E>, IndexedSeqLike<E>, RandomAccess {
 
     //region Narrow method
 
@@ -66,15 +66,7 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, RandomAccess {
 
     //region Optimized Collection Operations
 
-    @Override
-    default boolean isEmpty() {
-        return size() == 0;
-    }
 
-    @Override
-    default int knownSize() {
-        return size();
-    }
 
     @Override
     default boolean isDefinedAt(int index) {
