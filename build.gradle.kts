@@ -3,11 +3,10 @@ import java.io.RandomAccessFile
 plugins {
     `java-library`
 }
-kotlin.Result
 
 allprojects {
     group = "org.glavo"
-    version = kalaVersion("0.14.0")
+    version = kalaVersion("0.15.0")
 
     if (this == project(":benchmark")) {
         return@allprojects
