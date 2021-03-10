@@ -3,7 +3,7 @@ import java.io.RandomAccessFile
 plugins {
     `java-library`
 }
-
+kotlin.Result
 
 allprojects {
     group = "org.glavo"

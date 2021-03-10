@@ -8,6 +8,7 @@ import org.glavo.kala.tuple.Tuple2;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -54,6 +55,19 @@ public interface CollectionLike<E> extends Traversable<E> {
     default <U, G extends Growable<? super U>> @NotNull G mapTo(@NotNull G destination, @NotNull Function<? super E, ? extends U> mapper) {
         for (E e : this) {
             destination.addValue(mapper.apply(e));
+        }
+        return destination;
+    }
+
+    @Contract(value = "_, _ -> param1", mutates = "param1")
+    default <U, G extends Growable<@NotNull ? super U>> @NotNull G mapNotNullTo(
+            @NotNull G destination,
+            @NotNull Function<? super E, @Nullable ? extends U> mapper) {
+        for (E e : this) {
+            U u = mapper.apply(e);
+            if (u != null) {
+                destination.addValue(u);
+            }
         }
         return destination;
     }

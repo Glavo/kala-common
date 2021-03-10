@@ -312,6 +312,15 @@ final class Synchronized {
             }
         }
 
+        @Override
+        public <U, G extends Growable<@NotNull ? super U>> @NotNull G mapNotNullTo(
+                @NotNull G destination,
+                @NotNull Function<? super E, ? extends U> mapper) {
+            synchronized (mutex) {
+                return source.mapNotNullTo(destination, mapper);
+            }
+        }
+
         //region Aggregate Operations
 
         @Override

@@ -395,6 +395,19 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     }
 
     @Override
+    default <U, G extends Growable<@NotNull ? super U>> @NotNull G mapNotNullTo(
+            @NotNull G destination,
+            @NotNull Function<? super E, ? extends U> mapper) {
+        for (int i = 0; i < this.size(); i++) {
+            U u = mapper.apply(this.get(i));
+            if(u != null) {
+                destination.addValue(u);
+            }
+        }
+        return destination;
+    }
+
+    @Override
     default <U, G extends Growable<? super U>> @NotNull G mapIndexedTo(@NotNull G destination, @NotNull IndexedFunction<? super E, ? extends U> mapper) {
         for (int i = 0; i < this.size(); i++) {
             destination.addValue(mapper.apply(i, this.get(i)));
@@ -513,7 +526,7 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
         final int size = size();
 
         for (int i = size - 1; i >= 0; i--) {
-            zero = op.apply(i, get(i), zero); // fixme
+            zero = op.apply(i, get(i), zero);
         }
         return zero;
     }

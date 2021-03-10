@@ -2,6 +2,7 @@ package org.glavo.kala.control;
 
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.annotations.Sealed;
+import org.glavo.kala.tuple.Tuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,6 +41,15 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
     @Contract("_ -> new")
     public static <A, B> Either.@NotNull Right<A, B> right(B value) {
         return new Right<>(value);
+    }
+
+    // TODO: new name
+    public static <T> T join(@NotNull Either<? extends T, ? extends T> either) {
+        if (either.isLeft()) {
+            return either.getLeftValue();
+        } else {
+            return either.getRightValue();
+        }
     }
 
     public abstract boolean isLeft();
