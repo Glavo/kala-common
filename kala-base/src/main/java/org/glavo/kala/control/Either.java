@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 @Sealed(subclasses = {Either.Left.class, Either.Right.class})
@@ -77,6 +78,11 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
     public final @NotNull RightProjection rightProjection() {
         return this.new RightProjection();
     }
+
+    public abstract void forEach(
+            @NotNull Consumer<? super A> leftConsumer,
+            @NotNull Consumer<? super B> rightConsumer
+    );
 
     public final static class Left<@Covariant A, @Covariant B> extends Either<A, B> {
         private static final long serialVersionUID = -1160729620210301179L;
@@ -173,6 +179,11 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
         @Override
         public final @NotNull Result<B, A> toResult() {
             return Result.err(value);
+        }
+
+        @Override
+        public final void forEach(@NotNull Consumer<? super A> leftConsumer, @NotNull Consumer<? super B> rightConsumer) {
+            leftConsumer.accept(value);
         }
 
         /**
@@ -303,6 +314,11 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
         @Override
         public final @NotNull Result<B, A> toResult() {
             return Result.ok(value);
+        }
+
+        @Override
+        public final void forEach(@NotNull Consumer<? super A> leftConsumer, @NotNull Consumer<? super B> rightConsumer) {
+            rightConsumer.accept(value);
         }
 
         /**
