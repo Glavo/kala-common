@@ -63,6 +63,11 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
 
     public abstract <U> @NotNull Either<A, U> mapRight(@NotNull Function<? super B, ? extends U> mapper);
 
+    public abstract <U> U fold(
+            @NotNull Function<? super A, ? extends U> leftMapper,
+            @NotNull Function<? super B, ? extends U> rightMapper
+    );
+
     @Contract("-> new")
     public abstract @NotNull Either<B, A> swap();
 
@@ -166,6 +171,13 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
         @Override
         public final <U> @NotNull Either<A, U> mapRight(@NotNull Function<? super B, ? extends U> mapper) {
             return (Either<A, U>) this;
+        }
+
+        @Override
+        public final <U> U fold(
+                @NotNull Function<? super A, ? extends U> leftMapper,
+                @NotNull Function<? super B, ? extends U> rightMapper) {
+            return leftMapper.apply(value);
         }
 
         /**
@@ -303,6 +315,13 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
             return Either.right(mapper.apply(value));
         }
 
+        @Override
+        public final <U> U fold(
+                @NotNull Function<? super A, ? extends U> leftMapper,
+                @NotNull Function<? super B, ? extends U> rightMapper) {
+            return rightMapper.apply(value);
+        }
+
         /**
          * {@inheritDoc}
          */
@@ -359,8 +378,7 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
 
         private static final int HASH_MAGIC = 905770825;
 
-        @NotNull
-        public final Either<A, B> getEither() {
+        public final @NotNull Either<A, B> getEither() {
             return Either.this;
         }
 
