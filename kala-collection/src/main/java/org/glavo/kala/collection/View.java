@@ -13,7 +13,8 @@ public interface View<@Covariant E> extends CollectionLike<E> {
 
     //region Collection Operations
 
-    default String className() {
+    @Override
+    default @NotNull String className() {
         return "View";
     }
 

@@ -360,7 +360,7 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
     //region MutableCollection members
 
     @Override
-    public final String className() {
+    public final @NotNull String className() {
         return "MutableHashSet";
     }
 

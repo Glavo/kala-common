@@ -33,7 +33,7 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqOps<E
     //region Collection Operations
 
     @Override
-    default String className() {
+    default @NotNull String className() {
         return "SeqView";
     }
 

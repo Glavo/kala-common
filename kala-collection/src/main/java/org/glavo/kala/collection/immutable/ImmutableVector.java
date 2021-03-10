@@ -236,7 +236,7 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
     //region Collection Operations
 
     @Override
-    public final String className() {
+    public final @NotNull String className() {
         return "ImmutableVector";
     }
 

@@ -74,7 +74,7 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
     //region Collection Operations
 
     @Override
-    default String className() {
+    default @NotNull String className() {
         return "MutableSet";
     }
 

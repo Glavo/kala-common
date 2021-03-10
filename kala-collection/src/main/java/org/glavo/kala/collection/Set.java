@@ -47,7 +47,7 @@ public interface Set<E> extends Collection<E>, SetLike<E> {
     //region Collection Operations
 
     @Override
-    default String className() {
+    default @NotNull String className() {
         return "Set";
     }
 

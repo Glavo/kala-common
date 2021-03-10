@@ -241,7 +241,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     //region Collection Operations
 
     @Override
-    public final String className() {
+    public final @NotNull String className() {
         return "MutableTreeSet";
     }
 

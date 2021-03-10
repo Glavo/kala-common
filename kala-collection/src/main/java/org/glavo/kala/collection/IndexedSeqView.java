@@ -23,7 +23,7 @@ public interface IndexedSeqView<@Covariant E> extends SeqView<E>, IndexedSeqLike
     //region Collection Operations
 
     @Override
-    default String className() {
+    default @NotNull String className() {
         return "IndexedSeqView";
     }
 

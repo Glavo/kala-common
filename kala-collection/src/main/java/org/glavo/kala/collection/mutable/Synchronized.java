@@ -47,7 +47,7 @@ final class Synchronized {
 
 
         @Override
-        public String className() {
+        public @NotNull String className() {
             return "SynchronizedCollection";
         }
 
@@ -792,7 +792,7 @@ final class Synchronized {
 
 
         @Override
-        public String className() {
+        public @NotNull String className() {
             return "SynchronizedSet";
         }
 
@@ -924,7 +924,7 @@ final class Synchronized {
         //region Collection Operations
 
         @Override
-        public String className() {
+        public @NotNull String className() {
             return "SynchronizedSeq";
         }
 
@@ -1163,7 +1163,7 @@ final class Synchronized {
         }
 
         @Override
-        public String className() {
+        public @NotNull String className() {
             return "SynchronizedIndexedSeq";
         }
 
@@ -1209,7 +1209,7 @@ final class Synchronized {
         }
 
         @Override
-        public String className() {
+        public @NotNull String className() {
             return "SynchronizedBuffer";
         }
 
@@ -1355,7 +1355,7 @@ final class Synchronized {
         }
 
         @Override
-        public String className() {
+        public @NotNull String className() {
             return "SynchronizedIndexedBuffer";
         }
 

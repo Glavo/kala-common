@@ -182,7 +182,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     //region Collection Operations
 
     @Override
-    public String className() {
+    public @NotNull String className() {
         return "ArraySeq";
     }
 

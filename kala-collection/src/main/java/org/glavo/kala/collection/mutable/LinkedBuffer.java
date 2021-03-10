@@ -136,7 +136,7 @@ public final class LinkedBuffer<E> extends ImmutableList.Builder<E>
     //region Collection Operations
 
     @Override
-    public final String className() {
+    public final @NotNull String className() {
         return "LinkedBuffer";
     }
 

@@ -97,7 +97,7 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     //region Collection Operations
 
     @Override
-    default String className() {
+    default @NotNull String className() {
         return "ImmutableSeq";
     }
 

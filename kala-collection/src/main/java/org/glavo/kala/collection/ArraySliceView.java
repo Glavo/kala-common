@@ -24,7 +24,7 @@ public class ArraySliceView<E> extends AbstractIndexedSeqView<E> {
     }
 
     @Override
-    public String className() {
+    public @NotNull String className() {
         return "ArraySliceView";
     }
 

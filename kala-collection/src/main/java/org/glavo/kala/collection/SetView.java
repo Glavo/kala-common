@@ -10,7 +10,7 @@ import java.util.function.Predicate;
 public interface SetView<@Covariant E> extends View<E>, SetLike<E> {
 
     @Override
-    default String className() {
+    default @NotNull String className() {
         return "SetView";
     }
 

@@ -204,7 +204,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     //region Collection Operations
 
     @Override
-    public final String className() {
+    public final @NotNull String className() {
         return "ImmutableArray";
     }
 

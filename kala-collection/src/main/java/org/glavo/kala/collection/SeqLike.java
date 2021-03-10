@@ -30,6 +30,11 @@ public interface SeqLike<E> extends CollectionLike<E> {
     }
 
     @Override
+    default @NotNull String className() {
+        return "SeqLike";
+    }
+
+    @Override
     @NotNull SeqView<E> view();
 
     default @NotNull SeqView<E> sliceView(int beginIndex, int endIndex) {

@@ -228,7 +228,7 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
     //region Collection Operations
 
     @Override
-    public final String className() {
+    public final @NotNull String className() {
         return "ArrayBuffer";
     }
 

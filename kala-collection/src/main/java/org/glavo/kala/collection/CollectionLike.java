@@ -14,6 +14,10 @@ import java.util.function.Predicate;
 
 public interface CollectionLike<E> extends Traversable<E> {
 
+    default @NotNull String className() {
+        return "CollectionLike";
+    }
+
     @NotNull View<E> view();
 
     @Contract(value = "_, _ -> param1", mutates = "param1")

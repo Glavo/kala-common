@@ -80,7 +80,7 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
     //region Collection Operations
 
     @Override
-    default String className() {
+    default @NotNull String className() {
         return "MutableSeq";
     }
 

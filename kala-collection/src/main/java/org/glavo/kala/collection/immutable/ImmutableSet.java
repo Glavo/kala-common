@@ -17,7 +17,7 @@ public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<
     }
 
     @Override
-    default String className() {
+    default @NotNull String className() {
         return "ImmutableSet";
     }
 

@@ -63,7 +63,7 @@ public interface MutableCollection<E> extends Collection<E> {
     //region Collection Operations
 
     @Override
-    default String className() {
+    default @NotNull String className() {
         return "MutableCollection";
     }
 

@@ -101,7 +101,7 @@ public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E> {
     //region Collection Operations
 
     @Override
-    default String className() {
+    default @NotNull String className() {
         return "Seq";
     }
 

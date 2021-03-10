@@ -96,7 +96,7 @@ public interface Buffer<E> extends MutableSeq<E>, Growable<E> {
     //region Collection Operations
 
     @Override
-    default String className() {
+    default @NotNull String className() {
         return "Buffer";
     }
 

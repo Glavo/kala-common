@@ -10,7 +10,7 @@ public final class MutableArraySliceView<E> extends ArraySliceView<E> {
     }
 
     @Override
-    public final String className() {
+    public final @NotNull String className() {
         return "MutableArraySliceView";
     }
 

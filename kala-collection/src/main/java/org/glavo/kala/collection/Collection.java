@@ -34,7 +34,7 @@ public interface Collection<@Covariant E> extends Traversable<E>, CollectionLike
 
     //region Collection Operations
 
-    default String className() {
+    default @NotNull String className() {
         return "Collection";
     }
 

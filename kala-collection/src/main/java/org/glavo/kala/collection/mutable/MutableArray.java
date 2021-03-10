@@ -177,7 +177,7 @@ public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Index
     //region Collection Operations
 
     @Override
-    public final String className() {
+    public final @NotNull String className() {
         return "MutableArray";
     }
 
