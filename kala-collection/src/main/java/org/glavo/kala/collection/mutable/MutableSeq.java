@@ -96,8 +96,8 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
 
     @Override
     default @NotNull java.util.List<E> asJava() {
-        if (this instanceof IndexedSeq<?>) {
-            return new AsJavaConvert.MutableIndexedSeqAsJava<>((MutableSeq<E> & IndexedSeq<E>) this);
+        if (this instanceof RandomAccess) {
+            return new AsJavaConvert.MutableIndexedSeqAsJava<>(this);
         }
         return new AsJavaConvert.MutableSeqAsJava<>(this);
     }

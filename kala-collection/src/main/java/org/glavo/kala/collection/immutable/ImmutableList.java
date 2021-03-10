@@ -1,9 +1,6 @@
 package org.glavo.kala.collection.immutable;
 
-import org.glavo.kala.collection.IndexedSeq;
-import org.glavo.kala.collection.Seq;
-import org.glavo.kala.collection.SeqLike;
-import org.glavo.kala.collection.SeqView;
+import org.glavo.kala.collection.*;
 import org.glavo.kala.collection.internal.view.SeqViews;
 import org.glavo.kala.collection.mutable.AbstractBuffer;
 import org.glavo.kala.control.Option;
@@ -122,7 +119,7 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
         return res;
     }
 
-    public static <E> @NotNull ImmutableList<E> from(@NotNull IndexedSeq<? extends E> values) {
+    public static <E> @NotNull ImmutableList<E> from(@NotNull IndexedSeqLike<? extends E> values) {
         ImmutableList<E> res = nil();
         for (int i = values.size() - 1; i >= 0; i--) { // implicit null check of values
             res = res.cons(values.get(i));

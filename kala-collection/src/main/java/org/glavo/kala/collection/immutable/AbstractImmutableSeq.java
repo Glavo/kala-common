@@ -11,10 +11,7 @@ import org.glavo.kala.collection.Collection;
 import org.glavo.kala.collection.Seq;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Predicate;
 
 @SuppressWarnings("unchecked")
@@ -63,7 +60,7 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
         Builder builder = factory.newBuilder();
         factory.sizeHint(builder, ns);
 
-        if (seq instanceof IndexedSeq<?>) {
+        if (seq instanceof RandomAccess) {
             for (int i = beginIndex; i < endIndex; i++) {
                 factory.addToBuilder(builder, seq.get(i));
             }

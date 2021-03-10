@@ -273,7 +273,7 @@ public final class AsJavaConvert {
 
     }
 
-    public static class MutableIndexedSeqAsJava<E, C extends MutableSeq<E> & IndexedSeq<E>>
+    public static class MutableIndexedSeqAsJava<E, C extends MutableSeq<E>>
             extends MutableSeqAsJava<E, C> implements RandomAccess {
         public MutableIndexedSeqAsJava(@NotNull C source) {
             super(source);
@@ -313,7 +313,7 @@ public final class AsJavaConvert {
         }
     }
 
-    public static class IndexedBufferAsJava<E, C extends Buffer<E> & IndexedSeq<E>>
+    public static class IndexedBufferAsJava<E, C extends Buffer<E>>
             extends BufferAsJava<E, C> implements RandomAccess {
         public IndexedBufferAsJava(@NotNull C source) {
             super(source);

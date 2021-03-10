@@ -112,8 +112,8 @@ public interface Buffer<E> extends MutableSeq<E>, Growable<E> {
 
     @Override
     default @NotNull List<E> asJava() {
-        return this instanceof IndexedSeq<?>
-                ? new AsJavaConvert.IndexedBufferAsJava<>((Buffer<E> & IndexedSeq<E>) this)
+        return this instanceof RandomAccess
+                ? new AsJavaConvert.IndexedBufferAsJava<>( this)
                 : new AsJavaConvert.BufferAsJava<>(this);
     }
 
