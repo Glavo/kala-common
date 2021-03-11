@@ -1,10 +1,6 @@
 package org.glavo.kala.benchmark;
 
-import org.glavo.kala.collection.immutable.ImmutableArray;
 import org.openjdk.jmh.annotations.*;
-import org.openjdk.jmh.runner.Runner;
-import org.openjdk.jmh.runner.RunnerException;
-import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -143,12 +139,5 @@ public class CopyOfArrayBenchmark {
     @Benchmark
     public TestImmutableArray2<?> testTestImmutableArray2() {
         return new TestImmutableArray2<>(array).filter(obj -> System.identityHashCode(obj) > 0);
-    }
-
-    public static void main(String[] args) throws RunnerException {
-        var options = new OptionsBuilder()
-                .include(CopyOfArrayBenchmark.class.getSimpleName())
-                .build();
-        new Runner(options).run();
     }
 }

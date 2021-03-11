@@ -45,11 +45,4 @@ public class ArrayBufferBenchmark {
         }
         return buffer;
     }
-
-    public static void main(String[] args) throws RunnerException {
-        var options = new OptionsBuilder()
-                .include(ArrayBufferBenchmark.class.getSimpleName())
-                .build();
-        new Runner(options).run();
-    }
 }
