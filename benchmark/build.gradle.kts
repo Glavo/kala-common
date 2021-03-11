@@ -29,11 +29,12 @@ tasks.create<JavaExec>("runBenchmark") {
 
     val dateFormat = SimpleDateFormat("yyyy-MM-dd_HHmmss")
     val fo = Files.newOutputStream(logDir.resolve("${dateFormat.format(Date())}.log"))
-
     standardOutput = org.apache.tools.ant.util.TeeOutputStream(System.out, fo)
     errorOutput = org.apache.tools.ant.util.TeeOutputStream(System.err, fo)
 
     args = (project.properties["benchmark"] as? String)?.split(';') ?: listOf()
+
+    doLast { fo.close() }
 }
 
 repositories {
