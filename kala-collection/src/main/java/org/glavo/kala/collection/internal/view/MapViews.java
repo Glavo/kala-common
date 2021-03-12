@@ -9,6 +9,7 @@ import org.glavo.kala.function.CheckedBiConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -151,6 +152,7 @@ public final class MapViews {
 
         @Override
         public @NotNull MapView<K, V> withDefault(@NotNull Function<? super K, ? extends V> defaultFunction) {
+            Objects.requireNonNull(defaultFunction);
             return new WithDefault<>(source, defaultFunction);
         }
     }

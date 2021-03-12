@@ -1,6 +1,7 @@
 package org.glavo.kala.collection.mutable;
 
 import org.glavo.kala.collection.Map;
+import org.glavo.kala.collection.base.AbstractIterator;
 import org.glavo.kala.collection.base.AbstractMapIterator;
 import org.glavo.kala.collection.base.MapIterator;
 import org.glavo.kala.collection.factory.MapFactory;
@@ -10,9 +11,7 @@ import org.glavo.kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -358,8 +357,13 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
         return new Itr<>(table);
     }
 
-    final @NotNull Itr<K, V> nodeIterator() {
-        return new Itr<>(table);
+    final @NotNull NodeItr<K, V> nodeIterator() {
+        return new NodeItr<>(table);
+    }
+
+    @Override
+    public final @NotNull java.util.Map<K, V> asJava() {
+        return new AsJava<>(this);
     }
 
     @Override
@@ -604,9 +608,9 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
         }
         if (m instanceof MutableHashMap<?, ?>) {
             MutableHashMap<K, V> mhm = (MutableHashMap<K, V>) m;
-            Itr<K, V> itr = mhm.nodeIterator();
+            NodeItr<K, V> itr = mhm.nodeIterator();
             while (itr.hasNext()) {
-                Node<K, V> next = itr.nextNode();
+                Node<K, V> next = itr.next();
                 put0(next.key, next.value, next.hash);
             }
             return;
@@ -616,7 +620,7 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
     }
 
     @Override
-    public @NotNull Option<V> remove(K key) {
+    public final @NotNull Option<V> remove(K key) {
         Node<K, V> node = remove0(key);
         return node == null ? Option.none() : Option.some(node.value);
     }
@@ -640,11 +644,19 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
 
     //endregion
 
+
+    @Override
+    public final boolean containsKey(K key) {
+        return findNode(key) != null;
+    }
+
     @Override
     public final void forEach(@NotNull BiConsumer<? super K, ? super V> consumer) {
         for (Node<K, V> fn : this.table) {
-            if (fn != null) {
-                fn.forEach(consumer);
+            Node<K, V> node = fn;
+            while (node != null) {
+                consumer.accept(node.key, node.value);
+                node = node.next;
             }
         }
     }
@@ -692,7 +704,7 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
             }
         }
 
-        void forEach(@NotNull BiConsumer<? super K, ? super V> consumer) {
+        final void forEach(@NotNull BiConsumer<? super K, ? super V> consumer) {
             Node<K, V> node = this;
             while (node != null) {
                 consumer.accept(node.key, node.value);
@@ -788,15 +800,6 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
             return false;
         }
 
-        final Node<K, V> nextNode() {
-            if (!hasNext()) {
-                throw new NoSuchElementException();
-            }
-            Node<K, V> oldNode = this.node;
-            this.node = oldNode.next;
-            return oldNode;
-        }
-
         @Override
         public final K nextKey() {
             if (!hasNext()) {
@@ -811,6 +814,68 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
         @Override
         public final V getValue() {
             return value;
+        }
+    }
+
+    static final class NodeItr<K, V> extends AbstractIterator<Node<K, V>> {
+        private int i = 0;
+        private Node<K, V> node = null;
+
+        private final Node<K, V>[] table;
+        private final int len;
+
+        NodeItr(Node<K, V>[] table) {
+            this.table = table;
+            this.len = table.length;
+        }
+
+        @Override
+        public final boolean hasNext() {
+            if (node != null) {
+                return true;
+            }
+            while (i < len) {
+                Node<K, V> n = table[i];
+                i += 1;
+                if (n != null) {
+                    node = n;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public final Node<K, V> next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            Node<K, V> oldNode = this.node;
+            this.node = oldNode.next;
+            return oldNode;
+        }
+    }
+
+    static final class AsJava<K, V> extends AsJavaConvert.MutableMapAsJava<K, V, MutableHashMap<K, V>> {
+
+        public AsJava(@NotNull MutableHashMap<K, V> source) {
+            super(source);
+        }
+
+        @Override
+        public @NotNull Set<Entry<K, V>> entrySet() {
+            return new EntrySet<>(source);
+        }
+
+        static final class EntrySet<K, V> extends AsJavaConvert.MapAsJava.EntrySet<K, V, MutableHashMap<K, V>> {
+            EntrySet(MutableHashMap<K, V> source) {
+                super(source);
+            }
+
+            @Override
+            @SuppressWarnings("rawtypes")
+            public final @NotNull Iterator<java.util.Map.Entry<K, V>> iterator() {
+                return (Iterator) source.nodeIterator();
+            }
         }
     }
 }
