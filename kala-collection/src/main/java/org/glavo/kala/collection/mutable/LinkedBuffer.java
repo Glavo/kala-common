@@ -177,7 +177,6 @@ public final class LinkedBuffer<E> extends ImmutableList.Builder<E>
         return first();
     }
 
-
     @SuppressWarnings("unchecked")
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         this.clear();

@@ -645,13 +645,13 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
     }
 
     @Override
-    public void clear() {
+    public final void clear() {
         Arrays.fill(table, null);
         contentSize = 0;
     }
 
     @Override
-    public void replaceAll(@NotNull BiFunction<? super K, ? super V, ? extends V> function) {
+    public final void replaceAll(@NotNull BiFunction<? super K, ? super V, ? extends V> function) {
         for (Node<K, V> fn : this.table) {
             Node<K, V> node = fn;
             while (node != null) {

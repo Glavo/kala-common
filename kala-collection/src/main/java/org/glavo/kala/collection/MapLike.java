@@ -2,16 +2,15 @@ package org.glavo.kala.collection;
 
 import org.glavo.kala.collection.base.MapIterator;
 import org.glavo.kala.collection.internal.view.MapViews;
+import org.glavo.kala.collection.mutable.Growable;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.function.CheckedBiConsumer;
+import org.glavo.kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
-import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 public interface MapLike<K, V> {
 
@@ -104,6 +103,8 @@ public interface MapLike<K, V> {
         return new MapViews.WithDefault<>(this, defaultFunction);
     }
 
+    //region Element Conditions
+
     default boolean contains(K key, Object value) {
         return getOption(key).contains(value);
     }
@@ -141,6 +142,14 @@ public interface MapLike<K, V> {
             return true;
         }
         return iterator().noneMatch(predicate);
+    }
+
+    //endregion
+
+    default <R, G extends Growable<? super R>> @NotNull G mapTo(
+            @NotNull G destination, @NotNull BiFunction<? super K, ? super V, ? extends R> mapper) {
+        this.forEach((k, v) -> destination.plusAssign(mapper.apply(k, v)));
+        return destination;
     }
 
     default @NotNull String joinToString() {
