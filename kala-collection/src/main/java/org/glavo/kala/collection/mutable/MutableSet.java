@@ -129,23 +129,17 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
     }
 
     @Override
-    @Deprecated
-    @DeprecatedReplaceWith("add(value)")
-    default void addValue(E value) {
+    default void plusAssign(E value) {
         add(value);
     }
 
     @Override
-    @Deprecated
-    @DeprecatedReplaceWith("addAll(values)")
-    default void addValues(E @NotNull [] values) {
+    default void plusAssign(E @NotNull [] values) {
         addAll(values);
     }
 
     @Override
-    @Deprecated
-    @DeprecatedReplaceWith("addAll(values)")
-    default void addValues(@NotNull Iterable<? extends E> values) {
+    default void plusAssign(@NotNull Iterable<? extends E> values) {
         addAll(values);
     }
 

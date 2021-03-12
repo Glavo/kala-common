@@ -2,7 +2,6 @@ package org.glavo.kala.collection;
 
 import org.glavo.kala.collection.base.GenericArrays;
 import org.glavo.kala.collection.base.Iterators;
-import org.glavo.kala.collection.immutable.ImmutableList;
 import org.glavo.kala.collection.mutable.ArrayBuffer;
 import org.glavo.kala.collection.mutable.Growable;
 import org.glavo.kala.control.Option;
@@ -18,8 +17,6 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 import java.util.Iterator;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 public interface SeqLike<E> extends CollectionLike<E> {
@@ -266,7 +263,7 @@ public interface SeqLike<E> extends CollectionLike<E> {
             @NotNull G destination, @NotNull IndexedFunction<? super E, ? extends U> mapper) {
         int idx = 0;
         for (E e : this) {
-            destination.addValue(mapper.apply(idx++, e));
+            destination.plusAssign(mapper.apply(idx++, e));
         }
         return destination;
     }

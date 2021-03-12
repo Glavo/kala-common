@@ -168,23 +168,17 @@ public interface Buffer<E> extends MutableSeq<E>, Growable<E> {
 
 
     @Override
-    @Deprecated
-    @DeprecatedReplaceWith("append(value)")
-    default void addValue(E value) {
+    default void plusAssign(E value) {
         append(value);
     }
 
     @Override
-    @Deprecated
-    @DeprecatedReplaceWith("appendAll(values)")
-    default void addValues(E @NotNull [] values) {
+    default void plusAssign(E @NotNull [] values) {
         appendAll(values);
     }
 
     @Override
-    @Deprecated
-    @DeprecatedReplaceWith("appendAll(values)")
-    default void addValues(@NotNull Iterable<? extends E> values) {
+    default void plusAssign(@NotNull Iterable<? extends E> values) {
         appendAll(values);
     }
 

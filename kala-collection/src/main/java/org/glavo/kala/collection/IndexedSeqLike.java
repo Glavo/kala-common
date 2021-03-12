@@ -358,7 +358,7 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
         for (int i = 0; i < this.size(); i++) {
             E e = this.get(i);
             if (predicate.test(e)) {
-                destination.addValue(e);
+                destination.plusAssign(e);
             }
         }
         return destination;
@@ -369,7 +369,7 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
         for (int i = 0; i < this.size(); i++) {
             E e = this.get(i);
             if (!predicate.test(e)) {
-                destination.addValue(e);
+                destination.plusAssign(e);
             }
         }
         return destination;
@@ -380,7 +380,7 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
         for (int i = 0; i < this.size(); i++) {
             E e = this.get(i);
             if (e != null) {
-                destination.addValue(e);
+                destination.plusAssign(e);
             }
         }
         return destination;
@@ -389,7 +389,7 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     @Override
     default <U, G extends Growable<? super U>> @NotNull G mapTo(@NotNull G destination, @NotNull Function<? super E, ? extends U> mapper) {
         for (int i = 0; i < this.size(); i++) {
-            destination.addValue(mapper.apply(this.get(i)));
+            destination.plusAssign(mapper.apply(this.get(i)));
         }
         return destination;
     }
@@ -401,7 +401,7 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
         for (int i = 0; i < this.size(); i++) {
             U u = mapper.apply(this.get(i));
             if(u != null) {
-                destination.addValue(u);
+                destination.plusAssign(u);
             }
         }
         return destination;
@@ -410,7 +410,7 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     @Override
     default <U, G extends Growable<? super U>> @NotNull G mapIndexedTo(@NotNull G destination, @NotNull IndexedFunction<? super E, ? extends U> mapper) {
         for (int i = 0; i < this.size(); i++) {
-            destination.addValue(mapper.apply(i, this.get(i)));
+            destination.plusAssign(mapper.apply(i, this.get(i)));
         }
         return destination;
     }
