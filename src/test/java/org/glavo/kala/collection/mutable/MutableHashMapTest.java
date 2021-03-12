@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 
@@ -129,6 +130,41 @@ public class MutableHashMapTest implements MutableMapTestTemplate {
                 MutableHashMap.from(java.util.Map.of("str1", 1, "str2", 2, "str3", 3)));
     }
 
+    @Test
+    void cloneTest() {
+
+        Integer[][] data1 = data1();
+        String[][] data1s = data1s();
+
+        for (int i = 0; i < data1.length; i++) {
+            Integer[] d1 = data1[i];
+            String[] d1s = data1s[i];
+
+            MutableHashMap<String, Integer> m = new MutableHashMap<>();
+            for (int j = 0; j < d1.length; j++) {
+                m.set(d1s[j], d1[j]);
+            }
+
+            MutableHashMap<String, Integer> newM = m.clone();
+            assertEquals(m, newM);
+
+            newM.put("(new key)", 100);
+            newM.put(d1s[0], d1[0] + 100);
+
+            assertEquals(d1.length, m.size());
+            assertEquals(d1.length + 1, newM.size());
+
+            assertEquals(d1[0], m.get(d1s[0]));
+            assertEquals(d1[0] + 100, newM.get(d1s[0]));
+
+            for (int j = 1; j < d1.length; j++) {
+                String s = d1s[j];
+                assertTrue(newM.containsKey(s));
+                assertEquals(d1[j], newM.get(s));
+            }
+        }
+    }
+
     @Nested
     @DisplayName("getOrPutTest")
     class GetOrPutTest {
@@ -180,4 +216,39 @@ public class MutableHashMapTest implements MutableMapTestTemplate {
             assertEquals("value2", hm.get(key));
         }
     }
+
+    @Test
+    void putAllTest() {
+
+        Integer[][] data1 = data1();
+        String[][] data1s = data1s();
+
+        for (int i = 0; i < data1.length; i++) {
+            Integer[] d1 = data1[i];
+            String[] d1s = data1s[i];
+
+            MutableHashMap<String, Integer> m = new MutableHashMap<>();
+
+            HashMap<String, Integer> hm = new HashMap<>();
+            for (int j = 0; j < d1.length; j++) {
+                hm.put(d1s[j], d1[j]);
+            }
+
+            m.putAll(hm);
+            assertEquals(hm.size(), m.size());
+            hm.forEach((k, v) -> {
+                assertTrue(m.containsKey(k));
+                assertEquals(v, m.get(k));
+            });
+
+            m.putAll(m);
+            assertEquals(hm.size(), m.size());
+            hm.forEach((k, v) -> {
+                assertTrue(m.containsKey(k));
+                assertEquals(v, m.get(k));
+            });
+        }
+    }
+
+
 }
