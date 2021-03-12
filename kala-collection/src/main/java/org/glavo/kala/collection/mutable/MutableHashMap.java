@@ -18,7 +18,8 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
-public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V> {
+public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
+        implements MutableMapOps<K, V, MutableHashMap<?, ?>, MutableHashMap<K, V>> {
     private static final Factory<?, ?> FACTORY = new Factory<>();
 
     public static final int DEFAULT_INITIAL_CAPACITY = 16;

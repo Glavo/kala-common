@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
 public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.Node<K, V>>
-        implements MutableMap<K, V>, SortedMap<K, V> {
+        implements MutableMap<K, V>, MutableMapOps<K, V, MutableTreeMap<?, ?>, MutableTreeMap<K, V>>, SortedMap<K, V> {
     private static final Factory<?, ?> DEFAULT_FACTORY = new Factory<>();
 
     public MutableTreeMap() {
