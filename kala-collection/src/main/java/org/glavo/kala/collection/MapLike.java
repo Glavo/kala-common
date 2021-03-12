@@ -104,6 +104,10 @@ public interface MapLike<K, V> {
         return new MapViews.WithDefault<>(this, defaultFunction);
     }
 
+    default boolean contains(K key, Object value) {
+        return getOption(key).contains(value);
+    }
+
     default boolean containsKey(K key) {
         if (knownSize() == 0) {
             return false;
@@ -111,7 +115,7 @@ public interface MapLike<K, V> {
         return iterator().containsKey(key);
     }
 
-    default boolean containsValue(V value) {
+    default boolean containsValue(Object value) {
         if (knownSize() == 0) {
             return false;
         }

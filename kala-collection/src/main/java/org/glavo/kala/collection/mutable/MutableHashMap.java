@@ -7,6 +7,7 @@ import org.glavo.kala.collection.base.MapIterator;
 import org.glavo.kala.collection.factory.MapFactory;
 import org.glavo.kala.collection.immutable.AbstractImmutableMap;
 import org.glavo.kala.collection.immutable.ImmutableHashMap;
+import org.glavo.kala.collection.immutable.ImmutableMap;
 import org.glavo.kala.collection.internal.convert.AsJavaConvert;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.tuple.Tuple2;
@@ -368,6 +369,14 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
     @Override
     public final @NotNull java.util.Map<K, V> asJava() {
         return new AsJava<>(this);
+    }
+
+    final @NotNull MutableHashMap<K, V> shallowClone() {
+        try {
+            return (MutableHashMap<K, V>) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError(e);
+        }
     }
 
     @Override
@@ -899,7 +908,7 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
 
     @ApiStatus.Internal
     public static class Frozen<K, V> extends AbstractImmutableMap<K, V> {
-        final MutableHashMap<K, V> source;
+        protected final MutableHashMap<K, V> source;
 
         protected Frozen(MutableHashMap<K, V> source) {
             this.source = source;
@@ -964,13 +973,15 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
             return source.getOrThrowException(key, exception);
         }
 
+        //region Element Conditions
+
         @Override
         public final boolean containsKey(K key) {
             return source.containsKey(key);
         }
 
         @Override
-        public final boolean containsValue(V value) {
+        public final boolean containsValue(Object value) {
             return source.containsValue(value);
         }
 
@@ -988,6 +999,8 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
         public final boolean noneMatch(@NotNull BiPredicate<? super K, ? super V> predicate) {
             return source.noneMatch(predicate);
         }
+
+        //endregion
 
         @Override
         public final void forEach(@NotNull BiConsumer<? super K, ? super V> consumer) {

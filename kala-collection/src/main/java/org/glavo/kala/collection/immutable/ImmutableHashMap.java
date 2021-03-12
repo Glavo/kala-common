@@ -1,6 +1,7 @@
 package org.glavo.kala.collection.immutable;
 
 import org.glavo.kala.collection.factory.MapFactory;
+import org.glavo.kala.collection.internal.FullMapOps;
 import org.glavo.kala.collection.mutable.AbstractMutableMapFactory;
 import org.glavo.kala.collection.mutable.MutableHashMap;
 import org.glavo.kala.tuple.Tuple2;
@@ -12,7 +13,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 @SuppressWarnings("unchecked")
-public final class ImmutableHashMap<K, V> extends MutableHashMap.Frozen<K, V> {
+public final class ImmutableHashMap<K, V> extends MutableHashMap.Frozen<K, V>
+        implements FullMapOps<K, V, ImmutableHashMap<?, ?>, ImmutableHashMap<K, V>> {
 
     private static final ImmutableHashMap<?, ?> EMPTY = new ImmutableHashMap<>(new MutableHashMap<>());
     private static final Factory<?, ?> FACTORY = new Factory<>();
@@ -144,6 +146,26 @@ public final class ImmutableHashMap<K, V> extends MutableHashMap.Frozen<K, V> {
     @Override
     public final @NotNull String className() {
         return "ImmutableHashMap";
+    }
+
+    @Override
+    public final @NotNull ImmutableHashMap<K, V> updated(K key, V value) {
+        if (source.contains(key, value)) {
+            return this;
+        }
+        MutableHashMap<K, V> nm = source.clone();
+        nm.put(key, value);
+        return new ImmutableHashMap<>(nm);
+    }
+
+    @Override
+    public final @NotNull ImmutableHashMap<K, V> removed(K key) {
+        if (!source.containsKey(key)) {
+            return this;
+        }
+        MutableHashMap<K, V> nm = source.clone();
+        nm.remove(key);
+        return nm.isEmpty() ? empty() : new ImmutableHashMap<>(nm);
     }
 
     private static final class Factory<K, V> implements MapFactory<K, V, MutableHashMap<K, V>, ImmutableHashMap<K, V>> {

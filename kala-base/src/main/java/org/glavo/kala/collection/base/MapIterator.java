@@ -51,7 +51,7 @@ public interface MapIterator<K, V> extends Iterator<Tuple2<K, V>> {
         return false;
     }
 
-    default boolean containsValue(V value) {
+    default boolean containsValue(Object value) {
         if (value == null) {
             while (hasNext()) {
                 nextKey();

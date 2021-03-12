@@ -318,7 +318,7 @@ public final class FromJavaConvert {
         }
 
         @Override
-        public boolean containsValue(V value) {
+        public boolean containsValue(Object value) {
             return source.containsValue(value);
         }
 

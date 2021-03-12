@@ -137,4 +137,12 @@ public interface ImmutableMap<K, V> extends Map<K, V> {
     default @NotNull <NK, NV> MapFactory<NK, NV, ?, ? extends ImmutableMap<NK, NV>> mapFactory() {
         return ImmutableMap.factory();
     }
+
+    default @NotNull ImmutableMap<K, V> updated(K key, V value) {
+        return AbstractImmutableMap.updated(this, key, value, mapFactory());
+    }
+
+    default @NotNull ImmutableMap<K, V> removed(K key) {
+        return AbstractImmutableMap.removed(this, key, mapFactory());
+    }
 }
