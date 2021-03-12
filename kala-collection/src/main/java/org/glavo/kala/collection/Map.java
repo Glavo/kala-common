@@ -2,22 +2,15 @@ package org.glavo.kala.collection;
 
 import org.glavo.kala.Equatable;
 import org.glavo.kala.collection.factory.MapFactory;
-import org.glavo.kala.collection.immutable.ImmutableHashMap;
 import org.glavo.kala.collection.immutable.ImmutableMap;
 import org.glavo.kala.collection.internal.convert.AsJavaConvert;
 import org.glavo.kala.collection.internal.convert.FromJavaConvert;
-import org.glavo.kala.control.Option;
-import org.glavo.kala.function.CheckedBiConsumer;
 import org.glavo.kala.collection.base.MapIterator;
 import org.glavo.kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Objects;
-import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
-import java.util.function.Supplier;
 
 public interface Map<K, V> extends MapLike<K, V>, Equatable {
 
@@ -155,7 +148,7 @@ public interface Map<K, V> extends MapLike<K, V>, Equatable {
         return ImmutableMap.from(values);
     }
 
-    static <K, V> @NotNull Map<K, V> from(@NotNull Map<? extends K, ? extends V> values) {
+    static <K, V> @NotNull Map<K, V> from(@NotNull MapLike<? extends K, ? extends V> values) {
         return ImmutableMap.from(values);
     }
 

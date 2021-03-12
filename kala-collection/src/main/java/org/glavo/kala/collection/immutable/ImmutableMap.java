@@ -1,8 +1,8 @@
 package org.glavo.kala.collection.immutable;
 
 import org.glavo.kala.collection.Map;
+import org.glavo.kala.collection.MapLike;
 import org.glavo.kala.collection.factory.MapFactory;
-import org.glavo.kala.collection.mutable.MutableHashMap;
 import org.glavo.kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
 
@@ -114,7 +114,7 @@ public interface ImmutableMap<K, V> extends Map<K, V> {
         return ImmutableHashMap.from(values);
     }
 
-    static <K, V> @NotNull ImmutableMap<K, V> from(@NotNull Map<? extends K, ? extends V> values) {
+    static <K, V> @NotNull ImmutableMap<K, V> from(@NotNull MapLike<? extends K, ? extends V> values) {
         return ImmutableHashMap.from(values);
     }
 

@@ -1,14 +1,14 @@
 package org.glavo.kala.collection.mutable;
 
+import org.glavo.kala.collection.Map;
+import org.glavo.kala.collection.MapLike;
 import org.glavo.kala.collection.factory.MapFactory;
 import org.glavo.kala.collection.internal.convert.AsJavaConvert;
 import org.glavo.kala.collection.internal.convert.FromJavaConvert;
-import org.glavo.kala.tuple.Tuple2;
-import org.glavo.kala.collection.Map;
 import org.glavo.kala.control.Option;
+import org.glavo.kala.tuple.Tuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -123,7 +123,7 @@ public interface MutableMap<K, V> extends Map<K, V> {
         return MutableHashMap.from(values);
     }
 
-    static <K, V> @NotNull MutableMap<K, V> from(@NotNull Map<? extends K, ? extends V> values) {
+    static <K, V> @NotNull MutableMap<K, V> from(@NotNull MapLike<? extends K, ? extends V> values) {
         return MutableHashMap.from(values);
     }
 
@@ -203,7 +203,7 @@ public interface MutableMap<K, V> extends Map<K, V> {
         m.forEach(this::set);
     }
 
-    default void putAll(@NotNull Map<? extends K, ? extends V> m) {
+    default void putAll(@NotNull MapLike<? extends K, ? extends V> m) {
         if (m == this) {
             return;
         }

@@ -1,13 +1,12 @@
 package org.glavo.kala.collection.mutable;
 
-import org.glavo.kala.collection.Map;
+import org.glavo.kala.collection.MapLike;
 import org.glavo.kala.collection.base.AbstractIterator;
 import org.glavo.kala.collection.base.AbstractMapIterator;
 import org.glavo.kala.collection.base.MapIterator;
 import org.glavo.kala.collection.factory.MapFactory;
 import org.glavo.kala.collection.immutable.AbstractImmutableMap;
 import org.glavo.kala.collection.immutable.ImmutableHashMap;
-import org.glavo.kala.collection.immutable.ImmutableMap;
 import org.glavo.kala.collection.internal.convert.AsJavaConvert;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.tuple.Tuple2;
@@ -226,7 +225,7 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
         return m;
     }
 
-    public static <K, V> @NotNull MutableHashMap<K, V> from(@NotNull Map<? extends K, ? extends V> values) {
+    public static <K, V> @NotNull MutableHashMap<K, V> from(@NotNull MapLike<? extends K, ? extends V> values) {
         MutableHashMap<K, V> m = new MutableHashMap<>();
         m.putAll(values);
         return m;
@@ -613,7 +612,7 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
     }
 
     @Override
-    public final void putAll(@NotNull Map<? extends K, ? extends V> m) {
+    public final void putAll(@NotNull MapLike<? extends K, ? extends V> m) {
         Objects.requireNonNull(m);
 
         if (m == this) {

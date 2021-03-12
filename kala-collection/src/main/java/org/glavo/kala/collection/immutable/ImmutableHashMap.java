@@ -1,13 +1,10 @@
 package org.glavo.kala.collection.immutable;
 
+import org.glavo.kala.collection.MapLike;
 import org.glavo.kala.collection.factory.MapFactory;
 import org.glavo.kala.collection.internal.FullMapOps;
-import org.glavo.kala.collection.mutable.AbstractMutableMapFactory;
 import org.glavo.kala.collection.mutable.MutableHashMap;
 import org.glavo.kala.tuple.Tuple2;
-import org.glavo.kala.collection.Map;
-import org.glavo.kala.collection.internal.convert.FromJavaConvert;
-import org.glavo.kala.collection.base.MapIterator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -129,7 +126,7 @@ public final class ImmutableHashMap<K, V> extends MutableHashMap.Frozen<K, V>
         return new ImmutableHashMap<>(MutableHashMap.from(values));
     }
 
-    public static <K, V> @NotNull ImmutableHashMap<K, V> from(@NotNull Map<? extends K, ? extends V> values) {
+    public static <K, V> @NotNull ImmutableHashMap<K, V> from(@NotNull MapLike<? extends K, ? extends V> values) {
         return new ImmutableHashMap<>(MutableHashMap.from(values));
     }
 
