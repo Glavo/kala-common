@@ -413,6 +413,11 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
     }
 
     @Override
+    public final @NotNull MutableMapEditor<K, V, MutableTreeMap<K, V>> edit() {
+        return new MutableMapEditor<>(this);
+    }
+
+    @Override
     public final @NotNull Map<K, V> asJava() {
         return new AsJava<>(this);
     }

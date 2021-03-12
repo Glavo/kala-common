@@ -366,6 +366,11 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
     }
 
     @Override
+    public final @NotNull MutableMapEditor<K, V, MutableHashMap<K, V>> edit() {
+        return new MutableMapEditor<>(this);
+    }
+
+    @Override
     public final @NotNull java.util.Map<K, V> asJava() {
         return new AsJava<>(this);
     }

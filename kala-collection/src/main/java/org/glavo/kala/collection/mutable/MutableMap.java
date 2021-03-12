@@ -156,6 +156,10 @@ public interface MutableMap<K, V> extends Map<K, V> {
         return MutableMap.factory();
     }
 
+    default @NotNull MutableMapEditor<K, V, ? extends MutableMap<K, V>> edit() {
+        return new MutableMapEditor<>(this);
+    }
+
     @Override
     default java.util.@NotNull Map<K, V> asJava() {
         return new AsJavaConvert.MutableMapAsJava<>(this);
