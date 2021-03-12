@@ -2,13 +2,16 @@ package org.glavo.kala.collection.mutable;
 
 import org.glavo.kala.collection.factory.MapFactory;
 import org.glavo.kala.collection.internal.convert.AsJavaConvert;
+import org.glavo.kala.collection.internal.convert.FromJavaConvert;
 import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.collection.Map;
 import org.glavo.kala.control.Option;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
@@ -21,24 +24,23 @@ public interface MutableMap<K, V> extends Map<K, V> {
         return (MapFactory) MutableHashMap.factory();
     }
 
-    static <K, V> @NotNull MutableMap<K, V> of() {
+    static <K, V> @NotNull MutableMap<K, V> create() {
         return new MutableHashMap<>();
     }
 
+    static <K, V> @NotNull MutableMap<K, V> of() {
+        return MutableHashMap.of();
+    }
+
     static <K, V> @NotNull MutableMap<K, V> of(K k1, V v1) {
-        MutableHashMap<K, V> m = new MutableHashMap<>();
-        m.set(k1, v1);
-        return m;
+        return MutableHashMap.of(k1, v1);
     }
 
     static <K, V> @NotNull MutableMap<K, V> of(
             K k1, V v1,
             K k2, V v2
     ) {
-        MutableHashMap<K, V> m = new MutableHashMap<>();
-        m.set(k1, v1);
-        m.set(k2, v2);
-        return m;
+        return MutableHashMap.of(k1, v1, k2, v2);
     }
 
     static <K, V> @NotNull MutableMap<K, V> of(
@@ -46,11 +48,7 @@ public interface MutableMap<K, V> extends Map<K, V> {
             K k2, V v2,
             K k3, V v3
     ) {
-        MutableHashMap<K, V> m = new MutableHashMap<>();
-        m.set(k1, v1);
-        m.set(k2, v2);
-        m.set(k3, v3);
-        return m;
+        return MutableHashMap.of(k1, v1, k2, v2, k3, v3);
     }
 
     static <K, V> @NotNull MutableMap<K, V> of(
@@ -59,12 +57,7 @@ public interface MutableMap<K, V> extends Map<K, V> {
             K k3, V v3,
             K k4, V v4
     ) {
-        MutableHashMap<K, V> m = new MutableHashMap<>();
-        m.set(k1, v1);
-        m.set(k2, v2);
-        m.set(k3, v3);
-        m.set(k4, v4);
-        return m;
+        return MutableHashMap.of(k1, v1, k2, v2, k3, v3, k4, v4);
     }
 
     static <K, V> @NotNull MutableMap<K, V> of(
@@ -74,35 +67,24 @@ public interface MutableMap<K, V> extends Map<K, V> {
             K k4, V v4,
             K k5, V v5
     ) {
-        MutableHashMap<K, V> m = new MutableHashMap<>();
-        m.set(k1, v1);
-        m.set(k2, v2);
-        m.set(k3, v3);
-        m.set(k4, v4);
-        m.set(k5, v5);
-        return m;
+        return MutableHashMap.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5);
     }
 
     static <K, V> @NotNull MutableMap<K, V> ofEntries() {
-        return new MutableHashMap<>();
+        return MutableHashMap.ofEntries();
     }
 
     static <K, V> @NotNull MutableMap<K, V> ofEntries(
             @NotNull Tuple2<? extends K, ? extends V> entry1
     ) {
-        MutableHashMap<K, V> res = new MutableHashMap<>();
-        res.set(entry1);
-        return res;
+        return MutableHashMap.ofEntries(entry1);
     }
 
     static <K, V> @NotNull MutableMap<K, V> ofEntries(
             @NotNull Tuple2<? extends K, ? extends V> entry1,
             @NotNull Tuple2<? extends K, ? extends V> entry2
     ) {
-        MutableHashMap<K, V> res = new MutableHashMap<>();
-        res.set(entry1);
-        res.set(entry2);
-        return res;
+        return MutableHashMap.ofEntries(entry1, entry2);
     }
 
     static <K, V> @NotNull MutableMap<K, V> ofEntries(
@@ -110,11 +92,7 @@ public interface MutableMap<K, V> extends Map<K, V> {
             @NotNull Tuple2<? extends K, ? extends V> entry2,
             @NotNull Tuple2<? extends K, ? extends V> entry3
     ) {
-        MutableHashMap<K, V> res = new MutableHashMap<>();
-        res.set(entry1);
-        res.set(entry2);
-        res.set(entry3);
-        return res;
+        return MutableHashMap.ofEntries(entry1, entry2, entry3);
     }
 
     static <K, V> @NotNull MutableMap<K, V> ofEntries(
@@ -123,12 +101,7 @@ public interface MutableMap<K, V> extends Map<K, V> {
             @NotNull Tuple2<? extends K, ? extends V> entry3,
             @NotNull Tuple2<? extends K, ? extends V> entry4
     ) {
-        MutableHashMap<K, V> res = new MutableHashMap<>();
-        res.set(entry1);
-        res.set(entry2);
-        res.set(entry3);
-        res.set(entry4);
-        return res;
+        return MutableHashMap.ofEntries(entry1, entry2, entry3, entry4);
     }
 
     static <K, V> @NotNull MutableMap<K, V> ofEntries(
@@ -138,52 +111,38 @@ public interface MutableMap<K, V> extends Map<K, V> {
             @NotNull Tuple2<? extends K, ? extends V> entry4,
             @NotNull Tuple2<? extends K, ? extends V> entry5
     ) {
-        MutableHashMap<K, V> res = new MutableHashMap<>();
-        res.set(entry1);
-        res.set(entry2);
-        res.set(entry3);
-        res.set(entry4);
-        res.set(entry5);
-        return res;
+        return MutableHashMap.ofEntries(entry1, entry2, entry3, entry4, entry5);
     }
 
     @SafeVarargs
     static <K, V> @NotNull MutableMap<K, V> ofEntries(Tuple2<? extends K, ? extends V> @NotNull ... entries) {
-        MutableHashMap<K, V> res = new MutableHashMap<>();
-        for (Tuple2<? extends K, ? extends V> entry : entries) {
-            res.set(entry);
-        }
-        return res;
+        return MutableHashMap.from(entries);
     }
 
     static <K, V> @NotNull MutableMap<K, V> from(java.util.@NotNull Map<? extends K, ? extends V> values) {
-        MutableHashMap<K, V> m = new MutableHashMap<>();
-        m.putAll(values);
-        return m;
+        return MutableHashMap.from(values);
     }
 
     static <K, V> @NotNull MutableMap<K, V> from(@NotNull Map<? extends K, ? extends V> values) {
-        MutableHashMap<K, V> m = new MutableHashMap<>();
-        m.putAll(values);
-        return m;
+        return MutableHashMap.from(values);
     }
 
     static <K, V> @NotNull MutableMap<K, V> from(java.util.Map.Entry<? extends K, ? extends V> @NotNull [] values) {
-        MutableHashMap<K, V> m = new MutableHashMap<>();
-        for (java.util.Map.Entry<? extends K, ? extends V> value : values) {
-            m.set(value.getKey(), value.getValue());
-        }
-        return m;
+        return MutableHashMap.from(values);
     }
 
     static <K, V> @NotNull MutableMap<K, V> from(@NotNull Iterable<? extends java.util.Map.Entry<? extends K, ? extends V>> values) {
-        MutableHashMap<K, V> m = new MutableHashMap<>();
-        for (java.util.Map.Entry<? extends K, ? extends V> value : values) {
-            m.set(value.getKey(), value.getValue());
-        }
-        return m;
+        return MutableHashMap.from(values);
     }
 
+    @SuppressWarnings("unchecked")
+    static <K, V> MutableMap<K, V> wrapJava(java.util.@NotNull Map<K, V> map) {
+        Objects.requireNonNull(map);
+        if (map instanceof AsJavaConvert.MutableMapAsJava<?, ?, ?>) {
+            return ((MutableMap<K, V>) map);
+        }
+        return new FromJavaConvert.MutableMapFromJava<>(map);
+    }
 
     //endregion
 
