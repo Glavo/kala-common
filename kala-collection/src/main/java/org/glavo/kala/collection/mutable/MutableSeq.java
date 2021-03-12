@@ -139,6 +139,11 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
     }
 
     @Contract(mutates = "this")
+    default void replaceAll(@NotNull Function<? super E, ? extends E> mapper) {
+        mapInPlace(mapper);
+    }
+
+    @Contract(mutates = "this")
     default void sort() {
         sort(Comparators.naturalOrder());
     }

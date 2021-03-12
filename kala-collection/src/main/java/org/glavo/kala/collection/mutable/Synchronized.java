@@ -1139,6 +1139,13 @@ final class Synchronized {
             }
         }
 
+        @Override
+        public void replaceAll(@NotNull Function<? super E, ? extends E> mapper) {
+            synchronized (mutex) {
+                source.replaceAll(mapper);
+            }
+        }
+
         @Contract(mutates = "this")
         public void sort() {
             synchronized (mutex) {

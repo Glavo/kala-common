@@ -110,34 +110,37 @@ public class BufferEditor<E, C extends Buffer<E>> extends MutableSeqEditor<E, C>
 
     //region MutableSeqEditor members
 
-    @NotNull
     @Override
     @Contract("_, _ -> this")
-    public BufferEditor<E, C> set(int index, E newValue) {
+    public @NotNull BufferEditor<E, C> set(int index, E newValue) {
         source.set(index, newValue);
         return this;
     }
 
-    @NotNull
     @Override
     @Contract("_ -> this")
-    public BufferEditor<E, C> mapInPlace(@NotNull Function<? super E, ? extends E> mapper) {
+    public @NotNull BufferEditor<E, C> mapInPlace(@NotNull Function<? super E, ? extends E> mapper) {
         source.mapInPlace(mapper);
         return this;
     }
 
-    @NotNull
+    @Override
+    @Contract("_ -> this")
+    public @NotNull BufferEditor<E, C> replaceAll(@NotNull Function<? super E, ? extends E> mapper) {
+        source.replaceAll(mapper);
+        return this;
+    }
+
     @Override
     @Contract("-> this")
-    public BufferEditor<E, C> sort() {
+    public @NotNull BufferEditor<E, C> sort() {
         source.sort();
         return this;
     }
 
     @Override
-    @NotNull
     @Contract("_ -> this")
-    public BufferEditor<E, C> sort(@NotNull Comparator<? super E> comparator) {
+    public @NotNull BufferEditor<E, C> sort(@NotNull Comparator<? super E> comparator) {
         source.sort(comparator);
         return this;
     }
