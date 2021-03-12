@@ -402,24 +402,15 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
 
     //region Internal put and remove helper
 
-    private void put0(K key, V value) {
-        if (contentSize + 1 >= threshold) {
-            growTable(table.length * 2);
-        }
-        final int hash = computeHash(key);
-        final int idx = index(hash);
-        put0(key, value, hash, idx);
-    }
-
-    private void put0(K key, V value, int hash) {
+    private void set0(K key, V value, int hash) {
         if (contentSize + 1 >= threshold) {
             growTable(table.length * 2);
         }
         final int idx = index(hash);
-        put0(key, value, hash, idx);
+        set0(key, value, hash, idx);
     }
 
-    private void put0(K key, V value, int hash, int idx) {
+    private void set0(K key, V value, int hash, int idx) {
         final Node<K, V>[] table = this.table;
         final Node<K, V> old = table[idx];
         if (old == null) {
@@ -445,24 +436,15 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
         contentSize += 1;
     }
 
-    private Option<V> putAndGetOld0(K key, V value) {
-        if (contentSize + 1 >= threshold) {
-            growTable(table.length * 2);
-        }
-        final int hash = computeHash(key);
-        final int idx = index(hash);
-        return putAndGetOld0(key, value, hash, idx);
-    }
-
-    private Option<V> putAndGetOld0(K key, V value, int hash) {
+    private Option<V> put0(K key, V value, int hash) {
         if (contentSize + 1 >= threshold) {
             growTable(table.length * 2);
         }
         final int idx = index(hash);
-        return putAndGetOld0(key, value, hash, idx);
+        return put0(key, value, hash, idx);
     }
 
-    private Option<V> putAndGetOld0(K key, V value, int hash, int idx) {
+    private Option<V> put0(K key, V value, int hash, int idx) {
         final Node<K, V>[] table = this.table;
         final Node<K, V> old = table[idx];
         if (old == null) {
@@ -567,7 +549,7 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
         final Node<K, V> node = findNode(key);
         if (node == null) {
             V value = defaultValue.get();
-            put0(key, value);
+            set(key, value);
             return value;
         }
         return node.value;
@@ -593,12 +575,22 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
 
     @Override
     public final void set(K key, V value) {
-        put0(key, value);
+        if (contentSize + 1 >= threshold) {
+            growTable(table.length * 2);
+        }
+        final int hash = computeHash(key);
+        final int idx = index(hash);
+        set0(key, value, hash, idx);
     }
 
     @Override
     public final @NotNull Option<V> put(K key, V value) {
-        return putAndGetOld0(key, value);
+        if (contentSize + 1 >= threshold) {
+            growTable(table.length * 2);
+        }
+        final int hash = computeHash(key);
+        final int idx = index(hash);
+        return put0(key, value, hash, idx);
     }
 
     @Override
@@ -626,7 +618,7 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
             NodeItr<K, V> itr = mhm.nodeIterator();
             while (itr.hasNext()) {
                 Node<K, V> next = itr.next();
-                put0(next.key, next.value, next.hash);
+                set0(next.key, next.value, next.hash);
             }
             return;
         }
@@ -642,7 +634,7 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
         NodeItr<? extends K, ? extends V> itr = m.nodeIterator();
         while (itr.hasNext()) {
             Node<? extends K, ? extends V> next = itr.next();
-            put0(next.key, next.value, next.hash);
+            set0(next.key, next.value, next.hash);
         }
     }
 
@@ -670,6 +662,12 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
     }
 
     //endregion
+
+    @Override
+    public final boolean contains(K key, Object value) {
+        Node<K, V> node = findNode(key);
+        return node != null && Objects.equals(node.value, value);
+    }
 
     @Override
     public final boolean containsKey(K key) {
@@ -973,6 +971,11 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
         }
 
         //region Element Conditions
+
+        @Override
+        public final boolean contains(K key, Object value) {
+            return source.contains(key, value);
+        }
 
         @Override
         public final boolean containsKey(K key) {

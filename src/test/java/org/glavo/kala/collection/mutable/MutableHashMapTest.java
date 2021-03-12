@@ -218,6 +218,16 @@ public class MutableHashMapTest implements MutableMapTestTemplate {
     }
 
     @Test
+    void putTest() {
+        // put null
+        MutableHashMap<String, Integer> m = new MutableHashMap<>();
+        m.put(null, 1234);
+
+        assertTrue(m.containsKey(null));
+        assertEquals(1234, m.get(null));
+    }
+
+    @Test
     void putAllTest() {
 
         Integer[][] data1 = data1();

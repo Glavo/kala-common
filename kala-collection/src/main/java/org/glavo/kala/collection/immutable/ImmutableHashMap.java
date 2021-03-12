@@ -2,7 +2,6 @@ package org.glavo.kala.collection.immutable;
 
 import org.glavo.kala.collection.MapLike;
 import org.glavo.kala.collection.factory.MapFactory;
-import org.glavo.kala.collection.internal.FullMapOps;
 import org.glavo.kala.collection.mutable.MutableHashMap;
 import org.glavo.kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +10,7 @@ import java.util.Objects;
 
 @SuppressWarnings("unchecked")
 public final class ImmutableHashMap<K, V> extends MutableHashMap.Frozen<K, V>
-        implements FullMapOps<K, V, ImmutableHashMap<?, ?>, ImmutableHashMap<K, V>> {
+        implements ImmutableMapOps<K, V, ImmutableHashMap<?, ?>, ImmutableHashMap<K, V>> {
 
     private static final ImmutableHashMap<?, ?> EMPTY = new ImmutableHashMap<>(new MutableHashMap<>());
     private static final Factory<?, ?> FACTORY = new Factory<>();
