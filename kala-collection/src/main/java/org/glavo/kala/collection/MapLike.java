@@ -1,6 +1,7 @@
 package org.glavo.kala.collection;
 
 import org.glavo.kala.collection.base.MapIterator;
+import org.glavo.kala.collection.internal.view.MapViews;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.function.CheckedBiConsumer;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +18,10 @@ public interface MapLike<K, V> {
     }
 
     @NotNull MapIterator<K, V> iterator();
+
+    default @NotNull MapView<K, V> view() {
+        return new MapViews.Of<>(this);
+    }
 
     //region Size Info
 

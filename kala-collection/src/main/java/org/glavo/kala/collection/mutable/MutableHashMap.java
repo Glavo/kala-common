@@ -364,7 +364,7 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
 
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public final MutableHashMap<K, V> clone() {
+    public final @NotNull MutableHashMap<K, V> clone() {
         return new MutableHashMap<>(this);
     }
 
