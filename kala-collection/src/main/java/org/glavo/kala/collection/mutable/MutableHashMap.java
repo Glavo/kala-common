@@ -4,6 +4,7 @@ import org.glavo.kala.collection.Map;
 import org.glavo.kala.collection.base.AbstractMapIterator;
 import org.glavo.kala.collection.base.MapIterator;
 import org.glavo.kala.collection.factory.MapFactory;
+import org.glavo.kala.collection.internal.convert.AsJavaConvert;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
@@ -358,6 +359,10 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
         return new Itr<>(table);
     }
 
+    final @NotNull Itr<K, V> nodeIterator() {
+        return new Itr<>(table);
+    }
+
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     public final MutableHashMap<K, V> clone() {
@@ -572,13 +577,43 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
     }
 
     @Override
+    public final void set(K key, V value) {
+        put0(key, value);
+    }
+
+    @Override
     public final @NotNull Option<V> put(K key, V value) {
         return putAndGetOld0(key, value);
     }
 
     @Override
-    public final void set(K key, V value) {
-        put0(key, value);
+    public final void putAll(java.util.@NotNull Map<? extends K, ? extends V> m) {
+        Objects.requireNonNull(m);
+        if (m instanceof AsJavaConvert.MapAsJava<?, ?, ?>) {
+            putAll(((AsJavaConvert.MapAsJava<K, V, ?>) m).source);
+            return;
+        }
+        m.forEach(this::set);
+    }
+
+    @Override
+    public final void putAll(@NotNull Map<? extends K, ? extends V> m) {
+        Objects.requireNonNull(m);
+
+        if (m == this) {
+            return;
+        }
+        if (m instanceof MutableHashMap<?, ?>) {
+            MutableHashMap<K, V> mhm = (MutableHashMap<K, V>) m;
+            Itr<K, V> itr = mhm.nodeIterator();
+            while (itr.hasNext()) {
+                Node<K, V> next = itr.nextNode();
+                put0(next.key, next.value, next.hash);
+            }
+            return;
+        }
+
+        m.forEach(this::set);
     }
 
     @Override
@@ -752,6 +787,15 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
                 }
             }
             return false;
+        }
+
+        final Node<K, V> nextNode() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            Node<K, V> oldNode = this.node;
+            this.node = oldNode.next;
+            return oldNode;
         }
 
         @Override

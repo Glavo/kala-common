@@ -240,6 +240,9 @@ public interface MutableMap<K, V> extends Map<K, V> {
     }
 
     default void putAll(@NotNull Map<? extends K, ? extends V> m) {
+        if (m == this) {
+            return;
+        }
         m.forEach(this::set);
     }
 

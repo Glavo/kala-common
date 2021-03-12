@@ -360,7 +360,7 @@ public final class AsJavaConvert {
 
     public static class MapAsJava<K, V, C extends org.glavo.kala.collection.Map<K, V>> extends AbstractMap<K, V> {
 
-        protected final C source;
+        public final C source;
 
         public MapAsJava(@NotNull C source) {
             this.source = source;
