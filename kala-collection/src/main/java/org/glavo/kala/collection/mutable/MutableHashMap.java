@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
 public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
-        implements MutableMapOps<K, V, MutableHashMap<?, ?>, MutableHashMap<K, V>> {
+        implements MutableMapOps<K, V, MutableHashMap<?, ?>, MutableHashMap<K, V>>, Cloneable {
     private static final Factory<?, ?> FACTORY = new Factory<>();
 
     public static final int DEFAULT_INITIAL_CAPACITY = 16;
@@ -53,7 +53,26 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
         final int tableSize = tableSizeFor(initialCapacity);
         this.table = (Node<K, V>[]) new Node<?, ?>[tableSize];
         this.threshold = newThreshold(tableSize);
+    }
 
+    /**
+     * @see #clone()
+     */
+    private MutableHashMap(@NotNull MutableHashMap<K, V> old) {
+        this.loadFactor = old.loadFactor;
+        this.threshold = old.threshold;
+        this.contentSize = old.contentSize;
+
+        Node<K, V>[] oldTable = old.table;
+        Node<K, V>[] newTable = (Node<K, V>[]) new Node<?, ?>[oldTable.length];
+        this.table = newTable;
+
+        for (int i = 0; i < oldTable.length; i++) {
+            Node<K, V> oldNode = oldTable[i];
+            if (oldNode != null) {
+                newTable[i] = oldNode.deepClone();
+            }
+        }
     }
 
     //region Static Factories
@@ -337,6 +356,12 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
     @Override
     public final @NotNull MapIterator<K, V> iterator() {
         return new Itr<>(table);
+    }
+
+    @Override
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
+    public final MutableHashMap<K, V> clone() {
+        return new MutableHashMap<>(this);
     }
 
     //endregion
@@ -682,6 +707,20 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
         @Override
         public String toString() {
             return "MutableHashMap.Node[key=" + key + ", value=" + value + ", hash=" + hash + "]";
+        }
+
+        final Node<K, V> deepClone() {
+            final Node<K, V> head = new Node<>(key, hash, value, next);
+
+            Node<K, V> node = head;
+            Node<K, V> nextNode;
+            while ((nextNode = node.next) != null) {
+                nextNode = new Node<>(nextNode.key, nextNode.hash, nextNode.value, nextNode.next);
+                node.next = nextNode;
+                node = nextNode;
+            }
+
+            return head;
         }
     }
 
