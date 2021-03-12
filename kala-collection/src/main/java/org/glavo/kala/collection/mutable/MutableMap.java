@@ -235,7 +235,12 @@ public interface MutableMap<K, V> extends Map<K, V> {
         return v;
     }
 
+    @SuppressWarnings("unchecked")
     default void putAll(java.util.@NotNull Map<? extends K, ? extends V> m) {
+        if (m instanceof AsJavaConvert.MapAsJava<?, ?, ?>) {
+            putAll(((Map<K, V>) m));
+            return;
+        }
         m.forEach(this::set);
     }
 

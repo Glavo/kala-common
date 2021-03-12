@@ -374,7 +374,7 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
         }
 
         if (size >= Integer.MAX_VALUE / 2) {
-            throw new AssertionError(); // TODO
+            throw new AssertionError();
         }
 
         final int newSize = size * 2;

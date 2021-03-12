@@ -5,15 +5,19 @@ import org.glavo.kala.collection.base.AbstractIterator;
 import org.glavo.kala.collection.base.AbstractMapIterator;
 import org.glavo.kala.collection.base.MapIterator;
 import org.glavo.kala.collection.factory.MapFactory;
+import org.glavo.kala.collection.immutable.AbstractImmutableMap;
+import org.glavo.kala.collection.immutable.ImmutableHashMap;
 import org.glavo.kala.collection.internal.convert.AsJavaConvert;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.tuple.Tuple2;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
@@ -606,6 +610,9 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
         if (m == this) {
             return;
         }
+        if (m instanceof ImmutableHashMap<?, ?>) {
+            m = ((Frozen<K, V>) m).source;
+        }
         if (m instanceof MutableHashMap<?, ?>) {
             MutableHashMap<K, V> mhm = (MutableHashMap<K, V>) m;
             NodeItr<K, V> itr = mhm.nodeIterator();
@@ -615,8 +622,20 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
             }
             return;
         }
-
         m.forEach(this::set);
+    }
+
+    public final void putAll(@NotNull MutableHashMap<? extends K, ? extends V> m) {
+        Objects.requireNonNull(m);
+
+        if (m == this) {
+            return;
+        }
+        NodeItr<? extends K, ? extends V> itr = m.nodeIterator();
+        while (itr.hasNext()) {
+            Node<? extends K, ? extends V> next = itr.next();
+            put0(next.key, next.value, next.hash);
+        }
     }
 
     @Override
@@ -643,7 +662,6 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
     }
 
     //endregion
-
 
     @Override
     public final boolean containsKey(K key) {
@@ -876,6 +894,104 @@ public final class MutableHashMap<K, V> extends AbstractMutableMap<K, V>
             public final @NotNull Iterator<java.util.Map.Entry<K, V>> iterator() {
                 return (Iterator) source.nodeIterator();
             }
+        }
+    }
+
+    @ApiStatus.Internal
+    public static class Frozen<K, V> extends AbstractImmutableMap<K, V> {
+        final MutableHashMap<K, V> source;
+
+        protected Frozen(MutableHashMap<K, V> source) {
+            this.source = source;
+        }
+
+        @Override
+        public final @NotNull MapIterator<K, V> iterator() {
+            return source.iterator();
+        }
+
+        //region Size Info
+
+        @Override
+        public final boolean isEmpty() {
+            return source.isEmpty();
+        }
+
+        @Override
+        public final int size() {
+            return source.size();
+        }
+
+        @Override
+        public final int knownSize() {
+            return source.knownSize();
+        }
+
+        //endregion
+
+        @Override
+        public final V get(K key) {
+            return source.get(key);
+        }
+
+        @Override
+        public final @Nullable V getOrNull(K key) {
+            return source.getOrNull(key);
+        }
+
+        @Override
+        public final @NotNull Option<V> getOption(K key) {
+            return source.getOption(key);
+        }
+
+        @Override
+        public final V getOrDefault(K key, V defaultValue) {
+            return source.getOrDefault(key, defaultValue);
+        }
+
+        @Override
+        public final V getOrElse(K key, @NotNull Supplier<? extends V> supplier) {
+            return source.getOrElse(key, supplier);
+        }
+
+        @Override
+        public final <Ex extends Throwable> V getOrThrow(K key, @NotNull Supplier<? extends Ex> supplier) throws Ex {
+            return source.getOrThrow(key, supplier);
+        }
+
+        @Override
+        public final <Ex extends Throwable> V getOrThrowException(K key, @NotNull Ex exception) throws Ex {
+            return source.getOrThrowException(key, exception);
+        }
+
+        @Override
+        public final boolean containsKey(K key) {
+            return source.containsKey(key);
+        }
+
+        @Override
+        public final boolean containsValue(V value) {
+            return source.containsValue(value);
+        }
+
+        @Override
+        public final boolean anyMatch(@NotNull BiPredicate<? super K, ? super V> predicate) {
+            return source.anyMatch(predicate);
+        }
+
+        @Override
+        public final boolean allMatch(@NotNull BiPredicate<? super K, ? super V> predicate) {
+            return source.allMatch(predicate);
+        }
+
+        @Override
+        public final boolean noneMatch(@NotNull BiPredicate<? super K, ? super V> predicate) {
+            return source.noneMatch(predicate);
+        }
+
+        @Override
+        public final void forEach(@NotNull BiConsumer<? super K, ? super V> consumer) {
+            source.forEach(consumer);
         }
     }
 }

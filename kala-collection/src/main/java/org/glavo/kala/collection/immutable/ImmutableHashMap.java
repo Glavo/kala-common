@@ -1,25 +1,31 @@
 package org.glavo.kala.collection.immutable;
 
+import org.glavo.kala.collection.factory.MapFactory;
+import org.glavo.kala.collection.mutable.AbstractMutableMapFactory;
+import org.glavo.kala.collection.mutable.MutableHashMap;
 import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.collection.Map;
 import org.glavo.kala.collection.internal.convert.FromJavaConvert;
 import org.glavo.kala.collection.base.MapIterator;
 import org.jetbrains.annotations.NotNull;
 
-public final class ImmutableHashMap<K, V> extends FromJavaConvert.MapFromJava<K, V> implements ImmutableMap<K, V> {
+import java.util.Objects;
 
-    private static final ImmutableMap<?, ?> EMPTY = new ImmutableHashMap<>();
+@SuppressWarnings("unchecked")
+public final class ImmutableHashMap<K, V> extends MutableHashMap.Frozen<K, V> {
 
-    ImmutableHashMap(java.util.HashMap<K, V> source) {
+    private static final ImmutableHashMap<?, ?> EMPTY = new ImmutableHashMap<>(new MutableHashMap<>());
+    private static final Factory<?, ?> FACTORY = new Factory<>();
+
+    private ImmutableHashMap(MutableHashMap<K, V> source) {
         super(source);
-
-    }
-
-    public ImmutableHashMap() {
-        this(new java.util.HashMap<>());
     }
 
     //region Static Factories
+
+    public static <K, V> @NotNull MapFactory<K, V, ?, ImmutableHashMap<K, V>> factory() {
+        return (Factory<K, V>) FACTORY;
+    }
 
     @SuppressWarnings("unchecked")
     public static <K, V> @NotNull ImmutableHashMap<K, V> empty() {
@@ -31,19 +37,14 @@ public final class ImmutableHashMap<K, V> extends FromJavaConvert.MapFromJava<K,
     }
 
     public static <K, V> @NotNull ImmutableHashMap<K, V> of(K k1, V v1) {
-        java.util.HashMap<K, V> m = new java.util.HashMap<>();
-        m.put(k1, v1);
-        return new ImmutableHashMap<>(m);
+        return new ImmutableHashMap<>(MutableHashMap.of(k1, v1));
     }
 
     public static <K, V> @NotNull ImmutableHashMap<K, V> of(
             K k1, V v1,
             K k2, V v2
     ) {
-        java.util.HashMap<K, V> m = new java.util.HashMap<>();
-        m.put(k1, v1);
-        m.put(k2, v2);
-        return new ImmutableHashMap<>(m);
+        return new ImmutableHashMap<>(MutableHashMap.of(k1, v1, k2, v2));
     }
 
     public static <K, V> @NotNull ImmutableHashMap<K, V> of(
@@ -51,11 +52,7 @@ public final class ImmutableHashMap<K, V> extends FromJavaConvert.MapFromJava<K,
             K k2, V v2,
             K k3, V v3
     ) {
-        java.util.HashMap<K, V> m = new java.util.HashMap<>();
-        m.put(k1, v1);
-        m.put(k2, v2);
-        m.put(k3, v3);
-        return new ImmutableHashMap<>(m);
+        return new ImmutableHashMap<>(MutableHashMap.of(k1, v1, k2, v2, k3, v3));
     }
 
     public static <K, V> @NotNull ImmutableHashMap<K, V> of(
@@ -64,12 +61,7 @@ public final class ImmutableHashMap<K, V> extends FromJavaConvert.MapFromJava<K,
             K k3, V v3,
             K k4, V v4
     ) {
-        java.util.HashMap<K, V> m = new java.util.HashMap<>();
-        m.put(k1, v1);
-        m.put(k2, v2);
-        m.put(k3, v3);
-        m.put(k4, v4);
-        return new ImmutableHashMap<>(m);
+        return new ImmutableHashMap<>(MutableHashMap.of(k1, v1, k2, v2, k3, v3, k4, v4));
     }
 
     public static <K, V> @NotNull ImmutableHashMap<K, V> of(
@@ -79,35 +71,24 @@ public final class ImmutableHashMap<K, V> extends FromJavaConvert.MapFromJava<K,
             K k4, V v4,
             K k5, V v5
     ) {
-        java.util.HashMap<K, V> m = new java.util.HashMap<>();
-        m.put(k1, v1);
-        m.put(k2, v2);
-        m.put(k3, v3);
-        m.put(k4, v4);
-        m.put(k5, v5);
-        return new ImmutableHashMap<>(m);
+        return new ImmutableHashMap<>(MutableHashMap.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5));
     }
 
     public static <K, V> @NotNull ImmutableHashMap<K, V> ofEntries() {
-        return new ImmutableHashMap<>();
+        return empty();
     }
 
     public static <K, V> @NotNull ImmutableHashMap<K, V> ofEntries(
             @NotNull Tuple2<? extends K, ? extends V> entry1
     ) {
-        java.util.HashMap<K, V> m = new java.util.HashMap<>();
-        m.put(entry1.getKey(), entry1.getValue());
-        return new ImmutableHashMap<>(m);
+        return new ImmutableHashMap<>(MutableHashMap.ofEntries(entry1));
     }
 
     public static <K, V> @NotNull ImmutableHashMap<K, V> ofEntries(
             @NotNull Tuple2<? extends K, ? extends V> entry1,
             @NotNull Tuple2<? extends K, ? extends V> entry2
     ) {
-        java.util.HashMap<K, V> m = new java.util.HashMap<>();
-        m.put(entry1.getKey(), entry1.getValue());
-        m.put(entry2.getKey(), entry2.getValue());
-        return new ImmutableHashMap<>(m);
+        return new ImmutableHashMap<>(MutableHashMap.ofEntries(entry1, entry2));
     }
 
     public static <K, V> @NotNull ImmutableHashMap<K, V> ofEntries(
@@ -115,11 +96,7 @@ public final class ImmutableHashMap<K, V> extends FromJavaConvert.MapFromJava<K,
             @NotNull Tuple2<? extends K, ? extends V> entry2,
             @NotNull Tuple2<? extends K, ? extends V> entry3
     ) {
-        java.util.HashMap<K, V> m = new java.util.HashMap<>();
-        m.put(entry1.getKey(), entry1.getValue());
-        m.put(entry2.getKey(), entry2.getValue());
-        m.put(entry3.getKey(), entry3.getValue());
-        return new ImmutableHashMap<>(m);
+        return new ImmutableHashMap<>(MutableHashMap.ofEntries(entry1, entry2, entry3));
     }
 
     public static <K, V> @NotNull ImmutableHashMap<K, V> ofEntries(
@@ -128,12 +105,7 @@ public final class ImmutableHashMap<K, V> extends FromJavaConvert.MapFromJava<K,
             @NotNull Tuple2<? extends K, ? extends V> entry3,
             @NotNull Tuple2<? extends K, ? extends V> entry4
     ) {
-        java.util.HashMap<K, V> m = new java.util.HashMap<>();
-        m.put(entry1.getKey(), entry1.getValue());
-        m.put(entry2.getKey(), entry2.getValue());
-        m.put(entry3.getKey(), entry3.getValue());
-        m.put(entry4.getKey(), entry4.getValue());
-        return new ImmutableHashMap<>(m);
+        return new ImmutableHashMap<>(MutableHashMap.ofEntries(entry1, entry2, entry3, entry4));
     }
 
     public static <K, V> @NotNull ImmutableHashMap<K, V> ofEntries(
@@ -143,51 +115,28 @@ public final class ImmutableHashMap<K, V> extends FromJavaConvert.MapFromJava<K,
             @NotNull Tuple2<? extends K, ? extends V> entry4,
             @NotNull Tuple2<? extends K, ? extends V> entry5
     ) {
-        java.util.HashMap<K, V> m = new java.util.HashMap<>();
-        m.put(entry1.getKey(), entry1.getValue());
-        m.put(entry2.getKey(), entry2.getValue());
-        m.put(entry3.getKey(), entry3.getValue());
-        m.put(entry4.getKey(), entry4.getValue());
-        m.put(entry5.getKey(), entry5.getValue());
-        return new ImmutableHashMap<>(m);
+        return new ImmutableHashMap<>(MutableHashMap.ofEntries(entry1, entry2, entry3, entry4, entry5));
     }
 
     @SafeVarargs
     public static <K, V> @NotNull ImmutableHashMap<K, V> ofEntries(Tuple2<? extends K, ? extends V> @NotNull ... entries) {
-        java.util.HashMap<K, V> m = new java.util.HashMap<>();
-        for (Tuple2<? extends K, ? extends V> entry : entries) {
-            m.put(entry.getKey(), entry.getValue());
-        }
-        return new ImmutableHashMap<>(m);
+        return new ImmutableHashMap<>(MutableHashMap.ofEntries(entries));
     }
 
     public static <K, V> @NotNull ImmutableHashMap<K, V> from(java.util.@NotNull Map<? extends K, ? extends V> values) {
-        return new ImmutableHashMap<>(new java.util.HashMap<>(values));
+        return new ImmutableHashMap<>(MutableHashMap.from(values));
     }
 
     public static <K, V> @NotNull ImmutableHashMap<K, V> from(@NotNull Map<? extends K, ? extends V> values) {
-        MapIterator<? extends K, ? extends V> it = values.iterator();
-        java.util.HashMap<K, V> m = new java.util.HashMap<>();
-        while (it.hasNext()) {
-            m.put(it.nextKey(), it.getValue());
-        }
-        return new ImmutableHashMap<>(m);
+        return new ImmutableHashMap<>(MutableHashMap.from(values));
     }
 
     public static <K, V> @NotNull ImmutableHashMap<K, V> from(java.util.Map.Entry<? extends K, ? extends V> @NotNull [] values) {
-        java.util.HashMap<K, V> m = new java.util.HashMap<>();
-        for (java.util.Map.Entry<? extends K, ? extends V> value : values) {
-            m.put(value.getKey(), value.getValue());
-        }
-        return new ImmutableHashMap<>(m);
+        return new ImmutableHashMap<>(MutableHashMap.from(values));
     }
 
     public static <K, V> @NotNull ImmutableHashMap<K, V> from(@NotNull Iterable<? extends java.util.Map.Entry<? extends K, ? extends V>> values) {
-        java.util.HashMap<K, V> m = new java.util.HashMap<>();
-        for (java.util.Map.Entry<? extends K, ? extends V> value : values) {
-            m.put(value.getKey(), value.getValue());
-        }
-        return new ImmutableHashMap<>(m);
+        return new ImmutableHashMap<>(MutableHashMap.from(values));
     }
 
     //endregion
@@ -195,5 +144,28 @@ public final class ImmutableHashMap<K, V> extends FromJavaConvert.MapFromJava<K,
     @Override
     public final @NotNull String className() {
         return "ImmutableHashMap";
+    }
+
+    private static final class Factory<K, V> implements MapFactory<K, V, MutableHashMap<K, V>, ImmutableHashMap<K, V>> {
+        @Override
+        public final MutableHashMap<K, V> newBuilder() {
+            return new MutableHashMap<>();
+        }
+
+        @Override
+        public final ImmutableHashMap<K, V> build(MutableHashMap<K, V> builder) {
+            return new ImmutableHashMap<>(Objects.requireNonNull(builder)); // Node: Unsafe operation, may need clone?
+        }
+
+        @Override
+        public final void addToBuilder(MutableHashMap<K, V> builder, K key, V value) {
+            builder.set(key, value);
+        }
+
+        @Override
+        public final MutableHashMap<K, V> mergeBuilder(MutableHashMap<K, V> builder1, MutableHashMap<K, V> builder2) {
+            builder1.putAll(builder2);
+            return builder1;
+        }
     }
 }

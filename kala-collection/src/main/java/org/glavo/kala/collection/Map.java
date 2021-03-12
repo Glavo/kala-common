@@ -2,15 +2,19 @@ package org.glavo.kala.collection;
 
 import org.glavo.kala.Equatable;
 import org.glavo.kala.collection.factory.MapFactory;
+import org.glavo.kala.collection.immutable.ImmutableHashMap;
+import org.glavo.kala.collection.immutable.ImmutableMap;
 import org.glavo.kala.collection.internal.convert.AsJavaConvert;
 import org.glavo.kala.collection.internal.convert.FromJavaConvert;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.function.CheckedBiConsumer;
 import org.glavo.kala.collection.base.MapIterator;
+import org.glavo.kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Supplier;
@@ -47,7 +51,128 @@ public interface Map<K, V> extends MapLike<K, V>, Equatable {
 
     //region Static Factories
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    static <K, V> @NotNull MapFactory<K, V, ?, Map<K, V>> factory() {
+        return (MapFactory) ImmutableMap.factory();
+    }
+
+    static <K, V> @NotNull Map<K, V> empty() {
+        return ImmutableMap.empty();
+    }
+
+    static <K, V> @NotNull Map<K, V> of() {
+        return empty();
+    }
+
+    static <K, V> @NotNull Map<K, V> of(K k1, V v1) {
+        return ImmutableMap.of(k1, v1);
+    }
+
+    static <K, V> @NotNull Map<K, V> of(
+            K k1, V v1,
+            K k2, V v2
+    ) {
+        return ImmutableMap.of(k1, v1, k2, v2);
+    }
+
+    static <K, V> @NotNull Map<K, V> of(
+            K k1, V v1,
+            K k2, V v2,
+            K k3, V v3
+    ) {
+        return ImmutableMap.of(k1, v1, k2, v2, k3, v3);
+    }
+
+    static <K, V> @NotNull Map<K, V> of(
+            K k1, V v1,
+            K k2, V v2,
+            K k3, V v3,
+            K k4, V v4
+    ) {
+        return ImmutableMap.of(k1, v1, k2, v2, k3, v3, k4, v4);
+    }
+
+    static <K, V> @NotNull Map<K, V> of(
+            K k1, V v1,
+            K k2, V v2,
+            K k3, V v3,
+            K k4, V v4,
+            K k5, V v5
+    ) {
+        return ImmutableMap.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5);
+    }
+
+    static <K, V> @NotNull Map<K, V> ofEntries() {
+        return empty();
+    }
+
+    static <K, V> @NotNull Map<K, V> ofEntries(
+            @NotNull Tuple2<? extends K, ? extends V> entry1
+    ) {
+        return ImmutableMap.ofEntries(entry1);
+    }
+
+    static <K, V> @NotNull Map<K, V> ofEntries(
+            @NotNull Tuple2<? extends K, ? extends V> entry1,
+            @NotNull Tuple2<? extends K, ? extends V> entry2
+    ) {
+        return ImmutableMap.ofEntries(entry1, entry2);
+    }
+
+    static <K, V> @NotNull Map<K, V> ofEntries(
+            @NotNull Tuple2<? extends K, ? extends V> entry1,
+            @NotNull Tuple2<? extends K, ? extends V> entry2,
+            @NotNull Tuple2<? extends K, ? extends V> entry3
+    ) {
+        return ImmutableMap.ofEntries(entry1, entry2, entry3);
+    }
+
+    static <K, V> @NotNull Map<K, V> ofEntries(
+            @NotNull Tuple2<? extends K, ? extends V> entry1,
+            @NotNull Tuple2<? extends K, ? extends V> entry2,
+            @NotNull Tuple2<? extends K, ? extends V> entry3,
+            @NotNull Tuple2<? extends K, ? extends V> entry4
+    ) {
+        return ImmutableMap.ofEntries(entry1, entry2, entry3, entry4);
+    }
+
+    static <K, V> @NotNull Map<K, V> ofEntries(
+            @NotNull Tuple2<? extends K, ? extends V> entry1,
+            @NotNull Tuple2<? extends K, ? extends V> entry2,
+            @NotNull Tuple2<? extends K, ? extends V> entry3,
+            @NotNull Tuple2<? extends K, ? extends V> entry4,
+            @NotNull Tuple2<? extends K, ? extends V> entry5
+    ) {
+        return ImmutableMap.ofEntries(entry1, entry2, entry3, entry4, entry5);
+    }
+
+    @SafeVarargs
+    static <K, V> @NotNull Map<K, V> ofEntries(Tuple2<? extends K, ? extends V> @NotNull ... entries) {
+        return ImmutableMap.ofEntries(entries);
+    }
+
+    static <K, V> @NotNull Map<K, V> from(java.util.@NotNull Map<? extends K, ? extends V> values) {
+        return ImmutableMap.from(values);
+    }
+
+    static <K, V> @NotNull Map<K, V> from(@NotNull Map<? extends K, ? extends V> values) {
+        return ImmutableMap.from(values);
+    }
+
+    static <K, V> @NotNull Map<K, V> from(java.util.Map.Entry<? extends K, ? extends V> @NotNull [] values) {
+        return ImmutableMap.from(values);
+    }
+
+    static <K, V> @NotNull Map<K, V> from(@NotNull Iterable<? extends java.util.Map.Entry<? extends K, ? extends V>> values) {
+        return ImmutableMap.from(values);
+    }
+
+    @SuppressWarnings("unchecked")
     static <K, V> Map<K, V> wrapJava(java.util.@NotNull @UnmodifiableView Map<K, V> map) {
+        Objects.requireNonNull(map);
+        if (map instanceof AsJavaConvert.MapAsJava<?, ?, ?>) {
+            return ((Map<K, V>) map);
+        }
         return new FromJavaConvert.MapFromJava<>(map);
     }
 
@@ -59,7 +184,7 @@ public interface Map<K, V> extends MapLike<K, V>, Equatable {
     }
 
     default <NK, NV> @NotNull MapFactory<NK, NV, ?, ? extends Map<NK, NV>> mapFactory() {
-        throw new UnsupportedOperationException(); // TODO
+        return Map.factory();
     }
 
     default java.util.@NotNull @UnmodifiableView Map<K, V> asJava() {
