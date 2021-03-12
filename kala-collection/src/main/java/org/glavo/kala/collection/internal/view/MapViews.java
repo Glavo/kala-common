@@ -1,8 +1,8 @@
 package org.glavo.kala.collection.internal.view;
 
 import org.glavo.kala.collection.AbstractMapView;
-import org.glavo.kala.collection.Map;
 import org.glavo.kala.collection.MapLike;
+import org.glavo.kala.collection.MapView;
 import org.glavo.kala.collection.base.MapIterator;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.function.CheckedBiConsumer;
@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public final class MapViews {
@@ -47,8 +48,7 @@ public final class MapViews {
         }
 
         @Override
-        @Nullable
-        public V getOrNull(K key) {
+        public @Nullable V getOrNull(K key) {
             return source.getOrNull(key);
         }
 
@@ -121,6 +121,37 @@ public final class MapViews {
         @Override
         public void forEachUnchecked(@NotNull CheckedBiConsumer<? super K, ? super V, ?> consumer) {
             source.forEachUnchecked(consumer);
+        }
+    }
+
+    public static class WithDefault<K, V, M extends MapLike<K, V>> extends Of<K, V, M> {
+        protected final @NotNull Function<? super K, ? extends V> defaultFunction;
+
+        public WithDefault(@NotNull M source, @NotNull Function<? super K, ? extends V> defaultFunction) {
+            super(source);
+            this.defaultFunction = defaultFunction;
+        }
+
+        @Override
+        public V get(K key) {
+            Option<V> opt = source.getOption(key);
+            return opt.isEmpty() ? defaultFunction.apply(key) : opt.get();
+        }
+
+        @Override
+        public V getOrNull(K key) {
+            return get(key);
+        }
+
+        @Override
+        public @NotNull Option<V> getOption(K key) {
+            Option<V> opt = source.getOption(key);
+            return opt.isEmpty() ? Option.some(defaultFunction.apply(key)) : opt;
+        }
+
+        @Override
+        public @NotNull MapView<K, V> withDefault(@NotNull Function<? super K, ? extends V> defaultFunction) {
+            return new WithDefault<>(source, defaultFunction);
         }
     }
 }

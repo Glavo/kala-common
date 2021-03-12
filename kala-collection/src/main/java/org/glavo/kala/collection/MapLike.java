@@ -7,8 +7,10 @@ import org.glavo.kala.function.CheckedBiConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public interface MapLike<K, V> {
@@ -95,6 +97,11 @@ public interface MapLike<K, V> {
 
     default <Ex extends Throwable> V getOrThrow(K key, @NotNull Supplier<? extends Ex> supplier) throws Ex {
         return getOption(key).getOrThrow(supplier);
+    }
+
+    default @NotNull MapView<K, V> withDefault(@NotNull Function<? super K, ? extends V> defaultFunction) {
+        Objects.requireNonNull(defaultFunction);
+        return new MapViews.WithDefault<>(this, defaultFunction);
     }
 
     default boolean containsKey(K key) {
