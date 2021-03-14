@@ -572,7 +572,7 @@ public final class Iterators {
         return new Iterators.MapNotNull<>(it, mapper);
     }
 
-    public static <E, U> @NotNull Iterator<U> mapNotNullIndexed(
+    public static <E, U> @NotNull Iterator<U> mapIndexedNotNull(
             @NotNull Iterator<? extends E> it,
             @NotNull IndexedFunction<? super E, ? extends U> mapper
     ) {

@@ -660,6 +660,50 @@ public final class ObjectArrays {
         return res;
     }
 
+    public static @NotNull Object @NotNull [] mapNotNull(
+            Object @NotNull [] array,
+            @NotNull Function<?, ?> mapper) {
+        final int length = array.length;
+        if (length == 0) {
+            return EMPTY;
+        }
+
+        final Object[] tmp = new Object[length];
+        int c = 0;
+        for (Object e : array) {
+            Object u = ((Function) mapper).apply(e);
+            if (u != null) {
+                tmp[c++] = u;
+            }
+        }
+        if (c == length) {
+            return tmp;
+        }
+        return Arrays.copyOf(tmp, c);
+    }
+
+    public static @NotNull Object @NotNull [] mapIndexedNotNull(
+            Object @NotNull [] array,
+            @NotNull IndexedFunction<?, ?> mapper) {
+        final int length = array.length;
+        if (length == 0) {
+            return EMPTY;
+        }
+
+        final Object[] tmp = new Object[length];
+        int c = 0;
+        for (int i = 0; i < array.length; i++) {
+            Object u = ((IndexedFunction) mapper).apply(i, array[i]);
+            if (u != null) {
+                tmp[c++] = u;
+            }
+        }
+        if (c == length) {
+            return tmp;
+        }
+        return Arrays.copyOf(tmp, c);
+    }
+
     public static Object @NotNull [] flatMap(
             Object @NotNull [] array,
             @NotNull Function<?, ? extends Iterable<?>> mapper) {

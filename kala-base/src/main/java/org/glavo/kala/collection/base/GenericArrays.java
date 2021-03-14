@@ -567,6 +567,42 @@ public final class GenericArrays {
         return res;
     }
 
+    public static <E, U> @NotNull U @NotNull [] mapNotNull(
+            E @NotNull [] array,
+            @NotNull IntFunction<U[]> generator, @NotNull Function<? super E, ? extends @Nullable U> mapper) {
+        final int length = array.length;
+        final U[] tmp = generator.apply(length);
+        int c = 0;
+        for (E e : array) {
+            U u = mapper.apply(e);
+            if (u != null) {
+                tmp[c++] = u;
+            }
+        }
+        if (c == length) {
+            return tmp;
+        }
+        return Arrays.copyOf(tmp, c);
+    }
+
+    public static <E, U> @NotNull U @NotNull [] mapIndexedNotNull(
+            E @NotNull [] array,
+            @NotNull IntFunction<U[]> generator, @NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
+        final int length = array.length;
+        final U[] tmp = generator.apply(length);
+        int c = 0;
+        for (int i = 0, arrayLength = array.length; i < arrayLength; i++) {
+            U u = mapper.apply(i, array[i]);
+            if (u != null) {
+                tmp[c++] = u;
+            }
+        }
+        if (c == length) {
+            return tmp;
+        }
+        return Arrays.copyOf(tmp, c);
+    }
+
     public static <E, U> U @NotNull [] flatMap(
             E @NotNull [] array,
             @NotNull IntFunction<U[]> generator,

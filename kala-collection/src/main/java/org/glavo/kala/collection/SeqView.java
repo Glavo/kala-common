@@ -194,7 +194,7 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqOps<E
     default <U> @NotNull SeqView<U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
         Objects.requireNonNull(mapper);
 
-        return new SeqViews.MapNotNullIndexed<>(this, mapper);
+        return new SeqViews.MapIndexedNotNull<>(this, mapper);
     }
 
     @Override

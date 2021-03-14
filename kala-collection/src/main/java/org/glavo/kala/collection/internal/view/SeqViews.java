@@ -4,9 +4,7 @@ import org.glavo.kala.Conditions;
 import org.glavo.kala.collection.*;
 import org.glavo.kala.collection.base.GenericArrays;
 import org.glavo.kala.collection.base.ObjectArrays;
-import org.glavo.kala.collection.immutable.ImmutableArray;
 import org.glavo.kala.collection.mutable.ArrayBuffer;
-import org.glavo.kala.collection.mutable.MutableArray;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.function.IndexedConsumer;
 import org.glavo.kala.function.IndexedFunction;
@@ -23,7 +21,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.*;
-import java.util.stream.Stream;
 
 @SuppressWarnings("ALL")
 public final class SeqViews {
@@ -921,19 +918,19 @@ public final class SeqViews {
         }
     }
 
-    public static class MapNotNullIndexed<E, T> extends AbstractSeqView<E> {
+    public static class MapIndexedNotNull<E, T> extends AbstractSeqView<E> {
         private final @NotNull SeqView<T> source;
 
         private final @NotNull IndexedFunction<? super T, ? extends E> mapper;
 
-        public MapNotNullIndexed(@NotNull SeqView<T> source, @NotNull IndexedFunction<? super T, ? extends E> mapper) {
+        public MapIndexedNotNull(@NotNull SeqView<T> source, @NotNull IndexedFunction<? super T, ? extends E> mapper) {
             this.source = source;
             this.mapper = mapper;
         }
 
         @Override
         public final @NotNull Iterator<E> iterator() {
-            return Iterators.mapNotNullIndexed(source.iterator(), mapper);
+            return Iterators.mapIndexedNotNull(source.iterator(), mapper);
         }
     }
 
