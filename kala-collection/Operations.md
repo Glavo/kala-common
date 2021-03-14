@@ -56,12 +56,12 @@
   * `reversed()`
   * `reverseIterator()`
 * Modification Operations
-  * `append(E)`
-  * `appendAll(E[])`
-  * `appendAll(Iterable<E>)`
   * `prepend(E)`
   * `prependAll(E[])`
   * `prependAll(Iterable<E>)`
+  * `append(E)`
+  * `appendAll(E[])`
+  * `appendAll(Iterable<E>)`
   * `clear()`
 * Addition Operations
   * `prepended(E)`

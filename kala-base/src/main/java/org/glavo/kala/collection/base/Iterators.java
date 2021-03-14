@@ -42,8 +42,24 @@ public final class Iterators {
         return empty();
     }
 
-    public static <E> @NotNull Iterator<E> of(E value) {
-        return value == null ? new Iterators.OfNull<>() : new Iterators.OfNotNull<>(value);
+    public static <E> @NotNull Iterator<E> of(E value1) {
+        return value1 == null ? new Iterators.OfNull<>() : new Iterators.OfNotNull<>(value1);
+    }
+
+    public static <E> @NotNull Iterator<E> of(E value1, E value2) {
+        return new Itr2<>(value1, value2);
+    }
+
+    public static <E> @NotNull Iterator<E> of(E value1, E value2, E value3) {
+        return new Itr3<>(value1, value2, value3);
+    }
+
+    public static <E> @NotNull Iterator<E> of(E value1, E value2, E value3, E value4) {
+        return new Itr4<>(value1, value2, value3, value4);
+    }
+
+    public static <E> @NotNull Iterator<E> of(E value1, E value2, E value3, E value4, E value5) {
+        return new Itr5<>(value1, value2, value3, value4, value5);
     }
 
     @SafeVarargs
@@ -991,6 +1007,186 @@ public final class Iterators {
             }
             hasNext = false;
             return null;
+        }
+    }
+
+    static final class Itr2<E> extends AbstractIterator<E> {
+        private int idx = 0;
+
+        private E value1;
+        private E value2;
+
+        Itr2(E value1, E value2) {
+            this.value1 = value1;
+            this.value2 = value2;
+        }
+
+        @Override
+        public final boolean hasNext() {
+            return idx < 2;
+        }
+
+        @Override
+        public final E next() {
+            E res;
+            switch (idx) {
+                case 0:
+                    res = value1;
+                    value1 = null;
+                    break;
+                case 1:
+                    res = value2;
+                    value2 = null;
+                    break;
+                default:
+                    throw new NoSuchElementException();
+            }
+            idx++;
+            return res;
+        }
+    }
+
+    static final class Itr3<E> extends AbstractIterator<E> {
+        private int idx = 0;
+
+        private E value1;
+        private E value2;
+        private E value3;
+
+        Itr3(E value1, E value2, E value3) {
+            this.value1 = value1;
+            this.value2 = value2;
+            this.value3 = value3;
+        }
+
+        @Override
+        public final boolean hasNext() {
+            return idx < 3;
+        }
+
+        @Override
+        public final E next() {
+            E res;
+            switch (idx) {
+                case 0:
+                    res = value1;
+                    value1 = null;
+                    break;
+                case 1:
+                    res = value2;
+                    value2 = null;
+                    break;
+                case 2:
+                    res = value3;
+                    value3 = null;
+                    break;
+                default:
+                    throw new NoSuchElementException();
+            }
+            idx++;
+            return res;
+        }
+    }
+
+    static final class Itr4<E> extends AbstractIterator<E> {
+        private int idx = 0;
+
+        private E value1;
+        private E value2;
+        private E value3;
+        private E value4;
+
+        Itr4(E value1, E value2, E value3, E value4) {
+            this.value1 = value1;
+            this.value2 = value2;
+            this.value3 = value3;
+            this.value4 = value4;
+        }
+
+        @Override
+        public final boolean hasNext() {
+            return idx < 4;
+        }
+
+        @Override
+        public final E next() {
+            E res;
+            switch (idx) {
+                case 0:
+                    res = value1;
+                    value1 = null;
+                    break;
+                case 1:
+                    res = value2;
+                    value2 = null;
+                    break;
+                case 2:
+                    res = value3;
+                    value3 = null;
+                    break;
+                case 3:
+                    res = value4;
+                    value4 = null;
+                    break;
+                default:
+                    throw new NoSuchElementException();
+            }
+            idx++;
+            return res;
+        }
+    }
+
+    static final class Itr5<E> extends AbstractIterator<E> {
+        private int idx = 0;
+
+        private E value1;
+        private E value2;
+        private E value3;
+        private E value4;
+        private E value5;
+
+        Itr5(E value1, E value2, E value3, E value4, E value5) {
+            this.value1 = value1;
+            this.value2 = value2;
+            this.value3 = value3;
+            this.value4 = value4;
+            this.value5 = value5;
+        }
+
+        @Override
+        public final boolean hasNext() {
+            return idx < 5;
+        }
+
+        @Override
+        public final E next() {
+            E res;
+            switch (idx) {
+                case 0:
+                    res = value1;
+                    value1 = null;
+                    break;
+                case 1:
+                    res = value2;
+                    value2 = null;
+                    break;
+                case 2:
+                    res = value3;
+                    value3 = null;
+                    break;
+                case 3:
+                    res = value4;
+                    value4 = null;
+                    break;
+                case 4:
+                    res = value5;
+                    value5 = null;
+                    break;
+                default:
+                    throw new NoSuchElementException();
+            }
+            idx++;
+            return res;
         }
     }
 

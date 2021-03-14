@@ -287,33 +287,6 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
     }
 
     @Override
-    public final void append(E value) {
-        if (size == elements.length) {
-            grow();
-        }
-        elements[size++] = value;
-    }
-
-    @Override
-    public final void appendAll(@NotNull Iterable<? extends E> values) {
-        Objects.requireNonNull(values);
-
-        if (values == this) {
-            appendThis();
-            return;
-        }
-
-        int knowSize = AnyTraversable.knownSize(values);
-        if (knowSize > 0 && size + knowSize > elements.length) {
-            grow(size + knowSize);
-        }
-
-        for (E e : values) {
-            this.append(e);
-        }
-    }
-
-    @Override
     public final void prepend(E value) {
         Object[] values = elements;
         if (size == values.length) {
@@ -367,6 +340,33 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
         System.arraycopy(cv, 0, elements, 0, cv.length);
         this.elements = elements;
         this.size += cv.length;
+    }
+
+    @Override
+    public final void append(E value) {
+        if (size == elements.length) {
+            grow();
+        }
+        elements[size++] = value;
+    }
+
+    @Override
+    public final void appendAll(@NotNull Iterable<? extends E> values) {
+        Objects.requireNonNull(values);
+
+        if (values == this) {
+            appendThis();
+            return;
+        }
+
+        int knowSize = AnyTraversable.knownSize(values);
+        if (knowSize > 0 && size + knowSize > elements.length) {
+            grow(size + knowSize);
+        }
+
+        for (E e : values) {
+            this.append(e);
+        }
     }
 
     private void appendThis() {
@@ -496,10 +496,7 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
 
     @Override
     public final Object @NotNull [] toArray() {
-        final int size = this.size;
-        Object[] arr = new Object[size];
-        System.arraycopy(elements, 0, arr, 0, size);
-        return arr;
+        return Arrays.copyOf(this.elements, size);
     }
 
     @Override
