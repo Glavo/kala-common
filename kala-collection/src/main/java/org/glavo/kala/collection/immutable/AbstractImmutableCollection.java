@@ -7,6 +7,7 @@ import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.AbstractCollection;
 import org.glavo.kala.collection.base.AnyTraversable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -30,6 +31,26 @@ public abstract class AbstractImmutableCollection<@Covariant E>
 
         for (E e : collection) {
             factory.addToBuilder(builder, mapper.apply(e));
+        }
+        return factory.build(builder);
+    }
+
+    static <E, U, T, Builder> T mapNotNull(
+            @NotNull ImmutableCollection<? extends E> collection,
+            @NotNull Function<? super E, ? extends U> mapper,
+            @NotNull CollectionFactory<? super U, Builder, ? extends T> factory
+    ) {
+        Objects.requireNonNull(mapper);
+
+        Builder builder = factory.newBuilder();
+
+        factory.sizeHint(builder, collection);
+
+        for (E e : collection) {
+            U u = mapper.apply(e);
+            if (u != null) {
+                factory.addToBuilder(builder, u);
+            }
         }
         return factory.build(builder);
     }
@@ -110,6 +131,10 @@ public abstract class AbstractImmutableCollection<@Covariant E>
 
     protected final <U, To extends ImmutableCollection<U>> @NotNull To mapImpl(@NotNull Function<? super E, ? extends U> mapper) {
         return (To) AbstractImmutableCollection.map(this, mapper, iterableFactory());
+    }
+
+    protected final <U, To extends ImmutableCollection<@NotNull U>> @NotNull To mapNotNullImpl(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
+        return (To) AbstractImmutableCollection.mapNotNull(this, mapper, iterableFactory());
     }
 
     protected final <To extends ImmutableCollection<E>> @NotNull To filterImpl(@NotNull Predicate<? super E> predicate) {

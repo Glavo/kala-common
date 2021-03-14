@@ -338,6 +338,28 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
     }
 
 
+    static <E, U, T, Builder> T mapIndexedNotNull(
+            @NotNull ImmutableSeq<? extends E> Seq,
+            @NotNull IndexedFunction<? super E, ? extends U> mapper,
+            @NotNull CollectionFactory<? super U, Builder, ? extends T> factory
+    ) {
+        Objects.requireNonNull(mapper);
+
+        Builder builder = factory.newBuilder();
+
+        factory.sizeHint(builder, Seq);
+
+        int idx = 0;
+        for (E e : Seq) {
+            U u = mapper.apply(idx++, e);
+            if (u != null) {
+                factory.addToBuilder(builder, u
+                );
+            }
+        }
+        return factory.build(builder);
+    }
+
     @NotNull
     protected final <To extends ImmutableSeq<E>> To updatedImpl(int index, E newValue) {
         return (To) AbstractImmutableSeq.updated(this, index, newValue, iterableFactory());
@@ -432,6 +454,11 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
     @NotNull
     protected final <U, To extends ImmutableSeq<U>> To mapIndexedImpl(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
         return (To) AbstractImmutableSeq.mapIndexed(this, mapper, iterableFactory());
+    }
+
+    @NotNull
+    protected final <U, To extends ImmutableSeq<U>> To mapIndexedNotNullImpl(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+        return (To) AbstractImmutableSeq.mapIndexedNotNull(this, mapper, iterableFactory());
     }
 
     @Override

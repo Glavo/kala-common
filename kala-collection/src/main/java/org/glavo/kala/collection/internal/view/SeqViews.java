@@ -52,8 +52,18 @@ public final class SeqViews {
         }
 
         @Override
-        public @NotNull <U> SeqView<?> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
-            return this;
+        public @NotNull <U> SeqView<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+            return SeqViews.empty();
+        }
+
+        @Override
+        public @NotNull <U> SeqView<U> mapNotNull(@NotNull Function<? super E, ? extends U> mapper) {
+            return SeqViews.empty();
+        }
+
+        @Override
+        public @NotNull <U> SeqView<U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+            return SeqViews.empty();
         }
 
         @Override
@@ -892,6 +902,38 @@ public final class SeqViews {
         @Override
         public final Iterator<E> iterator() {
             return Iterators.mapIndexed(source.iterator(), mapper);
+        }
+    }
+
+    public static class MapNotNull<E, T> extends AbstractSeqView<E> {
+        private final @NotNull SeqView<T> source;
+
+        private final @NotNull Function<? super T, ? extends E> mapper;
+
+        public MapNotNull(@NotNull SeqView<T> source, @NotNull Function<? super T, ? extends E> mapper) {
+            this.source = source;
+            this.mapper = mapper;
+        }
+
+        @Override
+        public final @NotNull Iterator<E> iterator() {
+            return Iterators.mapNotNull(source.iterator(), mapper);
+        }
+    }
+
+    public static class MapNotNullIndexed<E, T> extends AbstractSeqView<E> {
+        private final @NotNull SeqView<T> source;
+
+        private final @NotNull IndexedFunction<? super T, ? extends E> mapper;
+
+        public MapNotNullIndexed(@NotNull SeqView<T> source, @NotNull IndexedFunction<? super T, ? extends E> mapper) {
+            this.source = source;
+            this.mapper = mapper;
+        }
+
+        @Override
+        public final @NotNull Iterator<E> iterator() {
+            return Iterators.mapNotNullIndexed(source.iterator(), mapper);
         }
     }
 

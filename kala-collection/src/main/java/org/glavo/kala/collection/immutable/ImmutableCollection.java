@@ -6,6 +6,7 @@ import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.Collection;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -119,6 +120,10 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E> {
     @Contract(pure = true)
     default <U> @NotNull ImmutableCollection<U> map(@NotNull Function<? super E, ? extends U> mapper) {
         return AbstractImmutableCollection.map(this, mapper, this.<U>iterableFactory());
+    }
+
+    default <U> @NotNull ImmutableCollection<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
+        return AbstractImmutableCollection.mapNotNull(this, mapper, this.<U>iterableFactory());
     }
 
     @Contract(pure = true)

@@ -561,6 +561,28 @@ public final class Iterators {
         };
     }
 
+    public static <E, U> @NotNull Iterator<U> mapNotNull(
+            @NotNull Iterator<? extends E> it,
+            @NotNull Function<? super E, ? extends U> mapper
+    ) {
+        Objects.requireNonNull(mapper);
+        if (!it.hasNext()) {
+            return Iterators.empty();
+        }
+        return new Iterators.MapNotNull<>(it, mapper);
+    }
+
+    public static <E, U> @NotNull Iterator<U> mapNotNullIndexed(
+            @NotNull Iterator<? extends E> it,
+            @NotNull IndexedFunction<? super E, ? extends U> mapper
+    ) {
+        Objects.requireNonNull(mapper);
+        if (!it.hasNext()) {
+            return Iterators.empty();
+        }
+        return new Iterators.MapNotNullIndexed<>(it, mapper);
+    }
+
     public static <E, U> @NotNull Iterator<U> flatMap(
             @NotNull Iterator<? extends E> it,
             @NotNull Function<? super E, ? extends Iterable<? extends U>> mapper
@@ -1159,6 +1181,92 @@ public final class Iterators {
 
         @Override
         public final E next() {
+            if (hasNext()) {
+                flag = false;
+                return nextValue;
+            } else {
+                throw new NoSuchElementException();
+            }
+        }
+    }
+
+    static final class MapNotNull<E, U> extends AbstractIterator<U> {
+
+        private final @NotNull Iterator<? extends E> source;
+        private final @NotNull Function<? super E, ? extends U> mapper;
+
+        private U nextValue = null;
+        private boolean flag = false;
+
+        MapNotNull(@NotNull Iterator<? extends E> source, @NotNull Function<? super E, ? extends U> mapper) {
+            this.source = source;
+            this.mapper = mapper;
+        }
+
+        @Override
+        public final boolean hasNext() {
+            if (flag) {
+                return true;
+            }
+            U v;
+            do {
+                if (!source.hasNext()) {
+                    return false;
+                }
+                v = mapper.apply(source.next());
+            } while (v == null);
+
+            this.nextValue = v;
+            flag = true;
+            return true;
+        }
+
+        @Override
+        public final U next() {
+            if (hasNext()) {
+                flag = false;
+                return nextValue;
+            } else {
+                throw new NoSuchElementException();
+            }
+        }
+    }
+
+    static final class MapNotNullIndexed<E, U> extends AbstractIterator<U> {
+
+        private final @NotNull Iterator<? extends E> source;
+        private final @NotNull IndexedFunction<? super E, ? extends U> mapper;
+
+        private int idx = 0;
+        private U nextValue = null;
+        private boolean flag = false;
+
+
+        MapNotNullIndexed(@NotNull Iterator<? extends E> source, @NotNull IndexedFunction<? super E, ? extends U> mapper) {
+            this.source = source;
+            this.mapper = mapper;
+        }
+
+        @Override
+        public final boolean hasNext() {
+            if (flag) {
+                return true;
+            }
+            U v;
+            do {
+                if (!source.hasNext()) {
+                    return false;
+                }
+                v = mapper.apply(idx++, source.next());
+            } while (v == null);
+
+            this.nextValue = v;
+            flag = true;
+            return true;
+        }
+
+        @Override
+        public final U next() {
             if (hasNext()) {
                 flag = false;
                 return nextValue;

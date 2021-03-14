@@ -53,7 +53,6 @@ public interface BufferLike<E> extends MutableSeqLike<E>, Growable<E>  {
         }
     }
 
-
     @Override
     default void plusAssign(E value) {
         append(value);

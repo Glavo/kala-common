@@ -3,6 +3,7 @@ package org.glavo.kala.collection.internal;
 import org.glavo.kala.collection.CollectionLike;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -16,6 +17,8 @@ public interface FullCollectionOps<E, CC extends CollectionLike<?>, COLL extends
     @NotNull COLL filterNotNull();
 
     @NotNull <U> CC map(@NotNull Function<? super E, ? extends U> mapper);
+
+    @NotNull <U> CC mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper);
 
     @Contract(pure = true)
     <U> @NotNull CC flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper);

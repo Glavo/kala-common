@@ -12,10 +12,7 @@ import org.glavo.kala.function.IndexedConsumer;
 import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.collection.base.Iterators;
 import org.glavo.kala.collection.base.AnyTraversable;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Range;
+import org.jetbrains.annotations.*;
 
 import java.io.Serializable;
 import java.util.*;
@@ -235,10 +232,10 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
 
     @Override
     public final @NotNull SeqView<E> view() {
-        if(this == NIL) {
+        if (this == NIL) {
             return SeqViews.empty();
         }
-        if(tail == null) {
+        if (tail == null) {
             return new SeqViews.Single<>(head);
         }
         return new SeqViews.WithCachedSize<>(this);
@@ -607,6 +604,16 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
     @Override
     public final <U> @NotNull ImmutableList<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
         return mapIndexedImpl(mapper);
+    }
+
+    @Override
+    public final <U> @NotNull ImmutableList<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
+        return mapNotNullImpl(mapper);
+    }
+
+    @Override
+    public final <U> @NotNull ImmutableList<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
+        return mapIndexedNotNullImpl(mapper);
     }
 
     @Override

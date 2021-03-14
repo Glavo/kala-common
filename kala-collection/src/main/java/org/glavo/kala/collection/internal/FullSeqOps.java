@@ -3,6 +3,7 @@ package org.glavo.kala.collection.internal;
 import org.glavo.kala.collection.SeqLike;
 import org.glavo.kala.function.IndexedFunction;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
 import java.util.function.Predicate;
@@ -42,4 +43,6 @@ public interface FullSeqOps<E, CC extends SeqLike<?>, COLL extends SeqLike<E>> e
     @NotNull COLL reversed();
 
     <U> @NotNull CC mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper);
+
+    <U> @NotNull CC mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper);
 }

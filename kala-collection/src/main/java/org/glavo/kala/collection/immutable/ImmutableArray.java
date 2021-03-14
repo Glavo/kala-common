@@ -16,6 +16,7 @@ import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.collection.base.GenericArrays;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.*;
@@ -458,6 +459,64 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
             newValues[i] = mapper.apply(i, (E) elements[i]);
         }
         return new ImmutableArray<>(newValues);
+    }
+
+    @Override
+    public final <U> @NotNull ImmutableArray<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+
+        if (size == 0) {
+            return ImmutableArray.empty();
+        }
+
+        Object[] tmp = new Object[size];
+        int c = 0;
+
+        for (Object value : elements) {
+            final U u = mapper.apply((E) value);
+            if (u != null) {
+                tmp[c++] = u;
+            }
+        }
+
+        if (c == 0) {
+            return empty();
+        }
+        if (c == size) {
+            return new ImmutableArray<>(tmp);
+        }
+
+        return new ImmutableArray<>(Arrays.copyOf(tmp, c));
+    }
+
+    @Override
+    public final @NotNull <U> ImmutableArray<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+
+        if (size == 0) {
+            return ImmutableArray.empty();
+        }
+
+        Object[] tmp = new Object[size];
+        int c = 0;
+
+        for (int i = 0; i < size; i++) {
+            final U u = mapper.apply(i, (E) elements[i]);
+            if (u != null) {
+                tmp[c++] = u;
+            }
+        }
+
+        if (c == 0) {
+            return empty();
+        }
+        if (c == size) {
+            return new ImmutableArray<>(tmp);
+        }
+
+        return new ImmutableArray<>(Arrays.copyOf(tmp, c));
     }
 
     @Override

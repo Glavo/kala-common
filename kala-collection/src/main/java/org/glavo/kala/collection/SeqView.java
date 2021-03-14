@@ -12,6 +12,7 @@ import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.tuple.primitive.IntObjTuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
 import java.util.Objects;
@@ -176,10 +177,24 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqOps<E
     }
 
     @Override
-    default <U> @NotNull SeqView<?> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+    default <U> @NotNull SeqView<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
 
         return new SeqViews.MapIndexed<U, E>(this, mapper);
+    }
+
+    @Override
+    default <U> @NotNull SeqView<U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
+        Objects.requireNonNull(mapper);
+
+        return new SeqViews.MapNotNull<>(this, mapper);
+    }
+
+    @Override
+    default <U> @NotNull SeqView<U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
+        Objects.requireNonNull(mapper);
+
+        return new SeqViews.MapNotNullIndexed<>(this, mapper);
     }
 
     @Override

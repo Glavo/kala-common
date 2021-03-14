@@ -10,6 +10,7 @@ import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.tuple.primitive.IntObjTuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.*;
@@ -225,6 +226,15 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     @Contract(pure = true)
     default <U> @NotNull ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
         return AbstractImmutableSeq.mapIndexed(this, mapper, this.<U>iterableFactory());
+    }
+
+    @Override
+    default <U> @NotNull ImmutableCollection<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
+        return AbstractImmutableCollection.mapNotNull(this, mapper, this.<U>iterableFactory());
+    }
+
+    default <U> @NotNull ImmutableSeq<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
+        return AbstractImmutableSeq.mapIndexedNotNull(this, mapper, this.<U>iterableFactory());
     }
 
     @Override
