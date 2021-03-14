@@ -21,57 +21,6 @@ public interface CollectionLike<E> extends Traversable<E> {
 
     @NotNull View<E> view();
 
-    @Contract(value = "_, _ -> param1", mutates = "param1")
-    default <G extends Growable<? super E>> @NotNull G filterTo(@NotNull G destination, @NotNull Predicate<? super E> predicate) {
-        for (E e : this) {
-            if (predicate.test(e)) {
-                destination.plusAssign(e);
-            }
-        }
-        return destination;
-    }
-
-    @Contract(value = "_, _ -> param1", mutates = "param1")
-    default <G extends Growable<? super E>> @NotNull G filterNotTo(@NotNull G destination, @NotNull Predicate<? super E> predicate) {
-        for (E e : this) {
-            if (!predicate.test(e)) {
-                destination.plusAssign(e);
-            }
-        }
-        return destination;
-    }
-
-    @Contract(value = "_ -> param1", mutates = "param1")
-    default <G extends Growable<? super E>> @NotNull G filterNotNullTo(@NotNull G destination) {
-        for (E e : this) {
-            if (e != null) {
-                destination.plusAssign(e);
-            }
-        }
-        return destination;
-    }
-
-    @Contract(value = "_, _ -> param1", mutates = "param1")
-    default <U, G extends Growable<? super U>> @NotNull G mapTo(@NotNull G destination, @NotNull Function<? super E, ? extends U> mapper) {
-        for (E e : this) {
-            destination.plusAssign(mapper.apply(e));
-        }
-        return destination;
-    }
-
-    @Contract(value = "_, _ -> param1", mutates = "param1")
-    default <U, G extends Growable<@NotNull ? super U>> @NotNull G mapNotNullTo(
-            @NotNull G destination,
-            @NotNull Function<? super E, @Nullable ? extends U> mapper) {
-        for (E e : this) {
-            U u = mapper.apply(e);
-            if (u != null) {
-                destination.plusAssign(u);
-            }
-        }
-        return destination;
-    }
-
     //region Copy Operations
 
     @Contract(mutates = "param1")

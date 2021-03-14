@@ -144,6 +144,57 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
 
     //endregion
 
+    @Contract(value = "_, _ -> param1", mutates = "param1")
+    default <G extends Growable<? super T>> @NotNull G filterTo(@NotNull G destination, @NotNull Predicate<? super T> predicate) {
+        for (T e : this) {
+            if (predicate.test(e)) {
+                destination.plusAssign(e);
+            }
+        }
+        return destination;
+    }
+
+    @Contract(value = "_, _ -> param1", mutates = "param1")
+    default <G extends Growable<? super T>> @NotNull G filterNotTo(@NotNull G destination, @NotNull Predicate<? super T> predicate) {
+        for (T e : this) {
+            if (!predicate.test(e)) {
+                destination.plusAssign(e);
+            }
+        }
+        return destination;
+    }
+
+    @Contract(value = "_ -> param1", mutates = "param1")
+    default <G extends Growable<? super T>> @NotNull G filterNotNullTo(@NotNull G destination) {
+        for (T e : this) {
+            if (e != null) {
+                destination.plusAssign(e);
+            }
+        }
+        return destination;
+    }
+
+    @Contract(value = "_, _ -> param1", mutates = "param1")
+    default <U, G extends Growable<? super U>> @NotNull G mapTo(@NotNull G destination, @NotNull Function<? super T, ? extends U> mapper) {
+        for (T e : this) {
+            destination.plusAssign(mapper.apply(e));
+        }
+        return destination;
+    }
+
+    @Contract(value = "_, _ -> param1", mutates = "param1")
+    default <U, G extends Growable<@NotNull ? super U>> @NotNull G mapNotNullTo(
+            @NotNull G destination,
+            @NotNull Function<? super T, @Nullable ? extends U> mapper) {
+        for (T e : this) {
+            U u = mapper.apply(e);
+            if (u != null) {
+                destination.plusAssign(u);
+            }
+        }
+        return destination;
+    }
+
     //region Aggregate Operations
 
     default int count(@NotNull Predicate<? super T> predicate) {
