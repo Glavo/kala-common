@@ -2,6 +2,7 @@ package org.glavo.kala.collection.mutable;
 
 import org.glavo.kala.collection.ArraySeq;
 import org.glavo.kala.collection.Seq;
+import org.glavo.kala.collection.base.Growable;
 import org.glavo.kala.collection.internal.CollectionHelper;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
@@ -15,7 +16,7 @@ import java.util.RandomAccess;
 import java.util.function.Predicate;
 
 @SuppressWarnings("unchecked")
-public interface BufferLike<E> extends MutableSeqLike<E>, Growable<E>  {
+public interface BufferLike<E> extends MutableSeqLike<E>, Growable<E> {
     @Override
     default @NotNull String className() {
         return "BufferLike";

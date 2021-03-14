@@ -3,7 +3,7 @@ package org.glavo.kala.collection;
 import org.glavo.kala.collection.base.Iterators;
 import org.glavo.kala.collection.immutable.ImmutableList;
 import org.glavo.kala.collection.internal.view.IndexedSeqViews;
-import org.glavo.kala.collection.mutable.Growable;
+import org.glavo.kala.collection.base.Growable;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.function.IndexedBiFunction;
 import org.glavo.kala.function.IndexedConsumer;

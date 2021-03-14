@@ -2,7 +2,7 @@ package org.glavo.kala.collection;
 
 import org.glavo.kala.collection.base.MapIterator;
 import org.glavo.kala.collection.internal.view.MapViews;
-import org.glavo.kala.collection.mutable.Growable;
+import org.glavo.kala.collection.base.Growable;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.function.CheckedBiConsumer;
 import org.glavo.kala.tuple.Tuple2;

@@ -1,7 +1,7 @@
 package org.glavo.kala.collection;
 
 import org.glavo.kala.collection.immutable.*;
-import org.glavo.kala.collection.mutable.Growable;
+import org.glavo.kala.collection.base.Growable;
 import org.glavo.kala.collection.mutable.MutableArray;
 import org.glavo.kala.collection.base.Traversable;
 import org.glavo.kala.tuple.Tuple2;

@@ -1,11 +1,8 @@
 package org.glavo.kala.collection.mutable;
 
 import org.glavo.kala.collection.*;
-import org.glavo.kala.collection.Collection;
 import org.glavo.kala.collection.Map;
-import org.glavo.kala.collection.Set;
-import org.glavo.kala.collection.base.AnyTraversable;
-import org.glavo.kala.collection.base.Traversable;
+import org.glavo.kala.collection.base.Growable;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.immutable.ImmutableArray;
 import org.glavo.kala.collection.immutable.ImmutableList;

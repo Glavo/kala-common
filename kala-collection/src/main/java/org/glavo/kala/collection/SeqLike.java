@@ -3,7 +3,7 @@ package org.glavo.kala.collection;
 import org.glavo.kala.collection.base.GenericArrays;
 import org.glavo.kala.collection.base.Iterators;
 import org.glavo.kala.collection.mutable.ArrayBuffer;
-import org.glavo.kala.collection.mutable.Growable;
+import org.glavo.kala.collection.base.Growable;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.function.CheckedIndexedConsumer;
 import org.glavo.kala.function.IndexedBiFunction;
