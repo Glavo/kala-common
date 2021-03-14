@@ -5,12 +5,14 @@ import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.collection.base.AbstractIterator;
 import org.glavo.kala.collection.base.Iterators;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
+@Debug.Renderer(hasChildren = "!isEmpty()", childrenArray = "toArray()")
 public final class DoubleLinkedBuffer<E>
         extends AbstractBuffer<E> implements BufferOps<E, DoubleLinkedBuffer<?>, DoubleLinkedBuffer<E>>, MutableStack<E>, MutableQueue<E> {
 

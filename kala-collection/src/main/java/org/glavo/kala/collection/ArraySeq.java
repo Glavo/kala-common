@@ -10,6 +10,7 @@ import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.function.IndexedConsumer;
 import org.glavo.kala.collection.base.GenericArrays;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -22,6 +23,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @SuppressWarnings("unchecked")
+@Debug.Renderer(hasChildren = "!isEmpty()", childrenArray = "elements")
 public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>, Serializable {
     private static final long serialVersionUID = 4981379062449237945L;
 

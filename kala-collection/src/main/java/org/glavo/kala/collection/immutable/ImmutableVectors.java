@@ -6,6 +6,7 @@ import org.glavo.kala.collection.base.AbstractIterator;
 import org.glavo.kala.collection.base.Iterators;
 import org.glavo.kala.collection.base.GenericArrays;
 import org.glavo.kala.collection.base.Traversable;
+import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Array;
@@ -19,6 +20,7 @@ import static java.util.Arrays.copyOf;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 final class ImmutableVectors {
+    @Debug.Renderer(hasChildren = "false", childrenArray = "new Object[0]")
     final static class Vector0 extends ImmutableVector<Object> {
         private static final long serialVersionUID = 6286060267578716429L;
 
@@ -143,6 +145,7 @@ final class ImmutableVectors {
         }
     }
 
+    @Debug.Renderer(hasChildren = "true", childrenArray = "prefix1")
     final static class Vector1<E> extends ImmutableVector<E> {
         private static final long serialVersionUID = -2956354586637109936L;
 
@@ -359,6 +362,7 @@ final class ImmutableVectors {
         }
     }
 
+    @Debug.Renderer(hasChildren = "true", childrenArray = "toArray()")
     static abstract class BigVector<E> extends ImmutableVector<E> {
         final Object[] suffix1;
         final int length0;
@@ -854,7 +858,7 @@ final class ImmutableVectors {
         public final E get(int index) {
             checkElementIndex(index, length0);
 
-            final int io = index - len12;
+            int io = index - len12;
             if (io >= 0) {
                 int i3 = io >>> BITS2;
                 int i2 = (io >>> BITS) & MASK;
@@ -867,6 +871,9 @@ final class ImmutableVectors {
                 } else {
                     return (E) suffix1[i1];
                 }
+            } else if (index >= len1) {
+                io = index - len1;
+                return (E) prefix2[io >>> BITS][io & MASK];
             } else {
                 return (E) prefix1[index];
             }
@@ -1920,8 +1927,8 @@ final class ImmutableVectors {
         }
 
         ImmutableVector<E> build() {
-            int len = len1 + lenRest;
-            int realLen = len - offset;
+            final int len = len1 + lenRest;
+            final int realLen = len - offset;
             if (realLen == 0) {
                 return ImmutableVector.empty();
             } else if (len <= WIDTH) {

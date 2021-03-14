@@ -1,23 +1,16 @@
 package org.glavo.kala.collection.mutable;
 
-import org.glavo.kala.annotations.DeprecatedReplaceWith;
-import org.glavo.kala.collection.ArraySeq;
 import org.glavo.kala.collection.IndexedSeq;
 import org.glavo.kala.collection.internal.convert.AsJavaConvert;
 import org.glavo.kala.collection.internal.convert.FromJavaConvert;
-import org.glavo.kala.collection.internal.CollectionHelper;
 import org.glavo.kala.collection.factory.CollectionFactory;
-import org.glavo.kala.collection.Seq;
-import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Range;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.RandomAccess;
-import java.util.function.Predicate;
 
 public interface Buffer<E> extends MutableSeq<E>, BufferLike<E>{
 

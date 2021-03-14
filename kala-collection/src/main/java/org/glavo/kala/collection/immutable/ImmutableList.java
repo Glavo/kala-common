@@ -19,6 +19,7 @@ import java.util.*;
 import java.util.function.*;
 
 @SuppressWarnings("unchecked")
+@Debug.Renderer(hasChildren = "!isEmpty()", childrenArray = "toArray()")
 public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
         implements ImmutableSeq<E>, ImmutableSeqOps<E, ImmutableList<?>, ImmutableList<E>>, Serializable {
     private static final long serialVersionUID = 944030391350569673L;

@@ -16,7 +16,7 @@ public final class ImmutableArrayTest implements ImmutableSeqTestTemplate {
 
     @Test
     public final void ofTest() {
-        assertIterableEquals(List.of(),ImmutableArray.of());
+        assertIterableEquals(List.of(), ImmutableArray.of());
         assertIterableEquals(List.of("str1"), ImmutableArray.of("str1"));
         assertIterableEquals(List.of("str1", "str2"), ImmutableArray.of("str1", "str2"));
         assertIterableEquals(List.of("str1", "str2", "str3"), ImmutableArray.of("str1", "str2", "str3"));

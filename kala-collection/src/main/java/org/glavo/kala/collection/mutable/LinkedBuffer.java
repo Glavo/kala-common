@@ -3,6 +3,7 @@ package org.glavo.kala.collection.mutable;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.immutable.ImmutableList;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -13,7 +14,7 @@ import java.util.Iterator;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
 
-
+@Debug.Renderer(hasChildren = "!isEmpty()", childrenArray = "toArray()")
 public final class LinkedBuffer<E> extends ImmutableList.Builder<E>
         implements MutableSeqOps<E, LinkedBuffer<?>, LinkedBuffer<E>>, MutableStack<E>, Serializable {
 
