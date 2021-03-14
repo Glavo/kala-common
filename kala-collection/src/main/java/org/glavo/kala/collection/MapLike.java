@@ -105,6 +105,10 @@ public interface MapLike<K, V> {
 
     //region Element Conditions
 
+    default boolean contains(Tuple2<? extends K, ?> value) {
+        return value != null && contains(value._1, value._2);
+    }
+
     default boolean contains(K key, Object value) {
         return getOption(key).contains(value);
     }

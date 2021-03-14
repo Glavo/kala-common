@@ -32,7 +32,7 @@ public interface Map<K, V> extends MapLike<K, V>, Equatable {
         MapIterator<?, ?> it = map1.iterator();
         try {
             while (it.hasNext()) {
-                if (!((Map<Object, ?>) map2).getOption(it.nextKey()).contains(it.getValue())) {
+                if (!((Map<Object, ?>) map2).contains(it.nextKey(), it.getValue())) {
                     return false;
                 }
             }

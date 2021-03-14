@@ -87,6 +87,7 @@
   * `remove(K)`
   * `removeIfExists(K)`
   * `replace(K, V)`
+  * `replaceAll(BiFunction<K, V, V>)`
   * `withDefault(Function<K, V>)`
 * Element Retrieval Operations
   * `find(Predicate<E>)`

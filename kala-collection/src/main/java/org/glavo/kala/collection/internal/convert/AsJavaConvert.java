@@ -440,7 +440,7 @@ public final class AsJavaConvert {
                 }
                 Entry<?, ?> entry = (Entry<?, ?>) o;
                 try {
-                    return source.getOption((K) entry.getKey()).contains(entry.getValue());
+                    return source.contains((K) entry.getKey(), entry.getValue());
                 } catch (Throwable e) {
                     return false;
                 }

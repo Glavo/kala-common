@@ -60,7 +60,8 @@ public final class FromJavaConvert {
     }
 
     public static class SeqFromJava<E> implements Seq<E> {
-        protected @NotNull final List<E> source;
+        protected @NotNull
+        final List<E> source;
 
         public SeqFromJava(@NotNull List<E> source) {
             this.source = source;
@@ -378,7 +379,7 @@ public final class FromJavaConvert {
                         return false;
                     }
                     Tuple2<K, V> tuple = (Tuple2<K, V>) value;
-                    if (MutableMapFromJava.this.getOption(tuple._1).contains(tuple._2)) {
+                    if (MutableMapFromJava.this.contains(tuple)) {
                         source.remove(tuple._1);
                         return true;
                     } else {

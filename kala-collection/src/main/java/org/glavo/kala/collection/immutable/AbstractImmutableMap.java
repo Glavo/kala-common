@@ -16,6 +16,10 @@ public abstract class AbstractImmutableMap<K, V> extends AbstractMap<K, V> imple
         }
 
         Builder builder = factory.newBuilder();
+        int ks = map.knownSize();
+        if (ks >= 0) {
+            factory.sizeHint(builder, ks + 1);
+        }
         map.forEach((k, v) -> factory.addToBuilder(builder, k, v));
         factory.addToBuilder(builder, key, value);
         return factory.build(builder);
@@ -31,6 +35,10 @@ public abstract class AbstractImmutableMap<K, V> extends AbstractMap<K, V> imple
         }
 
         Builder builder = factory.newBuilder();
+        int ks = map.knownSize();
+        if (ks > 0) {
+            factory.sizeHint(builder,ks - 1);
+        }
         if (key == null) {
             map.forEach((k, v) -> {
                 if (null != k) {

@@ -1,7 +1,9 @@
 package org.glavo.kala.collection.factory;
 
+import org.glavo.kala.collection.base.AnyTraversable;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -16,6 +18,22 @@ public interface MapFactory<K, V, Builder, R> extends Factory<Builder, R> {
 
     default void sizeHint(@NotNull Builder builder, int size) {
 
+    }
+
+    default void sizeHint(@NotNull Builder builder, @NotNull Iterable<?> it) {
+        this.sizeHint(builder, it, 0);
+    }
+
+    default void sizeHint(@NotNull Builder builder, @NotNull Iterable<?> it, int delta) {
+        if (it instanceof Collection<?>) {
+            int s = ((Collection<?>) it).size();
+            this.sizeHint(builder, s + delta);
+        } else if (it instanceof AnyTraversable) {
+            int ks = ((AnyTraversable<?, ?, ?, ?, ?, ?>) it).knownSize();
+            if (ks > 0) {
+                this.sizeHint(builder, ks + delta);
+            }
+        }
     }
 
     @Override

@@ -185,5 +185,10 @@ public final class ImmutableHashMap<K, V> extends MutableHashMap.Frozen<K, V>
             builder1.putAll(builder2);
             return builder1;
         }
+
+        @Override
+        public final void sizeHint(@NotNull MutableHashMap<K, V> builder, int size) {
+            builder.sizeHint(size);
+        }
     }
 }
