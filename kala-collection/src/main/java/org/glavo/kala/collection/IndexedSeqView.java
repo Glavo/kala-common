@@ -20,6 +20,11 @@ public interface IndexedSeqView<@Covariant E> extends SeqView<E>, IndexedSeqLike
         return (IndexedSeqView<E>) view;
     }
 
+    @SuppressWarnings("unchecked")
+    static <E> @NotNull IndexedSeqView<E> empty() {
+        return ((IndexedSeqView<E>) IndexedSeqViews.Empty.INSTANCE);
+    }
+
     //region Collection Operations
 
     @Override

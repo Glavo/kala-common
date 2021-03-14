@@ -6,6 +6,8 @@ import java.io.Serializable;
 
 final class BooleanPredicates {
     static final class IsTrue implements BooleanPredicate, Serializable {
+        private static final long serialVersionUID = 0L;
+
         @Override
         public final boolean test(boolean v) {
             return v;
@@ -22,6 +24,8 @@ final class BooleanPredicates {
     }
 
     static final class IsFalse implements BooleanPredicate, Serializable {
+        private static final long serialVersionUID = 0L;
+
         @Override
         public final boolean test(boolean v) {
             return !v;

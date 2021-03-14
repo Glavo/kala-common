@@ -1,5 +1,6 @@
 package org.glavo.kala.collection;
 
+import org.glavo.kala.collection.internal.view.SeqViews;
 import org.glavo.kala.collection.internal.view.Views;
 import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.annotations.Covariant;
@@ -10,6 +11,11 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public interface View<@Covariant E> extends CollectionLike<E> {
+
+    @SuppressWarnings("unchecked")
+    static <E> @NotNull View<E> empty() {
+        return ((View<E>) Views.Empty.INSTANCE);
+    }
 
     //region Collection Operations
 

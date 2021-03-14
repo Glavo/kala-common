@@ -234,7 +234,7 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
     @Override
     public final @NotNull SeqView<E> view() {
         if (this == NIL) {
-            return SeqViews.empty();
+            return SeqView.empty();
         }
         if (tail == null) {
             return new SeqViews.Single<>(head);

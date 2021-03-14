@@ -4,14 +4,77 @@ import org.glavo.kala.Conditions;
 import org.glavo.kala.collection.*;
 import org.glavo.kala.collection.internal.view.SeqViews;
 import org.glavo.kala.control.Option;
+import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.tuple.primitive.IntObjTuple2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
+import java.util.Comparator;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
+@SuppressWarnings("ALL")
 public final class IndexedSeqViews {
+    public static class Empty<E> extends SeqViews.Empty<E> implements IndexedSeqView<E> {
+        public static final Empty<?> INSTANCE = new Empty<>();
+
+        @Override
+        public @NotNull IndexedSeqView<E> prepended(E value) {
+            return new Single<>(value);
+        }
+
+        @Override
+        public @NotNull IndexedSeqView<E> appended(E value) {
+            return new Single<>(value);
+        }
+
+        @Override
+        public @NotNull IndexedSeqView<E> slice(int beginIndex, int endIndex) {
+            if (beginIndex != 0 || endIndex != 0) {
+                Conditions.checkPositionIndices(beginIndex, endIndex, 0);
+            }
+            return this;
+        }
+
+        @Override
+        public @NotNull IndexedSeqView<E> sliceView(int beginIndex, int endIndex) {
+            if (beginIndex != 0 || endIndex != 0) {
+                Conditions.checkPositionIndices(beginIndex, endIndex, 0);
+            }
+            return this;
+        }
+
+        @Override
+        public @NotNull IndexedSeqView<E> drop(int n) {
+            return this;
+        }
+
+        @Override
+        public @NotNull IndexedSeqView<E> take(int n) {
+            return this;
+        }
+
+        @Override
+        public @NotNull IndexedSeqView<E> updated(int index, E newValue) {
+            throw new IndexOutOfBoundsException("index :" + index);
+        }
+
+        @Override
+        public @NotNull IndexedSeqView<IntObjTuple2<E>> withIndex() {
+            return (IndexedSeqView<IntObjTuple2<E>>) this;
+        }
+
+        @Override
+        public @NotNull <U> IndexedSeqView<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+            return (IndexedSeqView<U>) this;
+        }
+
+        @Override
+        public @NotNull <U> IndexedSeqView<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+            return (IndexedSeqView<U>) this;
+        }
+    }
 
     public static class Of<E, C extends IndexedSeqLike<E>> extends SeqViews.Of<E, C> implements IndexedSeqView<E> {
         public Of(@NotNull C source) {

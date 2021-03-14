@@ -50,17 +50,17 @@ public final class SeqViews {
 
         @Override
         public @NotNull <U> SeqView<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
-            return SeqViews.empty();
+            return SeqView.empty();
         }
 
         @Override
         public @NotNull <U> SeqView<U> mapNotNull(@NotNull Function<? super E, ? extends U> mapper) {
-            return SeqViews.empty();
+            return SeqView.empty();
         }
 
         @Override
         public @NotNull <U> SeqView<U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
-            return SeqViews.empty();
+            return SeqView.empty();
         }
 
         @Override
@@ -74,10 +74,6 @@ public final class SeqViews {
         }
     }
 
-    public static <E> SeqView<E> empty() {
-        return (SeqView<E>) Empty.INSTANCE;
-    }
-
     public static class Single<E> extends Views.Single<E> implements SeqView<E> {
         public Single(E value) {
             super(value);
@@ -85,17 +81,17 @@ public final class SeqViews {
 
         @Override
         public @NotNull SeqView<E> filter(@NotNull Predicate<? super E> predicate) {
-            return predicate.test(value) ? this : empty();
+            return predicate.test(value) ? this : SeqView.empty();
         }
 
         @Override
         public @NotNull SeqView<E> filterNot(@NotNull Predicate<? super E> predicate) {
-            return predicate.test(value) ? empty() : this;
+            return predicate.test(value) ? SeqView.empty() : this;
         }
 
         @Override
         public @NotNull SeqView<@NotNull E> filterNotNull() {
-            return value != null ? this : empty();
+            return value != null ? this : SeqView.empty();
         }
 
         @Override

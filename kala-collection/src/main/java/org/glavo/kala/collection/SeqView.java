@@ -31,6 +31,11 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqOps<E
 
     //endregion
 
+    @SuppressWarnings("unchecked")
+    static <E> @NotNull SeqView<E> empty() {
+        return (SeqView<E>) SeqViews.Empty.INSTANCE;
+    }
+
     //region Collection Operations
 
     @Override

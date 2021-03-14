@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 @SuppressWarnings("unchecked")
 public final class Views {
     public static class Empty<E> extends AbstractView<E> {
-        public static final Empty<?> INSTANCE = new Empty<Object>();
+        public static final Empty<?> INSTANCE = new Empty<>();
 
         @Override
         public final @NotNull Iterator<E> iterator() {
@@ -87,10 +87,6 @@ public final class Views {
         }
     }
 
-    public static <E> View<E> empty() {
-        return (View<E>) Empty.INSTANCE;
-    }
-
     public static class Single<E> extends AbstractView<E> {
         protected final E value;
 
@@ -129,17 +125,17 @@ public final class Views {
 
         @Override
         public @NotNull View<E> filter(@NotNull Predicate<? super E> predicate) {
-            return predicate.test(value) ? this : empty();
+            return predicate.test(value) ? this : View.empty();
         }
 
         @Override
         public @NotNull View<E> filterNot(@NotNull Predicate<? super E> predicate) {
-            return predicate.test(value) ? empty() : this;
+            return predicate.test(value) ? View.empty() : this;
         }
 
         @Override
         public @NotNull View<@NotNull E> filterNotNull() {
-            return value != null ? this : empty();
+            return value != null ? this : View.empty();
         }
 
         @Override
