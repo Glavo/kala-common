@@ -782,7 +782,6 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
 
         private boolean aliased = false;
 
-        @SuppressWarnings("SpellCheckingInspection")
         private void ensureUnaliased() {
             if (aliased) {
                 Builder<E> buffer = new LinkedBuffer<>();
