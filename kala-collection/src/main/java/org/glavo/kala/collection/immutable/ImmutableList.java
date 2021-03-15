@@ -236,7 +236,7 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
         if (this == NIL) {
             return SeqView.empty();
         }
-        if (tail == null) {
+        if (tail == NIL) {
             return new SeqViews.Single<>(head);
         }
         return new SeqViews.WithCachedSize<>(this);
@@ -263,7 +263,7 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    public final @Range(from = -1, to = Integer.MAX_VALUE) int knownSize() {
+    public final int knownSize() {
         if (this == NIL) {
             return 0;
         }

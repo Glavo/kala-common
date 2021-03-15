@@ -30,25 +30,7 @@ public interface BooleanIterator
     }
 
     static @NotNull BooleanIterator of(boolean value) {
-        return new AbstractBooleanIterator() {
-
-            private boolean hasNext = true;
-
-            @Override
-            public final boolean hasNext() {
-                return hasNext;
-            }
-
-            @Override
-            public final boolean nextBoolean() {
-                if (hasNext) {
-                    hasNext = false;
-                    return value;
-                } else {
-                    throw new NoSuchElementException();
-                }
-            }
-        };
+        return value ? new BooleanIterators.OfTrue() : new BooleanIterators.OfFalse();
     }
 
     static @NotNull BooleanIterator of(boolean... values) {
@@ -333,14 +315,11 @@ public interface BooleanIterator
     //region Addition Operations
 
     default @NotNull BooleanIterator appended(boolean value) {
-        if (!hasNext()) {
-            return BooleanIterator.of(value);
-        }
-        return new BooleanIterators.Appended(this, value);
+        return hasNext() ? new BooleanIterators.Appended(this, value) : BooleanIterator.of(value);
     }
 
     default @NotNull BooleanIterator prepended(boolean value) {
-        return new BooleanIterators.Prepended(this, value);
+        return hasNext() ? new BooleanIterators.Prepended(this, value) : BooleanIterator.of(value);
     }
 
     //endregion
@@ -573,6 +552,37 @@ public interface BooleanIterator
         }
 
         return Tuple.of(buffer.iterator(), it);
+    }
+
+    //endregion
+
+    //region Search Operations
+
+    default int indexOf(boolean value) {
+        int idx = 0;
+        while (hasNext()) {
+            if (nextBoolean() == value) {
+                return idx;
+            }
+            idx++;
+        }
+        return -1;
+    }
+
+    default int indexOf(boolean value, int beginIndex) {
+        BooleanIterator it = drop(beginIndex);
+        if (!it.hasNext()) {
+            return -1;
+        }
+
+        int idx = Integer.max(beginIndex, 0);
+        while (hasNext()) {
+            if (nextBoolean() == value) {
+                return idx;
+            }
+            idx++;
+        }
+        return -1;
     }
 
     //endregion

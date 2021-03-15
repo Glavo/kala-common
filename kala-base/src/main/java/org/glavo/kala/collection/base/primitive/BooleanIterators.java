@@ -23,6 +23,42 @@ final class BooleanIterators {
         }
     };
 
+    static final class OfTrue extends AbstractBooleanIterator {
+        private boolean hasNext = true;
+
+        @Override
+        public final boolean hasNext() {
+            return hasNext;
+        }
+
+        @Override
+        public final boolean nextBoolean() {
+            if (!hasNext) {
+                throw new NoSuchElementException();
+            }
+            hasNext = false;
+            return true;
+        }
+    }
+
+    static final class OfFalse extends AbstractBooleanIterator {
+        private boolean hasNext = true;
+
+        @Override
+        public final boolean hasNext() {
+            return hasNext;
+        }
+
+        @Override
+        public final boolean nextBoolean() {
+            if (!hasNext) {
+                throw new NoSuchElementException();
+            }
+            hasNext = false;
+            return false;
+        }
+    }
+
     static final class OfArray extends AbstractBooleanIterator {
         private boolean[] values;
         private int idx;
@@ -212,8 +248,7 @@ final class BooleanIterators {
     }
 
     static final class Appended extends AbstractBooleanIterator {
-        @NotNull
-        private final BooleanIterator source;
+        private final @NotNull BooleanIterator source;
 
         private final boolean value;
         private boolean flag = true;

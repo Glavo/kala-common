@@ -86,6 +86,14 @@ public final class BooleanOption extends PrimitiveOption<Boolean> implements Boo
         }
     }
 
+    public final @Nullable Boolean getOrNull() {
+        return isDefined ? value : null;
+    }
+
+    public final @NotNull BooleanOption getOption() {
+        return this;
+    }
+
     @Override
     public final @NotNull BooleanIterator iterator() {
         return isDefined ? BooleanIterator.of(value) : BooleanIterator.empty();

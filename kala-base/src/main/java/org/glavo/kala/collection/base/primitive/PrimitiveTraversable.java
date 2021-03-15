@@ -34,6 +34,10 @@ public interface PrimitiveTraversable<
 
     boolean containsAll(@NotNull T_TRAVERSABLE values);
 
+    default boolean containsAll(@NotNull T_ARRAY values) {
+        return iterator().containsAll(values);
+    }
+
     default boolean containsAll(@NotNull Iterable<?> values) {
         return iterator().containsAll(values);
     }
@@ -59,9 +63,6 @@ public interface PrimitiveTraversable<
         return knownSize() == 0 || iterator().noneMatch(predicate);
     }
 
-    default boolean containsAll(@NotNull T_ARRAY values) {
-        return iterator().containsAll(values);
-    }
 
     //endregion
 

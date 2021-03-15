@@ -5,6 +5,7 @@ import org.glavo.kala.function.BooleanConsumer;
 import org.glavo.kala.function.BooleanPredicate;
 import org.glavo.kala.function.CheckedBooleanConsumer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -20,6 +21,11 @@ public interface BooleanTraversable
 
     default boolean contains(boolean value) {
         return knownSize() != 0 && iterator().contains(value);
+    }
+
+    @Override
+    default boolean containsAll(boolean @NotNull [] values) {
+        return iterator().containsAll(values);
     }
 
     @Override
@@ -71,12 +77,34 @@ public interface BooleanTraversable
         return true;
     }
 
+    @Override
+    default boolean sameElements(@NotNull BooleanTraversable other) {
+        return this.iterator().sameElements(other.iterator());
+    }
+
+    @Override
+    default boolean anyMatch(@NotNull BooleanPredicate predicate) {
+        return iterator().anyMatch(predicate);
+    }
+
+    @Override
+    default boolean allMatch(@NotNull BooleanPredicate predicate) {
+        return iterator().allMatch(predicate);
+    }
+
+    @Override
+    default boolean noneMatch(@NotNull BooleanPredicate predicate) {
+        return iterator().noneMatch(predicate);
+    }
+
     //endregion
 
     @Override
     default @NotNull BooleanOption find(@NotNull BooleanPredicate predicate) {
         return knownSize() == 0 ? BooleanOption.None : iterator().find(predicate);
     }
+
+    //region Aggregate Operations
 
     default boolean max() {
         if (knownSize() == 0) {
@@ -85,12 +113,24 @@ public interface BooleanTraversable
         return iterator().max();
     }
 
+    @Override
+    default @Nullable Boolean maxOrNull() {
+        return knownSize() == 0 ? null : iterator().maxOrNull();
+    }
+
+    @Override
+    default @NotNull BooleanOption maxOption() {
+        return knownSize() == 0 ? BooleanOption.none() : iterator().maxOption();
+    }
+
     default boolean min() {
         if (knownSize() == 0) {
             throw new NoSuchElementException();
         }
         return iterator().min();
     }
+
+    //endregion
 
     @Override
     default boolean @NotNull [] toArray() {
@@ -113,6 +153,11 @@ public interface BooleanTraversable
     //region Traverse Operations
 
     @Override
+    default void forEachPrimitive(@NotNull BooleanConsumer action) {
+        iterator().forEach(action);
+    }
+
+    @Override
     @Deprecated
     default void forEach(@NotNull Consumer<? super Boolean> action) {
         Objects.requireNonNull(action);
@@ -121,11 +166,6 @@ public interface BooleanTraversable
         } else {
             forEachPrimitive(action::accept);
         }
-    }
-
-    @Override
-    default void forEachPrimitive(@NotNull BooleanConsumer action) {
-        iterator().forEach(action);
     }
 
     default <Ex extends Throwable> void forEachChecked(@NotNull CheckedBooleanConsumer<Ex> action) throws Ex {

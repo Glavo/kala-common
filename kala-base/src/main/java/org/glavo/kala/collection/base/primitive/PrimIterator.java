@@ -32,8 +32,16 @@ public interface PrimIterator<
 
     //region Size Info
 
+    default boolean isEmpty() {
+        return !hasNext();
+    }
+
     @Contract(mutates = "this")
     int size();
+
+    default int knownSize() {
+        return hasNext() ? -1 : 0;
+    }
 
     //endregion
 
