@@ -1,6 +1,7 @@
 package org.glavo.kala.collection.factory;
 
 import org.glavo.kala.collection.base.AnyTraversable;
+import org.glavo.kala.collection.base.MapBase;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -13,6 +14,14 @@ public interface MapFactory<K, V, Builder, R> extends Factory<Builder, R> {
     R build(Builder builder);
 
     void addToBuilder(Builder builder, K key, V value);
+
+    default void addAllToBuilder(Builder builder, java.util.@NotNull Map<? extends K, ? extends V> values) {
+        values.forEach((k, v) -> addToBuilder(builder, k, v));
+    }
+
+    default void addAllToBuilder(Builder builder, @NotNull MapBase<? extends K, ? extends V> values) {
+        values.forEach((k, v) -> addToBuilder(builder, k, v));
+    }
 
     Builder mergeBuilder(Builder builder1, Builder builder2);
 
@@ -33,6 +42,17 @@ public interface MapFactory<K, V, Builder, R> extends Factory<Builder, R> {
             if (ks > 0) {
                 this.sizeHint(builder, ks + delta);
             }
+        }
+    }
+
+    default void sizeHint(@NotNull Builder builder, java.util.@NotNull Map<?, ?> it) {
+        sizeHint(builder, it.size());
+    }
+
+    default void sizeHint(@NotNull Builder builder, MapBase<?, ?> it) {
+        int ks = it.knownSize();
+        if (ks >= 0) {
+            sizeHint(builder, ks);
         }
     }
 

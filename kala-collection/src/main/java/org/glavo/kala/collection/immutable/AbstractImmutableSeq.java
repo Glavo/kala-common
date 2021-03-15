@@ -9,12 +9,14 @@ import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.collection.base.Iterators;
 import org.glavo.kala.collection.Collection;
 import org.glavo.kala.collection.Seq;
+import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Predicate;
 
 @SuppressWarnings("unchecked")
+@Debug.Renderer(hasChildren = "!isEmpty()", childrenArray = "toArray()")
 public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutableCollection<E> implements ImmutableSeq<E> {
 
     static <E, T, Builder> T updated(

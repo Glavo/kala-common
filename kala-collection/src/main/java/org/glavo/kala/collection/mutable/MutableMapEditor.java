@@ -1,6 +1,5 @@
 package org.glavo.kala.collection.mutable;
 
-import org.glavo.kala.collection.MapLike;
 import org.glavo.kala.collection.base.MapBase;
 import org.glavo.kala.tuple.Tuple2;
 import org.jetbrains.annotations.Contract;

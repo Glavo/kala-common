@@ -1,4 +1,6 @@
 package org.glavo.kala.collection.mutable;
 
-public abstract class AbstractBuffer<E> extends AbstractMutableCollection<E> implements Buffer<E> {
+import org.jetbrains.annotations.Debug;
+
+public abstract class AbstractBuffer<E> extends AbstractMutableSeq<E> implements Buffer<E> {
 }

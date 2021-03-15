@@ -21,7 +21,6 @@ import java.util.function.IntFunction;
 import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
-@Debug.Renderer(hasChildren = "!isEmpty()", childrenArray = "toArray()")
 public final class ArrayBuffer<E> extends AbstractBuffer<E>
         implements BufferOps<E, ArrayBuffer<?>, ArrayBuffer<E>>, IndexedSeq<E>, Serializable {
     private static final long serialVersionUID = 2545219250020890853L;

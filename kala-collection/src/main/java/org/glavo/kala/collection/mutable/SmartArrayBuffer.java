@@ -2,18 +2,13 @@ package org.glavo.kala.collection.mutable;
 
 import org.glavo.kala.Conditions;
 import org.glavo.kala.collection.IndexedSeq;
-import org.glavo.kala.collection.SeqLike;
 import org.glavo.kala.collection.base.GenericArrays;
 import org.glavo.kala.collection.base.Iterators;
-import org.glavo.kala.collection.base.ObjectArrays;
 import org.glavo.kala.collection.factory.CollectionFactory;
-import org.glavo.kala.collection.internal.CollectionHelper;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.function.IndexedFunction;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 
 import java.io.Serializable;
 import java.util.*;
