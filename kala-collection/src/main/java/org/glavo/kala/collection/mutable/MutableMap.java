@@ -1,19 +1,14 @@
 package org.glavo.kala.collection.mutable;
 
 import org.glavo.kala.collection.Map;
-import org.glavo.kala.collection.MapLike;
+import org.glavo.kala.collection.base.MapBase;
 import org.glavo.kala.collection.factory.MapFactory;
 import org.glavo.kala.collection.internal.convert.AsJavaConvert;
 import org.glavo.kala.collection.internal.convert.FromJavaConvert;
-import org.glavo.kala.control.Option;
 import org.glavo.kala.tuple.Tuple2;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
 import java.util.Objects;
-import java.util.function.BiFunction;
-import java.util.function.Supplier;
 
 public interface MutableMap<K, V> extends Map<K, V>, MutableMapLike<K, V> {
 
@@ -123,7 +118,7 @@ public interface MutableMap<K, V> extends Map<K, V>, MutableMapLike<K, V> {
         return MutableHashMap.from(values);
     }
 
-    static <K, V> @NotNull MutableMap<K, V> from(@NotNull MapLike<? extends K, ? extends V> values) {
+    static <K, V> @NotNull MutableMap<K, V> from(@NotNull MapBase<? extends K, ? extends V> values) {
         return MutableHashMap.from(values);
     }
 

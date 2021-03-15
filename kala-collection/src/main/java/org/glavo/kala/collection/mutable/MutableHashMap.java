@@ -1,6 +1,6 @@
 package org.glavo.kala.collection.mutable;
 
-import org.glavo.kala.collection.MapLike;
+import org.glavo.kala.collection.base.MapBase;
 import org.glavo.kala.collection.factory.MapFactory;
 import org.glavo.kala.collection.internal.hash.HashMapBase;
 import org.glavo.kala.collection.internal.convert.AsJavaConvert;
@@ -183,7 +183,7 @@ public final class MutableHashMap<K, V> extends HashMapBase<K, V>
         return m;
     }
 
-    public static <K, V> @NotNull MutableHashMap<K, V> from(@NotNull MapLike<? extends K, ? extends V> values) {
+    public static <K, V> @NotNull MutableHashMap<K, V> from(@NotNull MapBase<? extends K, ? extends V> values) {
         MutableHashMap<K, V> m = new MutableHashMap<>();
         m.putAll(values);
         return m;

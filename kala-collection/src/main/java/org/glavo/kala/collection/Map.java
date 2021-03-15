@@ -1,6 +1,7 @@
 package org.glavo.kala.collection;
 
 import org.glavo.kala.Equatable;
+import org.glavo.kala.collection.base.MapBase;
 import org.glavo.kala.collection.factory.MapFactory;
 import org.glavo.kala.collection.immutable.ImmutableMap;
 import org.glavo.kala.collection.internal.convert.AsJavaConvert;
@@ -148,7 +149,7 @@ public interface Map<K, V> extends MapLike<K, V>, Equatable {
         return ImmutableMap.from(values);
     }
 
-    static <K, V> @NotNull Map<K, V> from(@NotNull MapLike<? extends K, ? extends V> values) {
+    static <K, V> @NotNull Map<K, V> from(@NotNull MapBase<? extends K, ? extends V> values) {
         return ImmutableMap.from(values);
     }
 

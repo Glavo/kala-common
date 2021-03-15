@@ -1,11 +1,7 @@
 package org.glavo.kala.collection.mutable;
 
-import org.glavo.kala.collection.MapLike;
 import org.glavo.kala.collection.SortedMap;
-import org.glavo.kala.collection.base.AbstractIterator;
-import org.glavo.kala.collection.base.AbstractMapIterator;
-import org.glavo.kala.collection.base.Iterators;
-import org.glavo.kala.collection.base.MapIterator;
+import org.glavo.kala.collection.base.*;
 import org.glavo.kala.collection.factory.MapFactory;
 import org.glavo.kala.collection.internal.convert.AsJavaConvert;
 import org.glavo.kala.comparator.Comparators;
@@ -331,7 +327,7 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
         return m;
     }
 
-    public static <K extends Comparable<? super K>, V> @NotNull MutableTreeMap<K, V> from(@NotNull MapLike<? extends K, ? extends V> values) {
+    public static <K extends Comparable<? super K>, V> @NotNull MutableTreeMap<K, V> from(@NotNull MapBase<? extends K, ? extends V> values) {
         MutableTreeMap<K, V> m = new MutableTreeMap<>();
         m.putAll(values);
         return m;

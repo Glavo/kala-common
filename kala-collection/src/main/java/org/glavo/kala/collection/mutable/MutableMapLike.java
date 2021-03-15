@@ -2,6 +2,7 @@ package org.glavo.kala.collection.mutable;
 
 import org.glavo.kala.collection.Map;
 import org.glavo.kala.collection.MapLike;
+import org.glavo.kala.collection.base.MapBase;
 import org.glavo.kala.collection.internal.convert.AsJavaConvert;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.tuple.Tuple2;
@@ -61,7 +62,7 @@ public interface MutableMapLike<K, V> extends MapLike<K, V> {
         m.forEach(this::set);
     }
 
-    default void putAll(@NotNull MapLike<? extends K, ? extends V> m) {
+    default void putAll(@NotNull MapBase<? extends K, ? extends V> m) {
         if (m == this) {
             return;
         }

@@ -1,6 +1,7 @@
 package org.glavo.kala.collection.internal.hash;
 
 import org.glavo.kala.collection.MapLike;
+import org.glavo.kala.collection.base.MapBase;
 import org.glavo.kala.collection.base.MapIterator;
 import org.glavo.kala.collection.immutable.ImmutableHashMap;
 import org.glavo.kala.collection.internal.convert.AsJavaConvert;
@@ -384,7 +385,7 @@ public class HashMapBase<K, V> extends AbstractMutableMap<K, V> {
     }
 
     @Override
-    public final void putAll(@NotNull MapLike<? extends K, ? extends V> m) {
+    public final void putAll(@NotNull MapBase<? extends K, ? extends V> m) {
         Objects.requireNonNull(m);
 
         if (m == this) {

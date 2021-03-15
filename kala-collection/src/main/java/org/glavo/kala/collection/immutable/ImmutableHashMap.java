@@ -1,10 +1,9 @@
 package org.glavo.kala.collection.immutable;
 
-import org.glavo.kala.collection.MapLike;
+import org.glavo.kala.collection.base.MapBase;
 import org.glavo.kala.collection.base.MapIterator;
 import org.glavo.kala.collection.factory.MapFactory;
 import org.glavo.kala.collection.internal.hash.HashMapBase;
-import org.glavo.kala.collection.mutable.MutableHashMap;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
@@ -12,7 +11,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Supplier;
@@ -185,7 +183,7 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V>
         return new ImmutableHashMap<>(impl);
     }
 
-    public static <K, V> @NotNull ImmutableHashMap<K, V> from(@NotNull MapLike<? extends K, ? extends V> values) {
+    public static <K, V> @NotNull ImmutableHashMap<K, V> from(@NotNull MapBase<? extends K, ? extends V> values) {
         if (values.isEmpty()) {
             return empty();
         }

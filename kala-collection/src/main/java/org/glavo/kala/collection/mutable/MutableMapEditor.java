@@ -1,6 +1,7 @@
 package org.glavo.kala.collection.mutable;
 
 import org.glavo.kala.collection.MapLike;
+import org.glavo.kala.collection.base.MapBase;
 import org.glavo.kala.tuple.Tuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -49,7 +50,7 @@ public class MutableMapEditor<K, V, M extends MutableMap<K, V>> {
     }
 
     @Contract("_ -> this")
-    public @NotNull MutableMapEditor<K, V, M> putAll(@NotNull MapLike<? extends K, ? extends V> m) {
+    public @NotNull MutableMapEditor<K, V, M> putAll(@NotNull MapBase<? extends K, ? extends V> m) {
         source.putAll(m);
         return this;
     }
