@@ -99,7 +99,31 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
             int n,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
-        return factory.from(seq.view().dropLast(n)); // TODO
+        if (n <= 0) {
+            return (T) seq;
+        }
+
+        final int ss = seq.size();
+
+        if (n >= ss) {
+            return factory.empty();
+        }
+        final int ns = ss - n;
+        Builder builder = factory.newBuilder();
+        factory.sizeHint(builder, ns);
+
+        if (seq instanceof RandomAccess) {
+            for (int i = 0; i < ns; i++) {
+                factory.addToBuilder(builder, seq.get(i));
+            }
+        } else {
+            Iterator<? extends E> it = seq.iterator();
+            for (int i = 0; i < ns; i++) {
+                factory.addToBuilder(builder, it.next());
+            }
+        }
+
+        return factory.build(builder);
     }
 
     static <E, T extends ImmutableSeq<? extends E>, Builder> T dropWhile(
@@ -151,7 +175,30 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
         if (n <= 0) {
             return factory.empty();
         }
-        return factory.from(seq.view().takeLast(n)); // TODO
+        final int ss = seq.size();
+        if (n >= ss) {
+            return (T) seq;
+        }
+
+        Builder builder = factory.newBuilder();
+        factory.sizeHint(builder, n);
+
+        if (seq instanceof RandomAccess) {
+            for (int i = ss - n; i < ss; i++) {
+                factory.addToBuilder(builder, seq.get(i));
+            }
+        } else {
+            Iterator<? extends E> it = seq.iterator();
+            for (int i = 0; i < ss - n; i++) {
+                it.next();
+            }
+
+            while (it.hasNext()) {
+                factory.addToBuilder(builder, it.next());
+            }
+        }
+
+        return factory.build(builder);
     }
 
     static <E, T extends ImmutableSeq<? extends E>, Builder> T takeWhile(

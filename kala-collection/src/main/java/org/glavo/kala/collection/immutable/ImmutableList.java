@@ -228,7 +228,13 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
 
     @Override
     public final @NotNull Iterator<E> iterator() {
-        return this == NIL ? Iterators.empty() : new Itr<>(this);
+        if(this == NIL) {
+            return Iterators.empty();
+        }
+        if(tail == NIL) {
+            return Iterators.of(head);
+        }
+        return new Itr<>(this);
     }
 
     @Override
@@ -306,12 +312,12 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
         }
 
         ImmutableList<? extends E> list = this;
-        ImmutableList<E> ans = nil();
+        ImmutableList<E> res = nil();
         while (list != NIL) {
-            ans = new ImmutableList<>(list.head, ans);
+            res = new ImmutableList<>(list.head, res);
             list = list.tail;
         }
-        return ans;
+        return res;
     }
 
     @Override
