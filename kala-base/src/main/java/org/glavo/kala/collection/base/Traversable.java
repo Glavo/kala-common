@@ -10,6 +10,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.*;
@@ -561,6 +563,44 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
             CharSequence separator, CharSequence prefix, CharSequence postfix
     ) {
         return Iterators.joinTo(iterator(), buffer, separator, prefix, postfix);
+    }
+
+    default <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, @NotNull Function<? super T, ? extends CharSequence> transform) {
+        return joinTo(buffer, ", ", transform);
+    }
+
+    default <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, CharSequence separator, @NotNull Function<? super T, ? extends CharSequence> transform) {
+        return joinTo(buffer, separator, "", "", transform);
+    }
+
+    @Contract(value = "_, _, _, _, _ -> param1", mutates = "param1")
+    default <A extends Appendable> @NotNull A joinTo(
+            @NotNull A buffer,
+            CharSequence separator, CharSequence prefix, CharSequence postfix,
+            @NotNull Function<? super T, ? extends CharSequence> transform
+    ) {
+        if (knownSize() == 0) {
+            try {
+                buffer.append(prefix).append(postfix);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return buffer;
+        } else {
+            return Iterators.joinTo(iterator(), buffer, separator, prefix, postfix, transform);
+        }
+    }
+
+    default @NotNull String joinToString(@NotNull Function<? super T, ? extends CharSequence> transform) {
+        return joinTo(new StringBuilder(), transform).toString();
+    }
+
+    default @NotNull String joinToString(CharSequence separator, @NotNull Function<? super T, ? extends CharSequence> transform) {
+        return joinTo(new StringBuilder(), separator, transform).toString();
+    }
+
+    default @NotNull String joinToString(CharSequence separator, CharSequence prefix, CharSequence postfix, @NotNull Function<? super T, ? extends CharSequence> transform) {
+        return joinTo(new StringBuilder(), separator, prefix, postfix, transform).toString();
     }
 
     //endregion

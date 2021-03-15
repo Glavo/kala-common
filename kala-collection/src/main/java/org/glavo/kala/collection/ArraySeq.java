@@ -533,6 +533,28 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     }
 
     @Override
+    public <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, CharSequence separator, CharSequence prefix, CharSequence postfix, @NotNull Function<? super E, ? extends CharSequence> transform) {
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+
+        try {
+            buffer.append(prefix);
+            if (size > 0) {
+                buffer.append(transform.apply((E) elements[0]));
+                for (int i = 1; i < size; i++) {
+                    buffer.append(separator);
+                    buffer.append(transform.apply((E) elements[i]));
+                }
+            }
+            buffer.append(postfix);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+
+        return buffer;
+    }
+
+    @Override
     public final <R, Builder> R collect(@NotNull Collector<? super E, Builder, ? extends R> collector) {
         if (collector instanceof CollectionFactory<?, ?, ?>) {
             return collect((CollectionFactory<? super E, Builder, ? extends R>) collector);

@@ -10,6 +10,7 @@ import org.glavo.kala.control.Option;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.base.Iterators;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -438,6 +439,22 @@ public final class Views {
         }
 
         @Override
+        public <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, @NotNull Function<? super E, ? extends CharSequence> transform) {
+            return source.joinTo(buffer, transform);
+        }
+
+        @Override
+        public <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, CharSequence separator, @NotNull Function<? super E, ? extends CharSequence> transform) {
+            return source.joinTo(buffer, separator, transform);
+        }
+
+        @Override
+        @Contract(value = "_, _, _, _, _ -> param1", mutates = "param1")
+        public <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, CharSequence separator, CharSequence prefix, CharSequence postfix, @NotNull Function<? super E, ? extends CharSequence> transform) {
+            return source.joinTo(buffer, separator, prefix, postfix, transform);
+        }
+
+        @Override
         public final @NotNull String joinToString() {
             return source.joinToString();
         }
@@ -452,6 +469,20 @@ public final class Views {
             return source.joinToString(separator, prefix, postfix);
         }
 
+        @Override
+        public @NotNull String joinToString(@NotNull Function<? super E, ? extends CharSequence> transform) {
+            return source.joinToString(transform);
+        }
+
+        @Override
+        public @NotNull String joinToString(CharSequence separator, @NotNull Function<? super E, ? extends CharSequence> transform) {
+            return source.joinToString(separator, transform);
+        }
+
+        @Override
+        public @NotNull String joinToString(CharSequence separator, CharSequence prefix, CharSequence postfix, @NotNull Function<? super E, ? extends CharSequence> transform) {
+            return source.joinToString(separator, prefix, postfix, transform);
+        }
 
         @Override
         public final String toString() {

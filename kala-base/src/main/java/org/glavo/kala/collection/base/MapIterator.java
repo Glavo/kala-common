@@ -3,11 +3,15 @@ package org.glavo.kala.collection.base;
 import org.glavo.kala.tuple.Tuple;
 import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.function.CheckedBiConsumer;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
 @SuppressWarnings("unchecked")
@@ -119,5 +123,92 @@ public interface MapIterator<K, V> extends Iterator<Tuple2<K, V>> {
 
     default void forEachUnchecked(@NotNull CheckedBiConsumer<? super K, ? super V, ?> action) {
         forEach(action);
+    }
+
+    default <A extends Appendable> @NotNull A joinTo(@NotNull A buffer) {
+        return joinTo(buffer, ", ");
+    }
+
+    default <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, CharSequence separator) {
+        return joinTo(buffer, separator, "", "");
+    }
+
+    @Contract(value = "_, _, _, _ -> param1", mutates = "param1")
+    default <A extends Appendable> @NotNull A joinTo(
+            @NotNull A buffer,
+            CharSequence separator, CharSequence prefix, CharSequence postfix
+    ) {
+        try {
+            buffer.append(prefix);
+            if (hasNext()) {
+                buffer.append(Objects.toString(nextKey())).append("=").append(Objects.toString(getValue()));
+            }
+            while (hasNext()) {
+                buffer.append(separator).append(Objects.toString(nextKey())).append("=").append(Objects.toString(getValue()));
+            }
+            buffer.append(postfix);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        return buffer;
+    }
+
+    default <A extends Appendable> @NotNull A joinTo(
+            @NotNull A buffer,
+            @NotNull BiFunction<? super K, ? super V, ? extends CharSequence> transform) {
+        return joinTo(buffer, ", ", transform);
+    }
+
+    default <A extends Appendable> @NotNull A joinTo(
+            @NotNull A buffer, CharSequence separator,
+            @NotNull BiFunction<? super K, ? super V, ? extends CharSequence> transform) {
+        return joinTo(buffer, separator, "", "", transform);
+    }
+
+    @Contract(value = "_, _, _, _, _ -> param1", mutates = "param1")
+    default <A extends Appendable> @NotNull A joinTo(
+            @NotNull A buffer,
+            CharSequence separator, CharSequence prefix, CharSequence postfix,
+            @NotNull BiFunction<? super K, ? super V, ? extends CharSequence> transform
+    ) {
+        try {
+            buffer.append(prefix);
+            if (hasNext()) {
+                buffer.append(transform.apply(nextKey(), getValue()));
+            }
+            while (hasNext()) {
+                buffer.append(separator).append(transform.apply(nextKey(), getValue()));
+            }
+            buffer.append(postfix);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        return buffer;
+    }
+
+    default @NotNull String joinToString() {
+        return joinTo(new StringBuilder()).toString();
+    }
+
+    default @NotNull String joinToString(CharSequence separator) {
+        return joinTo(new StringBuilder(), separator).toString();
+    }
+
+    default @NotNull String joinToString(CharSequence separator, CharSequence prefix, CharSequence postfix) {
+        return joinTo(new StringBuilder(), separator, prefix, postfix).toString();
+    }
+
+    default @NotNull String joinToString(@NotNull BiFunction<? super K, ? super V, ? extends CharSequence> transform) {
+        return joinTo(new StringBuilder(), transform).toString();
+    }
+
+    default @NotNull String joinToString(CharSequence separator, @NotNull BiFunction<? super K, ? super V, ? extends CharSequence> transform) {
+        return joinTo(new StringBuilder(), separator, transform).toString();
+    }
+
+    default @NotNull String joinToString(
+            CharSequence separator, CharSequence prefix, CharSequence postfix,
+            @NotNull BiFunction<? super K, ? super V, ? extends CharSequence> transform) {
+        return joinTo(new StringBuilder(), separator, prefix, postfix, transform).toString();
     }
 }

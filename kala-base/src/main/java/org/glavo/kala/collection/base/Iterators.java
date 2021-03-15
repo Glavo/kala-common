@@ -1013,6 +1013,47 @@ public final class Iterators {
         return buffer;
     }
 
+    @Contract(value = "_, _, _ -> param2", mutates = "param1, param2")
+    public static <E, A extends Appendable> @NotNull A joinTo(
+            @NotNull Iterator<? extends E> it,
+            @NotNull A buffer,
+            @NotNull Function<? super E, ? extends CharSequence> transform
+    ) {
+        return joinTo(it, buffer, ", ", "", "", transform);
+    }
+
+    @Contract(value = "_, _, _, _ -> param2", mutates = "param1, param2")
+    public static <E, A extends Appendable> @NotNull A joinTo(
+            @NotNull Iterator<? extends E> it,
+            @NotNull A buffer,
+            CharSequence separator,
+            @NotNull Function<? super E, ? extends CharSequence> transform
+    ) {
+        return joinTo(it, buffer, separator, "", "", transform);
+    }
+
+    @Contract(value = "_, _, _, _, _, _ -> param2", mutates = "param1, param2")
+    public static <E, A extends Appendable> @NotNull A joinTo(
+            @NotNull Iterator<? extends E> it,
+            @NotNull A buffer,
+            CharSequence separator, CharSequence prefix, CharSequence postfix,
+            @NotNull Function<? super E, ? extends CharSequence> transform
+    ) {
+        try {
+            buffer.append(prefix);
+            if (it.hasNext()) {
+                buffer.append(transform.apply(it.next()));
+            }
+            while (it.hasNext()) {
+                buffer.append(separator).append(transform.apply(it.next()));
+            }
+            buffer.append(postfix);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        return buffer;
+    }
+
     public static @NotNull String joinToString(@NotNull Iterator<?> it) {
         return joinTo(it, new StringBuilder()).toString();
     }
@@ -1029,6 +1070,26 @@ public final class Iterators {
             CharSequence separator, CharSequence prefix, CharSequence postfix
     ) {
         return joinTo(it, new StringBuilder(), separator, prefix, postfix).toString();
+    }
+
+    public static <E> @NotNull String joinToString(
+            @NotNull Iterator<? extends E> it,
+            @NotNull Function<? super E, ? extends CharSequence> transform) {
+        return joinTo(it, new StringBuilder(), transform).toString();
+    }
+
+    public static <E> @NotNull String joinToString(
+            @NotNull Iterator<? extends E> it,
+            CharSequence separator,
+            @NotNull Function<? super E, ? extends CharSequence> transform) {
+        return joinTo(it, new StringBuilder(), separator, transform).toString();
+    }
+
+    public static <E> @NotNull String joinToString(
+            @NotNull Iterator<? extends E> it,
+            CharSequence separator, CharSequence prefix, CharSequence postfix,
+            @NotNull Function<? super E, ? extends CharSequence> transform) {
+        return joinTo(it, new StringBuilder(), separator, prefix, postfix, transform).toString();
     }
 
 

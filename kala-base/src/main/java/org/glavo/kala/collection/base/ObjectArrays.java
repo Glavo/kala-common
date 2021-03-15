@@ -914,6 +914,47 @@ public final class ObjectArrays {
         }
     }
 
+    public static <A extends Appendable> @NotNull A joinTo(
+            @NotNull Object[] array,
+            @NotNull A buffer,
+            @NotNull Function<?, ? extends CharSequence> transform
+    ) {
+        return joinTo(array, buffer, ", ", "", "", transform);
+    }
+
+    public static <A extends Appendable> @NotNull A joinTo(
+            @NotNull Object[] array,
+            @NotNull A buffer,
+            CharSequence separator,
+            @NotNull Function<?, ? extends CharSequence> transform
+    ) {
+        return joinTo(array, buffer, separator, "", "", transform);
+    }
+
+    public static <A extends Appendable> @NotNull A joinTo(
+            @NotNull Object[] array,
+            @NotNull A buffer,
+            CharSequence separator, CharSequence prefix, CharSequence postfix,
+            @NotNull Function<?, ? extends CharSequence> transform
+    ) {
+        final int length = array.length;
+        try {
+            if (length == 0) {
+                buffer.append(prefix).append(postfix);
+                return buffer;
+            }
+            buffer.append(prefix).append(((Function<Object, CharSequence>) transform).apply(array[0]));
+            for (int i = 1; i < length; i++) {
+                buffer.append(separator);
+                buffer.append(((Function<Object, CharSequence>) transform).apply(array[i]));
+            }
+            buffer.append(postfix);
+            return buffer;
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
     public static @NotNull String joinToString(
             @NotNull Object[] array
     ) {
@@ -934,7 +975,29 @@ public final class ObjectArrays {
         return joinTo(array, new StringBuilder(), separator, prefix, postfix).toString();
     }
 
-    //endregion
+    public static @NotNull String joinToString(
+            @NotNull Object[] array,
+            @NotNull Function<?, ? extends CharSequence> transform
+    ) {
+        return joinTo(array, new StringBuilder(), transform).toString();
+    }
 
+    public static @NotNull String joinToString(
+            @NotNull Object[] array,
+            CharSequence separator,
+            @NotNull Function<?, ? extends CharSequence> transform
+    ) {
+        return joinTo(array, new StringBuilder(), separator, transform).toString();
+    }
+
+    public static @NotNull String joinToString(
+            @NotNull Object[] array,
+            CharSequence separator, CharSequence prefix, CharSequence postfix,
+            @NotNull Function<?, ? extends CharSequence> transform
+    ) {
+        return joinTo(array, new StringBuilder(), separator, prefix, postfix, transform).toString();
+    }
+
+    //endregion
 
 }

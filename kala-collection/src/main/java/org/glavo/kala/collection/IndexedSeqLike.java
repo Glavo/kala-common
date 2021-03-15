@@ -800,9 +800,8 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
         return list;
     }
 
-    @NotNull
     @Override
-    default <A extends Appendable> A joinTo(
+    default <A extends Appendable> @NotNull A joinTo(
             @NotNull A buffer,
             CharSequence separator, CharSequence prefix, CharSequence postfix
     ) {
@@ -814,6 +813,26 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
                 buffer.append(Objects.toString(get(0)));
                 for (int i = 1; i < size; i++) {
                     buffer.append(separator).append(Objects.toString(get(i)));
+                }
+            }
+            buffer.append(postfix);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+
+        return buffer;
+    }
+
+    @Override
+    default <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, CharSequence separator, CharSequence prefix, CharSequence postfix, @NotNull Function<? super E, ? extends CharSequence> transform) {
+        final int size = size();
+
+        try {
+            buffer.append(prefix);
+            if (size > 0) {
+                buffer.append(transform.apply(get(0)));
+                for (int i = 1; i < size; i++) {
+                    buffer.append(separator).append(transform.apply(get(i)));
                 }
             }
             buffer.append(postfix);

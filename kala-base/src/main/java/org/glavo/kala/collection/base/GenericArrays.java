@@ -923,14 +923,14 @@ public final class GenericArrays {
     //region String Representation
 
     public static <A extends Appendable> @NotNull A joinTo(
-            @NotNull Object[] array,
+            Object @NotNull [] array,
             @NotNull A buffer
     ) {
         return ObjectArrays.joinTo(array, buffer, ", ", "", "");
     }
 
     public static <A extends Appendable> @NotNull A joinTo(
-            @NotNull Object[] array,
+            Object @NotNull [] array,
             @NotNull A buffer,
             CharSequence separator
     ) {
@@ -938,31 +938,80 @@ public final class GenericArrays {
     }
 
     public static <A extends Appendable> @NotNull A joinTo(
-            @NotNull Object[] array,
+            Object @NotNull [] array,
             @NotNull A buffer,
             CharSequence separator, CharSequence prefix, CharSequence postfix
     ) {
         return ObjectArrays.joinTo(array, buffer, separator, prefix, postfix);
     }
 
+    public static <E, A extends Appendable> @NotNull A joinTo(
+            E @NotNull [] array,
+            @NotNull A buffer,
+            @NotNull Function<? super E, ? extends CharSequence> transform
+    ) {
+        return ObjectArrays.joinTo(array, buffer, ", ", "", "", transform);
+    }
+
+    public static <E, A extends Appendable> @NotNull A joinTo(
+            E @NotNull [] array,
+            @NotNull A buffer,
+            CharSequence separator,
+            @NotNull Function<? super E, ? extends CharSequence> transform
+    ) {
+        return ObjectArrays.joinTo(array, buffer, separator, "", "", transform);
+    }
+
+    public static <E, A extends Appendable> @NotNull A joinTo(
+            E @NotNull [] array,
+            @NotNull A buffer,
+            CharSequence separator, CharSequence prefix, CharSequence postfix,
+            @NotNull Function<? super E, ? extends CharSequence> transform
+    ) {
+        return ObjectArrays.joinTo(array, buffer, separator, prefix, postfix, transform);
+    }
+
     public static @NotNull String joinToString(
-            @NotNull Object[] array
+            Object @NotNull [] array
     ) {
         return ObjectArrays.joinTo(array, new StringBuilder()).toString();
     }
 
     public static @NotNull String joinToString(
-            @NotNull Object[] array,
+            Object @NotNull [] array,
             CharSequence separator
     ) {
         return ObjectArrays.joinTo(array, new StringBuilder(), separator).toString();
     }
 
     public static @NotNull String joinToString(
-            @NotNull Object[] array,
+            Object @NotNull [] array,
             CharSequence separator, CharSequence prefix, CharSequence postfix
     ) {
         return ObjectArrays.joinTo(array, new StringBuilder(), separator, prefix, postfix).toString();
+    }
+
+    public static <E> @NotNull String joinToString(
+            E @NotNull [] array,
+            @NotNull Function<? super E, ? extends CharSequence> transform
+    ) {
+        return ObjectArrays.joinTo(array, new StringBuilder(), transform).toString();
+    }
+
+    public static <E> @NotNull String joinToString(
+            E @NotNull [] array,
+            CharSequence separator,
+            @NotNull Function<? super E, ? extends CharSequence> transform
+    ) {
+        return ObjectArrays.joinTo(array, new StringBuilder(), separator, transform).toString();
+    }
+
+    public static <E> @NotNull String joinToString(
+            E @NotNull [] array,
+            CharSequence separator, CharSequence prefix, CharSequence postfix,
+            @NotNull Function<? super E, ? extends CharSequence> transform
+    ) {
+        return ObjectArrays.joinTo(array, new StringBuilder(), separator, prefix, postfix, transform).toString();
     }
 
     //endregion

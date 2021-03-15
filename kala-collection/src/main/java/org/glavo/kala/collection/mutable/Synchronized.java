@@ -752,6 +752,36 @@ final class Synchronized {
         }
 
         @Override
+        @Contract(value = "_, _, _, _ -> param1", mutates = "param1")
+        public <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, CharSequence separator, CharSequence prefix, CharSequence postfix) {
+            synchronized (mutex) {
+                return source.joinTo(buffer, separator, prefix, postfix);
+            }
+        }
+
+        @Override
+        public <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, @NotNull Function<? super E, ? extends CharSequence> transform) {
+            synchronized (mutex) {
+                return source.joinTo(buffer, transform);
+            }
+        }
+
+        @Override
+        public <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, CharSequence separator, @NotNull Function<? super E, ? extends CharSequence> transform) {
+            synchronized (mutex) {
+                return source.joinTo(buffer, separator, transform);
+            }
+        }
+
+        @Override
+        @Contract(value = "_, _, _, _, _ -> param1", mutates = "param1")
+        public <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, CharSequence separator, CharSequence prefix, CharSequence postfix, @NotNull Function<? super E, ? extends CharSequence> transform) {
+            synchronized (mutex) {
+                return source.joinTo(buffer, separator, prefix, postfix, transform);
+            }
+        }
+
+        @Override
         public @NotNull String joinToString() {
             synchronized (mutex) {
                 return source.joinToString();
@@ -772,16 +802,28 @@ final class Synchronized {
             }
         }
 
-
         @Override
-        @Contract(value = "_, _, _, _ -> param1", mutates = "param1")
-        public <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, CharSequence separator, CharSequence prefix, CharSequence postfix) {
+        public @NotNull String joinToString(@NotNull Function<? super E, ? extends CharSequence> transform) {
             synchronized (mutex) {
-                return source.joinTo(buffer, separator, prefix, postfix);
+                return source.joinToString(transform);
             }
         }
 
-        //endregion
+        @Override
+        public @NotNull String joinToString(CharSequence separator, @NotNull Function<? super E, ? extends CharSequence> transform) {
+            synchronized (mutex) {
+                return source.joinToString(separator, transform);
+            }
+        }
+
+        @Override
+        public @NotNull String joinToString(CharSequence separator, CharSequence prefix, CharSequence postfix, @NotNull Function<? super E, ? extends CharSequence> transform) {
+            synchronized (mutex) {
+                return source.joinToString(separator, prefix, postfix, transform);
+            }
+        }
+
+//endregion
     }
 
     public static class SynchronizedSet<E, C extends MutableSet<E>> extends SynchronizedCollection<E, C> implements MutableSet<E> {
