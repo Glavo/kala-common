@@ -1,5 +1,8 @@
 package org.glavo.kala.collection;
 
+import org.jetbrains.annotations.Debug;
+
+@Debug.Renderer(hasChildren = "!isEmpty()", childrenArray = "toArray()")
 public abstract class AbstractMap<K, V> implements Map<K, V> {
 
     @Override

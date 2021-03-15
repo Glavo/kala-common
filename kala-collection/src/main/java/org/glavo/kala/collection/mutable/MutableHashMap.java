@@ -1,28 +1,13 @@
 package org.glavo.kala.collection.mutable;
 
 import org.glavo.kala.collection.MapLike;
-import org.glavo.kala.collection.base.MapIterator;
 import org.glavo.kala.collection.factory.MapFactory;
-import org.glavo.kala.collection.immutable.AbstractImmutableMap;
-import org.glavo.kala.collection.immutable.ImmutableHashMap;
 import org.glavo.kala.collection.internal.hash.HashMapBase;
-import org.glavo.kala.collection.internal.hash.HashMapNodeIterator;
-import org.glavo.kala.collection.internal.hash.HashMapIterator;
-import org.glavo.kala.collection.internal.hash.HashMapNode;
 import org.glavo.kala.collection.internal.convert.AsJavaConvert;
-import org.glavo.kala.control.Option;
 import org.glavo.kala.tuple.Tuple2;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.function.Supplier;
-
-import static org.glavo.kala.collection.internal.hash.HashMapUtils.*;
 
 @SuppressWarnings("unchecked")
 public final class MutableHashMap<K, V> extends HashMapBase<K, V>

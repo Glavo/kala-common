@@ -11,6 +11,7 @@ import org.glavo.kala.collection.internal.convert.AsJavaConvert;
 import org.glavo.kala.comparator.Comparators;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.tuple.Tuple2;
+import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,8 +20,8 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-
 @SuppressWarnings("unchecked")
+@Debug.Renderer(hasChildren = "!isEmpty()", childrenArray = "toArray()")
 public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.Node<K, V>>
         implements MutableMap<K, V>, MutableMapOps<K, V, MutableTreeMap<?, ?>, MutableTreeMap<K, V>>, SortedMap<K, V> {
     private static final Factory<?, ?> DEFAULT_FACTORY = new Factory<>();

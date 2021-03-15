@@ -156,6 +156,17 @@ public interface MapLike<K, V> {
         return destination;
     }
 
+    @SuppressWarnings("unchecked")
+    default @NotNull Tuple2<K, V>[] toArray() {
+        final int size = this.size();
+        Tuple2<K, V>[] res = (Tuple2<K, V>[]) new Tuple2<?, ?>[size];
+        MapIterator<K, V> it = iterator();
+        for (int i = 0; i < size; i++) {
+            res[i] = it.next();
+        }
+        return res;
+    }
+
     default @NotNull String joinToString() {
         if (knownSize() == 0) {
             return "";

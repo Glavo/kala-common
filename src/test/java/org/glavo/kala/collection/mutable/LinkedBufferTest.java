@@ -33,6 +33,4 @@ public final class LinkedBufferTest implements BufferTestTemplate {
         buffer2.removeAt(1, 2);
         assertEquals(LinkedBuffer.of("C"), buffer2);
     }
-
-
 }
