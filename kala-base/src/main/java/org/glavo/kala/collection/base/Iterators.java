@@ -233,6 +233,123 @@ public final class Iterators {
         return true;
     }
 
+    public static <E> E first(@NotNull Iterator<? extends E> it) {
+        return it.next();
+    }
+
+    public static <E> E first(@NotNull Iterator<? extends E> it, @NotNull Predicate<? super E> predicate) {
+        while (it.hasNext()) {
+            E e = it.next();
+            if (predicate.test(e)) {
+                return e;
+            }
+        }
+        throw new NoSuchElementException();
+    }
+
+    public static <E> @Nullable E firstOrNull(@NotNull Iterator<? extends E> it) {
+        return it.hasNext() ? it.next() : null;
+    }
+
+    public static <E> @Nullable E firstOrNull(@NotNull Iterator<? extends E> it, @NotNull Predicate<? super E> predicate) {
+        while (it.hasNext()) {
+            E e = it.next();
+            if (predicate.test(e)) {
+                return e;
+            }
+        }
+        return null;
+    }
+
+    public static <E> @NotNull Option<E> firstOption(@NotNull Iterator<? extends E> it) {
+        return it.hasNext() ? Option.some(it.next()) : Option.none();
+    }
+
+    public static <E> @NotNull Option<E> firstOption(@NotNull Iterator<? extends E> it, @NotNull Predicate<? super E> predicate) {
+        while (it.hasNext()) {
+            E e = it.next();
+            if (predicate.test(e)) {
+                return Option.some(e);
+            }
+        }
+        return Option.none();
+    }
+
+    public static <E> E last(@NotNull Iterator<? extends E> it) {
+        E res = it.next();
+        while (it.hasNext()) {
+            res = it.next();
+        }
+        return res;
+    }
+
+    public static <E> E last(@NotNull Iterator<? extends E> it, Predicate<? super E> predicate) {
+        E res = null;
+        boolean hasValue = false;
+
+        while (it.hasNext()) {
+            E e = it.next();
+            if (predicate.test(e)) {
+                hasValue = true;
+                res = e;
+            }
+        }
+
+        if (!hasValue) {
+            throw new NoSuchElementException();
+        }
+        return res;
+    }
+
+    public static <E> @Nullable E lastOrNull(@NotNull Iterator<? extends E> it) {
+        E res = null;
+        while (it.hasNext()) {
+            res = it.next();
+        }
+        return res;
+    }
+
+    public static <E> @Nullable E lastOrNull(@NotNull Iterator<? extends E> it, Predicate<? super E> predicate) {
+        E res = null;
+        boolean hasValue = false;
+
+        while (it.hasNext()) {
+            E e = it.next();
+            if (predicate.test(e)) {
+                hasValue = true;
+                res = e;
+            }
+        }
+
+        return hasValue ? res : null;
+    }
+
+    public static <E> @NotNull Option<E> lastOption(@NotNull Iterator<? extends E> it) {
+        if (!it.hasNext()) {
+            return Option.none();
+        }
+        E res = null;
+        while (it.hasNext()) {
+            res = it.next();
+        }
+        return Option.some(res);
+    }
+
+    public static <E> @NotNull Option<E> lastOption(@NotNull Iterator<? extends E> it, Predicate<? super E> predicate) {
+        E res = null;
+        boolean hasValue = false;
+
+        while (it.hasNext()) {
+            E e = it.next();
+            if (predicate.test(e)) {
+                hasValue = true;
+                res = e;
+            }
+        }
+
+        return hasValue ? Option.some(res) : Option.none();
+    }
+
     public static <E extends Comparable<E>> E max(@NotNull Iterator<? extends E> it) {
         if (!it.hasNext()) {
             throw new NoSuchElementException();

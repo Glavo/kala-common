@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
 public interface SeqLike<E> extends CollectionLike<E> {
@@ -106,12 +107,101 @@ public interface SeqLike<E> extends CollectionLike<E> {
 
     //region Element Retrieval Operations
 
+    @Override
+    default @NotNull Option<E> find(@NotNull Predicate<? super E> predicate) {
+        return firstOption(predicate);
+    }
+
+    default @NotNull Option<E> findFirst(@NotNull Predicate<? super E> predicate) {
+        return firstOption(predicate);
+    }
+
+    default @NotNull Option<E> findLast(@NotNull Predicate<? super E> predicate) {
+        return lastOption(predicate);
+    }
+
     default E first() {
+        if (knownSize() == 0) {
+            throw new NoSuchElementException();
+        }
         return iterator().next();
+    }
+
+    default E first(@NotNull Predicate<? super E> predicate) {
+        if (knownSize() == 0) {
+            throw new NoSuchElementException();
+        }
+        return Iterators.first(iterator(), predicate);
+    }
+
+    default @Nullable E firstOrNull() {
+        if (knownSize() == 0) {
+            return null;
+        }
+        Iterator<E> it = this.iterator();
+        return it.hasNext() ? it.next() : null;
+    }
+
+    default @Nullable E firstOrNull(@NotNull Predicate<? super E> predicate) {
+        if (knownSize() == 0) {
+            return null;
+        }
+        return Iterators.firstOrNull(iterator(), predicate);
+    }
+
+    default @NotNull Option<E> firstOption() {
+        if (knownSize() == 0) {
+            return Option.none();
+        }
+        Iterator<E> it = this.iterator();
+        return it.hasNext() ? Option.some(it.next()) : Option.none();
+    }
+
+    default @NotNull Option<E> firstOption(@NotNull Predicate<? super E> predicate) {
+        if (knownSize() == 0) {
+            return Option.none();
+        }
+        return Iterators.firstOption(iterator(), predicate);
     }
 
     default E last() {
         return reverseIterator().next();
+    }
+
+    default E last(@NotNull Predicate<? super E> predicate) {
+        if (knownSize() == 0) {
+            throw new NoSuchElementException();
+        }
+        return Iterators.first(reverseIterator(), predicate);
+    }
+
+    default @Nullable E lastOrNull() {
+        if (knownSize() == 0) {
+            return null;
+        }
+        Iterator<E> it = reverseIterator();
+        return it.hasNext() ? it.next() : null;
+    }
+
+    default @Nullable E lastOrNull(@NotNull Predicate<? super E> predicate) {
+        if (knownSize() == 0) {
+            return null;
+        }
+        return Iterators.firstOrNull(reverseIterator(), predicate);
+    }
+
+    default @NotNull Option<E> lastOption() {
+        if (knownSize() == 0) {
+            return Option.none();
+        }
+        return Iterators.firstOption(reverseIterator());
+    }
+
+    default @NotNull Option<E> lastOption(@NotNull Predicate<? super E> predicate) {
+        if (knownSize() == 0) {
+            return Option.none();
+        }
+        return Iterators.firstOption(reverseIterator(), predicate);
     }
 
     //endregion

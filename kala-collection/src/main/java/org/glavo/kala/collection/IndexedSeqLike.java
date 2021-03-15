@@ -134,10 +134,56 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
 
     @Override
     default E first() {
-        if (size() == 0) {
+        if (isEmpty()) {
             throw new NoSuchElementException();
         }
         return get(0);
+    }
+
+    @Override
+    default E first(@NotNull Predicate<? super E> predicate) {
+        final int size = this.size();
+        for (int i = 0; i < size; i++) {
+            E e = get(i);
+            if (predicate.test(e)) {
+                return e;
+            }
+        }
+        throw new NoSuchElementException();
+    }
+
+    @Override
+    default @Nullable E firstOrNull() {
+        return isEmpty() ? null : get(0);
+    }
+
+    @Override
+    default @Nullable E firstOrNull(@NotNull Predicate<? super E> predicate) {
+        final int size = this.size();
+        for (int i = 0; i < size; i++) {
+            E e = get(i);
+            if (predicate.test(e)) {
+                return e;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    default @NotNull Option<E> firstOption() {
+        return isEmpty() ? Option.none() : Option.some(get(0));
+    }
+
+    @Override
+    default @NotNull Option<E> firstOption(@NotNull Predicate<? super E> predicate) {
+        final int size = this.size();
+        for (int i = 0; i < size; i++) {
+            E e = get(i);
+            if (predicate.test(e)) {
+                return Option.some(e);
+            }
+        }
+        return Option.none();
     }
 
     @Override
@@ -147,6 +193,54 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
             throw new NoSuchElementException();
         }
         return get(size - 1);
+    }
+
+    @Override
+    default E last(@NotNull Predicate<? super E> predicate) {
+        final int size = this.size();
+        for (int i = size - 1; i >= 0; i--) {
+            E e = get(i);
+            if (predicate.test(e)) {
+                return e;
+            }
+        }
+        throw new NoSuchElementException();
+    }
+
+    @Override
+    default @Nullable E lastOrNull() {
+        final int size = size();
+        return size == 0 ? null : get(size - 1);
+    }
+
+    @Override
+    default @Nullable E lastOrNull(@NotNull Predicate<? super E> predicate) {
+        final int size = this.size();
+        for (int i = size - 1; i >= 0; i--) {
+            E e = get(i);
+            if (predicate.test(e)) {
+                return e;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    default @NotNull Option<E> lastOption() {
+        final int size = size();
+        return size == 0 ? Option.none() : Option.some(get(size - 1));
+    }
+
+    @Override
+    default @NotNull Option<E> lastOption(@NotNull Predicate<? super E> predicate) {
+        final int size = this.size();
+        for (int i = size - 1; i >= 0; i--) {
+            E e = get(i);
+            if (predicate.test(e)) {
+                return Option.some(e);
+            }
+        }
+        return Option.none();
     }
 
     //endregion
@@ -400,7 +494,7 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
             @NotNull Function<? super E, ? extends U> mapper) {
         for (int i = 0; i < this.size(); i++) {
             U u = mapper.apply(this.get(i));
-            if(u != null) {
+            if (u != null) {
                 destination.plusAssign(u);
             }
         }
