@@ -1,5 +1,6 @@
 package org.glavo.kala.collection;
 
+import org.glavo.kala.Conditions;
 import org.glavo.kala.collection.base.Iterators;
 import org.glavo.kala.collection.immutable.ImmutableList;
 import org.glavo.kala.collection.internal.view.IndexedSeqViews;
@@ -442,6 +443,59 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
             }
         }
         return -1;
+    }
+
+    default int binarySearch(E value) {
+        return binarySearch(value, 0, size());
+    }
+
+    default int binarySearch(E value, Comparator<? super E> comparator) {
+        return binarySearch(value, comparator, 0, size());
+    }
+
+    @SuppressWarnings("unchecked")
+    default int binarySearch(E value, int beginIndex, int endIndex) {
+        Conditions.checkPositionIndices(beginIndex, endIndex, size());
+        int low = beginIndex;
+        int high = endIndex - 1;
+
+        while (low <= high) {
+            final int mid = (low + high) >>> 1;
+            final E midVal = get(mid);
+            final int cmp = ((Comparable<E>) midVal).compareTo(value);
+            if (cmp < 0) {
+                low = mid + 1;
+            } else if (cmp > 0) {
+                high = mid - 1;
+            } else {
+                return mid;
+            }
+        }
+        return -(low + 1);
+    }
+
+    default int binarySearch(E value, Comparator<? super E> comparator, int beginIndex, int endIndex) {
+        if (comparator == null) {
+            return binarySearch(value, beginIndex, endIndex);
+        }
+
+        Conditions.checkPositionIndices(beginIndex, endIndex, size());
+        int low = beginIndex;
+        int high = endIndex - 1;
+
+        while (low <= high) {
+            final int mid = (low + high) >>> 1;
+            final E midVal = get(mid);
+            final int cmp = comparator.compare(midVal, value);
+            if (cmp < 0) {
+                low = mid + 1;
+            } else if (cmp > 0) {
+                high = mid - 1;
+            } else {
+                return mid;
+            }
+        }
+        return -(low + 1);
     }
 
     //endregion

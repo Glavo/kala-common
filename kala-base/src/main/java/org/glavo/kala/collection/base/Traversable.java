@@ -1,6 +1,7 @@
 package org.glavo.kala.collection.base;
 
 import org.glavo.kala.annotations.Covariant;
+import org.glavo.kala.comparator.Comparators;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.function.CheckedConsumer;
@@ -202,7 +203,7 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
     }
 
     default T max() {
-        return max((Comparator<T>) Comparator.naturalOrder());
+        return max(Comparators.naturalOrder());
     }
 
     default T max(@NotNull Comparator<? super T> comparator) {
@@ -210,7 +211,7 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
     }
 
     default @Nullable T maxOrNull() {
-        return maxOrNull((Comparator<T>) Comparator.naturalOrder());
+        return maxOrNull(Comparators.naturalOrder());
     }
 
     default @Nullable T maxOrNull(@NotNull Comparator<? super T> comparator) {

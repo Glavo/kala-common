@@ -1,5 +1,6 @@
 package org.glavo.kala.collection.mutable;
 
+import org.glavo.kala.Conditions;
 import org.glavo.kala.collection.IndexedSeq;
 import org.glavo.kala.collection.SeqLike;
 import org.glavo.kala.collection.immutable.ImmutableArray;
@@ -264,10 +265,16 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
 
     //endregion
 
+    //region Size Info
+
     @Override
     public final int size() {
         return size;
     }
+
+    //endregion
+
+    //region Positional Access Operations
 
     @Override
     public final E get(int index) {
@@ -281,10 +288,9 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
         elements[index] = newValue;
     }
 
-    @Override
-    public final void sort(Comparator<? super E> comparator) {
-        Arrays.sort(elements, 0, size, (Comparator<? super Object>) comparator);
-    }
+    //endregion
+
+    //region Modification Operations
 
     @Override
     public final void prepend(E value) {
@@ -388,6 +394,35 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
         final Object[] elements = this.elements;
         System.arraycopy(elements, 0, elements, size, size);
         this.size = newSize;
+    }
+
+    //endregion
+
+
+    //region Search Operations
+
+    @Override
+    public int binarySearch(E value, int beginIndex, int endIndex) {
+        Conditions.checkPositionIndices(beginIndex, endIndex, size);
+        return Arrays.binarySearch(elements, beginIndex, endIndex, value);
+    }
+
+    @Override
+    public int binarySearch(E value, Comparator<? super E> comparator, int beginIndex, int endIndex) {
+        Conditions.checkPositionIndices(beginIndex, endIndex, size);
+        return Arrays.binarySearch((E[]) elements, beginIndex, endIndex, value, comparator);
+    }
+
+    //endregion
+
+    @Override
+    public final void sort() {
+        Arrays.sort(elements, 0, size);
+    }
+
+    @Override
+    public final void sort(Comparator<? super E> comparator) {
+        Arrays.sort(elements, 0, size, (Comparator<? super Object>) comparator);
     }
 
     @Override
