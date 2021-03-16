@@ -195,7 +195,7 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     }
 
     @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> sorted(@NotNull Comparator<? super E> comparator) {
+    default @NotNull ImmutableSeq<E> sorted(Comparator<? super E> comparator) {
         return AbstractImmutableSeq.sorted(this, comparator, iterableFactory());
     }
 

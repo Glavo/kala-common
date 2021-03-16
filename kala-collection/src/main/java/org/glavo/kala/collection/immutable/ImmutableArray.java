@@ -533,7 +533,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableArray<E> sorted(@NotNull Comparator<? super E> comparator) {
+    public final @NotNull ImmutableArray<E> sorted(Comparator<? super E> comparator) {
         final Object[] elements = this.elements;
         if (elements.length == 0) {
             return this;

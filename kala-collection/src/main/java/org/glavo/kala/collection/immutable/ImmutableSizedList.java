@@ -1,8 +1,10 @@
 package org.glavo.kala.collection.immutable;
 
 import org.glavo.kala.Conditions;
+import org.glavo.kala.collection.CollectionLike;
 import org.glavo.kala.collection.IndexedSeqLike;
 import org.glavo.kala.collection.SeqLike;
+import org.glavo.kala.collection.base.Traversable;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.mutable.LinkedBuffer;
 import org.glavo.kala.control.Option;
@@ -20,6 +22,7 @@ import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+@SuppressWarnings("unchecked")
 public final class ImmutableSizedList<E> extends AbstractImmutableSeq<E>
         implements ImmutableSeqOps<E, ImmutableSizedList<?>, ImmutableSizedList<E>> {
     private static final Factory<?> FACTORY = new Factory<>();
@@ -99,12 +102,20 @@ public final class ImmutableSizedList<E> extends AbstractImmutableSeq<E>
         return new ImmutableSizedList<>(ImmutableList.from(values), size);
     }
 
+    public static <E> @NotNull ImmutableSizedList<E> from(@NotNull ImmutableSizedList<? extends E> values) {
+        return (ImmutableSizedList<E>) values.toImmutableSizedList();
+    }
+
     @SuppressWarnings("unchecked")
     public static <E> @NotNull ImmutableSizedList<E> from(@NotNull Iterable<? extends E> values) {
         if (values instanceof ImmutableSizedList<?>) {
             return ((ImmutableSizedList<E>) values);
         }
-        return from(values.iterator()); // implicit null check of values
+        if (values instanceof ImmutableList<?>) {
+            return ((ImmutableList<E>) values).toImmutableSizedList();
+        }
+
+        return from(values.iterator()); // TODO
     }
 
     public static <E> @NotNull ImmutableSizedList<E> from(@NotNull Iterator<? extends E> it) {

@@ -53,7 +53,15 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqOps<E
     @Override
     default @NotNull SeqView<E> slice(int beginIndex, int endIndex) {
         final int ks = this.knownSize();
-        if (ks >= 0) {
+        if (ks == 0) {
+            if (beginIndex != 0) {
+                throw new IndexOutOfBoundsException("beginIndex: " + beginIndex);
+            }
+            if (endIndex != 0) {
+                throw new IndexOutOfBoundsException("endIndex: " + endIndex);
+            }
+            return SeqView.empty();
+        } else if (ks > 0) {
             Conditions.checkPositionIndices(beginIndex, endIndex, ks);
         } else {
             if (beginIndex < 0) {
@@ -73,10 +81,30 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqOps<E
     }
 
     default @NotNull SeqView<E> drop(int n) {
+        if (n <= 0) {
+            return this;
+        }
+        final int ks = this.knownSize();
+        if (ks == 0) {
+            return SeqView.empty();
+        }
+        if (ks > 0 && n >= ks) {
+            return SeqView.empty();
+        }
         return new SeqViews.Drop<>(this, n);
     }
 
     default @NotNull SeqView<E> dropLast(int n) {
+        if (n <= 0) {
+            return this;
+        }
+        final int ks = this.knownSize();
+        if (ks == 0) {
+            return SeqView.empty();
+        }
+        if (ks > 0 && n >= ks) {
+            return SeqView.empty();
+        }
         return new SeqViews.DropLast<>(this, n);
     }
 
@@ -86,10 +114,30 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqOps<E
     }
 
     default @NotNull SeqView<E> take(int n) {
+        if (n <= 0) {
+            return SeqView.empty();
+        }
+        final int ks = this.knownSize();
+        if (ks == 0) {
+            return SeqView.empty();
+        }
+        if (ks > 0 && n >= ks) {
+            return this;
+        }
         return new SeqViews.Take<>(this, n);
     }
 
     default @NotNull SeqView<E> takeLast(int n) {
+        if (n <= 0) {
+            return SeqView.empty();
+        }
+        final int ks = this.knownSize();
+        if (ks == 0) {
+            return SeqView.empty();
+        }
+        if (ks > 0 && n >= ks) {
+            return this;
+        }
         return new SeqViews.TakeLast<>(this, n);
     }
 
@@ -144,12 +192,10 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqOps<E
     }
 
     default @NotNull SeqView<E> sorted() {
-        return sorted(Comparators.naturalOrder());
+        return sorted(null);
     }
 
-    default @NotNull SeqView<E> sorted(@NotNull Comparator<? super E> comparator) {
-        Objects.requireNonNull(comparator);
-
+    default @NotNull SeqView<E> sorted(Comparator<? super E> comparator) {
         return new SeqViews.Sorted<>(this, comparator);
     }
 
@@ -177,28 +223,24 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqOps<E
     @Override
     default <U> @NotNull SeqView<U> map(@NotNull Function<? super E, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
-
         return new SeqViews.Mapped<>(this, mapper);
     }
 
     @Override
     default <U> @NotNull SeqView<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
-
-        return new SeqViews.MapIndexed<U, E>(this, mapper);
+        return new SeqViews.MapIndexed<>(this, mapper);
     }
 
     @Override
     default <U> @NotNull SeqView<U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
         Objects.requireNonNull(mapper);
-
         return new SeqViews.MapNotNull<>(this, mapper);
     }
 
     @Override
     default <U> @NotNull SeqView<U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
         Objects.requireNonNull(mapper);
-
         return new SeqViews.MapIndexedNotNull<>(this, mapper);
     }
 

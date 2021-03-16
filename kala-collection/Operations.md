@@ -142,8 +142,8 @@
     * `filterNot(Predicate<E>)`
     * `filterNotNull()`
     * `map(Function<E, U>)`
-    * `mapNotNull(Function<E, U>)`
     * `mapIndexed(IndexedFunction<E, U>)`
+    * `mapNotNull(Function<E, U>)`
     * `mapIndexedNotNull(IndexedFunction<E, U>)`
     * `flatMap(Function<E, Iterable<U>>)`
     * `sorted()`

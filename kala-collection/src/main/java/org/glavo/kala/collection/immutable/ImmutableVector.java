@@ -114,7 +114,6 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
         if (size <= ImmutableVectors.WIDTH) {
             Object[] res = new Object[size];
             res = values.toArray(res);
-            assert res.length == size;
             return new ImmutableVectors.Vector1<>(res);
         }
         return from(values.iterator());

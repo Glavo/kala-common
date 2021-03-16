@@ -761,6 +761,14 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
     }
 
     @Override
+    public final @NotNull ImmutableSizedList<E> toImmutableSizedList() {
+        if (this == NIL) {
+            return ImmutableSizedList.empty();
+        }
+        return new ImmutableSizedList<>(this, size());
+    }
+
+    @Override
     public final void forEach(@NotNull Consumer<? super E> action) {
         ImmutableList<E> list = this;
         while (list != NIL) {

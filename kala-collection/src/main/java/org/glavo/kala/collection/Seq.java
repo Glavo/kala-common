@@ -112,7 +112,7 @@ public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E> {
 
     @Override
     default @NotNull SeqView<E> view() {
-        return new SeqViews.Of<>(this);
+        return knownSize() == 0 ? SeqView.empty() : new SeqViews.Of<>(this);
     }
 
     @Override

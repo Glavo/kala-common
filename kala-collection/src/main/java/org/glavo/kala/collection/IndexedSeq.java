@@ -55,7 +55,7 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, IndexedSeqLike<E>, Ran
 
     @Override
     default @NotNull IndexedSeqView<E> view() {
-        return new IndexedSeqViews.Of<>(this);
+        return size() == 0 ? IndexedSeqView.empty() : new IndexedSeqViews.Of<>(this);
     }
 
     E get(int index);

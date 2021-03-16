@@ -350,8 +350,6 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
             @NotNull Comparator<? super E> comparator,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
-        Objects.requireNonNull(comparator);
-
         Object[] arr = seq.toArray();
         Arrays.sort(arr, ((Comparator<? super Object>) comparator));
 

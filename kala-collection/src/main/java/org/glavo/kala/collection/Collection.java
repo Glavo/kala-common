@@ -43,7 +43,7 @@ public interface Collection<@Covariant E> extends Traversable<E>, CollectionLike
     }
 
     default @NotNull View<E> view() {
-        return new Views.Of<>(this);
+        return knownSize() == 0 ? View.empty() : new Views.Of<>(this);
     }
 
     default java.util.@NotNull @UnmodifiableView Collection<E> asJava() {

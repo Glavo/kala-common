@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 public final class Views {
+
     public static class Empty<E> extends AbstractView<E> {
         public static final Empty<?> INSTANCE = new Empty<>();
 
@@ -83,7 +84,7 @@ public final class Views {
         }
 
         @Override
-        public String toString() {
+        public final String toString() {
             return className() + "[]";
         }
     }
@@ -123,26 +124,6 @@ public final class Views {
         }
 
         //endregion
-
-        @Override
-        public @NotNull View<E> filter(@NotNull Predicate<? super E> predicate) {
-            return predicate.test(value) ? this : View.empty();
-        }
-
-        @Override
-        public @NotNull View<E> filterNot(@NotNull Predicate<? super E> predicate) {
-            return predicate.test(value) ? View.empty() : this;
-        }
-
-        @Override
-        public @NotNull View<@NotNull E> filterNotNull() {
-            return value != null ? this : View.empty();
-        }
-
-        @Override
-        public @NotNull <U> View<U> map(@NotNull Function<? super E, ? extends U> mapper) {
-            return new Single<>(mapper.apply(value));
-        }
     }
 
     public static class Of<@Covariant E, C extends CollectionLike<E>> extends AbstractView<E> {

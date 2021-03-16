@@ -2,6 +2,7 @@ package org.glavo.kala.collection.internal.view;
 
 import org.glavo.kala.Conditions;
 import org.glavo.kala.collection.*;
+import org.glavo.kala.collection.base.AbstractIterator;
 import org.glavo.kala.collection.internal.view.SeqViews;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.function.IndexedFunction;
@@ -11,6 +12,8 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -18,6 +21,11 @@ import java.util.function.Predicate;
 public final class IndexedSeqViews {
     public static class Empty<E> extends SeqViews.Empty<E> implements IndexedSeqView<E> {
         public static final Empty<?> INSTANCE = new Empty<>();
+
+        @Override
+        public @NotNull SeqView<E> reversed() {
+            return this;
+        }
 
         @Override
         public @NotNull IndexedSeqView<E> prepended(E value) {
@@ -76,20 +84,29 @@ public final class IndexedSeqViews {
         }
     }
 
-    public static class Of<E, C extends IndexedSeqLike<E>> extends SeqViews.Of<E, C> implements IndexedSeqView<E> {
-        public Of(@NotNull C source) {
-            super(source);
-        }
-    }
-
     public static class Single<E> extends SeqViews.Single<E> implements IndexedSeqView<E> {
         public Single(E value) {
             super(value);
         }
 
         @Override
-        public @NotNull <U> IndexedSeqView<U> map(@NotNull Function<? super E, ? extends U> mapper) {
-            return new Single<>(mapper.apply(value));
+        public @NotNull IndexedSeqView<E> reversed() {
+            return this;
+        }
+
+        @Override
+        public @NotNull IndexedSeqView<E> updated(int index, E newValue) {
+            if (index != 0) {
+                throw new IndexOutOfBoundsException("index: " + index);
+            }
+
+            return new Single<>(newValue);
+        }
+    }
+
+    public static class Of<E, C extends IndexedSeqLike<E>> extends SeqViews.Of<E, C> implements IndexedSeqView<E> {
+        public Of(@NotNull C source) {
+            super(source);
         }
     }
 
@@ -99,8 +116,8 @@ public final class IndexedSeqViews {
         }
 
         @Override
-        public int knownSize() {
-            return seq1.size() + seq2.size();
+        public final int knownSize() {
+            return size();
         }
 
         @Override
@@ -186,6 +203,16 @@ public final class IndexedSeqViews {
         }
 
         @Override
+        public @NotNull Iterator<E> iterator() {
+            return this.new Itr();
+        }
+
+        @Override
+        public @NotNull Iterator<E> reverseIterator() {
+            return this.new ReverseItr();
+        }
+
+        @Override
         public final E get(int index) {
             Conditions.checkElementIndex(index, size());
             return source.get(index + beginIndex);
@@ -204,10 +231,41 @@ public final class IndexedSeqViews {
                     ? Option.none()
                     : Option.some(source.get(index + beginIndex));
         }
+
+        private final class Itr extends AbstractIterator<E> {
+            private int idx = beginIndex;
+
+            @Override
+            public final boolean hasNext() {
+                return idx < endIndex;
+            }
+
+            @Override
+            public final E next() {
+                if (idx >= endIndex) {
+                    throw new NoSuchElementException();
+                }
+                return get(idx++);
+            }
+        }
+
+        private final class ReverseItr extends AbstractIterator<E> {
+            private int idx = endIndex - 1;
+
+            @Override
+            public final boolean hasNext() {
+                return idx >= beginIndex;
+            }
+
+            @Override
+            public E next() {
+                return get(idx--);
+            }
+        }
     }
 
     public static class Drop<E> extends SeqViews.Drop<E> implements IndexedSeqView<E> {
-        public Drop(@NotNull SeqView<E> source, int n) {
+        public Drop(@NotNull SeqView<E> source, @Range(from = 1, to = Integer.MAX_VALUE) int n) {
             super(source, n);
         }
 
@@ -240,20 +298,28 @@ public final class IndexedSeqViews {
         }
 
         @Override
+        public final int size() {
+            return n;
+        }
+
+        @Override
+        public final int knownSize() {
+            return n;
+        }
+
+        @Override
         public final E get(int index) {
-            if (index >= 0 && index < size()) {
-                return source.get(index);
+            if (index < 0 || index >= n) {
+                throw new IndexOutOfBoundsException("Index out of range: " + index);
             }
-            throw new IndexOutOfBoundsException("Index out of range: " + index);
+            return source.get(index);
         }
 
         @Override
         public final @NotNull Option<E> getOption(int index) {
-            if (index >= 0 && index < size()) {
-                return source.getOption(index);
-            }
-
-            return Option.none();
+            return index >= 0 && index < size()
+                    ? source.getOption(index)
+                    : Option.none();
         }
     }
 

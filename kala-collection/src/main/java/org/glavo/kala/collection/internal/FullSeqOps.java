@@ -38,7 +38,7 @@ public interface FullSeqOps<E, CC extends SeqLike<?>, COLL extends SeqLike<E>> e
 
     @NotNull COLL sorted();
 
-    @NotNull COLL sorted(@NotNull Comparator<? super E> comparator);
+    @NotNull COLL sorted(Comparator<? super E> comparator);
 
     @NotNull COLL reversed();
 

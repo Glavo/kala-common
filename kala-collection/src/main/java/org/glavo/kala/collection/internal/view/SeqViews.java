@@ -5,6 +5,7 @@ import org.glavo.kala.collection.*;
 import org.glavo.kala.collection.base.GenericArrays;
 import org.glavo.kala.collection.base.ObjectArrays;
 import org.glavo.kala.collection.mutable.ArrayBuffer;
+import org.glavo.kala.comparator.Comparators;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.function.IndexedConsumer;
 import org.glavo.kala.function.IndexedFunction;
@@ -21,12 +22,23 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.*;
+import java.util.stream.Stream;
 
 @SuppressWarnings("ALL")
 public final class SeqViews {
     public static class Empty<E> extends Views.Empty<E> implements SeqView<E> {
 
         public static final Empty<?> INSTANCE = new Empty<>();
+
+        @Override
+        public @NotNull SeqView<E> reversed() {
+            return this;
+        }
+
+        @Override
+        public @NotNull Iterator<E> reverseIterator() {
+            return Iterators.empty();
+        }
 
         @Override
         public @NotNull SeqView<E> concat(@NotNull SeqLike<? extends E> other) {
@@ -80,23 +92,22 @@ public final class SeqViews {
         }
 
         @Override
-        public @NotNull SeqView<E> filter(@NotNull Predicate<? super E> predicate) {
-            return predicate.test(value) ? this : SeqView.empty();
+        public @NotNull SeqView<E> reversed() {
+            return this;
         }
 
         @Override
-        public @NotNull SeqView<E> filterNot(@NotNull Predicate<? super E> predicate) {
-            return predicate.test(value) ? SeqView.empty() : this;
+        public final @NotNull Iterator<E> reverseIterator() {
+            return Iterators.of(value);
         }
 
         @Override
-        public @NotNull SeqView<@NotNull E> filterNotNull() {
-            return value != null ? this : SeqView.empty();
-        }
+        public @NotNull SeqView<E> updated(int index, E newValue) {
+            if (index != 0) {
+                throw new IndexOutOfBoundsException("index: " + index);
+            }
 
-        @Override
-        public @NotNull <U> SeqView<U> map(@NotNull Function<? super E, ? extends U> mapper) {
-            return new Single<>(mapper.apply(value));
+            return new Single<>(newValue);
         }
     }
 
@@ -223,6 +234,11 @@ public final class SeqViews {
         }
 
         @Override
+        public @NotNull Iterator<E> iterator() {
+            return this.new Itr();
+        }
+
+        @Override
         public boolean isEmpty() {
             return beginIndex == endIndex;
         }
@@ -235,11 +251,6 @@ public final class SeqViews {
         @Override
         public int knownSize() {
             return endIndex - beginIndex;
-        }
-
-        @Override
-        public final @NotNull Iterator<E> iterator() {
-            return this.new Itr();
         }
 
         private final class Itr extends AbstractIterator<E> {
@@ -352,58 +363,50 @@ public final class SeqViews {
     }
 
     public static class Drop<E> extends AbstractSeqView<E> {
-        @NotNull
-        protected final SeqView<E> source;
+        protected final @NotNull SeqView<E> source;
 
         protected final int n;
 
-        public Drop(@NotNull SeqView<E> source, int n) {
+        public Drop(@NotNull SeqView<E> source, @Range(from = 1, to = Integer.MAX_VALUE) int n) {
             this.source = source;
             this.n = n;
         }
 
         @Override
+        public final @NotNull Iterator<E> iterator() {
+            return Iterators.drop(source.iterator(), n);
+        }
+
+        @Override
         public final int size() {
-            int s = source.size();
-            if (n <= 0) {
-                return s;
-            }
-            if (n >= s) {
-                return 0;
-            }
-            return s - n;
+            return Integer.max(0, source.size() - n);
         }
 
         @Override
         public int knownSize() {
             final int sks = source.knownSize();
-            final int n = this.n;
-
-            if (sks < 0) {
-                return -1;
-            }
-            if (n <= 0) {
-                return sks;
-            }
-            return Integer.max(0, sks - n);
-        }
-
-        @NotNull
-        @Override
-        public final Iterator<E> iterator() {
-            return Iterators.drop(source.iterator(), n);
+            return sks < 0 ? -1 : Integer.max(0, sks - n);
         }
     }
 
     public static class DropLast<E> extends AbstractSeqView<E> {
-        @NotNull
-        protected final SeqView<E> source;
+        protected final @NotNull SeqView<E> source;
 
-        private final int n;
+        private final @Range(from = 1, to = Integer.MAX_VALUE) int n;
 
-        public DropLast(@NotNull SeqView<E> source, int n) {
+        public DropLast(@NotNull SeqView<E> source, @Range(from = 1, to = Integer.MAX_VALUE) int n) {
             this.source = source;
             this.n = n;
+        }
+
+        @Override
+        public final @NotNull Iterator<E> iterator() {
+            final int ss = source.size();
+            if (n >= ss) {
+                return Iterators.empty();
+            }
+
+            return Iterators.take(source.iterator(), ss - n);
         }
 
         @Override
@@ -427,7 +430,7 @@ public final class SeqViews {
 
         @Override
         public final int size() {
-            return Integer.max(source.size() - Integer.max(this.n, 0), 0);
+            return Integer.max(0, source.size() - n);
         }
 
         @Override
@@ -436,29 +439,11 @@ public final class SeqViews {
             if (sks < 0) {
                 return -1;
             }
-            final int normalN = Integer.max(this.n, 0);
-            if (normalN >= sks) {
+            if (n >= sks) {
                 return 0;
             }
 
-            return sks - normalN;
-        }
-
-        @Override
-        public final @NotNull Iterator<E> iterator() {
-            final SeqView<E> source = this.source;
-            final int n = this.n;
-
-            if (n <= 0) {
-                return source.iterator();
-            }
-
-            final int ss = source.size();
-            if (n >= ss) {
-                return Iterators.empty();
-            }
-
-            return Iterators.take(this.source.iterator(), ss - n);
+            return sks - n;
         }
     }
 
@@ -482,15 +467,20 @@ public final class SeqViews {
     public static class Take<E> extends AbstractSeqView<E> {
         protected final @NotNull SeqView<E> source;
 
-        private final int n;
+        protected final @Range(from = 1, to = Integer.MAX_VALUE) int n;
 
-        public Take(@NotNull SeqView<E> source, int n) {
+        public Take(@NotNull SeqView<E> source, @Range(from = 1, to = Integer.MAX_VALUE) int n) {
             this.source = source;
             this.n = n;
         }
 
         @Override
-        public final int size() {
+        public final @NotNull Iterator<E> iterator() {
+            return Iterators.take(source.iterator(), n);
+        }
+
+        @Override
+        public int size() {
             if (n <= 0) {
                 return 0;
             }
@@ -508,12 +498,6 @@ public final class SeqViews {
                 return -1;
             }
             return Integer.min(sks, n);
-        }
-
-        @NotNull
-        @Override
-        public final Iterator<E> iterator() {
-            return Iterators.take(source.iterator(), n);
         }
     }
 
@@ -843,6 +827,16 @@ public final class SeqViews {
         }
 
         @Override
+        public final @NotNull Stream<E> stream() {
+            return source.stream().map(mapper);
+        }
+
+        @Override
+        public final @NotNull Stream<E> parallelStream() {
+            return source.parallelStream().map(mapper);
+        }
+
+        @Override
         public final int size() {
             return source.size();
         }
@@ -864,15 +858,25 @@ public final class SeqViews {
     }
 
     public static class MapIndexed<E, T> extends AbstractSeqView<E> {
-        @NotNull
-        private final SeqView<T> source;
+        private final @NotNull SeqView<T> source;
 
-        @NotNull
-        private final IndexedFunction<? super T, ? extends E> mapper;
+        private final @NotNull IndexedFunction<? super T, ? extends E> mapper;
 
         public MapIndexed(@NotNull SeqView<T> source, @NotNull IndexedFunction<? super T, ? extends E> mapper) {
             this.source = source;
             this.mapper = mapper;
+        }
+
+        @Override
+        public final @NotNull Iterator<E> iterator() {
+            return Iterators.mapIndexed(source.iterator(), mapper);
+        }
+
+        //region Size Info
+
+        @Override
+        public final boolean isEmpty() {
+            return source.isEmpty();
         }
 
         @Override
@@ -881,20 +885,25 @@ public final class SeqViews {
         }
 
         @Override
+        public final int knownSize() {
+            return source.knownSize();
+        }
+
+        //endregion
+
+        @Override
+        public final boolean isDefinedAt(int index) {
+            return source.isDefinedAt(index);
+        }
+
+        @Override
         public final E get(int index) {
             return mapper.apply(index, source.get(index));
         }
 
-        @NotNull
         @Override
-        public final Option<E> getOption(int index) {
+        public final @NotNull Option<E> getOption(int index) {
             return source.getOption(index).map(a -> mapper.apply(index, a));
-        }
-
-        @NotNull
-        @Override
-        public final Iterator<E> iterator() {
-            return Iterators.mapIndexed(source.iterator(), mapper);
         }
     }
 
@@ -990,7 +999,7 @@ public final class SeqViews {
         @Override
         public @NotNull Option<IntObjTuple2<E>> getOption(int index) {
             Option<E> opt = source.getOption(index);
-            return opt.isEmpty() ? Option.none() : Option.of(IntObjTuple2.of(index, opt.get()));
+            return opt.isEmpty() ? Option.none() : Option.some(IntObjTuple2.of(index, opt.get()));
         }
 
         //endregion
@@ -1018,7 +1027,9 @@ public final class SeqViews {
         @Override
         public @NotNull Iterator<IntObjTuple2<E>> iterator() {
             final int sks = source.knownSize();
-            if (sks > 0) {
+            if (sks == 0) {
+                return Iterators.empty();
+            } else if (sks > 0) {
                 Iterator<E> it = source.reverseIterator();
                 return new AbstractIterator<IntObjTuple2<E>>() {
                     private int idx = sks - 1;
@@ -1035,8 +1046,6 @@ public final class SeqViews {
                     }
                 };
 
-            } else if (sks == 0) {
-                return Iterators.empty();
             } else {
                 Iterator<E> it = source.iterator();
                 if (!it.hasNext()) {
@@ -1160,19 +1169,46 @@ public final class SeqViews {
             }
         }
 
-        @NotNull
         @Override
-        public final Option<E> getOption(int index) {
+        public final @Nullable E getOrNull(int index) {
+            if (index < 0) {
+                return null;
+            }
+
+            initSorted();
+            Object[] sorted = this.sorted;
+            if (index >= sorted.length) {
+                return null;
+            }
+            return (E) sorted[index];
+        }
+
+        @Override
+        public final @NotNull Option<E> getOption(int index) {
             if (index < 0) {
                 return Option.none();
             }
 
             initSorted();
             Object[] sorted = this.sorted;
-            if (index >= sorted.length) {
-                throw new IndexOutOfBoundsException("index(" + index + ") >= size(" + sorted.length + ")");
+            return index >= sorted.length ? Option.none() : (Option<E>) Option.some(sorted[index]);
+        }
+
+        @Override
+        public final @NotNull SeqView<E> sorted(Comparator<? super E> comparator) {
+            if (comparator == Comparators.naturalOrder()) {
+                comparator = null;
             }
-            return (Option<E>) Option.some(sorted[index]);
+
+            if (comparator == this.comparator) {
+                return this;
+            }
+            if ((comparator == null && this.comparator == Comparators.reverseOrder())
+                    || (comparator == Comparators.reverseOrder() && this.comparator == null)) {
+                return reversed();
+            }
+
+            return new Sorted<>(source, comparator);
         }
     }
 }

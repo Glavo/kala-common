@@ -63,7 +63,22 @@ public interface IndexedSeqView<@Covariant E> extends SeqView<E>, IndexedSeqLike
 
     @Override
     default @NotNull IndexedSeqView<E> slice(int beginIndex, int endIndex) {
-        Conditions.checkPositionIndices(beginIndex, endIndex, size());
+        final int size = this.size();
+        Conditions.checkPositionIndices(beginIndex, endIndex, size);
+
+        switch (endIndex - beginIndex) {
+            case 0:
+                return IndexedSeqView.empty();
+            case 1:
+                return new IndexedSeqViews.Single<>(get(beginIndex));
+        }
+
+        if (beginIndex == 0) {
+            return new IndexedSeqViews.Take<>(this, endIndex);
+        }
+        if (endIndex == size) {
+            return new IndexedSeqViews.Drop<>(this, beginIndex);
+        }
         return new IndexedSeqViews.Slice<>(this, beginIndex, endIndex);
     }
 
@@ -74,12 +89,56 @@ public interface IndexedSeqView<@Covariant E> extends SeqView<E>, IndexedSeqLike
 
     @Override
     default @NotNull IndexedSeqView<E> drop(int n) {
+        if (n <= 0) {
+            return this;
+        }
+        final int size = this.size();
+        if (size == 0 || n >= size) {
+            return IndexedSeqView.empty();
+        }
         return new IndexedSeqViews.Drop<>(this, n);
     }
 
     @Override
+    default @NotNull IndexedSeqView<E> dropLast(int n) {
+        if (n <= 0) {
+            return this;
+        }
+        final int size = this.size();
+        if (size == 0 || n >= size) {
+            return IndexedSeqView.empty();
+        }
+        return new IndexedSeqViews.Take<>(this, size - n);
+    }
+
+    @Override
     default @NotNull IndexedSeqView<E> take(int n) {
+        if (n <= 0) {
+            return IndexedSeqView.empty();
+        }
+        final int size = this.size();
+        if (size == 0) {
+            return IndexedSeqView.empty();
+        }
+        if (n >= size) {
+            return this;
+        }
         return new IndexedSeqViews.Take<>(this, n);
+    }
+
+    @Override
+    default @NotNull IndexedSeqView<E> takeLast(int n) {
+        if (n <= 0) {
+            return IndexedSeqView.empty();
+        }
+        final int size = this.size();
+        if (size == 0) {
+            return IndexedSeqView.empty();
+        }
+        if (n >= size) {
+            return this;
+        }
+        return new IndexedSeqViews.Drop<>(this, size - n);
     }
 
     @Override
