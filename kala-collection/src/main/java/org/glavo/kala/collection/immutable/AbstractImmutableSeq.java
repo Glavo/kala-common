@@ -25,7 +25,7 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
             E newValue,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
-        int s = seq.size();
+        final int s = seq.size();
 
         if (index < 0 || index >= s) {
             throw new IndexOutOfBoundsException();

@@ -4,6 +4,7 @@ import org.glavo.kala.collection.immutable.ImmutableList;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.base.Iterators;
 import org.glavo.kala.collection.base.GenericArrays;
+import org.glavo.kala.collection.immutable.ImmutableSeq;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.util.StringUtils;
 
@@ -29,6 +30,18 @@ public interface CollectionTestTemplate {
     }
 
     <E> CollectionFactory<E, ?, ? extends Collection<? extends E>> factory();
+
+    default <E> Collection<E> of(E... elements) {
+        return (Collection<E>) factory().from(elements);
+    }
+
+    default <E> Collection<E> from(E[] elements) {
+        return (Collection<E>) factory().from(elements);
+    }
+
+    default <E> Collection<E> from(Iterable<? extends E> elements) {
+        return (Collection<E>) factory().from(elements);
+    }
 
     @Test
     default void factoryTest() {

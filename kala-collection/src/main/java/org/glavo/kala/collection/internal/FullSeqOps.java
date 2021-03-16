@@ -30,11 +30,11 @@ public interface FullSeqOps<E, CC extends SeqLike<?>, COLL extends SeqLike<E>> e
 
     @NotNull COLL prepended(E element);
 
-    @NotNull COLL prependedAll(@NotNull Iterable<? extends E> prefix);
+    @NotNull COLL prependedAll(@NotNull Iterable<? extends E> values);
 
     @NotNull COLL appended(E element);
 
-    @NotNull COLL appendedAll(@NotNull Iterable<? extends E> prefix);
+    @NotNull COLL appendedAll(@NotNull Iterable<? extends E> values);
 
     @NotNull COLL sorted();
 

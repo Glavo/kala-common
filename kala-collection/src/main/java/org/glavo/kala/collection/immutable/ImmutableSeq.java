@@ -1,5 +1,6 @@
 package org.glavo.kala.collection.immutable;
 
+import org.glavo.kala.collection.SeqLike;
 import org.glavo.kala.collection.SeqView;
 import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.annotations.Covariant;
@@ -154,7 +155,7 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     }
 
     @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> concat(@NotNull Seq<? extends E> other) {
+    default @NotNull ImmutableSeq<E> concat(@NotNull SeqLike<? extends E> other) {
         return AbstractImmutableSeq.concat(this, other, iterableFactory());
     }
 

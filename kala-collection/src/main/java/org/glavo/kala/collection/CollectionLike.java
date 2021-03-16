@@ -78,6 +78,10 @@ public interface CollectionLike<E> extends Traversable<E> {
         return ImmutableList.from(this);
     }
 
+    default @NotNull ImmutableSizedList<E> toImmutableSizedList() {
+        return null; // TODO
+    }
+
     default @NotNull ImmutableVector<E> toImmutableVector() {
         return ImmutableVector.from(this);
     }

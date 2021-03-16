@@ -2,6 +2,8 @@ package org.glavo.kala.collection.immutable;
 
 import org.glavo.kala.collection.SeqTestTemplate;
 import org.glavo.kala.collection.factory.CollectionFactory;
+import org.glavo.kala.collection.mutable.LinkedBuffer;
+import org.glavo.kala.collection.mutable.MutableArray;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -15,6 +17,18 @@ import static org.junit.jupiter.api.Assertions.*;
 public interface ImmutableSeqTestTemplate extends ImmutableCollectionTestTemplate, SeqTestTemplate {
     @Override
     <E> CollectionFactory<E, ?, ? extends ImmutableSeq<? extends E>> factory();
+
+    default <E> ImmutableSeq<E> of(E... elements) {
+        return (ImmutableSeq<E>) factory().from(elements);
+    }
+
+    default <E> ImmutableSeq<E> from(E[] elements) {
+        return (ImmutableSeq<E>) factory().from(elements);
+    }
+
+    default <E> ImmutableSeq<E> from(Iterable<? extends E> elements) {
+        return (ImmutableSeq<E>) factory().from(elements);
+    }
 
     @Test
     default void reversedTest() {
@@ -192,6 +206,8 @@ public interface ImmutableSeqTestTemplate extends ImmutableCollectionTestTemplat
             assertIterableEquals(List.of("bar"), seq.updated(0, "bar"));
             assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(1, "bar"));
             assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(-1, "bar"));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MAX_VALUE, "bar"));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MIN_VALUE, "bar"));
         }
 
         {
@@ -199,8 +215,41 @@ public interface ImmutableSeqTestTemplate extends ImmutableCollectionTestTemplat
             assertIterableEquals(List.of("zzz", "bar"), seq.updated(0, "zzz"));
             assertIterableEquals(List.of("foo", "zzz"), seq.updated(1, "zzz"));
             assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(2, "zzz"));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MIN_VALUE, "zzz"));
             assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(-1, "zzz"));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MIN_VALUE, "zzz"));
         }
+    }
+
+    @Test
+    default void concatTest() {
+        ImmutableSeq<String> empty = (ImmutableSeq<String>) this.<String>factory().empty();
+        assertTrue(empty.concat(ImmutableList.empty()).isEmpty());
+        assertTrue(empty.concat(ImmutableArray.empty()).isEmpty());
+        assertTrue(empty.concat(ImmutableVector.empty()).isEmpty());
+
+        assertIterableEquals(List.of("str1"), empty.concat(ImmutableList.of("str1")));
+        assertIterableEquals(List.of("str1"), empty.concat(ImmutableArray.of("str1")));
+        assertIterableEquals(List.of("str1"), empty.concat(ImmutableVector.of("str1")));
+        assertIterableEquals(List.of("str1", "str2", "str3"), empty.concat(ImmutableList.of("str1", "str2", "str3")));
+        assertIterableEquals(List.of("str1", "str2", "str3"), empty.concat(ImmutableArray.of("str1", "str2", "str3")));
+        assertIterableEquals(List.of("str1", "str2", "str3"), empty.concat(ImmutableVector.of("str1", "str2", "str3")));
+
+
+        assertIterableEquals(List.of("str1"), of("str1").concat(ImmutableList.empty()));
+        assertIterableEquals(List.of("str1"), of("str1").concat(ImmutableArray.empty()));
+        assertIterableEquals(List.of("str1"), of("str1").concat(ImmutableVector.empty()));
+        assertIterableEquals(List.of("str1", "str2", "str3"), of("str1").concat(ImmutableList.of("str2", "str3")));
+        assertIterableEquals(List.of("str1", "str2", "str3"), of("str1").concat(ImmutableArray.of("str2", "str3")));
+        assertIterableEquals(List.of("str1", "str2", "str3"), of("str1").concat(ImmutableVector.of("str2", "str3")));
+
+        assertIterableEquals(List.of("str1", "str2"), of("str1", "str2").concat(ImmutableList.empty()));
+        assertIterableEquals(List.of("str1", "str2"), of("str1", "str2").concat(ImmutableArray.empty()));
+        assertIterableEquals(List.of("str1", "str2"), of("str1", "str2").concat(ImmutableVector.empty()));
+
+        assertIterableEquals(List.of("str1", "str2", "str3", "str4"), of("str1", "str2").concat(ImmutableList.of("str3", "str4")));
+        assertIterableEquals(List.of("str1", "str2", "str3", "str4"), of("str1", "str2").concat(ImmutableArray.of("str3", "str4")));
+        assertIterableEquals(List.of("str1", "str2", "str3", "str4"), of("str1", "str2").concat(ImmutableVector.of("str3", "str4")));
     }
 
 }

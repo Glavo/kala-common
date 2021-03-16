@@ -91,6 +91,8 @@
     * `withDefault(Function<K, V>)`
 * Element Retrieval Operations
     * `find(Predicate<E>)`
+    * `findFirst(Predicate<E>)`
+    * `findLast(Predicate<E>)`
     * `first()`
     * `first(Predicate<E>)`
     * `firstOrNull()`
@@ -135,12 +137,17 @@
     * `takeLast(int)`
     * `takeWhile(Predicate<E>)`
     * `updated(int, E)`
+    * `concat(SeqLiek<E>)`
     * `filter(Predicate<E>)`
     * `filterNot(Predicate<E>)`
     * `filterNotNull()`
     * `map(Function<E, U>)`
+    * `mapNotNull(Function<E, U>)`
     * `mapIndexed(IndexedFunction<E, U>)`
+    * `mapIndexedNotNull(IndexedFunction<E, U>)`
     * `flatMap(Function<E, Iterable<U>>)`
+    * `sorted()`
+    * `sorted(Comparator<E>)`
     * `withIndex()`
     * `zip(Iterable<U>)`
     * `span(Predicate<E>)`
@@ -192,6 +199,7 @@
     * `toImmutableSeq()`
     * `toImmutableArray()`
     * `toImmutableList()`
+    * `toImmutableSizedList()`
     * `toImmutableVector()`
     * `toMutableSeq()`
     * `toMutableArray()`
