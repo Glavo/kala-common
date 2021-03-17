@@ -1,11 +1,8 @@
 package org.glavo.kala.collection.internal.view;
 
 import org.glavo.kala.collection.*;
+import org.glavo.kala.collection.immutable.*;
 import org.glavo.kala.tuple.Tuple2;
-import org.glavo.kala.collection.immutable.ImmutableArray;
-import org.glavo.kala.collection.immutable.ImmutableList;
-import org.glavo.kala.collection.immutable.ImmutableSeq;
-import org.glavo.kala.collection.immutable.ImmutableVector;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.factory.CollectionFactory;
@@ -60,6 +57,11 @@ public final class Views {
 
         @Override
         public @NotNull View<E> filterNot(@NotNull Predicate<? super E> predicate) {
+            return this;
+        }
+
+        @Override
+        public @NotNull View<@NotNull E> filterNotNull() {
             return this;
         }
 
@@ -391,6 +393,28 @@ public final class Views {
             return source.toImmutableVector();
         }
 
+        @Override
+        public final @NotNull <K, V> ImmutableMap<K, V> toImmutableMap() {
+            return source.toImmutableMap();
+        }
+
+        @Override
+        public final @NotNull <K, V> Map<K, V> associate(
+                @NotNull Function<? super E, ? extends java.util.Map.Entry<? extends K, ? extends V>> transform) {
+            return source.associate(transform);
+        }
+
+        @Override
+        public final @NotNull <K, V> Map<K, V> associateBy(
+                @NotNull Function<? super E, ? extends K> keySelector, @NotNull Function<? super E, ? extends V> valueTransform) {
+            return source.associateBy(keySelector, valueTransform);
+        }
+
+        @Override
+        public final @NotNull <K> Map<K, E> associateBy(@NotNull Function<? super E, ? extends K> keySelector) {
+            return source.associateBy(keySelector);
+        }
+
         //endregion
 
         //region Traverse Operations
@@ -525,7 +549,6 @@ public final class Views {
     }
 
     public static final class Filter<@Covariant E> extends AbstractView<E> {
-
         private final @NotNull View<E> source;
 
         private final @NotNull Predicate<? super E> predicate;
@@ -538,6 +561,35 @@ public final class Views {
         @Override
         public final @NotNull Iterator<E> iterator() {
             return Iterators.filter(source.iterator(), predicate);
+        }
+    }
+
+    public static final class FilterNot<@Covariant E> extends AbstractView<E> {
+        private final @NotNull View<E> source;
+
+        private final @NotNull Predicate<? super E> predicate;
+
+        public FilterNot(@NotNull View<E> source, @NotNull Predicate<? super E> predicate) {
+            this.source = source;
+            this.predicate = predicate;
+        }
+
+        @Override
+        public final @NotNull Iterator<E> iterator() {
+            return Iterators.filterNot(source.iterator(), predicate);
+        }
+    }
+
+    public static final class FilterNotNull<@Covariant E> extends AbstractView<E> {
+        private final @NotNull View<E> source;
+
+        public FilterNotNull(@NotNull View<E> source) {
+            this.source = source;
+        }
+
+        @Override
+        public final @NotNull Iterator<E> iterator() {
+            return Iterators.filterNotNull(source.iterator());
         }
     }
 

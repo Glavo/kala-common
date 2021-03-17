@@ -1526,7 +1526,6 @@ public final class Iterators {
         private final @NotNull Iterator<? extends E> source;
 
         private E nextValue = null;
-        private boolean flag = false;
 
         FilterNotNull(@NotNull Iterator<? extends E> source) {
             this.source = source;
@@ -1534,33 +1533,34 @@ public final class Iterators {
 
         @Override
         public final boolean hasNext() {
-            if (flag) {
+            if (nextValue != null) {
                 return true;
             }
             if (!source.hasNext()) {
                 return false;
             }
-            E v = source.next();
-            while (v == null) {
-                if (!source.hasNext()) {
-                    return false;
-                }
+
+            E v = null;
+            do {
                 v = source.next();
+            } while (v == null && source.hasNext());
+
+            if (v == null) {
+                return false;
             }
 
             this.nextValue = v;
-            flag = true;
             return true;
         }
 
         @Override
         public final E next() {
-            if (hasNext()) {
-                flag = false;
-                return nextValue;
-            } else {
+            if (!hasNext()) {
                 throw new NoSuchElementException();
             }
+            final E v = this.nextValue;
+            this.nextValue = null;
+            return v;
         }
     }
 

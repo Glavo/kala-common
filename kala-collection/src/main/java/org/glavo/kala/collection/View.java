@@ -1,6 +1,5 @@
 package org.glavo.kala.collection;
 
-import org.glavo.kala.collection.internal.view.SeqViews;
 import org.glavo.kala.collection.internal.view.Views;
 import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.annotations.Covariant;
@@ -38,11 +37,11 @@ public interface View<@Covariant E> extends CollectionLike<E> {
 
     default @NotNull View<E> filterNot(@NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
-        return new Views.Filter<>(this, predicate.negate());
+        return new Views.FilterNot<>(this, predicate);
     }
 
     default @NotNull View<@NotNull E> filterNotNull() {
-        return filter(Objects::nonNull); // TODO
+        return new Views.FilterNotNull<>(this);
     }
 
     default <U> @NotNull View<U> map(@NotNull Function<? super E, ? extends U> mapper) {

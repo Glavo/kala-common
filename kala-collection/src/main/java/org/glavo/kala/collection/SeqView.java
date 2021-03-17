@@ -195,7 +195,7 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqOps<E
         return sorted(null);
     }
 
-    default @NotNull SeqView<E> sorted(Comparator<? super E> comparator) {
+    default @NotNull SeqView<E> sorted(@SuppressWarnings("ConstantConditions") Comparator<? super E> comparator) {
         return new SeqViews.Sorted<>(this, comparator);
     }
 
@@ -212,12 +212,12 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqOps<E
     @Override
     default @NotNull SeqView<E> filterNot(@NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
-        return new SeqViews.Filter<>(this, predicate.negate());
+        return new SeqViews.FilterNot<>(this, predicate);
     }
 
     @Override
     default @NotNull SeqView<E> filterNotNull() {
-        return filter(Objects::nonNull);
+        return new SeqViews.FilterNotNull<>(this);
     }
 
     @Override

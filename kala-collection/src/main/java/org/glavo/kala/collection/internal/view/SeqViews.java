@@ -56,6 +56,11 @@ public final class SeqViews {
         }
 
         @Override
+        public @NotNull SeqView<@NotNull E> filterNotNull() {
+            return this;
+        }
+
+        @Override
         public @NotNull <U> SeqView<U> map(@NotNull Function<? super E, ? extends U> mapper) {
             return (SeqView<U>) this;
         }
@@ -81,7 +86,7 @@ public final class SeqViews {
         }
 
         @Override
-        public @NotNull SeqView<E> sorted(@NotNull Comparator<? super E> comparator) {
+        public @NotNull SeqView<E> sorted(Comparator<? super E> comparator) {
             return this;
         }
     }
@@ -108,6 +113,11 @@ public final class SeqViews {
             }
 
             return new Single<>(newValue);
+        }
+
+        @Override
+        public @NotNull SeqView<E> filterNotNull() {
+            return value == null ? SeqView.empty() : this;
         }
     }
 
@@ -785,10 +795,38 @@ public final class SeqViews {
             this.predicate = predicate;
         }
 
-
         @Override
         public final @NotNull Iterator<E> iterator() {
             return Iterators.filter(source.iterator(), predicate);
+        }
+    }
+
+    public static final class FilterNot<E> extends AbstractSeqView<E> {
+        private final @NotNull SeqView<E> source;
+
+        private final @NotNull Predicate<? super E> predicate;
+
+        public FilterNot(@NotNull SeqView<E> source, @NotNull Predicate<? super E> predicate) {
+            this.source = source;
+            this.predicate = predicate;
+        }
+
+        @Override
+        public final @NotNull Iterator<E> iterator() {
+            return Iterators.filterNot(source.iterator(), predicate);
+        }
+    }
+
+    public static final class FilterNotNull<E> extends AbstractSeqView<E> {
+        private final @NotNull SeqView<E> source;
+
+        public FilterNotNull(@NotNull SeqView<E> source) {
+            this.source = source;
+        }
+
+        @Override
+        public final @NotNull Iterator<E> iterator() {
+            return Iterators.filterNotNull(source.iterator());
         }
     }
 
