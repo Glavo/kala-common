@@ -76,4 +76,31 @@ final class MapIterators {
         }
     }
 
+    static final class MapValues<K, V, OldV> extends AbstractMapIterator<K, V> {
+        private final @NotNull MapIterator<? extends K, ? extends OldV> source;
+        private final @NotNull BiFunction<? super K, ? super OldV, ? extends V> mapper;
+
+        private K k;
+
+        MapValues(@NotNull MapIterator<? extends K, ? extends OldV> source, @NotNull BiFunction<? super K, ? super OldV, ? extends V> mapper) {
+            this.source = source;
+            this.mapper = mapper;
+        }
+
+        @Override
+        public final boolean hasNext() {
+            return source.hasNext();
+        }
+
+        @Override
+        public final K nextKey() {
+            return k = source.nextKey();
+        }
+
+        @Override
+        public final V getValue() {
+            return mapper.apply(k, source.getValue());
+        }
+    }
+
 }

@@ -8,7 +8,6 @@ import org.glavo.kala.tuple.Tuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -42,6 +41,11 @@ public final class MapViews {
         @Override
         public final @NotNull <U> View<U> map(@NotNull BiFunction<? super K, ? super V, ? extends U> mapper) {
             return View.empty();
+        }
+
+        @Override
+        public final @NotNull <NV> MapView<K, NV> mapValues(@NotNull BiFunction<? super K, ? super V, ? extends NV> mapper) {
+            return MapView.empty();
         }
 
         @Override
@@ -271,6 +275,40 @@ public final class MapViews {
         @Override
         public final @NotNull Iterator<E> iterator() {
             return source.iterator().map(mapper);
+        }
+
+        //region Size Info
+
+        @Override
+        public final boolean isEmpty() {
+            return source.isEmpty();
+        }
+
+        @Override
+        public final int size() {
+            return source.size();
+        }
+
+        @Override
+        public final int knownSize() {
+            return source.knownSize();
+        }
+
+        //endregion
+    }
+
+    public static class MapValues<K, V, OldV> extends AbstractMapView<K, V> {
+        protected final @NotNull MapLike<K, OldV> source;
+        protected final @NotNull BiFunction<? super K, ? super OldV, ? extends V> mapper;
+
+        public MapValues(@NotNull MapLike<K, OldV> source, @NotNull BiFunction<? super K, ? super OldV, ? extends V> mapper) {
+            this.source = source;
+            this.mapper = mapper;
+        }
+
+        @Override
+        public final @NotNull MapIterator<K, V> iterator() {
+            return source.iterator().mapValues(mapper);
         }
 
         //region Size Info

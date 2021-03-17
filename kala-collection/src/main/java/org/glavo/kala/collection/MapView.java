@@ -36,4 +36,10 @@ public interface MapView<K, V> extends MapLike<K, V> {
         Objects.requireNonNull(mapper);
         return new MapViews.Mapped<>(this, mapper);
     }
+
+    default <NV> @NotNull MapView<K, NV> mapValues(@NotNull BiFunction<? super K, ? super V, ? extends NV> mapper) {
+        Objects.requireNonNull(mapper);
+        return new MapViews.MapValues<>(this, mapper);
+    }
+
 }
