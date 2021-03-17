@@ -16,9 +16,9 @@ public interface FullCollectionOps<E, CC extends CollectionLike<?>, COLL extends
 
     @NotNull COLL filterNotNull();
 
-    @NotNull <U> CC map(@NotNull Function<? super E, ? extends U> mapper);
+    <U> @NotNull CC map(@NotNull Function<? super E, ? extends U> mapper);
 
-    @NotNull <U> CC mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper);
+    <U> @NotNull CC mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper);
 
     @Contract(pure = true)
     <U> @NotNull CC flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper);

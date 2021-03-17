@@ -101,6 +101,14 @@ public interface MapIterator<K, V> extends Iterator<Tuple2<K, V>> {
         return true;
     }
 
+    default <U> @NotNull Iterator<U> map(@NotNull BiFunction<? super K, ? super V, ? extends U> mapper) {
+        Objects.requireNonNull(mapper);
+        if (!hasNext()) {
+            return Iterators.empty();
+        }
+        return new MapIterators.Mapped<>(this, mapper);
+    }
+
     default int hash() {
         int hash = 0;
         while (hasNext()) {

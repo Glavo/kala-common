@@ -152,7 +152,7 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
 
     public static <E> @NotNull ImmutableList<E> from(@NotNull Iterator<? extends E> it) {
         if (!it.hasNext()) { // implicit null check of it
-            return empty();
+            return nil();
         }
         ImmutableList<E> cons = new ImmutableList<>(it.next());
         cons.appendIterator(it).tail = nil();
@@ -161,7 +161,7 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
 
     public static <E> @NotNull ImmutableList<E> fill(int n, E value) {
         ImmutableList<E> res = ImmutableList.nil();
-        while (n-- > 0) {
+        for (int i = 0; i < n; i++) {
             res = new ImmutableList<>(value, res);
         }
         return res;
@@ -172,15 +172,14 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
             return nil();
         }
         final ImmutableList<E> res = new ImmutableList<>(supplier.get());
-        ImmutableList<E> tail = res;
+        ImmutableList<E> t = res;
 
-        while (--n > 0) {
-            ImmutableList<E> c = new ImmutableList<>(supplier.get());
-            tail.tail = c;
-            tail = c;
+        for (int i = 1; i < n; i++) {
+            ImmutableList<E> nl = new ImmutableList<>(supplier.get());
+            t.tail = nl;
+            t = nl;
         }
-        tail.tail = nil();
-
+        t.tail = nil();
         return res;
     }
 
@@ -189,22 +188,20 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
             return nil();
         }
         final ImmutableList<E> res = new ImmutableList<>(init.apply(0));
-        ImmutableList<E> tail = res;
+        ImmutableList<E> t = res;
 
-        int i = 0;
-        while (--n > 0) {
-            ImmutableList<E> c = new ImmutableList<>(init.apply(++i));
-            tail.tail = c;
-            tail = c;
+        for (int i = 1; i < n; i++) {
+            ImmutableList<E> nl = new ImmutableList<>(init.apply(i));
+            t.tail = nl;
+            t = nl;
         }
-        tail.tail = nil();
-
+        t.tail = nil();
         return res;
     }
 
     //endregion
 
-    final ImmutableList<E> appendIterator(@NotNull Iterator<? extends E> it) {
+    private ImmutableList<E> appendIterator(@NotNull Iterator<? extends E> it) {
         ImmutableList<E> node = this;
         while (it.hasNext()) {
             ImmutableList<E> nn = new ImmutableList<>(it.next());
@@ -410,14 +407,8 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
             }
             if (values instanceof java.util.List<?>) {
                 final List<E> list = (List<E>) values;
-                final int listSize = list.size();
-
-                if (listSize == 0) {
-                    return this;
-                }
-
                 ImmutableList<E> res = this;
-                for (int i = listSize - 1; i >= 0; i--) {
+                for (int i = list.size() - 1; i >= 0; i--) {
                     res = res.cons(list.get(i));
                 }
                 return res;
@@ -429,7 +420,7 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
             return this;
         }
         final ImmutableList<E> res = new ImmutableList<>(it.next());
-        res.appendIterator(it).tail = nil();
+        res.appendIterator(it).tail = this;
         return res;
     }
 

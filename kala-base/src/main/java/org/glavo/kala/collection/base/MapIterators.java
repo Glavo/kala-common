@@ -1,8 +1,11 @@
 package org.glavo.kala.collection.base;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.function.BiFunction;
 
 final class MapIterators {
     private MapIterators() {
@@ -50,6 +53,26 @@ final class MapIterators {
         @Override
         public final V getValue() {
             return value;
+        }
+    }
+
+    static final class Mapped<E, K, V> extends AbstractIterator<E> {
+        private final @NotNull MapIterator<? extends K, ? extends V> source;
+        private final @NotNull BiFunction<? super K, ? super V, ? extends E> mapper;
+
+        Mapped(@NotNull MapIterator<? extends K, ? extends V> source, @NotNull BiFunction<? super K, ? super V, ? extends E> mapper) {
+            this.source = source;
+            this.mapper = mapper;
+        }
+
+        @Override
+        public final boolean hasNext() {
+            return source.hasNext();
+        }
+
+        @Override
+        public final E next() {
+            return mapper.apply(source.nextKey(), source.getValue());
         }
     }
 

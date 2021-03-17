@@ -1,21 +1,55 @@
 package org.glavo.kala.collection.internal.view;
 
-import org.glavo.kala.collection.AbstractMapView;
-import org.glavo.kala.collection.MapLike;
-import org.glavo.kala.collection.MapView;
+import org.glavo.kala.collection.*;
 import org.glavo.kala.collection.base.MapIterator;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.function.CheckedBiConsumer;
+import org.glavo.kala.tuple.Tuple2;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
+import java.util.Iterator;
 import java.util.Objects;
-import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 public final class MapViews {
+    public static class Empty<K, V> extends AbstractMapView<K, V> {
+
+        public static final Empty<?, ?> INSTANCE = new Empty<>();
+
+        @Override
+        public final @NotNull MapIterator<K, V> iterator() {
+            return MapIterator.empty();
+        }
+
+        @Override
+        public final boolean isEmpty() {
+            return true;
+        }
+
+        @Override
+        public final int size() {
+            return 0;
+        }
+
+        @Override
+        public final int knownSize() {
+            return 0;
+        }
+
+        @Override
+        public final @NotNull <U> View<U> map(@NotNull BiFunction<? super K, ? super V, ? extends U> mapper) {
+            return View.empty();
+        }
+
+        @Override
+        public String toString() {
+            return className() + "{}";
+        }
+    }
+
     public static class Of<K, V, M extends MapLike<K, V>> extends AbstractMapView<K, V> {
         protected final @NotNull M source;
 
@@ -104,9 +138,8 @@ public final class MapViews {
         }
 
         @Override
-        @NotNull
-        public String joinToString() {
-            return source.joinToString();
+        public @NotNull Tuple2<K, V>[] toArray() {
+            return source.toArray();
         }
 
         @Override
@@ -123,14 +156,83 @@ public final class MapViews {
         public void forEachUnchecked(@NotNull CheckedBiConsumer<? super K, ? super V, ?> consumer) {
             source.forEachUnchecked(consumer);
         }
+
+        @Override
+        public <A extends Appendable> @NotNull A joinTo(@NotNull A buffer) {
+            return source.joinTo(buffer);
+        }
+
+        @Override
+        public <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, CharSequence separator) {
+            return source.joinTo(buffer, separator);
+        }
+
+        @Override
+        @Contract(value = "_, _, _, _ -> param1", mutates = "param1")
+        public <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, CharSequence separator, CharSequence prefix, CharSequence postfix) {
+            return source.joinTo(buffer, separator, prefix, postfix);
+        }
+
+        @Override
+        public <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, @NotNull BiFunction<? super K, ? super V, ? extends CharSequence> transform) {
+            return source.joinTo(buffer, transform);
+        }
+
+        @Override
+        public <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, CharSequence separator, @NotNull BiFunction<? super K, ? super V, ? extends CharSequence> transform) {
+            return source.joinTo(buffer, separator, transform);
+        }
+
+        @Override
+        @Contract(value = "_, _, _, _, _ -> param1", mutates = "param1")
+        public <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, CharSequence separator, CharSequence prefix, CharSequence postfix, @NotNull BiFunction<? super K, ? super V, ? extends CharSequence> transform) {
+            return source.joinTo(buffer, separator, prefix, postfix, transform);
+        }
+
+        @Override
+        public @NotNull String joinToString() {
+            return source.joinToString();
+        }
+
+        @Override
+        public @NotNull String joinToString(CharSequence separator) {
+            return source.joinToString(separator);
+        }
+
+        @Override
+        public @NotNull String joinToString(CharSequence separator, CharSequence prefix, CharSequence postfix) {
+            return source.joinToString(separator, prefix, postfix);
+        }
+
+        @Override
+        public @NotNull String joinToString(@NotNull BiFunction<? super K, ? super V, ? extends CharSequence> transform) {
+            return source.joinToString(transform);
+        }
+
+        @Override
+        public @NotNull String joinToString(CharSequence separator, @NotNull BiFunction<? super K, ? super V, ? extends CharSequence> transform) {
+            return source.joinToString(separator, transform);
+        }
+
+        @Override
+        public @NotNull String joinToString(CharSequence separator, CharSequence prefix, CharSequence postfix, @NotNull BiFunction<? super K, ? super V, ? extends CharSequence> transform) {
+            return source.joinToString(separator, prefix, postfix, transform);
+        }
+
     }
 
-    public static class WithDefault<K, V, M extends MapLike<K, V>> extends Of<K, V, M> {
+    public static class WithDefaultImpl<K, V, M extends MapLike<K, V>> extends Of<K, V, M>
+            implements MapView.WithDefault<K, V> {
         protected final @NotNull Function<? super K, ? extends V> defaultFunction;
 
-        public WithDefault(@NotNull M source, @NotNull Function<? super K, ? extends V> defaultFunction) {
+        public WithDefaultImpl(@NotNull M source, @NotNull Function<? super K, ? extends V> defaultFunction) {
             super(source);
             this.defaultFunction = defaultFunction;
+        }
+
+        @Override
+        public final @NotNull Function<? super K, ? extends V> getDefaultFunction() {
+            return defaultFunction;
         }
 
         @Override
@@ -151,9 +253,43 @@ public final class MapViews {
         }
 
         @Override
-        public @NotNull MapView<K, V> withDefault(@NotNull Function<? super K, ? extends V> defaultFunction) {
+        public @NotNull MapView.WithDefault<K, V> withDefault(@NotNull Function<? super K, ? extends V> defaultFunction) {
             Objects.requireNonNull(defaultFunction);
-            return new WithDefault<>(source, defaultFunction);
+            return new WithDefaultImpl<>(source, defaultFunction);
         }
+    }
+
+    public static class Mapped<E, K, V> extends AbstractView<E> {
+        protected final @NotNull MapLike<K, V> source;
+        protected final @NotNull BiFunction<? super K, ? super V, ? extends E> mapper;
+
+        public Mapped(@NotNull MapLike<K, V> source, @NotNull BiFunction<? super K, ? super V, ? extends E> mapper) {
+            this.source = source;
+            this.mapper = mapper;
+        }
+
+        @Override
+        public final @NotNull Iterator<E> iterator() {
+            return source.iterator().map(mapper);
+        }
+
+        //region Size Info
+
+        @Override
+        public final boolean isEmpty() {
+            return source.isEmpty();
+        }
+
+        @Override
+        public final int size() {
+            return source.size();
+        }
+
+        @Override
+        public final int knownSize() {
+            return source.knownSize();
+        }
+
+        //endregion
     }
 }
