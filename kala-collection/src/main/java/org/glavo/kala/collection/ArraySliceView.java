@@ -14,13 +14,11 @@ public class ArraySliceView<E> extends AbstractIndexedSeqView<E> {
     protected final Object[] array;
     protected final int beginIndex;
     protected final int endIndex;
-    protected final int size;
 
     protected ArraySliceView(Object[] array, int beginIndex, int endIndex) {
         this.array = array;
         this.beginIndex = beginIndex;
         this.endIndex = endIndex;
-        this.size = endIndex - beginIndex;
     }
 
     @Override
@@ -35,7 +33,7 @@ public class ArraySliceView<E> extends AbstractIndexedSeqView<E> {
 
     @Override
     public final int size() {
-        return size;
+        return endIndex - beginIndex;
     }
 
     public final int beginIndex() {
@@ -54,14 +52,14 @@ public class ArraySliceView<E> extends AbstractIndexedSeqView<E> {
 
     @Override
     public final @Nullable E getOrNull(int index) {
-        return index < 0 || index >= size
+        return index < 0 || index >= size()
                 ? null
                 : (E) array[beginIndex + index];
     }
 
     @Override
     public final @NotNull Option<E> getOption(int index) {
-        return index < 0 || index >= size
+        return index < 0 || index >= size()
                 ? Option.none()
                 : Option.some((E) array[beginIndex + index]);
     }

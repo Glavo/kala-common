@@ -21,7 +21,7 @@ public final class MutableArraySliceView<E> extends ArraySliceView<E> {
 
     @Override
     public @NotNull MutableArraySliceView<E> slice(int beginIndex, int endIndex) {
-        Conditions.checkPositionIndices(beginIndex, endIndex, this.endIndex - this.beginIndex);
+        Conditions.checkPositionIndices(beginIndex, endIndex, size());
         return new MutableArraySliceView<>(array, this.beginIndex + beginIndex, this.beginIndex + endIndex);
     }
 

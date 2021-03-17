@@ -207,6 +207,7 @@
     * `toArrayBuffer()`
     * `toLinkedBuffer()`
     * `toDoubleLinkedBuffer()`
+    * `toMap()`
     * `associate(Function)`
     * `associateBy(Function)`
     * `associateBy(Function, Function)`

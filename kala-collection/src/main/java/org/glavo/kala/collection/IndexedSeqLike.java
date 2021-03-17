@@ -2,13 +2,16 @@ package org.glavo.kala.collection;
 
 import org.glavo.kala.Conditions;
 import org.glavo.kala.collection.base.Iterators;
+import org.glavo.kala.collection.factory.MapFactory;
 import org.glavo.kala.collection.immutable.ImmutableList;
+import org.glavo.kala.collection.immutable.ImmutableMap;
 import org.glavo.kala.collection.internal.view.IndexedSeqViews;
 import org.glavo.kala.collection.base.Growable;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.function.IndexedBiFunction;
 import org.glavo.kala.function.IndexedConsumer;
 import org.glavo.kala.function.IndexedFunction;
+import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.tuple.primitive.IntObjTuple2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -500,7 +503,6 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
 
     //endregion
 
-
     @Override
     default <G extends Growable<? super E>> @NotNull G filterTo(@NotNull G destination, @NotNull Predicate<? super E> predicate) {
         for (int i = 0; i < this.size(); i++) {
@@ -798,6 +800,88 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
             list = list.cons(get(i));
         }
         return list;
+    }
+
+    @Override
+    default @NotNull <K, V> ImmutableMap<K, V> toImmutableMap() {
+        final int size = this.size();
+        if (size == 0) {
+            return ImmutableMap.empty();
+        }
+
+        @SuppressWarnings({"unchecked", "rawtypes"}) final MapFactory<K, V, Object, ImmutableMap<K, V>> factory =
+                (MapFactory) Map.factory();
+        final Object builder = factory.newBuilder();
+        factory.sizeHint(builder, size);
+
+        for (int i = 0; i < size; i++) {
+            @SuppressWarnings("unchecked") final java.util.Map.Entry<K, V> v = (java.util.Map.Entry<K, V>) this.get(i);
+            factory.addToBuilder(builder, v.getKey(), v.getValue());
+        }
+
+        return factory.build(builder);
+    }
+
+    @Override
+    default <K, V> @NotNull Map<K, V> associate(
+            @NotNull Function<? super E, ? extends java.util.Map.Entry<? extends K, ? extends V>> transform) {
+        final int size = this.size();
+        if (size == 0) {
+            return Map.empty();
+        }
+
+        @SuppressWarnings({"unchecked", "rawtypes"}) final MapFactory<K, V, Object, Map<K, V>> factory =
+                (MapFactory) Map.factory();
+        final Object builder = factory.newBuilder();
+        factory.sizeHint(builder, size);
+
+        for (int i = 0; i < size; i++) {
+            final java.util.Map.Entry<? extends K, ? extends V> v = transform.apply(this.get(i));
+            factory.addToBuilder(builder, v.getKey(), v.getValue());
+        }
+
+        return factory.build(builder);
+    }
+
+    @Override
+    default <K> @NotNull Map<K, E> associateBy(@NotNull Function<? super E, ? extends K> keySelector) {
+        final int size = this.size();
+        if (size == 0) {
+            return Map.empty();
+        }
+
+        @SuppressWarnings({"unchecked", "rawtypes"}) final MapFactory<K, E, Object, Map<K, E>> factory =
+                (MapFactory) Map.factory();
+        final Object builder = factory.newBuilder();
+        factory.sizeHint(builder, size);
+
+        for (int i = 0; i < size; i++) {
+            final E e = this.get(i);
+            factory.addToBuilder(builder, keySelector.apply(e), e);
+        }
+
+        return factory.build(builder);
+    }
+
+    @Override
+    default <K, V> @NotNull Map<K, V> associateBy(
+            @NotNull Function<? super E, ? extends K> keySelector, @NotNull Function<? super E, ? extends V> valueTransform) {
+        final int size = this.size();
+        if (size == 0) {
+            return Map.empty();
+        }
+
+        @SuppressWarnings({"unchecked", "rawtypes"}) final MapFactory<K, V, Object, Map<K, V>> factory =
+                (MapFactory) Map.factory();
+        final Object builder = factory.newBuilder();
+        factory.sizeHint(builder, size);
+
+        for (int i = 0; i < size; i++) {
+            final E e = this.get(i);
+            factory.addToBuilder(builder, keySelector.apply(e), valueTransform.apply(e));
+        }
+
+        return factory.build(builder);
     }
 
     @Override

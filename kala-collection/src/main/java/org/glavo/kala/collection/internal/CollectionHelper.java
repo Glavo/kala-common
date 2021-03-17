@@ -1,6 +1,7 @@
 package org.glavo.kala.collection.internal;
 
 import org.glavo.kala.collection.ArraySeq;
+import org.glavo.kala.collection.CollectionLike;
 import org.glavo.kala.collection.IndexedSeq;
 import org.glavo.kala.collection.Seq;
 import org.glavo.kala.collection.base.Traversable;
@@ -11,10 +12,12 @@ import org.glavo.kala.collection.internal.convert.FromJavaConvert;
 import org.glavo.kala.collection.mutable.ArrayBuffer;
 import org.glavo.kala.collection.mutable.LinkedBuffer;
 import org.glavo.kala.collection.mutable.MutableArray;
+import org.glavo.kala.tuple.Tuple2;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.function.Function;
 
 @SuppressWarnings("unchecked")
 @StaticClass

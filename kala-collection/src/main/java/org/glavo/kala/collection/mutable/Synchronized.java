@@ -4,10 +4,7 @@ import org.glavo.kala.collection.*;
 import org.glavo.kala.collection.Map;
 import org.glavo.kala.collection.base.Growable;
 import org.glavo.kala.collection.factory.CollectionFactory;
-import org.glavo.kala.collection.immutable.ImmutableArray;
-import org.glavo.kala.collection.immutable.ImmutableList;
-import org.glavo.kala.collection.immutable.ImmutableSeq;
-import org.glavo.kala.collection.immutable.ImmutableVector;
+import org.glavo.kala.collection.immutable.*;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.function.*;
 import org.glavo.kala.tuple.Tuple2;
@@ -672,9 +669,30 @@ final class Synchronized {
         }
 
         @Override
-        public @NotNull <K, V> Map<K, V> associate(@NotNull Function<? super E, ? extends Tuple2<? extends K, ? extends V>> transform) {
+        public @NotNull <K, V> ImmutableMap<K, V> toImmutableMap() {
+            synchronized (mutex) {
+                return source.toImmutableMap();
+            }
+        }
+
+        @Override
+        public @NotNull <K, V> Map<K, V> associate(@NotNull Function<? super E, ? extends java.util.Map.Entry<? extends K, ? extends V>> transform) {
             synchronized (mutex) {
                 return source.associate(transform);
+            }
+        }
+
+        @Override
+        public @NotNull <K> Map<K, E> associateBy(@NotNull Function<? super E, ? extends K> keySelector) {
+            synchronized (mutex) {
+                return source.associateBy(keySelector);
+            }
+        }
+
+        @Override
+        public @NotNull <K, V> Map<K, V> associateBy(@NotNull Function<? super E, ? extends K> keySelector, @NotNull Function<? super E, ? extends V> valueTransform) {
+            synchronized (mutex) {
+                return source.associateBy(keySelector, valueTransform);
             }
         }
 
