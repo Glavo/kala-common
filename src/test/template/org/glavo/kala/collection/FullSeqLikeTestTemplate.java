@@ -3,13 +3,12 @@ package org.glavo.kala.collection;
 import org.glavo.kala.collection.immutable.ImmutableArray;
 import org.glavo.kala.collection.immutable.ImmutableList;
 import org.glavo.kala.collection.immutable.ImmutableVector;
+import org.glavo.kala.comparator.Comparators;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
@@ -291,7 +290,22 @@ public interface FullSeqLikeTestTemplate extends FullCollectionLikeTestTemplate,
 
             assertIterableEquals(res, from(d).mapIndexedNotNull((idx, v) -> v > 0 ? String.format("%d%d", idx, v) : null));
         }
+    }
 
+    @Test
+    default void sortedTest() {
+        assertIterableEquals(List.of(), of().sorted());
+        assertIterableEquals(List.of(), of().sorted(null));
+        assertIterableEquals(List.of(), of().sorted(Comparators.reverseOrder()));
+
+        for (Integer[] data : data1()) {
+            final List<Integer> res1 = Arrays.stream(data).sorted().collect(Collectors.toList());
+            final List<Integer> res2 = Arrays.stream(data).sorted(Comparators.reverseOrder()).collect(Collectors.toList());
+
+            assertIterableEquals(res1, from(data).sorted());
+            assertIterableEquals(res1, from(data).sorted(null));
+            assertIterableEquals(res2, from(data).sorted(Comparators.reverseOrder()));
+        }
 
     }
 }
