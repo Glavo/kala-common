@@ -30,6 +30,8 @@ public interface FullSeqLikeOps<E, CC extends SeqLike<?>, COLL extends SeqLike<E
 
     @NotNull COLL concat(@NotNull SeqLike<? extends E> other);
 
+    @NotNull COLL concat(java.util.@NotNull List<? extends E> other);
+
     @NotNull COLL prepended(E element);
 
     @NotNull COLL prependedAll(@NotNull Iterable<? extends E> values);

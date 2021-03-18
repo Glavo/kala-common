@@ -40,6 +40,21 @@ public final class ImmutableCollectionTest implements ImmutableCollectionTestTem
         };
     }
 
+    @Override
+    public <E> ImmutableCollection<E> of(E... elements) {
+        return ImmutableCollection.from(elements);
+    }
+
+    @Override
+    public <E> ImmutableCollection<E> from(E[] elements) {
+        return ImmutableCollection.from(elements);
+    }
+
+    @Override
+    public <E> ImmutableCollection<E> from(Iterable<? extends E> elements) {
+        return ImmutableCollection.from(elements);
+    }
+
     @Test
     public final void ofTest() {
         assertIterableEquals(List.of(), ImmutableCollection.of());

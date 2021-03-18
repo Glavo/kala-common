@@ -1,6 +1,7 @@
 package org.glavo.kala.collection.factory;
 
 import org.glavo.kala.annotations.Covariant;
+import org.glavo.kala.collection.base.AnyTraversable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -94,6 +95,11 @@ public interface CollectionFactory<E, Builder, @Covariant R>
         if (it instanceof Collection<?>) {
             int s = ((Collection<?>) it).size();
             this.sizeHint(builder, s + delta);
+        } else if (it instanceof AnyTraversable) {
+            final int ks = ((AnyTraversable<?, ?, ?, ?, ?, ?>) it).knownSize();
+            if (ks >= 0) {
+                this.sizeHint(builder, ks + delta);
+            }
         }
     }
 

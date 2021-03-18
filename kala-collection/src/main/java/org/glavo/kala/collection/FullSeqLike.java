@@ -28,6 +28,8 @@ public interface FullSeqLike<E> extends FullCollectionLike<E>, SeqLike<E> {
 
     @NotNull FullSeqLike<E> concat(@NotNull SeqLike<? extends E> other);
 
+    @NotNull FullSeqLike<E> concat(java.util.@NotNull List<? extends E> other);
+
     @NotNull FullSeqLike<E> prepended(E element);
 
     @NotNull FullSeqLike<E> prependedAll(@NotNull Iterable<? extends E> values);

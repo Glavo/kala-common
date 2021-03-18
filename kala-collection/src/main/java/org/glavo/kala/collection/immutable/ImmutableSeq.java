@@ -160,6 +160,11 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
         return AbstractImmutableSeq.concat(this, other, iterableFactory());
     }
 
+    @Override
+    default @NotNull ImmutableSeq<E> concat(@NotNull List<? extends E> other) {
+        return AbstractImmutableSeq.concat(this, other, iterableFactory());
+    }
+
     @Contract(pure = true)
     default @NotNull ImmutableSeq<E> appended(E value) {
         return AbstractImmutableSeq.appended(this, value, iterableFactory());

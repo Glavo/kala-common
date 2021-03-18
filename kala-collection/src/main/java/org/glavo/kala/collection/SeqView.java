@@ -1,6 +1,7 @@
 package org.glavo.kala.collection;
 
 import org.glavo.kala.Conditions;
+import org.glavo.kala.collection.internal.convert.AsJavaConvert;
 import org.glavo.kala.collection.internal.view.SeqViews;
 import org.glavo.kala.tuple.Tuple;
 import org.glavo.kala.tuple.Tuple2;
@@ -17,6 +18,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+@SuppressWarnings("unchecked")
 public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqLike<E>,
         FullSeqLikeOps<E, SeqView<?>, SeqView<E>> {
 
@@ -160,6 +162,16 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqLike<
     default @NotNull SeqView<E> concat(@NotNull SeqLike<? extends E> other) {
         Objects.requireNonNull(other);
         return new SeqViews.Concat<>(this, narrow(other.view()));
+    }
+
+    @Override
+    default @NotNull SeqView<E> concat(java.util.@NotNull List<? extends E> other) {
+        Objects.requireNonNull(other);
+        if (other instanceof AsJavaConvert.SeqAsJava) {
+            return concat(((AsJavaConvert.SeqAsJava<E, ?>) other).source);
+        } else {
+            return concat(Seq.wrapJava(other).view());
+        }
     }
 
     default @NotNull SeqView<E> appended(E value) {

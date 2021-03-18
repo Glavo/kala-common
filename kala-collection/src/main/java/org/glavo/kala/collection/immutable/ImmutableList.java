@@ -673,6 +673,45 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
     }
 
     @Override
+    public final @NotNull ImmutableList<E> concat(@NotNull List<? extends E> other) {
+        if (this == NIL) {
+            return ImmutableList.from(other);
+        }
+
+        final int os = other.size();
+        if (os == 0) {
+            return this;
+        }
+
+        final ImmutableList<E> res = new ImmutableList<>(this.head);
+        ImmutableList<E> t = res;
+
+        ImmutableList<E> list = this.tail;
+        while (list != NIL) {
+            ImmutableList<E> nl = new ImmutableList<>(list.head);
+            t.tail = nl;
+            t = nl;
+            list = list.tail;
+        }
+
+        if (other instanceof RandomAccess) {
+            for (int i = 0; i < os; i++) {
+                ImmutableList<E> nl = new ImmutableList<>(other.get(i));
+                t.tail = nl;
+                t = nl;
+            }
+        } else {
+            for (E e : other) {
+                ImmutableList<E> nl = new ImmutableList<>(e);
+                t.tail = nl;
+                t = nl;
+            }
+        }
+        t.tail = nil();
+        return res;
+    }
+
+    @Override
     public final <U> @NotNull ImmutableList<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
         if (this == NIL) {
             return nil();

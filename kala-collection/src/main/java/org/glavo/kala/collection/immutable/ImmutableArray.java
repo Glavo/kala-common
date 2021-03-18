@@ -429,6 +429,11 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
+    public final @NotNull ImmutableArray<E> concat(@NotNull List<? extends E> other) {
+        return appendedAll(other);
+    }
+
+    @Override
     public final <U> @NotNull ImmutableArray<U> map(@NotNull Function<? super E, ? extends U> mapper) {
         final Object[] elements = this.elements;
         final int size = elements.length;

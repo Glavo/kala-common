@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Range;
 
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.RandomAccess;
 import java.util.function.Function;
 import java.util.function.IntFunction;
@@ -595,6 +596,51 @@ public final class ImmutableSizedList<E> extends AbstractImmutableSeq<E>
 
     @Override
     public final @NotNull ImmutableSizedList<E> concat(@NotNull SeqLike<? extends E> other) {
+        final int size = this.size;
+        final int otherSize = other.size();
+        if (otherSize == 0) {
+            return this;
+        }
+        if (size == 0) {
+            return new ImmutableSizedList<>(ImmutableList.from(other), size);
+        }
+
+        ImmutableList<E> list = this.list;
+        final ImmutableList<E> res = new ImmutableList<>(list.head);
+        ImmutableList<E> t = res;
+        list = list.tail;
+
+        while (list != ImmutableList.NIL) {
+            ImmutableList<E> nl = new ImmutableList<>(list.head);
+            t.tail = nl;
+            t = nl;
+            list = list.tail;
+        }
+
+        if (other instanceof RandomAccess) {
+            for (int i = 0; i < otherSize; i++) {
+                ImmutableList<E> nl = new ImmutableList<>(other.get(i));
+                t.tail = nl;
+                t = nl;
+            }
+            t.tail = ImmutableList.nil();
+            return new ImmutableSizedList<>(res, size + otherSize);
+        } else {
+            int c = this.size;
+            for (E e : other) {
+                ImmutableList<E> nl = new ImmutableList<>(e);
+                t.tail = nl;
+                t = nl;
+                c++;
+            }
+            assert c == size + otherSize;
+            t.tail = ImmutableList.nil();
+            return new ImmutableSizedList<>(res, c);
+        }
+    }
+
+    @Override
+    public final @NotNull ImmutableSizedList<E> concat(java.util.@NotNull List<? extends E> other) {
         final int size = this.size;
         final int otherSize = other.size();
         if (otherSize == 0) {

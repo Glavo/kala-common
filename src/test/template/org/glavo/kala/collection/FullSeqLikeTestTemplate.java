@@ -195,20 +195,20 @@ public interface FullSeqLikeTestTemplate extends FullCollectionLikeTestTemplate,
         {
             var seq = from(List.of("foo"));
             assertIterableEquals(List.of("bar"), seq.updated(0, "bar"));
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(1, "bar"));
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(-1, "bar"));
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MAX_VALUE, "bar"));
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MIN_VALUE, "bar"));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(1, "bar").toImmutableList());
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(-1, "bar").toImmutableList());
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MAX_VALUE, "bar").toImmutableList());
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MIN_VALUE, "bar").toImmutableList());
         }
 
         {
             var seq = from(List.of("foo", "bar"));
             assertIterableEquals(List.of("zzz", "bar"), seq.updated(0, "zzz"));
             assertIterableEquals(List.of("foo", "zzz"), seq.updated(1, "zzz"));
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(2, "zzz"));
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MIN_VALUE, "zzz"));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(2, "zzz").toImmutableList());
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MIN_VALUE, "zzz").toImmutableList());
             assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(-1, "zzz"));
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MIN_VALUE, "zzz"));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MIN_VALUE, "zzz").toImmutableList());
         }
     }
 

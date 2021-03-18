@@ -1,5 +1,6 @@
 package org.glavo.kala.collection.immutable;
 
+import org.glavo.kala.collection.FullCollectionLike;
 import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.factory.CollectionFactory;
@@ -18,7 +19,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
-public interface ImmutableCollection<@Covariant E> extends Collection<E> {
+public interface ImmutableCollection<@Covariant E> extends Collection<E>, FullCollectionLike<E> {
 
     //region Narrow method
 
