@@ -1,8 +1,8 @@
 package org.glavo.kala.collection.immutable;
 
-import org.glavo.kala.collection.internal.FullSeqOps;
+import org.glavo.kala.collection.FullSeqLikeOps;
 
 public interface ImmutableSeqOps<E, CC extends ImmutableSeq<?>, COLL extends ImmutableSeq<E>>
-        extends FullSeqOps<E, CC, COLL> {
+        extends FullSeqLikeOps<E, CC, COLL> {
 
 }

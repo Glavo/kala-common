@@ -548,6 +548,22 @@ public final class Views {
         //endregion
     }
 
+    public static class MapNotNull<E, T> extends AbstractView<E> {
+        private final @NotNull View<T> source;
+
+        private final @NotNull Function<? super T, ? extends E> mapper;
+
+        public MapNotNull(@NotNull View<T> source, @NotNull Function<? super T, ? extends E> mapper) {
+            this.source = source;
+            this.mapper = mapper;
+        }
+
+        @Override
+        public @NotNull Iterator<E> iterator() {
+            return Iterators.mapNotNull(source.iterator(), mapper);
+        }
+    }
+
     public static final class Filter<@Covariant E> extends AbstractView<E> {
         private final @NotNull View<E> source;
 

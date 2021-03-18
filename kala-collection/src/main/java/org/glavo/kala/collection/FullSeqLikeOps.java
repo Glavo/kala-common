@@ -1,6 +1,6 @@
-package org.glavo.kala.collection.internal;
+package org.glavo.kala.collection;
 
-import org.glavo.kala.collection.SeqLike;
+import org.glavo.kala.annotations.UnstableName;
 import org.glavo.kala.function.IndexedFunction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -8,7 +8,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Comparator;
 import java.util.function.Predicate;
 
-public interface FullSeqOps<E, CC extends SeqLike<?>, COLL extends SeqLike<E>> extends FullCollectionOps<E, CC, COLL> {
+@UnstableName
+public interface FullSeqLikeOps<E, CC extends SeqLike<?>, COLL extends SeqLike<E>>
+        extends FullCollectionLikeOps<E, CC, COLL>, SeqLike<E> {
 
     @NotNull COLL slice(int beginIndex, int endIndex);
 

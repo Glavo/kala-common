@@ -1,6 +1,6 @@
-package org.glavo.kala.collection.internal;
+package org.glavo.kala.collection;
 
-import org.glavo.kala.collection.CollectionLike;
+import org.glavo.kala.annotations.UnstableName;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -8,7 +8,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public interface FullCollectionOps<E, CC extends CollectionLike<?>, COLL extends CollectionLike<E>> {
+@UnstableName
+public interface FullCollectionLikeOps<E, CC extends CollectionLike<?>, COLL extends CollectionLike<E>>
+        extends CollectionLike<E> {
 
     @NotNull COLL filter(@NotNull Predicate<? super E> predicate);
 

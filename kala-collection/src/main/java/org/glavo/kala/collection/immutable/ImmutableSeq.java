@@ -1,5 +1,6 @@
 package org.glavo.kala.collection.immutable;
 
+import org.glavo.kala.collection.FullSeqLike;
 import org.glavo.kala.collection.SeqLike;
 import org.glavo.kala.collection.SeqView;
 import org.glavo.kala.tuple.Tuple2;
@@ -20,7 +21,7 @@ import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<E> {
+public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<E>, FullSeqLike<E> {
     //region Narrow method
 
     @Contract(value = "_ -> param1", pure = true)
@@ -230,7 +231,7 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     }
 
     @Override
-    default <U> @NotNull ImmutableCollection<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
+    default <U> @NotNull ImmutableSeq<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
         return AbstractImmutableCollection.mapNotNull(this, mapper, this.<U>iterableFactory());
     }
 

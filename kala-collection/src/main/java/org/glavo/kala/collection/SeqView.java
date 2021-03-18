@@ -6,8 +6,6 @@ import org.glavo.kala.tuple.Tuple;
 import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.internal.CollectionHelper;
-import org.glavo.kala.collection.internal.FullSeqOps;
-import org.glavo.kala.comparator.Comparators;
 import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.tuple.primitive.IntObjTuple2;
 import org.jetbrains.annotations.Contract;
@@ -19,7 +17,8 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqOps<E, SeqView<?>, SeqView<E>> {
+public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqLike<E>,
+        FullSeqLikeOps<E, SeqView<?>, SeqView<E>> {
 
     //region Narrow method
 

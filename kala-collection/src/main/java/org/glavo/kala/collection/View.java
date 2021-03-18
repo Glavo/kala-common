@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public interface View<@Covariant E> extends CollectionLike<E> {
+public interface View<@Covariant E> extends CollectionLike<E>, FullCollectionLike<E> {
 
     @SuppressWarnings("unchecked")
     static <E> @NotNull View<E> empty() {
@@ -47,6 +47,12 @@ public interface View<@Covariant E> extends CollectionLike<E> {
     default <U> @NotNull View<U> map(@NotNull Function<? super E, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
         return new Views.Mapped<>(this, mapper);
+    }
+
+    @Override
+    default @NotNull <U> View<U> mapNotNull(@NotNull Function<? super E, ? extends U> mapper) {
+        Objects.requireNonNull(mapper);
+        return new Views.MapNotNull<>(this, mapper);
     }
 
     default <U> @NotNull View<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
