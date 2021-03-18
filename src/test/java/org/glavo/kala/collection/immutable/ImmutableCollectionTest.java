@@ -1,6 +1,5 @@
 package org.glavo.kala.collection.immutable;
 
-import org.glavo.kala.collection.Collection;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;

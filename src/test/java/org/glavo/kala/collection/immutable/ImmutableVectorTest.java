@@ -1,6 +1,8 @@
 package org.glavo.kala.collection.immutable;
 
 
+import org.glavo.kala.collection.SeqView;
+import org.glavo.kala.collection.SeqViewTestTemplate;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.junit.jupiter.api.Test;
 
@@ -65,5 +67,22 @@ public final class ImmutableVectorTest implements ImmutableSeqTestTemplate {
         assertSame(ImmutableVectors.Vector2.class, v.getClass());
         v = ImmutableVector.fill(ImmutableVectors.WIDTH + 1, (i) -> "str");
         assertSame(ImmutableVectors.Vector2.class, v.getClass());
+    }
+
+    static final class ViewTest implements SeqViewTestTemplate {
+        @Override
+        public <E> SeqView<E> of(E... elements) {
+            return ImmutableVector.from(elements).view();
+        }
+
+        @Override
+        public <E> SeqView<E> from(E[] elements) {
+            return ImmutableVector.from(elements).view();
+        }
+
+        @Override
+        public <E> SeqView<E> from(Iterable<? extends E> elements) {
+            return ImmutableVector.<E>from(elements).view();
+        }
     }
 }
