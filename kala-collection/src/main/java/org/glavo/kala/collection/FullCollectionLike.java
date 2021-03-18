@@ -1,6 +1,9 @@
 package org.glavo.kala.collection;
 
 import org.glavo.kala.annotations.UnstableName;
+import org.glavo.kala.collection.immutable.AbstractImmutableCollection;
+import org.glavo.kala.collection.immutable.ImmutableCollection;
+import org.glavo.kala.tuple.Tuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,4 +25,6 @@ public interface FullCollectionLike<E> extends CollectionLike<E> {
 
     @Contract(pure = true)
     <U> @NotNull FullCollectionLike<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper);
+
+    <U> @NotNull FullCollectionLike<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other);
 }
