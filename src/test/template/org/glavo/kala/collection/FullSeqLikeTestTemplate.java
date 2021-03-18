@@ -215,10 +215,12 @@ public interface FullSeqLikeTestTemplate extends FullCollectionLikeTestTemplate,
     @Test
     default void concatTest() {
         var empty = of();
+        assertTrue(empty.concat(List.of()).isEmpty());
         assertTrue(empty.concat(ImmutableList.empty()).isEmpty());
         assertTrue(empty.concat(ImmutableArray.empty()).isEmpty());
         assertTrue(empty.concat(ImmutableVector.empty()).isEmpty());
 
+        assertIterableEquals(List.of("str1"), empty.concat(List.of("str1")));
         assertIterableEquals(List.of("str1"), empty.concat(ImmutableList.of("str1")));
         assertIterableEquals(List.of("str1"), empty.concat(ImmutableArray.of("str1")));
         assertIterableEquals(List.of("str1"), empty.concat(ImmutableVector.of("str1")));
@@ -227,17 +229,21 @@ public interface FullSeqLikeTestTemplate extends FullCollectionLikeTestTemplate,
         assertIterableEquals(List.of("str1", "str2", "str3"), empty.concat(ImmutableVector.of("str1", "str2", "str3")));
 
 
+        assertIterableEquals(List.of("str1"), of("str1").concat(List.of()));
         assertIterableEquals(List.of("str1"), of("str1").concat(ImmutableList.empty()));
         assertIterableEquals(List.of("str1"), of("str1").concat(ImmutableArray.empty()));
         assertIterableEquals(List.of("str1"), of("str1").concat(ImmutableVector.empty()));
         assertIterableEquals(List.of("str1", "str2", "str3"), of("str1").concat(ImmutableList.of("str2", "str3")));
+        assertIterableEquals(List.of("str1", "str2", "str3"), of("str1").concat(List.of("str2", "str3")));
         assertIterableEquals(List.of("str1", "str2", "str3"), of("str1").concat(ImmutableArray.of("str2", "str3")));
         assertIterableEquals(List.of("str1", "str2", "str3"), of("str1").concat(ImmutableVector.of("str2", "str3")));
 
+        assertIterableEquals(List.of("str1", "str2"), of("str1", "str2").concat(List.of()));
         assertIterableEquals(List.of("str1", "str2"), of("str1", "str2").concat(ImmutableList.empty()));
         assertIterableEquals(List.of("str1", "str2"), of("str1", "str2").concat(ImmutableArray.empty()));
         assertIterableEquals(List.of("str1", "str2"), of("str1", "str2").concat(ImmutableVector.empty()));
 
+        assertIterableEquals(List.of("str1", "str2", "str3", "str4"), of("str1", "str2").concat(List.of("str3", "str4")));
         assertIterableEquals(List.of("str1", "str2", "str3", "str4"), of("str1", "str2").concat(ImmutableList.of("str3", "str4")));
         assertIterableEquals(List.of("str1", "str2", "str3", "str4"), of("str1", "str2").concat(ImmutableArray.of("str3", "str4")));
         assertIterableEquals(List.of("str1", "str2", "str3", "str4"), of("str1", "str2").concat(ImmutableVector.of("str3", "str4")));

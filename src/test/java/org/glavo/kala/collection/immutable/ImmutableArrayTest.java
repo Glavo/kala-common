@@ -1,12 +1,17 @@
 package org.glavo.kala.collection.immutable;
 
+import org.glavo.kala.collection.Collection;
 import org.glavo.kala.collection.SeqView;
 import org.glavo.kala.collection.SeqViewTestTemplate;
+import org.glavo.kala.collection.SimpleIterable;
+import org.glavo.kala.collection.base.GenericArrays;
+import org.glavo.kala.collection.base.Iterators;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -43,6 +48,13 @@ public final class ImmutableArrayTest implements ImmutableSeqTestTemplate {
         assertIterableEquals(List.of("str1", "str2", "str3", "str4", "str5", "str6"), ImmutableArray.of("str1", "str2", "str3", "str4", "str5", "str6"));
         for (Integer[] data : data1()) {
             assertIterableEquals(Arrays.asList(data), ImmutableArray.of(data));
+        }
+    }
+
+    @Test
+    public final void fromTest() {
+        for (Integer[] data : data1()) {
+            assertIterableEquals(Arrays.asList(data), ImmutableArray.from(new SimpleIterable<>(Arrays.asList(data))));
         }
     }
 

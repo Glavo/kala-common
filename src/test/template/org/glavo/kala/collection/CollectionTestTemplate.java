@@ -3,6 +3,8 @@ package org.glavo.kala.collection;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.base.Iterators;
 import org.glavo.kala.collection.base.GenericArrays;
+import org.glavo.kala.collection.immutable.ImmutableArray;
+import org.glavo.kala.collection.immutable.ImmutableList;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
@@ -40,6 +42,8 @@ public interface CollectionTestTemplate extends CollectionLikeTestTemplate {
 
         for (Integer[] data : data1()) {
             assertIterableEquals(Arrays.asList(data), factory.from(data));
+            assertIterableEquals(Arrays.asList(data), factory.from(ImmutableArray.from(Arrays.asList(data))));
+            assertIterableEquals(Arrays.asList(data), factory.from(ImmutableList.from(Arrays.asList(data))));
             assertIterableEquals(Arrays.asList(data), factory.from(Arrays.asList(data)));
             assertIterableEquals(Arrays.asList(data), factory.from(Arrays.asList(data).iterator()));
         }

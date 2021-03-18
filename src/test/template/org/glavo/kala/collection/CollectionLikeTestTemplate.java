@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
@@ -28,6 +29,15 @@ public interface CollectionLikeTestTemplate {
     <E> CollectionLike<E> from(E[] elements);
 
     <E> CollectionLike<E> from(Iterable<? extends E> elements);
+
+    @Test
+    default void streamTest() {
+        assertEquals(0, of().stream().count());
+        assertEquals(0, of().parallelStream().count());
+
+        assertIterableEquals(List.of("foo"), of("foo").stream().collect(Collectors.toList()));
+        assertIterableEquals(List.of("foo"), of("foo").parallelStream().collect(Collectors.toList()));
+    }
 
     @Test
     default void isEmptyTest() {

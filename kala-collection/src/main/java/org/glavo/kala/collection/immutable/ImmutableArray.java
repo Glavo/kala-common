@@ -2,7 +2,6 @@ package org.glavo.kala.collection.immutable;
 
 import org.glavo.kala.collection.ArraySeq;
 import org.glavo.kala.collection.IndexedSeq;
-import org.glavo.kala.collection.Seq;
 import org.glavo.kala.collection.SeqLike;
 import org.glavo.kala.collection.internal.CollectionHelper;
 import org.glavo.kala.Conditions;
@@ -15,7 +14,6 @@ import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.collection.base.GenericArrays;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -131,10 +129,13 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     public static <E> @NotNull ImmutableArray<E> from(@NotNull Iterable<? extends E> values) {
         Objects.requireNonNull(values);
 
-        if (values instanceof Traversable<?>) {
+        if (values instanceof ImmutableArray) {
+            return ((ImmutableArray<E>) values);
+        }
+        if (values instanceof Traversable) {
             return from((Traversable<E>) values);
         }
-        if (values instanceof java.util.Collection<?>) {
+        if (values instanceof java.util.Collection) {
             return from(((java.util.Collection<E>) values));
         }
 
@@ -189,7 +190,10 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @StaticClass
-    public static class Unsafe {
+    public final static class Unsafe {
+        private Unsafe() {
+        }
+
         @Contract("_ -> new")
         public static <E> @NotNull ImmutableArray<E> wrap(E @NotNull [] array) {
             Objects.requireNonNull(array);

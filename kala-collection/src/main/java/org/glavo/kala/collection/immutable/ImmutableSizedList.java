@@ -588,9 +588,6 @@ public final class ImmutableSizedList<E> extends AbstractImmutableSeq<E>
     public final @NotNull ImmutableSizedList<E> updated(int index, E newValue) {
         final int size = this.size;
         Conditions.checkElementIndex(index, size);
-        if (size == 0) {
-            return this;
-        }
         return new ImmutableSizedList<>(list.updated(index, newValue), size);
     }
 
