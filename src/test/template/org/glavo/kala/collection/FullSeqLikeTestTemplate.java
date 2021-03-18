@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
@@ -131,7 +132,7 @@ public interface FullSeqLikeTestTemplate extends FullCollectionLikeTestTemplate,
         assertIterableEquals(List.of(), empty.take(Integer.MIN_VALUE));
 
         List<String> list = List.of("str1", "str2", "str3", "str4", "str5");
-        var seq =  from(list);
+        var seq = from(list);
         assertIterableEquals(List.of(), seq.take(0));
         assertIterableEquals(List.of(), seq.take(-1));
         assertIterableEquals(List.of(), seq.take(Integer.MIN_VALUE));
@@ -241,5 +242,56 @@ public interface FullSeqLikeTestTemplate extends FullCollectionLikeTestTemplate,
         assertIterableEquals(List.of("str1", "str2", "str3", "str4"), of("str1", "str2").concat(ImmutableList.of("str3", "str4")));
         assertIterableEquals(List.of("str1", "str2", "str3", "str4"), of("str1", "str2").concat(ImmutableArray.of("str3", "str4")));
         assertIterableEquals(List.of("str1", "str2", "str3", "str4"), of("str1", "str2").concat(ImmutableVector.of("str3", "str4")));
+    }
+
+    @Test
+    default void mapIndexedTest() {
+        assertIterableEquals(List.of(), of().mapIndexed((i, v) -> i));
+        assertIterableEquals(List.of(), of().mapIndexed((i, v) -> {
+            throw new AssertionError();
+        }));
+
+
+        Integer[][] data1 = data1();
+        String[][] data1s = data1s();
+
+        for (int i = 0; i < data1.length; i++) {
+            Integer[] d = data1[i];
+            String[] ds = data1s[i];
+
+            List<String> res = new ArrayList<>();
+            for (int j = 0; j < d.length; j++) {
+                res.add(j + ds[j]);
+            }
+
+            assertIterableEquals(res, from(d).mapIndexed((idx, v) -> String.format("%d%d", idx, v)));
+        }
+    }
+
+    @Test
+    default void mapIndexedNotNullTest() {
+        assertIterableEquals(List.of(), of().mapIndexedNotNull((i, v) -> i));
+        assertIterableEquals(List.of(), of().mapIndexedNotNull((i, v) -> {
+            throw new AssertionError();
+        }));
+
+        Integer[][] data1 = data1();
+        String[][] data1s = data1s();
+
+        for (int i = 0; i < data1.length; i++) {
+            Integer[] d = data1[i];
+            String[] ds = data1s[i];
+
+            List<String> res = new ArrayList<>();
+            for (int j = 0; j < d.length; j++) {
+                if (d[j] > 0) {
+                    res.add(j + ds[j]);
+                }
+            }
+
+            assertIterableEquals(res, from(d).mapIndexedNotNull((idx, v) -> v > 0 ? String.format("%d%d", idx, v) : null));
+        }
+
+
     }
 }

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
@@ -81,13 +82,13 @@ public interface FullCollectionLikeTestTemplate extends CollectionLikeTestTempla
         assertIterableEquals(List.of(), of().filterNotNull());
         assertIterableEquals(List.of(), of().filterNotNull());
 
-        assertIterableEquals(List.of(), from(Collections.singletonList(null)).filterNotNull());
-        assertIterableEquals(List.of(), from(Arrays.asList(null, null)).filterNotNull());
-        assertIterableEquals(List.of(), from(Arrays.asList(null, null, null)).filterNotNull());
-        assertIterableEquals(List.of("foo"), from(List.of("foo")).filterNotNull());
-        assertIterableEquals(List.of("foo"), from(Arrays.asList(null, "foo")).filterNotNull());
-        assertIterableEquals(List.of("foo"), from(Arrays.asList(null, "foo", null)).filterNotNull());
-        assertIterableEquals(List.of("foo", "bar"), from(Arrays.asList(null, "foo", null, "bar")).filterNotNull());
+        assertIterableEquals(List.of(), of((String) null).filterNotNull());
+        assertIterableEquals(List.of(), of(null, null).filterNotNull());
+        assertIterableEquals(List.of(), of(null, null, null).filterNotNull());
+        assertIterableEquals(List.of("foo"), of("foo").filterNotNull());
+        assertIterableEquals(List.of("foo"), of(null, "foo").filterNotNull());
+        assertIterableEquals(List.of("foo"), of(null, "foo", null).filterNotNull());
+        assertIterableEquals(List.of("foo", "bar"), of(null, "foo", null, "bar").filterNotNull());
 
         for (Integer[] data : data1()) {
             assertIterableEquals(Arrays.asList(data), from(data).filterNotNull(),
@@ -98,6 +99,9 @@ public interface FullCollectionLikeTestTemplate extends CollectionLikeTestTempla
     @Test
     default void mapTest() {
         assertIterableEquals(List.of(), of().map(i -> i));
+        assertIterableEquals(List.of(), of().map(i -> {
+            throw new AssertionError();
+        }));
 
 
         Integer[][] data1 = data1();
@@ -109,6 +113,32 @@ public interface FullCollectionLikeTestTemplate extends CollectionLikeTestTempla
 
             assertIterableEquals(Arrays.asList(d), from(ds).map(Integer::parseInt));
         }
+    }
+
+    @Test
+    default void mapNotNullTest() {
+        assertIterableEquals(List.of(), of().mapNotNull(i -> i));
+        assertIterableEquals(List.of(), of().mapNotNull(i -> {
+            throw new AssertionError();
+        }));
+        Integer[][] data1 = data1();
+        String[][] data1s = data1s();
+
+        for (int i = 0; i < data1.length; i++) {
+            Integer[] d = data1[i];
+            String[] ds = data1s[i];
+
+            assertIterableEquals(Arrays.asList(d), from(ds).mapNotNull(Integer::parseInt));
+            assertIterableEquals(
+                    Arrays.stream(d).filter(it -> it > 0).collect(Collectors.toList()),
+                    from(ds).mapNotNull(s -> {
+                        final int pi = Integer.parseInt(s);
+                        return pi > 0 ? pi : null;
+                    })
+            );
+        }
+
+
     }
 
     @Test
