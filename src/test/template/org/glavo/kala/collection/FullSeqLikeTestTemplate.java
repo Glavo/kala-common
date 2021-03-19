@@ -38,6 +38,37 @@ public interface FullSeqLikeTestTemplate extends FullCollectionLikeTestTemplate,
     }
 
     @Test
+    default void prependTest() {
+        assertIterableEquals(List.of("str"), this.<String>of().prepended("str"));
+        assertIterableEquals(Collections.singletonList(null), this.<String>of().prepended(null));
+        assertIterableEquals(List.of("str1", "str2"), of("str2").prepended("str1"));
+
+        final int head = 12345;
+        for (Integer[] data : data1()) {
+            final ArrayList<Integer> al = new ArrayList<>();
+            al.add(head);
+            al.addAll(Arrays.asList(data));
+
+            assertIterableEquals(al, from(data).prepended(12345));
+        }
+    }
+
+    @Test
+    default void appendedTest() {
+        assertIterableEquals(List.of("str"), this.<String>of().appended("str"));
+        assertIterableEquals(Collections.singletonList(null), this.<String>of().appended(null));
+        assertIterableEquals(List.of("str1", "str2"), of("str1").appended("str2"));
+
+        final int last = 12345;
+        for (Integer[] data : data1()) {
+            final ArrayList<Integer> al = new ArrayList<>(Arrays.asList(data));
+            al.add(last);
+
+            assertIterableEquals(al, from(data).appended(12345));
+        }
+    }
+
+    @Test
     default void sliceTest() {
         assertIterableEquals(List.of(), of().slice(0, 0));
         assertThrows(IndexOutOfBoundsException.class, () -> of().slice(-1, 0));

@@ -17,6 +17,7 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 public interface ImmutableCollection<@Covariant E> extends Collection<E>, FullCollectionLike<E> {
@@ -75,6 +76,10 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E>, FullCo
 
     static <E> @NotNull ImmutableCollection<E> from(@NotNull Iterator<? extends E> it) {
         return ImmutableSeq.from(it);
+    }
+
+    static <E> @NotNull ImmutableCollection<E> from(@NotNull Stream<? extends E> stream) {
+        return ImmutableSeq.from(stream);
     }
 
     static <E> @NotNull ImmutableCollection<E> fill(int n, E value) {

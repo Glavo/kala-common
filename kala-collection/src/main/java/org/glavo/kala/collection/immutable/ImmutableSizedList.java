@@ -22,6 +22,7 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 public final class ImmutableSizedList<E> extends AbstractImmutableSeq<E>
@@ -136,6 +137,10 @@ public final class ImmutableSizedList<E> extends AbstractImmutableSeq<E>
         return new ImmutableSizedList<>(res, c);
     }
 
+    public static <E> @NotNull ImmutableSizedList<E> from(@NotNull Stream<? extends E> stream) {
+        return stream.collect(factory());
+    }
+
     public static <E> @NotNull ImmutableSizedList<E> fill(int n, E value) {
         if (n <= 0) {
             return empty();
@@ -178,7 +183,6 @@ public final class ImmutableSizedList<E> extends AbstractImmutableSeq<E>
         t.tail = ImmutableList.nil();
         return new ImmutableSizedList<>(res, n);
     }
-
 
     //endregion
 
@@ -773,8 +777,7 @@ public final class ImmutableSizedList<E> extends AbstractImmutableSeq<E>
 
         @Override
         public final LinkedBuffer<E> mergeBuilder(@NotNull LinkedBuffer<E> builder1, @NotNull LinkedBuffer<E> builder2) {
-            builder1.appendAll(builder2);
-            return builder1;
+            return (LinkedBuffer<E>) ImmutableList.Builder.merge(builder1, builder2);
         }
     }
 }

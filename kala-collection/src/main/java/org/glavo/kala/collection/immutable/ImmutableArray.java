@@ -235,49 +235,6 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     //region Addition Operations
 
     @Override
-    public final @NotNull ImmutableArray<E> appended(E value) {
-        final Object[] elements = this.elements;
-        final int size = elements.length;
-
-        Object[] newValues = Arrays.copyOf(elements, size + 1);
-        newValues[size] = value;
-
-        return new ImmutableArray<>(newValues);
-    }
-
-    @Override
-    public final @NotNull ImmutableArray<E> appendedAll(E @NotNull [] values) {
-        if (values.length == 0) { // implicit null check of postfix
-            return this;
-        }
-
-        final Object[] elements = this.elements;
-        final int size = elements.length;
-
-        Object[] newValues = new Object[values.length + size];
-
-        System.arraycopy(elements, 0, newValues, 0, size);
-        System.arraycopy(values, 0, newValues, size, values.length);
-
-        return new ImmutableArray<>(newValues);
-    }
-
-    @Override
-    public final @NotNull ImmutableArray<E> appendedAll(@NotNull Iterable<? extends E> values) {
-        Objects.requireNonNull(values);
-
-        Object[] data = values instanceof ImmutableArray<?>
-                ? ((ImmutableArray<?>) values).elements
-                : CollectionHelper.asArray(values);
-        Object[] newValues = new Object[data.length + elements.length];
-
-        System.arraycopy(elements, 0, newValues, 0, elements.length);
-        System.arraycopy(data, 0, newValues, elements.length, data.length);
-
-        return new ImmutableArray<>(newValues);
-    }
-
-    @Override
     public final @NotNull ImmutableArray<E> prepended(E value) {
         Object[] newValues = new Object[elements.length + 1];
         newValues[0] = value;
@@ -292,8 +249,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
             return this;
         }
 
-        Object[] newValues = new Object[values.length + elements.length];
-        System.arraycopy(values, 0, newValues, 0, values.length);
+        Object[] newValues = Arrays.copyOf(values, values.length + elements.length, Object[].class);
         System.arraycopy(elements, 0, newValues, values.length, elements.length);
 
         return new ImmutableArray<>(newValues);
@@ -313,6 +269,44 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
         return new ImmutableArray<>(newValues);
     }
 
+    @Override
+    public final @NotNull ImmutableArray<E> appended(E value) {
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+
+        Object[] newValues = Arrays.copyOf(elements, size + 1);
+        newValues[size] = value;
+
+        return new ImmutableArray<>(newValues);
+    }
+
+    @Override
+    public final @NotNull ImmutableArray<E> appendedAll(E @NotNull [] values) {
+        if (values.length == 0) { // implicit null check of values
+            return this;
+        }
+
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+
+        Object[] newValues = Arrays.copyOf(elements, values.length + size);
+        System.arraycopy(values, 0, newValues, size, values.length);
+
+        return new ImmutableArray<>(newValues);
+    }
+
+    @Override
+    public final @NotNull ImmutableArray<E> appendedAll(@NotNull Iterable<? extends E> values) {
+        Objects.requireNonNull(values);
+
+        Object[] data = values instanceof ImmutableArray<?>
+                ? ((ImmutableArray<?>) values).elements
+                : CollectionHelper.asArray(values);
+        Object[] newValues = Arrays.copyOf(elements, elements.length + data.length);
+        System.arraycopy(data, 0, newValues, elements.length, data.length);
+
+        return new ImmutableArray<>(newValues);
+    }
 
     //endregion
 
@@ -386,10 +380,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
             return this;
         }
 
-        Object[] newValues = new Object[n];
-        System.arraycopy(elements, 0, newValues, 0, n);
-
-        return new ImmutableArray<>(newValues);
+        return new ImmutableArray<>(Arrays.copyOf(elements, n));
     }
 
     @Override
@@ -416,6 +407,9 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
 
         if (count == 0) {
             return empty();
+        }
+        if (count == size) {
+            return this;
         }
 
         return new ImmutableArray<>(Arrays.copyOf(elements, count));
@@ -538,7 +532,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     @Override
     public final @NotNull ImmutableArray<E> sorted() {
         final Object[] elements = this.elements;
-        if (elements.length == 0) {
+        if (elements.length == 0 || elements.length == 1) {
             return this;
         }
 
@@ -550,12 +544,12 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     @Override
     public final @NotNull ImmutableArray<E> sorted(Comparator<? super E> comparator) {
         final Object[] elements = this.elements;
-        if (elements.length == 0) {
+        if (elements.length == 0 || elements.length == 1) {
             return this;
         }
 
         Object[] newValues = elements.clone();
-        Arrays.sort(newValues, (Comparator<? super Object>) comparator);
+        Arrays.sort(newValues, (Comparator<Object>) comparator);
         return new ImmutableArray<>(newValues);
     }
 

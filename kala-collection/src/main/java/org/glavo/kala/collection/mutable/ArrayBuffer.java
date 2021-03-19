@@ -548,9 +548,7 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
         if (size == 0) {
             return ImmutableArray.empty();
         }
-        Object[] arr = new Object[size];
-        System.arraycopy(elements, 0, arr, 0, size);
-        return (ImmutableArray<E>) ImmutableArray.Unsafe.wrap(arr);
+        return (ImmutableArray<E>) ImmutableArray.Unsafe.wrap(Arrays.copyOf(elements, size));
     }
 
     //region Serialization

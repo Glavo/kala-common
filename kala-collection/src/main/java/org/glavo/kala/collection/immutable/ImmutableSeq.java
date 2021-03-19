@@ -20,6 +20,7 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<E>, FullSeqLike<E> {
     //region Narrow method
@@ -81,6 +82,10 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
 
     static <E> @NotNull ImmutableSeq<E> from(@NotNull Iterator<? extends E> it) {
         return ImmutableVector.from(it);
+    }
+
+    static <E> @NotNull ImmutableSeq<E> from(@NotNull Stream<? extends E> stream) {
+        return ImmutableVector.from(stream);
     }
 
     static <E> @NotNull ImmutableSeq<E> fill(int n, E value) {

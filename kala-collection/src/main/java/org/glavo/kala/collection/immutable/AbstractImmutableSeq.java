@@ -477,7 +477,7 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
 
     @NotNull
     protected final <To extends ImmutableSeq<E>> To appendedImpl(E value) {
-        return (To) AbstractImmutableSeq.prepended(this, value, iterableFactory());
+        return (To) AbstractImmutableSeq.appended(this, value, iterableFactory());
     }
 
     @NotNull
