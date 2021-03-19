@@ -171,21 +171,6 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     }
 
     @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> appended(E value) {
-        return AbstractImmutableSeq.appended(this, value, iterableFactory());
-    }
-
-    @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> appendedAll(@NotNull Iterable<? extends E> values) {
-        return AbstractImmutableSeq.prependedAll(this, values, iterableFactory());
-    }
-
-    @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> appendedAll(E @NotNull [] values) {
-        return AbstractImmutableSeq.prependedAll(this, values, iterableFactory());
-    }
-
-    @Contract(pure = true)
     default @NotNull ImmutableSeq<E> prepended(E value) {
         return AbstractImmutableSeq.prepended(this, value, iterableFactory());
     }
@@ -198,6 +183,21 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     @Contract(pure = true)
     default @NotNull ImmutableSeq<E> prependedAll(@NotNull Iterable<? extends E> values) {
         return AbstractImmutableSeq.prependedAll(this, values, iterableFactory());
+    }
+
+    @Contract(pure = true)
+    default @NotNull ImmutableSeq<E> appended(E value) {
+        return AbstractImmutableSeq.appended(this, value, iterableFactory());
+    }
+
+    @Contract(pure = true)
+    default @NotNull ImmutableSeq<E> appendedAll(@NotNull Iterable<? extends E> values) {
+        return AbstractImmutableSeq.appendedAll(this, values, iterableFactory());
+    }
+
+    @Contract(pure = true)
+    default @NotNull ImmutableSeq<E> appendedAll(E @NotNull [] values) {
+        return AbstractImmutableSeq.appendedAll(this, values, iterableFactory());
     }
 
     @Contract(pure = true)

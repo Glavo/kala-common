@@ -240,7 +240,7 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
 
     static <E, T extends ImmutableSeq<? extends E>, Builder> T concat(
             @NotNull ImmutableSeq<? extends E> seq,
-            java.util.@NotNull List<?extends E>other,
+            java.util.@NotNull List<? extends E> other,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
         Objects.requireNonNull(other);
@@ -334,10 +334,9 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
 
         Builder builder = factory.newBuilder();
 
-        factory.sizeHint(builder, seq);
+        factory.sizeHint(builder, seq, values.length);
         factory.addAllToBuilder(builder, seq);
 
-        factory.sizeHint(builder, values.length);
         for (E e : values) {
             factory.addToBuilder(builder, e);
         }

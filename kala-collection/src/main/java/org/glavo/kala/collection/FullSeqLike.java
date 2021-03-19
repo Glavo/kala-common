@@ -32,9 +32,13 @@ public interface FullSeqLike<E> extends FullCollectionLike<E>, SeqLike<E> {
 
     @NotNull FullSeqLike<E> prepended(E element);
 
+    @NotNull FullSeqLike<E> prependedAll(E @NotNull[] values);
+
     @NotNull FullSeqLike<E> prependedAll(@NotNull Iterable<? extends E> values);
 
     @NotNull FullSeqLike<E> appended(E element);
+
+    @NotNull FullSeqLike<E> appendedAll(E @NotNull[] values);
 
     @NotNull FullSeqLike<E> appendedAll(@NotNull Iterable<? extends E> values);
 

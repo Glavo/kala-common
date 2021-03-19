@@ -38,7 +38,7 @@ public interface FullSeqLikeTestTemplate extends FullCollectionLikeTestTemplate,
     }
 
     @Test
-    default void prependTest() {
+    default void prependedTest() {
         assertIterableEquals(List.of("str"), this.<String>of().prepended("str"));
         assertIterableEquals(Collections.singletonList(null), this.<String>of().prepended(null));
         assertIterableEquals(List.of("str1", "str2"), of("str2").prepended("str1"));
@@ -50,6 +50,39 @@ public interface FullSeqLikeTestTemplate extends FullCollectionLikeTestTemplate,
             al.addAll(Arrays.asList(data));
 
             assertIterableEquals(al, from(data).prepended(12345));
+        }
+    }
+
+    @Test
+    default void prependedAllTest() {
+        assertIterableEquals(List.of(), of().prependedAll(List.of()));
+        assertIterableEquals(List.of("str"), of("str").prependedAll(List.of()));
+        assertIterableEquals(List.of("str"), this.<String>of().prependedAll(List.of("str")));
+
+        for (Integer[] data : data1()) {
+            assertIterableEquals(Arrays.asList(data), this.<Integer>of().appendedAll(data));
+            assertIterableEquals(Arrays.asList(data), this.<Integer>of().appendedAll(Arrays.asList(data)));
+            assertIterableEquals(Arrays.asList(data), this.<Integer>of().appendedAll(ImmutableArray.from(data)));
+            assertIterableEquals(Arrays.asList(data), this.<Integer>of().appendedAll(ImmutableList.from(data)));
+        }
+
+        for (int i = 0; i < data1().length - 1; i++) {
+            final Integer[] data = data1()[i];
+            final Integer[] data2 = data1()[i + 1];
+
+            final ArrayList<Integer> tmp = new ArrayList<>(Arrays.asList(data));
+
+            assertIterableEquals(tmp, this.<Integer>of().appendedAll(data));
+            assertIterableEquals(tmp, this.<Integer>of().appendedAll(Arrays.asList(data)));
+            assertIterableEquals(tmp, this.<Integer>of().appendedAll(ImmutableArray.from(data)));
+            assertIterableEquals(tmp, this.<Integer>of().appendedAll(ImmutableList.from(data)));
+
+            tmp.addAll(Arrays.asList(data2));
+
+            assertIterableEquals(tmp, from(data).appendedAll(data2));
+            assertIterableEquals(tmp, from(data).appendedAll(Arrays.asList(data2)));
+            assertIterableEquals(tmp, from(data).appendedAll(ImmutableArray.from(data2)));
+            assertIterableEquals(tmp, from(data).appendedAll(ImmutableList.from(data2)));
         }
     }
 
