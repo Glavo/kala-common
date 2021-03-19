@@ -27,6 +27,7 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq<E>
@@ -163,6 +164,10 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
             builder.add(it.next());
         }
         return builder.build();
+    }
+
+    public static <E> @NotNull ImmutableVector<E> from(@NotNull Stream<? extends E> stream) {
+        return stream.collect(factory());
     }
 
     public static <E> @NotNull ImmutableVector<E> fill(int n, E value) {

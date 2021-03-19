@@ -3,6 +3,7 @@ package org.glavo.kala.collection.immutable;
 import org.glavo.kala.collection.SeqView;
 import org.glavo.kala.collection.SeqViewTestTemplate;
 import org.glavo.kala.collection.factory.CollectionFactory;
+import org.glavo.kala.collection.mutable.LinkedBuffer;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -18,7 +19,7 @@ public final class ImmutableListTest implements ImmutableSeqTestTemplate {
 
     @Test
     public final void ofTest() {
-        assertIterableEquals(List.of(),ImmutableList.of());
+        assertIterableEquals(List.of(), ImmutableList.of());
         assertIterableEquals(List.of("str1"), ImmutableList.of("str1"));
         assertIterableEquals(List.of("str1", "str2"), ImmutableList.of("str1", "str2"));
         assertIterableEquals(List.of("str1", "str2", "str3"), ImmutableList.of("str1", "str2", "str3"));
@@ -28,6 +29,20 @@ public final class ImmutableListTest implements ImmutableSeqTestTemplate {
         for (Integer[] data : data1()) {
             assertIterableEquals(Arrays.asList(data), ImmutableList.of(data));
         }
+    }
+
+    @Test
+    public final void mergeBuilderTest() {
+        LinkedBuffer<String> b1 = new LinkedBuffer<>();
+        LinkedBuffer<String> b2 = new LinkedBuffer<>();
+
+        assertTrue(ImmutableList.Builder.merge(b1, b2).isEmpty());
+
+        b1 = LinkedBuffer.of("str1", "str2");
+        b2 = LinkedBuffer.of("str3", "str4");
+
+        var m = ImmutableList.Builder.merge(b1, b2);
+        assertIterableEquals(List.of("str1", "str2", "str3", "str4"), m);
     }
 
     static final class ViewTest implements SeqViewTestTemplate {

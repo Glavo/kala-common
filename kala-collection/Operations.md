@@ -7,6 +7,7 @@
     * `from(E[])`
     * `from(Iterable<E>)`
     * `from(Iterator<E>)`
+    * `from(Stream<E>)`
     * `fill(int, E)`
     * `fill(int, Supplier<E>)`
     * `fill(int, IntFunction<E>)`

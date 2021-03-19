@@ -17,6 +17,7 @@ import org.jetbrains.annotations.*;
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.*;
+import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 @Debug.Renderer(hasChildren = "!isEmpty()", childrenArray = "toArray()")
@@ -157,6 +158,10 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
         ImmutableList<E> cons = new ImmutableList<>(it.next());
         cons.appendIterator(it).tail = nil();
         return cons;
+    }
+
+    public static <E> @NotNull ImmutableList<E> from(@NotNull Stream<? extends E> stream) {
+        return stream.collect(factory());
     }
 
     public static <E> @NotNull ImmutableList<E> fill(int n, E value) {
@@ -910,12 +915,7 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
 
         @Override
         public final LinkedBuffer<E> mergeBuilder(@NotNull LinkedBuffer<E> builder1, @NotNull LinkedBuffer<E> builder2) {
-            if (((Builder<E>) builder2).first != null) {
-                for (E e : ((Builder<E>) builder2).first) {
-                    builder1.append(e);
-                }
-            }
-            return builder1;
+            return (LinkedBuffer<E>) Builder.merge(builder1, builder2);
         }
 
         @Override
@@ -938,6 +938,36 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
         int len = 0;
 
         private boolean aliased = false;
+
+        static <E> Builder<E> merge(@NotNull Builder<E> b1, @NotNull Builder<E> b2) {
+            final int b1s = b1.len;
+            if (b1s == 0) {
+                return b2;
+            } else if (b1s == 1) {
+                b2.prepend(b1.first.head);
+                return b2;
+            }
+
+            final int b2s = b2.len;
+            if (b2s == 0) {
+                return b1;
+            } else if (b2s == 1) {
+                b1.append(b2.first.head);
+                return b1;
+            }
+
+            b1.ensureUnaliased();
+            b2.ensureUnaliased();
+
+            final ImmutableList<E> b2f = b2.first;
+            final ImmutableList<E> b2l = b2.last;
+            b2.clear();
+
+            b1.last.tail = b2f;
+            b1.last = b2l;
+            b1.len = b1s + b2s;
+            return b1;
+        }
 
         private void ensureUnaliased() {
             if (aliased) {

@@ -23,6 +23,7 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static org.glavo.kala.Conditions.checkPositionIndices;
 
@@ -151,6 +152,11 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
             buffer.append(it.next());
         }
         return buffer.toImmutableArray();
+    }
+
+    public static <E> @NotNull ImmutableArray<E> from(@NotNull Stream<? extends E> stream) {
+        final Object[] arr = stream.toArray();
+        return arr.length == 0 ? ImmutableArray.empty() : new ImmutableArray<>(arr);
     }
 
     public static <E> @NotNull ImmutableArray<E> fill(int n, E value) {

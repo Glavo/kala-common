@@ -1,6 +1,7 @@
 package org.glavo.kala.collection.internal.view;
 
 import org.glavo.kala.collection.*;
+import org.glavo.kala.collection.Map;
 import org.glavo.kala.collection.immutable.*;
 import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.control.Option;
@@ -10,12 +11,9 @@ import org.glavo.kala.collection.base.Iterators;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Spliterator;
+import java.io.Serializable;
+import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
@@ -29,6 +27,21 @@ public final class Views {
         @Override
         public final @NotNull Iterator<E> iterator() {
             return Iterators.empty();
+        }
+
+        @Override
+        public @NotNull Spliterator<E> spliterator() {
+            return Spliterators.emptySpliterator();
+        }
+
+        @Override
+        public @NotNull Stream<E> stream() {
+            return Stream.empty();
+        }
+
+        @Override
+        public @NotNull Stream<E> parallelStream() {
+            return Stream.<E>empty().parallel();
         }
 
         //region Size Info
@@ -104,8 +117,18 @@ public final class Views {
         }
 
         @Override
+        public @NotNull Spliterator<E> spliterator() {
+            return Spliterators.spliterator(Iterators.of(value), 1, 0);
+        }
+
+        @Override
         public @NotNull Stream<E> stream() {
             return Stream.of(value);
+        }
+
+        @Override
+        public @NotNull Stream<E> parallelStream() {
+            return Stream.of(value).parallel();
         }
 
         //region Size Info
@@ -517,6 +540,11 @@ public final class Views {
         }
 
         @Override
+        public @NotNull Spliterator<E> spliterator() {
+            return new MappedSpliterator<>(source.spliterator(), mapper);
+        }
+
+        @Override
         public final @NotNull Stream<E> stream() {
             return source.stream().map(mapper);
         }
@@ -566,7 +594,6 @@ public final class Views {
 
     public static final class Filter<@Covariant E> extends AbstractView<E> {
         private final @NotNull View<E> source;
-
         private final @NotNull Predicate<? super E> predicate;
 
         public Filter(@NotNull View<E> source, @NotNull Predicate<? super E> predicate) {
@@ -577,6 +604,16 @@ public final class Views {
         @Override
         public final @NotNull Iterator<E> iterator() {
             return Iterators.filter(source.iterator(), predicate);
+        }
+
+        @Override
+        public @NotNull Stream<E> stream() {
+            return source.stream().filter(predicate);
+        }
+
+        @Override
+        public @NotNull Stream<E> parallelStream() {
+            return source.stream().filter(predicate).parallel();
         }
     }
 
@@ -594,6 +631,16 @@ public final class Views {
         public final @NotNull Iterator<E> iterator() {
             return Iterators.filterNot(source.iterator(), predicate);
         }
+
+        @Override
+        public @NotNull Stream<E> stream() {
+            return source.stream().filter(predicate.negate());
+        }
+
+        @Override
+        public @NotNull Stream<E> parallelStream() {
+            return source.stream().filter(predicate.negate()).parallel();
+        }
     }
 
     public static final class FilterNotNull<@Covariant E> extends AbstractView<E> {
@@ -610,9 +657,7 @@ public final class Views {
     }
 
     public static final class FlatMapped<@Covariant E, T> extends AbstractView<E> {
-
         private final @NotNull View<? extends T> source;
-
         private final @NotNull Function<? super T, ? extends Iterable<? extends E>> mapper;
 
         public FlatMapped(
@@ -640,6 +685,38 @@ public final class Views {
         @Override
         public final @NotNull Iterator<Tuple2<E, U>> iterator() {
             return Iterators.zip(source.iterator(), other.iterator());
+        }
+    }
+
+    static final class MappedSpliterator<E, T> implements Spliterator<E> {
+        private final @NotNull Spliterator<? extends T> source;
+        private final @NotNull Function<? super T, ? extends E> mapper;
+
+        MappedSpliterator(@NotNull Spliterator<? extends T> source, @NotNull Function<? super T, ? extends E> mapper) {
+            this.source = source;
+            this.mapper = mapper;
+        }
+
+        @Override
+        public final boolean tryAdvance(Consumer<? super E> action) {
+            Objects.requireNonNull(action);
+            return source.tryAdvance((Consumer<T> & Serializable) (t) -> action.accept(mapper.apply(t)));
+        }
+
+        @Override
+        public final Spliterator<E> trySplit() {
+            final Spliterator<? extends T> ss = source.trySplit();
+            return ss == null ? null : new MappedSpliterator<>(ss, mapper);
+        }
+
+        @Override
+        public long estimateSize() {
+            return source.estimateSize();
+        }
+
+        @Override
+        public int characteristics() {
+            return source.characteristics();
         }
     }
 }
