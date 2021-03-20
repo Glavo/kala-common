@@ -138,7 +138,7 @@
     * `takeLast(int)`
     * `takeWhile(Predicate<E>)`
     * `updated(int, E)`
-    * `concat(SeqLiek<E>)`
+    * `concat(SeqLike<E>)`
     * `filter(Predicate<E>)`
     * `filterNot(Predicate<E>)`
     * `filterNotNull()`

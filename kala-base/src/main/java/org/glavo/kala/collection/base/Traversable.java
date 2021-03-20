@@ -208,7 +208,7 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
         return max(Comparators.naturalOrder());
     }
 
-    default T max(@NotNull Comparator<? super T> comparator) {
+    default T max(Comparator<? super T> comparator) {
         return maxOption(comparator).getOrThrow(NoSuchElementException::new);
     }
 
@@ -224,7 +224,7 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
         return maxOption((Comparator<T>) Comparator.naturalOrder());
     }
 
-    default @NotNull Option<T> maxOption(@NotNull Comparator<? super T> comparator) {
+    default @NotNull Option<T> maxOption(Comparator<? super T> comparator) {
         return Iterators.maxOption(iterator(), comparator);
     }
 
@@ -232,7 +232,7 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
         return min((Comparator<T>) Comparator.naturalOrder());
     }
 
-    default T min(@NotNull Comparator<? super T> comparator) {
+    default T min(Comparator<? super T> comparator) {
         return minOption(comparator).getOrThrow(NoSuchElementException::new);
     }
 
@@ -248,7 +248,7 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
         return minOption((Comparator<T>) Comparator.naturalOrder());
     }
 
-    default @NotNull Option<T> minOption(@NotNull Comparator<? super T> comparator) {
+    default @NotNull Option<T> minOption(Comparator<? super T> comparator) {
         return Iterators.minOption(iterator(), comparator);
     }
 

@@ -586,7 +586,10 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     }
 
     @Override
-    default E max(@NotNull Comparator<? super E> comparator) {
+    default E max(Comparator<? super E> comparator) {
+        if (comparator == null) {
+            return max();
+        }
         final int size = size();
 
         if (size == 0) {
@@ -606,7 +609,7 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     }
 
     @Override
-    default @NotNull Option<E> maxOption(@NotNull Comparator<? super E> comparator) {
+    default @NotNull Option<E> maxOption(Comparator<? super E> comparator) {
         if (isEmpty()) {
             return Option.none();
         }
@@ -614,7 +617,10 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     }
 
     @Override
-    default E min(@NotNull Comparator<? super E> comparator) {
+    default E min(Comparator<? super E> comparator) {
+        if (comparator == null) {
+            return min();
+        }
         final int size = size();
 
         if (size == 0) {
@@ -634,7 +640,7 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     }
 
     @Override
-    default @NotNull Option<E> minOption(@NotNull Comparator<? super E> comparator) {
+    default @NotNull Option<E> minOption(Comparator<? super E> comparator) {
         if (isEmpty()) {
             return Option.none();
         }

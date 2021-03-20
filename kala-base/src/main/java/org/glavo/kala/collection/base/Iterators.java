@@ -401,15 +401,24 @@ public final class Iterators {
         return e;
     }
 
-    public static <E> E max(@NotNull Iterator<? extends E> it, @NotNull Comparator<? super E> comparator) {
+    public static <E> E max(@NotNull Iterator<? extends E> it, Comparator<? super E> comparator) {
         if (!it.hasNext()) {
             throw new NoSuchElementException();
         }
         E e = it.next();
-        while (it.hasNext()) {
-            E v = it.next();
-            if (comparator.compare(v, e) > 0) {
-                e = v;
+        if (comparator == null) {
+            while (it.hasNext()) {
+                E v = it.next();
+                if (((Comparable<E>) v).compareTo(e) > 0) {
+                    e = v;
+                }
+            }
+        } else {
+            while (it.hasNext()) {
+                E v = it.next();
+                if (comparator.compare(v, e) > 0) {
+                    e = v;
+                }
             }
         }
         return e;
@@ -429,15 +438,24 @@ public final class Iterators {
         return e;
     }
 
-    public static <E> @Nullable E maxOrNull(@NotNull Iterator<? extends E> it, @NotNull Comparator<? super E> comparator) {
+    public static <E> @Nullable E maxOrNull(@NotNull Iterator<? extends E> it, Comparator<? super E> comparator) {
         if (!it.hasNext()) {
             return null;
         }
         E e = it.next();
-        while (it.hasNext()) {
-            E v = it.next();
-            if (comparator.compare(v, e) > 0) {
-                e = v;
+        if (comparator == null) {
+            while (it.hasNext()) {
+                E v = it.next();
+                if (((Comparable<E>) v).compareTo(e) > 0) {
+                    e = v;
+                }
+            }
+        } else {
+            while (it.hasNext()) {
+                E v = it.next();
+                if (comparator.compare(v, e) > 0) {
+                    e = v;
+                }
             }
         }
         return e;
@@ -457,15 +475,24 @@ public final class Iterators {
         return Option.some(e);
     }
 
-    public static <E> @NotNull Option<E> maxOption(@NotNull Iterator<? extends E> it, @NotNull Comparator<? super E> comparator) {
+    public static <E> @NotNull Option<E> maxOption(@NotNull Iterator<? extends E> it, Comparator<? super E> comparator) {
         if (!it.hasNext()) {
             return Option.none();
         }
         E e = it.next();
-        while (it.hasNext()) {
-            E v = it.next();
-            if (comparator.compare(v, e) > 0) {
-                e = v;
+        if (comparator == null) {
+            while (it.hasNext()) {
+                E v = it.next();
+                if (((Comparable<E>) v).compareTo(e) > 0) {
+                    e = v;
+                }
+            }
+        } else {
+            while (it.hasNext()) {
+                E v = it.next();
+                if (comparator.compare(v, e) > 0) {
+                    e = v;
+                }
             }
         }
         return Option.some(e);
@@ -485,17 +512,25 @@ public final class Iterators {
         return e;
     }
 
-    public static <E> E min(@NotNull Iterator<? extends E> it, @NotNull Comparator<? super E> comparator) {
+    public static <E> E min(@NotNull Iterator<? extends E> it, Comparator<? super E> comparator) {
         if (!it.hasNext()) {
             throw new NoSuchElementException();
         }
         E e = it.next();
-        while (it.hasNext()) {
-            E v = it.next();
-            if (comparator.compare(v, e) < 0) {
-                e = v;
+        if (comparator == null) {
+            while (it.hasNext()) {
+                E v = it.next();
+                if (((Comparable<E>) v).compareTo(e) < 0) {
+                    e = v;
+                }
             }
-        }
+        } else
+            while (it.hasNext()) {
+                E v = it.next();
+                if (comparator.compare(v, e) < 0) {
+                    e = v;
+                }
+            }
         return e;
     }
 
@@ -513,15 +548,24 @@ public final class Iterators {
         return e;
     }
 
-    public static <E> @Nullable E minOrNull(@NotNull Iterator<? extends E> it, @NotNull Comparator<? super E> comparator) {
+    public static <E> @Nullable E minOrNull(@NotNull Iterator<? extends E> it, Comparator<? super E> comparator) {
         if (!it.hasNext()) {
             return null;
         }
         E e = it.next();
-        while (it.hasNext()) {
-            E v = it.next();
-            if (comparator.compare(v, e) < 0) {
-                e = v;
+        if (comparator == null) {
+            while (it.hasNext()) {
+                E v = it.next();
+                if (((Comparable<E>) v).compareTo(e) < 0) {
+                    e = v;
+                }
+            }
+        } else {
+            while (it.hasNext()) {
+                E v = it.next();
+                if (comparator.compare(v, e) < 0) {
+                    e = v;
+                }
             }
         }
         return e;
@@ -541,15 +585,24 @@ public final class Iterators {
         return Option.some(e);
     }
 
-    public static <E> @NotNull Option<E> minOption(@NotNull Iterator<? extends E> it, @NotNull Comparator<? super E> comparator) {
+    public static <E> @NotNull Option<E> minOption(@NotNull Iterator<? extends E> it, Comparator<? super E> comparator) {
         if (!it.hasNext()) {
             return Option.none();
         }
         E e = it.next();
-        while (it.hasNext()) {
-            E v = it.next();
-            if (comparator.compare(v, e) < 0) {
-                e = v;
+        if (comparator == null) {
+            while (it.hasNext()) {
+                E v = it.next();
+                if (((Comparable<E>) v).compareTo(e) < 0) {
+                    e = v;
+                }
+            }
+        } else {
+            while (it.hasNext()) {
+                E v = it.next();
+                if (comparator.compare(v, e) < 0) {
+                    e = v;
+                }
             }
         }
         return Option.some(e);
