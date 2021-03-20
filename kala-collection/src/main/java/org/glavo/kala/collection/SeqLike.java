@@ -46,6 +46,11 @@ public interface SeqLike<E> extends CollectionLike<E> {
         return index >= 0 && sizeGreaterThan(index);
     }
 
+    @Override
+    default E elementAt(int index) {
+        return get(index);
+    }
+
     @Contract(pure = true)
     @Flow(sourceIsContainer = true)
     default E get(@Range(from = 0, to = Integer.MAX_VALUE) int index) {

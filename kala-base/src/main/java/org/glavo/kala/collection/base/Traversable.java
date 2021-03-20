@@ -62,6 +62,22 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
 
     //endregion
 
+    default T elementAt(int index) {
+        final Iterator<T> it = this.iterator();
+        for (int i = 0; i < index; i++) {
+            if (it.hasNext()) {
+                it.next();
+            } else {
+                throw new IndexOutOfBoundsException("index: " + index);
+            }
+        }
+        if (it.hasNext()) {
+            return it.next();
+        } else {
+            throw new IndexOutOfBoundsException("index: " + index);
+        }
+    }
+
     //region Element Retrieval Operations
 
     default @NotNull Option<T> find(@NotNull Predicate<? super T> predicate) {

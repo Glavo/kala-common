@@ -43,6 +43,7 @@
     * `sizeGreaterThanOrEquals(Iterable)`
 * Positional Access Operations
     * `isDefinedAt(int)`
+    * `elementAt(int)`
     * `get(int)`
     * `getOrNull(int)`
     * `getOption(int)`
