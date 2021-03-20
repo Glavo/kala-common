@@ -21,6 +21,7 @@ import java.util.*;
 import java.util.function.*;
 import java.util.function.Consumer;
 import java.util.stream.Collector;
+import java.util.stream.Stream;
 
 @StaticClass
 @SuppressWarnings("unchecked")
@@ -91,6 +92,42 @@ public final class Iterators {
 
     public static <E> @NotNull Iterator<E> from(@NotNull Iterable<? extends E> values) {
         return narrow(values.iterator());
+    }
+
+    public static <E> @NotNull Iterator<E> from(@NotNull Stream<? extends E> stream) {
+        return narrow(stream.iterator());
+    }
+
+    public static <E> @NotNull Iterator<E> fill(int n, E value) {
+        if (n <= 0) {
+            return empty();
+        }
+        if (n == 1) {
+            return of(value);
+        }
+        return new Copies<>(n, value);
+    }
+
+    public static <E> @NotNull Iterator<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+        if (n <= 0) {
+            return empty();
+        }
+        if (n == 1) {
+            return of(supplier.get());
+        }
+        Objects.requireNonNull(supplier);
+        return new FillSupplier<>(n, supplier);
+    }
+
+    public static <E> @NotNull Iterator<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+        if (n <= 0) {
+            return empty();
+        }
+        if (n == 1) {
+            return of(init.apply(0));
+        }
+        Objects.requireNonNull(init);
+        return new FillIntFunction<>(n, init);
     }
 
     public static <E> @NotNull Iterator<E> concat(@NotNull Iterator<? extends E> it1, @NotNull Iterator<? extends E> it2) {
@@ -1188,6 +1225,7 @@ public final class Iterators {
         }
     }
 
+
     static final class Itr2<E> extends AbstractIterator<E> {
         private int idx = 0;
 
@@ -1364,6 +1402,87 @@ public final class Iterators {
                     throw new NoSuchElementException();
             }
             idx++;
+            return res;
+        }
+    }
+
+    static final class Copies<E> extends AbstractIterator<E> {
+        private int n;
+        private E value;
+
+        Copies(int n, E value) {
+            this.n = n;
+            this.value = value;
+        }
+
+        @Override
+        public final boolean hasNext() {
+            return n > 0;
+        }
+
+        @Override
+        public final E next() {
+            if (n <= 0) {
+                throw new NoSuchElementException();
+            }
+            if (--n == 0) {
+                this.value = null;
+            }
+            return value;
+        }
+    }
+
+    static final class FillSupplier<E> extends AbstractIterator<E> {
+        private int n;
+        private Supplier<? extends E> supplier;
+
+        FillSupplier(int n, @NotNull Supplier<? extends E> supplier) {
+            this.n = n;
+            this.supplier = supplier;
+        }
+
+        @Override
+        public final boolean hasNext() {
+            return n > 0;
+        }
+
+        @Override
+        public final E next() {
+            if (n <= 0) {
+                throw new NoSuchElementException();
+            }
+            final E res = supplier.get();
+            if (--n == 0) {
+                this.supplier = null;
+            }
+            return res;
+        }
+    }
+
+    static final class FillIntFunction<E> extends AbstractIterator<E> {
+        private final int n;
+        private int idx = 0;
+        private IntFunction<? extends E> init;
+
+        FillIntFunction(int n, @NotNull IntFunction<? extends E> init) {
+            this.n = n;
+            this.init = init;
+        }
+
+        @Override
+        public final boolean hasNext() {
+            return idx < n;
+        }
+
+        @Override
+        public final E next() {
+            if (idx >= n) {
+                throw new NoSuchElementException();
+            }
+            final E res = init.apply(idx++);
+            if (idx == n) {
+                this.init = null;
+            }
             return res;
         }
     }

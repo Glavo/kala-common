@@ -459,6 +459,9 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
         if (this == NIL) {
             return from(values);
         }
+        if (values instanceof ImmutableList) {
+            return ((ImmutableList<E>) values).prependedAll(this);
+        }
         return appendedAllImpl(values);
     }
 

@@ -410,13 +410,13 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
             return -1;
         }
         if (value == null) {
-            for (int i = end; i >= 0; i--) {
+            for (int i = Integer.min(end, size() - 1); i >= 0; i--) {
                 if (null == get(i)) {
                     return i;
                 }
             }
         } else {
-            for (int i = end; i >= 0; i--) {
+            for (int i = Integer.min(end, size() - 1); i >= 0; i--) {
                 if (value.equals(get(i))) {
                     return i;
                 }

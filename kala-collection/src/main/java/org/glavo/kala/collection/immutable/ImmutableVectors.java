@@ -1926,7 +1926,11 @@ final class ImmutableVectors {
             }
         }
 
-        ImmutableVector<E> build() {
+        final int size() {
+            return len1 + lenRest - offset;
+        }
+
+        final ImmutableVector<E> build() {
             final int len = len1 + lenRest;
             final int realLen = len - offset;
             if (realLen == 0) {
