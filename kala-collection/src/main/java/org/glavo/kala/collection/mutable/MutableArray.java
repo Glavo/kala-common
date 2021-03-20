@@ -223,10 +223,10 @@ public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Index
     }
 
     @Override
-    public final void mapInPlace(@NotNull Function<? super E, ? extends E> mapper) {
+    public final void replaceAll(@NotNull Function<? super E, ? extends E> operator) {
         final Object[] elements = this.elements;
         for (int i = 0; i < elements.length; i++) {
-            elements[i] = mapper.apply((E) elements[i]);
+            elements[i] = operator.apply((E) elements[i]);
         }
     }
 

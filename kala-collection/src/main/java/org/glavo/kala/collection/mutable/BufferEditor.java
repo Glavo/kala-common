@@ -119,13 +119,6 @@ public class BufferEditor<E, C extends Buffer<E>> extends MutableSeqEditor<E, C>
 
     @Override
     @Contract("_ -> this")
-    public @NotNull BufferEditor<E, C> mapInPlace(@NotNull Function<? super E, ? extends E> mapper) {
-        source.mapInPlace(mapper);
-        return this;
-    }
-
-    @Override
-    @Contract("_ -> this")
     public @NotNull BufferEditor<E, C> replaceAll(@NotNull Function<? super E, ? extends E> mapper) {
         source.replaceAll(mapper);
         return this;

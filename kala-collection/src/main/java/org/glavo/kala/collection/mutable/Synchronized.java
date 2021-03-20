@@ -1183,9 +1183,9 @@ final class Synchronized {
         }
 
         @Contract(mutates = "this")
-        public void mapInPlace(@NotNull Function<? super E, ? extends E> mapper) {
+        public void replaceAll(@NotNull Function<? super E, ? extends E> operator) {
             synchronized (mutex) {
-                source.mapInPlace(mapper);
+                source.replaceAll(operator);
             }
         }
 

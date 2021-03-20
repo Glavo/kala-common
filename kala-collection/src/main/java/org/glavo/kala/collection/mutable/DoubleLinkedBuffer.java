@@ -359,10 +359,10 @@ public final class DoubleLinkedBuffer<E>
     }
 
     @Override
-    public final void mapInPlace(@NotNull Function<? super E, ? extends E> mapper) {
+    public final void replaceAll(@NotNull Function<? super E, ? extends E> operator) {
         Node<E> node = this.first;
         while (node != null) {
-            node.value = mapper.apply(node.value);
+            node.value = operator.apply(node.value);
             node = node.next;
         }
     }

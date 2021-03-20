@@ -445,17 +445,17 @@ public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements Inde
     }
 
     @Override
-    public final void mapInPlace(@NotNull Function<? super E, ? extends E> mapper) {
+    public final void replaceAll(@NotNull Function<? super E, ? extends E> operator) {
         switch (size) {
             case 0:
                 return;
             case 1:
-                elem = mapper.apply((E) elem);
+                elem = operator.apply((E) elem);
                 return;
             default:
                 Object[] arr = (Object[]) elem;
                 for (int i = 0; i < arr.length; i++) {
-                    arr[i] = mapper.apply(((E) arr[i]));
+                    arr[i] = operator.apply(((E) arr[i]));
                 }
         }
     }

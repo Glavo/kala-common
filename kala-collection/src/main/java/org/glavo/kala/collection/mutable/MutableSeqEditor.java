@@ -18,12 +18,6 @@ public class MutableSeqEditor<E, C extends MutableSeq<E>> extends MutableCollect
     }
 
     @Contract("_ -> this")
-    public @NotNull MutableSeqEditor<E, C> mapInPlace(@NotNull Function<? super E, ? extends E> mapper) {
-        source.mapInPlace(mapper);
-        return this;
-    }
-
-    @Contract("_ -> this")
     public @NotNull MutableSeqEditor<E, C> replaceAll(@NotNull Function<? super E, ? extends E> mapper) {
         source.replaceAll(mapper);
         return this;

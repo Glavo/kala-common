@@ -1237,7 +1237,7 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
         }
 
         @Override
-        public final void mapInPlace(@NotNull Function<? super E, ? extends E> mapper) {
+        public final void replaceAll(@NotNull Function<? super E, ? extends E> operator) {
             ImmutableList<E> n = first;
             if (n == null || n == NIL) {
                 return;
@@ -1245,7 +1245,7 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
             ensureUnaliased();
             while (n != NIL) {
                 ImmutableList<E> c = n;
-                c.head = mapper.apply(c.head);
+                c.head = operator.apply(c.head);
                 n = c.tail;
             }
         }

@@ -1,5 +1,7 @@
 package org.glavo.kala.collection.mutable;
 
+import org.glavo.kala.annotations.DeprecatedReplaceWith;
+import org.glavo.kala.annotations.UnstableName;
 import org.glavo.kala.collection.internal.convert.AsJavaConvert;
 import org.glavo.kala.collection.internal.convert.FromJavaConvert;
 import org.glavo.kala.comparator.Comparators;
@@ -123,6 +125,8 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
     void set(int index, E newValue);
 
     @Contract(mutates = "this")
+    @Deprecated
+    @DeprecatedReplaceWith("replaceAll(mapper)")
     default void mapInPlace(@NotNull Function<? super E, ? extends E> mapper) {
         int size = size();
         for (int i = 0; i < size; i++) {
@@ -130,6 +134,7 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
         }
     }
 
+    @UnstableName
     @Contract(mutates = "this")
     default void mapInPlaceIndexed(@NotNull IndexedFunction<? super E, ? extends E> mapper) {
         int size = size();
@@ -139,8 +144,11 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
     }
 
     @Contract(mutates = "this")
-    default void replaceAll(@NotNull Function<? super E, ? extends E> mapper) {
-        mapInPlace(mapper);
+    default void replaceAll(@NotNull Function<? super E, ? extends E> operator) {
+        int size = size();
+        for (int i = 0; i < size; i++) {
+            this.set(i, operator.apply(this.get(i)));
+        }
     }
 
     @Contract(mutates = "this")
