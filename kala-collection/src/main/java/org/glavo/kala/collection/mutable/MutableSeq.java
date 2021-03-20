@@ -128,9 +128,14 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
     @Deprecated
     @DeprecatedReplaceWith("replaceAll(mapper)")
     default void mapInPlace(@NotNull Function<? super E, ? extends E> mapper) {
+        replaceAll(mapper);
+    }
+
+    @Contract(mutates = "this")
+    default void replaceAll(@NotNull Function<? super E, ? extends E> operator) {
         int size = size();
         for (int i = 0; i < size; i++) {
-            this.set(i, mapper.apply(this.get(i)));
+            this.set(i, operator.apply(this.get(i)));
         }
     }
 
@@ -140,14 +145,6 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
         int size = size();
         for (int i = 0; i < size; i++) {
             this.set(i, mapper.apply(i, this.get(i)));
-        }
-    }
-
-    @Contract(mutates = "this")
-    default void replaceAll(@NotNull Function<? super E, ? extends E> operator) {
-        int size = size();
-        for (int i = 0; i < size; i++) {
-            this.set(i, operator.apply(this.get(i)));
         }
     }
 
