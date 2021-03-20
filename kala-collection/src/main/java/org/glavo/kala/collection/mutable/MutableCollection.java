@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public interface MutableCollection<E> extends Collection<E>, MutableCollectionLike<E> {
+public interface MutableCollection<E> extends Collection<E> {
 
     //region Static Factories
 
