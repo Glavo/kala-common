@@ -91,6 +91,9 @@ public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E> {
     }
 
     static boolean equals(@NotNull Seq<?> seq1, @NotNull Seq<?> seq2) {
+        if (seq1 == seq2) {
+            return true;
+        }
         if (!seq1.canEqual(seq2) || !seq2.canEqual(seq1)) {
             return false;
         }

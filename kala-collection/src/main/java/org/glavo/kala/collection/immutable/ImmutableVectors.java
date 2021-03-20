@@ -1611,6 +1611,15 @@ final class ImmutableVectors {
         private int offset = 0;
         private int depth = 1;
 
+        static <E> VectorBuilder<E> merge(VectorBuilder<E> builder1, VectorBuilder<E> builder2) {
+            builder1.addVector(builder2.build());
+            return builder1;
+        }
+
+        final int size() {
+            return len1 + lenRest - offset;
+        }
+
         private void setLen(int i) {
             this.len1 = i & MASK;
             this.lenRest = i - len1;
@@ -1926,10 +1935,6 @@ final class ImmutableVectors {
             }
         }
 
-        final int size() {
-            return len1 + lenRest - offset;
-        }
-
         final ImmutableVector<E> build() {
             final int len = len1 + lenRest;
             final int realLen = len - offset;
@@ -2021,6 +2026,113 @@ final class ImmutableVectors {
                 int len12345 = len1234 + prefix5.length * WIDTH4;
                 return new Vector6(prefix1, len1, prefix2, len12, prefix3, len123, prefix4, len1234, prefix5, len12345, data, suffix5, suffix4, suffix3, suffix2, suffix1, realLen);
             }
+        }
+
+        final ImmutableSeq<E> buildSeq() {
+            final int len = len1 + lenRest;
+            final int realLen = len - offset;
+            if (realLen == 0) {
+                return ImmutableSeq.empty();
+            } else if (len <= WIDTH) {
+                E[] a1 = (E[]) this.a1;
+                switch (realLen) {
+                    case 1:
+                        return ImmutableSeq.of(a1[0]);
+                    case 2:
+                        return ImmutableSeq.of(a1[0], a1[1]);
+                    case 3:
+                        return ImmutableSeq.of(a1[0], a1[1], a1[2]);
+                    case 4:
+                        return ImmutableSeq.of(a1[0], a1[1], a1[2], a1[3]);
+                    case 5:
+                        return ImmutableSeq.of(a1[0], a1[1], a1[2], a1[3], a1[4]);
+                }
+                if (realLen == WIDTH) {
+                    return new Vector1(a1);
+                } else {
+                    return new Vector1(copyOf(a1, realLen));
+                }
+            } else if (len <= WIDTH2) {
+                int i1 = (len - 1) & MASK;
+                int i2 = (len - 1) >>> BITS;
+                Object[][] data = Arrays.copyOfRange(a2, 1, i2);
+                Object[] prefix1 = a2[0];
+                Object[] suffix1 = copyIfDifferentSize(a2[i2], i1 + 1);
+                return new Vector2(prefix1, WIDTH - offset, data, suffix1, realLen);
+            } else if (len <= WIDTH3) {
+                int i1 = (len - 1) & MASK;
+                int i2 = ((len - 1) >>> BITS) & MASK;
+                int i3 = ((len - 1) >>> BITS2);
+                Object[][][] data = Arrays.copyOfRange(a3, 1, i3);
+                Object[][] prefix2 = copyTail(a3[0]);
+                Object[] prefix1 = a3[0][0];
+                Object[][] suffix2 = copyOf(a3[i3], i2);
+                Object[] suffix1 = copyIfDifferentSize(a3[i3][i2], i1 + 1);
+                int len1 = prefix1.length;
+                int len12 = len1 + prefix2.length * WIDTH;
+                return new Vector3(prefix1, len1, prefix2, len12, data, suffix2, suffix1, realLen);
+            } else if (len <= WIDTH4) {
+                int i1 = (len - 1) & MASK;
+                int i2 = ((len - 1) >>> BITS) & MASK;
+                int i3 = ((len - 1) >>> BITS2) & MASK;
+                int i4 = ((len - 1) >>> BITS3);
+                Object[][][][] data = Arrays.copyOfRange(a4, 1, i4);
+                Object[][][] prefix3 = copyTail(a4[0]);
+                Object[][] prefix2 = copyTail(a4[0][0]);
+                Object[] prefix1 = a4[0][0][0];
+                Object[][][] suffix3 = copyOf(a4[i4], i3);
+                Object[][] suffix2 = copyOf(a4[i4][i3], i2);
+                Object[] suffix1 = copyIfDifferentSize(a4[i4][i3][i2], i1 + 1);
+                int len1 = prefix1.length;
+                int len12 = len1 + prefix2.length * WIDTH;
+                int len123 = len12 + prefix3.length * WIDTH2;
+                return new Vector4(prefix1, len1, prefix2, len12, prefix3, len123, data, suffix3, suffix2, suffix1, realLen);
+            } else if (len <= WIDTH5) {
+                int i1 = (len - 1) & MASK;
+                int i2 = ((len - 1) >>> BITS) & MASK;
+                int i3 = ((len - 1) >>> BITS2) & MASK;
+                int i4 = ((len - 1) >>> BITS3) & MASK;
+                int i5 = ((len - 1) >>> BITS4);
+                Object[][][][][] data = Arrays.copyOfRange(a5, 1, i5);
+                Object[][][][] prefix4 = copyTail(a5[0]);
+                Object[][][] prefix3 = copyTail(a5[0][0]);
+                Object[][] prefix2 = copyTail(a5[0][0][0]);
+                Object[] prefix1 = a5[0][0][0][0];
+                Object[][][][] suffix4 = copyOf(a5[i5], i4);
+                Object[][][] suffix3 = copyOf(a5[i5][i4], i3);
+                Object[][] suffix2 = copyOf(a5[i5][i4][i3], i2);
+                Object[] suffix1 = copyIfDifferentSize(a5[i5][i4][i3][i2], i1 + 1);
+                int len1 = prefix1.length;
+                int len12 = len1 + prefix2.length * WIDTH;
+                int len123 = len12 + prefix3.length * WIDTH2;
+                int len1234 = len123 + prefix4.length * WIDTH3;
+                return new Vector5(prefix1, len1, prefix2, len12, prefix3, len123, prefix4, len1234, data, suffix4, suffix3, suffix2, suffix1, realLen);
+            } else {
+                int i1 = (len - 1) & MASK;
+                int i2 = ((len - 1) >>> BITS) & MASK;
+                int i3 = ((len - 1) >>> BITS2) & MASK;
+                int i4 = ((len - 1) >>> BITS3) & MASK;
+                int i5 = ((len - 1) >>> BITS4) & MASK;
+                int i6 = ((len - 1) >>> BITS5);
+                Object[][][][][][] data = Arrays.copyOfRange(a6, 1, i6);
+                Object[][][][][] prefix5 = copyTail(a6[0]);
+                Object[][][][] prefix4 = copyTail(a6[0][0]);
+                Object[][][] prefix3 = copyTail(a6[0][0][0]);
+                Object[][] prefix2 = copyTail(a6[0][0][0][0]);
+                Object[] prefix1 = a6[0][0][0][0][0];
+                Object[][][][][] suffix5 = copyOf(a6[i6], i5);
+                Object[][][][] suffix4 = copyOf(a6[i6][i5], i4);
+                Object[][][] suffix3 = copyOf(a6[i6][i5][i4], i3);
+                Object[][] suffix2 = copyOf(a6[i6][i5][i4][i3], i2);
+                Object[] suffix1 = copyIfDifferentSize(a6[i6][i5][i4][i3][i2], i1 + 1);
+                int len1 = prefix1.length;
+                int len12 = len1 + prefix2.length * WIDTH;
+                int len123 = len12 + prefix3.length * WIDTH2;
+                int len1234 = len123 + prefix4.length * WIDTH3;
+                int len12345 = len1234 + prefix5.length * WIDTH4;
+                return new Vector6(prefix1, len1, prefix2, len12, prefix3, len123, prefix4, len1234, prefix5, len12345, data, suffix5, suffix4, suffix3, suffix2, suffix1, realLen);
+            }
+
         }
 
         @Override

@@ -167,11 +167,11 @@ public final class Iterators {
 
     @Contract(mutates = "param1")
     public static int hash(@NotNull Iterator<?> it) {
-        int ans = 0;
+        int res = 0;
         while (it.hasNext()) { // implicit null check of it
-            ans = ans * 31 + Objects.hashCode(it.next());
+            res = res * 31 + Objects.hashCode(it.next());
         }
-        return ans;
+        return res;
     }
 
     public static int size(@NotNull Iterator<?> it) {

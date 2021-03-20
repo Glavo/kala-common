@@ -1,13 +1,10 @@
 package org.glavo.kala.collection.immutable;
 
-import org.glavo.kala.collection.FullSeqLike;
-import org.glavo.kala.collection.SeqLike;
-import org.glavo.kala.collection.SeqView;
+import org.glavo.kala.collection.*;
 import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.comparator.Comparators;
 import org.glavo.kala.collection.factory.CollectionFactory;
-import org.glavo.kala.collection.Seq;
 import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.tuple.primitive.IntObjTuple2;
 import org.jetbrains.annotations.Contract;
@@ -22,11 +19,11 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+@SuppressWarnings("unchecked")
 public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<E>, FullSeqLike<E> {
     //region Narrow method
 
     @Contract(value = "_ -> param1", pure = true)
-    @SuppressWarnings("unchecked")
     static <E> ImmutableSeq<E> narrow(ImmutableSeq<? extends E> seq) {
         return (ImmutableSeq<E>) seq;
     }
@@ -36,67 +33,124 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     //region Static Factories
 
     static <E> @NotNull CollectionFactory<E, ?, ImmutableSeq<E>> factory() {
-        return CollectionFactory.narrow(ImmutableVector.factory());
+        return (ImmutableSeqs.Factory<E>) ImmutableSeqs.FACTORY;
     }
 
     static <E> @NotNull ImmutableSeq<E> empty() {
-        return ImmutableVector.empty();
+        return (ImmutableSeq<E>) ImmutableSeqs.Seq0.INSTANCE;
     }
 
     static <E> @NotNull ImmutableSeq<E> of() {
-        return ImmutableVector.of();
+        return ImmutableSeq.empty();
     }
 
     static <E> @NotNull ImmutableSeq<E> of(E value1) {
-        return ImmutableVector.of(value1);
+        return new ImmutableSeqs.Seq1<>(value1);
     }
 
     static <E> @NotNull ImmutableSeq<E> of(E value1, E value2) {
-        return ImmutableVector.of(value1, value2);
+        return new ImmutableSeqs.Seq2<>(value1, value2);
     }
 
     static <E> @NotNull ImmutableSeq<E> of(E value1, E value2, E value3) {
-        return ImmutableVector.of(value1, value2, value3);
+        return new ImmutableSeqs.Seq3<>(value1, value2, value3);
     }
 
     static <E> @NotNull ImmutableSeq<E> of(E value1, E value2, E value3, E value4) {
-        return ImmutableVector.of(value1, value2, value3, value4);
+        return new ImmutableSeqs.Seq4<>(value1, value2, value3, value4);
     }
 
     static <E> @NotNull ImmutableSeq<E> of(E value1, E value2, E value3, E value4, E value5) {
-        return ImmutableVector.of(value1, value2, value3, value4, value5);
+        return new ImmutableSeqs.Seq5<>(value1, value2, value3, value4, value5);
     }
 
     @SafeVarargs
     static <E> @NotNull ImmutableSeq<E> of(E... values) {
-        return ImmutableVector.from(values);
+        return ImmutableSeq.from(values);
     }
 
     static <E> @NotNull ImmutableSeq<E> from(E @NotNull [] values) {
+        switch (values.length) {
+            case 0:
+                return ImmutableSeq.empty();
+            case 1:
+                return ImmutableSeq.of(values[0]);
+            case 2:
+                return ImmutableSeq.of(values[0], values[1]);
+            case 3:
+                return ImmutableSeq.of(values[0], values[1], values[2]);
+            case 4:
+                return ImmutableSeq.of(values[0], values[1], values[2], values[3]);
+            case 5:
+                return ImmutableSeq.of(values[0], values[1], values[2], values[3], values[4]);
+        }
         return ImmutableVector.from(values);
     }
 
     static <E> @NotNull ImmutableSeq<E> from(@NotNull Iterable<? extends E> values) {
-        return ImmutableVector.from(values);
+        return from(values.iterator()); // TODO
     }
 
     static <E> @NotNull ImmutableSeq<E> from(@NotNull Iterator<? extends E> it) {
-        return ImmutableVector.from(it);
+        if (!it.hasNext()) {
+            return ImmutableSeq.empty();
+        }
+        ImmutableVectors.VectorBuilder<E> builder = new ImmutableVectors.VectorBuilder<>();
+        while (it.hasNext()) {
+            builder.add(it.next());
+        }
+        return builder.buildSeq();
     }
 
     static <E> @NotNull ImmutableSeq<E> from(@NotNull Stream<? extends E> stream) {
-        return ImmutableVector.from(stream);
+        return stream.collect(factory());
     }
 
     static <E> @NotNull ImmutableSeq<E> fill(int n, E value) {
-        return ImmutableVector.fill(n, value);
+        if (n <= 0) {
+            return ImmutableSeq.empty();
+        }
+        if (n == 1) {
+            return new ImmutableSeqs.Seq1<>(value);
+        }
+        return new ImmutableSeqs.CopiesSeq<>(n, value);
     }
 
     static <E> @NotNull ImmutableSeq<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+        if (n <= 0) {
+            return ImmutableSeq.empty();
+        }
+        switch (n) {
+            case 1:
+                return ImmutableSeq.of(supplier.get());
+            case 2:
+                return ImmutableSeq.of(supplier.get(), supplier.get());
+            case 3:
+                return ImmutableSeq.of(supplier.get(), supplier.get(), supplier.get());
+            case 4:
+                return ImmutableSeq.of(supplier.get(), supplier.get(), supplier.get(), supplier.get());
+            case 5:
+                return ImmutableSeq.of(supplier.get(), supplier.get(), supplier.get(), supplier.get(), supplier.get());
+        }
         return ImmutableVector.fill(n, supplier);
     }
 
     static <E> @NotNull ImmutableSeq<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+        if (n <= 0) {
+            return ImmutableSeq.empty();
+        }
+        switch (n) {
+            case 1:
+                return ImmutableSeq.of(init.apply(0));
+            case 2:
+                return ImmutableSeq.of(init.apply(0), init.apply(1));
+            case 3:
+                return ImmutableSeq.of(init.apply(0), init.apply(1), init.apply(2));
+            case 4:
+                return ImmutableSeq.of(init.apply(0), init.apply(1), init.apply(2), init.apply(3));
+            case 5:
+                return ImmutableSeq.of(init.apply(0), init.apply(1), init.apply(2), init.apply(3), init.apply(4));
+        }
         return ImmutableVector.fill(n, init);
     }
 

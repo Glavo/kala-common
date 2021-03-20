@@ -124,19 +124,6 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     //region Element Retrieval Operations
 
     @Override
-    default @NotNull Option<E> find(@NotNull Predicate<? super E> predicate) {
-        final int size = this.size();
-
-        for (int i = 0; i < size; i++) {
-            E element = get(i);
-            if (predicate.test(element)) {
-                return Option.some(element);
-            }
-        }
-        return Option.none();
-    }
-
-    @Override
     default E first() {
         if (isEmpty()) {
             throw new NoSuchElementException();
