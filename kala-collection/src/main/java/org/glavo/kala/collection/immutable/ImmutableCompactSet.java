@@ -383,7 +383,6 @@ public final class ImmutableCompactSet<E>
         }
     }
 
-
     @Override
     public final @NotNull ImmutableCompactSet<E> addedAll(@NotNull Iterable<? extends E> values) {
         final Iterator<? extends E> it = values.iterator();

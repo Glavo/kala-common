@@ -364,6 +364,12 @@ public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements Inde
         if (oldSize == 0) {
             elem = value;
             this.size = 1;
+        } else if (oldSize == 1) {
+            final Object[] arr = new Object[DEFAULT_CAPACITY];
+            arr[0] = value;
+            arr[1] = elem;
+            this.elem = arr;
+            this.size = 2;
         } else {
             Object[] arr = (Object[]) this.elem;
             if (arr.length == oldSize) {
@@ -386,6 +392,12 @@ public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements Inde
         if (oldSize == 0) {
             elem = value;
             this.size = 1;
+        } else if (oldSize == 1) {
+            final Object[] arr = new Object[DEFAULT_CAPACITY];
+            arr[0] = elem;
+            arr[1] = value;
+            this.elem = arr;
+            this.size = 2;
         } else {
             Object[] arr = (Object[]) this.elem;
             if (arr.length == oldSize) {
