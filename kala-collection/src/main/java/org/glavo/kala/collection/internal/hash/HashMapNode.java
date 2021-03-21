@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
-public final class HashMapNode<K, V> implements java.util.Map.Entry<K, V> {
+public class HashMapNode<K, V> implements java.util.Map.Entry<K, V> {
     public final K key;
     public final int hash;
     public V value;

@@ -90,6 +90,8 @@
     * `removeIfExists(K)`
     * `replace(K, V)`
     * `replaceAll(BiFunction<K, V, V>)`
+    * `keysView()`
+    * `valuesView()`
     * `withDefault(Function<K, V>)`
 * Element Retrieval Operations
     * `find(Predicate<E>)`

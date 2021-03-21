@@ -126,6 +126,20 @@ public interface MapIterator<K, V> extends Iterator<Tuple2<K, V>> {
         return hash;
     }
 
+    default @NotNull Iterator<K> asKeysIterator() {
+        if (!hasNext()) {
+            return Iterators.empty();
+        }
+        return new MapIterators.KeysIterator<>(this);
+    }
+
+    default @NotNull Iterator<V> asValuesIterator() {
+        if (!hasNext()) {
+            return Iterators.empty();
+        }
+        return new MapIterators.ValuesIterator<>(this);
+    }
+
     default void forEach(@NotNull BiConsumer<? super K, ? super V> action) {
         while (hasNext()) {
             action.accept(nextKey(), getValue());

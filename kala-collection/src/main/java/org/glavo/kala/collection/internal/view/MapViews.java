@@ -1,6 +1,7 @@
 package org.glavo.kala.collection.internal.view;
 
 import org.glavo.kala.collection.*;
+import org.glavo.kala.collection.base.Iterators;
 import org.glavo.kala.collection.base.MapIterator;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.function.CheckedBiConsumer;
@@ -295,6 +296,72 @@ public final class MapViews {
         }
 
         //endregion
+    }
+
+    public static class Keys<K> extends AbstractSetView<K> {
+        protected final @NotNull MapLike<? extends K, ?> source;
+
+        public Keys(@NotNull MapLike<? extends K, ?> source) {
+            this.source = source;
+        }
+
+        @Override
+        public @NotNull String className() {
+            return "MapLike.KeysView";
+        }
+
+        @Override
+        public @NotNull Iterator<K> iterator() {
+            return Iterators.narrow(source.iterator().asKeysIterator());
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return source.isEmpty();
+        }
+
+        @Override
+        public int size() {
+            return source.size();
+        }
+
+        @Override
+        public int knownSize() {
+            return source.knownSize();
+        }
+    }
+
+    public static class Values<V> extends AbstractView<V> {
+        protected final @NotNull MapLike<?, ? extends V> source;
+
+        public Values(@NotNull MapLike<?, ? extends V> source) {
+            this.source = source;
+        }
+
+        @Override
+        public @NotNull String className() {
+            return "MapLike.ValuesView";
+        }
+
+        @Override
+        public @NotNull Iterator<V> iterator() {
+            return Iterators.narrow(source.iterator().asValuesIterator());
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return source.isEmpty();
+        }
+
+        @Override
+        public int size() {
+            return source.size();
+        }
+
+        @Override
+        public int knownSize() {
+            return source.knownSize();
+        }
     }
 
     public static class MapValues<K, V, OldV> extends AbstractMapView<K, V> {
