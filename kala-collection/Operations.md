@@ -150,6 +150,8 @@
     * `flatMap(Function<E, Iterable<U>>)`
     * `sorted()`
     * `sorted(Comparator<E>)`
+    * `shuffled()`
+    * `shuffled(Random)`
     * `withIndex()`
     * `zip(Iterable<U>)`
     * `span(Predicate<E>)`

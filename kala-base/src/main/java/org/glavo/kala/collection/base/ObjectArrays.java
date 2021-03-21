@@ -5,6 +5,7 @@ import org.glavo.kala.annotations.StaticClass;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.function.IndexedFunction;
+import org.glavo.kala.internal.RandomUtils;
 import org.glavo.kala.tuple.Tuple;
 import org.glavo.kala.tuple.Tuple2;
 import org.jetbrains.annotations.Contract;
@@ -235,6 +236,24 @@ public final class ObjectArrays {
     }
 
     //endregion
+
+    public static void shuffle(Object @NotNull [] array) {
+        shuffle(array, RandomUtils.threadLocal());
+    }
+
+    public static void shuffle(Object @NotNull [] array, @NotNull Random random) {
+        final int size = array.length;
+        if (size <= 1) {
+            return;
+        }
+
+        for (int i = size; i > 1; i--) {
+            final int k = random.nextInt(i);
+            final Object tmp = array[i - 1];
+            array[i - 1] = array[k];
+            array[k] = tmp;
+        }
+    }
 
     //region Element Retrieval Operations
 

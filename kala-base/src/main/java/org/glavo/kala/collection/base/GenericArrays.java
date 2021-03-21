@@ -6,6 +6,7 @@ import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.annotations.StaticClass;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.function.IndexedFunction;
+import org.glavo.kala.internal.RandomUtils;
 import org.glavo.kala.tuple.Tuple;
 import org.glavo.kala.tuple.Tuple2;
 import org.jetbrains.annotations.Contract;
@@ -20,7 +21,7 @@ import java.util.function.*;
 import java.util.stream.Stream;
 
 @StaticClass
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "CastCanBeRemovedNarrowingVariableType"})
 public final class GenericArrays {
     private GenericArrays() {
     }
@@ -275,6 +276,14 @@ public final class GenericArrays {
     }
 
     //endregion
+
+    public static void shuffle(Object @NotNull [] array) {
+        ObjectArrays.shuffle(array);
+    }
+
+    public static void shuffle(Object @NotNull [] array, @NotNull Random random) {
+        ObjectArrays.shuffle(array, random);
+    }
 
     //region Element Retrieval Operations
 

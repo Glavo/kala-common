@@ -1,7 +1,7 @@
 package org.glavo.kala.collection.mutable;
 
-import org.glavo.kala.annotations.DeprecatedReplaceWith;
-import org.glavo.kala.annotations.UnstableName;
+import org.glavo.kala.collection.base.ObjectArrays;
+import org.glavo.kala.internal.RandomUtils;
 import org.glavo.kala.collection.internal.convert.AsJavaConvert;
 import org.glavo.kala.collection.internal.convert.FromJavaConvert;
 import org.glavo.kala.comparator.Comparators;
@@ -124,11 +124,12 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
     @Contract(mutates = "this")
     void set(int index, E newValue);
 
-    @Contract(mutates = "this")
-    @Deprecated
-    @DeprecatedReplaceWith("replaceAll(mapper)")
-    default void mapInPlace(@NotNull Function<? super E, ? extends E> mapper) {
-        replaceAll(mapper);
+    default void swap(int index1, int index2) {
+        final E old1 = this.get(index1);
+        final E old2 = this.get(index2);
+
+        this.set(index1, old2);
+        this.set(index2, old1);
     }
 
     @Contract(mutates = "this")
@@ -139,12 +140,11 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
         }
     }
 
-    @UnstableName
     @Contract(mutates = "this")
-    default void mapInPlaceIndexed(@NotNull IndexedFunction<? super E, ? extends E> mapper) {
+    default void replaceAllIndexed(@NotNull IndexedFunction<? super E, ? extends E> operator) {
         int size = size();
         for (int i = 0; i < size; i++) {
-            this.set(i, mapper.apply(i, this.get(i)));
+            this.set(i, operator.apply(i, this.get(i)));
         }
     }
 
@@ -178,4 +178,24 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
         }
     }
 
+    default void shuffle() {
+        shuffle(RandomUtils.threadLocal());
+    }
+
+    default void shuffle(@NotNull Random random) {
+        int ks = this.knownSize();
+        if (ks == 0 || ks == 1) {
+            return;
+        }
+        if (this instanceof RandomAccess || (ks > 0 && ks <= AbstractMutableSeq.SHUFFLE_THRESHOLD)) {
+            assert ks > 0;
+            for (int i = ks; i > 1; i--) {
+                swap(i - 1, random.nextInt(i));
+            }
+        } else {
+            @SuppressWarnings("unchecked") final E[] arr = (E[]) this.toArray();
+            ObjectArrays.shuffle(arr, random);
+            this.replaceAllIndexed((i, v) -> arr[i]);
+        }
+    }
 }

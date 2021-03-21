@@ -33,7 +33,7 @@ allprojects {
     tasks.compileJava {
         modularity.inferModulePath.set(true)
         options.release.set(9)
-
+        options.isWarnings = false
         doLast {
             val tree = fileTree(destinationDir)
             tree.include("**/*.class")

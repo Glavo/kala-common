@@ -368,11 +368,11 @@ public final class DoubleLinkedBuffer<E>
     }
 
     @Override
-    public final void mapInPlaceIndexed(@NotNull IndexedFunction<? super E, ? extends E> mapper) {
+    public final void replaceAllIndexed(@NotNull IndexedFunction<? super E, ? extends E> operator) {
         Node<E> node = this.first;
         int idx = 0;
         while (node != null) {
-            node.value = mapper.apply(idx++, node.value);
+            node.value = operator.apply(idx++, node.value);
             node = node.next;
         }
     }

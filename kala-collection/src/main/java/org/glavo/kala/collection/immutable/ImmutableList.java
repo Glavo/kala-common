@@ -1,5 +1,6 @@
 package org.glavo.kala.collection.immutable;
 
+import org.glavo.kala.Conditions;
 import org.glavo.kala.collection.*;
 import org.glavo.kala.collection.internal.view.SeqViews;
 import org.glavo.kala.collection.mutable.AbstractBuffer;
@@ -995,6 +996,38 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
         }
 
         @Override
+        public final void swap(int index1, int index2) {
+            final int size = this.len;
+            Conditions.checkElementIndex(index1, size);
+            Conditions.checkElementIndex(index2, size);
+            if (index1 == index2) {
+                return;
+            }
+            ensureUnaliased();
+
+            final int i1 = Integer.min(index1, index2);
+            final int i2 = Integer.max(index1, index2);
+
+            ImmutableList<E> list = this.first;
+            int i = 0;
+            while (i < i1) {
+                list = list.tail;
+                i++;
+            }
+
+            final ImmutableList<E> node1 = list;
+            while (i < i2) {
+                list = list.tail;
+                i++;
+            }
+            final ImmutableList<E> node2 = list;
+
+            final E tmp = node1.head;
+            node1.head = node2.head;
+            node2.head = tmp;
+        }
+
+        @Override
         public final @NotNull Option<E> getOption(int index) {
             if (index < 0 || index >= len) {
                 return Option.none();
@@ -1246,6 +1279,21 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
             while (n != NIL) {
                 ImmutableList<E> c = n;
                 c.head = operator.apply(c.head);
+                n = c.tail;
+            }
+        }
+
+        @Override
+        public final void replaceAllIndexed(@NotNull IndexedFunction<? super E, ? extends E> operator) {
+            ImmutableList<E> n = first;
+            if (n == null || n == NIL) {
+                return;
+            }
+            ensureUnaliased();
+            int i = 0;
+            while (n != NIL) {
+                ImmutableList<E> c = n;
+                c.head = operator.apply(i++, c.head);
                 n = c.tail;
             }
         }

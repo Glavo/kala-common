@@ -7,7 +7,6 @@ import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.immutable.*;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.function.*;
-import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.tuple.primitive.IntObjTuple2;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
@@ -1190,9 +1189,9 @@ final class Synchronized {
         }
 
         @Contract(mutates = "this")
-        public void mapInPlaceIndexed(@NotNull IndexedFunction<? super E, ? extends E> mapper) {
+        public void replaceAllIndexed(@NotNull IndexedFunction<? super E, ? extends E> operator) {
             synchronized (mutex) {
-                source.mapInPlaceIndexed(mapper);
+                source.replaceAllIndexed(operator);
             }
         }
 

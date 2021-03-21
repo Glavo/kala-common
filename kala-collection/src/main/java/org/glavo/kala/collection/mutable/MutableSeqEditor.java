@@ -17,6 +17,12 @@ public class MutableSeqEditor<E, C extends MutableSeq<E>> extends MutableCollect
         return this;
     }
 
+    @Contract("_, _ -> this")
+    public @NotNull MutableSeqEditor<E, C> swap(int index1, int index2) {
+        source.swap(index1, index2);
+        return this;
+    }
+
     @Contract("_ -> this")
     public @NotNull MutableSeqEditor<E, C> replaceAll(@NotNull Function<? super E, ? extends E> mapper) {
         source.replaceAll(mapper);

@@ -118,6 +118,14 @@ public class BufferEditor<E, C extends Buffer<E>> extends MutableSeqEditor<E, C>
     }
 
     @Override
+    @Contract("_, _ -> this")
+    public @NotNull BufferEditor<E, C> swap(int index1, int index2) {
+        source.swap(index1, index2);
+        return this;
+    }
+
+
+    @Override
     @Contract("_ -> this")
     public @NotNull BufferEditor<E, C> replaceAll(@NotNull Function<? super E, ? extends E> mapper) {
         source.replaceAll(mapper);
