@@ -1,5 +1,7 @@
 package org.glavo.kala.collection.immutable;
 
+import org.glavo.kala.collection.View;
+import org.glavo.kala.collection.ViewTestTemplate;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.junit.jupiter.api.Test;
 
@@ -25,6 +27,24 @@ public final class ImmutableSeqTest implements ImmutableSeqTestTemplate {
         assertIterableEquals(List.of("str1", "str2", "str3", "str4", "str5", "str6"), ImmutableSeq.of("str1", "str2", "str3", "str4", "str5", "str6"));
         for (Integer[] data : data1()) {
             assertIterableEquals(Arrays.asList(data), ImmutableSeq.of(data));
+        }
+    }
+
+    static final class ViewTest implements ViewTestTemplate {
+
+        @Override
+        public <E> View<E> of(E... elements) {
+            return ImmutableSeq.from(elements).view();
+        }
+
+        @Override
+        public <E> View<E> from(E[] elements) {
+            return ImmutableSeq.from(elements).view();
+        }
+
+        @Override
+        public <E> View<E> from(Iterable<? extends E> elements) {
+            return ImmutableSeq.<E>from(elements).view();
         }
     }
 }

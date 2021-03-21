@@ -1,17 +1,17 @@
 package org.glavo.kala.collection.immutable;
 
+import org.glavo.kala.collection.View;
+import org.glavo.kala.collection.ViewTestTemplate;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class SimpleImmutableSeqTest implements ImmutableSeqTestTemplate {
+
     @Override
     public final <E> CollectionFactory<E, ?, ImmutableSeq<E>> factory() {
         return new CollectionFactory<E, ArrayList<E>, ImmutableSeq<E>>() {
@@ -49,6 +49,28 @@ public final class SimpleImmutableSeqTest implements ImmutableSeqTestTemplate {
         @Override
         public final @NotNull Iterator<E> iterator() {
             return list.iterator();
+        }
+    }
+
+    static final class ViewTest implements ViewTestTemplate {
+
+        @Override
+        public <E> View<E> of(E... elements) {
+            return new SimpleImmutableSeq<>(Arrays.asList(elements)).view();
+        }
+
+        @Override
+        public <E> View<E> from(E[] elements) {
+            return new SimpleImmutableSeq<>(Arrays.asList(elements)).view();
+        }
+
+        @Override
+        public <E> View<E> from(Iterable<? extends E> elements) {
+            final ArrayList<E> list = new ArrayList<>();
+            for (E element : elements) {
+                list.add(element);
+            }
+            return new SimpleImmutableSeq<>(list).view();
         }
     }
 }
