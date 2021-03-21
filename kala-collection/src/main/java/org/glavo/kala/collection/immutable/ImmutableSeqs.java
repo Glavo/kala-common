@@ -64,7 +64,7 @@ final class ImmutableSeqs {
 
         @Override
         public final E get(int index) {
-            throw new NoSuchElementException();
+            throw new IndexOutOfBoundsException();
         }
 
         @Override
@@ -163,7 +163,7 @@ final class ImmutableSeqs {
         @Override
         public final E get(int index) {
             if (index != 0) {
-                throw new NoSuchElementException();
+                throw new IndexOutOfBoundsException();
             }
             return value1;
         }
@@ -295,7 +295,7 @@ final class ImmutableSeqs {
                 case 1:
                     return value2;
                 default:
-                    throw new NoSuchElementException();
+                    throw new IndexOutOfBoundsException();
             }
         }
 
@@ -444,7 +444,7 @@ final class ImmutableSeqs {
                 case 2:
                     return value3;
                 default:
-                    throw new NoSuchElementException();
+                    throw new IndexOutOfBoundsException();
             }
         }
 
@@ -619,7 +619,7 @@ final class ImmutableSeqs {
                 case 3:
                     return value4;
                 default:
-                    throw new NoSuchElementException();
+                    throw new IndexOutOfBoundsException();
             }
         }
 
@@ -816,7 +816,7 @@ final class ImmutableSeqs {
                 case 4:
                     return value5;
                 default:
-                    throw new NoSuchElementException();
+                    throw new IndexOutOfBoundsException();
             }
         }
 

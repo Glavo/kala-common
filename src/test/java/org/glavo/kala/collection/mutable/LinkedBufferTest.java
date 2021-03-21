@@ -12,6 +12,22 @@ public final class LinkedBufferTest implements BufferTestTemplate {
         return LinkedBuffer.factory();
     }
 
+    @Override
+    public <E> LinkedBuffer<E> of(E... elements) {
+        return LinkedBuffer.from(elements);
+    }
+
+    @Override
+    public <E> LinkedBuffer<E> from(E[] elements) {
+        return LinkedBuffer.from(elements);
+    }
+
+    @Override
+    public <E> LinkedBuffer<E> from(Iterable<? extends E> elements) {
+        return LinkedBuffer.from(elements);
+    }
+
+
     @Test
     void removeTest() {
         var buffer1 = LinkedBuffer.of("A", "B", "C");

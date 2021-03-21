@@ -1478,10 +1478,12 @@ public final class Iterators {
             if (n <= 0) {
                 throw new NoSuchElementException();
             }
+            final E oldValue = this.value;
             if (--n == 0) {
+
                 this.value = null;
             }
-            return value;
+            return oldValue;
         }
     }
 

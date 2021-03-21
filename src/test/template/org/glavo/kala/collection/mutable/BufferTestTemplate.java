@@ -15,6 +15,15 @@ public interface BufferTestTemplate extends MutableSeqTestTemplate {
     @Override
     <E> CollectionFactory<E, ?, ? extends Buffer<? extends E>> factory();
 
+    @Override
+    <E> Buffer<E> of(E... elements);
+
+    @Override
+    <E> Buffer<E> from(E[] elements);
+
+    @Override
+    <E> Buffer<E> from(Iterable<? extends E> elements);
+
     @Test
     default void appendTest() {
         Buffer<Object> b = (Buffer<Object>) factory().empty();
@@ -37,7 +46,7 @@ public interface BufferTestTemplate extends MutableSeqTestTemplate {
 
     @Test
     default void appendAllTest() {
-        Buffer<Object> b = (Buffer<Object>) factory().empty();
+        Buffer<Object> b = of();
         assertIterableEquals(List.of(), b);
 
         b.appendAll(List.of());
