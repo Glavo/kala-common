@@ -19,6 +19,9 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 public final class ArrayBuffer<E> extends AbstractBuffer<E>
@@ -62,6 +65,10 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
 
     public static <E> @NotNull CollectionFactory<E, ?, ArrayBuffer<E>> factory() {
         return (Factory<E>) FACTORY;
+    }
+
+    public static <E> @NotNull Collector<E, ?, ArrayBuffer<E>> collector() {
+        return ArrayBuffer.factory();
     }
 
     @Contract("-> new")
@@ -142,6 +149,10 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
             buffer.append(it.next());
         }
         return buffer;
+    }
+
+    public static <E> @NotNull ArrayBuffer<E> from(@NotNull Stream<? extends E> stream) {
+        return stream.collect(factory());
     }
 
     public static <E> @NotNull ArrayBuffer<E> fill(int n, E value) {

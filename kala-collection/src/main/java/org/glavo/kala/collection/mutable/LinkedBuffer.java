@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
+import java.util.stream.Collector;
 
 @Debug.Renderer(hasChildren = "!isEmpty()", childrenArray = "toArray()")
 public final class LinkedBuffer<E> extends ImmutableList.Builder<E>
@@ -25,8 +26,12 @@ public final class LinkedBuffer<E> extends ImmutableList.Builder<E>
     //region Static Factories
 
     @SuppressWarnings("unchecked")
-    public static <E> CollectionFactory<E, ?, LinkedBuffer<E>> factory() {
+    public static <E> @NotNull CollectionFactory<E, ?, LinkedBuffer<E>> factory() {
         return (Factory<E>) FACTORY;
+    }
+
+    public static <E> @NotNull Collector<E, ?, LinkedBuffer<E>> collector() {
+        return factory();
     }
 
     @Contract(" -> new")

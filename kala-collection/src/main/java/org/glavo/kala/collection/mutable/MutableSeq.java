@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collector;
 
 public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
 
@@ -21,6 +22,10 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
 
     static <E> @NotNull CollectionFactory<E, ?, MutableSeq<E>> factory() {
         return CollectionFactory.narrow(MutableArray.factory());
+    }
+
+    static <E> @NotNull Collector<E, ?, MutableSeq<E>> collector() {
+        return factory();
     }
 
     static <E> @NotNull MutableSeq<E> of() {

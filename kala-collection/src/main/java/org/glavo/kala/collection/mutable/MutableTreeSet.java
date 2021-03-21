@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.stream.Collector;
 
 import static org.glavo.kala.collection.mutable.RedBlackTree.*;
 
@@ -54,6 +55,14 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
             return (Factory<E>) DEFAULT_FACTORY;
         }
         return new Factory<>(comparator);
+    }
+
+    public static <E extends Comparable<? super E>> @NotNull Collector<E, ?, MutableTreeSet<E>> collector() {
+        return factory();
+    }
+
+    public static <E> @NotNull Collector<E, ?, MutableTreeSet<E>> collector(Comparator<? super E> comparator) {
+        return factory(comparator);
     }
 
     @Contract(value = " -> new", pure = true)

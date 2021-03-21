@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.stream.Collector;
 
 public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E> {
 
@@ -21,6 +22,10 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
     @Contract(pure = true)
     static <E> @NotNull CollectionFactory<E, ?, MutableSet<E>> factory() {
         return CollectionFactory.narrow(MutableHashSet.factory());
+    }
+
+    static <E> @NotNull Collector<E, ?, MutableSet<E>> collector() {
+        return factory();
     }
 
     @Contract(value = "-> new", pure = true)

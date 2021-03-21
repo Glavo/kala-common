@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.stream.Collector;
 
 @SuppressWarnings("unchecked")
 public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Serializable {
@@ -65,9 +66,12 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
 
     //region Static Factories
 
-    @NotNull
-    public static <E> CollectionFactory<E, ?, MutableHashSet<E>> factory() {
+    public static <E> @NotNull CollectionFactory<E, ?, MutableHashSet<E>> factory() {
         return ((Factory<E>) FACTORY);
+    }
+
+    public static <E> @NotNull Collector<E, ?, MutableHashSet<E>> collector() {
+        return factory();
     }
 
     @NotNull

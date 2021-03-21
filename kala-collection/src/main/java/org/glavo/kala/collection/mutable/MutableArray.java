@@ -16,6 +16,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
+import java.util.stream.Collector;
 
 @SuppressWarnings("unchecked")
 public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, IndexedSeq<E>, Serializable {
@@ -37,6 +38,10 @@ public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Index
 
     public static <E> @NotNull CollectionFactory<E, ?, MutableArray<E>> factory() {
         return (Factory<E>) FACTORY;
+    }
+
+    public static <E> @NotNull Collector<E, ?, MutableArray<E>> collector() {
+        return factory();
     }
 
     @Contract("_ -> new")

@@ -7,13 +7,18 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.stream.Collector;
 
 public interface MutableCollection<E> extends Collection<E> {
 
     //region Static Factories
 
-    static <E> @NotNull CollectionFactory<E, ?, ? extends MutableCollection<E>> factory() {
+    static <E> @NotNull CollectionFactory<E, ?, MutableCollection<E>> factory() {
         return CollectionFactory.narrow(MutableSeq.factory());
+    }
+
+    static <E> @NotNull Collector<E, ?, MutableCollection<E>> collector() {
+        return factory();
     }
 
     static <E> @NotNull MutableCollection<E> of() {

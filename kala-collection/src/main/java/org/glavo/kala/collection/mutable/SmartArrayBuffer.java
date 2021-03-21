@@ -15,6 +15,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
+import java.util.stream.Collector;
 
 @SuppressWarnings("unchecked")
 public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements IndexedSeq<E>, Serializable {
@@ -38,8 +39,12 @@ public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements Inde
 
     //region Static Factories
 
-    public static <E> CollectionFactory<E, ?, SmartArrayBuffer<E>> factory() {
+    public static <E> @NotNull CollectionFactory<E, ?, SmartArrayBuffer<E>> factory() {
         return (Factory<E>) FACTORY;
+    }
+
+    public static <E> @NotNull Collector<E, ?, SmartArrayBuffer<E>> collector() {
+        return factory();
     }
 
     @Contract("-> new")

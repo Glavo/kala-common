@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
+import java.util.stream.Collector;
 
 @Debug.Renderer(hasChildren = "!isEmpty()", childrenArray = "toArray()")
 public final class DoubleLinkedBuffer<E>
@@ -30,6 +31,10 @@ public final class DoubleLinkedBuffer<E>
     @SuppressWarnings("unchecked")
     public static <E> @NotNull CollectionFactory<E, ?, DoubleLinkedBuffer<E>> factory() {
         return (DoubleLinkedBuffer.Factory<E>) FACTORY;
+    }
+
+    public static <E> @NotNull Collector<E, ?, DoubleLinkedBuffer<E>> collector() {
+        return factory();
     }
 
     @Contract("-> new")

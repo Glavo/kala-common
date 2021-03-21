@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.RandomAccess;
 import java.util.function.Predicate;
+import java.util.stream.Collector;
 
 @SuppressWarnings("unchecked")
 public interface Buffer<E> extends MutableSeq<E>, Growable<E> {
@@ -26,6 +27,10 @@ public interface Buffer<E> extends MutableSeq<E>, Growable<E> {
 
     static <E> @NotNull CollectionFactory<E, ?, Buffer<E>> factory() {
         return CollectionFactory.narrow(ArrayBuffer.factory());
+    }
+
+    static <E> @NotNull Collector<E, ?, Buffer<E>> collector() {
+        return factory();
     }
 
     @Contract("-> new")
