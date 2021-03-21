@@ -1,6 +1,7 @@
 package org.glavo.kala.collection;
 
 import org.glavo.kala.collection.base.MapBase;
+import org.glavo.kala.collection.immutable.ImmutableMap;
 import org.glavo.kala.collection.internal.view.MapViews;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,6 +21,10 @@ public interface MapLike<K, V> extends MapBase<K, V> {
     default @NotNull MapView.WithDefault<K, V> withDefault(@NotNull Function<? super K, ? extends V> defaultFunction) {
         Objects.requireNonNull(defaultFunction);
         return new MapViews.WithDefaultImpl<>(this, defaultFunction);
+    }
+
+    default @NotNull ImmutableMap<K, V> toImmutableMap() {
+        return ImmutableMap.from(this);
     }
 
 }

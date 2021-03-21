@@ -2,6 +2,7 @@ package org.glavo.kala.control;
 
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.annotations.Sealed;
+import org.glavo.kala.annotations.UnstableName;
 import org.glavo.kala.tuple.Tuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +44,7 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
         return new Right<>(value);
     }
 
-    // TODO: new name
+    @UnstableName
     public static <T> T join(@NotNull Either<? extends T, ? extends T> either) {
         if (either.isLeft()) {
             return either.getLeftValue();

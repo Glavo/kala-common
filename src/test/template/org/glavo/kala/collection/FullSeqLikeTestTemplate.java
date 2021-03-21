@@ -384,6 +384,13 @@ public interface FullSeqLikeTestTemplate extends FullCollectionLikeTestTemplate,
             Integer[] d = data1[i];
             String[] ds = data1s[i];
 
+            {
+                final Integer[] ta = new Integer[d.length];
+                for (int j = 0; j < d.length; j++) {
+                    ta[j] = d[j] + j;
+                }
+                assertIterableEquals(Arrays.asList(ta), from(d).mapIndexedNotNull(Integer::sum));
+            }
             List<String> res = new ArrayList<>();
             for (int j = 0; j < d.length; j++) {
                 if (d[j] > 0) {

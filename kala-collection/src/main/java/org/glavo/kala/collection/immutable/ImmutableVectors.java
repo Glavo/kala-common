@@ -718,8 +718,7 @@ final class ImmutableVectors {
                 }
 
                 Object[] suffix1b = copyOf(suffix1, suffix1.length + s);
-                //noinspection ResultOfMethodCallIgnored
-                it.copyToArray(suffix1b, suffix1.length);
+                it.copyToArray(suffix1.length, suffix1b);
                 return suffix1b;
             } else {
                 return null;

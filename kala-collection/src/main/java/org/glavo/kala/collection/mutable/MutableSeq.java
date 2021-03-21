@@ -172,9 +172,7 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
         }
 
         for (int i = 0; i < size / 2; i++) {
-            E tem = get(i);
-            set(i, get(size - i - 1));
-            set(size - i - 1, tem);
+            swap(i, size - i - 1);
         }
     }
 

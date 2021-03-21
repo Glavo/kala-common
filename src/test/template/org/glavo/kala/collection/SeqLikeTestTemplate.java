@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,6 +24,17 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate {
     <E> SeqLike<E> from(Iterable<? extends E> elements);
 
     @Test
+    default void streamTest() {
+        assertEquals(0, of().stream().count());
+        assertIterableEquals(List.of("foo"), of("foo").stream().collect(Collectors.toList()));
+        assertIterableEquals(List.of("foo", "bar"), of("foo", "bar").stream().collect(Collectors.toList()));
+
+        for (Integer[] data : data1()) {
+            assertIterableEquals(Arrays.asList(data), from(data).stream().collect(Collectors.toList()));
+        }
+    }
+
+    @Test
     default void isDefinedAtTest() {
         for (int i = -10; i < 10; i++) {
             assertFalse(of().isDefinedAt(i));
@@ -31,7 +43,7 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate {
         assertFalse(of().isDefinedAt(Integer.MAX_VALUE));
 
         for (Integer[] data : data1()) {
-            SeqLike< Integer> seq = from(data);
+            SeqLike<Integer> seq = from(data);
             assertFalse(seq.isDefinedAt(-1));
             assertFalse(seq.isDefinedAt(Integer.MIN_VALUE));
 
@@ -142,4 +154,6 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate {
         assertEquals(-1, from(List.of("foo", "bar")).lastIndexOf("zzz"));
         assertEquals(3, from(List.of("foo", "bar", "zzz", "bar")).lastIndexOf("bar"));
     }
+
+
 }

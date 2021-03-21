@@ -1,9 +1,12 @@
 package org.glavo.kala.collection.mutable;
 
 import org.glavo.kala.collection.SeqTestTemplate;
+import org.glavo.kala.collection.base.GenericArrays;
+import org.glavo.kala.collection.base.ObjectArrays;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,5 +36,17 @@ public interface MutableSeqTestTemplate extends MutableCollectionTestTemplate, S
                 List.of("A", "B", "C"),
                 of("A", "C", "B").edit().swap(2, 1).done()
         );
+    }
+
+    @Test
+    default void shuffleTest() {
+        for (Integer[] data : data1()) {
+            final MutableSeq<Integer> seq = from(data);
+            seq.shuffle();
+
+            assertEquals(data.length, seq.size());
+            assertTrue(seq.containsAll(data));
+        }
+
     }
 }

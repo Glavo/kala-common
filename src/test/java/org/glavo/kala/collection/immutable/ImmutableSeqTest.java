@@ -31,7 +31,6 @@ public final class ImmutableSeqTest implements ImmutableSeqTestTemplate {
     }
 
     static final class ViewTest implements ViewTestTemplate {
-
         @Override
         public <E> View<E> of(E... elements) {
             return ImmutableSeq.from(elements).view();

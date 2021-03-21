@@ -146,4 +146,9 @@ public interface ImmutableMap<K, V> extends Map<K, V> {
     default @NotNull ImmutableMap<K, V> removed(K key) {
         return AbstractImmutableMap.removed(this, key, mapFactory());
     }
+
+    @Override
+    default @NotNull ImmutableMap<K, V> toImmutableMap() {
+        return this;
+    }
 }
