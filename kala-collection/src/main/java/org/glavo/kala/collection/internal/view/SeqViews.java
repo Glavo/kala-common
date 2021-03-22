@@ -641,6 +641,11 @@ public final class SeqViews {
         }
 
         @Override
+        public final @NotNull Iterator<E> iterator() {
+            return Iterators.concat(seq1.iterator(), seq2.iterator());
+        }
+
+        @Override
         public final int size() {
             return seq1.size() + seq2.size();
         }
@@ -656,11 +661,6 @@ public final class SeqViews {
                 return -1;
             }
             return ks1 + ks2;
-        }
-
-        @Override
-        public final @NotNull Iterator<E> iterator() {
-            return Iterators.concat(seq1.iterator(), seq2.iterator());
         }
     }
 

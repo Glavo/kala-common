@@ -135,7 +135,7 @@ public final class IndexedSeqViews {
             final SeqLike<? extends E> seq2 = this.seq2;
             final int ss2 = seq2.size();
             if (index < ss1 + ss2) {
-                return seq2.get(index + ss1);
+                return seq2.get(index - ss1);
             }
 
             throw new IndexOutOfBoundsException("index(" + index + ") > size(" + (ss1 + ss2) + ")");

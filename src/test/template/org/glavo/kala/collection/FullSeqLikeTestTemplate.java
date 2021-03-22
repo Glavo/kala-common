@@ -2,6 +2,7 @@ package org.glavo.kala.collection;
 
 import org.glavo.kala.collection.immutable.ImmutableArray;
 import org.glavo.kala.collection.immutable.ImmutableList;
+import org.glavo.kala.collection.immutable.ImmutableSeq;
 import org.glavo.kala.collection.immutable.ImmutableVector;
 import org.glavo.kala.comparator.Comparators;
 import org.junit.jupiter.api.Test;
@@ -344,6 +345,17 @@ public interface FullSeqLikeTestTemplate extends FullCollectionLikeTestTemplate,
         assertIterableEquals(List.of("str1", "str2", "str3", "str4"), of("str1", "str2").concat(ImmutableList.of("str3", "str4")));
         assertIterableEquals(List.of("str1", "str2", "str3", "str4"), of("str1", "str2").concat(ImmutableArray.of("str3", "str4")));
         assertIterableEquals(List.of("str1", "str2", "str3", "str4"), of("str1", "str2").concat(ImmutableVector.of("str3", "str4")));
+
+        // https://github.com/Glavo/kala-common/issues/28
+        {
+            final var fst = of(1).view().map(i -> i + 1);
+            final var snd = of(2);
+            final var res = fst.concat(snd).toImmutableSeq();
+            assertIterableEquals(
+                    List.of(2, 2),
+                    res
+            );
+        }
     }
 
     @Test
