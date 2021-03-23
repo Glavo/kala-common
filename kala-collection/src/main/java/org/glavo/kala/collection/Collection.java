@@ -11,6 +11,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
+import java.util.stream.Collector;
+
 public interface Collection<@Covariant E> extends Traversable<E>, CollectionLike<E>, Equatable {
 
     int SEQ_HASH_MAGIC = -1140647423;
@@ -28,6 +30,10 @@ public interface Collection<@Covariant E> extends Traversable<E>, CollectionLike
     @Contract(pure = true)
     static <E> @NotNull CollectionFactory<E, ?, Collection<E>> factory() {
         return CollectionFactory.narrow(ImmutableCollection.factory());
+    }
+
+    static <E> @NotNull Collector<E, ?, Collection<E>> collector() {
+        return factory();
     }
 
     //endregion

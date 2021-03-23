@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.RandomAccess;
+import java.util.stream.Collector;
 
 @SuppressWarnings("unchecked")
 public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E> {
@@ -31,6 +32,10 @@ public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E> {
 
     static <E> @NotNull CollectionFactory<E, ?, Seq<E>> factory() {
         return CollectionFactory.narrow(ImmutableSeq.factory());
+    }
+
+    static <E> @NotNull Collector<E, ?, Seq<E>> collector() {
+        return factory();
     }
 
     static <E> @NotNull Seq<E> of() {

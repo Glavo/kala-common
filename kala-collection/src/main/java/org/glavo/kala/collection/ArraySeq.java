@@ -49,6 +49,10 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         return (Factory<E>) FACTORY;
     }
 
+    public static <E> @NotNull Collector<E, ?, ? extends ArraySeq<E>> collector() {
+        return factory();
+    }
+
     @Contract("_ -> new")
     public static <E> @NotNull ArraySeq<E> wrap(@NotNull E[] array) {
         Objects.requireNonNull(array);

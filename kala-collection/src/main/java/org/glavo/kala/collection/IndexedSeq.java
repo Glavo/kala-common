@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.*;
 import java.util.function.*;
+import java.util.stream.Collector;
 
 public interface IndexedSeq<@Covariant E> extends Seq<E>, IndexedSeqLike<E>, RandomAccess {
 
@@ -33,9 +34,12 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, IndexedSeqLike<E>, Ran
 
     //region Static Factories
 
-    @Contract(pure = true)
-    static <E> @NotNull CollectionFactory<E, ?, ? extends IndexedSeq<E>> factory() {
-        return ImmutableVector.factory();
+    static <E> @NotNull CollectionFactory<E, ?, IndexedSeq<E>> factory() {
+        return CollectionFactory.narrow(ImmutableVector.factory());
+    }
+
+    static <E> @NotNull Collector<E, ?, IndexedSeq<E>> collector() {
+        return factory();
     }
 
     @SafeVarargs
