@@ -17,10 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.function.*;
 import java.util.stream.Stream;
 
@@ -388,6 +385,16 @@ public final class SeqViews {
         }
 
         @Override
+        public @NotNull Stream<E> stream() {
+            return source.stream().skip(n);
+        }
+
+        @Override
+        public @NotNull Stream<E> parallelStream() {
+            return source.stream().skip(n).parallel();
+        }
+
+        @Override
         public final int size() {
             return Integer.max(0, source.size() - n);
         }
@@ -472,6 +479,16 @@ public final class SeqViews {
         public final @NotNull Iterator<E> iterator() {
             return Iterators.dropWhile(source.iterator(), predicate);
         }
+
+        @Override
+        public @NotNull Stream<E> stream() {
+            return source.stream().dropWhile(predicate);
+        }
+
+        @Override
+        public @NotNull Stream<E> parallelStream() {
+            return source.parallelStream().dropWhile(predicate);
+        }
     }
 
     public static class Take<E> extends AbstractSeqView<E> {
@@ -487,6 +504,16 @@ public final class SeqViews {
         @Override
         public final @NotNull Iterator<E> iterator() {
             return Iterators.take(source.iterator(), n);
+        }
+
+        @Override
+        public @NotNull Stream<E> stream() {
+            return source.stream().limit(n);
+        }
+
+        @Override
+        public @NotNull Stream<E> parallelStream() {
+            return source.stream().limit(n).parallel();
         }
 
         @Override
@@ -613,21 +640,28 @@ public final class SeqViews {
     }
 
     public static class TakeWhile<E> extends AbstractSeqView<E> {
-        @NotNull
-        private final SeqView<E> source;
+        private final @NotNull SeqView<E> source;
 
-        @NotNull
-        private final Predicate<? super E> predicate;
+        private final @NotNull Predicate<? super E> predicate;
 
         public TakeWhile(@NotNull SeqView<E> source, @NotNull Predicate<? super E> predicate) {
             this.source = source;
             this.predicate = predicate;
         }
 
-        @NotNull
         @Override
-        public final Iterator<E> iterator() {
+        public final @NotNull Iterator<E> iterator() {
             return Iterators.takeWhile(source.iterator(), predicate);
+        }
+
+        @Override
+        public @NotNull Stream<E> stream() {
+            return source.stream().takeWhile(predicate);
+        }
+
+        @Override
+        public @NotNull Stream<E> parallelStream() {
+            return source.parallelStream().takeWhile(predicate);
         }
     }
 
@@ -799,6 +833,16 @@ public final class SeqViews {
         public final @NotNull Iterator<E> iterator() {
             return Iterators.filter(source.iterator(), predicate);
         }
+
+        @Override
+        public @NotNull Stream<E> stream() {
+            return source.stream().filter(predicate);
+        }
+
+        @Override
+        public @NotNull Stream<E> parallelStream() {
+            return source.parallelStream().filter(predicate);
+        }
     }
 
     public static final class FilterNot<E> extends AbstractSeqView<E> {
@@ -815,6 +859,16 @@ public final class SeqViews {
         public final @NotNull Iterator<E> iterator() {
             return Iterators.filterNot(source.iterator(), predicate);
         }
+
+        @Override
+        public @NotNull Stream<E> stream() {
+            return source.stream().filter(predicate.negate());
+        }
+
+        @Override
+        public @NotNull Stream<E> parallelStream() {
+            return source.parallelStream().filter(predicate.negate());
+        }
     }
 
     public static final class FilterNotNull<E> extends AbstractSeqView<E> {
@@ -827,6 +881,16 @@ public final class SeqViews {
         @Override
         public final @NotNull Iterator<E> iterator() {
             return Iterators.filterNotNull(source.iterator());
+        }
+
+        @Override
+        public @NotNull Stream<E> stream() {
+            return source.stream().filter(Objects::nonNull);
+        }
+
+        @Override
+        public @NotNull Stream<E> parallelStream() {
+            return source.parallelStream().filter(Objects::nonNull);
         }
     }
 

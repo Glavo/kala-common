@@ -20,6 +20,8 @@ import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 public final class Views {
+    private Views() {
+    }
 
     public static class Empty<E> extends AbstractView<E> {
         public static final Empty<?> INSTANCE = new Empty<>();
