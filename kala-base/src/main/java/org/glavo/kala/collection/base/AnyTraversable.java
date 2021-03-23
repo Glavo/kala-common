@@ -48,6 +48,10 @@ public interface AnyTraversable<
         }
     }
 
+    default boolean isNotEmpty() {
+        return !isEmpty();
+    }
+
     /**
      * Returns the size of this {@code AnyTraversable} if is a finite structure.
      *
