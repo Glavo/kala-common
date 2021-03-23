@@ -290,6 +290,20 @@ public final class IndexedSeqViews {
 
             return source.getOption(index + n);
         }
+
+        @Override
+        public @NotNull IndexedSeqView<E> drop(int n) {
+            if (n <= 0) {
+                return this;
+            }
+
+            final int nn = this.n + n;
+            final int ss = source.size();
+            if (nn >= ss) {
+                return IndexedSeqView.empty();
+            }
+            return new Drop<>(source, nn);
+        }
     }
 
     public static class Take<E> extends SeqViews.Take<E> implements IndexedSeqView<E> {
@@ -320,6 +334,17 @@ public final class IndexedSeqViews {
             return index >= 0 && index < size()
                     ? source.getOption(index)
                     : Option.none();
+        }
+
+        @Override
+        public @NotNull IndexedSeqView<E> take(int n) {
+            if (n <= 0) {
+                return IndexedSeqView.empty();
+            }
+            if (n >= this.n) {
+                return this;
+            }
+            return new Take<>(source, n);
         }
     }
 

@@ -1,7 +1,7 @@
 package org.glavo.kala.collection;
 
 import org.glavo.kala.collection.base.GenericArrays;
-import org.glavo.kala.collection.immutable.ImmutableList;
+import org.glavo.kala.collection.immutable.ImmutableLinkedSeq;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -84,7 +84,7 @@ public interface CollectionLikeTestTemplate {
             assertEquals(0, c.sizeCompare(dl));
             assertEquals(0, c.sizeCompare(new SimpleIterable<>(dl)));
             assertEquals(0, c.sizeCompare(ArraySeq.wrap(data)));
-            assertEquals(0, c.sizeCompare(ImmutableList.from(data)));
+            assertEquals(0, c.sizeCompare(ImmutableLinkedSeq.from(data)));
 
             List<Integer> dl1 = dl.subList(0, data.length - 1);
 
@@ -92,7 +92,7 @@ public interface CollectionLikeTestTemplate {
             assertTrue(c.sizeCompare(dl1) > 0);
             assertTrue(c.sizeCompare(new SimpleIterable<>(dl1)) > 0);
             assertTrue(c.sizeCompare(ArraySeq.from(dl1)) > 0);
-            assertTrue(c.sizeCompare(ImmutableList.from(dl1)) > 0);
+            assertTrue(c.sizeCompare(ImmutableLinkedSeq.from(dl1)) > 0);
 
 
             ArrayList<Integer> dl2 = new ArrayList<>(dl);
@@ -102,7 +102,7 @@ public interface CollectionLikeTestTemplate {
             assertTrue(c.sizeCompare(dl2) < 0);
             assertTrue(c.sizeCompare(new SimpleIterable<>(dl2)) < 0);
             assertTrue(c.sizeCompare(ArraySeq.from(dl2)) < 0);
-            assertTrue(c.sizeCompare(ImmutableList.from(dl2)) < 0);
+            assertTrue(c.sizeCompare(ImmutableLinkedSeq.from(dl2)) < 0);
         }
     }
 

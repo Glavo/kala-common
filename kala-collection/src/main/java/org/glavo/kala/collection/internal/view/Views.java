@@ -409,8 +409,8 @@ public final class Views {
         }
 
         @Override
-        public final @NotNull ImmutableList<E> toImmutableList() {
-            return source.toImmutableList();
+        public final @NotNull ImmutableLinkedSeq<E> toImmutableLinkedSeq() {
+            return source.toImmutableLinkedSeq();
         }
 
         @Override

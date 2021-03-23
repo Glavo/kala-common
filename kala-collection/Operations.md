@@ -204,7 +204,7 @@
     * `toSeq()`
     * `toImmutableSeq()`
     * `toImmutableArray()`
-    * `toImmutableList()`
+    * `toImmutableLinkedSeq()`
     * `toImmutableSizedList()`
     * `toImmutableVector()`
     * `toMutableSeq()`

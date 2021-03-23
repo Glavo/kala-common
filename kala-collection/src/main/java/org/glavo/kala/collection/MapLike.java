@@ -44,8 +44,8 @@ public interface MapLike<K, V> extends MapBase<K, V> {
         return ImmutableArray.from(toArray());
     }
 
-    default @NotNull ImmutableList<Tuple2<K, V>> toImmutableList() {
-        return ImmutableList.from(this.iterator());
+    default @NotNull ImmutableLinkedSeq<Tuple2<K, V>> toImmutableLinkedSeq() {
+        return ImmutableLinkedSeq.from(this.iterator());
     }
 
     default @NotNull ImmutableVector<Tuple2<K, V>> toImmutableVector() {

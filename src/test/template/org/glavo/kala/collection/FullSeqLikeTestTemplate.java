@@ -1,15 +1,13 @@
 package org.glavo.kala.collection;
 
 import org.glavo.kala.collection.immutable.ImmutableArray;
-import org.glavo.kala.collection.immutable.ImmutableList;
-import org.glavo.kala.collection.immutable.ImmutableSeq;
+import org.glavo.kala.collection.immutable.ImmutableLinkedSeq;
 import org.glavo.kala.collection.immutable.ImmutableVector;
 import org.glavo.kala.comparator.Comparators;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
@@ -64,7 +62,7 @@ public interface FullSeqLikeTestTemplate extends FullCollectionLikeTestTemplate,
             assertIterableEquals(Arrays.asList(data), this.<Integer>of().prependedAll(data));
             assertIterableEquals(Arrays.asList(data), this.<Integer>of().prependedAll(Arrays.asList(data)));
             assertIterableEquals(Arrays.asList(data), this.<Integer>of().prependedAll(ImmutableArray.from(data)));
-            assertIterableEquals(Arrays.asList(data), this.<Integer>of().prependedAll(ImmutableList.from(data)));
+            assertIterableEquals(Arrays.asList(data), this.<Integer>of().prependedAll(ImmutableLinkedSeq.from(data)));
         }
 
         for (int i = 0; i < data1().length - 1; i++) {
@@ -76,14 +74,14 @@ public interface FullSeqLikeTestTemplate extends FullCollectionLikeTestTemplate,
             assertIterableEquals(tmp, this.<Integer>of().prependedAll(data));
             assertIterableEquals(tmp, this.<Integer>of().prependedAll(Arrays.asList(data)));
             assertIterableEquals(tmp, this.<Integer>of().prependedAll(ImmutableArray.from(data)));
-            assertIterableEquals(tmp, this.<Integer>of().prependedAll(ImmutableList.from(data)));
+            assertIterableEquals(tmp, this.<Integer>of().prependedAll(ImmutableLinkedSeq.from(data)));
 
             tmp.addAll(0, Arrays.asList(data2));
 
             assertIterableEquals(tmp, from(data).prependedAll(data2));
             assertIterableEquals(tmp, from(data).prependedAll(Arrays.asList(data2)));
             assertIterableEquals(tmp, from(data).prependedAll(ImmutableArray.from(data2)));
-            assertIterableEquals(tmp, from(data).prependedAll(ImmutableList.from(data2)));
+            assertIterableEquals(tmp, from(data).prependedAll(ImmutableLinkedSeq.from(data2)));
         }
     }
 
@@ -112,7 +110,7 @@ public interface FullSeqLikeTestTemplate extends FullCollectionLikeTestTemplate,
             assertIterableEquals(Arrays.asList(data), this.<Integer>of().appendedAll(data));
             assertIterableEquals(Arrays.asList(data), this.<Integer>of().appendedAll(Arrays.asList(data)));
             assertIterableEquals(Arrays.asList(data), this.<Integer>of().appendedAll(ImmutableArray.from(data)));
-            assertIterableEquals(Arrays.asList(data), this.<Integer>of().appendedAll(ImmutableList.from(data)));
+            assertIterableEquals(Arrays.asList(data), this.<Integer>of().appendedAll(ImmutableLinkedSeq.from(data)));
         }
 
         for (int i = 0; i < data1().length - 1; i++) {
@@ -124,14 +122,14 @@ public interface FullSeqLikeTestTemplate extends FullCollectionLikeTestTemplate,
             assertIterableEquals(tmp, this.<Integer>of().appendedAll(data));
             assertIterableEquals(tmp, this.<Integer>of().appendedAll(Arrays.asList(data)));
             assertIterableEquals(tmp, this.<Integer>of().appendedAll(ImmutableArray.from(data)));
-            assertIterableEquals(tmp, this.<Integer>of().appendedAll(ImmutableList.from(data)));
+            assertIterableEquals(tmp, this.<Integer>of().appendedAll(ImmutableLinkedSeq.from(data)));
 
             tmp.addAll(Arrays.asList(data2));
 
             assertIterableEquals(tmp, from(data).appendedAll(data2));
             assertIterableEquals(tmp, from(data).appendedAll(Arrays.asList(data2)));
             assertIterableEquals(tmp, from(data).appendedAll(ImmutableArray.from(data2)));
-            assertIterableEquals(tmp, from(data).appendedAll(ImmutableList.from(data2)));
+            assertIterableEquals(tmp, from(data).appendedAll(ImmutableLinkedSeq.from(data2)));
         }
     }
 
@@ -293,20 +291,20 @@ public interface FullSeqLikeTestTemplate extends FullCollectionLikeTestTemplate,
         {
             var seq = from(List.of("foo"));
             assertIterableEquals(List.of("bar"), seq.updated(0, "bar"));
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(1, "bar").toImmutableList());
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(-1, "bar").toImmutableList());
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MAX_VALUE, "bar").toImmutableList());
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MIN_VALUE, "bar").toImmutableList());
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(1, "bar").toImmutableLinkedSeq());
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(-1, "bar").toImmutableLinkedSeq());
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MAX_VALUE, "bar").toImmutableLinkedSeq());
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MIN_VALUE, "bar").toImmutableLinkedSeq());
         }
 
         {
             var seq = from(List.of("foo", "bar"));
             assertIterableEquals(List.of("zzz", "bar"), seq.updated(0, "zzz"));
             assertIterableEquals(List.of("foo", "zzz"), seq.updated(1, "zzz"));
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(2, "zzz").toImmutableList());
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MIN_VALUE, "zzz").toImmutableList());
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(2, "zzz").toImmutableLinkedSeq());
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MIN_VALUE, "zzz").toImmutableLinkedSeq());
             assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(-1, "zzz"));
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MIN_VALUE, "zzz").toImmutableList());
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MIN_VALUE, "zzz").toImmutableLinkedSeq());
         }
     }
 
@@ -314,35 +312,35 @@ public interface FullSeqLikeTestTemplate extends FullCollectionLikeTestTemplate,
     default void concatTest() {
         var empty = of();
         assertTrue(empty.concat(List.of()).isEmpty());
-        assertTrue(empty.concat(ImmutableList.empty()).isEmpty());
+        assertTrue(empty.concat(ImmutableLinkedSeq.empty()).isEmpty());
         assertTrue(empty.concat(ImmutableArray.empty()).isEmpty());
         assertTrue(empty.concat(ImmutableVector.empty()).isEmpty());
 
         assertIterableEquals(List.of("str1"), empty.concat(List.of("str1")));
-        assertIterableEquals(List.of("str1"), empty.concat(ImmutableList.of("str1")));
+        assertIterableEquals(List.of("str1"), empty.concat(ImmutableLinkedSeq.of("str1")));
         assertIterableEquals(List.of("str1"), empty.concat(ImmutableArray.of("str1")));
         assertIterableEquals(List.of("str1"), empty.concat(ImmutableVector.of("str1")));
-        assertIterableEquals(List.of("str1", "str2", "str3"), empty.concat(ImmutableList.of("str1", "str2", "str3")));
+        assertIterableEquals(List.of("str1", "str2", "str3"), empty.concat(ImmutableLinkedSeq.of("str1", "str2", "str3")));
         assertIterableEquals(List.of("str1", "str2", "str3"), empty.concat(ImmutableArray.of("str1", "str2", "str3")));
         assertIterableEquals(List.of("str1", "str2", "str3"), empty.concat(ImmutableVector.of("str1", "str2", "str3")));
 
 
         assertIterableEquals(List.of("str1"), of("str1").concat(List.of()));
-        assertIterableEquals(List.of("str1"), of("str1").concat(ImmutableList.empty()));
+        assertIterableEquals(List.of("str1"), of("str1").concat(ImmutableLinkedSeq.empty()));
         assertIterableEquals(List.of("str1"), of("str1").concat(ImmutableArray.empty()));
         assertIterableEquals(List.of("str1"), of("str1").concat(ImmutableVector.empty()));
-        assertIterableEquals(List.of("str1", "str2", "str3"), of("str1").concat(ImmutableList.of("str2", "str3")));
+        assertIterableEquals(List.of("str1", "str2", "str3"), of("str1").concat(ImmutableLinkedSeq.of("str2", "str3")));
         assertIterableEquals(List.of("str1", "str2", "str3"), of("str1").concat(List.of("str2", "str3")));
         assertIterableEquals(List.of("str1", "str2", "str3"), of("str1").concat(ImmutableArray.of("str2", "str3")));
         assertIterableEquals(List.of("str1", "str2", "str3"), of("str1").concat(ImmutableVector.of("str2", "str3")));
 
         assertIterableEquals(List.of("str1", "str2"), of("str1", "str2").concat(List.of()));
-        assertIterableEquals(List.of("str1", "str2"), of("str1", "str2").concat(ImmutableList.empty()));
+        assertIterableEquals(List.of("str1", "str2"), of("str1", "str2").concat(ImmutableLinkedSeq.empty()));
         assertIterableEquals(List.of("str1", "str2"), of("str1", "str2").concat(ImmutableArray.empty()));
         assertIterableEquals(List.of("str1", "str2"), of("str1", "str2").concat(ImmutableVector.empty()));
 
         assertIterableEquals(List.of("str1", "str2", "str3", "str4"), of("str1", "str2").concat(List.of("str3", "str4")));
-        assertIterableEquals(List.of("str1", "str2", "str3", "str4"), of("str1", "str2").concat(ImmutableList.of("str3", "str4")));
+        assertIterableEquals(List.of("str1", "str2", "str3", "str4"), of("str1", "str2").concat(ImmutableLinkedSeq.of("str3", "str4")));
         assertIterableEquals(List.of("str1", "str2", "str3", "str4"), of("str1", "str2").concat(ImmutableArray.of("str3", "str4")));
         assertIterableEquals(List.of("str1", "str2", "str3", "str4"), of("str1", "str2").concat(ImmutableVector.of("str3", "str4")));
 

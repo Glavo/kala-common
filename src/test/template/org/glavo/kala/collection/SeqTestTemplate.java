@@ -1,18 +1,14 @@
 package org.glavo.kala.collection;
 
 import org.glavo.kala.collection.immutable.ImmutableArray;
-import org.glavo.kala.collection.immutable.ImmutableList;
-import org.glavo.kala.collection.immutable.ImmutableSeq;
+import org.glavo.kala.collection.immutable.ImmutableLinkedSeq;
 import org.glavo.kala.collection.immutable.ImmutableVector;
 import org.glavo.kala.collection.mutable.MutableArray;
-import org.glavo.kala.control.Option;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -40,7 +36,7 @@ public interface SeqTestTemplate extends CollectionTestTemplate, SeqLikeTestTemp
     default void equalsTest() {
         Assertions.assertEquals(ImmutableArray.empty(), factory().empty());
         assertEquals(ImmutableVector.empty(), factory().empty());
-        Assertions.assertEquals(ImmutableList.empty(), factory().empty());
+        Assertions.assertEquals(ImmutableLinkedSeq.empty(), factory().empty());
         assertEquals(MutableArray.empty(), factory().empty());
 
         Seq<?> foo = factory().from(List.of("foo"));

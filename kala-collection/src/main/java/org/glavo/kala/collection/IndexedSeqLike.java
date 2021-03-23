@@ -3,7 +3,7 @@ package org.glavo.kala.collection;
 import org.glavo.kala.Conditions;
 import org.glavo.kala.collection.base.Iterators;
 import org.glavo.kala.collection.factory.MapFactory;
-import org.glavo.kala.collection.immutable.ImmutableList;
+import org.glavo.kala.collection.immutable.ImmutableLinkedSeq;
 import org.glavo.kala.collection.immutable.ImmutableMap;
 import org.glavo.kala.collection.internal.view.IndexedSeqViews;
 import org.glavo.kala.collection.base.Growable;
@@ -11,7 +11,6 @@ import org.glavo.kala.control.Option;
 import org.glavo.kala.function.IndexedBiFunction;
 import org.glavo.kala.function.IndexedConsumer;
 import org.glavo.kala.function.IndexedFunction;
-import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.tuple.primitive.IntObjTuple2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -785,10 +784,10 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     }
 
     @Override
-    default @NotNull ImmutableList<E> toImmutableList() {
+    default @NotNull ImmutableLinkedSeq<E> toImmutableLinkedSeq() {
         final int size = size();
 
-        ImmutableList<E> list = ImmutableList.nil();
+        ImmutableLinkedSeq<E> list = ImmutableLinkedSeq.nil();
         for (int i = size - 1; i >= 0; i--) {
             list = list.cons(get(i));
         }

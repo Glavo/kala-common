@@ -654,9 +654,9 @@ final class Synchronized {
         }
 
         @Override
-        public @NotNull ImmutableList<E> toImmutableList() {
+        public @NotNull ImmutableLinkedSeq<E> toImmutableLinkedSeq() {
             synchronized (mutex) {
-                return source.toImmutableList();
+                return source.toImmutableLinkedSeq();
             }
         }
 

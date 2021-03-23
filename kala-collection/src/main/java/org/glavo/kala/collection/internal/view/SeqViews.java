@@ -404,6 +404,14 @@ public final class SeqViews {
             final int sks = source.knownSize();
             return sks < 0 ? -1 : Integer.max(0, sks - n);
         }
+
+        @Override
+        public @NotNull SeqView<E> drop(int n) {
+            if (n <= 0) {
+                return this;
+            }
+            return source.drop(n + this.n);
+        }
     }
 
     public static class DropLast<E> extends AbstractSeqView<E> {
@@ -535,6 +543,17 @@ public final class SeqViews {
                 return -1;
             }
             return Integer.min(sks, n);
+        }
+
+        @Override
+        public @NotNull SeqView<E> take(int n) {
+            if (n <= 0) {
+                return SeqView.empty();
+            }
+            if (this.n <= n) {
+                return this;
+            }
+            return new Take<>(source, n);
         }
     }
 
