@@ -1,10 +1,10 @@
 package org.glavo.kala.collection.mutable;
 
 import org.glavo.kala.Conditions;
-import org.glavo.kala.collection.ArraySliceView;
+import org.glavo.kala.collection.internal.view.IndexedSeqViews;
 import org.jetbrains.annotations.NotNull;
 
-public final class MutableArraySliceView<E> extends ArraySliceView<E> {
+public final class MutableArraySliceView<E> extends IndexedSeqViews.OfArraySlice<E> {
     MutableArraySliceView(Object[] array, int beginIndex, int endIndex) {
         super(array, beginIndex, endIndex);
     }

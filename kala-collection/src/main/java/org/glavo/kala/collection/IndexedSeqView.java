@@ -25,6 +25,10 @@ public interface IndexedSeqView<@Covariant E> extends SeqView<E>, IndexedSeqLike
         return ((IndexedSeqView<E>) IndexedSeqViews.Empty.INSTANCE);
     }
 
+    static <E> @NotNull IndexedSeqView<E> of(E value) {
+        return new IndexedSeqViews.Single<>(value);
+    }
+
     //region Collection Operations
 
     @Override

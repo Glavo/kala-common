@@ -3,7 +3,7 @@ package org.glavo.kala.collection.internal.view;
 import org.glavo.kala.Conditions;
 import org.glavo.kala.collection.*;
 import org.glavo.kala.collection.base.AbstractIterator;
-import org.glavo.kala.collection.internal.view.SeqViews;
+import org.glavo.kala.collection.base.GenericArrays;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.tuple.primitive.IntObjTuple2;
@@ -11,11 +11,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 @SuppressWarnings("ALL")
 public final class IndexedSeqViews {
@@ -385,6 +383,133 @@ public final class IndexedSeqViews {
     public static class WithIndexReversed<E> extends SeqViews.WithIndexReversed<E> implements IndexedSeqView<IntObjTuple2<E>> {
         public WithIndexReversed(SeqLike<E> source) {
             super(source);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static class OfArraySlice<E> extends AbstractIndexedSeqView<E> {
+        protected final Object[] array;
+        protected final int beginIndex;
+        protected final int endIndex;
+
+        public OfArraySlice(Object[] array, int beginIndex, int endIndex) {
+            this.array = array;
+            this.beginIndex = beginIndex;
+            this.endIndex = endIndex;
+        }
+
+        @Override
+        public @NotNull Iterator<E> iterator() {
+            return (Iterator<E>) GenericArrays.iterator(array, beginIndex, endIndex);
+        }
+
+        @Override
+        public final int size() {
+            return endIndex - beginIndex;
+        }
+
+        public final int beginIndex() {
+            return beginIndex;
+        }
+
+        public final int endIndex() {
+            return endIndex;
+        }
+
+        @Override
+        public final E get(int index) {
+            Conditions.checkElementIndex(index, size());
+            return (E) array[index + beginIndex];
+        }
+
+        @Override
+        public final @Nullable E getOrNull(int index) {
+            return index < 0 || index >= size()
+                    ? null
+                    : (E) array[index + beginIndex];
+        }
+
+        @Override
+        public final @NotNull Option<E> getOption(int index) {
+            return index < 0 || index >= size()
+                    ? Option.none()
+                    : Option.some((E) array[index + beginIndex]);
+        }
+
+        @Override
+        public @NotNull IndexedSeqView<E> slice(int beginIndex, int endIndex) {
+            Conditions.checkPositionIndices(beginIndex, endIndex, size());
+            final int ns = endIndex - beginIndex;
+            switch (ns) {
+                case 0:
+                    return IndexedSeqView.empty();
+                case 1:
+                    return new Single<>((E) array[this.beginIndex + beginIndex]);
+            }
+            return new OfArraySlice<>(array, this.beginIndex + beginIndex, this.beginIndex + endIndex);
+        }
+
+        @Override
+        public @NotNull IndexedSeqView<E> sliceView(int beginIndex, int endIndex) {
+            return slice(beginIndex, endIndex);
+        }
+
+        @Override
+        public @NotNull IndexedSeqView<E> drop(int n) {
+            if (n <= 0) {
+                return this;
+            }
+
+            final int size = this.size();
+            if (n >= size) {
+                return IndexedSeqView.empty();
+            }
+
+            return new OfArraySlice<>(array, beginIndex + n, endIndex);
+        }
+
+        @Override
+        public @NotNull IndexedSeqView<E> dropLast(int n) {
+            if (n <= 0) {
+                return this;
+            }
+
+            final int size = this.size();
+            if (n >= size) {
+                return IndexedSeqView.empty();
+            }
+
+            return new OfArraySlice<>(array, beginIndex, endIndex - n);
+        }
+
+        @Override
+        public @NotNull IndexedSeqView<E> take(int n) {
+            if (n <= 0) {
+                return IndexedSeqView.empty();
+            }
+            final int size = this.size();
+            if (n >= size) {
+                return this;
+            }
+            if (n == 1) {
+                return new Single<>((E) array[beginIndex]);
+            }
+            return new OfArraySlice<>(array, beginIndex, beginIndex + n);
+        }
+
+        @Override
+        public @NotNull IndexedSeqView<E> takeLast(int n) {
+            if (n <= 0) {
+                return IndexedSeqView.empty();
+            }
+            final int size = this.size();
+            if (n >= size) {
+                return this;
+            }
+            if (n == 1) {
+                return new Single<>((E) array[beginIndex]);
+            }
+            return new OfArraySlice<>(array, endIndex - n, endIndex);
         }
     }
 }

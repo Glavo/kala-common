@@ -4,6 +4,7 @@ import org.glavo.kala.Conditions;
 import org.glavo.kala.collection.base.ObjectArrays;
 import org.glavo.kala.collection.base.Traversable;
 import org.glavo.kala.collection.immutable.ImmutableArray;
+import org.glavo.kala.collection.internal.view.IndexedSeqViews;
 import org.glavo.kala.collection.mutable.ArrayBuffer;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.base.GenericArrays;
@@ -398,9 +399,16 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     //endregion
 
     @Override
-    public @NotNull ArraySliceView<E> sliceView(int beginIndex, int endIndex) {
+    public @NotNull IndexedSeqView<E> sliceView(int beginIndex, int endIndex) {
         Conditions.checkPositionIndices(beginIndex, endIndex, elements.length);
-        return new ArraySliceView<>(elements, beginIndex, endIndex);
+        final int ns = endIndex - beginIndex;
+        switch (ns) {
+            case 0:
+                return IndexedSeqView.empty();
+            case 1:
+                return new IndexedSeqViews.Single<>((E) elements[beginIndex]);
+        }
+        return new IndexedSeqViews.OfArraySlice<>(elements, beginIndex, endIndex);
     }
 
     //region Aggregate Operations

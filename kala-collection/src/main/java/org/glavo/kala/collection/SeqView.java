@@ -37,6 +37,10 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqLike<
         return (SeqView<E>) SeqViews.Empty.INSTANCE;
     }
 
+    static <E> @NotNull SeqView<E> of(E value) {
+        return new SeqViews.Single<>(value);
+    }
+
     //region Collection Operations
 
     @Override
