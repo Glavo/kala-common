@@ -45,28 +45,28 @@ public class ArraySliceView<E> extends AbstractIndexedSeqView<E> {
     }
 
     @Override
-    public final E get(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
-        Conditions.checkElementIndex(index, endIndex);
-        return (E) array[beginIndex + index];
+    public final E get(int index) {
+        Conditions.checkElementIndex(index, size());
+        return (E) array[index + beginIndex];
     }
 
     @Override
     public final @Nullable E getOrNull(int index) {
         return index < 0 || index >= size()
                 ? null
-                : (E) array[beginIndex + index];
+                : (E) array[index + beginIndex];
     }
 
     @Override
     public final @NotNull Option<E> getOption(int index) {
         return index < 0 || index >= size()
                 ? Option.none()
-                : Option.some((E) array[beginIndex + index]);
+                : Option.some((E) array[index + beginIndex]);
     }
 
     @Override
     public @NotNull ArraySliceView<E> slice(int beginIndex, int endIndex) {
-        Conditions.checkPositionIndices(beginIndex, endIndex, this.endIndex - this.beginIndex);
+        Conditions.checkPositionIndices(beginIndex, endIndex, size());
         return new ArraySliceView<>(array, this.beginIndex + beginIndex, this.beginIndex + endIndex);
     }
 

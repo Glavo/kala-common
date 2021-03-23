@@ -172,7 +172,7 @@ public final class GenericArrays {
             case 0:
                 return Iterators.empty();
             case 1:
-                return Iterators.of(array[0]);
+                return Iterators.of(array[beginIndex]);
         }
         return new Itr<>(array, beginIndex, endIndex);
     }
@@ -1077,8 +1077,7 @@ public final class GenericArrays {
     }
 
     static final class Itr<@Covariant E> implements Iterator<E> {
-        @NotNull
-        private final E[] array;
+        private final E @NotNull [] array;
         private final int endIndex;
 
         private int index;

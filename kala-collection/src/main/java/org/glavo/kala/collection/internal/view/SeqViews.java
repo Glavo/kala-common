@@ -271,7 +271,7 @@ public final class SeqViews {
                     try {
                         it.next();
                     } catch (NoSuchElementException e) {
-                        throw new IllegalStateException(e);
+                        throw new IndexOutOfBoundsException();
                     }
                     --i;
                 }
@@ -294,7 +294,7 @@ public final class SeqViews {
                     ++idx;
                     return next;
                 } catch (NoSuchElementException e) {
-                    throw new IllegalStateException(e);
+                    throw new IndexOutOfBoundsException();
                 }
             }
         }

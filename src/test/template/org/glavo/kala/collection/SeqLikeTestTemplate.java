@@ -155,5 +155,30 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate {
         assertEquals(3, from(List.of("foo", "bar", "zzz", "bar")).lastIndexOf("bar"));
     }
 
+    @Test
+    default void sliceViewTest() {
+        assertIterableEquals(List.of(), of().sliceView(0, 0));
+        assertThrows(IndexOutOfBoundsException.class, () -> of().sliceView(-1, 0).toImmutableSeq());
+        assertThrows(IndexOutOfBoundsException.class, () -> of().sliceView(0, 1).toImmutableSeq());
+        assertThrows(IndexOutOfBoundsException.class, () -> of().sliceView(-1, 1).toImmutableSeq());
+        assertThrows(IndexOutOfBoundsException.class, () -> of().sliceView(Integer.MIN_VALUE, 0).toImmutableSeq());
+        assertThrows(IndexOutOfBoundsException.class, () -> of().sliceView(Integer.MIN_VALUE, 1).toImmutableSeq());
+
+        for (Integer[] data : data1()) {
+            int dl = data.length;
+            assertIterableEquals(Arrays.asList(data), from(data).sliceView(0, data.length));
+
+            if (dl >= 1) {
+                assertIterableEquals(
+                        Arrays.asList(Arrays.copyOfRange(data, 1, dl)),
+                        from(data).sliceView(1, dl)
+                );
+                assertIterableEquals(
+                        Arrays.asList(Arrays.copyOfRange(data, 0, dl - 1)),
+                        from(data).sliceView(0, dl - 1)
+                );
+            }
+        }
+    }
 
 }
