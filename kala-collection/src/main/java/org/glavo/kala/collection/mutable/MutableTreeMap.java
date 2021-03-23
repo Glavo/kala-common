@@ -14,7 +14,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collector;
 
 @SuppressWarnings("unchecked")
 @Debug.Renderer(hasChildren = "!isEmpty()", childrenArray = "toArray()")
@@ -40,6 +42,21 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
         return comparator == null || comparator == Comparators.naturalOrder()
                 ? (Factory<K, V>) DEFAULT_FACTORY
                 : new Factory<>(comparator);
+    }
+
+    static <T, K extends Comparable<? super K>, V> @NotNull Collector<T, ?, MutableTreeMap<K, V>> collector(
+            @NotNull Function<? super T, ? extends K> keyMapper,
+            @NotNull Function<? super T, ? extends V> valueMapper
+    ) {
+        return MapFactory.collector(factory(), keyMapper, valueMapper);
+    }
+
+    static <T, K, V> @NotNull Collector<T, ?, MutableTreeMap<K, V>> collector(
+            Comparator<? super K> comparator,
+            @NotNull Function<? super T, ? extends K> keyMapper,
+            @NotNull Function<? super T, ? extends V> valueMapper
+    ) {
+        return MapFactory.collector(factory(comparator), keyMapper, valueMapper);
     }
 
     public static <K extends Comparable<? super K>, V> @NotNull MutableTreeMap<K, V> of() {

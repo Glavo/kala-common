@@ -7,8 +7,16 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.stream.Collector;
 
 public interface MapFactory<K, V, Builder, R> extends Factory<Builder, R> {
+    static <T, K, V, Builder, R> Collector<T, ?, R> collector(
+            @NotNull MapFactory<K, V, Builder, R> factory,
+            @NotNull Function<? super T, ? extends K> keyMapper,
+            @NotNull Function<? super T, ? extends V> valueMapper) {
+        return factory.collector(keyMapper, valueMapper);
+    }
+
     Builder newBuilder();
 
     R build(Builder builder);
@@ -24,6 +32,17 @@ public interface MapFactory<K, V, Builder, R> extends Factory<Builder, R> {
     }
 
     Builder mergeBuilder(Builder builder1, Builder builder2);
+
+    default <T> @NotNull Collector<T, Builder, R> collector(
+            @NotNull Function<? super T, ? extends K> keyMapper,
+            @NotNull Function<? super T, ? extends V> valueMapper) {
+        return Collector.of(
+                this::newBuilder,
+                (builder, t) -> addToBuilder(builder, keyMapper.apply(t), valueMapper.apply(t)),
+                this::mergeBuilder,
+                this::build
+        );
+    }
 
     default void sizeHint(@NotNull Builder builder, int size) {
 

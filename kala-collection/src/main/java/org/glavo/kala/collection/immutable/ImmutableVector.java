@@ -27,6 +27,7 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
@@ -56,6 +57,10 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
     @SuppressWarnings("unchecked")
     public static <E> @NotNull CollectionFactory<E, ?, ImmutableVector<E>> factory() {
         return (Factory<E>) FACTORY;
+    }
+
+    public static <E> @NotNull Collector<E, ?, ImmutableVector<E>> collector() {
+        return factory();
     }
 
     @SuppressWarnings("unchecked")

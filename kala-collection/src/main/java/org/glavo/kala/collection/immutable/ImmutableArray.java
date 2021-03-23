@@ -23,6 +23,7 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 import static org.glavo.kala.Conditions.checkPositionIndices;
@@ -61,6 +62,10 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
 
     public static <E> @NotNull CollectionFactory<E, ?, ImmutableArray<E>> factory() {
         return (ImmutableArray.Factory<E>) FACTORY;
+    }
+
+    public static <E> @NotNull Collector<E, ?, ImmutableArray<E>> collector() {
+        return factory();
     }
 
     public static <E> @NotNull ImmutableArray<E> empty() {

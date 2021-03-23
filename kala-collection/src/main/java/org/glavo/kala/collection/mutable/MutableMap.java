@@ -9,6 +9,8 @@ import org.glavo.kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collector;
 
 public interface MutableMap<K, V> extends Map<K, V>, MutableMapLike<K, V> {
 
@@ -17,6 +19,13 @@ public interface MutableMap<K, V> extends Map<K, V>, MutableMapLike<K, V> {
     @SuppressWarnings({"unchecked", "rawtypes"})
     static <K, V> @NotNull MapFactory<K, V, ?, MutableMap<K, V>> factory() {
         return (MapFactory) MutableHashMap.factory();
+    }
+
+    static <T, K, V> @NotNull Collector<T, ?, MutableMap<K, V>> collector(
+            @NotNull Function<? super T, ? extends K> keyMapper,
+            @NotNull Function<? super T, ? extends V> valueMapper
+    ) {
+        return MapFactory.collector(factory(), keyMapper, valueMapper);
     }
 
     static <K, V> @NotNull MutableMap<K, V> create() {

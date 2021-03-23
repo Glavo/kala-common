@@ -18,6 +18,7 @@ import org.jetbrains.annotations.*;
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.*;
+import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
@@ -61,6 +62,10 @@ public final class ImmutableList<@Covariant E> extends AbstractImmutableSeq<E>
     @SuppressWarnings("unchecked")
     public static <E> CollectionFactory<E, ?, ImmutableList<E>> factory() {
         return (Factory<E>) FACTORY;
+    }
+
+    public static <E> @NotNull Collector<E, ?, ImmutableList<E>> collector() {
+        return factory();
     }
 
     @SuppressWarnings("unchecked")

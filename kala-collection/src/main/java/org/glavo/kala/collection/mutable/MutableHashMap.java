@@ -8,6 +8,8 @@ import org.glavo.kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collector;
 
 @SuppressWarnings("unchecked")
 public final class MutableHashMap<K, V> extends HashMapBase<K, V>
@@ -40,6 +42,13 @@ public final class MutableHashMap<K, V> extends HashMapBase<K, V>
 
     public static <K, V> @NotNull MapFactory<K, V, ?, MutableHashMap<K, V>> factory() {
         return (Factory<K, V>) FACTORY;
+    }
+
+    static <T, K, V> @NotNull Collector<T, ?, MutableHashMap<K, V>> collector(
+            @NotNull Function<? super T, ? extends K> keyMapper,
+            @NotNull Function<? super T, ? extends V> valueMapper
+    ) {
+        return MapFactory.collector(factory(), keyMapper, valueMapper);
     }
 
     public static <K, V> @NotNull MutableHashMap<K, V> of() {

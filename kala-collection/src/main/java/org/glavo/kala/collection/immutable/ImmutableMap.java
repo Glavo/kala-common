@@ -7,6 +7,9 @@ import org.glavo.kala.collection.factory.MapFactory;
 import org.glavo.kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Function;
+import java.util.stream.Collector;
+
 public interface ImmutableMap<K, V> extends Map<K, V> {
 
     //region Static Factories
@@ -14,6 +17,13 @@ public interface ImmutableMap<K, V> extends Map<K, V> {
     @SuppressWarnings({"unchecked", "rawtypes"})
     static <K, V> @NotNull MapFactory<K, V, ?, ImmutableMap<K, V>> factory() {
         return (MapFactory) ImmutableHashMap.factory();
+    }
+
+    static <T, K, V> @NotNull Collector<T, ?, ImmutableMap<K, V>> collector(
+            @NotNull Function<? super T, ? extends K> keyMapper,
+            @NotNull Function<? super T, ? extends V> valueMapper
+    ) {
+        return MapFactory.collector(factory(), keyMapper, valueMapper);
     }
 
     static <K, V> @NotNull ImmutableMap<K, V> empty() {

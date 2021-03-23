@@ -22,6 +22,7 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
@@ -44,6 +45,10 @@ public final class ImmutableSizedList<E> extends AbstractImmutableSeq<E>
     @SuppressWarnings("unchecked")
     public static <E> @NotNull CollectionFactory<E, ?, ImmutableSizedList<E>> factory() {
         return (Factory<E>) FACTORY;
+    }
+
+    public static <E> @NotNull Collector<E, ?, ImmutableSizedList<E>> collector() {
+        return factory();
     }
 
     @SuppressWarnings("unchecked")

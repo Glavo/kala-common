@@ -17,6 +17,7 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
@@ -35,6 +36,10 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E>, FullCo
 
     static <E> @NotNull CollectionFactory<E, ?, ImmutableCollection<E>> factory() {
         return CollectionFactory.narrow(ImmutableSeq.factory());
+    }
+
+    static <E> @NotNull Collector<E, ?, ImmutableCollection<E>> collector() {
+        return factory();
     }
 
     static <E> @NotNull ImmutableCollection<E> of() {

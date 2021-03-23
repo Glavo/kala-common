@@ -12,6 +12,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public interface Map<K, V> extends MapLike<K, V>, Equatable {
 
@@ -48,6 +51,13 @@ public interface Map<K, V> extends MapLike<K, V>, Equatable {
     @SuppressWarnings({"unchecked", "rawtypes"})
     static <K, V> @NotNull MapFactory<K, V, ?, Map<K, V>> factory() {
         return (MapFactory) ImmutableMap.factory();
+    }
+
+    static <T, K, V> @NotNull Collector<T, ?, Map<K, V>> collector(
+            @NotNull Function<? super T, ? extends K> keyMapper,
+            @NotNull Function<? super T, ? extends V> valueMapper
+    ) {
+        return MapFactory.collector(factory(), keyMapper, valueMapper);
     }
 
     static <K, V> @NotNull Map<K, V> empty() {

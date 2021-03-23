@@ -1,5 +1,7 @@
 package org.glavo.kala.collection.immutable;
 
+import org.glavo.kala.collection.factory.MapFactory;
+import org.glavo.kala.collection.mutable.MutableTreeMap;
 import org.glavo.kala.collection.mutable.MutableTreeSet;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.base.GenericArrays;
@@ -9,6 +11,8 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collector;
 
 @SuppressWarnings("unchecked")
 public final class ImmutableCompactSet<E>
@@ -42,6 +46,14 @@ public final class ImmutableCompactSet<E>
             return (ImmutableCompactSet.Factory<E>) DEFAULT_FACTORY;
         }
         return new ImmutableCompactSet.Factory<>(comparator);
+    }
+
+    public static <E extends Comparable<? super E>> @NotNull Collector<E, ?, ImmutableCompactSet<E>> collector() {
+        return factory();
+    }
+
+    public static <E> @NotNull Collector<E, ?, ImmutableCompactSet<E>> collector(Comparator<? super E> comparator) {
+        return factory(comparator);
     }
 
     @Contract(value = " -> new", pure = true)
