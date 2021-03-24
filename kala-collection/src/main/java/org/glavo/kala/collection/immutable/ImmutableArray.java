@@ -663,6 +663,34 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
+    public @NotNull <U> ImmutableArray<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+
+        if (size == 0) {
+            return ImmutableArray.empty();
+        }
+
+        Object[] tmp = new Object[size];
+        int c = 0;
+
+        for (Object value : elements) {
+            if (clazz.isInstance(value)) {
+                tmp[c++] = value;
+            }
+        }
+
+        if (c == 0) {
+            return empty();
+        }
+        if (c == size) {
+            return ((ImmutableArray<U>) this);
+        }
+
+        return new ImmutableArray<>(Arrays.copyOf(tmp, c));
+    }
+
+    @Override
     public final <U> @NotNull ImmutableArray<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
         final Object[] elements = this.elements;
         final int size = elements.length;

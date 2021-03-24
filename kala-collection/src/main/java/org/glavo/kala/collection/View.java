@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+@SuppressWarnings("unchecked")
 public interface View<@Covariant E> extends CollectionLike<E>, FullCollectionLike<E> {
 
     @SuppressWarnings("unchecked")
@@ -42,6 +43,11 @@ public interface View<@Covariant E> extends CollectionLike<E>, FullCollectionLik
 
     default @NotNull View<@NotNull E> filterNotNull() {
         return new Views.FilterNotNull<>(this);
+    }
+
+    @Override
+    default <U> @NotNull View<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
+        return ((View<U>) filter(clazz::isInstance));
     }
 
     default <U> @NotNull View<U> map(@NotNull Function<? super E, ? extends U> mapper) {

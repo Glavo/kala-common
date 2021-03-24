@@ -702,6 +702,11 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
+    public @NotNull <U> ImmutableSizedLinkedSeq<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
+        return ((ImmutableSizedLinkedSeq<U>) filter(clazz::isInstance));
+    }
+
+    @Override
     public final <U> @NotNull ImmutableSizedLinkedSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
         final int size = this.size;
         if (size == 0) {

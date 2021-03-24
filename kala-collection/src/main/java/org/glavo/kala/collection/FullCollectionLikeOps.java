@@ -18,6 +18,8 @@ public interface FullCollectionLikeOps<E, CC extends CollectionLike<?>, COLL ext
 
     @NotNull COLL filterNotNull();
 
+    <U> @NotNull CC filterIsInstance(@NotNull Class<? extends U> clazz);
+
     <U> @NotNull CC map(@NotNull Function<? super E, ? extends U> mapper);
 
     <U> @NotNull CC mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper);

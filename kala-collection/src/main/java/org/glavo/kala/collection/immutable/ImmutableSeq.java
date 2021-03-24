@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "rawtypes"})
 public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<E>, FullSeqLike<E> {
     //region Narrow method
 
@@ -287,6 +287,10 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     @Override
     default @NotNull ImmutableSeq<@NotNull E> filterNotNull() {
         return this.filter(Objects::nonNull);
+    }
+
+    default <U> @NotNull ImmutableSeq<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
+        return ((ImmutableSeq<U>) this.filter(clazz::isInstance));
     }
 
     @Override

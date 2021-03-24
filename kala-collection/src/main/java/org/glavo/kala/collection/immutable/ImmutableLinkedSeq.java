@@ -800,6 +800,11 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
     }
 
     @Override
+    public final @NotNull <U> ImmutableLinkedSeq<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
+        return ((ImmutableLinkedSeq<U>) filter(clazz::isInstance));
+    }
+
+    @Override
     public final @NotNull ImmutableLinkedSeq<E> toImmutableLinkedSeq() {
         return this;
     }

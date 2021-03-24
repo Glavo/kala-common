@@ -236,6 +236,11 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqLike<
     }
 
     @Override
+    default <U> @NotNull SeqView<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
+        return ((SeqView<U>) filter(clazz::isInstance));
+    }
+
+    @Override
     default <U> @NotNull SeqView<U> map(@NotNull Function<? super E, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
         return new SeqViews.Mapped<>(this, mapper);

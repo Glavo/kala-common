@@ -414,6 +414,11 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
     }
 
     @Override
+    public @NotNull <U> ImmutableVector<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
+        return ((ImmutableVector<U>) filter(clazz::isInstance));
+    }
+
+    @Override
     public @NotNull <U> ImmutableVector<U> map(@NotNull Function<? super E, ? extends U> mapper) {
         ImmutableVectors.VectorBuilder<U> builder = new ImmutableVectors.VectorBuilder<>();
         for (E e : this) {
