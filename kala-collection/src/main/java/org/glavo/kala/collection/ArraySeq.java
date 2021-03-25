@@ -494,11 +494,6 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     }
 
     @Override
-    public final E reduce(@NotNull BiFunction<? super E, ? super E, ? extends E> op) throws NoSuchElementException {
-        return (E) GenericArrays.reduce(elements, (BiFunction<Object, Object, ?>) op);
-    }
-
-    @Override
     public final E reduceLeft(@NotNull BiFunction<? super E, ? super E, ? extends E> op) throws NoSuchElementException {
         return (E) GenericArrays.reduceLeft(elements, (BiFunction<Object, Object, ?>) op);
     }
@@ -506,11 +501,6 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     @Override
     public final E reduceRight(@NotNull BiFunction<? super E, ? super E, ? extends E> op) throws NoSuchElementException {
         return (E) GenericArrays.reduceRight(elements, (BiFunction<Object, Object, ?>) op);
-    }
-
-    @Override
-    public final @NotNull Option<E> reduceOption(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-        return (Option<E>) GenericArrays.reduceOption(elements, (BiFunction<Object, Object, ?>) op);
     }
 
     @Override

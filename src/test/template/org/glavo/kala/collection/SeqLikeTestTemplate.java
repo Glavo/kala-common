@@ -183,8 +183,108 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate {
 
     @Test
     default void foldTest() {
-        assertEquals("A", this.<String>of().fold("A", (a, b) -> a + b));
-        assertEquals("ABC", of("B", "C").fold("A", (a, b) -> a + b));
+        assertEquals(10, this.<Integer>of().fold(10, Integer::sum));
+        assertEquals(30, of(20).fold(10, Integer::sum));
+        assertEquals(60, of(20, 30).fold(10, Integer::sum));
+        assertEquals(150, of(20, 30, 40, 50).fold(10, Integer::sum));
+
+        assertEquals("A", this.<String>of().foldLeft("A", (a, b) -> a + b));
+        assertEquals("ABC", of("B", "C").foldLeft("A", (a, b) -> a + b));
+        assertEquals("AB", of("B").foldLeft("A", (a, b) -> a + b));
+        assertEquals("ABCDEF", of("B", "C", "D", "E", "F").foldLeft("A", (a, b) -> a + b));
+
+        assertEquals("A", this.<String>of().foldRight("A", (a, b) -> a + b));
+        assertEquals("AB", of("A").foldRight("B", (a, b) -> a + b));
+        assertEquals("ABC", of("A", "B").foldRight("C", (a, b) -> a + b));
+        assertEquals("ABCDEF", of("A", "B", "C", "D", "E").foldRight("F", (a, b) -> a + b));
+
+        assertEquals(10, this.<Integer>of().foldIndexed(10, (idx, i1, i2) -> idx + i1 + i2));
+        assertEquals(30, of(20).foldIndexed(10, (idx, i1, i2) -> idx + i1 + i2));
+        assertEquals(61, of(20, 30).foldIndexed(10, (idx, i1, i2) -> idx + i1 + i2));
+        assertEquals(156, of(20, 30, 40, 50).foldIndexed(10, (idx, i1, i2) -> idx + i1 + i2));
+
+        assertEquals("init", this.<String>of().foldLeftIndexed("init", (idx, a, b) -> a + b));
+        assertEquals("0 init A", of("A")
+                .foldLeftIndexed("init", (idx, a, b) -> String.format("%d %s %s", idx, a, b)));
+        assertEquals("2 1 0 init A B C", of("A", "B", "C")
+                .foldLeftIndexed("init", (idx, a, b) -> String.format("%d %s %s", idx, a, b)));
+        assertEquals("5 4 3 2 1 0 init A B C D E F", of("A", "B", "C", "D", "E", "F")
+                .foldLeftIndexed("init", (idx, a, b) -> String.format("%d %s %s", idx, a, b)));
+
+        assertEquals("init", this.<String>of()
+                .foldRightIndexed("init", (idx, a, b) -> String.format("%d %s %s", idx, a, b)));
+        assertEquals("0 A init", of("A")
+                .foldRightIndexed("init", (idx, a, b) -> String.format("%d %s %s", idx, a, b)));
+        assertEquals("0 A 1 B 2 C init", of("A", "B", "C")
+                .foldRightIndexed("init", (idx, a, b) -> String.format("%d %s %s", idx, a, b)));
+        assertEquals("0 A 1 B 2 C 3 D 4 E 5 F init", of("A", "B", "C", "D", "E", "F")
+                .foldRightIndexed("init", (idx, a, b) -> String.format("%d %s %s", idx, a, b)));
+    }
+
+    @Test
+    default void reduceTest() {
+        assertThrows(NoSuchElementException.class, () -> this.<Integer>of().reduce(Integer::sum));
+        assertThrows(NoSuchElementException.class, () -> this.<Integer>of().reduceLeft(Integer::sum));
+        assertThrows(NoSuchElementException.class, () -> this.<Integer>of().reduceRight(Integer::sum));
+
+        assertEquals(10, of(10).reduce(Integer::sum));
+        assertEquals(30, of(10, 20).reduce(Integer::sum));
+        assertEquals(60, of(10, 20, 30).reduce(Integer::sum));
+        assertEquals(210, of(10, 20, 30, 40, 50, 60).reduce(Integer::sum));
+
+        assertEquals("A", of("A")
+                .reduceLeft((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+        assertEquals("(A, B)", of("A", "B")
+                .reduceLeft((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+        assertEquals("((A, B), C)", of("A", "B", "C")
+                .reduceLeft((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+        assertEquals("(((((A, B), C), D), E), F)", of("A", "B", "C", "D", "E", "F")
+                .reduceLeft((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+
+        assertEquals("A", of("A")
+                .reduceLeftOrNull((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+        assertEquals("(A, B)", of("A", "B")
+                .reduceLeftOrNull((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+        assertEquals("((A, B), C)", of("A", "B", "C")
+                .reduceLeftOrNull((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+        assertEquals("(((((A, B), C), D), E), F)", of("A", "B", "C", "D", "E", "F")
+                .reduceLeftOrNull((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+
+        assertEquals("A", of("A")
+                .reduceLeftOption((s1, s2) -> String.format("(%s, %s)", s1, s2)).get());
+        assertEquals("(A, B)", of("A", "B")
+                .reduceLeftOption((s1, s2) -> String.format("(%s, %s)", s1, s2)).get());
+        assertEquals("((A, B), C)", of("A", "B", "C")
+                .reduceLeftOption((s1, s2) -> String.format("(%s, %s)", s1, s2)).get());
+        assertEquals("(((((A, B), C), D), E), F)", of("A", "B", "C", "D", "E", "F")
+                .reduceLeftOption((s1, s2) -> String.format("(%s, %s)", s1, s2)).get());
+
+        assertEquals("A", of("A")
+                .reduceRight((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+        assertEquals("(A, B)", of("A", "B")
+                .reduceRight((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+        assertEquals("(A, (B, C))", of("A", "B", "C")
+                .reduceRight((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+        assertEquals("(A, (B, (C, (D, (E, F)))))", of("A", "B", "C", "D", "E", "F")
+                .reduceRight((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+
+        assertEquals("A", of("A")
+                .reduceRightOrNull((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+        assertEquals("(A, B)", of("A", "B")
+                .reduceRightOrNull((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+        assertEquals("(A, (B, C))", of("A", "B", "C")
+                .reduceRightOrNull((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+        assertEquals("(A, (B, (C, (D, (E, F)))))", of("A", "B", "C", "D", "E", "F")
+                .reduceRightOrNull((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+
+        assertEquals("A", of("A")
+                .reduceRightOption((s1, s2) -> String.format("(%s, %s)", s1, s2)).get());
+        assertEquals("(A, B)", of("A", "B")
+                .reduceRightOption((s1, s2) -> String.format("(%s, %s)", s1, s2)).get());
+        assertEquals("(A, (B, C))", of("A", "B", "C")
+                .reduceRightOption((s1, s2) -> String.format("(%s, %s)", s1, s2)).get());
+        assertEquals("(A, (B, (C, (D, (E, F)))))", of("A", "B", "C", "D", "E", "F")
+                .reduceRightOption((s1, s2) -> String.format("(%s, %s)", s1, s2)).get());
     }
 
 }

@@ -704,6 +704,36 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     }
 
     @Override
+    default @Nullable E reduceLeftOrNull(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
+        final int size = size();
+
+        if (size == 0) {
+            return null;
+        }
+
+        E e = get(0);
+        for (int i = 1; i < size; i++) {
+            e = op.apply(e, get(i));
+        }
+        return e;
+    }
+
+    @Override
+    default @Nullable E reduceRightOrNull(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
+        final int size = size();
+
+        if (size == 0) {
+            return null;
+        }
+
+        E e = get(size - 1);
+        for (int i = size - 2; i >= 0; i--) {
+            e = op.apply(get(i), e);
+        }
+        return e;
+    }
+
+    @Override
     default @NotNull Option<E> reduceLeftOption(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
         final int size = size();
 

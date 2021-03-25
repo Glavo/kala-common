@@ -320,8 +320,11 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
      * @throws NoSuchElementException if this {@code Traversable} is empty
      */
     default T reduce(@NotNull BiFunction<? super T, ? super T, ? extends T> op) throws NoSuchElementException {
-        Objects.requireNonNull(op);
         return reduceLeft(op);
+    }
+
+    default @Nullable T reduceOrNull(@NotNull BiFunction<? super T, ? super T, ? extends T> op) {
+        return reduceLeftOrNull(op);
     }
 
     /**
@@ -331,7 +334,6 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
      * @return an {@code Option} contain the reduced value or a empty {@code Option} if the {@code Traversable} is empty
      */
     default @NotNull Option<T> reduceOption(@NotNull BiFunction<? super T, ? super T, ? extends T> op) {
-        Objects.requireNonNull(op);
         return reduceLeftOption(op);
     }
 
@@ -346,11 +348,11 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
      * @throws NoSuchElementException if this {@code Traversable} is empty
      */
     default T reduceLeft(@NotNull BiFunction<? super T, ? super T, ? extends T> op) throws NoSuchElementException {
-        Option<T> opt = reduceLeftOption(op);
-        if (opt.isDefined()) {
-            return opt.get();
-        }
-        throw new NoSuchElementException("Traversable.reduceLeft");
+        return reduceLeftOption(op).get();
+    }
+
+    default @Nullable T reduceLeftOrNull(@NotNull BiFunction<? super T, ? super T, ? extends T> op) {
+        return reduceLeftOption(op).getOrNull();
     }
 
     /**
@@ -377,11 +379,11 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
      * @throws NoSuchElementException if this {@code Traversable} is empty
      */
     default T reduceRight(@NotNull BiFunction<? super T, ? super T, ? extends T> op) throws NoSuchElementException {
-        Option<T> opt = reduceRightOption(op);
-        if (opt.isDefined()) {
-            return opt.get();
-        }
-        throw new NoSuchElementException("Traversable.reduceRight");
+        return reduceRightOption(op).get();
+    }
+
+    default @Nullable T reduceRightOrNull(@NotNull BiFunction<? super T, ? super T, ? extends T> op) {
+        return reduceRightOption(op).getOrNull();
     }
 
     /**

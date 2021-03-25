@@ -433,20 +433,6 @@ final class Synchronized {
         }
 
         @Override
-        public E reduce(@NotNull BiFunction<? super E, ? super E, ? extends E> op) throws NoSuchElementException {
-            synchronized (mutex) {
-                return source.reduce(op);
-            }
-        }
-
-        @Override
-        public @NotNull Option<E> reduceOption(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-            synchronized (mutex) {
-                return source.reduceOption(op);
-            }
-        }
-
-        @Override
         public E reduceLeft(@NotNull BiFunction<? super E, ? super E, ? extends E> op) throws NoSuchElementException {
             synchronized (mutex) {
                 return source.reduceLeft(op);

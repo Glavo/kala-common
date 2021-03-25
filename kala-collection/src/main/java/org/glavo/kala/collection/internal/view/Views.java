@@ -335,16 +335,6 @@ public final class Views {
         }
 
         @Override
-        public final E reduce(@NotNull BiFunction<? super E, ? super E, ? extends E> op) throws NoSuchElementException {
-            return source.reduce(op);
-        }
-
-        @Override
-        public final @NotNull Option<E> reduceOption(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-            return source.reduceOption(op);
-        }
-
-        @Override
         public final E reduceLeft(@NotNull BiFunction<? super E, ? super E, ? extends E> op) throws NoSuchElementException {
             return source.reduceLeft(op);
         }

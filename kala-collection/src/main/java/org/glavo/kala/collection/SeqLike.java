@@ -16,8 +16,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 public interface SeqLike<E> extends CollectionLike<E> {
@@ -379,6 +381,22 @@ public interface SeqLike<E> extends CollectionLike<E> {
 
     default <U> U foldRightIndexed(U zero, @NotNull IndexedBiFunction<? super E, ? super U, ? extends U> op) {
         return Iterators.foldRightIndexed(this.iterator(), zero, op);
+    }
+
+    @Override
+    default @NotNull Option<E> reduceRightOption(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
+        if (this.knownSize() == 0) {
+            return Option.none();
+        }
+        final Iterator<E> it = this.reverseIterator();
+        if (!it.hasNext()) {
+            return Option.none();
+        }
+        E e = it.next();
+        while (it.hasNext()) {
+            e = op.apply(it.next(), e);
+        }
+        return Option.some(e);
     }
 
     //endregion

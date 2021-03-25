@@ -945,14 +945,7 @@ public final class Iterators {
     }
 
     public static <E> E reduce(@NotNull Iterator<? extends E> it, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-        if (!it.hasNext()) {
-            throw new NoSuchElementException();
-        }
-        E e = it.next();
-        while (it.hasNext()) {
-            e = op.apply(e, it.next());
-        }
-        return e;
+        return reduceLeft(it, op);
     }
 
     public static <E> E reduceLeft(@NotNull Iterator<? extends E> it, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
@@ -983,7 +976,43 @@ public final class Iterators {
         return e;
     }
 
-    public static <E> Option<E> reduceOption(@NotNull Iterator<? extends E> it, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
+    public static <E> @Nullable E reduceOrNull(@NotNull Iterator<? extends E> it, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
+        return reduceLeftOrNull(it, op);
+    }
+
+    public static <E> @Nullable E reduceLeftOrNull(@NotNull Iterator<? extends E> it, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
+        if (!it.hasNext()) {
+            return null;
+        }
+        E e = it.next();
+        while (it.hasNext()) {
+            e = op.apply(e, it.next());
+        }
+        return e;
+    }
+
+    public static <E> @Nullable E reduceRightOrNull(@NotNull Iterator<? extends E> it, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
+        if (!it.hasNext()) {
+            return null;
+        }
+        ArrayList<E> list = new ArrayList<>();
+        while (it.hasNext()) {
+            list.add(it.next());
+        }
+        assert !list.isEmpty();
+        E e = list.get(list.size() - 1);
+
+        for (int i = list.size() - 2; i >= 0; i--) {
+            e = op.apply(list.get(i), e);
+        }
+        return e;
+    }
+
+    public static <E> @NotNull Option<E> reduceOption(@NotNull Iterator<? extends E> it, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
+        return reduceLeftOption(it, op);
+    }
+
+    public static <E> @NotNull Option<E> reduceLeftOption(@NotNull Iterator<? extends E> it, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
         if (!it.hasNext()) {
             return Option.none();
         }
@@ -994,18 +1023,7 @@ public final class Iterators {
         return Option.some(e);
     }
 
-    public static <E> Option<E> reduceLeftOption(@NotNull Iterator<? extends E> it, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-        if (!it.hasNext()) {
-            return Option.none();
-        }
-        E e = it.next();
-        while (it.hasNext()) {
-            e = op.apply(e, it.next());
-        }
-        return Option.some(e);
-    }
-
-    public static <E> Option<E> reduceRightOption(@NotNull Iterator<? extends E> it, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
+    public static <E> @NotNull Option<E> reduceRightOption(@NotNull Iterator<? extends E> it, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
         if (!it.hasNext()) {
             return Option.none();
         }
@@ -1022,7 +1040,7 @@ public final class Iterators {
         return Option.some(e);
     }
 
-    public static <E> E[] toArray(@NotNull Iterator<? extends E> it, @NotNull IntFunction<E[]> generator) {
+    public static <E> E @NotNull [] toArray(@NotNull Iterator<? extends E> it, @NotNull IntFunction<E[]> generator) {
         Objects.requireNonNull(generator);
         if (!it.hasNext()) {
             return generator.apply(0);
