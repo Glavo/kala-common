@@ -147,6 +147,11 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E>, FullCo
         return AbstractImmutableCollection.filterNot(this, predicate, iterableFactory());
     }
 
+    @Override
+    default <U> @NotNull ImmutableCollection<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
+        return (ImmutableCollection<U>) filter(clazz::isInstance);
+    }
+
     @Contract(pure = true)
     default @NotNull ImmutableCollection<@NotNull E> filterNotNull() {
         return this.filter(Objects::nonNull);

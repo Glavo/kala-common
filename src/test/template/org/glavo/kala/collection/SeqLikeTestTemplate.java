@@ -181,4 +181,10 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate {
         }
     }
 
+    @Test
+    default void foldTest() {
+        assertEquals("A", this.<String>of().fold("A", (a, b) -> a + b));
+        assertEquals("ABC", of("B", "C").fold("A", (a, b) -> a + b));
+    }
+
 }

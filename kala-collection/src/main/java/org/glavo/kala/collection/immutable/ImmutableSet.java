@@ -2,13 +2,16 @@ package org.glavo.kala.collection.immutable;
 
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.collection.ArraySeq;
+import org.glavo.kala.collection.FullCollectionLike;
 import org.glavo.kala.collection.SortedSet;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.Set;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.function.Predicate;
 
 public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<E> {
 
@@ -69,5 +72,24 @@ public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<
         return addedAll(ArraySeq.wrap(values));
     }
 
+    @Override
+    default @NotNull ImmutableSet<E> filter(@NotNull Predicate<? super E> predicate) {
+        return AbstractImmutableCollection.filter(this, predicate, factory());
+    }
 
+    @Override
+    default @NotNull ImmutableSet<E> filterNot(@NotNull Predicate<? super E> predicate) {
+        return AbstractImmutableCollection.filterNot(this, predicate, factory());
+    }
+
+    @Override
+    default @NotNull ImmutableSet<@NotNull E> filterNotNull() {
+        return filter(Objects::nonNull);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    default <U> @NotNull ImmutableSet<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
+        return (ImmutableSet<U>) filter(clazz::isInstance);
+    }
 }
