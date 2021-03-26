@@ -38,6 +38,11 @@ public final class SeqViews {
         }
 
         @Override
+        public E get(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
+            throw new IndexOutOfBoundsException("index: " + index);
+        }
+
+        @Override
         public @NotNull SeqView<E> concat(@NotNull SeqLike<? extends E> other) {
             return (SeqView<E>) other.view();
         }
@@ -101,6 +106,14 @@ public final class SeqViews {
         @Override
         public final @NotNull Iterator<E> reverseIterator() {
             return Iterators.of(value);
+        }
+
+        @Override
+        public E get(int index) {
+            if (index != 0) {
+                throw new IndexOutOfBoundsException("index: " + index);
+            }
+            return value;
         }
 
         @Override
@@ -765,8 +778,7 @@ public final class SeqViews {
     }
 
     public static class Appended<E> extends AbstractSeqView<E> {
-        @NotNull
-        protected final SeqView<E> source;
+        protected final @NotNull SeqView<E> source;
 
         protected final E value;
 

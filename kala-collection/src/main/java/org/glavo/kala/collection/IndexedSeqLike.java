@@ -14,6 +14,7 @@ import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.tuple.primitive.IntObjTuple2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -77,6 +78,9 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     default boolean isDefinedAt(int index) {
         return index >= 0 && index < size();
     }
+
+    @Override
+    E get(int index);
 
     @Override
     default @Nullable E getOrNull(int index) {

@@ -28,6 +28,7 @@ public final class ImmutableSeqTest implements ImmutableSeqTestTemplate {
         for (Integer[] data : data1()) {
             assertIterableEquals(Arrays.asList(data), ImmutableSeq.of(data));
         }
+        of().view().appended("zero").joinToString("::");
     }
 
     static final class ViewTest implements ViewTestTemplate {
