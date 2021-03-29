@@ -246,6 +246,26 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
     }
 
     @Override
+    public final @NotNull Iterator<E> iterator(int beginIndex) {
+        if (beginIndex < 0) {
+            throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") < 0");
+        }
+        if (beginIndex == 0) {
+            return iterator();
+        }
+
+        int n = beginIndex;
+        ImmutableLinkedSeq<E> list = this;
+        while (n-- > 0) {
+            if (list == NIL) {
+                throw new IndexOutOfBoundsException("beginIndex: " + beginIndex);
+            }
+            list = list.tail;
+        }
+        return list.iterator();
+    }
+
+    @Override
     public final @NotNull SeqView<E> view() {
         if (this == NIL) {
             return SeqView.empty();

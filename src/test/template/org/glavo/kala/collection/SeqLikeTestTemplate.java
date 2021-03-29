@@ -24,6 +24,45 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate {
     <E> SeqLike<E> from(Iterable<? extends E> elements);
 
     @Test
+    default void iteratorTest() {
+        assertFalse(of().iterator(0).hasNext());
+        assertThrows(IndexOutOfBoundsException.class, () -> of().iterator(-1));
+        assertThrows(IndexOutOfBoundsException.class, () -> of().iterator(Integer.MIN_VALUE));
+        assertThrows(IndexOutOfBoundsException.class, () -> of().iterator(1));
+        assertThrows(IndexOutOfBoundsException.class, () -> of().iterator(Integer.MAX_VALUE));
+
+        assertIterableEquals(
+                List.of("str"),
+                ImmutableSeq.from(of("str").iterator(0))
+        );
+        assertIterableEquals(
+                List.of(),
+                ImmutableSeq.from(of("str").iterator(1))
+        );
+        assertThrows(IndexOutOfBoundsException.class, () -> of("str").iterator(-1));
+        assertThrows(IndexOutOfBoundsException.class, () -> of("str").iterator(Integer.MIN_VALUE));
+        assertThrows(IndexOutOfBoundsException.class, () -> of("str").iterator(2));
+        assertThrows(IndexOutOfBoundsException.class, () -> of("str").iterator(Integer.MAX_VALUE));
+
+        assertIterableEquals(
+                List.of("str1", "str2", "str3"),
+                ImmutableSeq.from(of("str1", "str2", "str3").iterator(0))
+        );
+        assertIterableEquals(
+                List.of("str2", "str3"),
+                ImmutableSeq.from(of("str1", "str2", "str3").iterator(1))
+        );
+        assertIterableEquals(
+                List.of("str3"),
+                ImmutableSeq.from(of("str1", "str2", "str3").iterator(2))
+        );
+        assertIterableEquals(
+                List.of(),
+                ImmutableSeq.from(of("str1", "str2", "str3").iterator(3))
+        );
+    }
+
+    @Test
     default void streamTest() {
         assertEquals(0, of().stream().count());
         assertIterableEquals(List.of("foo"), of("foo").stream().collect(Collectors.toList()));

@@ -34,6 +34,31 @@ public interface SeqLike<E> extends CollectionLike<E> {
         return "SeqLike";
     }
 
+    default @NotNull Iterator<E> iterator(int beginIndex) {
+        if (beginIndex < 0) {
+            throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") < 0");
+        }
+        final int ks = knownSize();
+        if (ks >= 0) {
+            if (beginIndex > ks) {
+                throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") > size(" + ks + ")");
+            }
+            if (beginIndex == ks) {
+                return Iterators.empty();
+            }
+        }
+
+        final Iterator<E> it = iterator();
+        int n = beginIndex;
+        while (n-- > 0) {
+            if (!it.hasNext()) {
+                throw new IndexOutOfBoundsException("beginIndex: " + beginIndex);
+            }
+            it.next();
+        }
+        return it;
+    }
+
     @Override
     @NotNull SeqView<E> view();
 

@@ -52,6 +52,33 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     }
 
     @Override
+    default @NotNull Iterator<E> iterator(int beginIndex) {
+        final int size = size();
+        Conditions.checkPositionIndex(beginIndex, size);
+
+        if (beginIndex == size) {
+            return Iterators.empty();
+        }
+
+        return new Iterator<E>() {
+            private int idx = beginIndex;
+
+            @Override
+            public final boolean hasNext() {
+                return idx < size;
+            }
+
+            @Override
+            public final E next() {
+                if (idx >= size) {
+                    throw new NoSuchElementException();
+                }
+                return get(idx++);
+            }
+        };
+    }
+
+    @Override
     default @NotNull IndexedSeqView<E> view() {
         return new IndexedSeqViews.Of<>(this);
     }

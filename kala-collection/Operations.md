@@ -15,6 +15,7 @@
     * `className()`
     * `iterableFactory()`
     * `iterator()`
+    * `iterator(int)`
     * `spliterator()`
     * `view()`
     * `stream()`
