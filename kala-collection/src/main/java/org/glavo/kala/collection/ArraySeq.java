@@ -1,6 +1,7 @@
 package org.glavo.kala.collection;
 
 import org.glavo.kala.Conditions;
+import org.glavo.kala.collection.base.Iterators;
 import org.glavo.kala.collection.base.ObjectArrays;
 import org.glavo.kala.collection.base.Traversable;
 import org.glavo.kala.collection.immutable.ImmutableArray;
@@ -196,6 +197,11 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     @Override
     public final @NotNull Iterator<E> iterator() {
         return (Iterator<E>) GenericArrays.iterator(elements);
+    }
+
+    @Override
+    public @NotNull Iterator<E> iterator(int beginIndex) {
+        return (Iterator<E>) GenericArrays.iterator(elements, beginIndex);
     }
 
     @Override

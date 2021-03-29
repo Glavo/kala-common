@@ -159,7 +159,7 @@ public final class GenericArrays {
             case 0:
                 return Iterators.empty();
             case 1:
-                return Iterators.of(array[0]);
+                return Iterators.of(array[beginIndex]);
         }
         return new Itr<>(array, beginIndex, arrayLength);
     }
