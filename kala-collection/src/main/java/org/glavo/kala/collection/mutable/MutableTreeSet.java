@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.IntFunction;
 import java.util.stream.Collector;
 
 import static org.glavo.kala.collection.mutable.RedBlackTree.*;
@@ -415,6 +416,34 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     }
 
     @Override
+    public final Object @NotNull [] toArray() {
+        final int size = this.size;
+        final Object[] res = new Object[size];
+        if (size == 0) {
+            return res;
+        }
+        final Iterator<E> it = this.iterator();
+        for (int i = 0; i < size; i++) {
+            res[i] = it.next();
+        }
+        return res;
+    }
+
+    @Override
+    public final <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
+        final int size = this.size;
+        final U[] res = generator.apply(size);
+        if (size == 0) {
+            return res;
+        }
+        final Iterator<E> it = this.iterator();
+        for (int i = 0; i < size; i++) {
+            res[i] = (U) it.next();
+        }
+        return res;
+    }
+
+    @Override
     public final int hashCode() {
         return Iterators.hash(iterator()) + Collection.SET_HASH_MAGIC;
     }
@@ -432,13 +461,13 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     }
 
     @Override
-    public final String toString() {
-        return joinToString(", ", "MutableTreeSet[", "]");
+    public final void forEach(@NotNull Consumer<? super E> action) {
+        forEachKey0(action);
     }
 
     @Override
-    public final void forEach(@NotNull Consumer<? super E> action) {
-        forEachKey0(action);
+    public final String toString() {
+        return joinToString(", ", "MutableTreeSet[", "]");
     }
 
     //region Serialization Operations

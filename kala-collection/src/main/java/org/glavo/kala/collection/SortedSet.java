@@ -11,7 +11,7 @@ import java.util.Iterator;
 
 public interface SortedSet<@Covariant E> extends Set<E> {
 
-    @NotNull <U> CollectionFactory<U, ?, ? extends SortedSet<U>> iterableFactory(Comparator<? super U> comparator);
+    <U> @NotNull CollectionFactory<U, ?, ? extends SortedSet<U>> iterableFactory(Comparator<? super U> comparator);
 
     default Comparator<? super E> comparator() {
         return Comparators.naturalOrder();

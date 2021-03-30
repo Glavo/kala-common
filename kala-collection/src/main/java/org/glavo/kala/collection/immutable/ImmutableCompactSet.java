@@ -413,6 +413,9 @@ public final class ImmutableCompactSet<E>
 
         builder.addAll(elements);
         builder.addAll(values);
+        if (builder.size() == elements.length) {
+            return this;
+        }
 
         return new ImmutableCompactSet<>(comparator, builder.toArray());
     }
