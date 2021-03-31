@@ -9,7 +9,6 @@ import java.util.function.Function;
 
 public interface ImmutableSortedSet<E> extends ImmutableSet<E>, SortedSet<E> {
 
-
     @Override
     <U> @NotNull CollectionFactory<U, ?, ? extends ImmutableSortedSet<U>> iterableFactory();
 

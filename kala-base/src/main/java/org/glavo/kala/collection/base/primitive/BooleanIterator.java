@@ -75,6 +75,11 @@ public interface BooleanIterator
      */
     boolean nextBoolean();
 
+    @Override
+    default void nextIgnoreResult() {
+        nextBoolean();
+    }
+
     default int size() {
         int i = 0;
         while (hasNext()) {

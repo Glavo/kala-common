@@ -180,7 +180,6 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
     }
 
     @Contract(mutates = "this")
-    @SuppressWarnings("unchecked")
     default boolean retainAll(@NotNull Iterable<? super E> values) {
         Objects.requireNonNull(values);
 
@@ -198,7 +197,7 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
 
         for (Object value : arr) {
             if (!t.contains(value)) {
-                this.remove((E) value);
+                this.remove(value);
                 m = true;
             }
         }
@@ -222,7 +221,7 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
         Object[] arr = toArray();
         for (Object e : arr) {
             if (!predicate.test((E) e)) {
-                this.remove((E) e);
+                this.remove(e);
             }
         }
     }

@@ -6,6 +6,7 @@ import org.glavo.kala.collection.FullCollectionLike;
 import org.glavo.kala.collection.SortedSet;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.Set;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -13,7 +14,13 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Predicate;
 
+@SuppressWarnings("unchecked")
 public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<E> {
+
+    @Contract(value = "_ -> param1", pure = true)
+    static <E> ImmutableSet<E> narrow(ImmutableSet<? extends E> set) {
+        return (ImmutableSet<E>) set;
+    }
 
     static <E> CollectionFactory<E, ?, ? extends ImmutableSet<E>> factory() {
         throw new UnsupportedOperationException();// TODO

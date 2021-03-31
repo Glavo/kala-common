@@ -30,6 +30,8 @@ public interface PrimIterator<
     @Override
     @NotNull T next();
 
+    void nextIgnoreResult();
+
     //region Size Info
 
     default boolean isEmpty() {

@@ -51,8 +51,8 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
 
     @Contract(value = "_ -> param1", pure = true)
     @SuppressWarnings("unchecked")
-    public static <E> ImmutableLinkedSeq<E> narrow(ImmutableLinkedSeq<? extends E> list) {
-        return (ImmutableLinkedSeq<E>) list;
+    public static <E> ImmutableLinkedSeq<E> narrow(ImmutableLinkedSeq<? extends E> seq) {
+        return (ImmutableLinkedSeq<E>) seq;
     }
 
     //endregion

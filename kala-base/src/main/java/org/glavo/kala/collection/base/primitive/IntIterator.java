@@ -70,6 +70,11 @@ public interface IntIterator
      */
     int nextInt();
 
+    @Override
+    default void nextIgnoreResult() {
+        nextInt();
+    }
+
     default int size() {
         int i = 0;
         while (hasNext()) {

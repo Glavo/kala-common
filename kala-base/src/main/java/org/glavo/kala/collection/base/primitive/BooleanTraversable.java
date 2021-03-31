@@ -7,15 +7,35 @@ import org.glavo.kala.function.CheckedBooleanConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Spliterator;
 import java.util.function.Consumer;
+import java.util.stream.BaseStream;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public interface BooleanTraversable
         extends PrimitiveTraversable<Boolean, BooleanTraversable, BooleanIterator, boolean[], BooleanOption, BooleanConsumer, BooleanPredicate> {
     @Override
     @NotNull BooleanIterator iterator();
 
+    default boolean elementAt(int index) {
+        final BooleanIterator it = this.iterator();
+        for (int i = 0; i < index; i++) {
+            if (it.hasNext()) {
+                it.nextBoolean();
+            } else {
+                throw new IndexOutOfBoundsException("index: " + index);
+            }
+        }
+        if (it.hasNext()) {
+            return it.nextBoolean();
+        } else {
+            throw new IndexOutOfBoundsException("index: " + index);
+        }
+    }
 
     //region Element Conditions
 

@@ -43,7 +43,6 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
     //region Narrow method
 
     @Contract(value = "_ -> param1", pure = true)
-    @SuppressWarnings("unchecked")
     static <E> ImmutableVector<E> narrow(ImmutableVector<? extends E> vector) {
         return (ImmutableVector<E>) vector;
     }

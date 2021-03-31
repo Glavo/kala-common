@@ -1,7 +1,5 @@
 package org.glavo.kala.collection.immutable;
 
-import org.glavo.kala.collection.factory.MapFactory;
-import org.glavo.kala.collection.mutable.MutableTreeMap;
 import org.glavo.kala.collection.mutable.MutableTreeSet;
 import org.glavo.kala.collection.factory.CollectionFactory;
 import org.glavo.kala.collection.base.GenericArrays;
@@ -11,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collector;
 
 @SuppressWarnings("unchecked")

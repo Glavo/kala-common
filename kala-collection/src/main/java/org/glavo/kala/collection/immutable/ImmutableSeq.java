@@ -1,6 +1,8 @@
 package org.glavo.kala.collection.immutable;
 
 import org.glavo.kala.collection.*;
+import org.glavo.kala.collection.base.Traversable;
+import org.glavo.kala.collection.internal.convert.AsJavaConvert;
 import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.annotations.Covariant;
 import org.glavo.kala.comparator.Comparators;
@@ -13,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.*;
+import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
@@ -92,7 +95,73 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
         return ImmutableVector.from(values);
     }
 
+    static <E> @NotNull ImmutableSeq<E> from(java.util.@NotNull Collection<? extends E> values) {
+        final int size = values.size();
+        if (size == 0) {
+            return ImmutableSeq.empty();
+        }
+
+        if (size <= ImmutableVectors.WIDTH) {
+            final Object[] arr = values.toArray();
+            final int length = arr.length;
+            //noinspection ConstantConditions
+            assert length == size;
+            assert arr.getClass() == Object[].class;
+            switch (length) {
+                case 1:
+                    return (ImmutableSeq<E>) ImmutableSeq.of(arr[0]);
+                case 2:
+                    return (ImmutableSeq<E>) ImmutableSeq.of(arr[0], arr[1]);
+                case 3:
+                    return (ImmutableSeq<E>) ImmutableSeq.of(arr[0], arr[1], arr[2]);
+                case 4:
+                    return (ImmutableSeq<E>) ImmutableSeq.of(arr[0], arr[1], arr[2], arr[3]);
+                case 5:
+                    return (ImmutableSeq<E>) ImmutableSeq.of(arr[0], arr[1], arr[2], arr[3], arr[4]);
+                default:
+                    return new ImmutableVectors.Vector1<>(arr);
+            }
+        }
+        return ImmutableVector.from(values.iterator());
+    }
+
+    static <E> @NotNull ImmutableSeq<E> from(@NotNull Traversable<? extends E> values) {
+        if (values instanceof ImmutableSeq<?>) {
+            return (ImmutableSeq<E>) values;
+        }
+        final int knownSize = values.knownSize(); // implicit null check of values
+        if (knownSize == 0) {
+            return empty();
+        }
+        if (knownSize > 0 && knownSize <= ImmutableVectors.WIDTH) {
+            Object[] arr = new Object[knownSize];
+            final int cn = values.copyToArray(arr);
+            assert cn == knownSize;
+            switch (knownSize) {
+                case 1:
+                    return (ImmutableSeq<E>) ImmutableSeq.of(arr[0]);
+                case 2:
+                    return (ImmutableSeq<E>) ImmutableSeq.of(arr[0], arr[1]);
+                case 3:
+                    return (ImmutableSeq<E>) ImmutableSeq.of(arr[0], arr[1], arr[2]);
+                case 4:
+                    return (ImmutableSeq<E>) ImmutableSeq.of(arr[0], arr[1], arr[2], arr[3]);
+                case 5:
+                    return (ImmutableSeq<E>) ImmutableSeq.of(arr[0], arr[1], arr[2], arr[3], arr[4]);
+                default:
+                    return new ImmutableVectors.Vector1<>(arr);
+            }
+        }
+        return from(values.iterator());
+    }
+
     static <E> @NotNull ImmutableSeq<E> from(@NotNull Iterable<? extends E> values) {
+        if (values instanceof Traversable) {
+            return from(((Traversable<E>) values));
+        }
+        if (values instanceof java.util.Collection) {
+            return from(((Collection<E>) values));
+        }
         return from(values.iterator()); // TODO
     }
 

@@ -9,6 +9,8 @@ import org.jetbrains.annotations.Range;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.stream.BaseStream;
+import java.util.stream.StreamSupport;
 
 public interface AnyTraversable<
         T,
@@ -34,6 +36,14 @@ public interface AnyTraversable<
 
     @Override
     @NotNull T_ITERATOR iterator();
+
+    default @NotNull BaseStream<T, ?> stream() {
+        return StreamSupport.stream(spliterator(), false);
+    }
+
+    default @NotNull BaseStream<T, ?> parallelStream() {
+        return StreamSupport.stream(spliterator(), true);
+    }
 
     //endregion
 
