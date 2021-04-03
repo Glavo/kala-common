@@ -26,7 +26,7 @@ public interface AnyTraversable<
         if (c instanceof Collection<?>) {
             return ((Collection<?>) c).size();
         }
-        if (c instanceof AnyTraversable<?, ?, ?, ?, ?, ?>) {
+        if (c instanceof AnyTraversable) {
             return ((AnyTraversable<?, ?, ?, ?, ?, ?>) c).knownSize();
         }
         return -1;
