@@ -1,9 +1,7 @@
 package org.glavo.kala.collection.internal.hash;
 
-import java.util.Objects;
-
-public final class HashMapUtils {
-    private HashMapUtils() {
+public final class HashUtils {
+    private HashUtils() {
     }
 
     public static int improveHash(int originalHash) {
@@ -15,6 +13,6 @@ public final class HashMapUtils {
     }
 
     public static int computeHash(Object o) {
-        return HashMapUtils.improveHash(Objects.hashCode(o));
+        return o == null ? 0 : improveHash(o.hashCode());
     }
 }

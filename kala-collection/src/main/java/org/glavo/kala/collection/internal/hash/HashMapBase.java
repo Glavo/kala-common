@@ -1,9 +1,7 @@
 package org.glavo.kala.collection.internal.hash;
 
-import org.glavo.kala.collection.MapLike;
 import org.glavo.kala.collection.base.MapBase;
 import org.glavo.kala.collection.base.MapIterator;
-import org.glavo.kala.collection.immutable.ImmutableHashMap;
 import org.glavo.kala.collection.internal.convert.AsJavaConvert;
 import org.glavo.kala.collection.mutable.AbstractMutableMap;
 import org.glavo.kala.collection.mutable.MutableHashMap;
@@ -18,7 +16,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-import static org.glavo.kala.collection.internal.hash.HashMapUtils.*;
+import static org.glavo.kala.collection.internal.hash.HashUtils.*;
 
 @SuppressWarnings("unchecked")
 public class HashMapBase<K, V> extends AbstractMutableMap<K, V> {

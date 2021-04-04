@@ -1,6 +1,7 @@
 package org.glavo.kala.collection.mutable;
 
 import org.glavo.kala.collection.factory.CollectionFactory;
+import org.glavo.kala.collection.internal.hash.HashUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
@@ -166,17 +167,6 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
 
     //region HashSet helpers
 
-    private static int improveHash(int originalHash) {
-        return originalHash ^ (originalHash >>> 16);
-    }
-
-    private static int hash(Object obj) {
-        if (obj == null) {
-            return 0;
-        }
-        return improveHash(obj.hashCode());
-    }
-
     private static int tableSizeFor(int capacity) {
         return Math.min(Integer.highestOneBit(Math.max(capacity - 1, 4)) * 2, MAXIMUM_CAPACITY);
     }
@@ -190,7 +180,7 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
     }
 
     private Node<E> findNode(E value) {
-        final int hash = hash(value);
+        final int hash = HashUtils.computeHash(value);
         Node<E> n = table[indexOf(hash)];
         if (n == null) {
             return null;
@@ -307,7 +297,7 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
         if (size + 1 >= threshold) {
             growTable(table.length * 2);
         }
-        return add(value, hash(value));
+        return add(value, HashUtils.computeHash(value));
     }
 
     @Override
@@ -350,7 +340,7 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
 
     @Override
     public final boolean remove(Object value) {
-        return remove(value, hash(value));
+        return remove(value, HashUtils.computeHash(value));
     }
 
     @Override
@@ -431,7 +421,7 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
     private final class Itr implements Iterator<E> {
         private int i = 0;
         private Node<E> node = null;
-        private int len = table.length;
+        private final int len = table.length;
 
         @Override
         public final boolean hasNext() {

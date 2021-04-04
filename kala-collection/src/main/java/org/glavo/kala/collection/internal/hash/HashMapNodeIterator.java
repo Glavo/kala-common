@@ -1,7 +1,6 @@
 package org.glavo.kala.collection.internal.hash;
 
 import org.glavo.kala.collection.base.AbstractIterator;
-import org.glavo.kala.collection.internal.hash.HashMapNode;
 
 import java.util.NoSuchElementException;
 

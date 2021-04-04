@@ -41,7 +41,7 @@ allprojects {
             tree.forEach {
                 RandomAccessFile(it, "rw").use { rf ->
                     rf.seek(7)   // major version
-                    rf.write(52) // java 8
+                    rf.write(52)   // java 8
                     rf.close()
                 }
             }

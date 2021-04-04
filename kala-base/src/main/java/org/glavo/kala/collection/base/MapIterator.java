@@ -27,11 +27,11 @@ public interface MapIterator<K, V> extends Iterator<Tuple2<K, V>> {
         return new MapIterators.OfIterator<>(it);
     }
 
+    boolean hasNext();
+
     K nextKey();
 
     V getValue();
-
-    boolean hasNext();
 
     @Override
     default Tuple2<K, V> next() {
