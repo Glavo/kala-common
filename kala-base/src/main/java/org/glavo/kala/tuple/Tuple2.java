@@ -163,11 +163,11 @@ public final class Tuple2<@Covariant T1, @Covariant T2> extends HList<T1, Tuple1
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Tuple2<?, ?>)) {
+        if (!(o instanceof java.util.Map.Entry)) {
             return false;
         }
-        Tuple2<?, ?> t = (Tuple2<?, ?>) o;
-        return Objects.equals(_1, t._1) && Objects.equals(_2, t._2);
+        Map.Entry<?, ?> entry = (Map.Entry<?, ?>) o;
+        return Objects.equals(_1, entry.getKey()) && Objects.equals(_2, entry.getValue());
     }
 
     /**
@@ -175,10 +175,7 @@ public final class Tuple2<@Covariant T1, @Covariant T2> extends HList<T1, Tuple1
      */
     @Override
     public final int hashCode() {
-        int hash = 0;
-        hash = 31 * hash + Objects.hashCode(_1);
-        hash = 31 * hash + Objects.hashCode(_2);
-        return hash + Tuple.HASH_MAGIC;
+        return Objects.hashCode(_1) ^ Objects.hashCode(_2);
     }
 
     /**
