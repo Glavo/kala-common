@@ -2,6 +2,7 @@ package org.glavo.kala.collection;
 
 import org.glavo.kala.collection.base.GenericArrays;
 import org.glavo.kala.collection.base.Iterators;
+import org.glavo.kala.collection.internal.view.SeqViews;
 import org.glavo.kala.collection.mutable.ArrayBuffer;
 import org.glavo.kala.collection.base.Growable;
 import org.glavo.kala.control.Option;
@@ -9,6 +10,7 @@ import org.glavo.kala.function.CheckedIndexedConsumer;
 import org.glavo.kala.function.IndexedBiFunction;
 import org.glavo.kala.function.IndexedConsumer;
 import org.glavo.kala.function.IndexedFunction;
+import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.tuple.primitive.IntObjTuple2;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
@@ -392,6 +394,10 @@ public interface SeqLike<E> extends CollectionLike<E> {
 
     default @NotNull SeqView<IntObjTuple2<E>> withIndex() {
         return view().withIndex();
+    }
+
+    default <U> @NotNull SeqView<@NotNull Tuple2<E, U>> zipView(@NotNull SeqLike<? extends U> other) {
+        return new SeqViews.Zip<>(this, other);
     }
 
     //region Aggregate Operations

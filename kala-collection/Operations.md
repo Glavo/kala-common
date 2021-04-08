@@ -157,6 +157,7 @@
     * `shuffled(Random)`
     * `withIndex()`
     * `zip(Iterable<U>)`
+    * `zipView(SeqLike<U>)`
     * `span(Predicate<E>)`
     * `chunked(int)`
     * `windowed(int)`

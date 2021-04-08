@@ -6,6 +6,7 @@ import org.glavo.kala.collection.base.AbstractIterator;
 import org.glavo.kala.collection.base.GenericArrays;
 import org.glavo.kala.control.Option;
 import org.glavo.kala.function.IndexedFunction;
+import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.tuple.primitive.IntObjTuple2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -383,6 +384,13 @@ public final class IndexedSeqViews {
     public static class WithIndexReversed<E> extends SeqViews.WithIndexReversed<E> implements IndexedSeqView<IntObjTuple2<E>> {
         public WithIndexReversed(SeqLike<E> source) {
             super(source);
+        }
+    }
+
+    public static class Zip<E, U> extends SeqViews.Zip<E, U>
+            implements IndexedSeqView<Tuple2<E, U>> {
+        public Zip(@NotNull SeqLike<? extends E> source, @NotNull SeqLike<? extends U> other) {
+            super(source, other);
         }
     }
 

@@ -27,6 +27,4 @@ public interface FullCollectionLike<E> extends CollectionLike<E> {
 
     @Contract(pure = true)
     <U> @NotNull FullCollectionLike<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper);
-
-    <U> @NotNull FullCollectionLike<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other);
 }

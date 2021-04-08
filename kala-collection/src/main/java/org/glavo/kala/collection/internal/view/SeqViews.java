@@ -11,6 +11,8 @@ import org.glavo.kala.function.IndexedConsumer;
 import org.glavo.kala.function.IndexedFunction;
 import org.glavo.kala.collection.base.AbstractIterator;
 import org.glavo.kala.collection.base.Iterators;
+import org.glavo.kala.tuple.Tuple;
+import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.tuple.primitive.IntObjTuple2;
 import org.glavo.kala.tuple.primitive.PrimitiveTuple;
 import org.jetbrains.annotations.NotNull;
@@ -63,27 +65,27 @@ public final class SeqViews {
         }
 
         @Override
-        public @NotNull <U> SeqView<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+        public <U> @NotNull SeqView<U> map(@NotNull Function<? super E, ? extends U> mapper) {
             return (SeqView<U>) this;
         }
 
         @Override
-        public @NotNull <U> SeqView<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+        public <U> @NotNull SeqView<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
             return SeqView.empty();
         }
 
         @Override
-        public @NotNull <U> SeqView<U> mapNotNull(@NotNull Function<? super E, ? extends U> mapper) {
+        public <U> @NotNull SeqView<U> mapNotNull(@NotNull Function<? super E, ? extends U> mapper) {
             return SeqView.empty();
         }
 
         @Override
-        public @NotNull <U> SeqView<U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+        public <U> @NotNull SeqView<U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
             return SeqView.empty();
         }
 
         @Override
-        public @NotNull <U> SeqView<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
+        public <U> @NotNull SeqView<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
             return (SeqView<U>) this;
         }
 
@@ -1342,6 +1344,69 @@ public final class SeqViews {
             }
 
             return new Sorted<>(source, comparator);
+        }
+    }
+
+    public static class Zip<E, U> extends AbstractSeqView<Tuple2<E, U>> {
+        private final @NotNull SeqLike<? extends E> source;
+        private final @NotNull SeqLike<? extends U> other;
+
+        public Zip(@NotNull SeqLike<? extends E> source, @NotNull SeqLike<? extends U> other) {
+            this.source = source;
+            this.other = other;
+        }
+
+        @Override
+        public final @NotNull Iterator<Tuple2<E, U>> iterator() {
+            return Iterators.zip(source.iterator(), other.iterator());
+        }
+
+        @Override
+        public final boolean isEmpty() {
+            return source.isEmpty() || other.isEmpty();
+        }
+
+        @Override
+        public final int size() {
+            final int ss = source.size();
+            return ss == 0 ? 0 : Integer.min(ss, other.size());
+        }
+
+        @Override
+        public int knownSize() {
+            final int ks1 = source.knownSize();
+            if (ks1 < 0) {
+                return -1;
+            }
+            if (ks1 == 0) {
+                return 0;
+            }
+
+            final int ks2 = other.knownSize();
+            return Integer.min(ks1, ks2);
+        }
+
+        @Override
+        public final @NotNull Tuple2<E, U> get(int index) {
+            return Tuple.of(source.get(index), other.get(index));
+        }
+
+        @Override
+        public final @NotNull Option<Tuple2<E, U>> getOption(int index) {
+            final Option<? extends E> o1 = source.getOption(index);
+            if (o1.isEmpty()) {
+                return Option.none();
+            }
+            final Option<? extends U> o2 = other.getOption(index);
+            if (o2.isEmpty()) {
+                return Option.none();
+            }
+            return Option.some(Tuple.of(o1.get(), o2.get()));
+        }
+
+        @Override
+        public final @NotNull SeqView<Tuple2<E, U>> reversed() {
+            return (SeqView) source.view().reversed().zipView(other.view().reversed());
         }
     }
 }

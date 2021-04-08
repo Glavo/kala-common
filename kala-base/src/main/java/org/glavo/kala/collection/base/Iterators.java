@@ -839,9 +839,9 @@ public final class Iterators {
     }
 
     public static <E, U> @NotNull Iterator<@NotNull Tuple2<E, U>> zip(@NotNull Iterator<? extends E> it1, Iterator<? extends U> it2) {
-        Objects.requireNonNull(it1);
-        Objects.requireNonNull(it2);
-        return new Zip<>(it1, it2);
+        return it1.hasNext() && it2.hasNext()
+                ? new Zip<E, U>(it1, it2)
+                : Iterators.empty();
     }
 
     public static <E> @NotNull Tuple2<Iterator<E>, Iterator<E>> span(

@@ -11,6 +11,7 @@ import org.glavo.kala.control.Option;
 import org.glavo.kala.function.IndexedBiFunction;
 import org.glavo.kala.function.IndexedConsumer;
 import org.glavo.kala.function.IndexedFunction;
+import org.glavo.kala.tuple.Tuple2;
 import org.glavo.kala.tuple.primitive.IntObjTuple2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -585,6 +586,10 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     @Override
     default @NotNull IndexedSeqView<IntObjTuple2<E>> withIndex() {
         return view().withIndex();
+    }
+
+    default <U> @NotNull SeqView<@NotNull Tuple2<E, U>> zipView(@NotNull IndexedSeqLike<? extends U> other) {
+        return SeqLike.super.zipView(other);
     }
 
     //region Aggregate Operations

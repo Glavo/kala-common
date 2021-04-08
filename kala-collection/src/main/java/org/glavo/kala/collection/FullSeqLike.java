@@ -2,6 +2,7 @@ package org.glavo.kala.collection;
 
 import org.glavo.kala.annotations.UnstableName;
 import org.glavo.kala.function.IndexedFunction;
+import org.glavo.kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
