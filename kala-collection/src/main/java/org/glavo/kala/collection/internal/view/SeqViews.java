@@ -744,11 +744,16 @@ public final class SeqViews {
         }
 
         @Override
+        public final @NotNull Iterator<E> iterator() {
+            return Iterators.prepended(source.iterator(), value);
+        }
+
+        @Override
         public final E get(int index) {
             if (index < 0) {
                 throw new IndexOutOfBoundsException("index(" + index + ") < 0");
             }
-            return index == 0 ? value : source.get(index + 1);
+            return index == 0 ? value : source.get(index - 1);
         }
 
         @Override
@@ -771,11 +776,6 @@ public final class SeqViews {
                 return -1;
             }
             return sks + 1;
-        }
-
-        @Override
-        public final @NotNull Iterator<E> iterator() {
-            return Iterators.prepended(source.iterator(), value);
         }
     }
 
