@@ -2,6 +2,7 @@ import java.io.RandomAccessFile
 
 plugins {
     `java-library`
+
 }
 
 allprojects {
