@@ -2,7 +2,6 @@ package kala.collection;
 
 import kala.collection.base.MapBase;
 import kala.collection.immutable.*;
-import org.glavo.kala.collection.immutable.*;
 import kala.collection.internal.view.MapViews;
 import kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;

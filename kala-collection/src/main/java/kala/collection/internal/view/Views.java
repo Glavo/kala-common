@@ -6,8 +6,6 @@ import kala.collection.base.Iterators;
 import kala.collection.immutable.*;
 import kala.control.Option;
 import kala.tuple.Tuple2;
-import org.glavo.kala.collection.*;
-import org.glavo.kala.collection.immutable.*;
 import kala.annotations.Covariant;
 import kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.Contract;

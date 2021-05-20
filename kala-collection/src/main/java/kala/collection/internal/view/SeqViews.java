@@ -15,7 +15,6 @@ import kala.tuple.Tuple2;
 import kala.tuple.primitive.IntObjTuple2;
 import kala.tuple.primitive.PrimitiveTuple;
 import kala.Conditions;
-import org.glavo.kala.collection.*;
 import kala.collection.mutable.ArrayBuffer;
 import kala.comparator.Comparators;
 import kala.collection.base.AbstractIterator;

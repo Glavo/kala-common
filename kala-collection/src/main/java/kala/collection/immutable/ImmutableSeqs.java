@@ -6,7 +6,6 @@ import kala.control.Option;
 import kala.function.IndexedConsumer;
 import kala.function.IndexedFunction;
 import kala.Conditions;
-import org.glavo.kala.collection.*;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.internal.view.IndexedSeqViews;
 import org.jetbrains.annotations.NotNull;
@@ -113,22 +112,22 @@ final class ImmutableSeqs {
 
         @Override
         public final @NotNull <U> ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
-            return empty();
+            return ImmutableSeq.empty();
         }
 
         @Override
         public final @NotNull <U> ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
-            return empty();
+            return ImmutableSeq.empty();
         }
 
         @Override
         public final @NotNull <U> ImmutableSeq<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
-            return empty();
+            return ImmutableSeq.empty();
         }
 
         @Override
         public final @NotNull <U> ImmutableSeq<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
-            return empty();
+            return ImmutableSeq.empty();
         }
     }
 
@@ -180,7 +179,7 @@ final class ImmutableSeqs {
         @Override
         public final @NotNull ImmutableSeq<E> take(int n) {
             if (n <= 0) {
-                return empty();
+                return ImmutableSeq.empty();
             }
             return this;
         }
@@ -188,7 +187,7 @@ final class ImmutableSeqs {
         @Override
         public final @NotNull ImmutableSeq<E> takeLast(int n) {
             if (n <= 0) {
-                return empty();
+                return ImmutableSeq.empty();
             }
             return this;
         }
@@ -196,7 +195,7 @@ final class ImmutableSeqs {
         @Override
         public final @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
             if (!predicate.test(value1)) {
-                return empty();
+                return ImmutableSeq.empty();
             }
             return this;
         }
@@ -206,7 +205,7 @@ final class ImmutableSeqs {
             if (n <= 0) {
                 return this;
             }
-            return empty();
+            return ImmutableSeq.empty();
         }
 
         @Override
@@ -214,12 +213,12 @@ final class ImmutableSeqs {
             if (n <= 0) {
                 return this;
             }
-            return empty();
+            return ImmutableSeq.empty();
         }
 
         @Override
         public final @NotNull ImmutableSeq<E> dropWhile(@NotNull Predicate<? super E> predicate) {
-            return predicate.test(value1) ? empty() : this;
+            return predicate.test(value1) ? ImmutableSeq.empty() : this;
         }
 
         @Override
@@ -247,13 +246,13 @@ final class ImmutableSeqs {
         @Override
         public final @NotNull <U> ImmutableSeq<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
             final U u = mapper.apply(value1);
-            return u == null ? empty() : ImmutableSeq.of(u);
+            return u == null ? ImmutableSeq.empty() : ImmutableSeq.of(u);
         }
 
         @Override
         public final @NotNull <U> ImmutableSeq<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
             final U u = mapper.apply(0, value1);
-            return u == null ? empty() : ImmutableSeq.of(u);
+            return u == null ? ImmutableSeq.empty() : ImmutableSeq.of(u);
         }
     }
 
@@ -311,7 +310,7 @@ final class ImmutableSeqs {
         @Override
         public final @NotNull ImmutableSeq<E> take(int n) {
             if (n <= 0) {
-                return empty();
+                return ImmutableSeq.empty();
             }
             if (n == 1) {
                 return ImmutableSeq.of(value1);
@@ -322,7 +321,7 @@ final class ImmutableSeqs {
         @Override
         public final @NotNull ImmutableSeq<E> takeLast(int n) {
             if (n <= 0) {
-                return empty();
+                return ImmutableSeq.empty();
             }
             if (n == 1) {
                 return ImmutableSeq.of(value2);
@@ -333,7 +332,7 @@ final class ImmutableSeqs {
         @Override
         public final @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
             if (!predicate.test(value1)) {
-                return empty();
+                return ImmutableSeq.empty();
             }
             if (!predicate.test(value2)) {
                 return ImmutableSeq.of(value1);
@@ -349,7 +348,7 @@ final class ImmutableSeqs {
             if (n == 1) {
                 return ImmutableSeq.of(value2);
             }
-            return empty();
+            return ImmutableSeq.empty();
         }
 
         @Override
@@ -360,7 +359,7 @@ final class ImmutableSeqs {
             if (n == 1) {
                 return ImmutableSeq.of(value1);
             }
-            return empty();
+            return ImmutableSeq.empty();
         }
 
         @Override
@@ -371,7 +370,7 @@ final class ImmutableSeqs {
             if (!predicate.test(value2)) {
                 return ImmutableSeq.of(value2);
             }
-            return empty();
+            return ImmutableSeq.empty();
         }
 
         @Override
@@ -460,7 +459,7 @@ final class ImmutableSeqs {
         @Override
         public final @NotNull ImmutableSeq<E> take(int n) {
             if (n <= 0) {
-                return empty();
+                return ImmutableSeq.empty();
             }
             switch (n) {
                 case 1:
@@ -474,7 +473,7 @@ final class ImmutableSeqs {
         @Override
         public final @NotNull ImmutableSeq<E> takeLast(int n) {
             if (n <= 0) {
-                return empty();
+                return ImmutableSeq.empty();
             }
             switch (n) {
                 case 1:
@@ -488,7 +487,7 @@ final class ImmutableSeqs {
         @Override
         public final @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
             if (!predicate.test(value1)) {
-                return empty();
+                return ImmutableSeq.empty();
             }
             if (!predicate.test(value2)) {
                 return ImmutableSeq.of(value1);
@@ -510,7 +509,7 @@ final class ImmutableSeqs {
                 case 2:
                     return ImmutableSeq.of(value3);
             }
-            return empty();
+            return ImmutableSeq.empty();
         }
 
         @Override
@@ -524,7 +523,7 @@ final class ImmutableSeqs {
                 case 2:
                     return ImmutableSeq.of(value2);
             }
-            return empty();
+            return ImmutableSeq.empty();
         }
 
         @Override
@@ -538,7 +537,7 @@ final class ImmutableSeqs {
             if (!predicate.test(value3)) {
                 return ImmutableSeq.of(value3);
             }
-            return empty();
+            return ImmutableSeq.empty();
         }
 
         @Override
@@ -635,7 +634,7 @@ final class ImmutableSeqs {
         @Override
         public final @NotNull ImmutableSeq<E> take(int n) {
             if (n <= 0) {
-                return empty();
+                return ImmutableSeq.empty();
             }
             switch (n) {
                 case 1:
@@ -651,7 +650,7 @@ final class ImmutableSeqs {
         @Override
         public final @NotNull ImmutableSeq<E> takeLast(int n) {
             if (n <= 0) {
-                return empty();
+                return ImmutableSeq.empty();
             }
             switch (n) {
                 case 1:
@@ -667,7 +666,7 @@ final class ImmutableSeqs {
         @Override
         public final @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
             if (!predicate.test(value1)) {
-                return empty();
+                return ImmutableSeq.empty();
             }
             if (!predicate.test(value2)) {
                 return ImmutableSeq.of(value1);
@@ -694,7 +693,7 @@ final class ImmutableSeqs {
                 case 3:
                     return ImmutableSeq.of(value4);
             }
-            return empty();
+            return ImmutableSeq.empty();
         }
 
         @Override
@@ -710,7 +709,7 @@ final class ImmutableSeqs {
                 case 3:
                     return ImmutableSeq.of(value1);
             }
-            return empty();
+            return ImmutableSeq.empty();
         }
 
         @Override
@@ -727,7 +726,7 @@ final class ImmutableSeqs {
             if (!predicate.test(value4)) {
                 return ImmutableSeq.of(value4);
             }
-            return empty();
+            return ImmutableSeq.empty();
         }
 
         @Override
@@ -832,7 +831,7 @@ final class ImmutableSeqs {
         @Override
         public final @NotNull ImmutableSeq<E> take(int n) {
             if (n <= 0) {
-                return empty();
+                return ImmutableSeq.empty();
             }
             switch (n) {
                 case 1:
@@ -850,7 +849,7 @@ final class ImmutableSeqs {
         @Override
         public final @NotNull ImmutableSeq<E> takeLast(int n) {
             if (n <= 0) {
-                return empty();
+                return ImmutableSeq.empty();
             }
             switch (n) {
                 case 1:
@@ -868,7 +867,7 @@ final class ImmutableSeqs {
         @Override
         public final @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
             if (!predicate.test(value1)) {
-                return empty();
+                return ImmutableSeq.empty();
             }
             if (!predicate.test(value2)) {
                 return ImmutableSeq.of(value1);
@@ -900,7 +899,7 @@ final class ImmutableSeqs {
                 case 4:
                     return ImmutableSeq.of(value5);
             }
-            return empty();
+            return ImmutableSeq.empty();
         }
 
         @Override
@@ -918,7 +917,7 @@ final class ImmutableSeqs {
                 case 4:
                     return ImmutableSeq.of(value1);
             }
-            return empty();
+            return ImmutableSeq.empty();
         }
 
         @Override
@@ -938,7 +937,7 @@ final class ImmutableSeqs {
             if (!predicate.test(value5)) {
                 return ImmutableSeq.of(value5);
             }
-            return empty();
+            return ImmutableSeq.empty();
         }
 
         @Override
@@ -1418,7 +1417,7 @@ final class ImmutableSeqs {
 
         public static <E> @NotNull ImmutableSeq<E> fill(int n, E value) {
             if (n <= 0) {
-                return empty();
+                return ImmutableSeq.empty();
             }
             return new CopiesSeq<>(n, value);
         }
@@ -1482,7 +1481,7 @@ final class ImmutableSeqs {
         public final @NotNull ImmutableSeq<E> slice(int beginIndex, int endIndex) {
             Conditions.checkPositionIndices(beginIndex, endIndex, size);
             final int ns = endIndex - beginIndex;
-            return ns == 0 ? empty() : new CopiesSeq<>(ns, value);
+            return ns == 0 ? ImmutableSeq.empty() : new CopiesSeq<>(ns, value);
         }
 
         @Override
@@ -1491,7 +1490,7 @@ final class ImmutableSeqs {
                 return this;
             }
             if (n >= size) {
-                return empty();
+                return ImmutableSeq.empty();
             }
             return new CopiesSeq<>(size - n, value);
         }
@@ -1510,13 +1509,13 @@ final class ImmutableSeqs {
                     return drop(i);
                 }
             }
-            return empty();
+            return ImmutableSeq.empty();
         }
 
         @Override
         public final @NotNull ImmutableSeq<E> take(int n) {
             if (n <= 0) {
-                return empty();
+                return ImmutableSeq.empty();
             }
             if (n >= size) {
                 return this;
@@ -1571,7 +1570,7 @@ final class ImmutableSeqs {
             }
 
             if (c == 0) {
-                return empty();
+                return ImmutableSeq.empty();
             }
             if (c == 1) {
                 return ImmutableSeq.of(value);
@@ -1595,7 +1594,7 @@ final class ImmutableSeqs {
             }
 
             if (c == 0) {
-                return empty();
+                return ImmutableSeq.empty();
             }
             if (c == 1) {
                 return ImmutableSeq.of(value);
@@ -1608,7 +1607,7 @@ final class ImmutableSeqs {
 
         @Override
         public final @NotNull ImmutableSeq<@NotNull E> filterNotNull() {
-            return value == null ? empty() : this;
+            return value == null ? ImmutableSeq.empty() : this;
         }
 
         @Override

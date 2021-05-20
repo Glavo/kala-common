@@ -4,7 +4,6 @@ import kala.collection.base.*;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.control.Option;
 import kala.tuple.Tuple2;
-import org.glavo.kala.collection.base.*;
 import kala.collection.factory.MapFactory;
 import kala.comparator.Comparators;
 import org.jetbrains.annotations.Debug;

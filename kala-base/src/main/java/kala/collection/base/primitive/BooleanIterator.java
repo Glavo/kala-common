@@ -7,7 +7,7 @@ import kala.internal.InternalBooleanLinkedBuffer;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import kala.collection.base.AbstractIterator;
-import org.glavo.kala.function.*;
+import kala.function.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

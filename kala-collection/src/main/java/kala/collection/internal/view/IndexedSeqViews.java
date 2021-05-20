@@ -7,7 +7,6 @@ import kala.function.IndexedFunction;
 import kala.tuple.Tuple2;
 import kala.tuple.primitive.IntObjTuple2;
 import kala.Conditions;
-import org.glavo.kala.collection.*;
 import kala.collection.base.AbstractIterator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

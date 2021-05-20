@@ -2,8 +2,7 @@ package kala.collection;
 
 import kala.Equatable;
 import kala.annotations.Covariant;
-import kala.collection.immutable.ImmutableCollection;
-import org.glavo.kala.collection.immutable.*;
+import kala.collection.immutable.*;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.base.Traversable;

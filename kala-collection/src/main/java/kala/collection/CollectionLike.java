@@ -4,7 +4,6 @@ import kala.collection.base.Traversable;
 import kala.collection.factory.MapFactory;
 import kala.collection.immutable.*;
 import kala.collection.mutable.MutableArray;
-import org.glavo.kala.collection.immutable.*;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

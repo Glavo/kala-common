@@ -6,7 +6,6 @@ import kala.collection.SeqLike;
 import kala.collection.base.Traversable;
 import kala.function.IndexedFunction;
 import kala.tuple.Tuple2;
-import org.glavo.kala.collection.*;
 import kala.annotations.Covariant;
 import kala.comparator.Comparators;
 import kala.collection.factory.CollectionFactory;

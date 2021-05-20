@@ -5,7 +5,6 @@ import kala.collection.mutable.*;
 import kala.control.Option;
 import kala.tuple.Tuple2;
 import kala.annotations.StaticClass;
-import org.glavo.kala.collection.mutable.*;
 import kala.collection.base.MapIterator;
 import kala.collection.Seq;
 import org.jetbrains.annotations.NotNull;

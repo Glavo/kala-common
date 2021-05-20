@@ -4,7 +4,6 @@ import kala.collection.Seq;
 import kala.annotations.Covariant;
 import kala.annotations.StaticClass;
 import kala.collection.mutable.*;
-import org.glavo.kala.collection.mutable.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

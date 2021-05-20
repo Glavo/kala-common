@@ -6,7 +6,6 @@ import kala.collection.base.MapIterator;
 import kala.control.Option;
 import kala.function.CheckedBiConsumer;
 import kala.tuple.Tuple2;
-import org.glavo.kala.collection.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

@@ -10,7 +10,6 @@ import kala.control.Option;
 import kala.function.IndexedConsumer;
 import kala.function.IndexedFunction;
 import kala.Conditions;
-import org.glavo.kala.collection.*;
 import kala.collection.internal.view.SeqViews;
 import kala.collection.mutable.AbstractBuffer;
 import kala.tuple.Tuple2;

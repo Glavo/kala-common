@@ -167,7 +167,7 @@ final class BooleanIterators {
                     tag = true;
                     return true;
                 } else {
-                    source = empty();
+                    source = BooleanIterator.empty();
                     predicate = null;
                     return false;
                 }
