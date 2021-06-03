@@ -17,6 +17,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.IntFunction;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
@@ -405,7 +406,6 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
     }
 
     //endregion
-
 
     //region Search Operations
 

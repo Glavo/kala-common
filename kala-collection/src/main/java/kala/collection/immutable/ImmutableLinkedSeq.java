@@ -1017,6 +1017,22 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
         }
 
         @Override
+        public final @NotNull Iterator<E> iterator() {
+            final ImmutableLinkedSeq<E> first = this.first;
+            return first == null ? Iterators.empty() : first.iterator();
+        }
+
+        @Override
+        public final int size() {
+            return len;
+        }
+
+        @Override
+        public final int knownSize() {
+            return len;
+        }
+
+        @Override
         public final E get(int index) {
             if (index < 0 || index >= len) {
                 throw new IndexOutOfBoundsException("Index out of range: " + index);
@@ -1332,6 +1348,32 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
         }
 
         @Override
+        public final void filterInPlace(@NotNull Predicate<? super E> predicate) {
+            ensureUnaliased();
+            ImmutableLinkedSeq<E> prev = null;
+            ImmutableLinkedSeq<E> cur = first;
+            if (cur == null) {
+                return;
+            }
+
+            while (cur != NIL) {
+                ImmutableLinkedSeq<E> follow = cur.tail;
+                if (!predicate.test(cur.head)) {
+                    if (prev == null) {
+                        first = follow;
+                    } else {
+                        prev.tail = follow;
+                    }
+                    --len;
+                } else {
+                    prev = cur;
+                }
+                cur = follow;
+            }
+            last = prev;
+        }
+
+        @Override
         public final void reverse() {
             if (len <= 1) {
                 return;
@@ -1345,20 +1387,5 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
             this.aliased = false;
         }
 
-        @Override
-        public final int size() {
-            return len;
-        }
-
-        @Override
-        public final int knownSize() {
-            return len;
-        }
-
-        @Override
-        public final @NotNull Iterator<E> iterator() {
-            final ImmutableLinkedSeq<E> first = this.first;
-            return first == null ? Iterators.empty() : first.iterator();
-        }
     }
 }

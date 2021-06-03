@@ -108,6 +108,18 @@ public class BufferEditor<E, C extends Buffer<E>> extends MutableSeqEditor<E, C>
         return this;
     }
 
+    @Contract("_ -> this")
+    public BufferEditor<E, C> filterInPlace(@NotNull Predicate<? super E> predicate) {
+        source.filterInPlace(predicate);
+        return this;
+    }
+
+    @Contract("_ -> this")
+    public BufferEditor<E, C> filterNotInPlace(@NotNull Predicate<? super E> predicate) {
+        source.filterNotInPlace(predicate);
+        return this;
+    }
+
     //region MutableSeqEditor members
 
     @Override

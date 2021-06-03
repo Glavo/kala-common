@@ -318,4 +318,30 @@ public interface Buffer<E> extends MutableSeq<E>, Growable<E> {
         }
     }
 
+    @Contract(mutates = "this")
+    default void filterInPlace(@NotNull Predicate<? super E> predicate) {
+        final int size = this.size();
+        int i = 0;
+        int j = 0;
+        while (i < size) {
+            final E e = get(i);
+            if (predicate.test(e)) {
+                if (i != j) {
+                    set(j, e);
+                }
+                j += 1;
+            }
+            i += 1;
+        }
+
+        if (i != j) {
+            takeInPlace(j);
+        }
+    }
+
+    @Contract(mutates = "this")
+    default void filterNotInPlace(@NotNull Predicate<? super E> predicate) {
+        filterInPlace(predicate.negate());
+    }
+
 }

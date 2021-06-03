@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -191,5 +192,39 @@ public interface BufferTestTemplate extends MutableSeqTestTemplate {
             b.prependAll(b);
             assertIterableEquals(l, b);
         }
+    }
+
+    @Test
+    default void filterInPlaceTest() {
+        final Buffer<?> empty = factory().empty();
+        empty.filterInPlace(e -> true);
+        assertIterableEquals(List.of(), empty);
+        empty.filterInPlace(e -> false);
+        assertIterableEquals(List.of(), empty);
+
+        final Buffer<Integer> b1 = of(0, 1, 2, 3, 4, 5);
+        b1.filterInPlace(it -> it > 2);
+        assertIterableEquals(List.of(3, 4, 5), b1);
+
+        final Buffer<Integer> b2 = of(0, 1, 2, 3, 4, 5);
+        b2.filterInPlace(it -> it % 2 == 0);
+        assertIterableEquals(List.of(0, 2, 4), b2);
+    }
+
+    @Test
+    default void filterNotInPlaceTest() {
+        final Buffer<?> empty = factory().empty();
+        empty.filterNotInPlace(e -> true);
+        assertIterableEquals(List.of(), empty);
+        empty.filterNotInPlace(e -> false);
+        assertIterableEquals(List.of(), empty);
+
+        final Buffer<Integer> b1 = of(0, 1, 2, 3, 4, 5);
+        b1.filterNotInPlace(it -> it > 2);
+        assertIterableEquals(List.of(0, 1, 2), b1);
+
+        final Buffer<Integer> b2 = of(0, 1, 2, 3, 4, 5);
+        b2.filterNotInPlace(it -> it % 2 == 0);
+        assertIterableEquals(List.of(1, 3, 5), b2);
     }
 }

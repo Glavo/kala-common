@@ -7,7 +7,7 @@ plugins {
 
 allprojects {
     group = "org.glavo"
-    version = kalaVersion("0.19.0")
+    version = kalaVersion("0.20.0")
 
     if (this == project(":benchmark")) {
         return@allprojects
@@ -23,7 +23,7 @@ allprojects {
     }
 
     dependencies {
-        "org.jetbrains:annotations:20.1.0".also {
+        "org.jetbrains:annotations:21.0.1".also {
             compileOnly(it)
             testImplementation(it)
         }

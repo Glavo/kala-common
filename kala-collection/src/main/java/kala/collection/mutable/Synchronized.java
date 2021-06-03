@@ -1392,6 +1392,20 @@ final class Synchronized {
                 source.takeWhileInPlace(predicate);
             }
         }
+
+        @Override
+        public void filterInPlace(@NotNull Predicate<? super E> predicate) {
+            synchronized (mutex) {
+                source.filterInPlace(predicate);
+            }
+        }
+
+        @Override
+        public void filterNotInPlace(@NotNull Predicate<? super E> predicate) {
+            synchronized (mutex) {
+                source.filterNotInPlace(predicate);
+            }
+        }
     }
 
     public static class SynchronizedIndexedBuffer<E, C extends Buffer<E> & IndexedSeq<E>> extends SynchronizedIndexedSeq<E, C>
@@ -1536,6 +1550,20 @@ final class Synchronized {
         public void takeWhileInPlace(@NotNull Predicate<? super E> predicate) {
             synchronized (mutex) {
                 source.takeWhileInPlace(predicate);
+            }
+        }
+
+        @Override
+        public void filterInPlace(@NotNull Predicate<? super E> predicate) {
+            synchronized (mutex) {
+                source.filterInPlace(predicate);
+            }
+        }
+
+        @Override
+        public void filterNotInPlace(@NotNull Predicate<? super E> predicate) {
+            synchronized (mutex) {
+                source.filterNotInPlace(predicate);
             }
         }
     }
