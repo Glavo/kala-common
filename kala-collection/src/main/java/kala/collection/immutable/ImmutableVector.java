@@ -15,6 +15,7 @@ import kala.collection.base.Traversable;
 import kala.comparator.Comparators;
 import kala.function.CheckedFunction;
 import kala.function.CheckedIndexedFunction;
+import kala.function.CheckedPredicate;
 import kala.function.IndexedFunction;
 import kala.tuple.Tuple2;
 import kala.annotations.Covariant;
@@ -457,8 +458,30 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
     }
 
     @Override
+    public final @NotNull <Ex extends Throwable> ImmutableVector<E> filterChecked(
+            @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) {
+        return filter(predicate);
+    }
+
+    @Override
+    public final @NotNull ImmutableVector<E> filterUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
+        return filter(predicate);
+    }
+
+    @Override
     public final @NotNull ImmutableVector<E> filterNot(@NotNull Predicate<? super E> predicate) {
         return filterImpl(predicate, true);
+    }
+
+    @Override
+    public final @NotNull <Ex extends Throwable> ImmutableVector<E> filterNotChecked(
+            @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) {
+        return filterNot(predicate);
+    }
+
+    @Override
+    public final @NotNull ImmutableVector<E> filterNotUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
+        return filterNot(predicate);
     }
 
     @Override

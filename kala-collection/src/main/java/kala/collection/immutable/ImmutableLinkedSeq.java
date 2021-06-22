@@ -7,10 +7,7 @@ import kala.collection.SeqView;
 import kala.collection.base.AnyTraversable;
 import kala.collection.base.Iterators;
 import kala.control.Option;
-import kala.function.CheckedFunction;
-import kala.function.CheckedIndexedFunction;
-import kala.function.IndexedConsumer;
-import kala.function.IndexedFunction;
+import kala.function.*;
 import kala.Conditions;
 import kala.collection.internal.view.SeqViews;
 import kala.collection.mutable.AbstractBuffer;
@@ -860,8 +857,30 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
     }
 
     @Override
+    public final @NotNull <Ex extends Throwable> ImmutableLinkedSeq<E> filterChecked(
+            @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) {
+        return filter(predicate);
+    }
+
+    @Override
+    public final @NotNull ImmutableLinkedSeq<E> filterUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
+        return filter(predicate);
+    }
+
+    @Override
     public final @NotNull ImmutableLinkedSeq<E> filterNot(@NotNull Predicate<? super E> predicate) {
         return filterNotImpl(predicate);
+    }
+
+    @Override
+    public final @NotNull <Ex extends Throwable> ImmutableLinkedSeq<E> filterNotChecked(
+            @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) {
+        return filterNot(predicate);
+    }
+
+    @Override
+    public final @NotNull ImmutableLinkedSeq<E> filterNotUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
+        return filterNot(predicate);
     }
 
     @Override

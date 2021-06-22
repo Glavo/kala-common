@@ -4,6 +4,7 @@ import kala.collection.IndexedSeqLike;
 import kala.control.Option;
 import kala.function.CheckedFunction;
 import kala.function.CheckedIndexedFunction;
+import kala.function.CheckedPredicate;
 import kala.function.IndexedFunction;
 import kala.Conditions;
 import kala.collection.SeqLike;
@@ -694,8 +695,30 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
+    public final @NotNull <Ex extends Throwable> ImmutableSizedLinkedSeq<E> filterChecked(
+            @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) {
+        return filter(predicate);
+    }
+
+    @Override
+    public final @NotNull ImmutableSizedLinkedSeq<E> filterUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
+        return filter(predicate);
+    }
+
+    @Override
     public final @NotNull ImmutableSizedLinkedSeq<E> filterNot(@NotNull Predicate<? super E> predicate) {
         return filterNotImpl(predicate);
+    }
+
+    @Override
+    public final @NotNull <Ex extends Throwable> ImmutableSizedLinkedSeq<E> filterNotChecked(
+            @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) {
+        return filterNot(predicate);
+    }
+
+    @Override
+    public final @NotNull ImmutableSizedLinkedSeq<E> filterNotUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
+        return filterNot(predicate);
     }
 
     @Override

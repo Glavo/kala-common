@@ -6,6 +6,7 @@ import kala.collection.SeqLike;
 import kala.collection.base.Traversable;
 import kala.function.CheckedFunction;
 import kala.function.CheckedIndexedFunction;
+import kala.function.CheckedPredicate;
 import kala.function.IndexedFunction;
 import kala.tuple.Tuple2;
 import kala.annotations.Covariant;
@@ -350,9 +351,29 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
         return AbstractImmutableCollection.filter(this, predicate, iterableFactory());
     }
 
+    default @NotNull <Ex extends Throwable> ImmutableSeq<E> filterChecked(
+            @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) throws Ex {
+        return filter(predicate);
+    }
+
+    default @NotNull ImmutableSeq<E> filterUnchecked(
+            @NotNull CheckedPredicate<? super E, ?> predicate) {
+        return filter(predicate);
+    }
+
     @Override
     default @NotNull ImmutableSeq<E> filterNot(@NotNull Predicate<? super E> predicate) {
         return AbstractImmutableCollection.filterNot(this, predicate, iterableFactory());
+    }
+
+    default @NotNull <Ex extends Throwable> ImmutableSeq<E> filterNotChecked(
+            @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) throws Ex {
+        return filterNot(predicate);
+    }
+
+    default @NotNull ImmutableSeq<E> filterNotUnchecked(
+            @NotNull CheckedPredicate<? super E, ?> predicate) {
+        return filterNot(predicate);
     }
 
     @Override

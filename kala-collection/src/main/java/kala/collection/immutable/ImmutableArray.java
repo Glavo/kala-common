@@ -5,6 +5,7 @@ import kala.collection.base.GenericArrays;
 import kala.collection.base.Traversable;
 import kala.function.CheckedFunction;
 import kala.function.CheckedIndexedFunction;
+import kala.function.CheckedPredicate;
 import kala.function.IndexedFunction;
 import kala.collection.IndexedSeq;
 import kala.collection.SeqLike;
@@ -444,6 +445,147 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
         return appendedAll(other);
     }
 
+
+    @Override
+    public final @NotNull ImmutableArray<E> filter(@NotNull Predicate<? super E> predicate) {
+        Objects.requireNonNull(predicate);
+
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+
+        if (size == 0) {
+            return this;
+        }
+
+        Object[] tmp = new Object[size];
+        int c = 0;
+
+        for (Object value : elements) {
+            E v = (E) value;
+            if (predicate.test(v)) {
+                tmp[c++] = v;
+            }
+        }
+
+        if (c == 0) {
+            return empty();
+        }
+        if (c == size) {
+            return this;
+        }
+
+        return new ImmutableArray<>(Arrays.copyOf(tmp, c));
+    }
+
+    @Override
+    public final @NotNull <Ex extends Throwable> ImmutableArray<E> filterChecked(
+            @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) {
+        return filter(predicate);
+    }
+
+    @Override
+    public final @NotNull ImmutableArray<E> filterUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
+        return filter(predicate);
+    }
+
+    @Override
+    public final @NotNull ImmutableArray<E> filterNot(@NotNull Predicate<? super E> predicate) {
+        Objects.requireNonNull(predicate);
+
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+
+        if (size == 0) {
+            return this;
+        }
+
+        Object[] tmp = new Object[size];
+        int c = 0;
+
+        for (Object value : elements) {
+            E v = (E) value;
+            if (!predicate.test(v)) {
+                tmp[c++] = v;
+            }
+        }
+
+        if (c == 0) {
+            return empty();
+        }
+        if (c == size) {
+            return this;
+        }
+
+        return new ImmutableArray<>(Arrays.copyOf(tmp, c));
+    }
+
+    @Override
+    public final @NotNull <Ex extends Throwable> ImmutableArray<E> filterNotChecked(
+            @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) {
+        return filterNot(predicate);
+    }
+
+    @Override
+    public final @NotNull ImmutableArray<E> filterNotUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
+        return filterNot(predicate);
+    }
+
+    @Override
+    public final @NotNull ImmutableArray<@NotNull E> filterNotNull() {
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+
+        if (size == 0) {
+            return this;
+        }
+
+        Object[] tmp = new Object[size];
+        int c = 0;
+
+        for (Object value : elements) {
+            if (value != null) {
+                tmp[c++] = value;
+            }
+        }
+
+        if (c == 0) {
+            return empty();
+        }
+        if (c == size) {
+            return this;
+        }
+
+        return new ImmutableArray<>(Arrays.copyOf(tmp, c));
+    }
+
+    @Override
+    public @NotNull <U> ImmutableArray<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+
+        if (size == 0) {
+            return ImmutableArray.empty();
+        }
+
+        Object[] tmp = new Object[size];
+        int c = 0;
+
+        for (Object value : elements) {
+            if (clazz.isInstance(value)) {
+                tmp[c++] = value;
+            }
+        }
+
+        if (c == 0) {
+            return empty();
+        }
+        if (c == size) {
+            return ((ImmutableArray<U>) this);
+        }
+
+        return new ImmutableArray<>(Arrays.copyOf(tmp, c));
+    }
+
     @Override
     public final <U> @NotNull ImmutableArray<U> map(@NotNull Function<? super E, ? extends U> mapper) {
         final Object[] elements = this.elements;
@@ -617,124 +759,6 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
             res[i] = elements[size - i - 1];
         }
         return new ImmutableArray<>(res);
-    }
-
-    @Override
-    public final @NotNull ImmutableArray<E> filter(@NotNull Predicate<? super E> predicate) {
-        Objects.requireNonNull(predicate);
-
-        final Object[] elements = this.elements;
-        final int size = elements.length;
-
-        if (size == 0) {
-            return this;
-        }
-
-        Object[] tmp = new Object[size];
-        int c = 0;
-
-        for (Object value : elements) {
-            E v = (E) value;
-            if (predicate.test(v)) {
-                tmp[c++] = v;
-            }
-        }
-
-        if (c == 0) {
-            return empty();
-        }
-        if (c == size) {
-            return this;
-        }
-
-        return new ImmutableArray<>(Arrays.copyOf(tmp, c));
-    }
-
-    @Override
-    public final @NotNull ImmutableArray<E> filterNot(@NotNull Predicate<? super E> predicate) {
-        Objects.requireNonNull(predicate);
-
-        final Object[] elements = this.elements;
-        final int size = elements.length;
-
-        if (size == 0) {
-            return this;
-        }
-
-        Object[] tmp = new Object[size];
-        int c = 0;
-
-        for (Object value : elements) {
-            E v = (E) value;
-            if (!predicate.test(v)) {
-                tmp[c++] = v;
-            }
-        }
-
-        if (c == 0) {
-            return empty();
-        }
-        if (c == size) {
-            return this;
-        }
-
-        return new ImmutableArray<>(Arrays.copyOf(tmp, c));
-    }
-
-    @Override
-    public final @NotNull ImmutableArray<@NotNull E> filterNotNull() {
-        final Object[] elements = this.elements;
-        final int size = elements.length;
-
-        if (size == 0) {
-            return this;
-        }
-
-        Object[] tmp = new Object[size];
-        int c = 0;
-
-        for (Object value : elements) {
-            if (value != null) {
-                tmp[c++] = value;
-            }
-        }
-
-        if (c == 0) {
-            return empty();
-        }
-        if (c == size) {
-            return this;
-        }
-
-        return new ImmutableArray<>(Arrays.copyOf(tmp, c));
-    }
-
-    @Override
-    public @NotNull <U> ImmutableArray<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
-        final Object[] elements = this.elements;
-        final int size = elements.length;
-
-        if (size == 0) {
-            return ImmutableArray.empty();
-        }
-
-        Object[] tmp = new Object[size];
-        int c = 0;
-
-        for (Object value : elements) {
-            if (clazz.isInstance(value)) {
-                tmp[c++] = value;
-            }
-        }
-
-        if (c == 0) {
-            return empty();
-        }
-        if (c == size) {
-            return ((ImmutableArray<U>) this);
-        }
-
-        return new ImmutableArray<>(Arrays.copyOf(tmp, c));
     }
 
     @Override

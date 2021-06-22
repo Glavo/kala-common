@@ -3,6 +3,7 @@ package kala.collection.immutable;
 import kala.collection.Collection;
 import kala.collection.FullCollectionLike;
 import kala.function.CheckedFunction;
+import kala.function.CheckedPredicate;
 import kala.tuple.Tuple2;
 import kala.annotations.Covariant;
 import kala.collection.factory.CollectionFactory;
@@ -166,19 +167,39 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E>, FullCo
         return AbstractImmutableCollection.filter(this, predicate, iterableFactory());
     }
 
+    default @NotNull <Ex extends Throwable> ImmutableCollection<E> filterChecked(
+            @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) throws Ex {
+        return filter(predicate);
+    }
+
+    default @NotNull ImmutableCollection<E> filterUnchecked(
+            @NotNull CheckedPredicate<? super E, ?> predicate) {
+        return filter(predicate);
+    }
+
     @Contract(pure = true)
     default @NotNull ImmutableCollection<E> filterNot(@NotNull Predicate<? super E> predicate) {
         return AbstractImmutableCollection.filterNot(this, predicate, iterableFactory());
     }
 
-    @Override
-    default <U> @NotNull ImmutableCollection<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
-        return (ImmutableCollection<U>) filter(clazz::isInstance);
+    default @NotNull <Ex extends Throwable> ImmutableCollection<E> filterNotChecked(
+            @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) throws Ex {
+        return filterNot(predicate);
+    }
+
+    default @NotNull ImmutableCollection<E> filterNotUnchecked(
+            @NotNull CheckedPredicate<? super E, ?> predicate) {
+        return filterNot(predicate);
     }
 
     @Contract(pure = true)
     default @NotNull ImmutableCollection<@NotNull E> filterNotNull() {
         return this.filter(Objects::nonNull);
+    }
+
+    @Override
+    default <U> @NotNull ImmutableCollection<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
+        return (ImmutableCollection<U>) filter(clazz::isInstance);
     }
 
     @Contract(pure = true)
