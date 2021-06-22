@@ -1,13 +1,11 @@
 package kala.collection.immutable;
 
-import kala.collection.base.GenericArrays;
-import kala.collection.base.Iterators;
-import kala.collection.base.Traversable;
+import kala.collection.base.*;
 import kala.function.IndexedConsumer;
 import kala.function.IndexedFunction;
-import kala.collection.base.AbstractIterator;
 import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
 import java.util.*;
@@ -63,6 +61,11 @@ final class ImmutableVectors {
         @Override
         public final Object get(int index) {
             throw new IndexOutOfBoundsException();
+        }
+
+        @Override
+        public final @NotNull ImmutableVector<Object> reversed() {
+            return this;
         }
 
         //region Addition Operations
@@ -126,7 +129,17 @@ final class ImmutableVectors {
         }
 
         @Override
-        public @NotNull <U> ImmutableVector<U> mapIndexed(@NotNull IndexedFunction<? super Object, ? extends U> mapper) {
+        public final @NotNull <U> ImmutableVector<@NotNull U> mapNotNull(@NotNull Function<? super Object, ? extends @Nullable U> mapper) {
+            return (ImmutableVector<U>) this;
+        }
+
+        @Override
+        public final @NotNull <U> ImmutableVector<U> mapIndexed(@NotNull IndexedFunction<? super Object, ? extends U> mapper) {
+            return (ImmutableVector<U>) this;
+        }
+
+        @Override
+        public final @NotNull <U> ImmutableVector<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super Object, ? extends @Nullable U> mapper) {
             return (ImmutableVector<U>) this;
         }
 
@@ -190,6 +203,11 @@ final class ImmutableVectors {
             } catch (ArrayIndexOutOfBoundsException e) {
                 throw new IndexOutOfBoundsException();
             }
+        }
+
+        @Override
+        public final @NotNull ImmutableVector<E> reversed() {
+            return new Vector1<>(ObjectArrays.reversed(prefix1));
         }
 
         //region Addition Operations
@@ -334,6 +352,31 @@ final class ImmutableVectors {
         }
 
         @Override
+        public final @NotNull <U> ImmutableVector<@NotNull U> mapNotNull(
+                @NotNull Function<? super E, ? extends @Nullable U> mapper) {
+            final Object[] prefix1 = this.prefix1;
+            final int size = prefix1.length;
+
+            int n = 0;
+            Object[] tmp = new Object[size];
+
+            for (Object o : prefix1) {
+                U u = mapper.apply((E) o);
+                if (u != null) {
+                    tmp[n++] = u;
+                }
+            }
+            if (n == 0) {
+                return ImmutableVector.empty();
+            }
+            if (n == size) {
+                return new Vector1<>(tmp);
+            }
+            return new Vector1<>(Arrays.copyOf(tmp, n));
+        }
+
+
+        @Override
         public final @NotNull <U> ImmutableVector<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
             final Object[] prefix1 = this.prefix1;
             final int size = prefix1.length;
@@ -343,6 +386,30 @@ final class ImmutableVectors {
                 res[i] = mapper.apply(i, (E) prefix1[i]);
             }
             return new Vector1<>(res);
+        }
+
+        @Override
+        public final @NotNull <U> ImmutableVector<@NotNull U> mapIndexedNotNull(
+                @NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
+            final Object[] prefix1 = this.prefix1;
+            final int size = prefix1.length;
+
+            int n = 0;
+            Object[] tmp = new Object[size];
+
+            for (int i = 0; i < size; i++) {
+                U u = mapper.apply(i, (E) prefix1[i]);
+                if (u != null) {
+                    tmp[n++] = u;
+                }
+            }
+            if (n == 0) {
+                return ImmutableVector.empty();
+            }
+            if (n == size) {
+                return new Vector1<>(tmp);
+            }
+            return new Vector1<>(Arrays.copyOf(tmp, n));
         }
 
         @Override

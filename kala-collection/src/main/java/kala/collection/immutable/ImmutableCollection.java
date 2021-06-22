@@ -2,6 +2,7 @@ package kala.collection.immutable;
 
 import kala.collection.Collection;
 import kala.collection.FullCollectionLike;
+import kala.function.CheckedFunction;
 import kala.tuple.Tuple2;
 import kala.annotations.Covariant;
 import kala.collection.factory.CollectionFactory;
@@ -133,8 +134,31 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E>, FullCo
         return AbstractImmutableCollection.map(this, mapper, this.<U>iterableFactory());
     }
 
+    @Contract(pure = true)
+    default <U, Ex extends Throwable> @NotNull ImmutableCollection<U> mapChecked(
+            @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
+        return map(mapper);
+    }
+
+    @Contract(pure = true)
+    default <U> @NotNull ImmutableCollection<U> mapUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
+        return map(mapper);
+    }
+
+    @Contract(pure = true)
     default <U> @NotNull ImmutableCollection<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
         return AbstractImmutableCollection.mapNotNull(this, mapper, this.<U>iterableFactory());
+    }
+
+    @Contract(pure = true)
+    default <U, Ex extends Throwable> @NotNull ImmutableCollection<U> mapNotNullChecked(
+            @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
+        return mapNotNull(mapper);
+    }
+
+    @Contract(pure = true)
+    default <U> @NotNull ImmutableCollection<U> mapNotNullUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
+        return mapNotNull(mapper);
     }
 
     @Contract(pure = true)

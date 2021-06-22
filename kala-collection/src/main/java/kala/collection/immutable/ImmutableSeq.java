@@ -4,6 +4,8 @@ import kala.collection.FullSeqLike;
 import kala.collection.Seq;
 import kala.collection.SeqLike;
 import kala.collection.base.Traversable;
+import kala.function.CheckedFunction;
+import kala.function.CheckedIndexedFunction;
 import kala.function.IndexedFunction;
 import kala.tuple.Tuple2;
 import kala.annotations.Covariant;
@@ -367,9 +369,29 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
         return AbstractImmutableCollection.map(this, mapper, this.<U>iterableFactory());
     }
 
+    @Override
+    default <U, Ex extends Throwable> @NotNull ImmutableSeq<U> mapChecked(
+            @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
+        return map(mapper);
+    }
+
+    @Override
+    default <U> @NotNull ImmutableSeq<U> mapUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
+        return map(mapper);
+    }
+
     @Contract(pure = true)
     default <U> @NotNull ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
         return AbstractImmutableSeq.mapIndexed(this, mapper, this.<U>iterableFactory());
+    }
+
+    default <U, Ex extends Throwable> @NotNull ImmutableSeq<U> mapIndexedChecked(
+            @NotNull CheckedIndexedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
+        return mapIndexed(mapper);
+    }
+
+    default <U> @NotNull ImmutableSeq<U> mapIndexedUnchecked(@NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
+        return mapIndexed(mapper);
     }
 
     @Override
@@ -377,8 +399,30 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
         return AbstractImmutableCollection.mapNotNull(this, mapper, this.<U>iterableFactory());
     }
 
-    default <U> @NotNull ImmutableSeq<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
+    @Override
+    default <U, Ex extends Throwable> @NotNull ImmutableSeq<U> mapNotNullChecked(
+            @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
+        return mapNotNull(mapper);
+    }
+
+    @Override
+    default <U> @NotNull ImmutableSeq<U> mapNotNullUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
+        return mapNotNull(mapper);
+    }
+
+    default <U> @NotNull ImmutableSeq<@NotNull U> mapIndexedNotNull(
+            @NotNull IndexedFunction<? super E, @Nullable ? extends U> mapper) {
         return AbstractImmutableSeq.mapIndexedNotNull(this, mapper, this.<U>iterableFactory());
+    }
+
+    default <U, Ex extends Throwable> @NotNull ImmutableSeq<@NotNull U> mapIndexedNotNullChecked(
+            @NotNull CheckedIndexedFunction<? super E, @Nullable ? extends U, ? extends Ex> mapper) {
+        return mapIndexedNotNull(mapper);
+    }
+
+    default <U> @NotNull ImmutableSeq<@NotNull U> mapIndexedNotNullUnchecked(
+            @NotNull CheckedIndexedFunction<? super E, @Nullable ? extends U, ?> mapper) {
+        return mapIndexedNotNull(mapper);
     }
 
     @Override

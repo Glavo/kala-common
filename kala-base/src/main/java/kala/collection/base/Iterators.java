@@ -803,7 +803,7 @@ public final class Iterators {
         if (!it.hasNext()) {
             return Iterators.empty();
         }
-        return new Iterators.MapNotNullIndexed<>(it, mapper);
+        return new MapIndexedNotNull<>(it, mapper);
     }
 
     public static <E, U> @NotNull Iterator<U> flatMap(
@@ -1798,7 +1798,7 @@ public final class Iterators {
         }
     }
 
-    static final class MapNotNullIndexed<E, U> extends AbstractIterator<U> {
+    static final class MapIndexedNotNull<E, U> extends AbstractIterator<U> {
 
         private final @NotNull Iterator<? extends E> source;
         private final @NotNull IndexedFunction<? super E, ? extends U> mapper;
@@ -1808,7 +1808,7 @@ public final class Iterators {
         private boolean flag = false;
 
 
-        MapNotNullIndexed(@NotNull Iterator<? extends E> source, @NotNull IndexedFunction<? super E, ? extends U> mapper) {
+        MapIndexedNotNull(@NotNull Iterator<? extends E> source, @NotNull IndexedFunction<? super E, ? extends U> mapper) {
             this.source = source;
             this.mapper = mapper;
         }

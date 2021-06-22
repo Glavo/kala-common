@@ -2,6 +2,8 @@ package kala.collection.immutable;
 
 import kala.collection.IndexedSeqLike;
 import kala.control.Option;
+import kala.function.CheckedFunction;
+import kala.function.CheckedIndexedFunction;
 import kala.function.IndexedFunction;
 import kala.Conditions;
 import kala.collection.SeqLike;
@@ -716,8 +718,13 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    public final <U> @NotNull ImmutableSizedLinkedSeq<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
-        return mapNotNullImpl(mapper);
+    public final @NotNull <U, Ex extends Throwable> ImmutableSizedLinkedSeq<U> mapChecked(@NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
+        return map(mapper);
+    }
+
+    @Override
+    public final @NotNull <U> ImmutableSizedLinkedSeq<U> mapUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
+        return map(mapper);
     }
 
     @Override
@@ -730,8 +737,48 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
+    public final @NotNull <U, Ex extends Throwable> ImmutableSizedLinkedSeq<U> mapIndexedChecked(
+            @NotNull CheckedIndexedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
+        return mapIndexed(mapper);
+    }
+
+    @Override
+    public final @NotNull <U> ImmutableSizedLinkedSeq<U> mapIndexedUnchecked(@NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
+        return mapIndexed(mapper);
+    }
+
+
+    @Override
+    public final <U> @NotNull ImmutableSizedLinkedSeq<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
+        return mapNotNullImpl(mapper);
+    }
+
+    @Override
+    public final @NotNull <U, Ex extends Throwable> ImmutableSizedLinkedSeq<U> mapNotNullChecked(
+            @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
+        return mapNotNull(mapper);
+    }
+
+    @Override
+    public final @NotNull <U> ImmutableSizedLinkedSeq<U> mapNotNullUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
+        return mapNotNull(mapper);
+    }
+
+    @Override
     public final <U> @NotNull ImmutableSizedLinkedSeq<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
         return mapIndexedNotNullImpl(mapper);
+    }
+
+    @Override
+    public final @NotNull <U, Ex extends Throwable> ImmutableSizedLinkedSeq<@NotNull U> mapIndexedNotNullChecked(
+            @NotNull CheckedIndexedFunction<? super E, @Nullable ? extends U, ? extends Ex> mapper) {
+        return mapIndexedNotNull(mapper);
+    }
+
+    @Override
+    public final @NotNull <U> ImmutableSizedLinkedSeq<@NotNull U> mapIndexedNotNullUnchecked(
+            @NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
+        return mapIndexedNotNull(mapper);
     }
 
     @Override

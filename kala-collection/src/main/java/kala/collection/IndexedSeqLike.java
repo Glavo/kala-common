@@ -18,7 +18,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.*;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.RandomAccess;
+import java.util.Objects;
 import java.util.function.*;
 
 public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
@@ -880,7 +884,7 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     }
 
     @Override
-    default <K, V> @NotNull kala.collection.Map<K, V> associate(
+    default <K, V>  kala.collection.@NotNull Map<K, V> associate(
             @NotNull Function<? super E, ? extends java.util.Map.Entry<? extends K, ? extends V>> transform) {
         final int size = this.size();
         if (size == 0) {
@@ -901,7 +905,7 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     }
 
     @Override
-    default <K> @NotNull kala.collection.Map<K, E> associateBy(@NotNull Function<? super E, ? extends K> keySelector) {
+    default <K>  kala.collection.@NotNull Map<K, E> associateBy(@NotNull Function<? super E, ? extends K> keySelector) {
         final int size = this.size();
         if (size == 0) {
             return kala.collection.Map.empty();
@@ -921,7 +925,7 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     }
 
     @Override
-    default <K, V> @NotNull kala.collection.Map<K, V> associateBy(
+    default <K, V>  kala.collection.@NotNull Map<K, V> associateBy(
             @NotNull Function<? super E, ? extends K> keySelector, @NotNull Function<? super E, ? extends V> valueTransform) {
         final int size = this.size();
         if (size == 0) {

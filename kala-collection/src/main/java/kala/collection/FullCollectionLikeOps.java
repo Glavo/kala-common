@@ -26,5 +26,4 @@ public interface FullCollectionLikeOps<E, CC extends CollectionLike<?>, COLL ext
 
     @Contract(pure = true)
     <U> @NotNull CC flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper);
-
 }

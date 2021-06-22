@@ -3,6 +3,8 @@ package kala.collection.immutable;
 import kala.collection.ArraySeq;
 import kala.collection.base.GenericArrays;
 import kala.collection.base.Traversable;
+import kala.function.CheckedFunction;
+import kala.function.CheckedIndexedFunction;
 import kala.function.IndexedFunction;
 import kala.collection.IndexedSeq;
 import kala.collection.SeqLike;
@@ -461,6 +463,17 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
+    public final @NotNull <U, Ex extends Throwable> ImmutableArray<U> mapChecked(
+            @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
+        return map(mapper);
+    }
+
+    @Override
+    public final @NotNull <U> ImmutableArray<U> mapUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
+        return map(mapper);
+    }
+
+    @Override
     public final <U> @NotNull ImmutableArray<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
         final Object[] elements = this.elements;
         final int size = elements.length;
@@ -474,6 +487,17 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
             newValues[i] = mapper.apply(i, (E) elements[i]);
         }
         return new ImmutableArray<>(newValues);
+    }
+
+    @Override
+    public final @NotNull <U, Ex extends Throwable> ImmutableArray<U> mapIndexedChecked(
+            @NotNull CheckedIndexedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
+        return mapIndexed(mapper);
+    }
+
+    @Override
+    public final @NotNull <U> ImmutableArray<U> mapIndexedUnchecked(@NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
+        return mapIndexed(mapper);
     }
 
     @Override
@@ -506,6 +530,17 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
+    public final @NotNull <U, Ex extends Throwable> ImmutableArray<U> mapNotNullChecked(
+            @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
+        return mapNotNull(mapper);
+    }
+
+    @Override
+    public final @NotNull <U> ImmutableArray<U> mapNotNullUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
+        return mapNotNull(mapper);
+    }
+
+    @Override
     public final @NotNull <U> ImmutableArray<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
         final Object[] elements = this.elements;
         final int size = elements.length;
@@ -532,6 +567,18 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
         }
 
         return new ImmutableArray<>(Arrays.copyOf(tmp, c));
+    }
+
+    @Override
+    public final @NotNull <U, Ex extends Throwable> ImmutableArray<@NotNull U> mapIndexedNotNullChecked(
+            @NotNull CheckedIndexedFunction<? super E, @Nullable ? extends U, ? extends Ex> mapper) {
+        return mapIndexedNotNull(mapper);
+    }
+
+    @Override
+    public final @NotNull <U> ImmutableArray<@NotNull U> mapIndexedNotNullUnchecked(
+            @NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
+        return mapIndexedNotNull(mapper);
     }
 
     @Override
