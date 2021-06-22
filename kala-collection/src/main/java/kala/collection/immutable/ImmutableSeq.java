@@ -451,6 +451,18 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
         return AbstractImmutableCollection.flatMap(this, mapper, iterableFactory());
     }
 
+    @Contract(pure = true)
+    default <U, Ex extends Throwable> @NotNull ImmutableSeq<U> flatMapChecked(
+            @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ? extends Ex> mapper) throws Ex {
+        return flatMap(mapper);
+    }
+
+    @Contract(pure = true)
+    default <U> @NotNull ImmutableSeq<U> flatMapUnchecked(
+            @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ?> mapper) {
+        return flatMap(mapper);
+    }
+
     @Override
     default <U> @NotNull ImmutableSeq<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
         return AbstractImmutableCollection.zip(this, other, this.<Tuple2<E, U>>iterableFactory());

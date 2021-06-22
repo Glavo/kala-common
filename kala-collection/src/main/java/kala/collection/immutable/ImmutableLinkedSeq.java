@@ -748,37 +748,45 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
     }
 
     @Override
-    public final <U> @NotNull ImmutableLinkedSeq<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
-        if (this == NIL) {
-            return nil();
-        }
-        LinkedBuffer<U> buffer = new LinkedBuffer<>();
-        ImmutableLinkedSeq<E> list = this;
-        while (list != NIL) {
-            buffer.appendAll(mapper.apply(list.head));
-            list = list.tail;
-        }
-        return buffer.toImmutableLinkedSeq();
+    public final @NotNull ImmutableLinkedSeq<E> filter(@NotNull Predicate<? super E> predicate) {
+        return filterImpl(predicate);
     }
 
     @Override
-    public final @NotNull ImmutableLinkedSeq<E> sorted() {
-        if (this == NIL || tail == NIL) {
-            return this;
-        }
-        Object[] arr = this.toArray();
-        Arrays.sort(arr);
-        return (ImmutableLinkedSeq<E>) from(arr);
+    public final @NotNull <Ex extends Throwable> ImmutableLinkedSeq<E> filterChecked(
+            @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) {
+        return filter(predicate);
     }
 
     @Override
-    public final @NotNull ImmutableLinkedSeq<E> sorted(@NotNull Comparator<? super E> comparator) {
-        if (this == NIL || tail == NIL) {
-            return this;
-        }
-        Object[] arr = this.toArray();
-        Arrays.sort(arr, (Comparator<Object>) comparator);
-        return (ImmutableLinkedSeq<E>) from(arr);
+    public final @NotNull ImmutableLinkedSeq<E> filterUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
+        return filter(predicate);
+    }
+
+    @Override
+    public final @NotNull ImmutableLinkedSeq<E> filterNot(@NotNull Predicate<? super E> predicate) {
+        return filterNotImpl(predicate);
+    }
+
+    @Override
+    public final @NotNull <Ex extends Throwable> ImmutableLinkedSeq<E> filterNotChecked(
+            @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) {
+        return filterNot(predicate);
+    }
+
+    @Override
+    public final @NotNull ImmutableLinkedSeq<E> filterNotUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
+        return filterNot(predicate);
+    }
+
+    @Override
+    public final @NotNull ImmutableLinkedSeq<@NotNull E> filterNotNull() {
+        return filterNotNullImpl();
+    }
+
+    @Override
+    public final @NotNull <U> ImmutableLinkedSeq<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
+        return ((ImmutableLinkedSeq<U>) filter(clazz::isInstance));
     }
 
     @Override
@@ -847,50 +855,54 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
     }
 
     @Override
+    public final <U> @NotNull ImmutableLinkedSeq<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
+        if (this == NIL) {
+            return nil();
+        }
+        LinkedBuffer<U> buffer = new LinkedBuffer<>();
+        ImmutableLinkedSeq<E> list = this;
+        while (list != NIL) {
+            buffer.appendAll(mapper.apply(list.head));
+            list = list.tail;
+        }
+        return buffer.toImmutableLinkedSeq();
+    }
+
+    @Override
+    public final <U, Ex extends Throwable> @NotNull ImmutableLinkedSeq<U> flatMapChecked(
+            @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ? extends Ex> mapper) throws Ex {
+        return flatMap(mapper);
+    }
+
+    @Override
+    public final  <U> @NotNull ImmutableLinkedSeq<U> flatMapUnchecked(
+            @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ?> mapper) {
+        return flatMap(mapper);
+    }
+
+    @Override
+    public final @NotNull ImmutableLinkedSeq<E> sorted() {
+        if (this == NIL || tail == NIL) {
+            return this;
+        }
+        Object[] arr = this.toArray();
+        Arrays.sort(arr);
+        return (ImmutableLinkedSeq<E>) from(arr);
+    }
+
+    @Override
+    public final @NotNull ImmutableLinkedSeq<E> sorted(@NotNull Comparator<? super E> comparator) {
+        if (this == NIL || tail == NIL) {
+            return this;
+        }
+        Object[] arr = this.toArray();
+        Arrays.sort(arr, (Comparator<Object>) comparator);
+        return (ImmutableLinkedSeq<E>) from(arr);
+    }
+
+    @Override
     public final <U> @NotNull ImmutableLinkedSeq<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
         return zipImpl(other);
-    }
-
-    @Override
-    public final @NotNull ImmutableLinkedSeq<E> filter(@NotNull Predicate<? super E> predicate) {
-        return filterImpl(predicate);
-    }
-
-    @Override
-    public final @NotNull <Ex extends Throwable> ImmutableLinkedSeq<E> filterChecked(
-            @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) {
-        return filter(predicate);
-    }
-
-    @Override
-    public final @NotNull ImmutableLinkedSeq<E> filterUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
-        return filter(predicate);
-    }
-
-    @Override
-    public final @NotNull ImmutableLinkedSeq<E> filterNot(@NotNull Predicate<? super E> predicate) {
-        return filterNotImpl(predicate);
-    }
-
-    @Override
-    public final @NotNull <Ex extends Throwable> ImmutableLinkedSeq<E> filterNotChecked(
-            @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) {
-        return filterNot(predicate);
-    }
-
-    @Override
-    public final @NotNull ImmutableLinkedSeq<E> filterNotUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
-        return filterNot(predicate);
-    }
-
-    @Override
-    public final @NotNull ImmutableLinkedSeq<@NotNull E> filterNotNull() {
-        return filterNotNullImpl();
-    }
-
-    @Override
-    public final @NotNull <U> ImmutableLinkedSeq<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
-        return ((ImmutableLinkedSeq<U>) filter(clazz::isInstance));
     }
 
     @Override

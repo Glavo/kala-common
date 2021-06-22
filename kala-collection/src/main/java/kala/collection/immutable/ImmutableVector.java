@@ -597,6 +597,19 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
     }
 
     @Override
+    public final <U, Ex extends Throwable> @NotNull ImmutableVector<U> flatMapChecked(
+            @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ? extends Ex> mapper) throws Ex {
+        return flatMap(mapper);
+    }
+
+    @Override
+    public final <U> @NotNull ImmutableVector<U> flatMapUnchecked(
+            @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ?> mapper) {
+        return flatMap(mapper);
+    }
+
+
+    @Override
     public final @NotNull ImmutableVector<E> sorted() {
         return sorted(Comparators.naturalOrder());
     }

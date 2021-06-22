@@ -23,4 +23,9 @@ public interface ImmutableCollectionOps<E, CC extends ImmutableCollection<?>, CO
     <U, Ex extends Throwable> @NotNull CC mapNotNullChecked(@NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex;
 
     <U> @NotNull CC mapNotNullUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper);
+
+    <U, Ex extends Throwable> @NotNull CC flatMapChecked(
+            @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ? extends Ex> mapper) throws Ex;
+
+    <U> @NotNull CC flatMapUnchecked(@NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ?> mapper);
 }

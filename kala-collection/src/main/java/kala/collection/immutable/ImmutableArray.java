@@ -718,9 +718,36 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final @NotNull <U> ImmutableArray<@NotNull U> mapIndexedNotNullUnchecked(
+    public final <U> @NotNull ImmutableArray<@NotNull U> mapIndexedNotNullUnchecked(
             @NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
         return mapIndexedNotNull(mapper);
+    }
+
+    @Override
+    public final <U> @NotNull ImmutableArray<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+        if (size == 0) {
+            return empty();
+        }
+
+        ArrayBuffer<U> builder = new ArrayBuffer<>();
+        for (Object value : elements) {
+            builder.appendAll(mapper.apply((E) value));
+        }
+        return builder.toImmutableArray();
+    }
+
+    @Override
+    public final @NotNull <U, Ex extends Throwable> ImmutableArray<U> flatMapChecked(
+            @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ? extends Ex> mapper) throws Ex {
+        return flatMap(mapper);
+    }
+
+    @Override
+    public final <U> @NotNull ImmutableArray<U> flatMapUnchecked(
+            @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ?> mapper) {
+        return flatMap(mapper);
     }
 
     @Override
@@ -759,21 +786,6 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
             res[i] = elements[size - i - 1];
         }
         return new ImmutableArray<>(res);
-    }
-
-    @Override
-    public final <U> @NotNull ImmutableArray<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
-        final Object[] elements = this.elements;
-        final int size = elements.length;
-        if (size == 0) {
-            return empty();
-        }
-
-        ArrayBuffer<U> builder = new ArrayBuffer<>();
-        for (Object value : elements) {
-            builder.appendAll(mapper.apply((E) value));
-        }
-        return builder.toImmutableArray();
     }
 
     @Override

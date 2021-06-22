@@ -810,6 +810,18 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
+    public final <U, Ex extends Throwable> @NotNull ImmutableSizedLinkedSeq<U> flatMapChecked(
+            @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ? extends Ex> mapper) throws Ex {
+        return flatMap(mapper);
+    }
+
+    @Override
+    public final <U> @NotNull ImmutableSizedLinkedSeq<U> flatMapUnchecked(
+            @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ?> mapper) {
+        return flatMap(mapper);
+    }
+
+    @Override
     public final @NotNull ImmutableSizedLinkedSeq<E> sorted() {
         final int size = this.size;
         if (size == 0 || size == 1) {

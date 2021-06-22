@@ -207,6 +207,18 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E>, FullCo
         return AbstractImmutableCollection.flatMap(this, mapper, iterableFactory());
     }
 
+    @Contract(pure = true)
+    default <U, Ex extends Throwable> @NotNull ImmutableCollection<U> flatMapChecked(
+            @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ? extends Ex> mapper) throws Ex {
+        return flatMap(mapper);
+    }
+
+    @Contract(pure = true)
+    default <U> @NotNull ImmutableCollection<U> flatMapUnchecked(
+            @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ?> mapper) {
+        return flatMap(mapper);
+    }
+
     default <U> @NotNull ImmutableCollection<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
         return AbstractImmutableCollection.zip(this, other, this.<Tuple2<E, U>>iterableFactory());
     }
