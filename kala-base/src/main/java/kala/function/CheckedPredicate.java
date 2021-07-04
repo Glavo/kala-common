@@ -2,6 +2,7 @@ package kala.function;
 
 import kala.control.Try;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
 
@@ -23,6 +24,14 @@ public interface CheckedPredicate<T, Ex extends Throwable> extends Predicate<T> 
             return testChecked(t);
         } catch (Throwable ex) {
             throw Try.throwExceptionUnchecked(ex);
+        }
+    }
+
+    default @NotNull Try<Boolean> tryTest(T t) {
+        try {
+            return Try.success(testChecked(t));
+        } catch (Throwable ex) {
+            return Try.failure(ex);
         }
     }
 }

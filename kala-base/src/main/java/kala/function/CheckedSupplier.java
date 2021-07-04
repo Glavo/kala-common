@@ -2,6 +2,7 @@ package kala.function;
 
 import kala.control.Try;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
@@ -33,6 +34,14 @@ public interface CheckedSupplier<T, Ex extends Throwable> extends Supplier<T> {
             return getChecked();
         } catch (Throwable e) {
             throw Try.throwExceptionUnchecked(e);
+        }
+    }
+
+    default @NotNull Try<T> tryGet() {
+        try {
+            return Try.success(getChecked());
+        } catch (Throwable e) {
+            return Try.failure(e);
         }
     }
 }

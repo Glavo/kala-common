@@ -17,11 +17,21 @@ public interface CheckedIntConsumer<Ex extends Throwable> extends IntConsumer {
 
     void acceptChecked(int value) throws Ex;
 
+    @Override
     default void accept(int value) {
         try {
             acceptChecked(value);
         } catch (Throwable e) {
             throw Try.throwExceptionUnchecked(e);
+        }
+    }
+
+    default @NotNull Try<Void> tryAccept(int value) {
+        try {
+            acceptChecked(value);
+            return Try.success(null);
+        } catch (Throwable e) {
+            return Try.failure(e);
         }
     }
 }

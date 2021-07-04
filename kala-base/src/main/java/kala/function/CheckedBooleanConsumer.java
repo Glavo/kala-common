@@ -2,6 +2,7 @@ package kala.function;
 
 import kala.control.Try;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
 public interface CheckedBooleanConsumer<Ex extends Throwable> extends BooleanConsumer {
@@ -14,11 +15,21 @@ public interface CheckedBooleanConsumer<Ex extends Throwable> extends BooleanCon
 
     void acceptChecked(boolean value) throws Ex;
 
+    @Override
     default void accept(boolean value) {
         try {
             acceptChecked(value);
         } catch (Throwable e) {
             throw Try.throwExceptionUnchecked(e);
+        }
+    }
+
+    default @NotNull Try<Void> tryAccept(boolean value) {
+        try {
+            acceptChecked(value);
+            return Try.success(null);
+        } catch (Throwable e) {
+            return Try.failure(e);
         }
     }
 }

@@ -52,6 +52,9 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
 
     @Contract("_ -> new")
     public static <T> Try.@NotNull Success<T> success(T value) {
+        if (value == null) {
+            return (Try.Success<T>) Try.Success.NULL;
+        }
         return new Try.Success<>(value);
     }
 
@@ -182,6 +185,8 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
     public static final class Success<T> extends Try<T> {
         private static final long serialVersionUID = 2848103842157024577L;
         private static final int HASH_MAGIC = 518848667;
+
+        private static final Try<?> NULL = new Try.Success<>(null);
 
         final T value;
 

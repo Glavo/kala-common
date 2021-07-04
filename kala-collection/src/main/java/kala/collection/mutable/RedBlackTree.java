@@ -76,48 +76,33 @@ abstract class RedBlackTree<A, N extends RedBlackTree.TreeNode<A, N>> {
         }
     }
 
-    static <T extends TreeNode<?, T>> T leftOrNull(T p) {
-        return (p == null) ? null : p.left;
+    static <T extends TreeNode<?, T>> T leftOrNull(@Nullable T p) {
+        return p == null ? null : p.left;
     }
 
-    static <T extends TreeNode<?, T>> T rightOrNull(T p) {
-        return (p == null) ? null : p.right;
+    static <T extends TreeNode<?, T>> T rightOrNull(@Nullable T p) {
+        return p == null ? null : p.right;
     }
 
-    static <T extends TreeNode<?, T>> T minNode(T node) {
-        if (node == null) {
-            return null;
-        }
-        return minNodeNonNull(node);
-    }
-
-    static <T extends TreeNode<?, T>> T minNodeNonNull(@NotNull T node) {
-        while (node.left != null) {
-            node = node.left;
+    static <T extends TreeNode<?, T>> T minNode(@NotNull T node) {
+        T left;
+        while ((left = node.left) != null) {
+            node = left;
         }
         return node;
     }
 
-    static <T extends TreeNode<?, T>> T maxNode(T node) {
-        if (node == null) {
-            return null;
-        }
-        return maxNodeNonNull(node);
-    }
-
-    static <T extends TreeNode<?, T>> T maxNodeNonNull(@NotNull T node) {
-        while (node.right != null) {
-            node = node.right;
+    static <T extends TreeNode<?, T>> T maxNode(@NotNull T node) {
+        T right;
+        while ((right = node.right) != null) {
+            node = right;
         }
         return node;
     }
 
-    static <T extends TreeNode<?, T>> T successor(T node) {
-        if (node == null) {
-            return null;
-        }
+    static <T extends TreeNode<?, T>> T successor(@NotNull T node) {
         if (node.right != null) {
-            return minNodeNonNull(node.right);
+            return minNode(node.right);
         }
         T n = node.parent;
         T ch = node;
@@ -128,12 +113,9 @@ abstract class RedBlackTree<A, N extends RedBlackTree.TreeNode<A, N>> {
         return n;
     }
 
-    static <T extends TreeNode<?, T>> T predecessor(T node) {
-        if (node == null) {
-            return null;
-        }
+    static <T extends TreeNode<?, T>> T predecessor(@NotNull T node) {
         if (node.left != null) {
-            return maxNodeNonNull(node.left);
+            return maxNode(node.left);
         }
         T p = node.parent;
         T ch = node;
