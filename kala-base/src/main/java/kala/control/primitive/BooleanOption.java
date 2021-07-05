@@ -57,7 +57,7 @@ public final class BooleanOption extends PrimitiveOption<Boolean> implements Boo
 
     public static @NotNull BooleanOption fromOption(@NotNull Option<? extends Boolean> option) {
         if (option.isDefined()) {
-            return of(option.get());
+            return some(option.get());
         } else {
             return None;
         }

@@ -43,6 +43,10 @@ public final class IntOption extends PrimitiveOption<Integer> implements IntTrav
         return None;
     }
 
+    public static @NotNull IntOption of(int value) {
+        return some(value);
+    }
+
     public static @NotNull IntOption of(@Nullable Integer value) {
         return value == null ? None : some(value);
     }

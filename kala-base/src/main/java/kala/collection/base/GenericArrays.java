@@ -88,6 +88,14 @@ public final class GenericArrays {
         }
     }
 
+    public static <E> E @NotNull [] from(@NotNull IntFunction<E[]> generator, @NotNull Iterator<? extends E> it) {
+        return Iterators.toArray(it, generator);
+    }
+
+    public static <E> E @NotNull [] from(@NotNull IntFunction<E[]> generator, @NotNull Stream<? extends E> stream) {
+        return stream.toArray(generator);
+    }
+
     public static <E> E @NotNull [] fill(@NotNull IntFunction<E[]> generator, int n, E value) {
         if (n <= 0) {
             return generator.apply(0);

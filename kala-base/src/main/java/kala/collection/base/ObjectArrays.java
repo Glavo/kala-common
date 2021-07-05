@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.UncheckedIOException;
 import java.util.*;
 import java.util.function.*;
@@ -32,7 +33,7 @@ public final class ObjectArrays {
 
     public static final Object[] EMPTY = GenericArrays.EMPTY_OBJECT_ARRAY;
 
-    private static final IntFunction<Object[]> GENERATOR = Object[]::new;
+    private static final IntFunction<Object[]> GENERATOR = (IntFunction<Object[]> & Serializable) Object[]::new;
     private static final CollectionFactory<Object, ?, Object[]> FACTORY = GenericArrays.factory(GENERATOR);
 
     //region Static Factories
@@ -90,6 +91,10 @@ public final class ObjectArrays {
             list.add(it.next());
         }
         return list.toArray();
+    }
+
+    public static Object @NotNull [] from(@NotNull Stream<?> stream) {
+        return stream.toArray(GENERATOR);
     }
 
     public static Object @NotNull [] fill(int n, Object value) {

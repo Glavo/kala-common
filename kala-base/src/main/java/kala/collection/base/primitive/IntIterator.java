@@ -130,12 +130,16 @@ public interface IntIterator
 
     @Override
     default boolean containsAll(int @NotNull [] values) {
-        for (int value : values) {
-            if (!contains(value)) {
-                return false;
+        loop:
+        while (hasNext()) {
+            final int v = nextInt();
+            for (int i : values) {
+                if (i == v) {
+                    continue loop;
+                }
             }
+            return false;
         }
-
         return true;
     }
 

@@ -13,21 +13,18 @@ final class BooleanComparators {
             return Boolean.compare(b1, b2);
         }
 
-        @NotNull
         @Override
-        public final BooleanComparator nullsFirst() {
+        public final @NotNull BooleanComparator nullsFirst() {
             return NaturalOrderNullComparator.NULLS_FIRST;
         }
 
-        @NotNull
         @Override
-        public final BooleanComparator nullsLast() {
+        public final @NotNull BooleanComparator nullsLast() {
             return NaturalOrderNullComparator.NULLS_LAST;
         }
 
-        @NotNull
         @Override
-        public final BooleanComparator reversed() {
+        public final @NotNull BooleanComparator reversed() {
             return ReverseOrderComparator.INSTANCE;
         }
     }
@@ -40,21 +37,18 @@ final class BooleanComparators {
             return Boolean.compare(b2, b1);
         }
 
-        @NotNull
         @Override
-        public final BooleanComparator nullsFirst() {
+        public final @NotNull BooleanComparator nullsFirst() {
             return ReverseOrderNullComparator.NULLS_FIRST;
         }
 
-        @NotNull
         @Override
-        public final BooleanComparator nullsLast() {
+        public final @NotNull BooleanComparator nullsLast() {
             return ReverseOrderNullComparator.NULLS_LAST;
         }
 
-        @NotNull
         @Override
-        public final BooleanComparator reversed() {
+        public final @NotNull BooleanComparator reversed() {
             return NaturalOrderComparator.INSTANCE;
         }
     }
@@ -64,8 +58,7 @@ final class BooleanComparators {
 
         private final boolean nullFirst;
 
-        @NotNull
-        private final BooleanComparator real;
+        private final @NotNull BooleanComparator real;
 
         NullComparator(boolean nullFirst, @NotNull BooleanComparator real) {
             this.nullFirst = nullFirst;
@@ -136,21 +129,18 @@ final class BooleanComparators {
             }
         }
 
-        @NotNull
         @Override
-        public final BooleanComparator nullsFirst() {
+        public final @NotNull BooleanComparator nullsFirst() {
             return NULLS_FIRST;
         }
 
-        @NotNull
         @Override
-        public final BooleanComparator nullsLast() {
+        public final @NotNull BooleanComparator nullsLast() {
             return NULLS_LAST;
         }
 
-        @NotNull
         @Override
-        public final BooleanComparator reversed() {
+        public final @NotNull BooleanComparator reversed() {
             return nullFirst ? ReverseOrderNullComparator.NULLS_LAST : ReverseOrderNullComparator.NULLS_FIRST;
         }
 
@@ -187,21 +177,18 @@ final class BooleanComparators {
             }
         }
 
-        @NotNull
         @Override
-        public final BooleanComparator nullsFirst() {
+        public final @NotNull BooleanComparator nullsFirst() {
             return NULLS_FIRST;
         }
 
-        @NotNull
         @Override
-        public final BooleanComparator nullsLast() {
+        public final @NotNull BooleanComparator nullsLast() {
             return NULLS_LAST;
         }
 
-        @NotNull
         @Override
-        public final BooleanComparator reversed() {
+        public final @NotNull BooleanComparator reversed() {
             return nullFirst ? NaturalOrderNullComparator.NULLS_LAST : NaturalOrderNullComparator.NULLS_FIRST;
         }
 

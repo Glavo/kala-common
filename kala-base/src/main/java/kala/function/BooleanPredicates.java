@@ -18,6 +18,11 @@ final class BooleanPredicates {
             return IS_FALSE;
         }
 
+        @Override
+        public final String toString() {
+            return "BooleanPredicate.IS_TRUE";
+        }
+
         private Object readResolve() {
             return IS_TRUE;
         }
@@ -34,6 +39,11 @@ final class BooleanPredicates {
         @Override
         public final @NotNull BooleanPredicate negate() {
             return IS_TRUE;
+        }
+
+        @Override
+        public final String toString() {
+            return "BooleanPredicate.IS_FALSE";
         }
 
         private Object readResolve() {

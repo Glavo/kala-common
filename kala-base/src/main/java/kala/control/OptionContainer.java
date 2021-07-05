@@ -72,6 +72,26 @@ public interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>,
     T get();
 
     /**
+     * Returns the value of the container if it is not empty, otherwise return the {@code null}.
+     *
+     * @return the value of the container if the container {@link #isDefined()},
+     * or the {@code null} if the container {@link #isEmpty()}
+     */
+    default @Nullable T getOrNull() {
+        return isDefined() ? get() : null;
+    }
+
+    /**
+     * Returns {@code Option.some(get())} if it is not empty, otherwise return the {@code Option.none()}.
+     *
+     * @return {@code Option.some(get())} if the container {@link #isDefined()},
+     * or the {@code Option.none()} if the container {@link #isEmpty()}
+     */
+    default @NotNull Option<T> getOption() {
+        return isDefined() ? Option.some(get()) : Option.none();
+    }
+
+    /**
      * Returns the value of the container if it is not empty, otherwise return the {@code defaultValue}.
      *
      * @param defaultValue the default value
@@ -87,22 +107,12 @@ public interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>,
     }
 
     /**
-     * Returns the value of the container if it is not empty, otherwise return the {@code null}.
-     *
-     * @return the value of the container if the container {@link #isDefined()},
-     * or the {@code null} if the container {@link #isEmpty()}
-     */
-    default @Nullable T getOrNull() {
-        return isDefined() ? get() : null;
-    }
-
-    /**
      * Returns the value of the container if it is not empty, otherwise throw the {@code exception}.
      *
      * @return the value of the container if the container {@link #isDefined()}
-     * @throws E if no value is present
+     * @throws Ex if no value is present
      */
-    default <E extends Throwable> T getOrThrowException(@NotNull E exception) throws E {
+    default <Ex extends Throwable> T getOrThrowException(@NotNull Ex exception) throws Ex {
         if (isEmpty()) {
             Objects.requireNonNull(exception);
             throw exception;
@@ -114,24 +124,14 @@ public interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>,
      * Returns the value of the container if it is not empty, otherwise throw {@code supplier.get()}.
      *
      * @return the value of the container if the container {@link #isDefined()}
-     * @throws E if no value is present
+     * @throws Ex if no value is present
      */
-    default <E extends Throwable> T getOrThrow(@NotNull Supplier<? extends E> supplier) throws E {
+    default <Ex extends Throwable> T getOrThrow(@NotNull Supplier<? extends Ex> supplier) throws Ex {
         if (isEmpty()) {
             Objects.requireNonNull(supplier);
             throw supplier.get();
         }
         return get();
-    }
-
-    /**
-     * Returns {@code Option.some(get())} if it is not empty, otherwise return the {@code Option.none()}.
-     *
-     * @return {@code Option.some(get())} if the container {@link #isDefined()},
-     * or the {@code Option.none()} if the container {@link #isEmpty()}
-     */
-    default @NotNull Option<T> getOption() {
-        return isDefined() ? Option.some(get()) : Option.none();
     }
 
     /**

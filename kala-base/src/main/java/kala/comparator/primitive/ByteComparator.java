@@ -12,19 +12,16 @@ public interface ByteComparator extends PrimitiveComparator<Byte, ByteComparator
         return compare(b1.byteValue(), b2.byteValue());
     }
 
-    @NotNull
-    default ByteComparator nullsFirst() {
+    default @NotNull ByteComparator nullsFirst() {
         return new ByteComparators.NullComparator(true, this);
     }
 
-    @NotNull
-    default ByteComparator nullsLast() {
+    default @NotNull ByteComparator nullsLast() {
         return new ByteComparators.NullComparator(false, this);
     }
 
-    @NotNull
     @Override
-    default ByteComparator reversed() {
+    default @NotNull ByteComparator reversed() {
         return (ByteComparator & Serializable) (b1, b2) -> compare(b2, b1);
     }
 }

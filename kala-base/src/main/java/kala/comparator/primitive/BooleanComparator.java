@@ -7,13 +7,11 @@ import java.io.Serializable;
 @FunctionalInterface
 public interface BooleanComparator extends PrimitiveComparator<Boolean, BooleanComparator> {
 
-    @NotNull
-    static BooleanComparator naturalOrder() {
+    static @NotNull BooleanComparator naturalOrder() {
         return BooleanComparators.NaturalOrderComparator.INSTANCE;
     }
 
-    @NotNull
-    static BooleanComparator reverseOrder() {
+    static @NotNull BooleanComparator reverseOrder() {
         return BooleanComparators.ReverseOrderComparator.INSTANCE;
     }
 
@@ -24,19 +22,16 @@ public interface BooleanComparator extends PrimitiveComparator<Boolean, BooleanC
         return compare(o1.booleanValue(), o2.booleanValue());
     }
 
-    @NotNull
-    default BooleanComparator nullsFirst() {
+    default @NotNull BooleanComparator nullsFirst() {
         return new BooleanComparators.NullComparator(true, this);
     }
 
-    @NotNull
-    default BooleanComparator nullsLast() {
+    default @NotNull BooleanComparator nullsLast() {
         return new BooleanComparators.NullComparator(false, this);
     }
 
-    @NotNull
     @Override
-    default BooleanComparator reversed() {
+    default @NotNull BooleanComparator reversed() {
         return (BooleanComparator & Serializable) (b1, b2) -> compare(b2, b1);
     }
 }

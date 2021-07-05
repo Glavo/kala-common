@@ -19,6 +19,7 @@ import java.util.Objects;
 import java.util.RandomAccess;
 import java.util.function.Predicate;
 import java.util.stream.Collector;
+import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 public interface Buffer<E> extends MutableSeq<E>, Growable<E> {
@@ -83,6 +84,10 @@ public interface Buffer<E> extends MutableSeq<E>, Growable<E> {
 
     static <E> @NotNull Buffer<E> from(@NotNull Iterator<? extends E> it) {
         return ArrayBuffer.from(it);
+    }
+
+    static <E> @NotNull Buffer<E> from(@NotNull Stream<? extends E> stream) {
+        return ArrayBuffer.from(stream);
     }
 
     @Contract("_ -> new")

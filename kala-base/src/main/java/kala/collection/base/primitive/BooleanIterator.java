@@ -566,12 +566,22 @@ public interface BooleanIterator
 
     default int indexOf(boolean value) {
         int idx = 0;
-        while (hasNext()) {
-            if (nextBoolean() == value) {
-                return idx;
+        if (value) {
+            while (hasNext()) {
+                if (nextBoolean()) {
+                    return idx;
+                }
+                idx++;
             }
-            idx++;
+        } else {
+            while (hasNext()) {
+                if (!nextBoolean()) {
+                    return idx;
+                }
+                idx++;
+            }
         }
+
         return -1;
     }
 
