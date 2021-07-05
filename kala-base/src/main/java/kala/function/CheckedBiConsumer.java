@@ -22,7 +22,7 @@ public interface CheckedBiConsumer<T, U, Ex extends Throwable> extends BiConsume
         try {
             acceptChecked(t, u);
         } catch (Throwable ex) {
-            Try.throwExceptionUnchecked(ex);
+            Try.sneakyThrow(ex);
         }
     }
 

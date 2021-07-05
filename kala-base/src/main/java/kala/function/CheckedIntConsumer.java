@@ -22,7 +22,7 @@ public interface CheckedIntConsumer<Ex extends Throwable> extends IntConsumer {
         try {
             acceptChecked(value);
         } catch (Throwable e) {
-            throw Try.throwExceptionUnchecked(e);
+            throw Try.sneakyThrow(e);
         }
     }
 

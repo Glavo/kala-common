@@ -21,7 +21,7 @@ public interface CheckedIndexedFunction<T, R, Ex extends Throwable> extends Inde
         try {
             return applyChecked(index, t);
         } catch (Throwable ex) {
-            throw Try.throwExceptionUnchecked(ex);
+            throw Try.sneakyThrow(ex);
         }
     }
 

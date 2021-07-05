@@ -9,7 +9,6 @@ import kala.collection.immutable.ImmutableSeq;
 import kala.collection.internal.convert.FromJavaConvert;
 import kala.annotations.StaticClass;
 import kala.collection.mutable.ArrayBuffer;
-import kala.collection.mutable.LinkedBuffer;
 import kala.collection.mutable.MutableArray;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -78,7 +77,7 @@ public final class CollectionHelper {
             if (!iterator.hasNext()) {
                 return ImmutableSeq.empty();
             }
-            LinkedBuffer<E> buffer = new LinkedBuffer<>();
+            ArrayBuffer<E> buffer = new ArrayBuffer<>();
             while (iterator.hasNext()) {
                 buffer.append(((E) iterator.next()));
             }
@@ -86,7 +85,7 @@ public final class CollectionHelper {
         }
 
         if (collection instanceof Iterable<?>) {
-            LinkedBuffer<E> buffer = new LinkedBuffer<>();
+            ArrayBuffer<E> buffer = new ArrayBuffer<>();
             buffer.appendAll(((Iterable<E>) collection));
             return buffer;
         }

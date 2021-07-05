@@ -13,7 +13,7 @@ public interface CheckedRunnable<Ex extends Throwable> extends Runnable {
         try {
             runChecked();
         } catch (Throwable e) {
-            Try.throwExceptionUnchecked(e);
+            Try.sneakyThrow(e);
         }
     }
 

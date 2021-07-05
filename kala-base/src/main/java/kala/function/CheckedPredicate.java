@@ -23,7 +23,7 @@ public interface CheckedPredicate<T, Ex extends Throwable> extends Predicate<T> 
         try {
             return testChecked(t);
         } catch (Throwable ex) {
-            throw Try.throwExceptionUnchecked(ex);
+            throw Try.sneakyThrow(ex);
         }
     }
 

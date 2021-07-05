@@ -1215,7 +1215,7 @@ public final class Iterators {
                 action.acceptChecked(it.next());
             }
         } catch (Throwable e) {
-            Try.throwExceptionUnchecked(e);
+            Try.sneakyThrow(e);
         }
     }
 
@@ -1227,7 +1227,7 @@ public final class Iterators {
                 action.acceptChecked(it.next());
             }
         } catch (Throwable e) {
-            Try.throwExceptionUnchecked(e);
+            Try.sneakyThrow(e);
         }
     }
 

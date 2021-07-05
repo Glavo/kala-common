@@ -33,7 +33,7 @@ public interface CheckedSupplier<T, Ex extends Throwable> extends Supplier<T> {
         try {
             return getChecked();
         } catch (Throwable e) {
-            throw Try.throwExceptionUnchecked(e);
+            throw Try.sneakyThrow(e);
         }
     }
 

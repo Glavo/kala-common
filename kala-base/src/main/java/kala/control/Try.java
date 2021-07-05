@@ -36,17 +36,17 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
         return (Try.Failure<T>) failure;
     }
 
-    public static <E extends Throwable> void maybeThrows() throws E {
+    public static <Ex extends Throwable> void maybeThrows() throws Ex {
         // do nothing
     }
 
     @Contract("_ -> fail")
-    public static RuntimeException throwExceptionUnchecked(@NotNull Throwable throwable) {
-        throwExceptionUnchecked0(throwable);
+    public static RuntimeException sneakyThrow(@NotNull Throwable throwable) {
+        sneakyThrow0(throwable);
         return null;
     }
 
-    private static <E extends Throwable> void throwExceptionUnchecked0(Throwable throwable) throws E {
+    private static <E extends Throwable> void sneakyThrow0(Throwable throwable) throws E {
         throw (E) throwable;
     }
 
@@ -65,7 +65,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
     }
 
     @Contract("_ -> new")
-    public static <T> @NotNull Try<T> run(@NotNull CheckedSupplier<? extends T, ? extends Throwable> supplier) {
+    public static <T> @NotNull Try<T> of(@NotNull CheckedSupplier<? extends T, ?> supplier) {
         Objects.requireNonNull(supplier);
         try {
             return success(supplier.getChecked());
@@ -75,7 +75,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
     }
 
     @Contract("_ -> new")
-    public static <T> @NotNull Try<T> runCallable(@NotNull Callable<? extends T> callable) {
+    public static <T> @NotNull Try<T> ofCallable(@NotNull Callable<? extends T> callable) {
         Objects.requireNonNull(callable);
         try {
             return success(callable.call());
