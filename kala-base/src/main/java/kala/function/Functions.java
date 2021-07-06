@@ -2,7 +2,13 @@ package kala.function;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.WeakHashMap;
 import java.util.function.Function;
 
 @SuppressWarnings("unchecked")
@@ -17,6 +23,34 @@ public final class Functions {
 
     public static <T> @NotNull Function<T, T> identity() {
         return ((Function<T, T>) Identity.INSTANCE);
+    }
+
+    public static <T, R> @NotNull Function<T, R> memoized(@NotNull Function<? super T, ? extends R> function) {
+        return memoized(function, false);
+    }
+
+    public static <T, R> @NotNull Function<T, R> memoized(@NotNull Function<? super T, ? extends R> function, boolean sync) {
+        Objects.requireNonNull(function);
+        if (function instanceof Memoized) {
+            return narrow(function);
+        }
+        return sync
+                ? new MemoizedFunction<>(function, new HashMap<>())
+                : new MemoizedFunction<>(function, new HashMap<>(), null);
+    }
+
+    public static <T, R> @NotNull Function<T, R> weakMemoized(@NotNull Function<? super T, ? extends R> function) {
+        return weakMemoized(function, false);
+    }
+
+    public static <T, R> @NotNull Function<T, R> weakMemoized(@NotNull Function<? super T, ? extends R> function, boolean sync) {
+        Objects.requireNonNull(function);
+        if (function instanceof Memoized) {
+            return narrow(function);
+        }
+        return sync
+                ? new MemoizedFunction<>(function, new WeakHashMap<>())
+                : new MemoizedFunction<>(function, new WeakHashMap<>(), null);
     }
 
     enum Identity implements Function<Object, Object> {
@@ -35,6 +69,51 @@ public final class Functions {
         @Override
         public <V> @NotNull Function<Object, V> andThen(@NotNull Function<? super Object, ? extends V> after) {
             return narrow(after);
+        }
+    }
+
+    static final class MemoizedFunction<T, R> implements Function<T, R>, Memoized, Serializable {
+        private static final Object NULL_HOLE = new Object();
+
+        private final @NotNull Function<? super T, ? extends R> function;
+        private final @NotNull Map<T, Object> cache;
+        private final @Nullable Object lock;
+
+        MemoizedFunction(@NotNull Function<? super T, ? extends R> function, @NotNull Map<T, Object> cache) {
+            this(function, cache, cache);
+        }
+
+        public MemoizedFunction(@NotNull Function<? super T, ? extends R> function, @NotNull Map<T, Object> cache, @Nullable Object lock) {
+            this.function = function;
+            this.cache = cache;
+            this.lock = lock;
+        }
+
+        @Override
+        public final R apply(T t) {
+            final Object value = cache.getOrDefault(t, NULL_HOLE);
+            if (value == NULL_HOLE) {
+                if (lock == null) {
+                    final R res = function.apply(t);
+                    cache.put(t, res);
+                    return res;
+                } else synchronized (lock) {
+                    final R res = function.apply(t);
+                    cache.put(t, res);
+                    return res;
+                }
+            } else {
+                return (R) value;
+            }
+        }
+
+        @Override
+        public final String toString() {
+            return "MemoizedFunction[" +
+                    "function=" + function +
+                    ", cache=" + cache +
+                    ", lock=" + lock +
+                    ']';
         }
     }
 }
