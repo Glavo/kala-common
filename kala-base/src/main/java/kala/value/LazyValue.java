@@ -4,6 +4,7 @@ import kala.collection.base.Traversable;
 import kala.annotations.Covariant;
 import kala.collection.base.AbstractIterator;
 import kala.collection.base.Mappable;
+import kala.function.Memoized;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +16,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public final class LazyValue<@Covariant T> implements Traversable<T>, Mappable<T>, Value<T>, Serializable {
+public final class LazyValue<@Covariant T> implements Traversable<T>, Mappable<T>, Value<T>, Supplier<T>, Memoized, Serializable {
     private static final long serialVersionUID = 7403692951772568981L;
 
     private transient volatile Supplier<? extends T> supplier;
@@ -95,9 +96,9 @@ public final class LazyValue<@Covariant T> implements Traversable<T>, Mappable<T
     @Override
     public final String toString() {
         if (supplier == null) {
-            return "LazyValue[<not computed>]";
-        } else {
             return "LazyValue[" + value + "]";
+        } else {
+            return "LazyValue[<not computed>]";
         }
     }
 
