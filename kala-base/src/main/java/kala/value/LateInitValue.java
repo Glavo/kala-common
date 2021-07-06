@@ -65,7 +65,7 @@ public final class LateInitValue<T> implements Value<T> {
     @Override
     public final String toString() {
         if (initialized) {
-            return "LateInitValue[" + value + "]";
+            return "LateInitValue[" + value + ']';
         } else {
             return "LateInitValue[<uninitialized>]";
         }
