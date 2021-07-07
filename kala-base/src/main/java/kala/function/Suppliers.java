@@ -20,6 +20,15 @@ public final class Suppliers {
         return (Supplier<T>) supplier;
     }
 
+    @Contract(value = "_ -> param1", pure = true)
+    public static <T> Supplier<T> of(Supplier<? extends T> supplier) {
+        return (Supplier<T>) supplier;
+    }
+
+    public static <T> @NotNull Supplier<T> constant(T value) {
+        return new Constant<>(value);
+    }
+
     public static <T> @NotNull Supplier<T> memoized(@NotNull Supplier<? extends T> supplier) {
         Objects.requireNonNull(supplier);
         if (supplier instanceof Memoized) {
@@ -28,11 +37,7 @@ public final class Suppliers {
         return LazyValue.of(supplier);
     }
 
-    public static <T> @NotNull Supplier<T> constant(T value) {
-        return new Constant<>(value);
-    }
-
-    static final class Constant<T> implements Supplier<T>, Serializable {
+    static final class Constant<T> implements Supplier<T>, Memoized, Serializable {
         private final T value;
 
         Constant(T value) {
@@ -40,12 +45,12 @@ public final class Suppliers {
         }
 
         @Override
-        public T get() {
+        public final T get() {
             return value;
         }
 
         @Override
-        public String toString() {
+        public final String toString() {
             return "Suppliers.Constant[value=" + value + ']';
         }
     }

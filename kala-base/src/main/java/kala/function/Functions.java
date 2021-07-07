@@ -2,11 +2,8 @@ package kala.function;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.WeakHashMap;
 import java.util.function.Function;
@@ -39,9 +36,7 @@ public final class Functions {
         if (function instanceof kala.function.Memoized) {
             return narrow(function);
         }
-        return sync
-                ? new Memoized<>(function, new HashMap<>())
-                : new Memoized<>(function, new HashMap<>(), null);
+        return new MemoizedFunction<>(function, new HashMap<>(), sync);
     }
 
     public static <T, R> @NotNull Function<T, R> weakMemoized(@NotNull Function<? super T, ? extends R> function) {
@@ -53,9 +48,7 @@ public final class Functions {
         if (function instanceof kala.function.Memoized) {
             return narrow(function);
         }
-        return sync
-                ? new Memoized<>(function, new WeakHashMap<>())
-                : new Memoized<>(function, new WeakHashMap<>(), null);
+        return new MemoizedFunction<>(function, new WeakHashMap<>(), sync);
     }
 
     enum Identity implements Function<Object, Object> {
@@ -82,48 +75,4 @@ public final class Functions {
         }
     }
 
-    static final class Memoized<T, R> implements Function<T, R>, kala.function.Memoized, Serializable {
-        private static final Object NULL_HOLE = new Object();
-
-        private final @NotNull Function<? super T, ? extends R> function;
-        private final @NotNull Map<T, Object> cache;
-        private final @Nullable Object lock;
-
-        Memoized(@NotNull Function<? super T, ? extends R> function, @NotNull Map<T, Object> cache) {
-            this(function, cache, cache);
-        }
-
-        Memoized(@NotNull Function<? super T, ? extends R> function, @NotNull Map<T, Object> cache, @Nullable Object lock) {
-            this.function = function;
-            this.cache = cache;
-            this.lock = lock;
-        }
-
-        @Override
-        public final R apply(T t) {
-            final Object value = cache.getOrDefault(t, NULL_HOLE);
-            if (value == NULL_HOLE) {
-                if (lock == null) {
-                    final R res = function.apply(t);
-                    cache.put(t, res);
-                    return res;
-                } else synchronized (lock) {
-                    final R res = function.apply(t);
-                    cache.put(t, res);
-                    return res;
-                }
-            } else {
-                return (R) value;
-            }
-        }
-
-        @Override
-        public final String toString() {
-            return "Functions.Memoized[" +
-                    "function=" + function +
-                    ", cache=" + cache +
-                    ", lock=" + lock +
-                    ']';
-        }
-    }
 }
