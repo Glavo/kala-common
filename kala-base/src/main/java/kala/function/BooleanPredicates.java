@@ -15,7 +15,7 @@ final class BooleanPredicates {
 
         @Override
         public final @NotNull BooleanPredicate negate() {
-            return IS_FALSE;
+            return BooleanPredicate.IS_FALSE;
         }
 
         @Override
@@ -24,7 +24,7 @@ final class BooleanPredicates {
         }
 
         private Object readResolve() {
-            return IS_TRUE;
+            return BooleanPredicate.IS_TRUE;
         }
     }
 
@@ -38,7 +38,7 @@ final class BooleanPredicates {
 
         @Override
         public final @NotNull BooleanPredicate negate() {
-            return IS_TRUE;
+            return BooleanPredicate.IS_TRUE;
         }
 
         @Override
@@ -47,7 +47,7 @@ final class BooleanPredicates {
         }
 
         private Object readResolve() {
-            return IS_FALSE;
+            return BooleanPredicate.IS_FALSE;
         }
     }
 }
