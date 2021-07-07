@@ -10,6 +10,7 @@ import kala.collection.base.ObjectArrays;
 import kala.control.Option;
 import kala.function.IndexedConsumer;
 import kala.function.IndexedFunction;
+import kala.function.Predicates;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import kala.tuple.primitive.IntObjTuple2;
@@ -921,12 +922,12 @@ public final class SeqViews {
 
         @Override
         public @NotNull Stream<E> stream() {
-            return source.stream().filter(Objects::nonNull);
+            return source.stream().filter(Predicates.isNotNull());
         }
 
         @Override
         public @NotNull Stream<E> parallelStream() {
-            return source.parallelStream().filter(Objects::nonNull);
+            return source.parallelStream().filter(Predicates.isNotNull());
         }
     }
 

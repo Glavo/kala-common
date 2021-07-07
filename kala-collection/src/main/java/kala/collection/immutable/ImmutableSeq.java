@@ -4,10 +4,7 @@ import kala.collection.FullSeqLike;
 import kala.collection.Seq;
 import kala.collection.SeqLike;
 import kala.collection.base.Traversable;
-import kala.function.CheckedFunction;
-import kala.function.CheckedIndexedFunction;
-import kala.function.CheckedPredicate;
-import kala.function.IndexedFunction;
+import kala.function.*;
 import kala.tuple.Tuple2;
 import kala.annotations.Covariant;
 import kala.comparator.Comparators;
@@ -378,11 +375,11 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
 
     @Override
     default @NotNull ImmutableSeq<@NotNull E> filterNotNull() {
-        return this.filter(Objects::nonNull);
+        return this.filter(Predicates.isNotNull());
     }
 
     default <U> @NotNull ImmutableSeq<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
-        return ((ImmutableSeq<U>) this.filter(clazz::isInstance));
+        return ((ImmutableSeq<U>) this.filter(Predicates.instanceOf(clazz)));
     }
 
     @Override

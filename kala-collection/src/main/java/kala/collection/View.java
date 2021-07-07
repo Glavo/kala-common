@@ -1,6 +1,7 @@
 package kala.collection;
 
 import kala.collection.internal.view.Views;
+import kala.function.Predicates;
 import kala.tuple.Tuple2;
 import kala.annotations.Covariant;
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +48,7 @@ public interface View<@Covariant E> extends CollectionLike<E>, FullCollectionLik
 
     @Override
     default <U> @NotNull View<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
-        return ((View<U>) filter(clazz::isInstance));
+        return ((View<U>) filter(Predicates.instanceOf(clazz)));
     }
 
     default <U> @NotNull View<U> map(@NotNull Function<? super E, ? extends U> mapper) {

@@ -1,6 +1,7 @@
 package kala.collection.immutable;
 
 import kala.collection.base.AnyTraversable;
+import kala.function.Predicates;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import kala.collection.factory.CollectionFactory;
@@ -146,7 +147,7 @@ public abstract class AbstractImmutableCollection<@Covariant E>
     }
 
     protected final <To extends ImmutableCollection<E>> @NotNull To filterNotNullImpl() {
-        return (To) this.filter(Objects::nonNull);
+        return (To) this.filter(Predicates.isNotNull());
     }
 
     protected final <U, To extends ImmutableCollection<U>> @NotNull To flatMapImpl(

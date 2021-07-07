@@ -4,6 +4,7 @@ import kala.collection.Collection;
 import kala.collection.FullCollectionLike;
 import kala.function.CheckedFunction;
 import kala.function.CheckedPredicate;
+import kala.function.Predicates;
 import kala.tuple.Tuple2;
 import kala.annotations.Covariant;
 import kala.collection.factory.CollectionFactory;
@@ -194,7 +195,7 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E>, FullCo
 
     @Contract(pure = true)
     default @NotNull ImmutableCollection<@NotNull E> filterNotNull() {
-        return this.filter(Objects::nonNull);
+        return this.filter(Predicates.isNotNull());
     }
 
     @Override

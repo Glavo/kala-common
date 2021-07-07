@@ -5,6 +5,7 @@ import kala.collection.SortedSet;
 import kala.annotations.Covariant;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.Set;
+import kala.function.Predicates;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -90,7 +91,7 @@ public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<
 
     @Override
     default @NotNull ImmutableSet<@NotNull E> filterNotNull() {
-        return filter(Objects::nonNull);
+        return filter(Predicates.isNotNull());
     }
 
     @Override

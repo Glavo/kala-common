@@ -13,10 +13,7 @@ import kala.collection.SeqLike;
 import kala.collection.base.AnyTraversable;
 import kala.collection.base.Traversable;
 import kala.comparator.Comparators;
-import kala.function.CheckedFunction;
-import kala.function.CheckedIndexedFunction;
-import kala.function.CheckedPredicate;
-import kala.function.IndexedFunction;
+import kala.function.*;
 import kala.tuple.Tuple2;
 import kala.annotations.Covariant;
 import kala.Conditions;
@@ -486,7 +483,7 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
 
     @Override
     public final @NotNull ImmutableVector<E> filterNotNull() {
-        return filter(Objects::nonNull);
+        return filter(Predicates.isNotNull());
     }
 
     @Override
