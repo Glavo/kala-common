@@ -21,6 +21,11 @@ public final class Functions {
         return (Function<T, R>) function;
     }
 
+    @Contract(value = "_ -> param1", pure = true)
+    public static <T, R> Function<T, R> of(Function<? super T, ? extends R> function) {
+        return (Function<T, R>) function;
+    }
+
     public static <T> @NotNull Function<T, T> identity() {
         return ((Function<T, T>) Identity.INSTANCE);
     }
@@ -31,12 +36,12 @@ public final class Functions {
 
     public static <T, R> @NotNull Function<T, R> memoized(@NotNull Function<? super T, ? extends R> function, boolean sync) {
         Objects.requireNonNull(function);
-        if (function instanceof Memoized) {
+        if (function instanceof kala.function.Memoized) {
             return narrow(function);
         }
         return sync
-                ? new MemoizedFunction<>(function, new HashMap<>())
-                : new MemoizedFunction<>(function, new HashMap<>(), null);
+                ? new Memoized<>(function, new HashMap<>())
+                : new Memoized<>(function, new HashMap<>(), null);
     }
 
     public static <T, R> @NotNull Function<T, R> weakMemoized(@NotNull Function<? super T, ? extends R> function) {
@@ -45,12 +50,12 @@ public final class Functions {
 
     public static <T, R> @NotNull Function<T, R> weakMemoized(@NotNull Function<? super T, ? extends R> function, boolean sync) {
         Objects.requireNonNull(function);
-        if (function instanceof Memoized) {
+        if (function instanceof kala.function.Memoized) {
             return narrow(function);
         }
         return sync
-                ? new MemoizedFunction<>(function, new WeakHashMap<>())
-                : new MemoizedFunction<>(function, new WeakHashMap<>(), null);
+                ? new Memoized<>(function, new WeakHashMap<>())
+                : new Memoized<>(function, new WeakHashMap<>(), null);
     }
 
     enum Identity implements Function<Object, Object> {
@@ -70,20 +75,25 @@ public final class Functions {
         public <V> @NotNull Function<Object, V> andThen(@NotNull Function<? super Object, ? extends V> after) {
             return narrow(after);
         }
+
+        @Override
+        public String toString() {
+            return "Functions.Identity";
+        }
     }
 
-    static final class MemoizedFunction<T, R> implements Function<T, R>, Memoized, Serializable {
+    static final class Memoized<T, R> implements Function<T, R>, kala.function.Memoized, Serializable {
         private static final Object NULL_HOLE = new Object();
 
         private final @NotNull Function<? super T, ? extends R> function;
         private final @NotNull Map<T, Object> cache;
         private final @Nullable Object lock;
 
-        MemoizedFunction(@NotNull Function<? super T, ? extends R> function, @NotNull Map<T, Object> cache) {
+        Memoized(@NotNull Function<? super T, ? extends R> function, @NotNull Map<T, Object> cache) {
             this(function, cache, cache);
         }
 
-        public MemoizedFunction(@NotNull Function<? super T, ? extends R> function, @NotNull Map<T, Object> cache, @Nullable Object lock) {
+        Memoized(@NotNull Function<? super T, ? extends R> function, @NotNull Map<T, Object> cache, @Nullable Object lock) {
             this.function = function;
             this.cache = cache;
             this.lock = lock;
@@ -109,7 +119,7 @@ public final class Functions {
 
         @Override
         public final String toString() {
-            return "MemoizedFunction[" +
+            return "Functions.Memoized[" +
                     "function=" + function +
                     ", cache=" + cache +
                     ", lock=" + lock +

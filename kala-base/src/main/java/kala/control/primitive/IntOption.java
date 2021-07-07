@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
+import java.util.OptionalInt;
 import java.util.function.IntConsumer;
 
 public final class IntOption extends PrimitiveOption<Integer> implements IntTraversable {
@@ -49,6 +50,11 @@ public final class IntOption extends PrimitiveOption<Integer> implements IntTrav
 
     public static @NotNull IntOption of(@Nullable Integer value) {
         return value == null ? None : some(value);
+    }
+
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    public static @NotNull IntOption fromJava(@NotNull OptionalInt optional) {
+        return optional.isPresent() ? some(optional.getAsInt()) : none();
     }
 
     public final boolean isDefined() {
