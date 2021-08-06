@@ -45,7 +45,7 @@ public final class Functions {
 
     public static <T, R> @NotNull Function<T, R> weakMemoized(@NotNull Function<? super T, ? extends R> function, boolean sync) {
         Objects.requireNonNull(function);
-        if (function instanceof kala.function.Memoized) {
+        if (function instanceof Memoized) {
             return narrow(function);
         }
         return new MemoizedFunction<>(function, new WeakHashMap<>(), sync);
