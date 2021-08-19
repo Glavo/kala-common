@@ -4,10 +4,13 @@ import kala.comparator.Comparators;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.function.Consumer;
 
-abstract class RedBlackTree<A, N extends RedBlackTree.TreeNode<A, N>> {
+abstract class RedBlackTree<A, N extends RedBlackTree.TreeNode<A, N>> implements Serializable {
+    private static final long serialVersionUID = 3036340578028981301L;
+
     static final boolean RED = true;
     static final boolean BLACK = false;
 

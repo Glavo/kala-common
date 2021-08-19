@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -20,7 +21,9 @@ import java.util.stream.Collector;
 @SuppressWarnings("unchecked")
 @Debug.Renderer(hasChildren = "!isEmpty()", childrenArray = "toArray()")
 public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.Node<K, V>>
-        implements MutableMap<K, V>, MutableMapOps<K, V, MutableTreeMap<?, ?>, MutableTreeMap<K, V>>, kala.collection.SortedMap<K, V> {
+        implements MutableMap<K, V>, MutableMapOps<K, V, MutableTreeMap<?, ?>, MutableTreeMap<K, V>>, kala.collection.SortedMap<K, V>, Serializable {
+    private static final long serialVersionUID = 5474475537398882423L;
+
     private static final Factory<?, ?> DEFAULT_FACTORY = new Factory<>();
 
     public MutableTreeMap() {
@@ -405,40 +408,40 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
     //region Collection Operations
 
     @Override
-    public final @NotNull String className() {
+    public @NotNull String className() {
         return "MutableTreeMap";
     }
 
     @Override
-    public final @NotNull <NK, NV> MapFactory<NK, NV, ?, MutableTreeMap<NK, NV>> mapFactory() {
+    public @NotNull <NK, NV> MapFactory<NK, NV, ?, MutableTreeMap<NK, NV>> mapFactory() {
         return (Factory<NK, NV>) factory();
     }
 
     @Override
-    public final @NotNull <NK, NV> MapFactory<NK, NV, ?, MutableTreeMap<NK, NV>> mapFactory(Comparator<? super NK> comparator) {
+    public @NotNull <NK, NV> MapFactory<NK, NV, ?, MutableTreeMap<NK, NV>> mapFactory(Comparator<? super NK> comparator) {
         return MutableTreeMap.factory(comparator);
     }
 
     @Override
-    public final @NotNull MapIterator<K, V> iterator() {
+    public @NotNull MapIterator<K, V> iterator() {
         Node<K, V> node = firstNode();
         return node == null ? MapIterator.empty() : new Itr<>(node);
     }
 
     @Override
-    public final @NotNull MutableMapEditor<K, V, MutableTreeMap<K, V>> edit() {
+    public @NotNull MutableMapEditor<K, V, MutableTreeMap<K, V>> edit() {
         return new MutableMapEditor<>(this);
     }
 
     @Override
-    public final @NotNull Map<K, V> asJava() {
+    public @NotNull Map<K, V> asJava() {
         return new AsJava<>(this);
     }
 
     //endregion
 
     @Override
-    public final V get(K key) {
+    public V get(K key) {
         Node<K, V> node = getNode(key);
         if (node == null) {
             throw new NoSuchElementException();
@@ -447,31 +450,31 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
     }
 
     @Override
-    public final @Nullable V getOrNull(K key) {
+    public @Nullable V getOrNull(K key) {
         Node<K, V> node = getNode(key);
         return node == null ? null : node.value;
     }
 
     @Override
-    public final @NotNull Option<V> getOption(K key) {
+    public @NotNull Option<V> getOption(K key) {
         Node<K, V> node = getNode(key);
         return node == null ? Option.none() : Option.some(node.value);
     }
 
     @Override
-    public final V getOrDefault(K key, V defaultValue) {
+    public V getOrDefault(K key, V defaultValue) {
         Node<K, V> node = getNode(key);
         return node == null ? defaultValue : node.value;
     }
 
     @Override
-    public final V getOrElse(K key, @NotNull Supplier<? extends V> supplier) {
+    public V getOrElse(K key, @NotNull Supplier<? extends V> supplier) {
         Node<K, V> node = getNode(key);
         return node == null ? supplier.get() : node.value;
     }
 
     @Override
-    public final V getOrPut(K key, @NotNull Supplier<? extends V> defaultValue) {
+    public V getOrPut(K key, @NotNull Supplier<? extends V> defaultValue) {
         Node<K, V> node = getNode(key);
         if (node == null) {
             V dv = defaultValue.get();
@@ -482,7 +485,7 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
     }
 
     @Override
-    public final <Ex extends Throwable> V getOrThrow(K key, @NotNull Supplier<? extends Ex> supplier) throws Ex {
+    public <Ex extends Throwable> V getOrThrow(K key, @NotNull Supplier<? extends Ex> supplier) throws Ex {
         Node<K, V> node = getNode(key);
         if (node == null) {
             throw supplier.get();
@@ -491,7 +494,7 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
     }
 
     @Override
-    public final <Ex extends Throwable> V getOrThrowException(K key, @NotNull Ex exception) throws Ex {
+    public <Ex extends Throwable> V getOrThrowException(K key, @NotNull Ex exception) throws Ex {
         Node<K, V> node = getNode(key);
         if (node == null) {
             throw exception;
@@ -500,7 +503,7 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
     }
 
     @Override
-    public final void set(K key, V value) {
+    public void set(K key, V value) {
         final Comparator<? super K> comparator = this.comparator;
 
         Node<K, V> node = root;
@@ -541,7 +544,7 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
     }
 
     @Override
-    public final @NotNull Option<V> put(K key, V value) {
+    public @NotNull Option<V> put(K key, V value) {
         final Comparator<? super K> comparator = this.comparator;
 
         Node<K, V> node = root;
@@ -585,7 +588,7 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
     }
 
     @Override
-    public final @NotNull Option<V> remove(K key) {
+    public @NotNull Option<V> remove(K key) {
         Node<K, V> node = getNode(key);
         if (node == null) {
             return Option.none();
@@ -596,7 +599,7 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
     }
 
     @Override
-    public final @NotNull Option<V> replace(K key, V value) {
+    public @NotNull Option<V> replace(K key, V value) {
         Node<K, V> node = getNode(key);
         if (node == null) {
             return Option.none();
@@ -608,7 +611,7 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
     }
 
     @Override
-    public final boolean replace(K key, V oldValue, V newValue) {
+    public boolean replace(K key, V oldValue, V newValue) {
         Node<K, V> node = getNode(key);
         if (node == null || !Objects.equals(node.value, oldValue)) {
             return false;
@@ -646,12 +649,12 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
     //region SortedMap
 
     @Override
-    public final Comparator<? super K> comparator() {
+    public Comparator<? super K> comparator() {
         return this.comparator;
     }
 
     @Override
-    public final K firstKey() {
+    public K firstKey() {
         Node<K, V> node = firstNode();
         if (node == null) {
             throw new NoSuchElementException();
@@ -660,7 +663,7 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
     }
 
     @Override
-    public final K lastKey() {
+    public K lastKey() {
         Node<K, V> node = lastNode();
         if (node == null) {
             throw new NoSuchElementException();
@@ -671,7 +674,7 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
     //endregion
 
     @Override
-    public final void forEach(@NotNull BiConsumer<? super K, ? super V> consumer) {
+    public void forEach(@NotNull BiConsumer<? super K, ? super V> consumer) {
         Node<K, V> node = this.root;
         while (node != null) {
             consumer.accept(node.key, node.value);
@@ -695,6 +698,33 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
         }
     }
 
+    private void writeObject(java.io.ObjectOutputStream s)
+            throws java.io.IOException {
+        s.defaultWriteObject();
+        s.writeInt(size);
+
+        this.forEachUnchecked((k, v) -> {
+            s.writeObject(k);
+            s.writeObject(v);
+        });
+
+    }
+
+    /**
+     * Reconstitute the {@code TreeMap} instance from a stream (i.e.,
+     * deserialize it).
+     */
+    private void readObject(final java.io.ObjectInputStream s)
+            throws java.io.IOException, ClassNotFoundException {
+        s.defaultReadObject();
+        int size = s.readInt();
+        for (int i = 0; i < size; i++) {
+            final Object k = s.readObject();
+            final Object v = s.readObject();
+            this.set((K) k, (V) v);
+        }
+    }
+
     private static final class Factory<K, V> extends AbstractMutableMapFactory<K, V, MutableTreeMap<K, V>> {
         private final Comparator<? super K> comparator;
 
@@ -707,7 +737,7 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
         }
 
         @Override
-        public final MutableTreeMap<K, V> newBuilder() {
+        public MutableTreeMap<K, V> newBuilder() {
             return new MutableTreeMap<>(comparator);
         }
     }
@@ -722,17 +752,17 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
         }
 
         @Override
-        public final K getKey() {
+        public K getKey() {
             return key;
         }
 
         @Override
-        public final V getValue() {
+        public V getValue() {
             return value;
         }
 
         @Override
-        public final V setValue(V value) {
+        public V setValue(V value) {
             V oldValue = this.value;
             this.value = value;
             return oldValue;
@@ -748,12 +778,12 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return node != null;
         }
 
         @Override
-        public final K nextKey() {
+        public K nextKey() {
             final Node<K, V> node = this.node;
             if (node == null) {
                 throw new NoSuchElementException();
@@ -780,7 +810,7 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
         }
 
         @Override
-        public final V getValue() {
+        public V getValue() {
             return value;
         }
     }

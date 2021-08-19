@@ -247,34 +247,34 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     //region Collection Operations
 
     @Override
-    public final @NotNull String className() {
+    public @NotNull String className() {
         return "MutableTreeSet";
     }
 
     @Override
-    public final <U> @NotNull CollectionFactory<U, ?, MutableTreeSet<U>> iterableFactory() {
+    public <U> @NotNull CollectionFactory<U, ?, MutableTreeSet<U>> iterableFactory() {
         return ((Factory<U>) DEFAULT_FACTORY);
     }
 
     @Override
-    public final <U> @NotNull CollectionFactory<U, ?, MutableTreeSet<U>> iterableFactory(Comparator<? super U> comparator) {
+    public <U> @NotNull CollectionFactory<U, ?, MutableTreeSet<U>> iterableFactory(Comparator<? super U> comparator) {
         return factory(comparator);
     }
 
     @Override
-    public final @NotNull Iterator<E> iterator() {
+    public @NotNull Iterator<E> iterator() {
         final Node<E> firstNode = firstNode();
         return firstNode == null ? Iterators.empty() : new MutableTreeSet.Itr<>(firstNode);
     }
 
     @Override
-    public final @NotNull MutableSetEditor<E, MutableTreeSet<E>> edit() {
+    public @NotNull MutableSetEditor<E, MutableTreeSet<E>> edit() {
         return new MutableSetEditor<>(this);
     }
 
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public final @NotNull MutableTreeSet<E> clone() {
+    public @NotNull MutableTreeSet<E> clone() {
         return from(comparator, this); // need to optimize
     }
 
@@ -283,19 +283,19 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     //region Size Info
 
     @Override
-    public final int size() {
+    public int size() {
         return size;
     }
 
     @Override
-    public final int knownSize() {
+    public int knownSize() {
         return size;
     }
 
     //endregion
 
     @Override
-    public final boolean add(E value) {
+    public boolean add(E value) {
         final Comparator<? super E> comparator = this.comparator;
 
         Node<E> node = root;
@@ -337,7 +337,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     }
 
     @Override
-    public final boolean remove(Object value) {
+    public boolean remove(Object value) {
         Node<E> node = getNode(value);
         if (node == null) {
             return false;
@@ -384,17 +384,17 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     }
 
     @Override
-    public final boolean contains(Object value) {
+    public boolean contains(Object value) {
         return getNode(value) != null;
     }
 
     @Override
-    public final Comparator<? super E> comparator() {
+    public Comparator<? super E> comparator() {
         return this.comparator;
     }
 
     @Override
-    public final E first() {
+    public E first() {
         final Node<E> node = firstNode();
         if (node == null) {
             throw new NoSuchElementException();
@@ -403,7 +403,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     }
 
     @Override
-    public final E last() {
+    public E last() {
         final Node<E> node = lastNode();
         if (node == null) {
             throw new NoSuchElementException();
@@ -412,7 +412,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     }
 
     @Override
-    public final Object @NotNull [] toArray() {
+    public Object @NotNull [] toArray() {
         final int size = this.size;
         final Object[] res = new Object[size];
         if (size == 0) {
@@ -426,7 +426,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     }
 
     @Override
-    public final <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
+    public <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
         final int size = this.size;
         final U[] res = generator.apply(size);
         if (size == 0) {
@@ -440,12 +440,12 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     }
 
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         return Iterators.hash(iterator()) + Collection.SET_HASH_MAGIC;
     }
 
     @Override
-    public final boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
@@ -457,12 +457,12 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     }
 
     @Override
-    public final void forEach(@NotNull Consumer<? super E> action) {
+    public void forEach(@NotNull Consumer<? super E> action) {
         forEachKey0(action);
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         return joinToString(", ", "MutableTreeSet[", "]");
     }
 
@@ -493,16 +493,16 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
             super(value, parent);
         }
 
-        final void setValue(E newValue) {
+        void setValue(E newValue) {
             this.key = newValue;
         }
 
-        final E getValue() {
+        E getValue() {
             return key;
         }
 
         @Override
-        public final String toString() {
+        public String toString() {
             return String.format(
                     "MutableTreeSet.Node[value=%s, color=%s, parent=%s, left=%s, right=%s]",
                     key, color == RED ? "RED" : "BLACK", parent, left, right
@@ -518,12 +518,12 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return node != null;
         }
 
         @Override
-        public final E next() {
+        public E next() {
             final Node<E> node = this.node;
             if (node == null) {
                 throw new NoSuchElementException();
@@ -559,7 +559,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
         }
 
         @Override
-        public final MutableTreeSet<E> newBuilder() {
+        public MutableTreeSet<E> newBuilder() {
             return new MutableTreeSet<>(comparator);
         }
     }
