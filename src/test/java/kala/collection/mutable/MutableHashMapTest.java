@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.io.*;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.function.Supplier;
@@ -260,5 +261,51 @@ public class MutableHashMapTest implements MutableMapTestTemplate {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    private static <T> T writeAndRead(T value) throws IOException, ClassNotFoundException {
+        final ByteArrayOutputStream tmp = new ByteArrayOutputStream();
+        try (final ObjectOutputStream out = new ObjectOutputStream(tmp)) {
+            out.writeObject(value);
+        }
+
+        return (T) new ObjectInputStream(new ByteArrayInputStream(tmp.toByteArray())).readObject();
+    }
+
+    @Test
+    void serializationTest() throws Exception {
+        {
+            final var map1 = new MutableHashMap<>();
+            final var map2 = writeAndRead(map1);
+
+            assertNotSame(map1, map2);
+            assertEquals(0, map2.size());
+        }
+
+        {
+            final var map1 = MutableHashMap.of("A", 10, "B", 20, "C", 30);
+            final var map2 = writeAndRead(map1);
+
+            assertNotSame(map1, map2);
+            assertEquals(map1.size(), map2.size());
+
+            map1.forEach((k, v) -> assertEquals(v, map2.get(k)));
+        }
+
+        for (int i = 0; i < data1().length; i++) {
+            var keys = data1()[i];
+            var values = data1s()[i];
+
+            final MutableHashMap<Integer, String> map1 = new MutableHashMap<>();
+            for (int j = 0; j < keys.length; j++) {
+                map1.set(keys[j], values[j]);
+            }
+
+            final var map2 = writeAndRead(map1);
+
+            assertNotSame(map1, map2);
+            assertEquals(map1.size(), map2.size());
+            map1.forEach((k, v) -> assertEquals(v, map2.get(k)));
+        }
+    }
 
 }

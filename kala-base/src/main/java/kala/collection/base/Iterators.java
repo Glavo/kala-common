@@ -348,17 +348,15 @@ public final class Iterators {
 
     public static <E> @Nullable E lastOrNull(@NotNull Iterator<? extends E> it, Predicate<? super E> predicate) {
         E res = null;
-        boolean hasValue = false;
 
         while (it.hasNext()) {
             E e = it.next();
             if (predicate.test(e)) {
-                hasValue = true;
                 res = e;
             }
         }
 
-        return hasValue ? res : null;
+        return res;
     }
 
     public static <E> @NotNull Option<E> lastOption(@NotNull Iterator<? extends E> it) {

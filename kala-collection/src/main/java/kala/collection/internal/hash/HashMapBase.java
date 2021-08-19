@@ -6,9 +6,13 @@ import kala.collection.internal.convert.AsJavaConvert;
 import kala.control.Option;
 import kala.collection.mutable.AbstractMutableMap;
 import kala.collection.mutable.MutableHashMap;
+import kala.function.CheckedBiConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+import java.io.InvalidObjectException;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -19,16 +23,18 @@ import java.util.function.Supplier;
 import static kala.collection.internal.hash.HashUtils.*;
 
 @SuppressWarnings("unchecked")
-public class HashMapBase<K, V> extends AbstractMutableMap<K, V> {
+public class HashMapBase<K, V> extends AbstractMutableMap<K, V> implements Serializable {
+    private static final long serialVersionUID = 5898767589365493454L;
+
     public static final int DEFAULT_INITIAL_CAPACITY = 16;
     public static final double DEFAULT_LOAD_FACTOR = 0.75;
 
     protected final double loadFactor;
 
-    protected HashMapNode<K, V>[] table;
+    protected transient HashMapNode<K, V>[] table;
     protected int threshold;
 
-    protected int contentSize = 0;
+    protected transient int contentSize = 0;
 
     protected HashMapBase(int initialCapacity, double loadFactor) {
         if (initialCapacity < 0) {
@@ -63,6 +69,22 @@ public class HashMapBase<K, V> extends AbstractMutableMap<K, V> {
     }
 
     //region HashMap helpers
+
+    private void reinitialize(int initialCapacity) throws IOException {
+        if (initialCapacity < 0) {
+            throw new InvalidObjectException("Illegal initial capacity: " + initialCapacity);
+        }
+
+        if (loadFactor <= 0 || Double.isNaN(loadFactor)) {
+            throw new InvalidObjectException("Illegal load factor: " + loadFactor);
+        }
+
+        contentSize = 0;
+
+        final int tableSize = tableSizeFor(initialCapacity);
+        this.table = (HashMapNode<K, V>[]) new HashMapNode<?, ?>[tableSize];
+        this.threshold = newThreshold(tableSize);
+    }
 
     protected final int index(int hash) {
         return hash & (table.length - 1);
@@ -480,6 +502,32 @@ public class HashMapBase<K, V> extends AbstractMutableMap<K, V> {
                 consumer.accept(node.key, node.value);
                 node = node.next;
             }
+        }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream stream) throws IOException {
+        final int capacity = table != null ? table.length : (threshold > 0 ? threshold : DEFAULT_INITIAL_CAPACITY);
+
+        stream.defaultWriteObject();
+        stream.writeInt(capacity);
+        stream.writeInt(contentSize);
+        this.forEachUnchecked((k, v) -> {
+            stream.writeObject(k);
+            stream.writeObject(v);
+        });
+    }
+
+    private void readObject(java.io.ObjectInputStream stream) throws IOException, ClassNotFoundException {
+        stream.defaultReadObject();
+        final int capacity = stream.readInt();
+        reinitialize(capacity);
+
+        final int size = stream.readInt();
+        for (int i = 0; i < size; i++) {
+            Object key = stream.readObject();
+            Object value = stream.readObject();
+
+            this.set((K) key, (V) value);
         }
     }
 }

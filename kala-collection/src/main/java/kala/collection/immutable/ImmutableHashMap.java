@@ -9,6 +9,7 @@ import kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -19,7 +20,8 @@ import java.util.stream.Collector;
 
 @SuppressWarnings("unchecked")
 public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V>
-        implements ImmutableMapOps<K, V, ImmutableHashMap<?, ?>, ImmutableHashMap<K, V>> {
+        implements ImmutableMapOps<K, V, ImmutableHashMap<?, ?>, ImmutableHashMap<K, V>>, Serializable {
+    private static final long serialVersionUID = 4088221143962926192L;
 
     private static final ImmutableHashMap<?, ?> EMPTY = new ImmutableHashMap<>(new Impl<>());
     private static final Factory<?, ?> FACTORY = new Factory<>();
@@ -228,110 +230,110 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V>
     //endregion
 
     @Override
-    public final @NotNull String className() {
+    public @NotNull String className() {
         return "ImmutableHashMap";
     }
 
     @Override
-    public final @NotNull MapIterator<K, V> iterator() {
+    public @NotNull MapIterator<K, V> iterator() {
         return source.iterator();
     }
 
     //region Size Info
 
     @Override
-    public final boolean isEmpty() {
+    public boolean isEmpty() {
         return source.isEmpty();
     }
 
     @Override
-    public final int size() {
+    public int size() {
         return source.size();
     }
 
     @Override
-    public final int knownSize() {
+    public int knownSize() {
         return source.knownSize();
     }
 
     //endregion
 
     @Override
-    public final V get(K key) {
+    public V get(K key) {
         return source.get(key);
     }
 
     @Override
-    public final @Nullable V getOrNull(K key) {
+    public @Nullable V getOrNull(K key) {
         return source.getOrNull(key);
     }
 
     @Override
-    public final @NotNull Option<V> getOption(K key) {
+    public @NotNull Option<V> getOption(K key) {
         return source.getOption(key);
     }
 
     @Override
-    public final V getOrDefault(K key, V defaultValue) {
+    public V getOrDefault(K key, V defaultValue) {
         return source.getOrDefault(key, defaultValue);
     }
 
     @Override
-    public final V getOrElse(K key, @NotNull Supplier<? extends V> supplier) {
+    public V getOrElse(K key, @NotNull Supplier<? extends V> supplier) {
         return source.getOrElse(key, supplier);
     }
 
     @Override
-    public final <Ex extends Throwable> V getOrThrow(K key, @NotNull Supplier<? extends Ex> supplier) throws Ex {
+    public <Ex extends Throwable> V getOrThrow(K key, @NotNull Supplier<? extends Ex> supplier) throws Ex {
         return source.getOrThrow(key, supplier);
     }
 
     @Override
-    public final <Ex extends Throwable> V getOrThrowException(K key, @NotNull Ex exception) throws Ex {
+    public <Ex extends Throwable> V getOrThrowException(K key, @NotNull Ex exception) throws Ex {
         return source.getOrThrowException(key, exception);
     }
 
     //region Element Conditions
 
     @Override
-    public final boolean contains(K key, Object value) {
+    public boolean contains(K key, Object value) {
         return source.contains(key, value);
     }
 
     @Override
-    public final boolean containsKey(K key) {
+    public boolean containsKey(K key) {
         return source.containsKey(key);
     }
 
     @Override
-    public final boolean containsValue(Object value) {
+    public boolean containsValue(Object value) {
         return source.containsValue(value);
     }
 
     @Override
-    public final boolean anyMatch(@NotNull BiPredicate<? super K, ? super V> predicate) {
+    public boolean anyMatch(@NotNull BiPredicate<? super K, ? super V> predicate) {
         return source.anyMatch(predicate);
     }
 
     @Override
-    public final boolean allMatch(@NotNull BiPredicate<? super K, ? super V> predicate) {
+    public boolean allMatch(@NotNull BiPredicate<? super K, ? super V> predicate) {
         return source.allMatch(predicate);
     }
 
     @Override
-    public final boolean noneMatch(@NotNull BiPredicate<? super K, ? super V> predicate) {
+    public boolean noneMatch(@NotNull BiPredicate<? super K, ? super V> predicate) {
         return source.noneMatch(predicate);
     }
 
     //endregion
 
     @Override
-    public final void forEach(@NotNull BiConsumer<? super K, ? super V> consumer) {
+    public void forEach(@NotNull BiConsumer<? super K, ? super V> consumer) {
         source.forEach(consumer);
     }
 
     @Override
-    public final @NotNull ImmutableHashMap<K, V> updated(K key, V value) {
+    public @NotNull ImmutableHashMap<K, V> updated(K key, V value) {
         if (source.contains(key, value)) {
             return this;
         }
@@ -341,7 +343,7 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V>
     }
 
     @Override
-    public final @NotNull ImmutableHashMap<K, V> removed(K key) {
+    public @NotNull ImmutableHashMap<K, V> removed(K key) {
         if (!source.containsKey(key)) {
             return this;
         }
@@ -352,33 +354,35 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V>
 
     private static final class Factory<K, V> implements MapFactory<K, V, Builder<K, V>, ImmutableHashMap<K, V>> {
         @Override
-        public final Builder<K, V> newBuilder() {
+        public Builder<K, V> newBuilder() {
             return new Builder<>();
         }
 
         @Override
-        public final ImmutableHashMap<K, V> build(Builder<K, V> builder) {
+        public ImmutableHashMap<K, V> build(Builder<K, V> builder) {
             return builder.build();
         }
 
         @Override
-        public final void addToBuilder(Builder<K, V> builder, K key, V value) {
+        public void addToBuilder(Builder<K, V> builder, K key, V value) {
             builder.add(key, value);
         }
 
         @Override
-        public final Builder<K, V> mergeBuilder(Builder<K, V> builder1, Builder<K, V> builder2) {
+        public Builder<K, V> mergeBuilder(Builder<K, V> builder1, Builder<K, V> builder2) {
             return builder1.merge(builder2);
         }
 
         @Override
-        public final void sizeHint(@NotNull Builder<K, V> builder, int size) {
+        public void sizeHint(@NotNull Builder<K, V> builder, int size) {
             builder.sizeHint(size);
         }
     }
 
     static final class Impl<K, V> extends HashMapBase<K, V> {
-        protected Impl() {
+        private static final long serialVersionUID = -3496307994182942597L;
+
+        Impl() {
             super(HashMapBase.DEFAULT_INITIAL_CAPACITY, HashMapBase.DEFAULT_LOAD_FACTOR);
         }
 
@@ -388,7 +392,7 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V>
 
         @Override
         @SuppressWarnings("MethodDoesntCallSuperMethod")
-        public final Impl<K, V> clone() {
+        public Impl<K, V> clone() {
             return new Impl<>(this);
         }
     }
@@ -403,23 +407,23 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V>
             }
         }
 
-        final void add(K key, V value) {
+        void add(K key, V value) {
             ensureUnaliased();
             impl.set(key, value);
         }
 
-        final Builder<K, V> merge(Builder<K, V> other) {
+        Builder<K, V> merge(Builder<K, V> other) {
             ensureUnaliased();
             this.impl.putAll(other.impl);
             return this;
         }
 
-        final void sizeHint(int size) {
+        void sizeHint(int size) {
             ensureUnaliased();
             impl.sizeHint(size);
         }
 
-        final ImmutableHashMap<K, V> build() {
+        ImmutableHashMap<K, V> build() {
             if (impl.isEmpty()) {
                 return ImmutableHashMap.empty();
             }

@@ -19,7 +19,7 @@ public final class HashMapIterator<K, V> extends AbstractMapIterator<K, V> {
     }
 
     @Override
-    public final boolean hasNext() {
+    public boolean hasNext() {
         if (node != null) {
             return true;
         }
@@ -35,7 +35,7 @@ public final class HashMapIterator<K, V> extends AbstractMapIterator<K, V> {
     }
 
     @Override
-    public final K nextKey() {
+    public K nextKey() {
         if (!hasNext()) {
             throw new NoSuchElementException();
         }
@@ -46,7 +46,7 @@ public final class HashMapIterator<K, V> extends AbstractMapIterator<K, V> {
     }
 
     @Override
-    public final V getValue() {
+    public V getValue() {
         return value;
     }
 }

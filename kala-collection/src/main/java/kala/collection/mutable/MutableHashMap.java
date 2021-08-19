@@ -7,6 +7,7 @@ import kala.tuple.Tuple2;
 import kala.collection.factory.MapFactory;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collector;
@@ -14,6 +15,8 @@ import java.util.stream.Collector;
 @SuppressWarnings("unchecked")
 public final class MutableHashMap<K, V> extends HashMapBase<K, V>
         implements MutableMapOps<K, V, MutableHashMap<?, ?>, MutableHashMap<K, V>>, Cloneable {
+    private static final long serialVersionUID = 4445503260710443405L;
+
     private static final Factory<?, ?> FACTORY = new Factory<>();
 
     public static final int DEFAULT_INITIAL_CAPACITY = HashMapBase.DEFAULT_INITIAL_CAPACITY;
@@ -219,26 +222,26 @@ public final class MutableHashMap<K, V> extends HashMapBase<K, V>
     //region Collection Operations
 
     @Override
-    public final @NotNull String className() {
+    public @NotNull String className() {
         return "MutableHashMap";
     }
 
     @Override
-    public final @NotNull <NK, NV> MapFactory<NK, NV, ?, MutableHashMap<NK, NV>> mapFactory() {
+    public @NotNull <NK, NV> MapFactory<NK, NV, ?, MutableHashMap<NK, NV>> mapFactory() {
         return MutableHashMap.factory();
     }
 
     @Override
-    public final @NotNull MutableMapEditor<K, V, MutableHashMap<K, V>> edit() {
+    public @NotNull MutableMapEditor<K, V, MutableHashMap<K, V>> edit() {
         return new MutableMapEditor<>(this);
     }
 
     @Override
-    public final @NotNull java.util.Map<K, V> asJava() {
+    public @NotNull java.util.Map<K, V> asJava() {
         return new AsJava<>(this);
     }
 
-    final @NotNull MutableHashMap<K, V> shallowClone() {
+    @NotNull MutableHashMap<K, V> shallowClone() {
         try {
             return (MutableHashMap<K, V>) super.clone();
         } catch (CloneNotSupportedException e) {
@@ -248,7 +251,7 @@ public final class MutableHashMap<K, V> extends HashMapBase<K, V>
 
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public final @NotNull MutableHashMap<K, V> clone() {
+    public @NotNull MutableHashMap<K, V> clone() {
         return new MutableHashMap<>(this);
     }
 
@@ -256,7 +259,7 @@ public final class MutableHashMap<K, V> extends HashMapBase<K, V>
 
     private static final class Factory<K, V> extends AbstractMutableMapFactory<K, V, MutableHashMap<K, V>> {
         @Override
-        public final MutableHashMap<K, V> newBuilder() {
+        public MutableHashMap<K, V> newBuilder() {
             return new MutableHashMap<>();
         }
     }
@@ -279,7 +282,7 @@ public final class MutableHashMap<K, V> extends HashMapBase<K, V>
 
             @Override
             @SuppressWarnings("rawtypes")
-            public final @NotNull Iterator<java.util.Map.Entry<K, V>> iterator() {
+            public @NotNull Iterator<java.util.Map.Entry<K, V>> iterator() {
                 return (Iterator) source.nodeIterator();
             }
         }
