@@ -27,7 +27,7 @@ public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Index
 
     //region Constructors
 
-    MutableArray(@NotNull Object[] array) {
+    MutableArray(Object @NotNull [] array) {
         super(array);
     }
 
@@ -250,7 +250,7 @@ public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Index
     private static final class Checked<E> extends MutableArray<E> {
         private static final long serialVersionUID = 3903230112786321463L;
 
-        Checked(@NotNull Object[] array) {
+        Checked(Object @NotNull [] array) {
             super(array);
         }
 

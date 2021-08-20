@@ -900,14 +900,14 @@ public final class ObjectArrays {
     //region String Representation
 
     public static <A extends Appendable> @NotNull A joinTo(
-            @NotNull Object[] array,
+            Object @NotNull [] array,
             @NotNull A buffer
     ) {
         return joinTo(array, buffer, ", ", "", "");
     }
 
     public static <A extends Appendable> @NotNull A joinTo(
-            @NotNull Object[] array,
+            Object @NotNull [] array,
             @NotNull A buffer,
             CharSequence separator
     ) {
@@ -915,7 +915,7 @@ public final class ObjectArrays {
     }
 
     public static <A extends Appendable> @NotNull A joinTo(
-            @NotNull Object[] array,
+            Object @NotNull [] array,
             @NotNull A buffer,
             CharSequence separator, CharSequence prefix, CharSequence postfix
     ) {
@@ -938,7 +938,7 @@ public final class ObjectArrays {
     }
 
     public static <A extends Appendable> @NotNull A joinTo(
-            @NotNull Object[] array,
+            Object @NotNull [] array,
             @NotNull A buffer,
             @NotNull Function<?, ? extends CharSequence> transform
     ) {
@@ -946,7 +946,7 @@ public final class ObjectArrays {
     }
 
     public static <A extends Appendable> @NotNull A joinTo(
-            @NotNull Object[] array,
+            Object @NotNull [] array,
             @NotNull A buffer,
             CharSequence separator,
             @NotNull Function<?, ? extends CharSequence> transform
@@ -955,7 +955,7 @@ public final class ObjectArrays {
     }
 
     public static <A extends Appendable> @NotNull A joinTo(
-            @NotNull Object[] array,
+            Object @NotNull [] array,
             @NotNull A buffer,
             CharSequence separator, CharSequence prefix, CharSequence postfix,
             @NotNull Function<?, ? extends CharSequence> transform
@@ -979,34 +979,34 @@ public final class ObjectArrays {
     }
 
     public static @NotNull String joinToString(
-            @NotNull Object[] array
+            Object @NotNull [] array
     ) {
         return joinTo(array, new StringBuilder()).toString();
     }
 
     public static @NotNull String joinToString(
-            @NotNull Object[] array,
+            Object @NotNull [] array,
             CharSequence separator
     ) {
         return joinTo(array, new StringBuilder(), separator).toString();
     }
 
     public static @NotNull String joinToString(
-            @NotNull Object[] array,
+            Object @NotNull [] array,
             CharSequence separator, CharSequence prefix, CharSequence postfix
     ) {
         return joinTo(array, new StringBuilder(), separator, prefix, postfix).toString();
     }
 
     public static @NotNull String joinToString(
-            @NotNull Object[] array,
+            Object @NotNull [] array,
             @NotNull Function<?, ? extends CharSequence> transform
     ) {
         return joinTo(array, new StringBuilder(), transform).toString();
     }
 
     public static @NotNull String joinToString(
-            @NotNull Object[] array,
+            Object @NotNull [] array,
             CharSequence separator,
             @NotNull Function<?, ? extends CharSequence> transform
     ) {
@@ -1014,7 +1014,7 @@ public final class ObjectArrays {
     }
 
     public static @NotNull String joinToString(
-            @NotNull Object[] array,
+            Object @NotNull [] array,
             CharSequence separator, CharSequence prefix, CharSequence postfix,
             @NotNull Function<?, ? extends CharSequence> transform
     ) {

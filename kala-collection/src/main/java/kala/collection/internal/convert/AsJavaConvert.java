@@ -94,6 +94,8 @@ public final class AsJavaConvert {
 
     }
 
+    // Seq
+
     public static class SeqAsJava<E, C extends Seq<E>> extends AbstractList<E> implements List<E> {
         public final C source;
 
@@ -195,19 +197,6 @@ public final class AsJavaConvert {
         }
     }
 
-    @SuppressWarnings("NullableProblems")
-    public static class SetAsJava<E, C extends kala.collection.Set<E>> extends CollectionAsJava<E, C> implements java.util.Set<E> {
-        public SetAsJava(@NotNull C collection) {
-            super(collection);
-        }
-    }
-
-    public static class SortedSetAsJava<E, C extends kala.collection.Set<E>> extends CollectionAsJava<E, C> {
-        public SortedSetAsJava(@NotNull C collection) {
-            super(collection);
-        }
-    }
-
     public static class MutableCollectionAsJava<E, C extends MutableCollection<E>>
             extends java.util.AbstractCollection<E> {
         protected final C source;
@@ -225,9 +214,8 @@ public final class AsJavaConvert {
             return source.toArray(generator);
         }
 
-        @NotNull
         @Override
-        public Iterator<E> iterator() {
+        public @NotNull Iterator<E> iterator() {
             return source.iterator();
         }
 
@@ -319,6 +307,60 @@ public final class AsJavaConvert {
         }
     }
 
+    // Set
+
+    public static class SetAsJava<E, C extends kala.collection.Set<E>> extends CollectionAsJava<E, C> implements java.util.Set<E> {
+        public SetAsJava(@NotNull C collection) {
+            super(collection);
+        }
+    }
+
+    public static class SortedSetAsJava<E, C extends kala.collection.SortedSet<E>>
+            extends CollectionAsJava<E, C>
+            implements java.util.SortedSet<E> {
+        public SortedSetAsJava(@NotNull C collection) {
+            super(collection);
+        }
+
+
+        @Override
+        public @Nullable Comparator<? super E> comparator() {
+            return source.comparator();
+        }
+
+        @Override
+        public @NotNull SortedSet<E> subSet(E fromElement, E toElement) {
+            throw new UnsupportedOperationException(); // TODO
+        }
+
+        @Override
+        public @NotNull SortedSet<E> headSet(E toElement) {
+            throw new UnsupportedOperationException(); // TODO
+        }
+
+        @Override
+        public @NotNull SortedSet<E> tailSet(E fromElement) {
+            throw new UnsupportedOperationException(); // TODO
+        }
+
+        @Override
+        public E first() {
+            return source.first();
+        }
+
+        @Override
+        public E last() {
+            return source.last();
+        }
+    }
+
+    public static class MutableSortedSetAsJava<E, C extends kala.collection.mutable.MutableSet<E> & kala.collection.SortedSet<E>>
+            extends SortedSetAsJava<E, C> implements java.util.SortedSet<E> {
+        public MutableSortedSetAsJava(@NotNull C collection) {
+            super(collection);
+        }
+    }
+
     public static class MutableSetAsJava<E, C extends MutableSet<E>>
             extends SetAsJava<E, C> implements java.util.Set<E> {
         public MutableSetAsJava(C source) {
@@ -356,6 +398,9 @@ public final class AsJavaConvert {
             source.clear();
         }
     }
+
+
+    // Map
 
     public static class MapAsJava<K, V, C extends kala.collection.Map<K, V>> extends AbstractMap<K, V> {
 

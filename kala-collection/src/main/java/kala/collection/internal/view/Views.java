@@ -527,7 +527,7 @@ public final class Views {
         //region Collection Operations
 
         @Override
-        public final @NotNull Iterator<E> iterator() {
+        public @NotNull Iterator<E> iterator() {
             return Iterators.map(source.iterator(), mapper);
         }
 
@@ -537,12 +537,12 @@ public final class Views {
         }
 
         @Override
-        public final @NotNull Stream<E> stream() {
+        public @NotNull Stream<E> stream() {
             return source.stream().map(mapper);
         }
 
         @Override
-        public final @NotNull Stream<E> parallelStream() {
+        public @NotNull Stream<E> parallelStream() {
             return source.parallelStream().map(mapper);
         }
 
@@ -551,17 +551,17 @@ public final class Views {
         //region Size Info
 
         @Override
-        public final boolean isEmpty() {
+        public boolean isEmpty() {
             return source.isEmpty();
         }
 
         @Override
-        public final int size() {
+        public int size() {
             return source.size();
         }
 
         @Override
-        public final int knownSize() {
+        public int knownSize() {
             return source.knownSize();
         }
 
@@ -594,7 +594,7 @@ public final class Views {
         }
 
         @Override
-        public final @NotNull Iterator<E> iterator() {
+        public @NotNull Iterator<E> iterator() {
             return Iterators.filter(source.iterator(), predicate);
         }
 
@@ -620,7 +620,7 @@ public final class Views {
         }
 
         @Override
-        public final @NotNull Iterator<E> iterator() {
+        public @NotNull Iterator<E> iterator() {
             return Iterators.filterNot(source.iterator(), predicate);
         }
 
@@ -643,7 +643,7 @@ public final class Views {
         }
 
         @Override
-        public final @NotNull Iterator<E> iterator() {
+        public @NotNull Iterator<E> iterator() {
             return Iterators.filterNotNull(source.iterator());
         }
     }
@@ -660,7 +660,7 @@ public final class Views {
         }
 
         @Override
-        public final @NotNull Iterator<E> iterator() {
+        public @NotNull Iterator<E> iterator() {
             return Iterators.concat(source.map(it -> mapper.apply(it).iterator()));
         }
     }
@@ -675,7 +675,7 @@ public final class Views {
         }
 
         @Override
-        public final @NotNull Iterator<Tuple2<E, U>> iterator() {
+        public @NotNull Iterator<Tuple2<E, U>> iterator() {
             return Iterators.zip(source.iterator(), other.iterator());
         }
     }
@@ -690,15 +690,15 @@ public final class Views {
         }
 
         @Override
-        public final boolean tryAdvance(Consumer<? super E> action) {
+        public boolean tryAdvance(Consumer<? super E> action) {
             Objects.requireNonNull(action);
             return source.tryAdvance((Consumer<T> & Serializable) (t) -> action.accept(mapper.apply(t)));
         }
 
         @Override
-        public final Spliterator<E> trySplit() {
+        public Spliterator<E> trySplit() {
             final Spliterator<? extends T> ss = source.trySplit();
-            return ss == null ? null : new MappedSpliterator<>(ss, mapper);
+            return ss != null ? new MappedSpliterator<>(ss, mapper) : null;
         }
 
         @Override
