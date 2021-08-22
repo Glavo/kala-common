@@ -193,17 +193,17 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     //region Collection Operations
 
     @Override
-    public final @NotNull String className() {
+    public @NotNull String className() {
         return "ImmutableSizedList";
     }
 
     @Override
-    public final <U> @NotNull CollectionFactory<U, ?, ImmutableSizedLinkedSeq<U>> iterableFactory() {
+    public <U> @NotNull CollectionFactory<U, ?, ImmutableSizedLinkedSeq<U>> iterableFactory() {
         return ImmutableSizedLinkedSeq.factory();
     }
 
     @Override
-    public final @NotNull Iterator<E> iterator() {
+    public @NotNull Iterator<E> iterator() {
         return list.iterator();
     }
 
@@ -212,17 +212,17 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     //region Size Info
 
     @Override
-    public final boolean isEmpty() {
+    public boolean isEmpty() {
         return size == 0;
     }
 
     @Override
-    public final int size() {
+    public int size() {
         return size;
     }
 
     @Override
-    public final int knownSize() {
+    public int knownSize() {
         return size;
     }
 
@@ -231,7 +231,7 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     //region Positional Access Operations
 
     @Override
-    public final E get(int index) {
+    public E get(int index) {
         Conditions.checkElementIndex(index, size);
         ImmutableLinkedSeq<E> list = this.list;
         for (int i = 0; i < index; i++) {
@@ -241,7 +241,7 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    public final @Nullable E getOrNull(int index) {
+    public @Nullable E getOrNull(int index) {
         if (index < 0 || index >= size) {
             return null;
         }
@@ -253,7 +253,7 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    public final @NotNull Option<E> getOption(int index) {
+    public @NotNull Option<E> getOption(int index) {
         if (index < 0 || index >= size) {
             return Option.none();
         }
@@ -269,7 +269,7 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     //region Reversal Operations
 
     @Override
-    public final @NotNull ImmutableSizedLinkedSeq<E> reversed() {
+    public @NotNull ImmutableSizedLinkedSeq<E> reversed() {
         final int size = this.size;
         if (size == 0 || size == 1) {
             return this;
@@ -279,7 +279,7 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    public final @NotNull Iterator<E> reverseIterator() {
+    public @NotNull Iterator<E> reverseIterator() {
         return list.reverseIterator();
     }
 
@@ -287,37 +287,37 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
 
     //region Addition Operations
 
-    public final @NotNull ImmutableSizedLinkedSeq<E> cons(E value) {
+    public @NotNull ImmutableSizedLinkedSeq<E> cons(E value) {
         return new ImmutableSizedLinkedSeq<>(list.cons(value), size + 1);
     }
 
     @Override
-    public final @NotNull ImmutableSizedLinkedSeq<E> prepended(E value) {
+    public @NotNull ImmutableSizedLinkedSeq<E> prepended(E value) {
         return new ImmutableSizedLinkedSeq<>(list.prepended(value), size + 1);
     }
 
     @Override
-    public final @NotNull ImmutableSizedLinkedSeq<E> prependedAll(E @NotNull [] values) {
+    public @NotNull ImmutableSizedLinkedSeq<E> prependedAll(E @NotNull [] values) {
         return prependedAllImpl(values);
     }
 
     @Override
-    public final @NotNull ImmutableSizedLinkedSeq<E> prependedAll(@NotNull Iterable<? extends E> values) {
+    public @NotNull ImmutableSizedLinkedSeq<E> prependedAll(@NotNull Iterable<? extends E> values) {
         return prependedAllImpl(values);
     }
 
     @Override
-    public final @NotNull ImmutableSizedLinkedSeq<E> appended(E value) {
+    public @NotNull ImmutableSizedLinkedSeq<E> appended(E value) {
         return new ImmutableSizedLinkedSeq<>(list.appended(value), size + 1);
     }
 
     @Override
-    public final @NotNull ImmutableSizedLinkedSeq<E> appendedAll(E @NotNull [] values) {
+    public @NotNull ImmutableSizedLinkedSeq<E> appendedAll(E @NotNull [] values) {
         return appendedAllImpl(values);
     }
 
     @Override
-    public final @NotNull ImmutableSizedLinkedSeq<E> appendedAll(@NotNull Iterable<? extends E> values) {
+    public @NotNull ImmutableSizedLinkedSeq<E> appendedAll(@NotNull Iterable<? extends E> values) {
         return appendedAllImpl(values);
     }
 
@@ -326,17 +326,17 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     //region Element Retrieval Operations
 
     @Override
-    public final E first() {
+    public E first() {
         return list.first();
     }
 
     @Override
-    public final E first(@NotNull Predicate<? super E> predicate) {
+    public E first(@NotNull Predicate<? super E> predicate) {
         return list.first(predicate);
     }
 
     @Override
-    public final @Nullable E firstOrNull() {
+    public @Nullable E firstOrNull() {
         return list.firstOrNull();
     }
 
@@ -356,7 +356,7 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    public final E last() {
+    public E last() {
         return list.last();
     }
 
@@ -390,42 +390,42 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     //region Element Conditions
 
     @Override
-    public final boolean contains(Object value) {
+    public boolean contains(Object value) {
         return list.contains(value);
     }
 
     @Override
-    public final boolean containsAll(Object @NotNull [] values) {
+    public boolean containsAll(Object @NotNull [] values) {
         return list.containsAll(values);
     }
 
     @Override
-    public final boolean containsAll(@NotNull Iterable<?> values) {
+    public boolean containsAll(@NotNull Iterable<?> values) {
         return list.containsAll(values);
     }
 
     @Override
-    public final boolean sameElements(@NotNull Iterable<?> other) {
+    public boolean sameElements(@NotNull Iterable<?> other) {
         return list.sameElements(other);
     }
 
     @Override
-    public final boolean sameElements(@NotNull Iterable<?> other, boolean identity) {
+    public boolean sameElements(@NotNull Iterable<?> other, boolean identity) {
         return list.sameElements(other, identity);
     }
 
     @Override
-    public final boolean anyMatch(@NotNull Predicate<? super E> predicate) {
+    public boolean anyMatch(@NotNull Predicate<? super E> predicate) {
         return list.anyMatch(predicate);
     }
 
     @Override
-    public final boolean allMatch(@NotNull Predicate<? super E> predicate) {
+    public boolean allMatch(@NotNull Predicate<? super E> predicate) {
         return list.allMatch(predicate);
     }
 
     @Override
-    public final boolean noneMatch(@NotNull Predicate<? super E> predicate) {
+    public boolean noneMatch(@NotNull Predicate<? super E> predicate) {
         return list.noneMatch(predicate);
     }
 
@@ -435,25 +435,25 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
 
     @Override
     @Contract(pure = true)
-    public final int indexOf(Object value) {
+    public int indexOf(Object value) {
         return list.indexOf(value);
     }
 
     @Override
     @Contract(pure = true)
-    public final int indexWhere(@NotNull Predicate<? super E> predicate) {
+    public int indexWhere(@NotNull Predicate<? super E> predicate) {
         return list.indexWhere(predicate);
     }
 
     @Override
     @Contract(pure = true)
-    public final int lastIndexOf(Object value) {
+    public int lastIndexOf(Object value) {
         return list.lastIndexOf(value);
     }
 
     @Override
     @Contract(pure = true)
-    public final int lastIndexWhere(@NotNull Predicate<? super E> predicate) {
+    public int lastIndexWhere(@NotNull Predicate<? super E> predicate) {
         return list.lastIndexWhere(predicate);
     }
 
@@ -462,7 +462,7 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     //region Misc Operations
 
     @Override
-    public final @NotNull ImmutableSizedLinkedSeq<E> slice(int beginIndex, int endIndex) {
+    public @NotNull ImmutableSizedLinkedSeq<E> slice(int beginIndex, int endIndex) {
         final int size = this.size;
         Conditions.checkPositionIndices(beginIndex, endIndex, size);
         if (endIndex == size) {
@@ -485,7 +485,7 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableSizedLinkedSeq<E> drop(int n) {
+    public @NotNull ImmutableSizedLinkedSeq<E> drop(int n) {
         final int size = this.size;
         if (n <= 0) {
             return this;
@@ -503,7 +503,7 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableSizedLinkedSeq<E> dropLast(int n) {
+    public @NotNull ImmutableSizedLinkedSeq<E> dropLast(int n) {
         final int size = this.size;
         if (n <= 0) {
             return this;
@@ -517,7 +517,7 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableSizedLinkedSeq<E> dropWhile(@NotNull Predicate<? super E> predicate) {
+    public @NotNull ImmutableSizedLinkedSeq<E> dropWhile(@NotNull Predicate<? super E> predicate) {
         int c = 0;
 
         ImmutableLinkedSeq<E> list = this.list;
@@ -537,7 +537,7 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableSizedLinkedSeq<E> take(int n) {
+    public @NotNull ImmutableSizedLinkedSeq<E> take(int n) {
         if (n <= 0) {
             return ImmutableSizedLinkedSeq.empty();
         }
@@ -549,7 +549,7 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableSizedLinkedSeq<E> takeLast(int n) {
+    public @NotNull ImmutableSizedLinkedSeq<E> takeLast(int n) {
         if (n <= 0) {
             return ImmutableSizedLinkedSeq.empty();
         }
@@ -561,7 +561,7 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableSizedLinkedSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
+    public @NotNull ImmutableSizedLinkedSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
         ImmutableLinkedSeq<E> list = this.list;
         if (list == ImmutableLinkedSeq.NIL || !predicate.test(list.head)) {
             return ImmutableSizedLinkedSeq.empty();
@@ -593,14 +593,14 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableSizedLinkedSeq<E> updated(int index, E newValue) {
+    public @NotNull ImmutableSizedLinkedSeq<E> updated(int index, E newValue) {
         final int size = this.size;
         Conditions.checkElementIndex(index, size);
         return new ImmutableSizedLinkedSeq<>(list.updated(index, newValue), size);
     }
 
     @Override
-    public final @NotNull ImmutableSizedLinkedSeq<E> concat(@NotNull SeqLike<? extends E> other) {
+    public @NotNull ImmutableSizedLinkedSeq<E> concat(@NotNull SeqLike<? extends E> other) {
         final int size = this.size;
         final int otherSize = other.size();
         if (otherSize == 0) {
@@ -645,7 +645,7 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableSizedLinkedSeq<E> concat(java.util.@NotNull List<? extends E> other) {
+    public @NotNull ImmutableSizedLinkedSeq<E> concat(java.util.@NotNull List<? extends E> other) {
         final int size = this.size;
         final int otherSize = other.size();
         if (otherSize == 0) {
@@ -690,39 +690,39 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableSizedLinkedSeq<E> filter(@NotNull Predicate<? super E> predicate) {
+    public @NotNull ImmutableSizedLinkedSeq<E> filter(@NotNull Predicate<? super E> predicate) {
         return filterImpl(predicate);
     }
 
     @Override
-    public final @NotNull <Ex extends Throwable> ImmutableSizedLinkedSeq<E> filterChecked(
+    public @NotNull <Ex extends Throwable> ImmutableSizedLinkedSeq<E> filterChecked(
             @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) {
         return filter(predicate);
     }
 
     @Override
-    public final @NotNull ImmutableSizedLinkedSeq<E> filterUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
+    public @NotNull ImmutableSizedLinkedSeq<E> filterUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
         return filter(predicate);
     }
 
     @Override
-    public final @NotNull ImmutableSizedLinkedSeq<E> filterNot(@NotNull Predicate<? super E> predicate) {
+    public @NotNull ImmutableSizedLinkedSeq<E> filterNot(@NotNull Predicate<? super E> predicate) {
         return filterNotImpl(predicate);
     }
 
     @Override
-    public final @NotNull <Ex extends Throwable> ImmutableSizedLinkedSeq<E> filterNotChecked(
+    public @NotNull <Ex extends Throwable> ImmutableSizedLinkedSeq<E> filterNotChecked(
             @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) {
         return filterNot(predicate);
     }
 
     @Override
-    public final @NotNull ImmutableSizedLinkedSeq<E> filterNotUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
+    public @NotNull ImmutableSizedLinkedSeq<E> filterNotUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
         return filterNot(predicate);
     }
 
     @Override
-    public final @NotNull ImmutableSizedLinkedSeq<E> filterNotNull() {
+    public @NotNull ImmutableSizedLinkedSeq<E> filterNotNull() {
         return filterNotNullImpl();
     }
 
@@ -732,7 +732,7 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    public final <U> @NotNull ImmutableSizedLinkedSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+    public <U> @NotNull ImmutableSizedLinkedSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
         final int size = this.size;
         if (size == 0) {
             return ImmutableSizedLinkedSeq.empty();
@@ -741,17 +741,17 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    public final @NotNull <U, Ex extends Throwable> ImmutableSizedLinkedSeq<U> mapChecked(@NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
+    public @NotNull <U, Ex extends Throwable> ImmutableSizedLinkedSeq<U> mapChecked(@NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
         return map(mapper);
     }
 
     @Override
-    public final @NotNull <U> ImmutableSizedLinkedSeq<U> mapUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
+    public @NotNull <U> ImmutableSizedLinkedSeq<U> mapUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
         return map(mapper);
     }
 
     @Override
-    public final <U> @NotNull ImmutableSizedLinkedSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+    public <U> @NotNull ImmutableSizedLinkedSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
         final int size = this.size;
         if (size == 0) {
             return ImmutableSizedLinkedSeq.empty();
@@ -760,69 +760,69 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    public final @NotNull <U, Ex extends Throwable> ImmutableSizedLinkedSeq<U> mapIndexedChecked(
+    public @NotNull <U, Ex extends Throwable> ImmutableSizedLinkedSeq<U> mapIndexedChecked(
             @NotNull CheckedIndexedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
         return mapIndexed(mapper);
     }
 
     @Override
-    public final @NotNull <U> ImmutableSizedLinkedSeq<U> mapIndexedUnchecked(@NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
+    public @NotNull <U> ImmutableSizedLinkedSeq<U> mapIndexedUnchecked(@NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
         return mapIndexed(mapper);
     }
 
 
     @Override
-    public final <U> @NotNull ImmutableSizedLinkedSeq<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
+    public <U> @NotNull ImmutableSizedLinkedSeq<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
         return mapNotNullImpl(mapper);
     }
 
     @Override
-    public final @NotNull <U, Ex extends Throwable> ImmutableSizedLinkedSeq<U> mapNotNullChecked(
+    public @NotNull <U, Ex extends Throwable> ImmutableSizedLinkedSeq<U> mapNotNullChecked(
             @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
         return mapNotNull(mapper);
     }
 
     @Override
-    public final @NotNull <U> ImmutableSizedLinkedSeq<U> mapNotNullUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
+    public @NotNull <U> ImmutableSizedLinkedSeq<U> mapNotNullUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
         return mapNotNull(mapper);
     }
 
     @Override
-    public final <U> @NotNull ImmutableSizedLinkedSeq<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
+    public <U> @NotNull ImmutableSizedLinkedSeq<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
         return mapIndexedNotNullImpl(mapper);
     }
 
     @Override
-    public final @NotNull <U, Ex extends Throwable> ImmutableSizedLinkedSeq<@NotNull U> mapIndexedNotNullChecked(
+    public @NotNull <U, Ex extends Throwable> ImmutableSizedLinkedSeq<@NotNull U> mapIndexedNotNullChecked(
             @NotNull CheckedIndexedFunction<? super E, @Nullable ? extends U, ? extends Ex> mapper) {
         return mapIndexedNotNull(mapper);
     }
 
     @Override
-    public final @NotNull <U> ImmutableSizedLinkedSeq<@NotNull U> mapIndexedNotNullUnchecked(
+    public @NotNull <U> ImmutableSizedLinkedSeq<@NotNull U> mapIndexedNotNullUnchecked(
             @NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
         return mapIndexedNotNull(mapper);
     }
 
     @Override
-    public final <U> @NotNull ImmutableSizedLinkedSeq<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
+    public <U> @NotNull ImmutableSizedLinkedSeq<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
         return flatMapImpl(mapper);
     }
 
     @Override
-    public final <U, Ex extends Throwable> @NotNull ImmutableSizedLinkedSeq<U> flatMapChecked(
+    public <U, Ex extends Throwable> @NotNull ImmutableSizedLinkedSeq<U> flatMapChecked(
             @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ? extends Ex> mapper) throws Ex {
         return flatMap(mapper);
     }
 
     @Override
-    public final <U> @NotNull ImmutableSizedLinkedSeq<U> flatMapUnchecked(
+    public <U> @NotNull ImmutableSizedLinkedSeq<U> flatMapUnchecked(
             @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ?> mapper) {
         return flatMap(mapper);
     }
 
     @Override
-    public final @NotNull ImmutableSizedLinkedSeq<E> sorted() {
+    public @NotNull ImmutableSizedLinkedSeq<E> sorted() {
         final int size = this.size;
         if (size == 0 || size == 1) {
             return this;
@@ -831,7 +831,7 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableSizedLinkedSeq<E> sorted(@NotNull Comparator<? super E> comparator) {
+    public @NotNull ImmutableSizedLinkedSeq<E> sorted(@NotNull Comparator<? super E> comparator) {
         final int size = this.size;
         if (size == 0 || size == 1) {
             return this;
@@ -842,19 +842,19 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     //endregion
 
     @Override
-    public final @NotNull ImmutableSizedLinkedSeq<E> toImmutableSizedLinkedSeq() {
+    public @NotNull ImmutableSizedLinkedSeq<E> toImmutableSizedLinkedSeq() {
         return this;
     }
 
     static final class Factory<E> implements CollectionFactory<E, LinkedBuffer<E>, ImmutableSizedLinkedSeq<E>> {
 
         @Override
-        public final LinkedBuffer<E> newBuilder() {
+        public LinkedBuffer<E> newBuilder() {
             return new LinkedBuffer<>();
         }
 
         @Override
-        public final ImmutableSizedLinkedSeq<E> build(LinkedBuffer<E> builder) {
+        public ImmutableSizedLinkedSeq<E> build(LinkedBuffer<E> builder) {
             return builder.toImmutableSizedLinkedSeq();
         }
 
@@ -864,7 +864,7 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
-        public final LinkedBuffer<E> mergeBuilder(@NotNull LinkedBuffer<E> builder1, @NotNull LinkedBuffer<E> builder2) {
+        public LinkedBuffer<E> mergeBuilder(@NotNull LinkedBuffer<E> builder1, @NotNull LinkedBuffer<E> builder2) {
             return (LinkedBuffer<E>) ImmutableLinkedSeq.Builder.merge(builder1, builder2);
         }
     }

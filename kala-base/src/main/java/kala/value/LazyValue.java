@@ -20,7 +20,7 @@ public final class LazyValue<@Covariant T> implements Traversable<T>, Mappable<T
     private static final long serialVersionUID = 7403692951772568981L;
 
     private transient volatile Supplier<? extends T> supplier;
-    private T value;
+    private transient T value;
 
     @Contract(value = "_ -> param1", pure = true)
     @SuppressWarnings("unchecked")
@@ -47,7 +47,7 @@ public final class LazyValue<@Covariant T> implements Traversable<T>, Mappable<T
         this.value = value;
     }
 
-    public final T get() {
+    public T get() {
         if (supplier != null) {
             synchronized (this) {
                 Supplier<? extends T> s = supplier;
@@ -60,41 +60,40 @@ public final class LazyValue<@Covariant T> implements Traversable<T>, Mappable<T
         return value;
     }
 
-    public final boolean isReady() {
+    public boolean isReady() {
         return supplier == null;
     }
 
     @Override
     @Contract("_ -> new")
-    public final <U> @NotNull LazyValue<U> map(@NotNull Function<? super T, ? extends U> mapper) {
+    public <U> @NotNull LazyValue<U> map(@NotNull Function<? super T, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
         return LazyValue.of(() -> mapper.apply(get()));
     }
 
     @Override
-    public final @NotNull Iterator<T> iterator() {
+    public @NotNull Iterator<T> iterator() {
         return new AbstractIterator<T>() {
             private boolean hasNext = true;
 
             @Override
-            public final boolean hasNext() {
+            public boolean hasNext() {
                 return hasNext;
             }
 
             @Override
-            public final T next() {
-                if (hasNext) {
-                    hasNext = false;
-                    return get();
-                } else {
+            public T next() {
+                if (!hasNext) {
                     throw new NoSuchElementException();
                 }
+                hasNext = false;
+                return get();
             }
         };
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         if (supplier == null) {
             return "LazyValue[" + value + "]";
         } else {

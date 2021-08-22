@@ -106,7 +106,7 @@ dependencies {
 sourceSets {
     test {
         java {
-            setSrcDirs(listOf("src/test/java", "src/test/template"))
+            setSrcDirs(listOf("src/test/java", "src/test/template", "src/test/util"))
         }
     }
 }

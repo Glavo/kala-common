@@ -1,5 +1,6 @@
 package kala.collection.mutable;
 
+import kala.SerializationUtils;
 import kala.tuple.Tuple;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -261,21 +262,11 @@ public class MutableHashMapTest implements MutableMapTestTemplate {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private static <T> T writeAndRead(T value) throws IOException, ClassNotFoundException {
-        final ByteArrayOutputStream tmp = new ByteArrayOutputStream();
-        try (final ObjectOutputStream out = new ObjectOutputStream(tmp)) {
-            out.writeObject(value);
-        }
-
-        return (T) new ObjectInputStream(new ByteArrayInputStream(tmp.toByteArray())).readObject();
-    }
-
     @Test
     void serializationTest() throws Exception {
         {
             final var map1 = new MutableHashMap<>();
-            final var map2 = writeAndRead(map1);
+            final var map2 = SerializationUtils.writeAndRead(map1);
 
             assertNotSame(map1, map2);
             assertEquals(0, map2.size());
@@ -283,7 +274,7 @@ public class MutableHashMapTest implements MutableMapTestTemplate {
 
         {
             final var map1 = MutableHashMap.of("A", 10, "B", 20, "C", 30);
-            final var map2 = writeAndRead(map1);
+            final var map2 = SerializationUtils.writeAndRead(map1);
 
             assertNotSame(map1, map2);
             assertEquals(map1.size(), map2.size());
@@ -300,7 +291,7 @@ public class MutableHashMapTest implements MutableMapTestTemplate {
                 map1.set(keys[j], values[j]);
             }
 
-            final var map2 = writeAndRead(map1);
+            final var map2 = SerializationUtils.writeAndRead(map1);
 
             assertNotSame(map1, map2);
             assertEquals(map1.size(), map2.size());
