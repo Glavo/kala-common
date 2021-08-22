@@ -76,7 +76,7 @@ public interface CollectionLike<E> extends Traversable<E> {
         return ImmutableLinkedSeq.from(this);
     }
 
-    default @NotNull ImmutableSizedLinkedSeq<E> toImmutableSizedLinkedList() {
+    default @NotNull ImmutableSizedLinkedSeq<E> toImmutableSizedLinkedSeq() {
         return ImmutableSizedLinkedSeq.from(this);
     }
 

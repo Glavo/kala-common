@@ -75,12 +75,12 @@ public final class Iterators {
 
         return new AbstractIterator<E>() {
             @Override
-            public final boolean hasNext() {
+            public boolean hasNext() {
                 return enumeration.hasMoreElements();
             }
 
             @Override
-            public final E next() {
+            public E next() {
                 return enumeration.nextElement();
             }
         };
@@ -647,12 +647,12 @@ public final class Iterators {
             int c = n;
 
             @Override
-            public final boolean hasNext() {
+            public boolean hasNext() {
                 return c > 0 && it.hasNext();
             }
 
             @Override
-            public final E next() {
+            public E next() {
                 if (hasNext()) {
                     --c;
                     return it.next();
@@ -685,12 +685,12 @@ public final class Iterators {
             private int idx = 0;
 
             @Override
-            public final boolean hasNext() {
+            public boolean hasNext() {
                 return it.hasNext();
             }
 
             @Override
-            public final E next() {
+            public E next() {
                 if (idx++ == n) {
                     it.next();
                     return newValue;
@@ -748,12 +748,12 @@ public final class Iterators {
         }
         return new AbstractIterator<U>() {
             @Override
-            public final boolean hasNext() {
+            public boolean hasNext() {
                 return it.hasNext();
             }
 
             @Override
-            public final U next() {
+            public U next() {
                 return mapper.apply(it.next());
             }
         };
@@ -771,12 +771,12 @@ public final class Iterators {
             private int idx = 0;
 
             @Override
-            public final boolean hasNext() {
+            public boolean hasNext() {
                 return it.hasNext();
             }
 
             @Override
-            public final U next() {
+            public U next() {
                 return mapper.apply(idx++, it.next());
             }
         };
@@ -824,12 +824,12 @@ public final class Iterators {
             private int index = 0;
 
             @Override
-            public final boolean hasNext() {
+            public boolean hasNext() {
                 return it.hasNext();
             }
 
             @Override
-            public final IntObjTuple2<E> next() {
+            public IntObjTuple2<E> next() {
                 final E nextValue = it.next();
                 return IntObjTuple2.of(index++, nextValue);
             }
@@ -1238,17 +1238,17 @@ public final class Iterators {
 
     private static final Iterator<?> EMPTY = new AbstractIterator<Object>() {
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return false;
         }
 
         @Override
-        public final Object next() {
+        public Object next() {
             throw new NoSuchElementException();
         }
 
         @Override
-        public final String toString() {
+        public String toString() {
             return "Iterator[]";
         }
     };
@@ -1261,12 +1261,12 @@ public final class Iterators {
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return value != null;
         }
 
         @Override
-        public final E next() {
+        public E next() {
             final E v = this.value;
             if (v == null) {
                 throw new NoSuchElementException();
@@ -1280,12 +1280,12 @@ public final class Iterators {
         private boolean hasNext = true;
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return hasNext;
         }
 
         @Override
-        public final E next() {
+        public E next() {
             if (!hasNext) {
                 throw new NoSuchElementException();
             }
@@ -1307,12 +1307,12 @@ public final class Iterators {
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return idx < 2;
         }
 
         @Override
-        public final E next() {
+        public E next() {
             E res;
             switch (idx) {
                 case 0:
@@ -1345,12 +1345,12 @@ public final class Iterators {
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return idx < 3;
         }
 
         @Override
-        public final E next() {
+        public E next() {
             E res;
             switch (idx) {
                 case 0:
@@ -1389,12 +1389,12 @@ public final class Iterators {
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return idx < 4;
         }
 
         @Override
-        public final E next() {
+        public E next() {
             E res;
             switch (idx) {
                 case 0:
@@ -1439,12 +1439,12 @@ public final class Iterators {
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return idx < 5;
         }
 
         @Override
-        public final E next() {
+        public E next() {
             E res;
             switch (idx) {
                 case 0:
@@ -1485,12 +1485,12 @@ public final class Iterators {
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return n > 0;
         }
 
         @Override
-        public final E next() {
+        public E next() {
             if (n <= 0) {
                 throw new NoSuchElementException();
             }
@@ -1513,12 +1513,12 @@ public final class Iterators {
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return n > 0;
         }
 
         @Override
-        public final E next() {
+        public E next() {
             if (n <= 0) {
                 throw new NoSuchElementException();
             }
@@ -1541,12 +1541,12 @@ public final class Iterators {
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return idx < n;
         }
 
         @Override
-        public final E next() {
+        public E next() {
             if (idx >= n) {
                 throw new NoSuchElementException();
             }
@@ -1568,12 +1568,12 @@ public final class Iterators {
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return last != null || source.hasNext();
         }
 
         @Override
-        public final E next() {
+        public E next() {
             if (source.hasNext()) {
                 return source.next();
             }
@@ -1595,12 +1595,12 @@ public final class Iterators {
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return hasLast || source.hasNext();
         }
 
         @Override
-        public final E next() {
+        public E next() {
             if (source.hasNext()) {
                 return source.next();
             } else if (hasLast) {
@@ -1622,12 +1622,12 @@ public final class Iterators {
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return head != null || source.hasNext();
         }
 
         @Override
-        public final E next() {
+        public E next() {
             if (head != null) {
                 E h = this.head;
                 this.head = null;
@@ -1647,12 +1647,12 @@ public final class Iterators {
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return hasHead || source.hasNext();
         }
 
         @Override
-        public final E next() {
+        public E next() {
             if (hasHead) {
                 hasHead = false;
                 return null;
@@ -1680,7 +1680,7 @@ public final class Iterators {
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             if (flag) {
                 return true;
             }
@@ -1701,13 +1701,12 @@ public final class Iterators {
         }
 
         @Override
-        public final E next() {
-            if (hasNext()) {
-                flag = false;
-                return nextValue;
-            } else {
+        public E next() {
+            if (!hasNext()) {
                 throw new NoSuchElementException();
             }
+            flag = false;
+            return nextValue;
         }
     }
 
@@ -1722,7 +1721,7 @@ public final class Iterators {
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             if (nextValue != null) {
                 return true;
             }
@@ -1744,7 +1743,7 @@ public final class Iterators {
         }
 
         @Override
-        public final E next() {
+        public E next() {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
@@ -1768,7 +1767,7 @@ public final class Iterators {
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             if (flag) {
                 return true;
             }
@@ -1786,13 +1785,12 @@ public final class Iterators {
         }
 
         @Override
-        public final U next() {
-            if (hasNext()) {
-                flag = false;
-                return nextValue;
-            } else {
+        public U next() {
+            if (!hasNext()) {
                 throw new NoSuchElementException();
             }
+            flag = false;
+            return nextValue;
         }
     }
 
@@ -1812,7 +1810,7 @@ public final class Iterators {
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             if (flag) {
                 return true;
             }
@@ -1830,19 +1828,18 @@ public final class Iterators {
         }
 
         @Override
-        public final U next() {
-            if (hasNext()) {
-                flag = false;
-                return nextValue;
-            } else {
+        public U next() {
+            if (!hasNext()) {
                 throw new NoSuchElementException();
             }
+            flag = false;
+            return nextValue;
         }
     }
 
     static final class TakeWhile<E> extends AbstractIterator<E> {
-        @NotNull
-        private Iterator<? extends E> source;
+
+        private @NotNull Iterator<? extends E> source;
 
         private final Predicate<? super E> predicate;
 
@@ -1855,7 +1852,7 @@ public final class Iterators {
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             if (tag) {
                 return true;
             }
@@ -1875,7 +1872,7 @@ public final class Iterators {
         }
 
         @Override
-        public final E next() {
+        public E next() {
             if (hasNext()) {
                 tag = false;
                 return nextValue;
@@ -1895,7 +1892,7 @@ public final class Iterators {
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             if (it1 != null) {
                 if (it1.hasNext()) {
                     return true;
@@ -1914,7 +1911,7 @@ public final class Iterators {
         }
 
         @Override
-        public final E next() {
+        public E next() {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
@@ -1939,7 +1936,7 @@ public final class Iterators {
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             while ((current == null || !current.hasNext()) && iterators.hasNext()) {
                 current = iterators.next();
             }
@@ -1947,7 +1944,7 @@ public final class Iterators {
         }
 
         @Override
-        public final E next() {
+        public E next() {
             if (hasNext()) {
                 return current.next();
             }
@@ -1965,12 +1962,12 @@ public final class Iterators {
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return it1.hasNext() && it2.hasNext();
         }
 
         @Override
-        public final @NotNull Tuple2<E, U> next() {
+        public @NotNull Tuple2<E, U> next() {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }

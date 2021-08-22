@@ -16,13 +16,10 @@ import java.util.stream.Collector;
 
 @SuppressWarnings("unchecked")
 public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Serializable {
-
     private static final long serialVersionUID = 56207218679792671L;
 
     private static final int DEFAULT_INITIAL_CAPACITY = 16;
-
     private static final double DEFAULT_LOAD_FACTOR = 0.75;
-
     private static final int MAXIMUM_CAPACITY = 1 << 30;
 
     private static final MutableHashSet.Factory<?> FACTORY = new Factory<>();
@@ -75,32 +72,28 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
         return factory();
     }
 
-    @NotNull
     @Contract(value = "-> new", pure = true)
-    public static <E> MutableHashSet<E> of() {
+    public static <E> @NotNull MutableHashSet<E> of() {
         return new MutableHashSet<>();
     }
 
-    @NotNull
     @Contract(value = "_ -> new", pure = true)
-    public static <E> MutableHashSet<E> of(E value1) {
+    public static <E> @NotNull MutableHashSet<E> of(E value1) {
         MutableHashSet<E> s = new MutableHashSet<>();
         s.add(value1);
         return s;
     }
 
-    @NotNull
     @Contract(value = "_, _ -> new", pure = true)
-    public static <E> MutableHashSet<E> of(E value1, E value2) {
+    public static <E> @NotNull MutableHashSet<E> of(E value1, E value2) {
         MutableHashSet<E> s = new MutableHashSet<>();
         s.add(value1);
         s.add(value2);
         return s;
     }
 
-    @NotNull
     @Contract(value = "_, _, _ -> new", pure = true)
-    public static <E> MutableHashSet<E> of(E value1, E value2, E value3) {
+    public static <E> @NotNull MutableHashSet<E> of(E value1, E value2, E value3) {
         MutableHashSet<E> s = new MutableHashSet<>();
         s.add(value1);
         s.add(value2);
@@ -108,9 +101,8 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
         return s;
     }
 
-    @NotNull
     @Contract(value = "_, _, _, _ -> new", pure = true)
-    public static <E> MutableHashSet<E> of(E value1, E value2, E value3, E value4) {
+    public static <E> @NotNull MutableHashSet<E> of(E value1, E value2, E value3, E value4) {
         MutableHashSet<E> s = new MutableHashSet<>();
         s.add(value1);
         s.add(value2);
@@ -119,9 +111,8 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
         return s;
     }
 
-    @NotNull
     @Contract(value = "_, _, _, _, _ -> new", pure = true)
-    public static <E> MutableHashSet<E> of(E value1, E value2, E value3, E value4, E value5) {
+    public static <E> @NotNull MutableHashSet<E> of(E value1, E value2, E value3, E value4, E value5) {
         MutableHashSet<E> s = new MutableHashSet<>();
         s.add(value1);
         s.add(value2);
@@ -131,31 +122,27 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
         return s;
     }
 
-    @NotNull
     @Contract(value = "_ -> new", pure = true)
-    public static <E> MutableHashSet<E> of(E... values) {
+    public static <E> @NotNull MutableHashSet<E> of(E... values) {
         return from(values);
     }
 
-    @NotNull
     @Contract(value = "_ -> new", pure = true)
-    public static <E> MutableHashSet<E> from(E @NotNull [] values) {
+    public static <E> @NotNull MutableHashSet<E> from(E @NotNull [] values) {
+        MutableHashSet<E> s = new MutableHashSet<>(values.length); // implicit null check of values
+        s.addAll(values);
+        return s;
+    }
+
+    @Contract(value = "_ -> new", pure = true)
+    public static <E> @NotNull MutableHashSet<E> from(@NotNull Iterable<? extends E> values) {
         MutableHashSet<E> s = new MutableHashSet<>();
         s.addAll(values);
         return s;
     }
 
-    @NotNull
     @Contract(value = "_ -> new", pure = true)
-    public static <E> MutableHashSet<E> from(@NotNull Iterable<? extends E> values) {
-        MutableHashSet<E> s = new MutableHashSet<>();
-        s.addAll(values);
-        return s;
-    }
-
-    @NotNull
-    @Contract(value = "_ -> new", pure = true)
-    public static <E> MutableHashSet<E> from(@NotNull Iterator<? extends E> it) {
+    public static <E> @NotNull MutableHashSet<E> from(@NotNull Iterator<? extends E> it) {
         MutableHashSet<E> s = new MutableHashSet<>();
         while (it.hasNext()) {
             s.add(it.next());
@@ -293,7 +280,7 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
     }
 
     @Override
-    public final boolean add(E value) {
+    public boolean add(E value) {
         if (size + 1 >= threshold) {
             growTable(table.length * 2);
         }
@@ -339,12 +326,12 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
     }
 
     @Override
-    public final boolean remove(Object value) {
+    public boolean remove(Object value) {
         return remove(value, HashUtils.computeHash(value));
     }
 
     @Override
-    public final void clear() {
+    public void clear() {
         Arrays.fill(table, null);
         size = 0;
     }
@@ -354,35 +341,32 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
     //region MutableCollection members
 
     @Override
-    public final @NotNull String className() {
+    public @NotNull String className() {
         return "MutableHashSet";
     }
 
-    @NotNull
     @Override
-    public final <U> CollectionFactory<U, ?, MutableHashSet<U>> iterableFactory() {
+    public <U> @NotNull CollectionFactory<U, ?, MutableHashSet<U>> iterableFactory() {
         return factory();
     }
 
-    @NotNull
     @Override
-    public final MutableSetEditor<E, MutableHashSet<E>> edit() {
+    public @NotNull MutableSetEditor<E, MutableHashSet<E>> edit() {
         return new MutableSetEditor<>(this);
     }
 
-    @NotNull
     @Override
-    public final Iterator<E> iterator() {
+    public @NotNull Iterator<E> iterator() {
         return new Itr();
     }
 
     @Override
-    public final int size() {
+    public int size() {
         return size;
     }
 
     @Override
-    public final int knownSize() {
+    public int knownSize() {
         return size;
     }
 
@@ -424,7 +408,7 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
         private final int len = table.length;
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             if (node != null) {
                 return true;
             }
@@ -441,7 +425,7 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
         }
 
         @Override
-        public final E next() {
+        public E next() {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
@@ -471,7 +455,7 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
 
     private static final class Factory<E> extends AbstractMutableSetFactory<E, MutableHashSet<E>> {
         @Override
-        public final MutableHashSet<E> newBuilder() {
+        public MutableHashSet<E> newBuilder() {
             return new MutableHashSet<>();
         }
 

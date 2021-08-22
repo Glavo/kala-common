@@ -867,7 +867,7 @@ public final class SeqViews {
         }
 
         @Override
-        public final @NotNull Iterator<E> iterator() {
+        public @NotNull Iterator<E> iterator() {
             return Iterators.filter(source.iterator(), predicate);
         }
 

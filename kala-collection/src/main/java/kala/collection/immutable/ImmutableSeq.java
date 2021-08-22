@@ -40,7 +40,7 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
         return (ImmutableSeqs.Factory<E>) ImmutableSeqs.FACTORY;
     }
 
-    public static <E> @NotNull Collector<E, ?, ImmutableSeq<E>> collector() {
+    static <E> @NotNull Collector<E, ?, ImmutableSeq<E>> collector() {
         return factory();
     }
 
@@ -162,7 +162,7 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
         if (values instanceof java.util.Collection) {
             return from(((Collection<E>) values));
         }
-        return from(values.iterator()); // TODO
+        return from(values.iterator());
     }
 
     static <E> @NotNull ImmutableSeq<E> from(@NotNull Iterator<? extends E> it) {

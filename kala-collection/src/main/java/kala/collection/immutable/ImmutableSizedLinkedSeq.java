@@ -109,7 +109,7 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     public static <E> @NotNull ImmutableSizedLinkedSeq<E> from(@NotNull ImmutableSizedLinkedSeq<? extends E> values) {
-        return (ImmutableSizedLinkedSeq<E>) values.toImmutableSizedLinkedList();
+        return (ImmutableSizedLinkedSeq<E>) values.toImmutableSizedLinkedSeq();
     }
 
     @SuppressWarnings("unchecked")
@@ -118,7 +118,7 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
             return ((ImmutableSizedLinkedSeq<E>) values);
         }
         if (values instanceof ImmutableLinkedSeq<?>) {
-            return ((ImmutableLinkedSeq<E>) values).toImmutableSizedLinkedList();
+            return ((ImmutableLinkedSeq<E>) values).toImmutableSizedLinkedSeq();
         }
 
         return from(values.iterator()); // TODO
@@ -842,7 +842,7 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     //endregion
 
     @Override
-    public final @NotNull ImmutableSizedLinkedSeq<E> toImmutableSizedLinkedList() {
+    public final @NotNull ImmutableSizedLinkedSeq<E> toImmutableSizedLinkedSeq() {
         return this;
     }
 
@@ -855,7 +855,7 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
 
         @Override
         public final ImmutableSizedLinkedSeq<E> build(LinkedBuffer<E> builder) {
-            return builder.toImmutableSizedLinkedList();
+            return builder.toImmutableSizedLinkedSeq();
         }
 
         @Override

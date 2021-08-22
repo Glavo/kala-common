@@ -911,7 +911,7 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
     }
 
     @Override
-    public final @NotNull ImmutableSizedLinkedSeq<E> toImmutableSizedLinkedList() {
+    public final @NotNull ImmutableSizedLinkedSeq<E> toImmutableSizedLinkedSeq() {
         if (this == NIL) {
             return ImmutableSizedLinkedSeq.empty();
         }
@@ -1351,7 +1351,7 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
         }
 
         @Override
-        public final @NotNull ImmutableSizedLinkedSeq<E> toImmutableSizedLinkedList() {
+        public final @NotNull ImmutableSizedLinkedSeq<E> toImmutableSizedLinkedSeq() {
             final ImmutableLinkedSeq<E> first = this.first;
             if (first == null) {
                 return ImmutableSizedLinkedSeq.empty();

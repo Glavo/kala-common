@@ -27,111 +27,119 @@ final class ImmutableSeqs {
 
     }
 
-    static final class Seq0<E> extends SeqN<E> {
+    static final class Seq0<E> extends SeqN<E> implements Serializable {
+        private static final long serialVersionUID = 0L;
+
         static final Seq0<?> INSTANCE = new Seq0<>();
 
         @Override
-        public final @NotNull Iterator<E> iterator() {
+        public @NotNull Iterator<E> iterator() {
             return Iterators.empty();
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> reversed() {
+        public @NotNull ImmutableSeq<E> reversed() {
             return this;
         }
 
         @Override
-        public final @NotNull Iterator<E> reverseIterator() {
+        public @NotNull Iterator<E> reverseIterator() {
             return Iterators.empty();
         }
 
         @Override
-        public final @NotNull Spliterator<E> spliterator() {
+        public @NotNull Spliterator<E> spliterator() {
             return Spliterators.emptySpliterator();
         }
 
         @Override
-        public final @NotNull IndexedSeqView<E> view() {
+        public @NotNull IndexedSeqView<E> view() {
             return IndexedSeqView.empty();
         }
 
         @Override
-        public final int size() {
+        public int size() {
             return 0;
         }
 
         @Override
-        public final E get(int index) {
+        public E get(int index) {
             throw new IndexOutOfBoundsException();
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> prepended(E value) {
+        public @NotNull ImmutableSeq<E> prepended(E value) {
             return ImmutableSeq.of(value);
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> appended(E value) {
+        public @NotNull ImmutableSeq<E> appended(E value) {
             return ImmutableSeq.of(value);
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> take(int n) {
+        public @NotNull ImmutableSeq<E> take(int n) {
             return this;
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> takeLast(int n) {
+        public @NotNull ImmutableSeq<E> takeLast(int n) {
             return this;
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
+        public @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
             return this;
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> drop(int n) {
+        public @NotNull ImmutableSeq<E> drop(int n) {
             return this;
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> dropLast(int n) {
+        public @NotNull ImmutableSeq<E> dropLast(int n) {
             return this;
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> dropWhile(@NotNull Predicate<? super E> predicate) {
+        public @NotNull ImmutableSeq<E> dropWhile(@NotNull Predicate<? super E> predicate) {
             return this;
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> updated(int index, E newValue) {
+        public @NotNull ImmutableSeq<E> updated(int index, E newValue) {
             throw new IndexOutOfBoundsException("index: " + index);
         }
 
         @Override
-        public final @NotNull <U> ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+        public @NotNull <U> ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
             return ImmutableSeq.empty();
         }
 
         @Override
-        public final @NotNull <U> ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+        public @NotNull <U> ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
             return ImmutableSeq.empty();
         }
 
         @Override
-        public final @NotNull <U> ImmutableSeq<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
+        public @NotNull <U> ImmutableSeq<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
             return ImmutableSeq.empty();
         }
 
         @Override
-        public final @NotNull <U> ImmutableSeq<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
+        public @NotNull <U> ImmutableSeq<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
             return ImmutableSeq.empty();
+        }
+
+        private Object readResolve() {
+            return INSTANCE;
         }
     }
 
-    static final class Seq1<E> extends SeqN<E> {
+    static final class Seq1<E> extends SeqN<E> implements Serializable {
+        private static final long serialVersionUID = 0L;
+
         private final E value1;
 
         Seq1(E value1) {
@@ -139,27 +147,27 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull Iterator<E> iterator() {
+        public @NotNull Iterator<E> iterator() {
             return Iterators.of(value1);
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> reversed() {
+        public @NotNull ImmutableSeq<E> reversed() {
             return this;
         }
 
         @Override
-        public final @NotNull Iterator<E> reverseIterator() {
+        public @NotNull Iterator<E> reverseIterator() {
             return Iterators.of(value1);
         }
 
         @Override
-        public final int size() {
+        public int size() {
             return 1;
         }
 
         @Override
-        public final E get(int index) {
+        public E get(int index) {
             if (index != 0) {
                 throw new IndexOutOfBoundsException();
             }
@@ -167,17 +175,17 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> prepended(E value) {
+        public @NotNull ImmutableSeq<E> prepended(E value) {
             return ImmutableSeq.of(value, value1);
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> appended(E value) {
+        public @NotNull ImmutableSeq<E> appended(E value) {
             return ImmutableSeq.of(value1, value);
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> take(int n) {
+        public @NotNull ImmutableSeq<E> take(int n) {
             if (n <= 0) {
                 return ImmutableSeq.empty();
             }
@@ -185,7 +193,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> takeLast(int n) {
+        public @NotNull ImmutableSeq<E> takeLast(int n) {
             if (n <= 0) {
                 return ImmutableSeq.empty();
             }
@@ -193,7 +201,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
+        public @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
             if (!predicate.test(value1)) {
                 return ImmutableSeq.empty();
             }
@@ -201,7 +209,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> drop(int n) {
+        public @NotNull ImmutableSeq<E> drop(int n) {
             if (n <= 0) {
                 return this;
             }
@@ -209,7 +217,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> dropLast(int n) {
+        public @NotNull ImmutableSeq<E> dropLast(int n) {
             if (n <= 0) {
                 return this;
             }
@@ -217,12 +225,12 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> dropWhile(@NotNull Predicate<? super E> predicate) {
+        public @NotNull ImmutableSeq<E> dropWhile(@NotNull Predicate<? super E> predicate) {
             return predicate.test(value1) ? ImmutableSeq.empty() : this;
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> updated(int index, E newValue) {
+        public @NotNull ImmutableSeq<E> updated(int index, E newValue) {
             if (index != 0) {
                 throw new IndexOutOfBoundsException("index: " + index);
             }
@@ -230,33 +238,35 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull <U> ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+        public @NotNull <U> ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
             return ImmutableSeq.of(
                     mapper.apply(value1)
             );
         }
 
         @Override
-        public final @NotNull <U> ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+        public @NotNull <U> ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
             return ImmutableSeq.of(
                     mapper.apply(0, value1)
             );
         }
 
         @Override
-        public final @NotNull <U> ImmutableSeq<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
+        public @NotNull <U> ImmutableSeq<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
             final U u = mapper.apply(value1);
             return u == null ? ImmutableSeq.empty() : ImmutableSeq.of(u);
         }
 
         @Override
-        public final @NotNull <U> ImmutableSeq<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
+        public @NotNull <U> ImmutableSeq<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
             final U u = mapper.apply(0, value1);
             return u == null ? ImmutableSeq.empty() : ImmutableSeq.of(u);
         }
     }
 
-    static final class Seq2<E> extends SeqN<E> {
+    static final class Seq2<E> extends SeqN<E> implements Serializable {
+        private static final long serialVersionUID = 0L;
+
         private final E value1;
         private final E value2;
 
@@ -266,27 +276,27 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull Iterator<E> iterator() {
+        public @NotNull Iterator<E> iterator() {
             return Iterators.of(value1, value2);
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> reversed() {
+        public @NotNull ImmutableSeq<E> reversed() {
             return new Seq2<>(value2, value1);
         }
 
         @Override
-        public final @NotNull Iterator<E> reverseIterator() {
+        public @NotNull Iterator<E> reverseIterator() {
             return Iterators.of(value2, value1);
         }
 
         @Override
-        public final int size() {
+        public int size() {
             return 2;
         }
 
         @Override
-        public final E get(int index) {
+        public E get(int index) {
             switch (index) {
                 case 0:
                     return value1;
@@ -298,17 +308,17 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> prepended(E value) {
+        public @NotNull ImmutableSeq<E> prepended(E value) {
             return ImmutableSeq.of(value, value1, value2);
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> appended(E value) {
+        public @NotNull ImmutableSeq<E> appended(E value) {
             return ImmutableSeq.of(value1, value2, value);
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> take(int n) {
+        public @NotNull ImmutableSeq<E> take(int n) {
             if (n <= 0) {
                 return ImmutableSeq.empty();
             }
@@ -319,7 +329,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> takeLast(int n) {
+        public @NotNull ImmutableSeq<E> takeLast(int n) {
             if (n <= 0) {
                 return ImmutableSeq.empty();
             }
@@ -330,7 +340,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
+        public @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
             if (!predicate.test(value1)) {
                 return ImmutableSeq.empty();
             }
@@ -341,7 +351,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> drop(int n) {
+        public @NotNull ImmutableSeq<E> drop(int n) {
             if (n <= 0) {
                 return this;
             }
@@ -352,7 +362,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> dropLast(int n) {
+        public @NotNull ImmutableSeq<E> dropLast(int n) {
             if (n <= 0) {
                 return this;
             }
@@ -363,7 +373,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> dropWhile(@NotNull Predicate<? super E> predicate) {
+        public @NotNull ImmutableSeq<E> dropWhile(@NotNull Predicate<? super E> predicate) {
             if (!predicate.test(value1)) {
                 return this;
             }
@@ -374,7 +384,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> updated(int index, E newValue) {
+        public @NotNull ImmutableSeq<E> updated(int index, E newValue) {
             switch (index) {
                 case 0:
                     return ImmutableSeq.of(newValue, value2);
@@ -385,7 +395,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull <U> ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+        public @NotNull <U> ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
             return ImmutableSeq.of(
                     mapper.apply(value1),
                     mapper.apply(value2)
@@ -393,7 +403,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull <U> ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+        public @NotNull <U> ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
             return ImmutableSeq.of(
                     mapper.apply(0, value1),
                     mapper.apply(1, value2)
@@ -401,7 +411,9 @@ final class ImmutableSeqs {
         }
     }
 
-    static final class Seq3<E> extends SeqN<E> {
+    static final class Seq3<E> extends SeqN<E> implements Serializable {
+        private static final long serialVersionUID = 0L;
+
         private final E value1;
         private final E value2;
         private final E value3;
@@ -413,27 +425,27 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull Iterator<E> iterator() {
+        public @NotNull Iterator<E> iterator() {
             return Iterators.of(value1, value2, value3);
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> reversed() {
+        public @NotNull ImmutableSeq<E> reversed() {
             return new Seq3<>(value3, value2, value1);
         }
 
         @Override
-        public final @NotNull Iterator<E> reverseIterator() {
+        public @NotNull Iterator<E> reverseIterator() {
             return Iterators.of(value3, value2, value1);
         }
 
         @Override
-        public final int size() {
+        public int size() {
             return 3;
         }
 
         @Override
-        public final E get(int index) {
+        public E get(int index) {
             switch (index) {
                 case 0:
                     return value1;
@@ -447,17 +459,17 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> prepended(E value) {
+        public @NotNull ImmutableSeq<E> prepended(E value) {
             return ImmutableSeq.of(value, value1, value2, value3);
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> appended(E value) {
+        public @NotNull ImmutableSeq<E> appended(E value) {
             return ImmutableSeq.of(value1, value2, value3, value);
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> take(int n) {
+        public @NotNull ImmutableSeq<E> take(int n) {
             if (n <= 0) {
                 return ImmutableSeq.empty();
             }
@@ -471,7 +483,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> takeLast(int n) {
+        public @NotNull ImmutableSeq<E> takeLast(int n) {
             if (n <= 0) {
                 return ImmutableSeq.empty();
             }
@@ -485,7 +497,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
+        public @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
             if (!predicate.test(value1)) {
                 return ImmutableSeq.empty();
             }
@@ -499,7 +511,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> drop(int n) {
+        public @NotNull ImmutableSeq<E> drop(int n) {
             if (n <= 0) {
                 return this;
             }
@@ -513,7 +525,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> dropLast(int n) {
+        public @NotNull ImmutableSeq<E> dropLast(int n) {
             if (n <= 0) {
                 return this;
             }
@@ -527,7 +539,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> dropWhile(@NotNull Predicate<? super E> predicate) {
+        public @NotNull ImmutableSeq<E> dropWhile(@NotNull Predicate<? super E> predicate) {
             if (!predicate.test(value1)) {
                 return this;
             }
@@ -541,7 +553,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> updated(int index, E newValue) {
+        public @NotNull ImmutableSeq<E> updated(int index, E newValue) {
             switch (index) {
                 case 0:
                     return ImmutableSeq.of(newValue, value2, value3);
@@ -554,7 +566,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull <U> ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+        public @NotNull <U> ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
             return ImmutableSeq.of(
                     mapper.apply(value1),
                     mapper.apply(value2),
@@ -563,7 +575,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull <U> ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+        public @NotNull <U> ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
             return ImmutableSeq.of(
                     mapper.apply(0, value1),
                     mapper.apply(1, value2),
@@ -572,7 +584,9 @@ final class ImmutableSeqs {
         }
     }
 
-    static final class Seq4<E> extends SeqN<E> {
+    static final class Seq4<E> extends SeqN<E> implements Serializable {
+        private static final long serialVersionUID = 0L;
+
         private final E value1;
         private final E value2;
         private final E value3;
@@ -586,27 +600,27 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull Iterator<E> iterator() {
+        public @NotNull Iterator<E> iterator() {
             return Iterators.of(value1, value2, value3, value4);
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> reversed() {
+        public @NotNull ImmutableSeq<E> reversed() {
             return new Seq4<>(value4, value3, value2, value1);
         }
 
         @Override
-        public final @NotNull Iterator<E> reverseIterator() {
+        public @NotNull Iterator<E> reverseIterator() {
             return Iterators.of(value4, value3, value2, value1);
         }
 
         @Override
-        public final int size() {
+        public int size() {
             return 4;
         }
 
         @Override
-        public final E get(int index) {
+        public E get(int index) {
             switch (index) {
                 case 0:
                     return value1;
@@ -622,17 +636,17 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> prepended(E value) {
+        public @NotNull ImmutableSeq<E> prepended(E value) {
             return ImmutableSeq.of(value, value1, value2, value3, value4);
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> appended(E value) {
+        public @NotNull ImmutableSeq<E> appended(E value) {
             return ImmutableSeq.of(value1, value2, value3, value4, value);
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> take(int n) {
+        public @NotNull ImmutableSeq<E> take(int n) {
             if (n <= 0) {
                 return ImmutableSeq.empty();
             }
@@ -648,7 +662,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> takeLast(int n) {
+        public @NotNull ImmutableSeq<E> takeLast(int n) {
             if (n <= 0) {
                 return ImmutableSeq.empty();
             }
@@ -664,7 +678,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
+        public @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
             if (!predicate.test(value1)) {
                 return ImmutableSeq.empty();
             }
@@ -681,7 +695,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> drop(int n) {
+        public @NotNull ImmutableSeq<E> drop(int n) {
             if (n <= 0) {
                 return this;
             }
@@ -697,7 +711,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> dropLast(int n) {
+        public @NotNull ImmutableSeq<E> dropLast(int n) {
             if (n <= 0) {
                 return this;
             }
@@ -713,7 +727,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> dropWhile(@NotNull Predicate<? super E> predicate) {
+        public @NotNull ImmutableSeq<E> dropWhile(@NotNull Predicate<? super E> predicate) {
             if (!predicate.test(value1)) {
                 return this;
             }
@@ -730,7 +744,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> updated(int index, E newValue) {
+        public @NotNull ImmutableSeq<E> updated(int index, E newValue) {
             switch (index) {
                 case 0:
                     return ImmutableSeq.of(newValue, value2, value3, value4);
@@ -745,7 +759,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull <U> ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+        public @NotNull <U> ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
             return ImmutableSeq.of(
                     mapper.apply(value1),
                     mapper.apply(value2),
@@ -755,7 +769,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull <U> ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+        public @NotNull <U> ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
             return ImmutableSeq.of(
                     mapper.apply(0, value1),
                     mapper.apply(1, value2),
@@ -765,7 +779,9 @@ final class ImmutableSeqs {
         }
     }
 
-    static final class Seq5<E> extends SeqN<E> {
+    static final class Seq5<E> extends SeqN<E> implements Serializable {
+        private static final long serialVersionUID = 0L;
+
         private final E value1;
         private final E value2;
         private final E value3;
@@ -781,27 +797,27 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull Iterator<E> iterator() {
+        public @NotNull Iterator<E> iterator() {
             return Iterators.of(value1, value2, value3, value4, value5);
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> reversed() {
+        public @NotNull ImmutableSeq<E> reversed() {
             return new Seq5<>(value5, value4, value3, value2, value1);
         }
 
         @Override
-        public final @NotNull Iterator<E> reverseIterator() {
+        public @NotNull Iterator<E> reverseIterator() {
             return Iterators.of(value5, value4, value3, value2, value1);
         }
 
         @Override
-        public final int size() {
+        public int size() {
             return 5;
         }
 
         @Override
-        public final E get(int index) {
+        public E get(int index) {
             switch (index) {
                 case 0:
                     return value1;
@@ -819,17 +835,17 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> prepended(E value) {
+        public @NotNull ImmutableSeq<E> prepended(E value) {
             return new ImmutableVectors.Vector1<>(new Object[]{value, value1, value2, value3, value4, value5});
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> appended(E value) {
+        public @NotNull ImmutableSeq<E> appended(E value) {
             return new ImmutableVectors.Vector1<>(new Object[]{value1, value2, value3, value4, value5, value});
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> take(int n) {
+        public @NotNull ImmutableSeq<E> take(int n) {
             if (n <= 0) {
                 return ImmutableSeq.empty();
             }
@@ -847,7 +863,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> takeLast(int n) {
+        public @NotNull ImmutableSeq<E> takeLast(int n) {
             if (n <= 0) {
                 return ImmutableSeq.empty();
             }
@@ -865,7 +881,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
+        public @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
             if (!predicate.test(value1)) {
                 return ImmutableSeq.empty();
             }
@@ -885,7 +901,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> drop(int n) {
+        public @NotNull ImmutableSeq<E> drop(int n) {
             if (n <= 0) {
                 return this;
             }
@@ -903,7 +919,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> dropLast(int n) {
+        public @NotNull ImmutableSeq<E> dropLast(int n) {
             if (n <= 0) {
                 return this;
             }
@@ -921,7 +937,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> dropWhile(@NotNull Predicate<? super E> predicate) {
+        public @NotNull ImmutableSeq<E> dropWhile(@NotNull Predicate<? super E> predicate) {
             if (!predicate.test(value1)) {
                 return this;
             }
@@ -941,7 +957,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> updated(int index, E newValue) {
+        public @NotNull ImmutableSeq<E> updated(int index, E newValue) {
             switch (index) {
                 case 0:
                     return ImmutableSeq.of(newValue, value2, value3, value4, value5);
@@ -958,7 +974,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull <U> ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+        public @NotNull <U> ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
             return ImmutableSeq.of(
                     mapper.apply(value1),
                     mapper.apply(value2),
@@ -969,7 +985,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull <U> ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+        public @NotNull <U> ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
             return ImmutableSeq.of(
                     mapper.apply(0, value1),
                     mapper.apply(1, value2),
@@ -982,7 +998,7 @@ final class ImmutableSeqs {
 
     @SuppressWarnings("unchecked")
     static abstract class CopiesSeqBase<E>
-            implements IndexedSeqLike<E> {
+            implements IndexedSeqLike<E>, Serializable {
         protected final @Range(from = 1, to = Integer.MAX_VALUE) int size;
         protected final E value;
 
@@ -1308,12 +1324,12 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull String className() {
+        public @NotNull String className() {
             return "CopiesSeqView";
         }
 
         @Override
-        public final @NotNull IndexedSeqView<E> prepended(E value) {
+        public @NotNull IndexedSeqView<E> prepended(E value) {
             if (value == this.value) {
                 return new CopiesSeqView<>(size + 1, value);
             }
@@ -1321,7 +1337,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull IndexedSeqView<E> appended(E value) {
+        public @NotNull IndexedSeqView<E> appended(E value) {
             if (value == this.value) {
                 return new CopiesSeqView<>(size + 1, value);
             }
@@ -1329,14 +1345,14 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeqs.CopiesSeqView<E> reversed() {
+        public @NotNull ImmutableSeqs.CopiesSeqView<E> reversed() {
             return this;
         }
 
         //region Misc Operations
 
         @Override
-        public final @NotNull IndexedSeqView<E> slice(int beginIndex, int endIndex) {
+        public @NotNull IndexedSeqView<E> slice(int beginIndex, int endIndex) {
             Conditions.checkPositionIndices(beginIndex, endIndex, size);
             final int ns = endIndex - beginIndex;
             if (ns == 0) {
@@ -1349,7 +1365,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull IndexedSeqView<E> drop(int n) {
+        public @NotNull IndexedSeqView<E> drop(int n) {
             if (n <= 0) {
                 return this;
             }
@@ -1364,12 +1380,12 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull IndexedSeqView<E> dropLast(int n) {
+        public @NotNull IndexedSeqView<E> dropLast(int n) {
             return drop(n);
         }
 
         @Override
-        public final @NotNull IndexedSeqView<E> take(int n) {
+        public @NotNull IndexedSeqView<E> take(int n) {
             if (n <= 0) {
                 return IndexedSeqView.empty();
             }
@@ -1383,22 +1399,22 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull IndexedSeqView<E> takeLast(int n) {
+        public @NotNull IndexedSeqView<E> takeLast(int n) {
             return take(n);
         }
 
         @Override
-        public final @NotNull IndexedSeqView<@NotNull E> filterNotNull() {
+        public @NotNull IndexedSeqView<@NotNull E> filterNotNull() {
             return value == null ? IndexedSeqView.empty() : this;
         }
 
         @Override
-        public final @NotNull IndexedSeqView<E> sorted() {
+        public @NotNull IndexedSeqView<E> sorted() {
             return this;
         }
 
         @Override
-        public final @NotNull IndexedSeqView<E> sorted(Comparator<? super E> comparator) {
+        public @NotNull IndexedSeqView<E> sorted(Comparator<? super E> comparator) {
             return this;
         }
 
@@ -1423,17 +1439,17 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull IndexedSeqView<E> view() {
+        public @NotNull IndexedSeqView<E> view() {
             return size == 1 ? new IndexedSeqViews.Single<>(value) : new CopiesSeqView<>(size, value);
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> reversed() {
+        public @NotNull ImmutableSeq<E> reversed() {
             return this;
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> prepended(E value) {
+        public @NotNull ImmutableSeq<E> prepended(E value) {
             final int size = this.size;
             if (value == this.value) {
                 return new CopiesSeq<>(size + 1, value);
@@ -1454,7 +1470,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> appended(E value) {
+        public @NotNull ImmutableSeq<E> appended(E value) {
             final int size = this.size;
             if (value == this.value) {
                 assert size != Integer.MAX_VALUE;
@@ -1478,14 +1494,14 @@ final class ImmutableSeqs {
         //region Misc Operations
 
         @Override
-        public final @NotNull ImmutableSeq<E> slice(int beginIndex, int endIndex) {
+        public @NotNull ImmutableSeq<E> slice(int beginIndex, int endIndex) {
             Conditions.checkPositionIndices(beginIndex, endIndex, size);
             final int ns = endIndex - beginIndex;
             return ns == 0 ? ImmutableSeq.empty() : new CopiesSeq<>(ns, value);
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> drop(int n) {
+        public @NotNull ImmutableSeq<E> drop(int n) {
             if (n <= 0) {
                 return this;
             }
@@ -1496,12 +1512,12 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> dropLast(int n) {
+        public @NotNull ImmutableSeq<E> dropLast(int n) {
             return drop(n);
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> dropWhile(@NotNull Predicate<? super E> predicate) {
+        public @NotNull ImmutableSeq<E> dropWhile(@NotNull Predicate<? super E> predicate) {
             final int size = this.size;
             final E value = this.value;
             for (int i = 0; i < size; i++) {
@@ -1513,7 +1529,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> take(int n) {
+        public @NotNull ImmutableSeq<E> take(int n) {
             if (n <= 0) {
                 return ImmutableSeq.empty();
             }
@@ -1524,12 +1540,12 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> takeLast(int n) {
+        public @NotNull ImmutableSeq<E> takeLast(int n) {
             return take(n);
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
+        public @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
             final int size = this.size;
             final E value = this.value;
             for (int i = 0; i < size; i++) {
@@ -1541,7 +1557,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> concat(@NotNull SeqLike<? extends E> other) {
+        public @NotNull ImmutableSeq<E> concat(@NotNull SeqLike<? extends E> other) {
             if (other instanceof CopiesSeq) {
                 CopiesSeq<E> ics = (CopiesSeq<E>) other;
                 if (ics.value == this.value) {
@@ -1558,7 +1574,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> filter(@NotNull Predicate<? super E> predicate) {
+        public @NotNull ImmutableSeq<E> filter(@NotNull Predicate<? super E> predicate) {
             final int size = this.size;
             final E value = this.value;
 
@@ -1582,7 +1598,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> filterNot(@NotNull Predicate<? super E> predicate) {
+        public @NotNull ImmutableSeq<E> filterNot(@NotNull Predicate<? super E> predicate) {
             final int size = this.size;
             final E value = this.value;
 
@@ -1606,24 +1622,24 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public final @NotNull ImmutableSeq<@NotNull E> filterNotNull() {
+        public @NotNull ImmutableSeq<@NotNull E> filterNotNull() {
             return value == null ? ImmutableSeq.empty() : this;
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> sorted() {
+        public @NotNull ImmutableSeq<E> sorted() {
             return this;
         }
 
         @Override
-        public final @NotNull ImmutableSeq<E> sorted(Comparator<? super E> comparator) {
+        public @NotNull ImmutableSeq<E> sorted(Comparator<? super E> comparator) {
             return this;
         }
 
         //endregion
 
         @Override
-        public final int hashCode() {
+        public int hashCode() {
             if (value == null) {
                 return SEQ_HASH_MAGIC;
             }
@@ -1651,58 +1667,58 @@ final class ImmutableSeqs {
     static final class Factory<E> implements CollectionFactory<E, ImmutableVectors.VectorBuilder<E>, ImmutableSeq<E>> {
 
         @Override
-        public final ImmutableSeq<E> empty() {
+        public ImmutableSeq<E> empty() {
             return ImmutableSeq.empty();
         }
 
         @Override
-        public final ImmutableVectors.VectorBuilder<E> newBuilder() {
+        public ImmutableVectors.VectorBuilder<E> newBuilder() {
             return new ImmutableVectors.VectorBuilder<>();
         }
 
         @Override
-        public final void addToBuilder(ImmutableVectors.@NotNull VectorBuilder<E> builder, E value) {
+        public void addToBuilder(ImmutableVectors.@NotNull VectorBuilder<E> builder, E value) {
             builder.add(value);
         }
 
         @Override
-        public final ImmutableVectors.VectorBuilder<E> mergeBuilder(ImmutableVectors.@NotNull VectorBuilder<E> builder1, ImmutableVectors.@NotNull VectorBuilder<E> builder2) {
+        public ImmutableVectors.VectorBuilder<E> mergeBuilder(ImmutableVectors.@NotNull VectorBuilder<E> builder1, ImmutableVectors.@NotNull VectorBuilder<E> builder2) {
             builder1.addVector(builder2.build());
             return builder1;
         }
 
         @Override
-        public final ImmutableSeq<E> build(ImmutableVectors.@NotNull VectorBuilder<E> builder) {
+        public ImmutableSeq<E> build(ImmutableVectors.@NotNull VectorBuilder<E> builder) {
             return builder.buildSeq();
         }
 
         @Override
-        public final ImmutableSeq<E> from(E @NotNull [] values) {
+        public ImmutableSeq<E> from(E @NotNull [] values) {
             return ImmutableSeq.from(values);
         }
 
         @Override
-        public final ImmutableSeq<E> from(@NotNull Iterable<? extends E> values) {
+        public ImmutableSeq<E> from(@NotNull Iterable<? extends E> values) {
             return ImmutableSeq.from(values);
         }
 
         @Override
-        public final ImmutableSeq<E> from(@NotNull Iterator<? extends E> it) {
+        public ImmutableSeq<E> from(@NotNull Iterator<? extends E> it) {
             return ImmutableSeq.from(it);
         }
 
         @Override
-        public final ImmutableSeq<E> fill(int n, E value) {
+        public ImmutableSeq<E> fill(int n, E value) {
             return ImmutableSeq.fill(n, value);
         }
 
         @Override
-        public final ImmutableSeq<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+        public ImmutableSeq<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
             return ImmutableSeq.fill(n, supplier);
         }
 
         @Override
-        public final ImmutableSeq<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+        public ImmutableSeq<E> fill(int n, @NotNull IntFunction<? extends E> init) {
             return ImmutableSeq.fill(n, init);
         }
     }
