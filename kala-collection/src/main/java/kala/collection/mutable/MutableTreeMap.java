@@ -3,6 +3,7 @@ package kala.collection.mutable;
 import kala.collection.base.*;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.control.Option;
+import kala.internal.ComparableUtils;
 import kala.tuple.Tuple2;
 import kala.collection.factory.MapFactory;
 import kala.comparator.Comparators;
@@ -24,7 +25,7 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
         implements MutableMap<K, V>, MutableMapOps<K, V, MutableTreeMap<?, ?>, MutableTreeMap<K, V>>, kala.collection.SortedMap<K, V>, Serializable {
     private static final long serialVersionUID = 5474475537398882423L;
 
-    private static final Factory<?, ?> DEFAULT_FACTORY = new Factory<>();
+    private static final Factory<?, ?> DEFAULT_FACTORY = new Factory<>(null);
 
     public MutableTreeMap() {
         this(null);
@@ -41,7 +42,7 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
     }
 
     public static <K, V> @NotNull MapFactory<K, V, ?, MutableTreeMap<K, V>> factory(Comparator<? super K> comparator) {
-        return comparator == null || comparator == Comparators.naturalOrder()
+        return comparator == null
                 ? (Factory<K, V>) DEFAULT_FACTORY
                 : new Factory<>(comparator);
     }
@@ -509,9 +510,6 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
         Node<K, V> node = root;
 
         if (node == null) {
-            //noinspection ResultOfMethodCallIgnored,EqualsWithItself
-            comparator.compare(key, key);
-
             root = new Node<>(key, value, null);
             size = 1;
             return;
@@ -520,19 +518,33 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
         int c;
         Node<K, V> parent;
 
-        do {
-            parent = node;
-            c = comparator.compare(key, node.key);
-            if (c < 0) {
-                node = node.left;
-            } else if (c > 0) {
-                node = node.right;
-            } else {
-                node.value = value;
-                return;
-            }
-        } while (node != null);
-
+        if (comparator == null) {
+            do {
+                parent = node;
+                c = ComparableUtils.compare(key, node.key);
+                if (c < 0) {
+                    node = node.left;
+                } else if (c > 0) {
+                    node = node.right;
+                } else {
+                    node.value = value;
+                    return;
+                }
+            } while (node != null);
+        } else {
+            do {
+                parent = node;
+                c = comparator.compare(key, node.key);
+                if (c < 0) {
+                    node = node.left;
+                } else if (c > 0) {
+                    node = node.right;
+                } else {
+                    node.value = value;
+                    return;
+                }
+            } while (node != null);
+        }
         Node<K, V> n = new Node<>(key, value, parent);
         if (c < 0) {
             parent.left = n;
@@ -550,9 +562,6 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
         Node<K, V> node = root;
 
         if (node == null) {
-            //noinspection ResultOfMethodCallIgnored,EqualsWithItself
-            comparator.compare(key, key);
-
             root = new Node<>(key, value, null);
             size = 1;
             return Option.none();
@@ -561,20 +570,37 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
         int c;
         Node<K, V> parent;
 
-        do {
-            parent = node;
-            c = comparator.compare(key, node.key);
-            if (c < 0) {
-                node = node.left;
-            } else if (c > 0) {
-                node = node.right;
-            } else {
-                V oldValue = node.value;
-                node.value = value;
-                return Option.some(oldValue);
-            }
+        if (comparator == null) {
+            do {
+                parent = node;
+                c = ComparableUtils.compare(key, node.key);
+                if (c < 0) {
+                    node = node.left;
+                } else if (c > 0) {
+                    node = node.right;
+                } else {
+                    V oldValue = node.value;
+                    node.value = value;
+                    return Option.some(oldValue);
+                }
 
-        } while (node != null);
+            } while (node != null);
+        } else {
+            do {
+                parent = node;
+                c = comparator.compare(key, node.key);
+                if (c < 0) {
+                    node = node.left;
+                } else if (c > 0) {
+                    node = node.right;
+                } else {
+                    V oldValue = node.value;
+                    node.value = value;
+                    return Option.some(oldValue);
+                }
+
+            } while (node != null);
+        }
 
         Node<K, V> n = new Node<>(key, value, parent);
         if (c < 0) {
@@ -727,10 +753,6 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
 
     private static final class Factory<K, V> extends AbstractMutableMapFactory<K, V, MutableTreeMap<K, V>> {
         private final Comparator<? super K> comparator;
-
-        Factory() {
-            this(Comparators.naturalOrder());
-        }
 
         Factory(Comparator<? super K> comparator) {
             this.comparator = comparator;

@@ -1,6 +1,7 @@
 package kala.collection.mutable;
 
 import kala.comparator.Comparators;
+import kala.internal.ComparableUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,7 +15,7 @@ abstract class RedBlackTree<A, N extends RedBlackTree.TreeNode<A, N>> implements
     static final boolean RED = true;
     static final boolean BLACK = false;
 
-    final Comparator<? super A> comparator;
+    final @Nullable Comparator<? super A> comparator;
 
     transient N root;
     transient int size;
@@ -28,14 +29,28 @@ abstract class RedBlackTree<A, N extends RedBlackTree.TreeNode<A, N>> implements
         try {
             final Comparator<? super A> comparator = this.comparator;
             N n = this.root;
-            while (n != null) {
-                int c = comparator.compare((A) key, n.key);
-                if (c < 0) {
-                    n = n.left;
-                } else if (c > 0) {
-                    n = n.right;
-                } else {
-                    return n;
+
+            if (comparator == null) {
+                while (n != null) {
+                    int c = ComparableUtils.compare(key, n.key);
+                    if (c < 0) {
+                        n = n.left;
+                    } else if (c > 0) {
+                        n = n.right;
+                    } else {
+                        return n;
+                    }
+                }
+            } else {
+                while (n != null) {
+                    int c = comparator.compare((A) key, n.key);
+                    if (c < 0) {
+                        n = n.left;
+                    } else if (c > 0) {
+                        n = n.right;
+                    } else {
+                        return n;
+                    }
                 }
             }
         } catch (ClassCastException ignored) {

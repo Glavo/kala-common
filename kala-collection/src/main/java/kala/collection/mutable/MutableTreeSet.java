@@ -6,8 +6,10 @@ import kala.collection.base.Iterators;
 import kala.collection.Set;
 import kala.collection.base.AbstractIterator;
 import kala.collection.factory.CollectionFactory;
+import kala.internal.ComparableUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -26,7 +28,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     private static final long serialVersionUID = 6211626172352429615L;
 
     private static final MutableTreeSet.Factory<? extends Comparable<?>> DEFAULT_FACTORY =
-            new Factory<>(Comparator.naturalOrder());
+            new Factory<>(null);
 
 
     //region Constructors
@@ -48,7 +50,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     }
 
     public static <E> @NotNull CollectionFactory<E, ?, MutableTreeSet<E>> factory(Comparator<? super E> comparator) {
-        if (comparator == null || comparator == Comparator.naturalOrder()) {
+        if (comparator == null) {
             return (Factory<E>) DEFAULT_FACTORY;
         }
         return new Factory<>(comparator);
@@ -301,9 +303,6 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
         Node<E> node = root;
 
         if (node == null) {
-            //noinspection ResultOfMethodCallIgnored,EqualsWithItself
-            comparator.compare(value, value);
-
             root = new Node<>(value, null);
             size = 1;
             return true;
@@ -312,18 +311,33 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
         int c;
         Node<E> parent;
 
-        do {
-            parent = node;
-            c = comparator.compare(value, node.getValue());
-            if (c < 0) {
-                node = node.left;
-            } else if (c > 0) {
-                node = node.right;
-            } else {
-                return false;
-            }
+        if (comparator == null) {
+            do {
+                parent = node;
+                c = ComparableUtils.compare(value, node.getValue());
+                if (c < 0) {
+                    node = node.left;
+                } else if (c > 0) {
+                    node = node.right;
+                } else {
+                    return false;
+                }
 
-        } while (node != null);
+            } while (node != null);
+        } else {
+            do {
+                parent = node;
+                c = comparator.compare(value, node.getValue());
+                if (c < 0) {
+                    node = node.left;
+                } else if (c > 0) {
+                    node = node.right;
+                } else {
+                    return false;
+                }
+
+            } while (node != null);
+        }
 
         Node<E> n = new Node<>(value, parent);
         if (c < 0) {
@@ -552,9 +566,9 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
 
     private static final class Factory<E> extends AbstractMutableSetFactory<E, MutableTreeSet<E>> {
 
-        private final @NotNull Comparator<? super E> comparator;
+        private final @Nullable Comparator<? super E> comparator;
 
-        Factory(@NotNull Comparator<? super E> comparator) {
+        Factory(@Nullable Comparator<? super E> comparator) {
             this.comparator = comparator;
         }
 
