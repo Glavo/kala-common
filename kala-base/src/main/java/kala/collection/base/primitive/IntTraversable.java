@@ -1,6 +1,6 @@
 package kala.collection.base.primitive;
 
-import kala.annotations.DeprecatedReplaceWith;
+import kala.annotations.ReplaceWith;
 import kala.control.primitive.IntOption;
 import kala.function.CheckedIntConsumer;
 import org.jetbrains.annotations.NotNull;
@@ -77,7 +77,7 @@ public interface IntTraversable
 
     @Override
     @Deprecated
-    @DeprecatedReplaceWith("forEachPrimitive(action::accept)")
+    @ReplaceWith("forEachPrimitive(action::accept)")
     default void forEach(@NotNull Consumer<? super Integer> action) {
         if (action instanceof IntConsumer) {
             forEachPrimitive(((IntConsumer) action));

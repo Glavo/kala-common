@@ -114,7 +114,7 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
          * {@inheritDoc}
          */
         @Override
-        public final boolean isLeft() {
+        public boolean isLeft() {
             return true;
         }
 
@@ -122,7 +122,7 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
          * {@inheritDoc}
          */
         @Override
-        public final boolean isRight() {
+        public boolean isRight() {
             return false;
         }
 
@@ -130,7 +130,7 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
          * {@inheritDoc}
          */
         @Override
-        public final A getLeftValue() {
+        public A getLeftValue() {
             return value;
         }
 
@@ -138,7 +138,7 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
          * {@inheritDoc}
          */
         @Override
-        public final @NotNull Option<A> getLeftOption() {
+        public @NotNull Option<A> getLeftOption() {
             return Option.some(value);
         }
 
@@ -147,7 +147,7 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
          */
         @Override
         @Contract("-> fail")
-        public final B getRightValue() {
+        public B getRightValue() {
             throw new NoSuchElementException("Either.Left.getRightValue");
         }
 
@@ -155,12 +155,12 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
          * {@inheritDoc}
          */
         @Override
-        public final @NotNull Option<B> getRightOption() {
+        public @NotNull Option<B> getRightOption() {
             return Option.none();
         }
 
         @Override
-        public final <U, V> @NotNull Either<U, V> map(
+        public <U, V> @NotNull Either<U, V> map(
                 @NotNull Function<? super A, ? extends U> leftMapper,
                 @NotNull Function<? super B, ? extends V> rightMapper) {
             return Either.left(leftMapper.apply(value));
@@ -170,7 +170,7 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
          * {@inheritDoc}
          */
         @Override
-        public final <U> @NotNull Either<U, B> mapLeft(@NotNull Function<? super A, ? extends U> mapper) {
+        public <U> @NotNull Either<U, B> mapLeft(@NotNull Function<? super A, ? extends U> mapper) {
             Objects.requireNonNull(mapper);
             return Either.left(mapper.apply(value));
         }
@@ -179,12 +179,12 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
          * {@inheritDoc}
          */
         @Override
-        public final <U> @NotNull Either<A, U> mapRight(@NotNull Function<? super B, ? extends U> mapper) {
+        public <U> @NotNull Either<A, U> mapRight(@NotNull Function<? super B, ? extends U> mapper) {
             return (Either<A, U>) this;
         }
 
         @Override
-        public final <U> U fold(
+        public <U> U fold(
                 @NotNull Function<? super A, ? extends U> leftMapper,
                 @NotNull Function<? super B, ? extends U> rightMapper) {
             return leftMapper.apply(value);
@@ -194,17 +194,17 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
          * {@inheritDoc}
          */
         @Override
-        public final @NotNull Either<B, A> swap() {
+        public @NotNull Either<B, A> swap() {
             return Either.right(value);
         }
 
         @Override
-        public final @NotNull Result<B, A> toResult() {
+        public @NotNull Result<B, A> toResult() {
             return Result.err(value);
         }
 
         @Override
-        public final void forEach(@NotNull Consumer<? super A> leftConsumer, @NotNull Consumer<? super B> rightConsumer) {
+        public void forEach(@NotNull Consumer<? super A> leftConsumer, @NotNull Consumer<? super B> rightConsumer) {
             leftConsumer.accept(value);
         }
 
@@ -212,7 +212,7 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
          * {@inheritDoc}
          */
         @Override
-        public final boolean equals(Object obj) {
+        public boolean equals(Object obj) {
             if (this == obj) {
                 return true;
             }
@@ -227,7 +227,7 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
          * {@inheritDoc}
          */
         @Override
-        public final int hashCode() {
+        public int hashCode() {
             return Objects.hashCode(value) + HASH_MAGIC;
         }
 
@@ -235,7 +235,7 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
          * {@inheritDoc}
          */
         @Override
-        public final String toString() {
+        public String toString() {
             return "Either.Left[" + value + "]";
         }
     }
@@ -255,7 +255,7 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
          * {@inheritDoc}
          */
         @Override
-        public final boolean isLeft() {
+        public boolean isLeft() {
             return false;
         }
 
@@ -263,7 +263,7 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
          * {@inheritDoc}
          */
         @Override
-        public final boolean isRight() {
+        public boolean isRight() {
             return true;
         }
 
@@ -272,7 +272,7 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
          */
         @Override
         @Contract("-> fail")
-        public final A getLeftValue() {
+        public A getLeftValue() {
             throw new NoSuchElementException("Either.Right.getLeftValue");
         }
 
@@ -280,7 +280,7 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
          * {@inheritDoc}
          */
         @Override
-        public final @NotNull Option<A> getLeftOption() {
+        public @NotNull Option<A> getLeftOption() {
             return Option.none();
         }
 
@@ -288,7 +288,7 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
          * {@inheritDoc}
          */
         @Override
-        public final B getRightValue() {
+        public B getRightValue() {
             return value;
         }
 
@@ -296,12 +296,12 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
          * {@inheritDoc}
          */
         @Override
-        public final @NotNull Option<B> getRightOption() {
+        public @NotNull Option<B> getRightOption() {
             return Option.none();
         }
 
         @Override
-        public final <U, V> @NotNull Either<U, V> map(
+        public <U, V> @NotNull Either<U, V> map(
                 @NotNull Function<? super A, ? extends U> leftMapper,
                 @NotNull Function<? super B, ? extends V> rightMapper
         ) {
@@ -312,7 +312,7 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
          * {@inheritDoc}
          */
         @Override
-        public final <U> @NotNull Either<U, B> mapLeft(@NotNull Function<? super A, ? extends U> mapper) {
+        public <U> @NotNull Either<U, B> mapLeft(@NotNull Function<? super A, ? extends U> mapper) {
             return (Either<U, B>) this;
         }
 
@@ -320,13 +320,13 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
          * {@inheritDoc}
          */
         @Override
-        public final <U> @NotNull Either<A, U> mapRight(@NotNull Function<? super B, ? extends U> mapper) {
+        public <U> @NotNull Either<A, U> mapRight(@NotNull Function<? super B, ? extends U> mapper) {
             Objects.requireNonNull(mapper);
             return Either.right(mapper.apply(value));
         }
 
         @Override
-        public final <U> U fold(
+        public <U> U fold(
                 @NotNull Function<? super A, ? extends U> leftMapper,
                 @NotNull Function<? super B, ? extends U> rightMapper) {
             return rightMapper.apply(value);
@@ -336,17 +336,17 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
          * {@inheritDoc}
          */
         @Override
-        public final @NotNull Either<B, A> swap() {
+        public @NotNull Either<B, A> swap() {
             return Either.left(value);
         }
 
         @Override
-        public final @NotNull Result<B, A> toResult() {
+        public @NotNull Result<B, A> toResult() {
             return Result.ok(value);
         }
 
         @Override
-        public final void forEach(@NotNull Consumer<? super A> leftConsumer, @NotNull Consumer<? super B> rightConsumer) {
+        public void forEach(@NotNull Consumer<? super A> leftConsumer, @NotNull Consumer<? super B> rightConsumer) {
             rightConsumer.accept(value);
         }
 
@@ -354,7 +354,7 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
          * {@inheritDoc}
          */
         @Override
-        public final boolean equals(Object obj) {
+        public boolean equals(Object obj) {
             if (this == obj) {
                 return true;
             }
@@ -369,7 +369,7 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
          * {@inheritDoc}
          */
         @Override
-        public final int hashCode() {
+        public int hashCode() {
             return Objects.hashCode(value) + HASH_MAGIC;
         }
 
@@ -377,7 +377,7 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
          * {@inheritDoc}
          */
         @Override
-        public final String toString() {
+        public String toString() {
             return "Either.Right[" + value + "]";
         }
     }
@@ -417,13 +417,13 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
         }
 
         @Override
-        public final A get() {
+        public A get() {
             return Either.this.getLeftValue();
         }
 
         @Override
         @NotNull
-        public final <U> Either<U, B>.LeftProjection map(@NotNull Function<? super A, ? extends U> mapper) {
+        public <U> Either<U, B>.LeftProjection map(@NotNull Function<? super A, ? extends U> mapper) {
             Objects.requireNonNull(mapper);
             if (isDefined()) {
                 return Either.<U, B>left(mapper.apply(getLeftValue())).new LeftProjection();
@@ -436,7 +436,7 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
          */
         @NotNull
         @Override
-        public final String toString() {
+        public String toString() {
             return Either.this + ".LeftProjection";
         }
     }
@@ -448,13 +448,13 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
         }
 
         @Override
-        public final B get() {
+        public B get() {
             return Either.this.getRightValue();
         }
 
         @Override
         @NotNull
-        public final <U> Either<A, U>.RightProjection map(@NotNull Function<? super B, ? extends U> mapper) {
+        public <U> Either<A, U>.RightProjection map(@NotNull Function<? super B, ? extends U> mapper) {
             Objects.requireNonNull(mapper);
             if (isDefined()) {
                 return Either.<A, U>right(mapper.apply(getRightValue())).new RightProjection();
@@ -467,7 +467,7 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
          */
         @NotNull
         @Override
-        public final String toString() {
+        public String toString() {
             return Either.this + ".RightProjection";
         }
     }

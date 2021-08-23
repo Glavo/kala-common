@@ -1,6 +1,6 @@
 package kala.collection.base.primitive;
 
-import kala.annotations.DeprecatedReplaceWith;
+import kala.annotations.ReplaceWith;
 import kala.collection.base.Iterators;
 import kala.control.primitive.IntOption;
 import kala.internal.InternalIntLinkedBuffer;
@@ -86,7 +86,7 @@ public interface IntIterator
 
     @Override
     @Deprecated
-    @DeprecatedReplaceWith("nextInt()")
+    @ReplaceWith("nextInt()")
     default @NotNull Integer next() {
         return nextInt();
     }

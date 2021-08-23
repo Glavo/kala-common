@@ -1,6 +1,6 @@
 package kala.collection.base.primitive;
 
-import kala.annotations.DeprecatedReplaceWith;
+import kala.annotations.ReplaceWith;
 import kala.control.AnyOption;
 import kala.tuple.Tuple2;
 import org.jetbrains.annotations.Contract;
@@ -147,7 +147,7 @@ public interface PrimIterator<
     void forEach(@NotNull T_CONSUMER action);
 
     @Override
-    @DeprecatedReplaceWith("forEach(action)")
+    @ReplaceWith("forEach(action)")
     default void forEachRemaining(@NotNull T_CONSUMER action) {
         forEach(action);
     }

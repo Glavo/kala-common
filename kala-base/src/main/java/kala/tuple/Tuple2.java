@@ -51,7 +51,7 @@ public final class Tuple2<@Covariant T1, @Covariant T2> extends HList<T1, Tuple1
      * {@inheritDoc}
      */
     @Override
-    public final int arity() {
+    public int arity() {
         return 2;
     }
 
@@ -60,7 +60,7 @@ public final class Tuple2<@Covariant T1, @Covariant T2> extends HList<T1, Tuple1
      */
     @Override
     @SuppressWarnings("unchecked")
-    public final <U> U elementAt(int index) {
+    public <U> U elementAt(int index) {
         switch (index) {
             case 0:
                 return (U) _1;
@@ -76,7 +76,7 @@ public final class Tuple2<@Covariant T1, @Covariant T2> extends HList<T1, Tuple1
      */
     @Override
     @SuppressWarnings("unchecked")
-    public final <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
+    public <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
         U[] arr = generator.apply(arity());
         arr[0] = (U) this._1;
         arr[1] = (U) this._2;
@@ -88,7 +88,7 @@ public final class Tuple2<@Covariant T1, @Covariant T2> extends HList<T1, Tuple1
      *
      * @return the 1st element of this tuple
      */
-    public final T1 component1() {
+    public T1 component1() {
         return _1;
     }
 
@@ -97,7 +97,7 @@ public final class Tuple2<@Covariant T1, @Covariant T2> extends HList<T1, Tuple1
      *
      * @return the 2nd element of this tuple
      */
-    public final T2 component2() {
+    public T2 component2() {
         return _2;
     }
 
@@ -105,7 +105,7 @@ public final class Tuple2<@Covariant T1, @Covariant T2> extends HList<T1, Tuple1
      * {@inheritDoc}
      */
     @Override
-    public final T1 head() {
+    public T1 head() {
         return _1;
     }
 
@@ -113,7 +113,7 @@ public final class Tuple2<@Covariant T1, @Covariant T2> extends HList<T1, Tuple1
      * {@inheritDoc}
      */
     @Override
-    public final @NotNull Tuple1<T2> tail() {
+    public @NotNull Tuple1<T2> tail() {
         return of(_2);
     }
 
@@ -122,7 +122,7 @@ public final class Tuple2<@Covariant T1, @Covariant T2> extends HList<T1, Tuple1
      */
     @Contract("_ -> new")
     @Override
-    public final <H> @NotNull Tuple3<H, T1, T2> cons(H head) {
+    public <H> @NotNull Tuple3<H, T1, T2> cons(H head) {
         return new Tuple3<>(head, _1, _2);
     }
 
@@ -130,7 +130,7 @@ public final class Tuple2<@Covariant T1, @Covariant T2> extends HList<T1, Tuple1
      * {@inheritDoc}
      */
     @Override
-    public final T1 getKey() {
+    public T1 getKey() {
         return _1;
     }
 
@@ -138,7 +138,7 @@ public final class Tuple2<@Covariant T1, @Covariant T2> extends HList<T1, Tuple1
      * {@inheritDoc}
      */
     @Override
-    public final T2 getValue() {
+    public T2 getValue() {
         return _2;
     }
 
@@ -151,7 +151,7 @@ public final class Tuple2<@Covariant T1, @Covariant T2> extends HList<T1, Tuple1
     @Override
     @Deprecated
     @Contract("_ -> fail")
-    public final T2 setValue(T2 value) throws UnsupportedOperationException {
+    public T2 setValue(T2 value) throws UnsupportedOperationException {
         throw new UnsupportedOperationException("Tuple2.setValue");
     }
 
@@ -159,7 +159,7 @@ public final class Tuple2<@Covariant T1, @Covariant T2> extends HList<T1, Tuple1
      * {@inheritDoc}
      */
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -174,7 +174,7 @@ public final class Tuple2<@Covariant T1, @Covariant T2> extends HList<T1, Tuple1
      * {@inheritDoc}
      */
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         return Objects.hashCode(_1) ^ Objects.hashCode(_2);
     }
 
@@ -182,7 +182,7 @@ public final class Tuple2<@Covariant T1, @Covariant T2> extends HList<T1, Tuple1
      * {@inheritDoc}
      */
     @Override
-    public final String toString() {
+    public String toString() {
         return "(" + _1 + ", " + _2 + ")";
     }
 }

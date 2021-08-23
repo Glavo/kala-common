@@ -84,7 +84,7 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
          * {@inheritDoc}
          */
         @Override
-        public final boolean isOk() {
+        public boolean isOk() {
             return true;
         }
 
@@ -92,7 +92,7 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
          * {@inheritDoc}
          */
         @Override
-        public final T get() {
+        public T get() {
             return value;
         }
 
@@ -101,12 +101,12 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
          */
         @Override
         @Contract("-> fail")
-        public final E getErr() {
+        public E getErr() {
             throw new NoSuchElementException("Result.Ok.getErr()");
         }
 
         @Override
-        public final @Nullable E getErrOrNull() {
+        public @Nullable E getErrOrNull() {
             return null;
         }
 
@@ -115,7 +115,7 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
          */
         @Override
         @Contract("_ -> new")
-        public final <U> @NotNull Ok<U, E> map(@NotNull Function<? super T, ? extends U> mapper) {
+        public <U> @NotNull Ok<U, E> map(@NotNull Function<? super T, ? extends U> mapper) {
             return Result.ok(mapper.apply(value));
         }
 
@@ -123,12 +123,12 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
          * {@inheritDoc}
          */
         @Override
-        public final <U> @NotNull Ok<T, U> mapErr(@NotNull Function<? super E, ? extends U> mapper) {
+        public <U> @NotNull Ok<T, U> mapErr(@NotNull Function<? super E, ? extends U> mapper) {
             return (Ok<T, U>) this;
         }
 
         @Override
-        public final <U> @NotNull Result<U, E> flatMap(@NotNull Function<? super T, ? extends Result<? extends U, ? extends E>> mapper) {
+        public <U> @NotNull Result<U, E> flatMap(@NotNull Function<? super T, ? extends Result<? extends U, ? extends E>> mapper) {
             return Result.narrow(mapper.apply(value));
         }
 
@@ -136,7 +136,7 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
          * {@inheritDoc}
          */
         @Override
-        public final @NotNull Either<E, T> toEither() {
+        public @NotNull Either<E, T> toEither() {
             return Either.right(value);
         }
 
@@ -148,7 +148,7 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
          * {@inheritDoc}
          */
         @Override
-        public final boolean equals(Object o) {
+        public boolean equals(Object o) {
             if (this == o) {
                 return true;
             }
@@ -163,7 +163,7 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
          * {@inheritDoc}
          */
         @Override
-        public final int hashCode() {
+        public int hashCode() {
             return Objects.hashCode(value) + HASH_MAGIC;
         }
 
@@ -171,7 +171,7 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
          * {@inheritDoc}
          */
         @Override
-        public final String toString() {
+        public String toString() {
             return "Result.Ok[" + value + "]";
         }
     }
@@ -190,7 +190,7 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
          * {@inheritDoc}
          */
         @Override
-        public final boolean isOk() {
+        public boolean isOk() {
             return false;
         }
 
@@ -199,7 +199,7 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
          */
         @Override
         @Contract("-> fail")
-        public final T get() {
+        public T get() {
             throw new NoSuchElementException();
         }
 
@@ -207,18 +207,18 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
          * {@inheritDoc}
          */
         @Override
-        public final E getErr() {
+        public E getErr() {
             return value;
         }
 
         @Override
-        public final @NotNull E getErrOrNull() {
+        public @NotNull E getErrOrNull() {
             return value;
         }
 
         @Override
         @Contract("_ -> this")
-        public final <U> Result.@NotNull Err<U, E> map(@NotNull Function<? super T, ? extends U> mapper) {
+        public <U> Result.@NotNull Err<U, E> map(@NotNull Function<? super T, ? extends U> mapper) {
             return (Result.Err<U, E>) this;
         }
 
@@ -226,13 +226,13 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
          * {@inheritDoc}
          */
         @Override
-        public final <U> Result.@NotNull Err<T, U> mapErr(@NotNull Function<? super E, ? extends U> mapper) {
+        public <U> Result.@NotNull Err<T, U> mapErr(@NotNull Function<? super E, ? extends U> mapper) {
             return Result.err(mapper.apply(value));
         }
 
 
         @Override
-        public final <U> @NotNull Result<U, E> flatMap(@NotNull Function<? super T, ? extends Result<? extends U, ? extends E>> mapper) {
+        public <U> @NotNull Result<U, E> flatMap(@NotNull Function<? super T, ? extends Result<? extends U, ? extends E>> mapper) {
             return ((Result<U, E>) this);
         }
 
@@ -240,7 +240,7 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
          * {@inheritDoc}
          */
         @Override
-        public final @NotNull Either<E, T> toEither() {
+        public @NotNull Either<E, T> toEither() {
             return Either.left(value);
         }
 
@@ -252,7 +252,7 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
          * {@inheritDoc}
          */
         @Override
-        public final boolean equals(Object o) {
+        public boolean equals(Object o) {
             if (this == o) {
                 return true;
             }
@@ -267,12 +267,12 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
          * {@inheritDoc}
          */
         @Override
-        public final int hashCode() {
+        public int hashCode() {
             return Objects.hashCode(value) + HASH_MAGIC;
         }
 
         @Override
-        public final String toString() {
+        public String toString() {
             return "Result.Err[" + value + "]";
         }
     }

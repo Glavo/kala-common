@@ -83,7 +83,7 @@ public final class Tuple6<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      * {@inheritDoc}
      */
     @Override
-    public final int arity() {
+    public int arity() {
         return 6;
     }
 
@@ -92,7 +92,7 @@ public final class Tuple6<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      */
     @Override
     @SuppressWarnings("unchecked")
-    public final <U> U elementAt(int index) {
+    public <U> U elementAt(int index) {
         switch (index) {
             case 0:
                 return (U) _1;
@@ -116,7 +116,7 @@ public final class Tuple6<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      */
     @Override
     @SuppressWarnings("unchecked")
-    public final <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
+    public <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
         U[] arr = generator.apply(arity());
         arr[0] = (U) this._1;
         arr[1] = (U) this._2;
@@ -132,7 +132,7 @@ public final class Tuple6<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      *
      * @return the 1st element of this tuple
      */
-    public final T1 component1() {
+    public T1 component1() {
         return _1;
     }
 
@@ -141,7 +141,7 @@ public final class Tuple6<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      *
      * @return the 2nd element of this tuple
      */
-    public final T2 component2() {
+    public T2 component2() {
         return _2;
     }
 
@@ -150,7 +150,7 @@ public final class Tuple6<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      *
      * @return the 3rd element of this tuple
      */
-    public final T3 component3() {
+    public T3 component3() {
         return _3;
     }
 
@@ -159,7 +159,7 @@ public final class Tuple6<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      *
      * @return the 4th element of this tuple
      */
-    public final T4 component4() {
+    public T4 component4() {
         return _4;
     }
 
@@ -168,7 +168,7 @@ public final class Tuple6<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      *
      * @return the 5th element of this tuple
      */
-    public final T5 component5() {
+    public T5 component5() {
         return _5;
     }
 
@@ -177,7 +177,7 @@ public final class Tuple6<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      *
      * @return the 6th element of this tuple
      */
-    public final T6 component6() {
+    public T6 component6() {
         return _6;
     }
 
@@ -185,7 +185,7 @@ public final class Tuple6<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      * {@inheritDoc}
      */
     @Override
-    public final T1 head() {
+    public T1 head() {
         return _1;
     }
 
@@ -193,7 +193,7 @@ public final class Tuple6<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      * {@inheritDoc}
      */
     @Override
-    public final @NotNull Tuple5<T2, T3, T4, T5, T6> tail() {
+    public @NotNull Tuple5<T2, T3, T4, T5, T6> tail() {
         return of(_2, _3, _4, _5, _6);
     }
 
@@ -202,7 +202,7 @@ public final class Tuple6<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      */
     @Override
     @Contract("_ -> new")
-    public final <H> @NotNull Tuple7<H, T1, T2, T3, T4, T5, T6> cons(H head) {
+    public <H> @NotNull Tuple7<H, T1, T2, T3, T4, T5, T6> cons(H head) {
         return new Tuple7<>(head, _1, _2, _3, _4, _5, _6);
     }
 
@@ -210,7 +210,7 @@ public final class Tuple6<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      * {@inheritDoc}
      */
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -225,7 +225,7 @@ public final class Tuple6<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      * {@inheritDoc}
      */
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         int hash = 0;
         hash = 31 * hash + Objects.hashCode(_1);
         hash = 31 * hash + Objects.hashCode(_2);
@@ -240,7 +240,7 @@ public final class Tuple6<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      * {@inheritDoc}
      */
     @Override
-    public final String toString() {
+    public String toString() {
         return "(" + _1 + ", " + _2 + ", " + _3 + ", " + _4 + ", " + _5 + ", " + _6 + ")";
     }
 }

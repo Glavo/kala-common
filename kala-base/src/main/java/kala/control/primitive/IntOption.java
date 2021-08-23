@@ -57,11 +57,11 @@ public final class IntOption extends PrimitiveOption<Integer> implements IntTrav
         return optional.isPresent() ? some(optional.getAsInt()) : none();
     }
 
-    public final boolean isDefined() {
+    public boolean isDefined() {
         return this != None;
     }
 
-    public final boolean isEmpty() {
+    public boolean isEmpty() {
         return this == None;
     }
 
@@ -86,17 +86,17 @@ public final class IntOption extends PrimitiveOption<Integer> implements IntTrav
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         return this == None ? "OptionInt.None" : "OptionInt[" + value + "]";
     }
 
     @Override
-    public final @NotNull IntIterator iterator() {
+    public @NotNull IntIterator iterator() {
         return isDefined() ? IntIterator.of(value) : IntIterator.empty();
     }
 
     @Override
-    public final void forEachPrimitive(@NotNull IntConsumer action) {
+    public void forEachPrimitive(@NotNull IntConsumer action) {
         if (isDefined()) {
             action.accept(value);
         }
@@ -114,7 +114,7 @@ public final class IntOption extends PrimitiveOption<Integer> implements IntTrav
             this.value = value;
         }
 
-        final Object readResolve() {
+        Object readResolve() {
             return value == null ? None : some(value);
         }
     }

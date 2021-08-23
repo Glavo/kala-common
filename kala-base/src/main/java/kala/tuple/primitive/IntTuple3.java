@@ -1,7 +1,6 @@
 package kala.tuple.primitive;
 
 import kala.tuple.Tuple;
-import kala.annotations.DeprecatedReplaceWith;
 import kala.tuple.Tuple3;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,10 +12,7 @@ public final class IntTuple3 implements PrimitiveTuple {
     public final int _2;
     public final int _3;
 
-    @Deprecated
-    @DeprecatedReplaceWith("of(i1, i2, i3)")
-    @SuppressWarnings("DeprecatedIsStillUsed")
-    public IntTuple3(int i1, int i2, int i3) {
+    private IntTuple3(int i1, int i2, int i3) {
         _1 = i1;
         _2 = i2;
         _3 = i3;
@@ -27,28 +23,28 @@ public final class IntTuple3 implements PrimitiveTuple {
     }
 
     @Override
-    public final int arity() {
+    public int arity() {
         return 3;
     }
 
-    public final int component1() {
+    public int component1() {
         return _1;
     }
 
-    public final int component2() {
+    public int component2() {
         return _2;
     }
 
-    public final int component3() {
+    public int component3() {
         return _3;
     }
 
-    public final @NotNull Tuple3<@NotNull Integer, @NotNull Integer, @NotNull Integer> toTuple3() {
+    public @NotNull Tuple3<@NotNull Integer, @NotNull Integer, @NotNull Integer> toTuple3() {
         return Tuple.of(_1, _2, _3);
     }
 
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -62,7 +58,7 @@ public final class IntTuple3 implements PrimitiveTuple {
     }
 
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         int hash = 0;
         hash = 31 * hash + _1;
         hash = 31 * hash + _2;
@@ -71,7 +67,7 @@ public final class IntTuple3 implements PrimitiveTuple {
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         return "IntTuple3(" + _1 + ", " + _2 + ", " + _3 + ")";
     }
 }

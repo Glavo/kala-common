@@ -1,6 +1,6 @@
 package kala.collection.base.primitive;
 
-import kala.annotations.DeprecatedReplaceWith;
+import kala.annotations.ReplaceWith;
 import kala.collection.base.AnyTraversable;
 import kala.control.AnyOption;
 import org.jetbrains.annotations.NotNull;
@@ -112,7 +112,7 @@ public interface PrimitiveTraversable<
      */
     @Override
     @Deprecated
-    @DeprecatedReplaceWith("forEachPrimitive(action::accept)")
+    @ReplaceWith("forEachPrimitive(action::accept)")
     void forEach(@NotNull Consumer<? super T> action);
 
     void forEachPrimitive(@NotNull T_CONSUMER action);

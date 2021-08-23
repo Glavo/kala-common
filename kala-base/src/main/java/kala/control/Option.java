@@ -102,12 +102,12 @@ public final class Option<@Covariant T> extends AnyOption<T>
      *
      * @return {@code true} if the {@code Option} contain a value, otherwise {@code false}
      */
-    public final boolean isDefined() {
+    public boolean isDefined() {
         return this != None;
     }
 
     @Override
-    public final boolean isEmpty() {
+    public boolean isEmpty() {
         return this == None;
     }
 
@@ -118,7 +118,7 @@ public final class Option<@Covariant T> extends AnyOption<T>
      * @throws NoSuchElementException if the {@code Option} is empty
      */
     @Flow(sourceIsContainer = true)
-    public final T get() {
+    public T get() {
         if (this == None) {
             throw new NoSuchElementException("Option.None");
         }
@@ -130,7 +130,7 @@ public final class Option<@Covariant T> extends AnyOption<T>
      */
     @Override
     @Contract(value = "-> this", pure = true)
-    public final @NotNull Option<T> getOption() {
+    public @NotNull Option<T> getOption() {
         return this;
     }
 
@@ -139,7 +139,7 @@ public final class Option<@Covariant T> extends AnyOption<T>
      */
     @Override
     @Contract(value = "-> this", pure = true)
-    public final @NotNull Option<T> toOption() {
+    public @NotNull Option<T> toOption() {
         return this;
     }
 
@@ -147,27 +147,27 @@ public final class Option<@Covariant T> extends AnyOption<T>
      * {@inheritDoc}
      */
     @Override
-    public final <U> @NotNull Option<U> map(@NotNull Function<? super T, ? extends U> mapper) {
+    public <U> @NotNull Option<U> map(@NotNull Function<? super T, ? extends U> mapper) {
         return isDefined() ? some(mapper.apply(value)) : none();
     }
 
-    public final <U> Option<U> flatMap(@NotNull Function<? super T, ? extends Option<? extends U>> mapper) {
+    public <U> Option<U> flatMap(@NotNull Function<? super T, ? extends Option<? extends U>> mapper) {
         return isDefined() ? narrow(mapper.apply(value)) : none();
     }
 
-    public final @NotNull Option<T> filter(@NotNull Predicate<? super T> predicate) {
+    public @NotNull Option<T> filter(@NotNull Predicate<? super T> predicate) {
         return isDefined() && predicate.test(value) ? this : none();
     }
 
-    public final @NotNull Option<T> filterNot(@NotNull Predicate<? super T> predicate) {
+    public @NotNull Option<T> filterNot(@NotNull Predicate<? super T> predicate) {
         return isDefined() && !predicate.test(value) ? this : none();
     }
 
-    public final @NotNull Option<@NotNull T> filterNotNull() {
+    public @NotNull Option<@NotNull T> filterNotNull() {
         return value == null ? none() : this;
     }
 
-    public final @NotNull Tuple2<@NotNull Option<T>, @NotNull Option<T>> span(@NotNull Predicate<? super T> predicate) {
+    public @NotNull Tuple2<@NotNull Option<T>, @NotNull Option<T>> span(@NotNull Predicate<? super T> predicate) {
         if (isEmpty()) {
             return new Tuple2<>(none(), none());
         } else if (predicate.test(value)) {
@@ -182,7 +182,7 @@ public final class Option<@Covariant T> extends AnyOption<T>
      */
     @Override
     @Contract(pure = true)
-    public final boolean contains(Object value) {
+    public boolean contains(Object value) {
         return Objects.equals(this.value, value) && this != None;
     }
 
@@ -190,7 +190,7 @@ public final class Option<@Covariant T> extends AnyOption<T>
      * {@inheritDoc}
      */
     @Override
-    public final @NotNull Option<T> find(@NotNull Predicate<? super T> predicate) {
+    public @NotNull Option<T> find(@NotNull Predicate<? super T> predicate) {
         return isDefined() && predicate.test(value) ? this : none();
     }
 
@@ -200,12 +200,12 @@ public final class Option<@Covariant T> extends AnyOption<T>
      * @return {@code Optional.of(get())} if the {@code Option} contain a value, otherwise {@link Optional#empty()}
      * @throws NullPointerException if {@link #isDefined()} but value is {@code null}
      */
-    public final @NotNull Optional<T> asJava() {
+    public @NotNull Optional<T> asJava() {
         return this == None ? Optional.empty() : Optional.of(Objects.requireNonNull(value));
     }
 
     @Override
-    public final @NotNull Iterator<T> iterator() {
+    public @NotNull Iterator<T> iterator() {
         return this == None ? Iterators.empty() : Iterators.of(value);
     }
 
@@ -213,7 +213,7 @@ public final class Option<@Covariant T> extends AnyOption<T>
      * {@inheritDoc}
      */
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -229,7 +229,7 @@ public final class Option<@Covariant T> extends AnyOption<T>
      * {@inheritDoc}
      */
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         return this == None ? NONE_HASH : Objects.hashCode(value) + HASH_MAGIC;
     }
 
@@ -239,7 +239,7 @@ public final class Option<@Covariant T> extends AnyOption<T>
     @NotNull
     @Contract(pure = true)
     @Override
-    public final String toString() {
+    public String toString() {
         if (this == None) {
             return "Option.None";
         } else {

@@ -63,11 +63,11 @@ public final class BooleanOption extends PrimitiveOption<Boolean> implements Boo
         }
     }
 
-    public final boolean isDefined() {
+    public boolean isDefined() {
         return isDefined;
     }
 
-    public final boolean isEmpty() {
+    public boolean isEmpty() {
         return !isDefined;
     }
 
@@ -78,7 +78,7 @@ public final class BooleanOption extends PrimitiveOption<Boolean> implements Boo
      * @throws NoSuchElementException if the {@code Option} is empty
      */
     @Flow(sourceIsContainer = true)
-    public final boolean get() {
+    public boolean get() {
         if (isDefined) {
             return value;
         } else {
@@ -86,26 +86,26 @@ public final class BooleanOption extends PrimitiveOption<Boolean> implements Boo
         }
     }
 
-    public final @Nullable Boolean getOrNull() {
+    public @Nullable Boolean getOrNull() {
         return isDefined ? value : null;
     }
 
-    public final @NotNull BooleanOption getOption() {
+    public @NotNull BooleanOption getOption() {
         return this;
     }
 
     @Override
-    public final @NotNull BooleanIterator iterator() {
+    public @NotNull BooleanIterator iterator() {
         return isDefined ? BooleanIterator.of(value) : BooleanIterator.empty();
     }
 
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         return this == o;
     }
 
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         return this.hashCode;
     }
 
@@ -113,7 +113,7 @@ public final class BooleanOption extends PrimitiveOption<Boolean> implements Boo
      * {@inheritDoc}
      */
     @Override
-    public final String toString() {
+    public String toString() {
         return name;
     }
 

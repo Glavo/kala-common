@@ -6,7 +6,7 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 
 import kala.annotations.Covariant;
-import kala.annotations.DeprecatedReplaceWith;
+import kala.annotations.ReplaceWith;
 import kala.collection.base.Mappable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -24,7 +24,7 @@ public final class Tuple1<@Covariant T1> extends HList<T1, Unit> implements Mapp
      * The 1st element of this tuple.
      */
     @Deprecated
-    @DeprecatedReplaceWith("_1()")
+    @ReplaceWith("_1()")
     public final T1 _1;
 
     /**

@@ -1,6 +1,5 @@
 package kala.tuple.primitive;
 
-import kala.annotations.DeprecatedReplaceWith;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
@@ -14,10 +13,7 @@ public final class IntObjTuple2<T> implements PrimitiveTuple {
     public final int _1;
     public final T _2;
 
-    @Deprecated
-    @DeprecatedReplaceWith("of(i, t)")
-    @SuppressWarnings("DeprecatedIsStillUsed")
-    public IntObjTuple2(int i, T t) {
+    private IntObjTuple2(int i, T t) {
         _1 = i;
         _2 = t;
     }
@@ -27,24 +23,24 @@ public final class IntObjTuple2<T> implements PrimitiveTuple {
     }
 
     @Override
-    public final int arity() {
+    public int arity() {
         return 2;
     }
 
-    public final int component1() {
+    public int component1() {
         return _1;
     }
 
-    public final T component2() {
+    public T component2() {
         return _2;
     }
 
-    public final @NotNull Tuple2<@NotNull Integer, T> toTuple2() {
+    public @NotNull Tuple2<@NotNull Integer, T> toTuple2() {
         return Tuple.of(_1, _2);
     }
 
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -57,12 +53,12 @@ public final class IntObjTuple2<T> implements PrimitiveTuple {
     }
 
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         return 31 * _1 + Objects.hashCode(_2) + HASH_MAGIC;
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         return "IntObjTuple2(" + _1 + ", " + _2 + ")";
     }
 }

@@ -2,10 +2,8 @@ package kala.tuple.primitive;
 
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
-import kala.annotations.DeprecatedReplaceWith;
 import org.jetbrains.annotations.NotNull;
 
-@SuppressWarnings("DeprecatedIsStillUsed")
 public final class BooleanTuple2 implements PrimitiveTuple {
     private static final long serialVersionUID = 3436771981901568081L;
     private static final int HASH_MAGIC = -1290448591;
@@ -23,9 +21,7 @@ public final class BooleanTuple2 implements PrimitiveTuple {
     public final boolean _1;
     public final boolean _2;
 
-    @Deprecated
-    @DeprecatedReplaceWith("of(b1, b2)")
-    public BooleanTuple2(boolean b1, boolean b2) {
+    private BooleanTuple2(boolean b1, boolean b2) {
         _1 = b1;
         _2 = b2;
     }
@@ -39,24 +35,24 @@ public final class BooleanTuple2 implements PrimitiveTuple {
     }
 
     @Override
-    public final int arity() {
+    public int arity() {
         return 2;
     }
 
-    public final boolean component1() {
+    public boolean component1() {
         return _1;
     }
 
-    public final boolean component2() {
+    public boolean component2() {
         return _2;
     }
 
-    public final @NotNull Tuple2<@NotNull Boolean, @NotNull Boolean> toTuple2() {
+    public @NotNull Tuple2<@NotNull Boolean, @NotNull Boolean> toTuple2() {
         return Tuple.of(_1, _2);
     }
 
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -69,12 +65,12 @@ public final class BooleanTuple2 implements PrimitiveTuple {
     }
 
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         return 31 * Boolean.hashCode(_1) + Boolean.hashCode(_2) + HASH_MAGIC;
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         if (_1) {
             return _2 ? TT_S : TF_S;
         } else {
