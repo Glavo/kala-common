@@ -23,8 +23,6 @@ public final class Tuple1<@Covariant T1> extends HList<T1, Unit> implements Mapp
     /**
      * The 1st element of this tuple.
      */
-    @Deprecated
-    @ReplaceWith("_1()")
     public final T1 _1;
 
     /**
