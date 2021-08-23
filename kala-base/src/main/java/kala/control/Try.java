@@ -143,6 +143,10 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
 
     public abstract @Nullable Throwable getThrowableOrNull();
 
+    public final @NotNull Option<Throwable> getThrowableOption() {
+        return Option.of(getThrowableOrNull());
+    }
+
     public abstract @NotNull Success<T> recover(@NotNull Function<? super Throwable, ? extends T> op);
 
     public abstract @NotNull Try<T> recover(
@@ -198,7 +202,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          * {@inheritDoc}
          */
         @Override
-        public final boolean isSuccess() {
+        public boolean isSuccess() {
             return true;
         }
 
@@ -206,7 +210,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          * {@inheritDoc}
          */
         @Override
-        public final T get() {
+        public T get() {
             return value;
         }
 
@@ -214,7 +218,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          * {@inheritDoc}
          */
         @Override
-        public final @NotNull Throwable getThrowable() {
+        public @NotNull Throwable getThrowable() {
             throw new NoSuchElementException("Try.Success.getThrowable");
         }
 
@@ -222,7 +226,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          * {@inheritDoc}
          */
         @Override
-        public final @Nullable Throwable getThrowableOrNull() {
+        public @Nullable Throwable getThrowableOrNull() {
             return null;
         }
 
@@ -231,7 +235,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          */
         @Override
         @Contract("_-> this")
-        public final @NotNull Success<T> recover(@NotNull Function<? super Throwable, ? extends T> op) {
+        public @NotNull Success<T> recover(@NotNull Function<? super Throwable, ? extends T> op) {
             return this;
         }
 
@@ -240,7 +244,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          */
         @Override
         @Contract("_, _ -> this")
-        public final @NotNull Success<T> recover(
+        public @NotNull Success<T> recover(
                 @NotNull Class<? extends Throwable> type,
                 @NotNull Function<? super Throwable, ? extends T> op) {
             return this;
@@ -251,7 +255,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          */
         @Override
         @Contract("_ -> this")
-        public final @NotNull Success<T> recoverWith(@NotNull Function<? super Throwable, ? extends Try<? extends T>> op) {
+        public @NotNull Success<T> recoverWith(@NotNull Function<? super Throwable, ? extends Try<? extends T>> op) {
             return this;
         }
 
@@ -260,7 +264,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          */
         @Override
         @Contract("_, _ -> this")
-        public final @NotNull Success<T> recoverWith(
+        public @NotNull Success<T> recoverWith(
                 @NotNull Class<? extends Throwable> type,
                 @NotNull Function<? super Throwable, ? extends Try<? extends T>> op) {
             return this;
@@ -272,7 +276,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
         @NotNull
         @Override
         @Contract("-> this")
-        public final <E extends Throwable> Success<T> rethrow() throws E {
+        public <E extends Throwable> Success<T> rethrow() throws E {
             return this;
         }
 
@@ -281,13 +285,13 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          */
         @Override
         @Contract("_ -> this")
-        public final <E extends Throwable> @NotNull Success<T> rethrow(@NotNull Class<? extends E> type) throws E {
+        public <E extends Throwable> @NotNull Success<T> rethrow(@NotNull Class<? extends E> type) throws E {
             return this;
         }
 
         @Override
         @Contract("-> new")
-        public final @NotNull Either<@NotNull Throwable, T> toEither() {
+        public @NotNull Either<@NotNull Throwable, T> toEither() {
             return Either.right(value);
         }
 
@@ -295,7 +299,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          * {@inheritDoc}
          */
         @Override
-        public final <U> @NotNull Success<U> map(@NotNull Function<? super T, ? extends U> mapper) {
+        public <U> @NotNull Success<U> map(@NotNull Function<? super T, ? extends U> mapper) {
             return new Success<>(mapper.apply(value));
         }
 
@@ -303,7 +307,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          * {@inheritDoc}
          */
         @Override
-        public final boolean equals(Object o) {
+        public boolean equals(Object o) {
             if (this == o) {
                 return true;
             }
@@ -318,7 +322,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          * {@inheritDoc}
          */
         @Override
-        public final int hashCode() {
+        public int hashCode() {
             return Objects.hashCode(value) + HASH_MAGIC;
         }
 
@@ -326,7 +330,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          * {@inheritDoc}
          */
         @Override
-        public final String toString() {
+        public String toString() {
             return "Try.Success[" + value + "]";
         }
     }
@@ -346,7 +350,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          * {@inheritDoc}
          */
         @Override
-        public final boolean isSuccess() {
+        public boolean isSuccess() {
             return false;
         }
 
@@ -355,17 +359,17 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          */
         @Override
         @Contract("-> fail")
-        public final T get() {
+        public T get() {
             throw new NoSuchElementException("Try.Failure.get");
         }
 
         @Override
-        public final @NotNull Throwable getThrowable() {
+        public @NotNull Throwable getThrowable() {
             return throwable;
         }
 
         @Override
-        public final @NotNull Throwable getThrowableOrNull() {
+        public @NotNull Throwable getThrowableOrNull() {
             return throwable;
         }
 
@@ -374,7 +378,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          */
         @Override
         @Contract("_ -> new")
-        public final @NotNull Success<T> recover(@NotNull Function<? super Throwable, ? extends T> op) {
+        public @NotNull Success<T> recover(@NotNull Function<? super Throwable, ? extends T> op) {
             return Try.success(op.apply(throwable));
         }
 
@@ -382,7 +386,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          * {@inheritDoc}
          */
         @Override
-        public final @NotNull Try<T> recover(
+        public @NotNull Try<T> recover(
                 @NotNull Class<? extends Throwable> type,
                 @NotNull Function<? super Throwable, ? extends T> op) {
             if (type.isInstance(throwable)) {
@@ -395,7 +399,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          * {@inheritDoc}
          */
         @Override
-        public final @NotNull Try<T> recoverWith(@NotNull Function<? super Throwable, ? extends Try<? extends T>> op) {
+        public @NotNull Try<T> recoverWith(@NotNull Function<? super Throwable, ? extends Try<? extends T>> op) {
             return narrow(op.apply(throwable));
         }
 
@@ -403,7 +407,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          * {@inheritDoc}
          */
         @Override
-        public final @NotNull Try<T> recoverWith(
+        public @NotNull Try<T> recoverWith(
                 @NotNull Class<? extends Throwable> type,
                 @NotNull Function<? super Throwable, ? extends Try<? extends T>> op) {
             if (type.isInstance(throwable)) {
@@ -425,7 +429,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          * {@inheritDoc}
          */
         @Override
-        public final <E extends Throwable> @NotNull Failure<T> rethrow(@NotNull Class<? extends E> type) throws E {
+        public <E extends Throwable> @NotNull Failure<T> rethrow(@NotNull Class<? extends E> type) throws E {
             if (type.isInstance(throwable)) {
                 throw (E) throwable;
             }
@@ -434,7 +438,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
 
         @Override
         @Contract("-> new")
-        public final @NotNull Either<@NotNull Throwable, T> toEither() {
+        public @NotNull Either<@NotNull Throwable, T> toEither() {
             return Either.left(throwable);
         }
 
@@ -442,7 +446,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          * {@inheritDoc}
          */
         @Override
-        public final <U> @NotNull Failure<U> map(@NotNull Function<? super T, ? extends U> mapper) {
+        public <U> @NotNull Failure<U> map(@NotNull Function<? super T, ? extends U> mapper) {
             return (Failure<U>) this;
         }
 
@@ -450,7 +454,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          * {@inheritDoc}
          */
         @Override
-        public final boolean equals(Object o) {
+        public boolean equals(Object o) {
             if (this == o) {
                 return true;
             }
@@ -465,7 +469,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          * {@inheritDoc}
          */
         @Override
-        public final int hashCode() {
+        public int hashCode() {
             return throwable.hashCode() + HASH_MAGIC;
         }
 
@@ -473,7 +477,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          * {@inheritDoc}
          */
         @Override
-        public final String toString() {
+        public String toString() {
             return "Try.Failure[" + throwable + "]";
         }
     }

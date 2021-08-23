@@ -1,5 +1,6 @@
 package kala.tuple;
 
+import kala.collection.base.ObjectArrays;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -22,12 +23,12 @@ final class TupleXXL extends HList<Object, HList<?, ?>> {
     }
 
     @Override
-    public final int arity() {
+    public int arity() {
         return values.length;
     }
 
     @Override
-    public final <U> U elementAt(int index) {
+    public <U> U elementAt(int index) {
         try {
             return (U) values[index];
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -37,7 +38,7 @@ final class TupleXXL extends HList<Object, HList<?, ?>> {
 
     @Override
     @SuppressWarnings("rawtypes")
-    public final <H> @NotNull HList<H, TupleXXL> cons(H head) {
+    public <H> @NotNull HList<H, TupleXXL> cons(H head) {
         int arity = arity();
         Object[] arr = new Object[arity + 1];
         arr[0] = head;
@@ -46,25 +47,25 @@ final class TupleXXL extends HList<Object, HList<?, ?>> {
     }
 
     @Override
-    public final Object @NotNull [] toArray() {
+    public Object @NotNull [] toArray() {
         return values.clone();
     }
 
     @SuppressWarnings("SuspiciousSystemArraycopy")
     @Override
-    public final <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
+    public <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
         U[] arr = generator.apply(arity());
         System.arraycopy(values, 0, arr, 0, arity());
         return arr;
     }
 
     @Override
-    public final Object head() {
+    public Object head() {
         return values[0];
     }
 
     @Override
-    public final @NotNull HList<?, ?> tail() {
+    public @NotNull HList<?, ?> tail() {
         int arity = arity();
         if (arity == 10) {
             return new Tuple9<>(
@@ -75,7 +76,7 @@ final class TupleXXL extends HList<Object, HList<?, ?>> {
     }
 
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof TupleXXL)) {
             return false;
@@ -85,7 +86,7 @@ final class TupleXXL extends HList<Object, HList<?, ?>> {
     }
 
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         int hash = 0;
         for (Object value : values) {
             hash = hash * 31 + Objects.hashCode(value);
@@ -94,7 +95,7 @@ final class TupleXXL extends HList<Object, HList<?, ?>> {
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         final Object[] values = this.values;
         final int arity = values.length;
 

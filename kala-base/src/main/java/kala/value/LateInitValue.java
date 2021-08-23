@@ -10,7 +10,7 @@ public final class LateInitValue<T> implements Value<T> {
     private volatile boolean initialized = false;
     private T value;
 
-    public final void initialize(T value) {
+    public void initialize(T value) {
         if (initialized) {
             throw new IllegalStateException("Value is initialized");
         }
@@ -23,47 +23,29 @@ public final class LateInitValue<T> implements Value<T> {
         }
     }
 
-    public final boolean isInitialized() {
+    public boolean isInitialized() {
         return initialized;
     }
 
     @Override
-    public final T get() {
+    public T get() {
         if (!initialized) {
-            synchronized (this) {
-                if (!initialized) {
-                    throw new NoSuchElementException("Uninitialized LateInitValue");
-                }
-            }
+            throw new NoSuchElementException("Uninitialized LateInitValue");
         }
         return value;
     }
 
-    public final @Nullable T getOrNull() {
-        if (!initialized) {
-            synchronized (this) {
-                if (!initialized) {
-                    return null;
-                }
-            }
-        }
-        return value;
+    public @Nullable T getOrNull() {
+        return initialized ? value : null;
     }
 
 
-    public final @NotNull Option<T> getOption() {
-        if (!initialized) {
-            synchronized (this) {
-                if (!initialized) {
-                    return Option.none();
-                }
-            }
-        }
-        return Option.some(value);
+    public @NotNull Option<T> getOption() {
+        return initialized ? Option.some(value) : Option.none();
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         if (initialized) {
             return "LateInitValue[" + value + ']';
         } else {

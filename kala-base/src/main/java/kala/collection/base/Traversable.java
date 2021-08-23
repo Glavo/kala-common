@@ -204,9 +204,9 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
     }
 
     @Contract(value = "_, _ -> param1", mutates = "param1")
-    default <U, G extends Growable<@NotNull ? super U>> @NotNull G mapNotNullTo(
+    default <U, G extends Growable<? super U>> @NotNull G mapNotNullTo(
             @NotNull G destination,
-            @NotNull Function<? super T, @Nullable ? extends U> mapper) {
+            @NotNull Function<? super T, ? extends U> mapper) {
         for (T e : this) {
             U u = mapper.apply(e);
             if (u != null) {

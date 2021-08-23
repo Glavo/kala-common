@@ -1,8 +1,9 @@
 package kala.collection.base;
 
+import kala.annotations.Contravariant;
 import org.jetbrains.annotations.NotNull;
 
-public interface Growable<T> {
+public interface Growable<@Contravariant T> {
     
     void plusAssign(T value);
 

@@ -526,7 +526,8 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
 
     @Override
     default <G extends Growable<? super E>> @NotNull G filterTo(@NotNull G destination, @NotNull Predicate<? super E> predicate) {
-        for (int i = 0; i < this.size(); i++) {
+        final int size = this.size();
+        for (int i = 0; i < size; i++) {
             E e = this.get(i);
             if (predicate.test(e)) {
                 destination.plusAssign(e);
@@ -537,7 +538,8 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
 
     @Override
     default <G extends Growable<? super E>> @NotNull G filterNotTo(@NotNull G destination, @NotNull Predicate<? super E> predicate) {
-        for (int i = 0; i < this.size(); i++) {
+        final int size = this.size();
+        for (int i = 0; i < size; i++) {
             E e = this.get(i);
             if (!predicate.test(e)) {
                 destination.plusAssign(e);
@@ -548,7 +550,8 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
 
     @Override
     default <G extends Growable<? super E>> @NotNull G filterNotNullTo(@NotNull G destination) {
-        for (int i = 0; i < this.size(); i++) {
+        final int size = this.size();
+        for (int i = 0; i < size; i++) {
             E e = this.get(i);
             if (e != null) {
                 destination.plusAssign(e);
@@ -559,17 +562,19 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
 
     @Override
     default <U, G extends Growable<? super U>> @NotNull G mapTo(@NotNull G destination, @NotNull Function<? super E, ? extends U> mapper) {
-        for (int i = 0; i < this.size(); i++) {
+        final int size = this.size();
+        for (int i = 0; i < size; i++) {
             destination.plusAssign(mapper.apply(this.get(i)));
         }
         return destination;
     }
 
     @Override
-    default <U, G extends Growable<@NotNull ? super U>> @NotNull G mapNotNullTo(
+    default <U, G extends Growable<? super U>> @NotNull G mapNotNullTo(
             @NotNull G destination,
             @NotNull Function<? super E, ? extends U> mapper) {
-        for (int i = 0; i < this.size(); i++) {
+        final int size = this.size();
+        for (int i = 0; i < size; i++) {
             U u = mapper.apply(this.get(i));
             if (u != null) {
                 destination.plusAssign(u);
@@ -580,7 +585,8 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
 
     @Override
     default <U, G extends Growable<? super U>> @NotNull G mapIndexedTo(@NotNull G destination, @NotNull IndexedFunction<? super E, ? extends U> mapper) {
-        for (int i = 0; i < this.size(); i++) {
+        final int size = this.size();
+        for (int i = 0; i < size; i++) {
             destination.plusAssign(mapper.apply(i, this.get(i)));
         }
         return destination;
@@ -611,22 +617,28 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     default E max(Comparator<? super E> comparator) {
-        if (comparator == null) {
-            return max();
-        }
         final int size = size();
-
         if (size == 0) {
             throw new NoSuchElementException();
         }
 
         E res = get(0);
 
-        for (int i = 1; i < size; i++) {
-            E e = get(i);
-            if (comparator.compare(res, e) < 0) {
-                res = e;
+        if (comparator == null) {
+            for (int i = 1; i < size; i++) {
+                E e = get(i);
+                if (((Comparable<E>) res).compareTo(e) < 0) {
+                    res = e;
+                }
+            }
+        } else {
+            for (int i = 1; i < size; i++) {
+                E e = get(i);
+                if (comparator.compare(res, e) < 0) {
+                    res = e;
+                }
             }
         }
 
@@ -642,25 +654,30 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     default E min(Comparator<? super E> comparator) {
-        if (comparator == null) {
-            return min();
-        }
         final int size = size();
-
         if (size == 0) {
             throw new NoSuchElementException();
         }
 
         E res = get(0);
 
-        for (int i = 1; i < size; i++) {
-            E e = get(i);
-            if (comparator.compare(res, e) > 0) {
-                res = e;
+        if (comparator == null) {
+            for (int i = 1; i < size; i++) {
+                E e = get(i);
+                if (((Comparable<E>) res).compareTo(e) > 0) {
+                    res = e;
+                }
+            }
+        } else {
+            for (int i = 1; i < size; i++) {
+                E e = get(i);
+                if (comparator.compare(res, e) > 0) {
+                    res = e;
+                }
             }
         }
-
         return res;
     }
 
@@ -884,7 +901,7 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     }
 
     @Override
-    default <K, V>  kala.collection.@NotNull Map<K, V> associate(
+    default <K, V> kala.collection.@NotNull Map<K, V> associate(
             @NotNull Function<? super E, ? extends java.util.Map.Entry<? extends K, ? extends V>> transform) {
         final int size = this.size();
         if (size == 0) {
@@ -905,7 +922,7 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     }
 
     @Override
-    default <K>  kala.collection.@NotNull Map<K, E> associateBy(@NotNull Function<? super E, ? extends K> keySelector) {
+    default <K> kala.collection.@NotNull Map<K, E> associateBy(@NotNull Function<? super E, ? extends K> keySelector) {
         final int size = this.size();
         if (size == 0) {
             return kala.collection.Map.empty();
@@ -925,7 +942,7 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     }
 
     @Override
-    default <K, V>  kala.collection.@NotNull Map<K, V> associateBy(
+    default <K, V> kala.collection.@NotNull Map<K, V> associateBy(
             @NotNull Function<? super E, ? extends K> keySelector, @NotNull Function<? super E, ? extends V> valueTransform) {
         final int size = this.size();
         if (size == 0) {

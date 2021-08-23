@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
  * @author Glavo
  */
 public final class Unit extends EmptyTuple {
-
     private static final long serialVersionUID = -3636451611428514248L;
 
     public static final Unit INSTANCE = new Unit();

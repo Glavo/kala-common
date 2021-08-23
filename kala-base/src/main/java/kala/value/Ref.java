@@ -18,17 +18,17 @@ public final class Ref<T> implements MutableValue<T>, Serializable {
     }
 
     @Override
-    public final T get() {
+    public T get() {
         return value;
     }
 
     @Override
-    public final void set(T value) {
+    public void set(T value) {
         this.value = value;
     }
 
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -40,12 +40,12 @@ public final class Ref<T> implements MutableValue<T>, Serializable {
     }
 
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         return Objects.hash(value) + HASH_MAGIC;
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         return "Ref[" + value + "]";
     }
 }
