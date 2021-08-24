@@ -38,6 +38,10 @@ public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E> {
         return factory();
     }
 
+    static <E> @NotNull Seq<E> empty() {
+        return ImmutableSeq.empty();
+    }
+
     static <E> @NotNull Seq<E> of() {
         return ImmutableSeq.of();
     }
