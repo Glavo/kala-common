@@ -1558,12 +1558,12 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
             if (len <= 1) {
                 return;
             }
-            Builder<E> newBuffer = new DynamicLinkedSeq<>();
+            Builder<E> newBuilder = new DynamicLinkedSeq<>();
             for (E e : this) {
-                newBuffer.prepend(e);
+                newBuilder.prepend(e);
             }
-            this.first = newBuffer.first;
-            this.last = newBuffer.last;
+            this.first = newBuilder.first;
+            this.last = newBuilder.last;
             this.aliased = false;
         }
 

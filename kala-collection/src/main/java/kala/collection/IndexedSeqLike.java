@@ -7,7 +7,6 @@ import kala.collection.immutable.ImmutableMap;
 import kala.collection.immutable.ImmutableLinkedSeq;
 import kala.collection.internal.view.IndexedSeqViews;
 import kala.collection.base.Growable;
-import kala.collection.mutable.DynamicLinkedSeq;
 import kala.control.Option;
 import kala.function.IndexedBiFunction;
 import kala.function.IndexedConsumer;
@@ -42,12 +41,12 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
             private int idx = 0;
 
             @Override
-            public final boolean hasNext() {
+            public boolean hasNext() {
                 return idx < size;
             }
 
             @Override
-            public final E next() {
+            public E next() {
                 if (idx >= size) {
                     throw new NoSuchElementException();
                 }
@@ -69,12 +68,12 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
             private int idx = beginIndex;
 
             @Override
-            public final boolean hasNext() {
+            public boolean hasNext() {
                 return idx < size;
             }
 
             @Override
-            public final E next() {
+            public E next() {
                 if (idx >= size) {
                     throw new NoSuchElementException();
                 }
@@ -140,12 +139,12 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
             private int idx = size() - 1;
 
             @Override
-            public final boolean hasNext() {
+            public boolean hasNext() {
                 return idx >= 0;
             }
 
             @Override
-            public final E next() {
+            public E next() {
                 if (idx < 0) {
                     throw new NoSuchElementException();
                 }
@@ -874,15 +873,13 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     default @NotNull ImmutableLinkedSeq<E> toImmutableLinkedSeq() {
         final int size = size();
 
-        if (size == 0) {
-            return ImmutableLinkedSeq.empty();
+        ImmutableLinkedSeq.Node<E> node = ImmutableLinkedSeq.nilNode();
+
+        for (int i = size - 1; i >= 0; i--) {
+            node = node.cons(this.get(i));
         }
 
-        final DynamicLinkedSeq<E> builder = new DynamicLinkedSeq<>();
-        for (int i = 0; i < size; i++) {
-            builder.append(this.get(i));
-        }
-        return builder.toImmutableLinkedSeq();
+        return ImmutableLinkedSeq.Unsafe.build(node, size);
     }
 
     @Override
