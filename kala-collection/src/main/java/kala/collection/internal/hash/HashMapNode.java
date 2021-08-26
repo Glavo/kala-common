@@ -75,7 +75,7 @@ public class HashMapNode<K, V> implements java.util.Map.Entry<K, V> {
         HashMapNode<K, V> node = this;
         while (true) {
             final HashMapNode<K, V> nextNode = node.next;
-            builder.append(node.toString());
+            builder.append(node);
 
             if (nextNode == null) {
                 break;

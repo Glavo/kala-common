@@ -4,6 +4,7 @@ import kala.collection.base.Iterators;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.immutable.ImmutableSet;
 import kala.collection.internal.convert.AsJavaConvert;
+import kala.collection.internal.convert.FromJavaConvert;
 import kala.collection.internal.view.SetViews;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,9 +15,17 @@ import java.util.function.Predicate;
 
 public interface Set<E> extends Collection<E>, SetLike<E> {
 
+    //region Static Factories
+
     static <E> CollectionFactory<E, ?, Set<E>> factory() {
         return CollectionFactory.narrow(ImmutableSet.factory());
     }
+
+    static <E> @NotNull Set<E> wrapJava(java.util.@NotNull Set<E> source) {
+        return new FromJavaConvert.SetFromJava<>(source);
+    }
+
+    //endregion
 
     static int hashCode(@NotNull Set<?> set) {
         int h = SET_HASH_MAGIC;

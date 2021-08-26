@@ -9,17 +9,17 @@ final class BooleanPredicates {
         private static final long serialVersionUID = 0L;
 
         @Override
-        public final boolean test(boolean v) {
+        public boolean test(boolean v) {
             return v;
         }
 
         @Override
-        public final @NotNull BooleanPredicate negate() {
+        public @NotNull BooleanPredicate negate() {
             return BooleanPredicate.IS_FALSE;
         }
 
         @Override
-        public final String toString() {
+        public String toString() {
             return "BooleanPredicate.IS_TRUE";
         }
 
@@ -32,17 +32,17 @@ final class BooleanPredicates {
         private static final long serialVersionUID = 0L;
 
         @Override
-        public final boolean test(boolean v) {
+        public boolean test(boolean v) {
             return !v;
         }
 
         @Override
-        public final @NotNull BooleanPredicate negate() {
+        public @NotNull BooleanPredicate negate() {
             return BooleanPredicate.IS_TRUE;
         }
 
         @Override
-        public final String toString() {
+        public String toString() {
             return "BooleanPredicate.IS_FALSE";
         }
 

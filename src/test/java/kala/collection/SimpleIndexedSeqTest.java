@@ -3,10 +3,23 @@ package kala.collection;
 import kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class IndexedSeqTest implements SeqTestTemplate {
+public final class SimpleIndexedSeqTest implements SeqTestTemplate {
+    @Override
+    public void ofTest() {
+    }
+
+    @Override
+    public void fromTest() {
+    }
+
+    @Override
+    public void serializationTest() {
+    }
+
     @Override
     public <E> CollectionFactory<E, ?, ? extends Seq<? extends E>> factory() {
         return new CollectionFactory<E, ArrayList<E>, IndexedSeq<E>>() {

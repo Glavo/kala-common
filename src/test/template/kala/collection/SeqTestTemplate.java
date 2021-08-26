@@ -1,5 +1,6 @@
 package kala.collection;
 
+import kala.SerializationUtils;
 import kala.collection.immutable.ImmutableArray;
 import kala.collection.immutable.ImmutableLinkedSeq;
 import kala.collection.immutable.ImmutableVector;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
 
+import java.io.IOException;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -146,7 +148,16 @@ public interface SeqTestTemplate extends CollectionTestTemplate, SeqLikeTestTemp
             assertEquals(ImmutableVector.from(data), factory().from(data));
             assertEquals(MutableArray.from(data), factory().from(data));
         }
+    }
 
+    @Test
+    default void serializationTest() throws IOException, ClassNotFoundException {
+        assertEquals(of(), SerializationUtils.writeAndRead(of()));
+        assertEquals(of(0), SerializationUtils.writeAndRead(of(0)));
+        assertEquals(of(0, 1, 2), SerializationUtils.writeAndRead(of(0, 1, 2)));
 
+        for (String[] data : data1s()) {
+            assertEquals(from(data), SerializationUtils.writeAndRead(from(data)));
+        }
     }
 }

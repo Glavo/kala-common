@@ -3,6 +3,7 @@ package kala.collection.internal.convert;
 import kala.collection.IndexedSeq;
 import kala.collection.mutable.*;
 import kala.control.Option;
+import kala.internal.InternalIdentifyObject;
 import kala.tuple.Tuple2;
 import kala.annotations.StaticClass;
 import kala.collection.base.MapIterator;
@@ -16,6 +17,8 @@ import java.util.stream.Stream;
 
 @StaticClass
 public final class FromJavaConvert {
+    private static final Object NULL_HOLE = new InternalIdentifyObject();
+
     public static class CollectionFromJava<E> extends kala.collection.AbstractCollection<E> implements kala.collection.Collection<E> {
         protected final @NotNull java.util.Collection<E> source;
 
@@ -108,12 +111,12 @@ public final class FromJavaConvert {
                 private final java.util.ListIterator<E> it = source.listIterator(source.size());
 
                 @Override
-                public final boolean hasNext() {
+                public boolean hasNext() {
                     return it.hasPrevious();
                 }
 
                 @Override
-                public final E next() {
+                public E next() {
                     return it.previous();
                 }
             };
@@ -258,6 +261,7 @@ public final class FromJavaConvert {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static class MapFromJava<K, V> extends kala.collection.AbstractMap<K, V> {
         protected final java.util.Map<K, V> source;
 
@@ -293,12 +297,14 @@ public final class FromJavaConvert {
 
         //endregion
 
+
         @Override
         public V get(K key) {
-            if (!source.containsKey(key)) {
+            final Object res = ((Map<Object, Object>) source).getOrDefault(key, NULL_HOLE);
+            if (res == NULL_HOLE) {
                 throw new NoSuchElementException();
             }
-            return source.get(key);
+            return (V) res;
         }
 
         @Override
@@ -308,9 +314,8 @@ public final class FromJavaConvert {
 
         @Override
         public @NotNull Option<V> getOption(K key) {
-            return source.containsKey(key)
-                    ? Option.some(source.get(key))
-                    : Option.none();
+            final Object res = ((Map<Object, Object>) source).getOrDefault(key, NULL_HOLE);
+            return res == NULL_HOLE ? Option.none() : Option.some((V) res);
         }
 
         @Override
@@ -320,6 +325,7 @@ public final class FromJavaConvert {
 
         @Override
         public boolean containsValue(Object value) {
+            //noinspection SuspiciousMethodCalls
             return source.containsValue(value);
         }
 
@@ -360,6 +366,11 @@ public final class FromJavaConvert {
         }
 
         @Override
+        public boolean replace(K key, V oldValue, V newValue) {
+            return source.replace(key, oldValue, newValue);
+        }
+
+        @Override
         public final void clear() {
             source.clear();
         }
@@ -368,13 +379,13 @@ public final class FromJavaConvert {
         public final @NotNull MutableSet<Tuple2<K, V>> asMutableSet() {
             return new AbstractMutableSet<Tuple2<K, V>>() {
                 @Override
-                public final boolean add(@NotNull Tuple2<K, V> value) {
+                public boolean add(@NotNull Tuple2<K, V> value) {
                     return MutableMapFromJava.this.put(value._1, value._2).isDefined();
                 }
 
                 @Override
                 @SuppressWarnings("unchecked")
-                public final boolean remove(Object value) {
+                public boolean remove(Object value) {
                     if (!(value instanceof Tuple2)) {
                         return false;
                     }
@@ -388,12 +399,12 @@ public final class FromJavaConvert {
                 }
 
                 @Override
-                public final void clear() {
+                public void clear() {
                     source.clear();
                 }
 
                 @Override
-                public final @NotNull Iterator<Tuple2<K, V>> iterator() {
+                public @NotNull Iterator<Tuple2<K, V>> iterator() {
                     return MutableMapFromJava.this.iterator();
                 }
             };

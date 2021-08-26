@@ -9,21 +9,18 @@ public final class HashMapNodeIterator<K, V> extends AbstractIterator<HashMapNod
     private HashMapNode<K, V> node = null;
 
     private final HashMapNode<K, V>[] table;
-    private final int len;
 
     public HashMapNodeIterator(HashMapNode<K, V>[] table) {
         this.table = table;
-        this.len = table.length;
     }
 
     @Override
-    public final boolean hasNext() {
+    public boolean hasNext() {
         if (node != null) {
             return true;
         }
-        while (i < len) {
-            HashMapNode<K, V> n = table[i];
-            i += 1;
+        while (i < table.length) {
+            HashMapNode<K, V> n = table[i++];
             if (n != null) {
                 node = n;
                 return true;
@@ -32,11 +29,11 @@ public final class HashMapNodeIterator<K, V> extends AbstractIterator<HashMapNod
         return false;
     }
 
-    public final HashMapNode<K, V> next() {
+    public HashMapNode<K, V> next() {
         if (!hasNext()) {
             throw new NoSuchElementException();
         }
-        HashMapNode<K, V> oldNode = this.node;
+        final HashMapNode<K, V> oldNode = this.node;
         this.node = oldNode.next;
         return oldNode;
     }

@@ -5,6 +5,7 @@ import kala.collection.ViewTestTemplate;
 import kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.*;
 
 public final class SimpleImmutableSeqTest implements ImmutableSeqTestTemplate {
@@ -15,6 +16,10 @@ public final class SimpleImmutableSeqTest implements ImmutableSeqTestTemplate {
 
     @Override
     public void fromTest() {
+    }
+
+    @Override
+    public void serializationTest() {
     }
 
     @Override

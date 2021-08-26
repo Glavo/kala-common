@@ -17,14 +17,19 @@ import java.util.function.Predicate;
 @SuppressWarnings("unchecked")
 public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<E> {
 
+
     @Contract(value = "_ -> param1", pure = true)
     static <E> ImmutableSet<E> narrow(ImmutableSet<? extends E> set) {
         return (ImmutableSet<E>) set;
     }
 
+    //region Static Factories
+
     static <E> CollectionFactory<E, ?, ? extends ImmutableSet<E>> factory() {
         throw new UnsupportedOperationException();// TODO
     }
+
+    //endregion
 
     @Override
     default @NotNull String className() {

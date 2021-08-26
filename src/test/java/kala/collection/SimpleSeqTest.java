@@ -5,6 +5,7 @@ import kala.collection.mutable.ArrayBuffer;
 import kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -41,6 +42,10 @@ public final class SimpleSeqTest implements SeqTestTemplate {
 
     @Override
     public void fromTest() {
+    }
+
+    @Override
+    public void serializationTest() {
     }
 
     static final class SimpleSeq<E> extends AbstractSeq<E> {

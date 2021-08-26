@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.RandomAccess;
@@ -26,7 +27,9 @@ import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
-        implements ImmutableSeqOps<E, ImmutableSizedLinkedSeq<?>, ImmutableSizedLinkedSeq<E>> {
+        implements ImmutableSeqOps<E, ImmutableSizedLinkedSeq<?>, ImmutableSizedLinkedSeq<E>>, Serializable {
+    private static final long serialVersionUID = 4185879054671961536L;
+
     private static final Factory<?> FACTORY = new Factory<>();
 
     private static final ImmutableSizedLinkedSeq<?> EMPTY = new ImmutableSizedLinkedSeq<>(ImmutableLinkedSeq.NIL, 0);
@@ -668,6 +671,7 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         if (other instanceof RandomAccess) {
+            //noinspection ForLoopReplaceableByForEach
             for (int i = 0; i < otherSize; i++) {
                 ImmutableLinkedSeq<E> nl = new ImmutableLinkedSeq<>(other.get(i));
                 t.tail = nl;
@@ -794,7 +798,7 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
 
     @Override
     public @NotNull <U, Ex extends Throwable> ImmutableSizedLinkedSeq<@NotNull U> mapIndexedNotNullChecked(
-            @NotNull CheckedIndexedFunction<? super E, @Nullable ? extends U, ? extends Ex> mapper) {
+            @NotNull CheckedIndexedFunction<? super E, ? extends @Nullable U, ? extends Ex> mapper) {
         return mapIndexedNotNull(mapper);
     }
 
@@ -844,6 +848,23 @@ public final class ImmutableSizedLinkedSeq<E> extends AbstractImmutableSeq<E>
     @Override
     public @NotNull ImmutableSizedLinkedSeq<E> toImmutableSizedLinkedSeq() {
         return this;
+    }
+
+    private Object writeReplace() {
+        return this == EMPTY ? EmptyReplaced.INSTANCE : this;
+    }
+
+    static final class EmptyReplaced implements Serializable {
+        private static final long serialVersionUID = 0L;
+
+        static final EmptyReplaced INSTANCE = new EmptyReplaced();
+
+        private EmptyReplaced() {
+        }
+
+        private Object readResolve() {
+            return EMPTY;
+        }
     }
 
     static final class Factory<E> implements CollectionFactory<E, LinkedBuffer<E>, ImmutableSizedLinkedSeq<E>> {
