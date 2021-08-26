@@ -267,8 +267,8 @@ public final class AsJavaConvert {
         }
     }
 
-    public static class BufferAsJava<E, C extends Buffer<E>> extends MutableSeqAsJava<E, C> {
-        public BufferAsJava(@NotNull C source) {
+    public static class DynamicSeqAsJava<E, C extends DynamicSeq<E>> extends MutableSeqAsJava<E, C> {
+        public DynamicSeqAsJava(@NotNull C source) {
             super(source);
         }
 
@@ -300,9 +300,9 @@ public final class AsJavaConvert {
         }
     }
 
-    public static class IndexedBufferAsJava<E, C extends Buffer<E>>
-            extends BufferAsJava<E, C> implements RandomAccess {
-        public IndexedBufferAsJava(@NotNull C source) {
+    public static class DynamicIndexedSeqAsJava<E, C extends DynamicSeq<E>>
+            extends DynamicSeqAsJava<E, C> implements RandomAccess {
+        public DynamicIndexedSeqAsJava(@NotNull C source) {
             super(source);
         }
     }

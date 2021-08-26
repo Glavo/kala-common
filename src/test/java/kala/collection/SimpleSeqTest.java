@@ -1,11 +1,10 @@
 package kala.collection;
 
-import kala.collection.internal.ArrayBufferBasedFactory;
-import kala.collection.mutable.ArrayBuffer;
+import kala.collection.internal.DynamicArrayBasedFactory;
+import kala.collection.mutable.DynamicArray;
 import kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -61,11 +60,11 @@ public final class SimpleSeqTest implements SeqTestTemplate {
         }
     }
 
-    static final class SimpleFactory<E> extends ArrayBufferBasedFactory<E, SimpleSeq<E>> {
+    static final class SimpleFactory<E> extends DynamicArrayBasedFactory<E, SimpleSeq<E>> {
         static final SimpleFactory<?> INSTANCE = new SimpleFactory<>();
 
         @Override
-        public SimpleSeq<E> build(ArrayBuffer<E> builder) {
+        public SimpleSeq<E> build(DynamicArray<E> builder) {
             return new SimpleSeq<>(List.copyOf(builder.asJava()));
         }
     }

@@ -16,7 +16,7 @@ import kala.tuple.Tuple2;
 import kala.tuple.primitive.IntObjTuple2;
 import kala.tuple.primitive.PrimitiveTuple;
 import kala.Conditions;
-import kala.collection.mutable.ArrayBuffer;
+import kala.collection.mutable.DynamicArray;
 import kala.comparator.Comparators;
 import kala.collection.base.AbstractIterator;
 import org.jetbrains.annotations.NotNull;
@@ -623,13 +623,13 @@ public final class SeqViews {
                 Iterator<E> it = source.iterator();
                 int len = -1;
                 int pos = 0;
-                ArrayBuffer<E> buf = null;
+                DynamicArray<E> buf = null;
 
                 private void init() {
                     if (buf != null) {
                         return;
                     }
-                    buf = new ArrayBuffer<>(Integer.min(n, 256));
+                    buf = new DynamicArray<>(Integer.min(n, 256));
                     len = 0;
                     while (it.hasNext()) {
                         E next = it.next();

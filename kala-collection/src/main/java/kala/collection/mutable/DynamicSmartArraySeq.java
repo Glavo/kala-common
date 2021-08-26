@@ -19,7 +19,7 @@ import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements IndexedSeq<E>, Serializable {
+public final class DynamicSmartArraySeq<E> extends AbstractDynamicSeq<E> implements IndexedSeq<E>, Serializable {
     private static final long serialVersionUID = 85150510977824651L;
 
     private static final int DEFAULT_CAPACITY = 16;
@@ -30,69 +30,69 @@ public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements Inde
 
     private int size = 0;
 
-    private SmartArrayBuffer(int size, Object[] elements) {
+    private DynamicSmartArraySeq(int size, Object[] elements) {
         this.size = size;
         this.elem = elements;
     }
 
-    public SmartArrayBuffer() {
+    public DynamicSmartArraySeq() {
     }
 
     //region Static Factories
 
-    public static <E> @NotNull CollectionFactory<E, ?, SmartArrayBuffer<E>> factory() {
+    public static <E> @NotNull CollectionFactory<E, ?, DynamicSmartArraySeq<E>> factory() {
         return (Factory<E>) FACTORY;
     }
 
-    public static <E> @NotNull Collector<E, ?, SmartArrayBuffer<E>> collector() {
+    public static <E> @NotNull Collector<E, ?, DynamicSmartArraySeq<E>> collector() {
         return factory();
     }
 
     @Contract("-> new")
-    public static <E> @NotNull SmartArrayBuffer<E> of() {
-        return new SmartArrayBuffer<>();
+    public static <E> @NotNull DynamicSmartArraySeq<E> of() {
+        return new DynamicSmartArraySeq<>();
     }
 
     @Contract("_ -> new")
-    public static <E> @NotNull SmartArrayBuffer<E> of(E value1) {
-        SmartArrayBuffer<E> buffer = new SmartArrayBuffer<>();
+    public static <E> @NotNull DynamicSmartArraySeq<E> of(E value1) {
+        DynamicSmartArraySeq<E> buffer = new DynamicSmartArraySeq<>();
         buffer.size = 1;
         buffer.elem = value1;
         return buffer;
     }
 
     @Contract("_, _ -> new")
-    public static <E> @NotNull SmartArrayBuffer<E> of(E value1, E value2) {
+    public static <E> @NotNull DynamicSmartArraySeq<E> of(E value1, E value2) {
         Object[] arr = new Object[DEFAULT_CAPACITY];
         arr[0] = value1;
         arr[1] = value2;
 
-        return new SmartArrayBuffer<>(2, arr);
+        return new DynamicSmartArraySeq<>(2, arr);
     }
 
     @Contract("_, _, _ -> new")
-    public static <E> @NotNull SmartArrayBuffer<E> of(E value1, E value2, E value3) {
+    public static <E> @NotNull DynamicSmartArraySeq<E> of(E value1, E value2, E value3) {
         Object[] arr = new Object[DEFAULT_CAPACITY];
         arr[0] = value1;
         arr[1] = value2;
         arr[2] = value3;
 
-        return new SmartArrayBuffer<>(3, arr);
+        return new DynamicSmartArraySeq<>(3, arr);
     }
 
     @Contract("_, _, _, _ -> new")
-    public static <E> @NotNull SmartArrayBuffer<E> of(E value1, E value2, E value3, E value4) {
+    public static <E> @NotNull DynamicSmartArraySeq<E> of(E value1, E value2, E value3, E value4) {
         Object[] arr = new Object[DEFAULT_CAPACITY];
         arr[0] = value1;
         arr[1] = value2;
         arr[2] = value3;
         arr[3] = value4;
 
-        return new SmartArrayBuffer<>(4, arr);
+        return new DynamicSmartArraySeq<>(4, arr);
     }
 
     @Contract("_, _, _, _, _ -> new")
-    public static <E> @NotNull SmartArrayBuffer<E> of(E value1, E value2, E value3, E value4, E value5) {
+    public static <E> @NotNull DynamicSmartArraySeq<E> of(E value1, E value2, E value3, E value4, E value5) {
         Object[] arr = new Object[DEFAULT_CAPACITY];
         arr[0] = value1;
         arr[1] = value2;
@@ -100,54 +100,54 @@ public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements Inde
         arr[3] = value4;
         arr[4] = value5;
 
-        return new SmartArrayBuffer<>(5, arr);
+        return new DynamicSmartArraySeq<>(5, arr);
     }
 
     @Contract("_ -> new")
-    public static <E> @NotNull SmartArrayBuffer<E> of(E... values) {
+    public static <E> @NotNull DynamicSmartArraySeq<E> of(E... values) {
         return from(values);
     }
 
     @Contract("_ -> new")
-    public static <E> @NotNull SmartArrayBuffer<E> from(E @NotNull [] values) {
+    public static <E> @NotNull DynamicSmartArraySeq<E> from(E @NotNull [] values) {
         final int length = values.length; // implicit null check of values
         switch (length) {
             case 0:
-                return new SmartArrayBuffer<>();
+                return new DynamicSmartArraySeq<>();
             case 1:
-                return SmartArrayBuffer.of(values[0]);
+                return DynamicSmartArraySeq.of(values[0]);
             default:
-                return new SmartArrayBuffer<>(
+                return new DynamicSmartArraySeq<>(
                         length,
                         Arrays.copyOf(values, Math.max(length, DEFAULT_CAPACITY), Object[].class)
                 );
         }
     }
 
-    public static <E> @NotNull SmartArrayBuffer<E> from(@NotNull Iterable<? extends E> values) {
-        SmartArrayBuffer<E> buffer = new SmartArrayBuffer<>();
+    public static <E> @NotNull DynamicSmartArraySeq<E> from(@NotNull Iterable<? extends E> values) {
+        DynamicSmartArraySeq<E> buffer = new DynamicSmartArraySeq<>();
         buffer.appendAll(values);
         return buffer;
     }
 
-    public static <E> @NotNull SmartArrayBuffer<E> from(@NotNull Iterator<? extends E> it) {
-        SmartArrayBuffer<E> buffer = new SmartArrayBuffer<>();
+    public static <E> @NotNull DynamicSmartArraySeq<E> from(@NotNull Iterator<? extends E> it) {
+        DynamicSmartArraySeq<E> buffer = new DynamicSmartArraySeq<>();
         while (it.hasNext()) {
             buffer.append(it.next());
         }
         return buffer;
     }
 
-    public static <E> @NotNull SmartArrayBuffer<E> from(@NotNull Stream<? extends E> stream) {
+    public static <E> @NotNull DynamicSmartArraySeq<E> from(@NotNull Stream<? extends E> stream) {
         return stream.collect(factory());
     }
 
-    public static <E> @NotNull SmartArrayBuffer<E> fill(int n, E value) {
+    public static <E> @NotNull DynamicSmartArraySeq<E> fill(int n, E value) {
         if (n <= 0) {
-            return new SmartArrayBuffer<>();
+            return new DynamicSmartArraySeq<>();
         }
         if (n == 1) {
-            return SmartArrayBuffer.of(value);
+            return DynamicSmartArraySeq.of(value);
         }
 
         Object[] arr = new Object[Integer.max(DEFAULT_CAPACITY, n)];
@@ -155,37 +155,37 @@ public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements Inde
             Arrays.fill(arr, 0, n, value);
         }
 
-        return new SmartArrayBuffer<>(n, arr);
+        return new DynamicSmartArraySeq<>(n, arr);
     }
 
-    public static <E> @NotNull SmartArrayBuffer<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+    public static <E> @NotNull DynamicSmartArraySeq<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
         if (n <= 0) {
-            return new SmartArrayBuffer<>();
+            return new DynamicSmartArraySeq<>();
         }
         if (n == 1) {
-            return SmartArrayBuffer.of(supplier.get());
+            return DynamicSmartArraySeq.of(supplier.get());
         }
 
         Object[] arr = new Object[Integer.max(DEFAULT_CAPACITY, n)];
         for (int i = 0; i < n; i++) {
             arr[i] = supplier.get();
         }
-        return new SmartArrayBuffer<>(n, arr);
+        return new DynamicSmartArraySeq<>(n, arr);
     }
 
-    public static <E> @NotNull SmartArrayBuffer<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+    public static <E> @NotNull DynamicSmartArraySeq<E> fill(int n, @NotNull IntFunction<? extends E> init) {
         if (n <= 0) {
-            return new SmartArrayBuffer<>();
+            return new DynamicSmartArraySeq<>();
         }
         if (n == 1) {
-            return SmartArrayBuffer.of(init.apply(0));
+            return DynamicSmartArraySeq.of(init.apply(0));
         }
 
         Object[] arr = new Object[Integer.max(DEFAULT_CAPACITY, n)];
         for (int i = 0; i < n; i++) {
             arr[i] = init.apply(i);
         }
-        return new SmartArrayBuffer<>(n, arr);
+        return new DynamicSmartArraySeq<>(n, arr);
     }
 
     //endregion
@@ -222,12 +222,12 @@ public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements Inde
     //region Collection Operations
 
     @Override
-    public final @NotNull String className() {
-        return "SmartArrayBuffer";
+    public @NotNull String className() {
+        return "DynamicSmartArraySeq";
     }
 
     @Override
-    public final @NotNull Iterator<E> iterator() {
+    public @NotNull Iterator<E> iterator() {
         final int size = this.size;
         switch (size) {
             case 0:
@@ -240,7 +240,7 @@ public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements Inde
     }
 
     @Override
-    public final @NotNull Spliterator<E> spliterator() {
+    public @NotNull Spliterator<E> spliterator() {
         final int size = this.size;
         switch (size) {
             case 0:
@@ -256,19 +256,19 @@ public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements Inde
     //endregion
 
     @Override
-    public final boolean isEmpty() {
+    public boolean isEmpty() {
         return size == 0;
     }
 
     @Override
-    public final int size() {
+    public int size() {
         return this.size;
     }
 
     //region Positional Access Operations
 
     @Override
-    public final E get(int index) {
+    public E get(int index) {
         final int size = this.size;
         Conditions.checkElementIndex(index, size);
         if (size == 1) {
@@ -279,7 +279,7 @@ public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements Inde
     }
 
     @Override
-    public final E getOrNull(int index) {
+    public E getOrNull(int index) {
         final int size = this.size;
         if (index < 0 || index >= size) {
             return null;
@@ -292,7 +292,7 @@ public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements Inde
     }
 
     @Override
-    public final @NotNull Option<E> getOption(int index) {
+    public @NotNull Option<E> getOption(int index) {
         final int size = this.size;
         if (index < 0 || index >= size) {
             return Option.none();
@@ -305,7 +305,7 @@ public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements Inde
     }
 
     @Override
-    public final void set(int index, E newValue) {
+    public void set(int index, E newValue) {
         final int size = this.size;
         Conditions.checkElementIndex(index, size);
         if (size == 1) {
@@ -316,7 +316,7 @@ public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements Inde
     }
 
     @Override
-    public final void insert(int index, E value) {
+    public void insert(int index, E value) {
         final int oldSize = this.size;
         Conditions.checkPositionIndex(index, oldSize);
 
@@ -340,7 +340,7 @@ public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements Inde
     }
 
     @Override
-    public final E removeAt(int index) {
+    public E removeAt(int index) {
         final int oldSize = this.size;
         Conditions.checkElementIndex(index, oldSize);
         E res;
@@ -359,7 +359,7 @@ public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements Inde
     }
 
     @Override
-    public final void clear() {
+    public void clear() {
         size = 0;
         elem = null;
     }
@@ -369,7 +369,7 @@ public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements Inde
     //region Modification Operations
 
     @Override
-    public final void prepend(E value) {
+    public void prepend(E value) {
         final int oldSize = this.size;
         if (oldSize == 0) {
             elem = value;
@@ -397,7 +397,7 @@ public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements Inde
     }
 
     @Override
-    public final void append(E value) {
+    public void append(E value) {
         final int oldSize = this.size;
         if (oldSize == 0) {
             elem = value;
@@ -449,7 +449,7 @@ public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements Inde
     //endregion
 
     @Override
-    public final void sort() {
+    public void sort() {
         final int size = this.size;
         if (size == 0 || size == 1) {
             return;
@@ -458,7 +458,7 @@ public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements Inde
     }
 
     @Override
-    public final void sort(Comparator<? super E> comparator) {
+    public void sort(Comparator<? super E> comparator) {
         final int size = this.size;
         if (size == 0 || size == 1) {
             return;
@@ -467,7 +467,7 @@ public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements Inde
     }
 
     @Override
-    public final void replaceAll(@NotNull Function<? super E, ? extends E> operator) {
+    public void replaceAll(@NotNull Function<? super E, ? extends E> operator) {
         switch (size) {
             case 0:
                 return;
@@ -483,7 +483,7 @@ public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements Inde
     }
 
     @Override
-    public final void replaceAllIndexed(@NotNull IndexedFunction<? super E, ? extends E> operator) {
+    public void replaceAllIndexed(@NotNull IndexedFunction<? super E, ? extends E> operator) {
         switch (size) {
             case 0:
                 return;
@@ -499,7 +499,7 @@ public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements Inde
     }
 
     @Override
-    public final Object @NotNull [] toArray() {
+    public Object @NotNull [] toArray() {
         final int size = this.size;
         switch (size) {
             case 0:
@@ -512,7 +512,7 @@ public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements Inde
     }
 
     @Override
-    public final <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
+    public <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
         final int size = this.size;
         U[] arr = generator.apply(size);
         switch (size) {
@@ -528,10 +528,10 @@ public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements Inde
         }
     }
 
-    private static final class Factory<E> extends AbstractBufferFactory<E, SmartArrayBuffer<E>> {
+    private static final class Factory<E> extends AbstractDynamicSeqFactory<E, DynamicSmartArraySeq<E>> {
         @Override
-        public final SmartArrayBuffer<E> newBuilder() {
-            return new SmartArrayBuffer<>();
+        public DynamicSmartArraySeq<E> newBuilder() {
+            return new DynamicSmartArraySeq<>();
         }
     }
 }

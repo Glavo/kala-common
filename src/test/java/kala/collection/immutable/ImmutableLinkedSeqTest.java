@@ -3,7 +3,7 @@ package kala.collection.immutable;
 import kala.collection.SeqView;
 import kala.collection.SeqViewTestTemplate;
 import kala.collection.factory.CollectionFactory;
-import kala.collection.mutable.LinkedBuffer;
+import kala.collection.mutable.DynamicLinkedSeq;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -35,13 +35,13 @@ public final class ImmutableLinkedSeqTest implements ImmutableSeqTestTemplate {
 
     @Test
     public void mergeBuilderTest() {
-        LinkedBuffer<String> b1 = new LinkedBuffer<>();
-        LinkedBuffer<String> b2 = new LinkedBuffer<>();
+        DynamicLinkedSeq<String> b1 = new DynamicLinkedSeq<>();
+        DynamicLinkedSeq<String> b2 = new DynamicLinkedSeq<>();
 
         assertTrue(ImmutableLinkedSeq.Builder.merge(b1, b2).isEmpty());
 
-        b1 = LinkedBuffer.of("str1", "str2");
-        b2 = LinkedBuffer.of("str3", "str4");
+        b1 = DynamicLinkedSeq.of("str1", "str2");
+        b2 = DynamicLinkedSeq.of("str3", "str4");
 
         var m = ImmutableLinkedSeq.Builder.merge(b1, b2);
         assertIterableEquals(List.of("str1", "str2", "str3", "str4"), m);

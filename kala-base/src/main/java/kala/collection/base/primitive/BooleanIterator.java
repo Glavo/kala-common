@@ -3,11 +3,10 @@ package kala.collection.base.primitive;
 import kala.collection.base.Iterators;
 import kala.control.primitive.BooleanOption;
 import kala.function.*;
-import kala.internal.InternalBooleanLinkedBuffer;
+import kala.internal.InternalDynamicBooleanLinkedSeq;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import kala.collection.base.AbstractIterator;
-import kala.function.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -544,7 +543,7 @@ public interface BooleanIterator
             return Tuple.of(empty(), empty());
         }
 
-        InternalBooleanLinkedBuffer buffer = new InternalBooleanLinkedBuffer();
+        InternalDynamicBooleanLinkedSeq buffer = new InternalDynamicBooleanLinkedSeq();
         BooleanIterator it = this;
 
         while (it.hasNext()) {
@@ -609,7 +608,7 @@ public interface BooleanIterator
         if (!hasNext()) {
             return new boolean[0];
         }
-        InternalBooleanLinkedBuffer buffer = new InternalBooleanLinkedBuffer();
+        InternalDynamicBooleanLinkedSeq buffer = new InternalDynamicBooleanLinkedSeq();
         while (hasNext()) {
             buffer.append(nextBoolean());
         }

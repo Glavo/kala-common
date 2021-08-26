@@ -1,6 +1,7 @@
 package kala.collection.immutable;
 
 import kala.annotations.Covariant;
+import kala.annotations.StaticClass;
 import kala.collection.IndexedSeqLike;
 import kala.collection.Seq;
 import kala.collection.SeqView;
@@ -8,13 +9,13 @@ import kala.collection.base.AbstractIterator;
 import kala.collection.base.AnyTraversable;
 import kala.collection.base.Iterators;
 import kala.collection.internal.view.SeqViews;
-import kala.collection.mutable.AbstractBuffer;
+import kala.collection.mutable.AbstractDynamicSeq;
 import kala.control.Option;
 import kala.function.*;
 import kala.Conditions;
 import kala.collection.SeqLike;
 import kala.collection.factory.CollectionFactory;
-import kala.collection.mutable.LinkedBuffer;
+import kala.collection.mutable.DynamicLinkedSeq;
 import kala.tuple.Tuple2;
 import org.jetbrains.annotations.*;
 
@@ -204,6 +205,19 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         return new ImmutableLinkedSeq<>(res, n);
     }
 
+    @StaticClass
+    public static final class Unsafe {
+        private Unsafe() {
+        }
+
+        public static <E> @NotNull ImmutableLinkedSeq<E> build(@NotNull Node<? extends E> node, int size) {
+            Objects.requireNonNull(node);
+            assert size >= 0;
+
+            return size == 0 ? ImmutableLinkedSeq.empty() : new ImmutableLinkedSeq<>((Node<E>) node, size);
+        }
+    }
+
     //endregion
 
     //region NodeFactories
@@ -362,7 +376,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
 
     @Override
     public @NotNull String className() {
-        return "ImmutableSizedList";
+        return "ImmutableLinkedSeq";
     }
 
     @Override
@@ -910,7 +924,9 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    public @NotNull <U, Ex extends Throwable> ImmutableLinkedSeq<U> mapChecked(@NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
+    @SuppressWarnings("RedundantThrows")
+    public @NotNull <U, Ex extends Throwable> ImmutableLinkedSeq<U> mapChecked(
+            @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
         return map(mapper);
     }
 
@@ -929,6 +945,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
+    @SuppressWarnings("RedundantThrows")
     public @NotNull <U, Ex extends Throwable> ImmutableLinkedSeq<U> mapIndexedChecked(
             @NotNull CheckedIndexedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
         return mapIndexed(mapper);
@@ -946,6 +963,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
+    @SuppressWarnings("RedundantThrows")
     public @NotNull <U, Ex extends Throwable> ImmutableLinkedSeq<U> mapNotNullChecked(
             @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
         return mapNotNull(mapper);
@@ -979,6 +997,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
+    @SuppressWarnings("RedundantThrows")
     public <U, Ex extends Throwable> @NotNull ImmutableLinkedSeq<U> flatMapChecked(
             @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ? extends Ex> mapper) throws Ex {
         return flatMap(mapper);
@@ -1040,30 +1059,30 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
     }
 
-    static final class Factory<E> implements CollectionFactory<E, LinkedBuffer<E>, ImmutableLinkedSeq<E>> {
+    static final class Factory<E> implements CollectionFactory<E, DynamicLinkedSeq<E>, ImmutableLinkedSeq<E>> {
 
         @Override
-        public LinkedBuffer<E> newBuilder() {
-            return new LinkedBuffer<>();
+        public DynamicLinkedSeq<E> newBuilder() {
+            return new DynamicLinkedSeq<>();
         }
 
         @Override
-        public ImmutableLinkedSeq<E> build(LinkedBuffer<E> builder) {
+        public ImmutableLinkedSeq<E> build(DynamicLinkedSeq<E> builder) {
             return builder.toImmutableLinkedSeq();
         }
 
         @Override
-        public void addToBuilder(@NotNull LinkedBuffer<E> builder, E value) {
+        public void addToBuilder(@NotNull DynamicLinkedSeq<E> builder, E value) {
             builder.append(value);
         }
 
         @Override
-        public LinkedBuffer<E> mergeBuilder(@NotNull LinkedBuffer<E> builder1, @NotNull LinkedBuffer<E> builder2) {
-            return (LinkedBuffer<E>) Builder.merge(builder1, builder2);
+        public DynamicLinkedSeq<E> mergeBuilder(@NotNull DynamicLinkedSeq<E> builder1, @NotNull DynamicLinkedSeq<E> builder2) {
+            return (DynamicLinkedSeq<E>) Builder.merge(builder1, builder2);
         }
     }
 
-    public static final class NodeFactory<E> implements CollectionFactory<E, LinkedBuffer<E>, Node<E>> {
+    public static final class NodeFactory<E> implements CollectionFactory<E, DynamicLinkedSeq<E>, Node<E>> {
         NodeFactory() {
         }
 
@@ -1103,34 +1122,34 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
-        public LinkedBuffer<E> newBuilder() {
-            return new LinkedBuffer<>();
+        public DynamicLinkedSeq<E> newBuilder() {
+            return new DynamicLinkedSeq<>();
         }
 
         @Override
-        public void addToBuilder(@NotNull LinkedBuffer<E> builder, E value) {
+        public void addToBuilder(@NotNull DynamicLinkedSeq<E> builder, E value) {
             builder.append(value);
         }
 
         @Override
-        public LinkedBuffer<E> mergeBuilder(@NotNull LinkedBuffer<E> builder1, @NotNull LinkedBuffer<E> builder2) {
-            return (LinkedBuffer<E>) Builder.merge(builder1, builder2);
+        public DynamicLinkedSeq<E> mergeBuilder(@NotNull DynamicLinkedSeq<E> builder1, @NotNull DynamicLinkedSeq<E> builder2) {
+            return (DynamicLinkedSeq<E>) Builder.merge(builder1, builder2);
         }
 
         @Override
-        public Node<E> build(@NotNull LinkedBuffer<E> builder) {
+        public Node<E> build(@NotNull DynamicLinkedSeq<E> builder) {
             return builder.buildNode();
         }
     }
 
     /**
-     * Internal implementation of {@link LinkedBuffer}.
+     * Internal implementation of {@link DynamicLinkedSeq}.
      *
-     * @see LinkedBuffer
+     * @see DynamicLinkedSeq
      */
     @ApiStatus.Internal
     @SuppressWarnings("unchecked")
-    public static abstract class Builder<E> extends AbstractBuffer<E> {
+    public static abstract class Builder<E> extends AbstractDynamicSeq<E> {
         Node<E> first = null;
         Node<E> last = null;
 
@@ -1170,7 +1189,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
 
         private void ensureUnaliased() {
             if (aliased) {
-                Builder<E> buffer = new LinkedBuffer<>();
+                Builder<E> buffer = new DynamicLinkedSeq<>();
                 buffer.appendAll(this);
                 this.first = buffer.first;
                 this.last = buffer.last;
@@ -1539,7 +1558,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
             if (len <= 1) {
                 return;
             }
-            Builder<E> newBuffer = new LinkedBuffer<>();
+            Builder<E> newBuffer = new DynamicLinkedSeq<>();
             for (E e : this) {
                 newBuffer.prepend(e);
             }
@@ -1917,7 +1936,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
             }
 
             i = 0;
-            LinkedBuffer<E> buffer = new LinkedBuffer<>();
+            DynamicLinkedSeq<E> buffer = new DynamicLinkedSeq<>();
             while (list != NIL_NODE && i < ns) {
                 buffer.append(list.head);
                 list = list.tail;
@@ -2179,6 +2198,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
+        @SuppressWarnings("RedundantThrows")
         public @NotNull <U, Ex extends Throwable> Node<U> mapChecked(
                 @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
             return map(mapper);
@@ -2244,7 +2264,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
             if (this == NIL_NODE) {
                 return nilNode();
             }
-            LinkedBuffer<U> buffer = new LinkedBuffer<>();
+            DynamicLinkedSeq<U> buffer = new DynamicLinkedSeq<>();
             Node<E> list = this;
             while (list != NIL_NODE) {
                 buffer.appendAll(mapper.apply(list.head));

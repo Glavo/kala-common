@@ -178,9 +178,9 @@ public final class FromJavaConvert {
         }
     }
 
-    public static class BufferFromJava<E>
-            extends MutableSeqFromJava<E> implements Buffer<E> {
-        public BufferFromJava(@NotNull List<E> list) {
+    public static class DynamicSeqFromJava<E>
+            extends MutableSeqFromJava<E> implements DynamicSeq<E> {
+        public DynamicSeqFromJava(@NotNull List<E> list) {
             super(list);
         }
 
@@ -210,9 +210,9 @@ public final class FromJavaConvert {
         }
     }
 
-    public static class IndexedBufferFromJava<E>
-            extends BufferFromJava<E> implements IndexedSeq<E> {
-        public IndexedBufferFromJava(@NotNull List<E> list) {
+    public static class DynamicIndexedSeqFromJava<E>
+            extends DynamicSeqFromJava<E> implements IndexedSeq<E> {
+        public DynamicIndexedSeqFromJava(@NotNull List<E> list) {
             super(list);
         }
     }

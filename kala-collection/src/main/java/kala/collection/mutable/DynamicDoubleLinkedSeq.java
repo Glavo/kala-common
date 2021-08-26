@@ -14,8 +14,8 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 
 @Debug.Renderer(hasChildren = "!isEmpty()", childrenArray = "toArray()")
-public final class DoubleLinkedBuffer<E>
-        extends AbstractBuffer<E> implements BufferOps<E, DoubleLinkedBuffer<?>, DoubleLinkedBuffer<E>>, MutableStack<E>, MutableQueue<E> {
+public final class DynamicDoubleLinkedSeq<E>
+        extends AbstractDynamicSeq<E> implements DynamicSeqOps<E, DynamicDoubleLinkedSeq<?>, DynamicDoubleLinkedSeq<E>>, MutableStack<E>, MutableQueue<E> {
 
     private static final Factory<?> FACTORY = new Factory<>();
 
@@ -23,43 +23,43 @@ public final class DoubleLinkedBuffer<E>
     private Node<E> first = null;
     private Node<E> last = null;
 
-    public DoubleLinkedBuffer() {
+    public DynamicDoubleLinkedSeq() {
     }
 
     //region Static Factories
 
     @SuppressWarnings("unchecked")
-    public static <E> @NotNull CollectionFactory<E, ?, DoubleLinkedBuffer<E>> factory() {
-        return (DoubleLinkedBuffer.Factory<E>) FACTORY;
+    public static <E> @NotNull CollectionFactory<E, ?, DynamicDoubleLinkedSeq<E>> factory() {
+        return (DynamicDoubleLinkedSeq.Factory<E>) FACTORY;
     }
 
-    public static <E> @NotNull Collector<E, ?, DoubleLinkedBuffer<E>> collector() {
+    public static <E> @NotNull Collector<E, ?, DynamicDoubleLinkedSeq<E>> collector() {
         return factory();
     }
 
     @Contract("-> new")
-    public static <E> @NotNull DoubleLinkedBuffer<E> of() {
-        return new DoubleLinkedBuffer<>();
+    public static <E> @NotNull DynamicDoubleLinkedSeq<E> of() {
+        return new DynamicDoubleLinkedSeq<>();
     }
 
     @Contract("_ -> new")
-    public static <E> @NotNull DoubleLinkedBuffer<E> of(E value1) {
-        DoubleLinkedBuffer<E> res = new DoubleLinkedBuffer<>();
+    public static <E> @NotNull DynamicDoubleLinkedSeq<E> of(E value1) {
+        DynamicDoubleLinkedSeq<E> res = new DynamicDoubleLinkedSeq<>();
         res.append(value1);
         return res;
     }
 
     @Contract("_, _ -> new")
-    public static <E> @NotNull DoubleLinkedBuffer<E> of(E value1, E value2) {
-        DoubleLinkedBuffer<E> res = new DoubleLinkedBuffer<>();
+    public static <E> @NotNull DynamicDoubleLinkedSeq<E> of(E value1, E value2) {
+        DynamicDoubleLinkedSeq<E> res = new DynamicDoubleLinkedSeq<>();
         res.append(value1);
         res.append(value2);
         return res;
     }
 
     @Contract("_, _, _ -> new")
-    public static <E> @NotNull DoubleLinkedBuffer<E> of(E value1, E value2, E value3) {
-        DoubleLinkedBuffer<E> res = new DoubleLinkedBuffer<>();
+    public static <E> @NotNull DynamicDoubleLinkedSeq<E> of(E value1, E value2, E value3) {
+        DynamicDoubleLinkedSeq<E> res = new DynamicDoubleLinkedSeq<>();
         res.append(value1);
         res.append(value2);
         res.append(value3);
@@ -67,8 +67,8 @@ public final class DoubleLinkedBuffer<E>
     }
 
     @Contract("_, _, _, _ -> new")
-    public static <E> @NotNull DoubleLinkedBuffer<E> of(E value1, E value2, E value3, E value4) {
-        DoubleLinkedBuffer<E> res = new DoubleLinkedBuffer<>();
+    public static <E> @NotNull DynamicDoubleLinkedSeq<E> of(E value1, E value2, E value3, E value4) {
+        DynamicDoubleLinkedSeq<E> res = new DynamicDoubleLinkedSeq<>();
         res.append(value1);
         res.append(value2);
         res.append(value3);
@@ -77,8 +77,8 @@ public final class DoubleLinkedBuffer<E>
     }
 
     @Contract("_, _, _, _, _ -> new")
-    public static <E> @NotNull DoubleLinkedBuffer<E> of(E value1, E value2, E value3, E value4, E value5) {
-        DoubleLinkedBuffer<E> res = new DoubleLinkedBuffer<>();
+    public static <E> @NotNull DynamicDoubleLinkedSeq<E> of(E value1, E value2, E value3, E value4, E value5) {
+        DynamicDoubleLinkedSeq<E> res = new DynamicDoubleLinkedSeq<>();
         res.append(value1);
         res.append(value2);
         res.append(value3);
@@ -89,27 +89,27 @@ public final class DoubleLinkedBuffer<E>
 
     @SafeVarargs
     @Contract("_ -> new")
-    public static <E> @NotNull DoubleLinkedBuffer<E> of(E... values) {
+    public static <E> @NotNull DynamicDoubleLinkedSeq<E> of(E... values) {
         return from(values);
     }
 
     @Contract("_ -> new")
-    public static <E> @NotNull DoubleLinkedBuffer<E> from(E @NotNull [] values) {
-        DoubleLinkedBuffer<E> res = new DoubleLinkedBuffer<>();
+    public static <E> @NotNull DynamicDoubleLinkedSeq<E> from(E @NotNull [] values) {
+        DynamicDoubleLinkedSeq<E> res = new DynamicDoubleLinkedSeq<>();
         res.appendAll(values);
         return res;
     }
 
     @Contract("_ -> new")
-    public static <E> @NotNull DoubleLinkedBuffer<E> from(@NotNull Iterable<? extends E> values) {
-        DoubleLinkedBuffer<E> res = new DoubleLinkedBuffer<>();
+    public static <E> @NotNull DynamicDoubleLinkedSeq<E> from(@NotNull Iterable<? extends E> values) {
+        DynamicDoubleLinkedSeq<E> res = new DynamicDoubleLinkedSeq<>();
         res.appendAll(values);
         return res;
     }
 
     @Contract("_ -> new")
-    public static <E> @NotNull DoubleLinkedBuffer<E> from(@NotNull Iterator<? extends E> iterator) {
-        DoubleLinkedBuffer<E> res = new DoubleLinkedBuffer<>();
+    public static <E> @NotNull DynamicDoubleLinkedSeq<E> from(@NotNull Iterator<? extends E> iterator) {
+        DynamicDoubleLinkedSeq<E> res = new DynamicDoubleLinkedSeq<>();
         while (iterator.hasNext()) {
             res.append(iterator.next());
         }
@@ -138,30 +138,30 @@ public final class DoubleLinkedBuffer<E>
     //region Collection Operations
 
     @Override
-    public final @NotNull String className() {
-        return "DoubleLinkedBuffer";
+    public @NotNull String className() {
+        return "DynamicDoubleLinkedSeq";
     }
 
     @Override
-    public final @NotNull <U> CollectionFactory<U, ?, ? extends Buffer<U>> iterableFactory() {
-        return DoubleLinkedBuffer.factory();
+    public @NotNull <U> CollectionFactory<U, ?, ? extends DynamicSeq<U>> iterableFactory() {
+        return DynamicDoubleLinkedSeq.factory();
     }
 
     @Override
-    public final @NotNull Iterator<E> iterator() {
+    public @NotNull Iterator<E> iterator() {
         final Node<E> first = this.first;
         return first == null ? Iterators.empty() : new Itr<>(first);
     }
 
     @Override
-    public final @NotNull BufferEditor<E, DoubleLinkedBuffer<E>> edit() {
-        return new BufferEditor<>(this);
+    public @NotNull DynamicSeqEditor<E, DynamicDoubleLinkedSeq<E>> edit() {
+        return new DynamicSeqEditor<>(this);
     }
 
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public final @NotNull DoubleLinkedBuffer<E> clone() {
-        DoubleLinkedBuffer<E> res = new DoubleLinkedBuffer<>();
+    public @NotNull DynamicDoubleLinkedSeq<E> clone() {
+        DynamicDoubleLinkedSeq<E> res = new DynamicDoubleLinkedSeq<>();
         if (len != 0) {
             for (E e : this) {
                 res.append(e);
@@ -173,7 +173,7 @@ public final class DoubleLinkedBuffer<E>
     //endregion
 
     @Override
-    public final E get(int index) {
+    public E get(int index) {
         if (index < 0 || index >= len) {
             throw new IndexOutOfBoundsException();
         }
@@ -181,7 +181,7 @@ public final class DoubleLinkedBuffer<E>
     }
 
     @Override
-    public final void append(E value) {
+    public void append(E value) {
         final Node<E> last = this.last;
         final Node<E> nn = new Node<>(last, null, value);
         this.last = nn;
@@ -194,7 +194,7 @@ public final class DoubleLinkedBuffer<E>
     }
 
     @Override
-    public final void prepend(E value) {
+    public void prepend(E value) {
         final Node<E> first = this.first;
         final Node<E> newNode = new Node<>(null, first, value);
         this.first = newNode;
@@ -207,16 +207,16 @@ public final class DoubleLinkedBuffer<E>
     }
 
     @Override
-    public final void enqueue(E value) {
+    public void enqueue(E value) {
         prepend(value);
     }
 
     @Override
-    public final E dequeue() {
+    public E dequeue() {
         return removeLast();
     }
 
-    public final E removeFirst() {
+    public E removeFirst() {
         final Node<E> first = this.first;
         if (first == null) {
             throw new NoSuchElementException();
@@ -233,7 +233,7 @@ public final class DoubleLinkedBuffer<E>
         return first.value;
     }
 
-    public final E removeLast() {
+    public E removeLast() {
         final Node<E> last = this.last;
         if (last == null) {
             throw new NoSuchElementException();
@@ -251,7 +251,7 @@ public final class DoubleLinkedBuffer<E>
     }
 
     @Override
-    public final void insert(int index, E value) {
+    public void insert(int index, E value) {
         final int len = this.len;
         if (index < 0 || index > this.len) {
             throw new IndexOutOfBoundsException();
@@ -273,7 +273,7 @@ public final class DoubleLinkedBuffer<E>
     }
 
     @Override
-    public final E removeAt(int index) {
+    public E removeAt(int index) {
         if (index < 0 || index >= len) {
             throw new IndexOutOfBoundsException();
         }
@@ -301,14 +301,14 @@ public final class DoubleLinkedBuffer<E>
     }
 
     @Override
-    public final void clear() {
+    public void clear() {
         this.len = 0;
         this.first = null;
         this.last = null;
     }
 
     @Override
-    public final void set(int index, E newValue) {
+    public void set(int index, E newValue) {
         if (index < 0 || index >= len) {
             throw new IndexOutOfBoundsException();
         }
@@ -316,7 +316,7 @@ public final class DoubleLinkedBuffer<E>
     }
 
     @Override
-    public final E first() {
+    public E first() {
         final Node<E> first = this.first;
         if (first == null) {
             throw new NoSuchElementException();
@@ -325,7 +325,7 @@ public final class DoubleLinkedBuffer<E>
     }
 
     @Override
-    public final E last() {
+    public E last() {
         final Node<E> last = this.last;
         if (last == null) {
             throw new NoSuchElementException();
@@ -334,37 +334,37 @@ public final class DoubleLinkedBuffer<E>
     }
 
     @Override
-    public final int size() {
+    public int size() {
         return len;
     }
 
     @Override
-    public final int knownSize() {
+    public int knownSize() {
         return len;
     }
 
     @Override
-    public final void push(E value) {
+    public void push(E value) {
         prepend(value);
     }
 
     @Override
-    public final E pop() {
+    public E pop() {
         return removeFirst();
     }
 
     @Override
-    public final E peek() {
+    public E peek() {
         return first();
     }
 
     @Override
-    public final boolean isEmpty() {
+    public boolean isEmpty() {
         return len == 0;
     }
 
     @Override
-    public final void replaceAll(@NotNull Function<? super E, ? extends E> operator) {
+    public void replaceAll(@NotNull Function<? super E, ? extends E> operator) {
         Node<E> node = this.first;
         while (node != null) {
             node.value = operator.apply(node.value);
@@ -373,7 +373,7 @@ public final class DoubleLinkedBuffer<E>
     }
 
     @Override
-    public final void replaceAllIndexed(@NotNull IndexedFunction<? super E, ? extends E> operator) {
+    public void replaceAllIndexed(@NotNull IndexedFunction<? super E, ? extends E> operator) {
         Node<E> node = this.first;
         int idx = 0;
         while (node != null) {
@@ -383,7 +383,7 @@ public final class DoubleLinkedBuffer<E>
     }
 
     @Override
-    public final void reverse() {
+    public void reverse() {
         final int size = this.len;
         if (size == 0) {
             return;
@@ -402,7 +402,7 @@ public final class DoubleLinkedBuffer<E>
     }
 
     @Override
-    public final @NotNull Iterator<E> reverseIterator() {
+    public @NotNull Iterator<E> reverseIterator() {
         final Node<E> last = this.last;
         return last == null ? Iterators.empty() : new ReverseItr<>(last);
     }
@@ -428,12 +428,12 @@ public final class DoubleLinkedBuffer<E>
 
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return node != null;
         }
 
         @Override
-        public final E next() {
+        public E next() {
             final Node<E> node = this.node;
             if (this.node == null) {
                 throw new NoSuchElementException();
@@ -452,12 +452,12 @@ public final class DoubleLinkedBuffer<E>
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return node != null;
         }
 
         @Override
-        public final E next() {
+        public E next() {
             final Node<E> node = this.node;
             if (this.node == null) {
                 throw new NoSuchElementException();
@@ -468,10 +468,10 @@ public final class DoubleLinkedBuffer<E>
         }
     }
 
-    private static final class Factory<E> extends AbstractBufferFactory<E, DoubleLinkedBuffer<E>> {
+    private static final class Factory<E> extends AbstractDynamicSeqFactory<E, DynamicDoubleLinkedSeq<E>> {
         @Override
-        public final DoubleLinkedBuffer<E> newBuilder() {
-            return new DoubleLinkedBuffer<>();
+        public DynamicDoubleLinkedSeq<E> newBuilder() {
+            return new DynamicDoubleLinkedSeq<>();
         }
     }
 }

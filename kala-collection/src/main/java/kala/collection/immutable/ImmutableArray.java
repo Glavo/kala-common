@@ -14,7 +14,7 @@ import kala.Conditions;
 import kala.tuple.Tuple2;
 import kala.annotations.Covariant;
 import kala.annotations.StaticClass;
-import kala.collection.mutable.ArrayBuffer;
+import kala.collection.mutable.DynamicArray;
 import kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +26,6 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 import static kala.Conditions.checkPositionIndices;
@@ -144,14 +143,14 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
             return from(((java.util.Collection<E>) values));
         }
 
-        return ArrayBuffer.<E>from(values).toImmutableArray();
+        return DynamicArray.<E>from(values).toImmutableArray();
     }
 
     public static <E> @NotNull ImmutableArray<E> from(@NotNull Iterator<? extends E> it) {
         if (!it.hasNext()) {
             return empty();
         }
-        ArrayBuffer<E> buffer = new ArrayBuffer<>();
+        DynamicArray<E> buffer = new DynamicArray<>();
         while (it.hasNext()) {
             buffer.append(it.next());
         }
@@ -727,7 +726,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
             return empty();
         }
 
-        ArrayBuffer<U> builder = new ArrayBuffer<>();
+        DynamicArray<U> builder = new DynamicArray<>();
         for (Object value : elements) {
             builder.appendAll(mapper.apply((E) value));
         }
@@ -844,7 +843,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
         return this;
     }
 
-    private static final class Factory<E> implements CollectionFactory<E, ArrayBuffer<E>, ImmutableArray<E>> {
+    private static final class Factory<E> implements CollectionFactory<E, DynamicArray<E>, ImmutableArray<E>> {
         Factory() {
         }
 
@@ -884,28 +883,28 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
         }
 
         @Override
-        public final ArrayBuffer<E> newBuilder() {
-            return new ArrayBuffer<>();
+        public final DynamicArray<E> newBuilder() {
+            return new DynamicArray<>();
         }
 
         @Override
-        public final void addToBuilder(@NotNull ArrayBuffer<E> buffer, E value) {
+        public final void addToBuilder(@NotNull DynamicArray<E> buffer, E value) {
             buffer.append(value);
         }
 
         @Override
-        public final void sizeHint(@NotNull ArrayBuffer<E> buffer, int size) {
+        public final void sizeHint(@NotNull DynamicArray<E> buffer, int size) {
             buffer.sizeHint(size);
         }
 
         @Override
-        public final ArrayBuffer<E> mergeBuilder(@NotNull ArrayBuffer<E> buffer1, @NotNull ArrayBuffer<E> buffer2) {
+        public final DynamicArray<E> mergeBuilder(@NotNull DynamicArray<E> buffer1, @NotNull DynamicArray<E> buffer2) {
             buffer1.appendAll(buffer2);
             return buffer1;
         }
 
         @Override
-        public final ImmutableArray<E> build(@NotNull ArrayBuffer<E> buffer) {
+        public final ImmutableArray<E> build(@NotNull DynamicArray<E> buffer) {
             return buffer.toImmutableArray();
         }
 

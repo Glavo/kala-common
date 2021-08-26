@@ -18,83 +18,82 @@ import java.util.List;
 import java.util.Objects;
 import java.util.RandomAccess;
 import java.util.function.Predicate;
-import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public interface Buffer<E> extends MutableSeq<E>, Growable<E> {
+public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
 
     //region Static Factories
 
-    static <E> @NotNull CollectionFactory<E, ?, Buffer<E>> factory() {
-        return CollectionFactory.narrow(ArrayBuffer.factory());
+    static <E> @NotNull CollectionFactory<E, ?, DynamicSeq<E>> factory() {
+        return CollectionFactory.narrow(DynamicArray.factory());
     }
 
     @Contract("-> new")
-    static <E> @NotNull Buffer<E> create() {
-        return new ArrayBuffer<>();
+    static <E> @NotNull DynamicSeq<E> create() {
+        return new DynamicArray<>();
     }
 
     @Contract("-> new")
-    static <E> @NotNull Buffer<E> of() {
-        return ArrayBuffer.of();
+    static <E> @NotNull DynamicSeq<E> of() {
+        return DynamicArray.of();
     }
 
     @Contract("_ -> new")
-    static <E> @NotNull Buffer<E> of(E value1) {
-        return ArrayBuffer.of(value1);
+    static <E> @NotNull DynamicSeq<E> of(E value1) {
+        return DynamicArray.of(value1);
     }
 
     @Contract("_, _ -> new")
-    static <E> @NotNull Buffer<E> of(E value1, E value2) {
-        return ArrayBuffer.of(value1, value2);
+    static <E> @NotNull DynamicSeq<E> of(E value1, E value2) {
+        return DynamicArray.of(value1, value2);
     }
 
     @Contract("_, _, _ -> new")
-    static <E> @NotNull Buffer<E> of(E value1, E value2, E value3) {
-        return ArrayBuffer.of(value1, value2, value3);
+    static <E> @NotNull DynamicSeq<E> of(E value1, E value2, E value3) {
+        return DynamicArray.of(value1, value2, value3);
     }
 
     @Contract("_, _, _, _ -> new")
-    static <E> @NotNull Buffer<E> of(E value1, E value2, E value3, E value4) {
-        return ArrayBuffer.of(value1, value2, value3, value4);
+    static <E> @NotNull DynamicSeq<E> of(E value1, E value2, E value3, E value4) {
+        return DynamicArray.of(value1, value2, value3, value4);
     }
 
     @Contract("_, _, _, _, _ -> new")
-    static <E> @NotNull Buffer<E> of(E value1, E value2, E value3, E value4, E value5) {
-        return ArrayBuffer.of(value1, value2, value3, value4, value5);
+    static <E> @NotNull DynamicSeq<E> of(E value1, E value2, E value3, E value4, E value5) {
+        return DynamicArray.of(value1, value2, value3, value4, value5);
     }
 
     @SafeVarargs
-    static <E> @NotNull Buffer<E> of(E... values) {
+    static <E> @NotNull DynamicSeq<E> of(E... values) {
         return from(values);
     }
 
-    static <E> @NotNull Buffer<E> from(E @NotNull [] values) {
-        return ArrayBuffer.from(values);
+    static <E> @NotNull DynamicSeq<E> from(E @NotNull [] values) {
+        return DynamicArray.from(values);
     }
 
-    static <E> @NotNull Buffer<E> from(@NotNull Iterable<? extends E> values) {
-        return ArrayBuffer.from(values);
+    static <E> @NotNull DynamicSeq<E> from(@NotNull Iterable<? extends E> values) {
+        return DynamicArray.from(values);
     }
 
-    static <E> @NotNull Buffer<E> from(@NotNull Iterator<? extends E> it) {
-        return ArrayBuffer.from(it);
+    static <E> @NotNull DynamicSeq<E> from(@NotNull Iterator<? extends E> it) {
+        return DynamicArray.from(it);
     }
 
-    static <E> @NotNull Buffer<E> from(@NotNull Stream<? extends E> stream) {
-        return ArrayBuffer.from(stream);
+    static <E> @NotNull DynamicSeq<E> from(@NotNull Stream<? extends E> stream) {
+        return DynamicArray.from(stream);
     }
 
     @Contract("_ -> new")
-    static <E> @NotNull Buffer<E> wrapJava(@NotNull List<E> list) {
+    static <E> @NotNull DynamicSeq<E> wrapJava(@NotNull List<E> list) {
         Objects.requireNonNull(list);
-        if (list instanceof AsJavaConvert.BufferAsJava<?, ?>) {
-            return ((AsJavaConvert.BufferAsJava<E, Buffer<E>>) list).source;
+        if (list instanceof AsJavaConvert.DynamicSeqAsJava<?, ?>) {
+            return ((AsJavaConvert.DynamicSeqAsJava<E, DynamicSeq<E>>) list).source;
         }
         return list instanceof RandomAccess
-                ? new FromJavaConvert.IndexedBufferFromJava<>(list)
-                : new FromJavaConvert.BufferFromJava<>(list);
+                ? new FromJavaConvert.DynamicIndexedSeqFromJava<>(list)
+                : new FromJavaConvert.DynamicSeqFromJava<>(list);
     }
 
     //endregion
@@ -103,39 +102,39 @@ public interface Buffer<E> extends MutableSeq<E>, Growable<E> {
 
     @Override
     default @NotNull String className() {
-        return "Buffer";
+        return "DynamicSeq";
     }
 
     @Override
-    default <U> @NotNull CollectionFactory<U, ?, ? extends Buffer<U>> iterableFactory() {
+    default <U> @NotNull CollectionFactory<U, ?, ? extends DynamicSeq<U>> iterableFactory() {
         return factory();
     }
 
     @Override
-    default @NotNull BufferEditor<E, ? extends Buffer<E>> edit() {
-        return new BufferEditor<>(this);
+    default @NotNull DynamicSeqEditor<E, ? extends DynamicSeq<E>> edit() {
+        return new DynamicSeqEditor<>(this);
     }
 
     @Override
     default @NotNull List<E> asJava() {
         return this instanceof RandomAccess
-                ? new AsJavaConvert.IndexedBufferAsJava<>(this)
-                : new AsJavaConvert.BufferAsJava<>(this);
+                ? new AsJavaConvert.DynamicIndexedSeqAsJava<>(this)
+                : new AsJavaConvert.DynamicSeqAsJava<>(this);
     }
 
     @Override
-    default @NotNull Buffer<E> asSynchronized() {
+    default @NotNull DynamicSeq<E> asSynchronized() {
         return this instanceof IndexedSeq<?>
-                ? new Synchronized.SynchronizedIndexedBuffer<>((Buffer<E> & IndexedSeq<E>) this)
-                : new Synchronized.SynchronizedBuffer<>(this);
+                ? new Synchronized.SynchronizedDynamicIndexedSeq<>((DynamicSeq<E> & IndexedSeq<E>) this)
+                : new Synchronized.SynchronizedDynamicSeq<>(this);
     }
 
     @Override
-    default @NotNull Buffer<E> asSynchronized(@NotNull Object mutex) {
+    default @NotNull DynamicSeq<E> asSynchronized(@NotNull Object mutex) {
         Objects.requireNonNull(mutex);
         return this instanceof IndexedSeq<?>
-                ? new Synchronized.SynchronizedIndexedBuffer<>((Buffer<E> & IndexedSeq<E>) this, mutex)
-                : new Synchronized.SynchronizedBuffer<>(this, mutex);
+                ? new Synchronized.SynchronizedDynamicIndexedSeq<>((DynamicSeq<E> & IndexedSeq<E>) this, mutex)
+                : new Synchronized.SynchronizedDynamicSeq<>(this, mutex);
     }
 
     //endregion

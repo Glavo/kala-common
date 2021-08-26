@@ -17,19 +17,18 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.IntFunction;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public final class ArrayBuffer<E> extends AbstractBuffer<E>
-        implements BufferOps<E, ArrayBuffer<?>, ArrayBuffer<E>>, IndexedSeq<E>, Serializable {
+public final class DynamicArray<E> extends AbstractDynamicSeq<E>
+        implements DynamicSeqOps<E, DynamicArray<?>, DynamicArray<E>>, IndexedSeq<E>, Serializable {
     private static final long serialVersionUID = 2545219250020890853L;
 
     private static final int DEFAULT_CAPACITY = 16;
 
-    private static final ArrayBuffer.Factory<?> FACTORY = new Factory<>();
+    private static final DynamicArray.Factory<?> FACTORY = new Factory<>();
 
     //region Fields
 
@@ -40,16 +39,16 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
 
     //region Constructors
 
-    ArrayBuffer(Object @NotNull [] elements, int size) {
+    DynamicArray(Object @NotNull [] elements, int size) {
         this.elements = elements;
         this.size = size;
     }
 
-    public ArrayBuffer() {
+    public DynamicArray() {
         this(GenericArrays.EMPTY_OBJECT_ARRAY, 0);
     }
 
-    public ArrayBuffer(int initialCapacity) {
+    public DynamicArray(int initialCapacity) {
         if (initialCapacity < 0) {
             throw new IllegalArgumentException("illegal initialCapacity: " + initialCapacity);
         }
@@ -62,132 +61,132 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
 
     //region Static Factories
 
-    public static <E> @NotNull CollectionFactory<E, ?, ArrayBuffer<E>> factory() {
+    public static <E> @NotNull CollectionFactory<E, ?, DynamicArray<E>> factory() {
         return (Factory<E>) FACTORY;
     }
 
-    public static <E> @NotNull Collector<E, ?, ArrayBuffer<E>> collector() {
-        return ArrayBuffer.factory();
+    public static <E> @NotNull Collector<E, ?, DynamicArray<E>> collector() {
+        return DynamicArray.factory();
     }
 
     @Contract("-> new")
-    public static <E> @NotNull ArrayBuffer<E> of() {
-        return new ArrayBuffer<>();
+    public static <E> @NotNull DynamicArray<E> of() {
+        return new DynamicArray<>();
     }
 
     @Contract("_ -> new")
-    public static <E> @NotNull ArrayBuffer<E> of(E value1) {
+    public static <E> @NotNull DynamicArray<E> of(E value1) {
         Object[] arr = new Object[DEFAULT_CAPACITY];
         arr[0] = value1;
-        return new ArrayBuffer<>(arr, 1);
+        return new DynamicArray<>(arr, 1);
     }
 
     @Contract("_, _ -> new")
-    public static <E> @NotNull ArrayBuffer<E> of(E value1, E value2) {
+    public static <E> @NotNull DynamicArray<E> of(E value1, E value2) {
         Object[] arr = new Object[DEFAULT_CAPACITY];
         arr[0] = value1;
         arr[1] = value2;
-        return new ArrayBuffer<>(arr, 2);
+        return new DynamicArray<>(arr, 2);
     }
 
     @Contract("_, _, _ -> new")
-    public static <E> @NotNull ArrayBuffer<E> of(E value1, E value2, E value3) {
+    public static <E> @NotNull DynamicArray<E> of(E value1, E value2, E value3) {
         Object[] arr = new Object[DEFAULT_CAPACITY];
         arr[0] = value1;
         arr[1] = value2;
         arr[2] = value3;
-        return new ArrayBuffer<>(arr, 3);
+        return new DynamicArray<>(arr, 3);
     }
 
     @Contract("_, _, _, _ -> new")
-    public static <E> @NotNull ArrayBuffer<E> of(E value1, E value2, E value3, E value4) {
+    public static <E> @NotNull DynamicArray<E> of(E value1, E value2, E value3, E value4) {
         Object[] arr = new Object[DEFAULT_CAPACITY];
         arr[0] = value1;
         arr[1] = value2;
         arr[2] = value3;
         arr[3] = value4;
-        return new ArrayBuffer<>(arr, 4);
+        return new DynamicArray<>(arr, 4);
     }
 
     @Contract("_, _, _, _, _ -> new")
-    public static <E> @NotNull ArrayBuffer<E> of(E value1, E value2, E value3, E value4, E value5) {
+    public static <E> @NotNull DynamicArray<E> of(E value1, E value2, E value3, E value4, E value5) {
         Object[] arr = new Object[DEFAULT_CAPACITY];
         arr[0] = value1;
         arr[1] = value2;
         arr[2] = value3;
         arr[3] = value4;
         arr[4] = value5;
-        return new ArrayBuffer<>(arr, 5);
+        return new DynamicArray<>(arr, 5);
     }
 
     @Contract("_ -> new")
-    public static <E> @NotNull ArrayBuffer<E> of(E... values) {
+    public static <E> @NotNull DynamicArray<E> of(E... values) {
         return from(values);
     }
 
     @Contract("_ -> new")
-    public static <E> @NotNull ArrayBuffer<E> from(E @NotNull [] values) {
+    public static <E> @NotNull DynamicArray<E> from(E @NotNull [] values) {
         int length = values.length; // implicit null check of values
         if (length == 0) {
-            return new ArrayBuffer<>();
+            return new DynamicArray<>();
         }
         Object[] newValues = new Object[length];
         System.arraycopy(values, 0, newValues, 0, length);
-        return new ArrayBuffer<>(newValues, length);
+        return new DynamicArray<>(newValues, length);
     }
 
-    public static <E> @NotNull ArrayBuffer<E> from(@NotNull Iterable<? extends E> values) {
-        ArrayBuffer<E> buffer = new ArrayBuffer<>();
+    public static <E> @NotNull DynamicArray<E> from(@NotNull Iterable<? extends E> values) {
+        DynamicArray<E> buffer = new DynamicArray<>();
         buffer.appendAll(values);
         return buffer;
     }
 
-    public static <E> @NotNull ArrayBuffer<E> from(@NotNull Iterator<? extends E> it) {
-        ArrayBuffer<E> buffer = new ArrayBuffer<>();
+    public static <E> @NotNull DynamicArray<E> from(@NotNull Iterator<? extends E> it) {
+        DynamicArray<E> buffer = new DynamicArray<>();
         while (it.hasNext()) {
             buffer.append(it.next());
         }
         return buffer;
     }
 
-    public static <E> @NotNull ArrayBuffer<E> from(@NotNull Stream<? extends E> stream) {
+    public static <E> @NotNull DynamicArray<E> from(@NotNull Stream<? extends E> stream) {
         return stream.collect(factory());
     }
 
-    public static <E> @NotNull ArrayBuffer<E> fill(int n, E value) {
+    public static <E> @NotNull DynamicArray<E> fill(int n, E value) {
         if (n <= 0) {
-            return new ArrayBuffer<>();
+            return new DynamicArray<>();
         }
 
         Object[] arr = new Object[Integer.max(DEFAULT_CAPACITY, n)];
         if (value != null) {
             Arrays.fill(arr, 0, n, value);
         }
-        return new ArrayBuffer<>(arr, n);
+        return new DynamicArray<>(arr, n);
     }
 
-    public static <E> @NotNull ArrayBuffer<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+    public static <E> @NotNull DynamicArray<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
         if (n <= 0) {
-            return new ArrayBuffer<>();
+            return new DynamicArray<>();
         }
 
         Object[] arr = new Object[Integer.max(DEFAULT_CAPACITY, n)];
         for (int i = 0; i < n; i++) {
             arr[i] = supplier.get();
         }
-        return new ArrayBuffer<>(arr, n);
+        return new DynamicArray<>(arr, n);
     }
 
-    public static <E> @NotNull ArrayBuffer<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+    public static <E> @NotNull DynamicArray<E> fill(int n, @NotNull IntFunction<? extends E> init) {
         if (n <= 0) {
-            return new ArrayBuffer<>();
+            return new DynamicArray<>();
         }
 
         Object[] arr = new Object[Integer.max(DEFAULT_CAPACITY, n)];
         for (int i = 0; i < n; i++) {
             arr[i] = init.apply(i);
         }
-        return new ArrayBuffer<>(arr, n);
+        return new DynamicArray<>(arr, n);
     }
 
     //endregion
@@ -240,36 +239,36 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
     //region Collection Operations
 
     @Override
-    public final @NotNull String className() {
-        return "ArrayBuffer";
+    public @NotNull String className() {
+        return "DynamicArray";
     }
 
     @Override
-    public final <U> @NotNull CollectionFactory<U, ?, ArrayBuffer<U>> iterableFactory() {
+    public <U> @NotNull CollectionFactory<U, ?, DynamicArray<U>> iterableFactory() {
         return factory();
     }
 
     @Override
-    public final @NotNull Iterator<E> iterator() {
+    public @NotNull Iterator<E> iterator() {
         return (Iterator<E>) GenericArrays.iterator(elements, 0, size);
     }
 
     @Override
-    public final @NotNull Spliterator<E> spliterator() {
+    public @NotNull Spliterator<E> spliterator() {
         return (Spliterator<E>) Arrays.spliterator(elements, 0, size);
     }
 
     @Override
-    public final @NotNull BufferEditor<E, ArrayBuffer<E>> edit() {
-        return new BufferEditor<>(this);
+    public @NotNull DynamicSeqEditor<E, DynamicArray<E>> edit() {
+        return new DynamicSeqEditor<>(this);
     }
 
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public final ArrayBuffer<E> clone() {
+    public DynamicArray<E> clone() {
         final Object[] elements = this.elements;
         final int size = this.size;
-        return new ArrayBuffer<>(size == 0 ? GenericArrays.EMPTY_OBJECT_ARRAY : elements.clone(), size);
+        return new DynamicArray<>(size == 0 ? GenericArrays.EMPTY_OBJECT_ARRAY : elements.clone(), size);
     }
 
     //endregion
@@ -277,7 +276,7 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
     //region Size Info
 
     @Override
-    public final int size() {
+    public int size() {
         return size;
     }
 
@@ -286,13 +285,13 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
     //region Positional Access Operations
 
     @Override
-    public final E get(int index) {
+    public E get(int index) {
         checkInBound(index);
         return (E) elements[index];
     }
 
     @Override
-    public final void set(int index, E newValue) {
+    public void set(int index, E newValue) {
         checkInBound(index);
         elements[index] = newValue;
     }
@@ -302,7 +301,7 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
     //region Modification Operations
 
     @Override
-    public final void prepend(E value) {
+    public void prepend(E value) {
         Object[] values = elements;
         if (size == values.length) {
             values = growArray(size + 1);
@@ -314,7 +313,7 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
     }
 
     @Override
-    public final void prependAll(@NotNull Iterable<? extends E> values) {
+    public void prependAll(@NotNull Iterable<? extends E> values) {
         Objects.requireNonNull(values);
         if (values == this) {
             appendThis();
@@ -358,7 +357,7 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
     }
 
     @Override
-    public final void append(E value) {
+    public void append(E value) {
         if (size == elements.length) {
             grow();
         }
@@ -366,7 +365,7 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
     }
 
     @Override
-    public final void appendAll(@NotNull Iterable<? extends E> values) {
+    public void appendAll(@NotNull Iterable<? extends E> values) {
         Objects.requireNonNull(values);
 
         if (values == this) {
@@ -424,17 +423,17 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
     //endregion
 
     @Override
-    public final void sort() {
+    public void sort() {
         Arrays.sort(elements, 0, size);
     }
 
     @Override
-    public final void sort(Comparator<? super E> comparator) {
+    public void sort(Comparator<? super E> comparator) {
         Arrays.sort(elements, 0, size, (Comparator<? super Object>) comparator);
     }
 
     @Override
-    public final void insert(int index, E value) {
+    public void insert(int index, E value) {
         int size = this.size;
         if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException();
@@ -452,7 +451,7 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
     }
 
     @Override
-    public final void insertAll(int index, @NotNull Iterable<? extends E> values) {
+    public void insertAll(int index, @NotNull Iterable<? extends E> values) {
         Objects.requireNonNull(values);
         if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException("Index out of range: " + index);
@@ -477,7 +476,7 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
     }
 
     @Override
-    public final void insertAll(int index, E @NotNull [] values) {
+    public void insertAll(int index, E @NotNull [] values) {
         Objects.requireNonNull(values);
         if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException("Index out of range: " + index);
@@ -499,7 +498,7 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
     }
 
     @Override
-    public final E removeAt(int index) {
+    public E removeAt(int index) {
         checkInBound(index);
         E v = (E) elements[index];
         System.arraycopy(elements, index + 1, elements, index, size - index);
@@ -508,7 +507,7 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
     }
 
     @Override
-    public final void removeAt(int index, int count) {
+    public void removeAt(int index, int count) {
         if (count < 0) {
             throw new IllegalArgumentException("count: " + count);
         }
@@ -522,13 +521,13 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
     }
 
     @Override
-    public final void clear() {
+    public void clear() {
         Arrays.fill(elements, null);
         size = 0;
     }
 
     @Override
-    public final void takeInPlace(int n) {
+    public void takeInPlace(int n) {
         if (n <= 0) {
             clear();
         } else if (n < size) {
@@ -538,13 +537,13 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
     }
 
     @Override
-    public final Object @NotNull [] toArray() {
+    public Object @NotNull [] toArray() {
         return Arrays.copyOf(this.elements, size);
     }
 
     @Override
     @SuppressWarnings("SuspiciousSystemArraycopy")
-    public final <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
+    public <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
         final int size = this.size;
         U[] arr = generator.apply(size);
         System.arraycopy(elements, 0, arr, 0, size);
@@ -552,7 +551,7 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
     }
 
     @Override
-    public final @NotNull ImmutableArray<E> toImmutableArray() {
+    public @NotNull ImmutableArray<E> toImmutableArray() {
         final int size = this.size;
         if (size == 0) {
             return ImmutableArray.empty();
@@ -582,45 +581,45 @@ public final class ArrayBuffer<E> extends AbstractBuffer<E>
 
     //endregion
 
-    private static final class Factory<E> extends AbstractBufferFactory<E, ArrayBuffer<E>> {
+    private static final class Factory<E> extends AbstractDynamicSeqFactory<E, DynamicArray<E>> {
         @Override
-        public final ArrayBuffer<E> newBuilder() {
-            return new ArrayBuffer<>();
+        public DynamicArray<E> newBuilder() {
+            return new DynamicArray<>();
         }
 
         @Override
-        public void sizeHint(@NotNull ArrayBuffer<E> buffer, int size) {
+        public void sizeHint(@NotNull DynamicArray<E> buffer, int size) {
             buffer.sizeHint(size);
         }
 
         @Override
-        public final ArrayBuffer<E> from(E @NotNull [] values) {
-            return ArrayBuffer.from(values);
+        public DynamicArray<E> from(E @NotNull [] values) {
+            return DynamicArray.from(values);
         }
 
         @Override
-        public final ArrayBuffer<E> from(@NotNull Iterable<? extends E> values) {
-            return ArrayBuffer.from(values);
+        public DynamicArray<E> from(@NotNull Iterable<? extends E> values) {
+            return DynamicArray.from(values);
         }
 
         @Override
-        public final ArrayBuffer<E> from(@NotNull Iterator<? extends E> it) {
-            return ArrayBuffer.from(it);
+        public DynamicArray<E> from(@NotNull Iterator<? extends E> it) {
+            return DynamicArray.from(it);
         }
 
         @Override
-        public final ArrayBuffer<E> fill(int n, E value) {
-            return ArrayBuffer.fill(n, value);
+        public DynamicArray<E> fill(int n, E value) {
+            return DynamicArray.fill(n, value);
         }
 
         @Override
-        public final ArrayBuffer<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
-            return ArrayBuffer.fill(n, supplier);
+        public DynamicArray<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+            return DynamicArray.fill(n, supplier);
         }
 
         @Override
-        public final ArrayBuffer<E> fill(int n, @NotNull IntFunction<? extends E> init) {
-            return ArrayBuffer.fill(n, init);
+        public DynamicArray<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+            return DynamicArray.fill(n, init);
         }
     }
 }

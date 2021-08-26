@@ -11,7 +11,7 @@ import kala.function.IndexedFunction;
 import kala.tuple.Tuple2;
 import kala.tuple.primitive.IntObjTuple2;
 import kala.collection.internal.view.SeqViews;
-import kala.collection.mutable.ArrayBuffer;
+import kala.collection.mutable.DynamicArray;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -124,9 +124,9 @@ public interface SeqLike<E> extends CollectionLike<E> {
         if (!it.hasNext()) {
             return it;
         }
-        ArrayBuffer<E> buffer = ks > 0
-                ? new ArrayBuffer<>(ks)
-                : new ArrayBuffer<>();
+        DynamicArray<E> buffer = ks > 0
+                ? new DynamicArray<>(ks)
+                : new DynamicArray<>();
         while (it.hasNext()) {
             buffer.append(it.next());
         }

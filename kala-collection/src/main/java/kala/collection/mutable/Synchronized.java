@@ -1249,35 +1249,35 @@ final class Synchronized {
         }
     }
 
-    public static class SynchronizedBuffer<E, C extends Buffer<E>> extends SynchronizedSeq<E, C> implements Buffer<E> {
+    public static class SynchronizedDynamicSeq<E, C extends DynamicSeq<E>> extends SynchronizedSeq<E, C> implements DynamicSeq<E> {
 
-        public SynchronizedBuffer(C source) {
+        public SynchronizedDynamicSeq(C source) {
             super(source);
         }
 
-        public SynchronizedBuffer(C source, Object mutex) {
+        public SynchronizedDynamicSeq(C source, Object mutex) {
             super(source, mutex);
         }
 
         @Override
         public @NotNull String className() {
-            return "SynchronizedBuffer";
+            return "SynchronizedDynamicSeq";
         }
 
         @Override
-        public @NotNull <U> CollectionFactory<U, ?, ? extends Buffer<U>> iterableFactory() {
+        public @NotNull <U> CollectionFactory<U, ?, ? extends DynamicSeq<U>> iterableFactory() {
             return source.iterableFactory();
         }
 
         @Override
-        public @NotNull Buffer<E> asSynchronized() {
+        public @NotNull DynamicSeq<E> asSynchronized() {
             return this;
         }
 
         @Override
-        public @NotNull Buffer<E> asSynchronized(@NotNull Object mutex) {
+        public @NotNull DynamicSeq<E> asSynchronized(@NotNull Object mutex) {
             Objects.requireNonNull(mutex);
-            return mutex == this.mutex ? this : new SynchronizedBuffer<>(source, mutex);
+            return mutex == this.mutex ? this : new SynchronizedDynamicSeq<>(source, mutex);
         }
 
         @Contract(mutates = "this")
@@ -1408,36 +1408,36 @@ final class Synchronized {
         }
     }
 
-    public static class SynchronizedIndexedBuffer<E, C extends Buffer<E> & IndexedSeq<E>> extends SynchronizedIndexedSeq<E, C>
-            implements Buffer<E>, IndexedSeq<E> {
+    public static class SynchronizedDynamicIndexedSeq<E, C extends DynamicSeq<E> & IndexedSeq<E>> extends SynchronizedIndexedSeq<E, C>
+            implements DynamicSeq<E>, IndexedSeq<E> {
 
-        public SynchronizedIndexedBuffer(C source) {
+        public SynchronizedDynamicIndexedSeq(C source) {
             super(source);
         }
 
-        public SynchronizedIndexedBuffer(C source, Object mutex) {
+        public SynchronizedDynamicIndexedSeq(C source, Object mutex) {
             super(source, mutex);
         }
 
         @Override
         public @NotNull String className() {
-            return "SynchronizedIndexedBuffer";
+            return "SynchronizedDynamicIndexedSeq";
         }
 
         @Override
-        public @NotNull <U> CollectionFactory<U, ?, ? extends Buffer<U>> iterableFactory() {
+        public @NotNull <U> CollectionFactory<U, ?, ? extends DynamicSeq<U>> iterableFactory() {
             return source.iterableFactory();
         }
 
         @Override
-        public @NotNull Buffer<E> asSynchronized() {
+        public @NotNull DynamicSeq<E> asSynchronized() {
             return this;
         }
 
         @Override
-        public @NotNull Buffer<E> asSynchronized(@NotNull Object mutex) {
+        public @NotNull DynamicSeq<E> asSynchronized(@NotNull Object mutex) {
             Objects.requireNonNull(mutex);
-            return mutex == this.mutex ? this : new SynchronizedIndexedBuffer<>(source, mutex);
+            return mutex == this.mutex ? this : new SynchronizedDynamicIndexedSeq<>(source, mutex);
         }
 
         @Contract(mutates = "this")

@@ -7,7 +7,7 @@ import kala.collection.immutable.ImmutableMap;
 import kala.collection.immutable.ImmutableLinkedSeq;
 import kala.collection.internal.view.IndexedSeqViews;
 import kala.collection.base.Growable;
-import kala.collection.mutable.LinkedBuffer;
+import kala.collection.mutable.DynamicLinkedSeq;
 import kala.control.Option;
 import kala.function.IndexedBiFunction;
 import kala.function.IndexedConsumer;
@@ -878,7 +878,7 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
             return ImmutableLinkedSeq.empty();
         }
 
-        final LinkedBuffer<E> builder = new LinkedBuffer<>();
+        final DynamicLinkedSeq<E> builder = new DynamicLinkedSeq<>();
         for (int i = 0; i < size; i++) {
             builder.append(this.get(i));
         }

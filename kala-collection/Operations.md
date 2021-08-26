@@ -207,14 +207,13 @@
     * `toImmutableSeq()`
     * `toImmutableArray()`
     * `toImmutableLinkedSeq()`
-    * `toImmutableSizedList()`
     * `toImmutableVector()`
     * `toMutableSeq()`
     * `toMutableArray()`
-    * `toBuffer()`
-    * `toArrayBuffer()`
-    * `toLinkedBuffer()`
-    * `toDoubleLinkedBuffer()`
+    * `toDynamicSeq()`
+    * `toDynamicArray()`
+    * `toDynamicLinkedSeq()`
+    * `toDynamicDoubleLinkedSeq()`
     * `toMap()`
     * `associate(Function)`
     * `associateBy(Function)`

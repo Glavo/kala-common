@@ -15,7 +15,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
-import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
@@ -125,7 +124,7 @@ public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Index
         if (!it.hasNext()) { // implicit null check of it
             return empty();
         }
-        ArrayBuffer<E> buffer = new ArrayBuffer<>();
+        DynamicArray<E> buffer = new DynamicArray<>();
         while (it.hasNext()) {
             buffer.append(it.next());
         }
@@ -266,7 +265,7 @@ public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Index
         }
     }
 
-    private static final class Factory<E> implements CollectionFactory<E, ArrayBuffer<E>, MutableArray<E>> {
+    private static final class Factory<E> implements CollectionFactory<E, DynamicArray<E>, MutableArray<E>> {
         Factory() {
         }
 
@@ -301,28 +300,28 @@ public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Index
         }
 
         @Override
-        public final ArrayBuffer<E> newBuilder() {
-            return new ArrayBuffer<>();
+        public final DynamicArray<E> newBuilder() {
+            return new DynamicArray<>();
         }
 
         @Override
-        public final void addToBuilder(@NotNull ArrayBuffer<E> buffer, E value) {
+        public final void addToBuilder(@NotNull DynamicArray<E> buffer, E value) {
             buffer.append(value);
         }
 
         @Override
-        public final void sizeHint(@NotNull ArrayBuffer<E> buffer, int size) {
+        public final void sizeHint(@NotNull DynamicArray<E> buffer, int size) {
             buffer.sizeHint(size);
         }
 
         @Override
-        public final ArrayBuffer<E> mergeBuilder(@NotNull ArrayBuffer<E> builder1, @NotNull ArrayBuffer<E> builder2) {
+        public final DynamicArray<E> mergeBuilder(@NotNull DynamicArray<E> builder1, @NotNull DynamicArray<E> builder2) {
             builder1.appendAll(builder2);
             return builder1;
         }
 
         @Override
-        public final MutableArray<E> build(@NotNull ArrayBuffer<E> buffer) {
+        public final MutableArray<E> build(@NotNull DynamicArray<E> buffer) {
             return new MutableArray<>(buffer.toArray());
         }
     }

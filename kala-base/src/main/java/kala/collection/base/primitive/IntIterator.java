@@ -3,7 +3,7 @@ package kala.collection.base.primitive;
 import kala.annotations.ReplaceWith;
 import kala.collection.base.Iterators;
 import kala.control.primitive.IntOption;
-import kala.internal.InternalIntLinkedBuffer;
+import kala.internal.InternalDynamicIntLinkedSeq;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import kala.collection.base.AbstractIterator;
@@ -334,7 +334,7 @@ public interface IntIterator
             return Tuple.of(empty(), empty());
         }
 
-        InternalIntLinkedBuffer buffer = new InternalIntLinkedBuffer();
+        InternalDynamicIntLinkedSeq buffer = new InternalDynamicIntLinkedSeq();
         IntIterator it = this;
 
         while (it.hasNext()) {
@@ -448,7 +448,7 @@ public interface IntIterator
         if (!hasNext()) {
             return new int[0];
         }
-        InternalIntLinkedBuffer buffer = new InternalIntLinkedBuffer();
+        InternalDynamicIntLinkedSeq buffer = new InternalDynamicIntLinkedSeq();
         while (hasNext()) {
             buffer.append(nextInt());
         }

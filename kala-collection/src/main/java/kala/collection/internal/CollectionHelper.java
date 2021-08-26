@@ -8,7 +8,7 @@ import kala.collection.immutable.ImmutableArray;
 import kala.collection.immutable.ImmutableSeq;
 import kala.collection.internal.convert.FromJavaConvert;
 import kala.annotations.StaticClass;
-import kala.collection.mutable.ArrayBuffer;
+import kala.collection.mutable.DynamicArray;
 import kala.collection.mutable.MutableArray;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +29,7 @@ public final class CollectionHelper {
         if (it instanceof java.util.Collection<?>) {
             return ((java.util.Collection<?>) it).toArray();
         }
-        ArrayBuffer<Object> buffer = new ArrayBuffer<>();
+        DynamicArray<Object> buffer = new DynamicArray<>();
         for (Object o : it) {
             buffer.append(o);
         }
@@ -54,10 +54,10 @@ public final class CollectionHelper {
             return (ArraySeq<E>) ArraySeq.wrap(((java.util.Collection<E>) collection).toArray());
         }
         if (collection instanceof Iterable<?>) {
-            return ArrayBuffer.from(((Iterable<E>) collection));
+            return DynamicArray.from(((Iterable<E>) collection));
         }
         if (collection instanceof Iterator<?>) {
-            return ArrayBuffer.from((Iterator<E>) collection);
+            return DynamicArray.from((Iterator<E>) collection);
         }
 
         throw new IllegalArgumentException();
@@ -77,7 +77,7 @@ public final class CollectionHelper {
             if (!iterator.hasNext()) {
                 return ImmutableSeq.empty();
             }
-            ArrayBuffer<E> buffer = new ArrayBuffer<>();
+            DynamicArray<E> buffer = new DynamicArray<>();
             while (iterator.hasNext()) {
                 buffer.append(((E) iterator.next()));
             }
@@ -85,7 +85,7 @@ public final class CollectionHelper {
         }
 
         if (collection instanceof Iterable<?>) {
-            ArrayBuffer<E> buffer = new ArrayBuffer<>();
+            DynamicArray<E> buffer = new DynamicArray<>();
             buffer.appendAll(((Iterable<E>) collection));
             return buffer;
         }

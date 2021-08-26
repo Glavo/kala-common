@@ -7,27 +7,26 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Predicate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("unchecked")
-public interface BufferTestTemplate extends MutableSeqTestTemplate {
+public interface DynamicSeqTestTemplate extends MutableSeqTestTemplate {
     @Override
-    <E> CollectionFactory<E, ?, ? extends Buffer<? extends E>> factory();
+    <E> CollectionFactory<E, ?, ? extends DynamicSeq<? extends E>> factory();
 
     @Override
-    <E> Buffer<E> of(E... elements);
+    <E> DynamicSeq<E> of(E... elements);
 
     @Override
-    <E> Buffer<E> from(E[] elements);
+    <E> DynamicSeq<E> from(E[] elements);
 
     @Override
-    <E> Buffer<E> from(Iterable<? extends E> elements);
+    <E> DynamicSeq<E> from(Iterable<? extends E> elements);
 
     @Test
     default void appendTest() {
-        Buffer<Object> b = (Buffer<Object>) factory().empty();
+        DynamicSeq<Object> b = (DynamicSeq<Object>) factory().empty();
         assertIterableEquals(List.of(), b);
         b.append("foo");
         assertIterableEquals(List.of("foo"), b);
@@ -37,7 +36,7 @@ public interface BufferTestTemplate extends MutableSeqTestTemplate {
         assertIterableEquals(Arrays.asList("foo", "bar", null), b);
 
         for (Integer[] data : data1()) {
-            b = (Buffer<Object>) factory().empty();
+            b = (DynamicSeq<Object>) factory().empty();
             for (Integer i : data) {
                 b.append(i);
             }
@@ -47,7 +46,7 @@ public interface BufferTestTemplate extends MutableSeqTestTemplate {
 
     @Test
     default void appendAllTest() {
-        Buffer<Object> b = of();
+        DynamicSeq<Object> b = of();
         assertIterableEquals(List.of(), b);
 
         b.appendAll(List.of());
@@ -65,7 +64,7 @@ public interface BufferTestTemplate extends MutableSeqTestTemplate {
         b.appendAll(List.of("str4", "str5", "str6"));
         assertIterableEquals(List.of("str1", "str2", "str3", "str4", "str5", "str6"), b);
 
-        b = (Buffer<Object>) factory().empty();
+        b = (DynamicSeq<Object>) factory().empty();
         b.appendAll(b);
         assertIterableEquals(List.of(), b);
 
@@ -82,7 +81,7 @@ public interface BufferTestTemplate extends MutableSeqTestTemplate {
             d12.addAll(Arrays.asList(d2));
 
             {
-                b = (Buffer<Object>) factory().empty();
+                b = (DynamicSeq<Object>) factory().empty();
                 assertIterableEquals(List.of(), b);
                 b.appendAll(d1);
                 assertIterableEquals(Arrays.asList(d1), b);
@@ -90,7 +89,7 @@ public interface BufferTestTemplate extends MutableSeqTestTemplate {
                 assertIterableEquals(d12, b);
             }
             {
-                b = (Buffer<Object>) factory().empty();
+                b = (DynamicSeq<Object>) factory().empty();
                 assertIterableEquals(List.of(), b);
                 b.appendAll(Arrays.asList(d1));
                 assertIterableEquals(Arrays.asList(d1), b);
@@ -103,7 +102,7 @@ public interface BufferTestTemplate extends MutableSeqTestTemplate {
             l.addAll(Arrays.asList(data));
             l.addAll(Arrays.asList(data));
 
-            b = (Buffer<Object>) factory().empty();
+            b = (DynamicSeq<Object>) factory().empty();
             b.appendAll(data);
             b.appendAll(b);
             assertIterableEquals(l, b);
@@ -112,7 +111,7 @@ public interface BufferTestTemplate extends MutableSeqTestTemplate {
 
     @Test
     default void prependTest() {
-        Buffer<Object> b = (Buffer<Object>) factory().empty();
+        DynamicSeq<Object> b = (DynamicSeq<Object>) factory().empty();
         assertIterableEquals(List.of(), b);
         b.prepend("foo");
         assertIterableEquals(List.of("foo"), b);
@@ -121,7 +120,7 @@ public interface BufferTestTemplate extends MutableSeqTestTemplate {
         b.prepend(null);
         assertIterableEquals(Arrays.asList(null, "bar", "foo"), b);
         for (Integer[] data : data1()) {
-            b = (Buffer<Object>) factory().empty();
+            b = (DynamicSeq<Object>) factory().empty();
             for (int i = data.length - 1; i >= 0; i--) {
                 b.prepend(data[i]);
             }
@@ -131,7 +130,7 @@ public interface BufferTestTemplate extends MutableSeqTestTemplate {
 
     @Test
     default void prependAllTest() {
-        Buffer<Object> b = (Buffer<Object>) factory().empty();
+        DynamicSeq<Object> b = (DynamicSeq<Object>) factory().empty();
         assertIterableEquals(List.of(), b);
 
         b.prependAll(List.of());
@@ -149,7 +148,7 @@ public interface BufferTestTemplate extends MutableSeqTestTemplate {
         b.prependAll(List.of("str4", "str5", "str6"));
         assertIterableEquals(List.of("str4", "str5", "str6", "str2", "str3", "str1"), b);
 
-        b = (Buffer<Object>) factory().empty();
+        b = (DynamicSeq<Object>) factory().empty();
         b.prependAll(b);
         assertIterableEquals(List.of(), b);
 
@@ -166,7 +165,7 @@ public interface BufferTestTemplate extends MutableSeqTestTemplate {
             d21.addAll(Arrays.asList(d1));
 
             {
-                b = (Buffer<Object>) factory().empty();
+                b = (DynamicSeq<Object>) factory().empty();
                 assertIterableEquals(List.of(), b);
                 b.prependAll(d1);
                 assertIterableEquals(Arrays.asList(d1), b);
@@ -174,7 +173,7 @@ public interface BufferTestTemplate extends MutableSeqTestTemplate {
                 assertIterableEquals(d21, b);
             }
             {
-                b = (Buffer<Object>) factory().empty();
+                b = (DynamicSeq<Object>) factory().empty();
                 assertIterableEquals(List.of(), b);
                 b.prependAll(Arrays.asList(d1));
                 assertIterableEquals(Arrays.asList(d1), b);
@@ -187,7 +186,7 @@ public interface BufferTestTemplate extends MutableSeqTestTemplate {
             l.addAll(Arrays.asList(data));
             l.addAll(Arrays.asList(data));
 
-            b = (Buffer<Object>) factory().empty();
+            b = (DynamicSeq<Object>) factory().empty();
             b.prependAll(data);
             b.prependAll(b);
             assertIterableEquals(l, b);
@@ -196,34 +195,34 @@ public interface BufferTestTemplate extends MutableSeqTestTemplate {
 
     @Test
     default void filterInPlaceTest() {
-        final Buffer<?> empty = factory().empty();
+        final DynamicSeq<?> empty = factory().empty();
         empty.filterInPlace(e -> true);
         assertIterableEquals(List.of(), empty);
         empty.filterInPlace(e -> false);
         assertIterableEquals(List.of(), empty);
 
-        final Buffer<Integer> b1 = of(0, 1, 2, 3, 4, 5);
+        final DynamicSeq<Integer> b1 = of(0, 1, 2, 3, 4, 5);
         b1.filterInPlace(it -> it > 2);
         assertIterableEquals(List.of(3, 4, 5), b1);
 
-        final Buffer<Integer> b2 = of(0, 1, 2, 3, 4, 5);
+        final DynamicSeq<Integer> b2 = of(0, 1, 2, 3, 4, 5);
         b2.filterInPlace(it -> it % 2 == 0);
         assertIterableEquals(List.of(0, 2, 4), b2);
     }
 
     @Test
     default void filterNotInPlaceTest() {
-        final Buffer<?> empty = factory().empty();
+        final DynamicSeq<?> empty = factory().empty();
         empty.filterNotInPlace(e -> true);
         assertIterableEquals(List.of(), empty);
         empty.filterNotInPlace(e -> false);
         assertIterableEquals(List.of(), empty);
 
-        final Buffer<Integer> b1 = of(0, 1, 2, 3, 4, 5);
+        final DynamicSeq<Integer> b1 = of(0, 1, 2, 3, 4, 5);
         b1.filterNotInPlace(it -> it > 2);
         assertIterableEquals(List.of(0, 1, 2), b1);
 
-        final Buffer<Integer> b2 = of(0, 1, 2, 3, 4, 5);
+        final DynamicSeq<Integer> b2 = of(0, 1, 2, 3, 4, 5);
         b2.filterNotInPlace(it -> it % 2 == 0);
         assertIterableEquals(List.of(1, 3, 5), b2);
     }

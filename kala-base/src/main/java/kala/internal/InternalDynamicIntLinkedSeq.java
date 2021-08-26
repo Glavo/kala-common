@@ -1,27 +1,27 @@
 package kala.internal;
 
-import kala.collection.base.primitive.AbstractBooleanIterator;
-import kala.collection.base.primitive.BooleanIterator;
+import kala.collection.base.primitive.AbstractIntIterator;
+import kala.collection.base.primitive.IntIterator;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.NoSuchElementException;
 
 @ApiStatus.Internal
-public class InternalBooleanLinkedBuffer {
+public class InternalDynamicIntLinkedSeq {
     static final class Node {
-        final boolean head;
+        final int head;
         Node tail;
 
-        public Node(boolean head, Node tail) {
+        public Node(int head, Node tail) {
             this.head = head;
             this.tail = tail;
         }
 
-        public final BooleanIterator iterator() {
+        public final IntIterator iterator() {
             return new Itr(this);
         }
 
-        static final class Itr extends AbstractBooleanIterator {
+        static final class Itr extends AbstractIntIterator {
             private Node list;
 
             Itr(Node list) {
@@ -35,7 +35,7 @@ public class InternalBooleanLinkedBuffer {
             }
 
             @Override
-            public final boolean nextBoolean() {
+            public final int nextInt() {
                 final Node list = this.list;
 
                 if (list == null) {
@@ -49,12 +49,13 @@ public class InternalBooleanLinkedBuffer {
         }
     }
 
+
     Node first = null;
     Node last = null;
 
     int len = 0;
 
-    public final void append(boolean value) {
+    public final void append(int value) {
         Node n = new Node(value, null);
         if (first == null) {
             first = n;
@@ -65,8 +66,8 @@ public class InternalBooleanLinkedBuffer {
         ++len;
     }
 
-    public boolean[] toArray() {
-        boolean[] arr = new boolean[len];
+    public int[] toArray() {
+        int[] arr = new int[len];
 
         int i = 0;
         Node node = this.first;
@@ -77,7 +78,7 @@ public class InternalBooleanLinkedBuffer {
         return arr;
     }
 
-    public final BooleanIterator iterator() {
-        return first == null ? BooleanIterator.empty() : first.iterator();
+    public final IntIterator iterator() {
+        return first == null ? IntIterator.empty() : first.iterator();
     }
 }
