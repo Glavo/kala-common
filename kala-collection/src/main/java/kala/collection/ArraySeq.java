@@ -687,63 +687,63 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     private static final class Factory<E> implements CollectionFactory<E, ArrayBuffer<E>, ArraySeq<E>> {
 
         @Override
-        public final ArraySeq<E> empty() {
+        public ArraySeq<E> empty() {
             return ArraySeq.empty();
         }
 
         @Override
-        public final ArraySeq<E> from(E @NotNull [] values) {
+        public ArraySeq<E> from(E @NotNull [] values) {
             return ArraySeq.from(values);
         }
 
         @Override
-        public final ArraySeq<E> from(@NotNull Iterable<? extends E> values) {
+        public ArraySeq<E> from(@NotNull Iterable<? extends E> values) {
             return ArraySeq.from(values);
         }
 
         @Override
-        public final ArraySeq<E> from(@NotNull Iterator<? extends E> it) {
+        public ArraySeq<E> from(@NotNull Iterator<? extends E> it) {
             return ArraySeq.from(it);
         }
 
         @Override
-        public final ArraySeq<E> fill(int n, E value) {
+        public ArraySeq<E> fill(int n, E value) {
             return ArraySeq.fill(n, value);
         }
 
         @Override
-        public final ArraySeq<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+        public ArraySeq<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
             return ArraySeq.fill(n, supplier);
         }
 
         @Override
-        public final ArraySeq<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+        public ArraySeq<E> fill(int n, @NotNull IntFunction<? extends E> init) {
             return ArraySeq.fill(n, init);
         }
 
         @Override
-        public final ArrayBuffer<E> newBuilder() {
+        public ArrayBuffer<E> newBuilder() {
             return new ArrayBuffer<>();
         }
 
         @Override
-        public final void addToBuilder(@NotNull ArrayBuffer<E> buffer, E value) {
+        public void addToBuilder(@NotNull ArrayBuffer<E> buffer, E value) {
             buffer.append(value);
         }
 
         @Override
-        public final ArrayBuffer<E> mergeBuilder(@NotNull ArrayBuffer<E> builder1, @NotNull ArrayBuffer<E> builder2) {
+        public ArrayBuffer<E> mergeBuilder(@NotNull ArrayBuffer<E> builder1, @NotNull ArrayBuffer<E> builder2) {
             builder1.appendAll(builder2);
             return builder1;
         }
 
         @Override
-        public final void sizeHint(@NotNull ArrayBuffer<E> buffer, int size) {
+        public void sizeHint(@NotNull ArrayBuffer<E> buffer, int size) {
             buffer.sizeHint(size);
         }
 
         @Override
-        public final ArraySeq<E> build(@NotNull ArrayBuffer<E> buffer) {
+        public ArraySeq<E> build(@NotNull ArrayBuffer<E> buffer) {
             return new ArraySeq<>(buffer.toArray());
         }
     }

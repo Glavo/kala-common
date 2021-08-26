@@ -54,7 +54,7 @@ public final class ImmutableArrayTest implements ImmutableSeqTestTemplate {
         ImmutableSeqTestTemplate.super.fromTest();
         for (Integer[] data : data1()) {
             assertIterableEquals(Arrays.asList(data), ImmutableArray.from(new SimpleIterable<>(Arrays.asList(data))));
-            assertIterableEquals(Arrays.asList(data), ImmutableArray.from(ImmutableLinkedSeq.from(data)));
+            assertIterableEquals(Arrays.asList(data), ImmutableArray.from(ImmutableLinkedSeq.nodeFrom(data)));
             assertIterableEquals(Arrays.asList(data), ImmutableArray.from(Arrays.stream(data)));
         }
     }

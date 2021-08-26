@@ -1,20 +1,21 @@
 package kala.collection.immutable;
 
+import kala.annotations.Covariant;
 import kala.collection.IndexedSeqLike;
 import kala.collection.Seq;
-import kala.collection.SeqLike;
 import kala.collection.SeqView;
+import kala.collection.base.AbstractIterator;
 import kala.collection.base.AnyTraversable;
 import kala.collection.base.Iterators;
+import kala.collection.internal.view.SeqViews;
+import kala.collection.mutable.AbstractBuffer;
 import kala.control.Option;
 import kala.function.*;
 import kala.Conditions;
-import kala.collection.internal.view.SeqViews;
-import kala.collection.mutable.AbstractBuffer;
-import kala.tuple.Tuple2;
-import kala.annotations.Covariant;
-import kala.collection.mutable.LinkedBuffer;
+import kala.collection.SeqLike;
 import kala.collection.factory.CollectionFactory;
+import kala.collection.mutable.LinkedBuffer;
+import kala.tuple.Tuple2;
 import org.jetbrains.annotations.*;
 
 import java.io.Serializable;
@@ -24,37 +25,30 @@ import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-@Debug.Renderer(hasChildren = "!isEmpty()", childrenArray = "toArray()")
-public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq<E>
-        implements ImmutableSeq<E>, ImmutableSeqOps<E, ImmutableLinkedSeq<?>, ImmutableLinkedSeq<E>>, Serializable {
-    private static final long serialVersionUID = 944030391350569673L;
+public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
+        implements ImmutableSeqOps<E, ImmutableLinkedSeq<?>, ImmutableLinkedSeq<E>>, Serializable {
+    private static final long serialVersionUID = 4185879054671961536L;
 
-    private static final ImmutableLinkedSeq.Factory<?> FACTORY = new Factory<>();
+    public static final NodeFactory<?> NODE_FACTORY = new NodeFactory<>();
+    private static final Factory<?> FACTORY = new Factory<>();
 
-    public static final ImmutableLinkedSeq<?> NIL = new ImmutableLinkedSeq<>();
+    public static final Node<?> NIL_NODE = new Node<>();
+    public static final ImmutableLinkedSeq<?> EMPTY = new ImmutableLinkedSeq<>(NIL_NODE, 0);
 
-    E head;
+    private final Node<E> list;
+    private final int size;
 
-    ImmutableLinkedSeq<E> tail;
-
-    ImmutableLinkedSeq() {
-    }
-
-    ImmutableLinkedSeq(E head) {
-        this.head = head;
-    }
-
-    ImmutableLinkedSeq(E head, @NotNull ImmutableLinkedSeq<E> tail) {
-        this.head = head;
-        this.tail = tail;
+    ImmutableLinkedSeq(Node<E> list, int size) {
+        this.list = list;
+        this.size = size;
     }
 
     //region Narrow method
 
     @Contract(value = "_ -> param1", pure = true)
     @SuppressWarnings("unchecked")
-    public static <E> ImmutableLinkedSeq<E> narrow(ImmutableLinkedSeq<? extends E> seq) {
-        return (ImmutableLinkedSeq<E>) seq;
+    public static <E> Node<E> narrow(Node<? extends E> node) {
+        return (Node<E>) node;
     }
 
     //endregion
@@ -62,7 +56,7 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
     //region Static Factories
 
     @SuppressWarnings("unchecked")
-    public static <E> CollectionFactory<E, ?, ImmutableLinkedSeq<E>> factory() {
+    public static <E> @NotNull CollectionFactory<E, ?, ImmutableLinkedSeq<E>> factory() {
         return (Factory<E>) FACTORY;
     }
 
@@ -71,46 +65,32 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
     }
 
     @SuppressWarnings("unchecked")
-    public static <E> @NotNull ImmutableLinkedSeq<E> nil() {
-        return (ImmutableLinkedSeq<E>) NIL;
-    }
-
-    public static <E> @NotNull ImmutableLinkedSeq<E> empty() {
-        return nil();
+    public static <E> ImmutableLinkedSeq<E> empty() {
+        return (ImmutableLinkedSeq<E>) EMPTY;
     }
 
     public static <E> @NotNull ImmutableLinkedSeq<E> of() {
-        return nil();
+        return empty();
     }
 
     public static <E> @NotNull ImmutableLinkedSeq<E> of(E value1) {
-        return new ImmutableLinkedSeq<>(value1, nil());
+        return new ImmutableLinkedSeq<>(nodeOf(value1), 1);
     }
 
     public static <E> @NotNull ImmutableLinkedSeq<E> of(E value1, E value2) {
-        return new ImmutableLinkedSeq<>(value1,
-                new ImmutableLinkedSeq<>(value2, nil()));
+        return new ImmutableLinkedSeq<>(nodeOf(value1, value2), 2);
     }
 
     public static <E> @NotNull ImmutableLinkedSeq<E> of(E value1, E value2, E value3) {
-        return new ImmutableLinkedSeq<>(value1,
-                new ImmutableLinkedSeq<>(value2,
-                        new ImmutableLinkedSeq<>(value3, nil())));
+        return new ImmutableLinkedSeq<>(nodeOf(value1, value2, value3), 3);
     }
 
     public static <E> @NotNull ImmutableLinkedSeq<E> of(E value1, E value2, E value3, E value4) {
-        return new ImmutableLinkedSeq<>(value1,
-                new ImmutableLinkedSeq<>(value2,
-                        new ImmutableLinkedSeq<>(value3,
-                                new ImmutableLinkedSeq<>(value4, nil()))));
+        return new ImmutableLinkedSeq<>(nodeOf(value1, value2, value3, value4), 4);
     }
 
     public static <E> @NotNull ImmutableLinkedSeq<E> of(E value1, E value2, E value3, E value4, E value5) {
-        return new ImmutableLinkedSeq<>(value1,
-                new ImmutableLinkedSeq<>(value2,
-                        new ImmutableLinkedSeq<>(value3,
-                                new ImmutableLinkedSeq<>(value4,
-                                        new ImmutableLinkedSeq<>(value5, nil())))));
+        return new ImmutableLinkedSeq<>(nodeOf(value1, value2, value3, value4, value5), 5);
     }
 
     @SafeVarargs
@@ -119,36 +99,27 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
     }
 
     public static <E> @NotNull ImmutableLinkedSeq<E> from(E @NotNull [] values) {
-        ImmutableLinkedSeq<E> res = nil();
-        for (int i = values.length - 1; i >= 0; i--) {
-            res = new ImmutableLinkedSeq<>(values[i], res);
+        final int size = values.length;
+        if (size == 0) {
+            return empty();
         }
-        return res;
+        return new ImmutableLinkedSeq<>(nodeFrom(values), size);
     }
 
     public static <E> @NotNull ImmutableLinkedSeq<E> from(@NotNull IndexedSeqLike<? extends E> values) {
-        ImmutableLinkedSeq<E> res = nil();
-        for (int i = values.size() - 1; i >= 0; i--) { // implicit null check of values
-            res = res.cons(values.get(i));
+        final int size = values.size();
+        if (size == 0) {
+            return empty();
         }
-        return res;
+        return new ImmutableLinkedSeq<>(nodeFrom(values), size);
     }
 
     public static <E> @NotNull ImmutableLinkedSeq<E> from(@NotNull java.util.List<? extends E> values) {
-        if (values.isEmpty()) {
+        final int size = values.size();
+        if (size == 0) {
             return empty();
         }
-        return values instanceof RandomAccess
-                ? fromRandomAccess(values)
-                : from(values.iterator());
-    }
-
-    private static <E> @NotNull ImmutableLinkedSeq<E> fromRandomAccess(@NotNull java.util.List<? extends E> values) {
-        ImmutableLinkedSeq<E> res = nil();
-        for (int i = values.size() - 1; i >= 0; i--) { // implicit null check of values
-            res = new ImmutableLinkedSeq<>(values.get(i), res);
-        }
-        return res;
+        return new ImmutableLinkedSeq<>(nodeFrom(values), size);
     }
 
     @SuppressWarnings("unchecked")
@@ -156,16 +127,34 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
         if (values instanceof ImmutableLinkedSeq<?>) {
             return ((ImmutableLinkedSeq<E>) values);
         }
-        return from(values.iterator()); // implicit null check of values
+
+        if (values instanceof Node<?>) {
+            return from((Node<E>) values);
+        }
+
+        return from(values.iterator()); // TODO
+    }
+
+    public static <E> @NotNull ImmutableLinkedSeq<E> from(@NotNull Node<? extends E> values) {
+        final int size = values.size();
+        return size == 0 ? empty() : new ImmutableLinkedSeq<E>((Node<E>) values, size);
     }
 
     public static <E> @NotNull ImmutableLinkedSeq<E> from(@NotNull Iterator<? extends E> it) {
         if (!it.hasNext()) { // implicit null check of it
-            return nil();
+            return empty();
         }
-        ImmutableLinkedSeq<E> cons = new ImmutableLinkedSeq<>(it.next());
-        cons.appendIterator(it).tail = nil();
-        return cons;
+        final Node<E> res = new Node<>(it.next());
+        Node<E> t = res;
+        int c = 1;
+        while (it.hasNext()) {
+            Node<E> nl = new Node<>(it.next());
+            t.tail = nl;
+            t = nl;
+            c++;
+        }
+        t.tail = nilNode();
+        return new ImmutableLinkedSeq<>(res, c);
     }
 
     public static <E> @NotNull ImmutableLinkedSeq<E> from(@NotNull Stream<? extends E> stream) {
@@ -173,109 +162,217 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
     }
 
     public static <E> @NotNull ImmutableLinkedSeq<E> fill(int n, E value) {
-        ImmutableLinkedSeq<E> res = ImmutableLinkedSeq.nil();
-        for (int i = 0; i < n; i++) {
-            res = new ImmutableLinkedSeq<>(value, res);
+        if (n <= 0) {
+            return empty();
         }
-        return res;
+        Node<E> res = nilNode();
+        for (int i = 0; i < n; i++) {
+            res = new Node<>(value, res);
+        }
+        return new ImmutableLinkedSeq<>(res, n);
     }
 
     public static <E> @NotNull ImmutableLinkedSeq<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
         if (n <= 0) {
-            return nil();
+            return empty();
         }
-        final ImmutableLinkedSeq<E> res = new ImmutableLinkedSeq<>(supplier.get());
-        ImmutableLinkedSeq<E> t = res;
+        final Node<E> res = new Node<>(supplier.get());
+        Node<E> t = res;
 
         for (int i = 1; i < n; i++) {
-            ImmutableLinkedSeq<E> nl = new ImmutableLinkedSeq<>(supplier.get());
+            Node<E> nl = new Node<>(supplier.get());
             t.tail = nl;
             t = nl;
         }
-        t.tail = nil();
-        return res;
+        t.tail = nilNode();
+        return new ImmutableLinkedSeq<>(res, n);
     }
 
     public static <E> @NotNull ImmutableLinkedSeq<E> fill(int n, @NotNull IntFunction<? extends E> init) {
         if (n <= 0) {
-            return nil();
+            return empty();
         }
-        final ImmutableLinkedSeq<E> res = new ImmutableLinkedSeq<>(init.apply(0));
-        ImmutableLinkedSeq<E> t = res;
+        final Node<E> res = new Node<>(init.apply(0));
+        Node<E> t = res;
 
         for (int i = 1; i < n; i++) {
-            ImmutableLinkedSeq<E> nl = new ImmutableLinkedSeq<>(init.apply(i));
+            Node<E> nl = new Node<>(init.apply(i));
             t.tail = nl;
             t = nl;
         }
-        t.tail = nil();
-        return res;
+        t.tail = nilNode();
+        return new ImmutableLinkedSeq<>(res, n);
     }
 
     //endregion
 
-    private ImmutableLinkedSeq<E> appendIterator(@NotNull Iterator<? extends E> it) {
-        ImmutableLinkedSeq<E> node = this;
-        while (it.hasNext()) {
-            ImmutableLinkedSeq<E> nn = new ImmutableLinkedSeq<>(it.next());
-            node.tail = nn;
-            node = nn;
-        }
-        return node;
+    //region NodeFactories
+
+    @SuppressWarnings("unchecked")
+    public static <E> CollectionFactory<E, ?, Node<E>> nodeFactory() {
+        return (NodeFactory<E>) NODE_FACTORY;
     }
+
+    @SuppressWarnings("unchecked")
+    public static <E> @NotNull Node<E> nilNode() {
+        return (Node<E>) NIL_NODE;
+    }
+
+    public static <E> @NotNull Node<E> emptyNode() {
+        return nilNode();
+    }
+
+    public static <E> @NotNull Node<E> nodeOf() {
+        return nilNode();
+    }
+
+    public static <E> @NotNull Node<E> nodeOf(E value1) {
+        return new Node<>(value1, nilNode());
+    }
+
+    public static <E> @NotNull Node<E> nodeOf(E value1, E value2) {
+        return new Node<>(value1,
+                new Node<>(value2, nilNode()));
+    }
+
+    public static <E> @NotNull Node<E> nodeOf(E value1, E value2, E value3) {
+        return new Node<>(value1,
+                new Node<>(value2,
+                        new Node<>(value3, nilNode())));
+    }
+
+    public static <E> @NotNull Node<E> nodeOf(E value1, E value2, E value3, E value4) {
+        return new Node<>(value1,
+                new Node<>(value2,
+                        new Node<>(value3,
+                                new Node<>(value4, nilNode()))));
+    }
+
+    public static <E> @NotNull Node<E> nodeOf(E value1, E value2, E value3, E value4, E value5) {
+        return new Node<>(value1,
+                new Node<>(value2,
+                        new Node<>(value3,
+                                new Node<>(value4,
+                                        new Node<>(value5, nilNode())))));
+    }
+
+    @SafeVarargs
+    public static <E> @NotNull Node<E> nodeOf(E... values) {
+        return nodeFrom(values);
+    }
+
+    public static <E> @NotNull Node<E> nodeFrom(E @NotNull [] values) {
+        Node<E> res = nilNode();
+        for (int i = values.length - 1; i >= 0; i--) {
+            res = new Node<>(values[i], res);
+        }
+        return res;
+    }
+
+    public static <E> @NotNull Node<E> nodeFrom(@NotNull IndexedSeqLike<? extends E> values) {
+        Node<E> res = nilNode();
+        for (int i = values.size() - 1; i >= 0; i--) { // implicit null check of values
+            res = res.cons(values.get(i));
+        }
+        return res;
+    }
+
+    public static <E> @NotNull Node<E> nodeFrom(@NotNull List<? extends E> values) {
+        if (values.isEmpty()) {
+            return emptyNode();
+        }
+        return values instanceof RandomAccess
+                ? nodeFromRandomAccess(values)
+                : nodeFrom(values.iterator());
+    }
+
+    private static <E> @NotNull Node<E> nodeFromRandomAccess(@NotNull List<? extends E> values) {
+        Node<E> res = nilNode();
+        for (int i = values.size() - 1; i >= 0; i--) { // implicit null check of values
+            res = new Node<>(values.get(i), res);
+        }
+        return res;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <E> @NotNull Node<E> nodeFrom(@NotNull Iterable<? extends E> values) {
+        if (values instanceof Node<?>) {
+            return ((Node<E>) values);
+        }
+        return nodeFrom(values.iterator()); // implicit null check of values
+    }
+
+    public static <E> @NotNull Node<E> nodeFrom(@NotNull Iterator<? extends E> it) {
+        if (!it.hasNext()) { // implicit null check of it
+            return nilNode();
+        }
+        Node<E> cons = new Node<>(it.next());
+        cons.appendIterator(it).tail = nilNode();
+        return cons;
+    }
+
+    public static <E> @NotNull Node<E> nodeFrom(@NotNull Stream<? extends E> stream) {
+        return stream.collect(nodeFactory());
+    }
+
+    public static <E> @NotNull Node<E> nodeFill(int n, E value) {
+        Node<E> res = nilNode();
+        for (int i = 0; i < n; i++) {
+            res = new Node<>(value, res);
+        }
+        return res;
+    }
+
+    public static <E> @NotNull Node<E> nodeFill(int n, @NotNull Supplier<? extends E> supplier) {
+        if (n <= 0) {
+            return nilNode();
+        }
+        final Node<E> res = new Node<>(supplier.get());
+        Node<E> t = res;
+
+        for (int i = 1; i < n; i++) {
+            Node<E> nl = new Node<>(supplier.get());
+            t.tail = nl;
+            t = nl;
+        }
+        t.tail = nilNode();
+        return res;
+    }
+
+    public static <E> @NotNull Node<E> nodeFill(int n, @NotNull IntFunction<? extends E> init) {
+        if (n <= 0) {
+            return nilNode();
+        }
+        final Node<E> res = new Node<>(init.apply(0));
+        Node<E> t = res;
+
+        for (int i = 1; i < n; i++) {
+            Node<E> nl = new Node<>(init.apply(i));
+            t.tail = nl;
+            t = nl;
+        }
+        t.tail = nilNode();
+        return res;
+    }
+
+
+    //endregion
 
     //region Collection Operations
 
     @Override
     public @NotNull String className() {
-        return "ImmutableLinkedSeq";
+        return "ImmutableSizedList";
     }
 
     @Override
     public <U> @NotNull CollectionFactory<U, ?, ImmutableLinkedSeq<U>> iterableFactory() {
-        return factory();
+        return ImmutableLinkedSeq.factory();
     }
 
     @Override
     public @NotNull Iterator<E> iterator() {
-        if (this == NIL) {
-            return Iterators.empty();
-        }
-        if (tail == NIL) {
-            return Iterators.of(head);
-        }
-        return new Itr<>(this);
-    }
-
-    @Override
-    public @NotNull Iterator<E> iterator(int beginIndex) {
-        if (beginIndex < 0) {
-            throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") < 0");
-        }
-        if (beginIndex == 0) {
-            return iterator();
-        }
-
-        int n = beginIndex;
-        ImmutableLinkedSeq<E> list = this;
-        while (n-- > 0) {
-            if (list == NIL) {
-                throw new IndexOutOfBoundsException("beginIndex: " + beginIndex);
-            }
-            list = list.tail;
-        }
         return list.iterator();
-    }
-
-    @Override
-    public @NotNull SeqView<E> view() {
-        if (this == NIL) {
-            return SeqView.empty();
-        }
-        if (tail == NIL) {
-            return new SeqViews.Single<>(head);
-        }
-        return new SeqViews.WithCachedSize<>(this);
     }
 
     //endregion
@@ -284,51 +381,55 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
 
     @Override
     public boolean isEmpty() {
-        return this == NIL;
+        return size == 0;
     }
 
     @Override
     public int size() {
-        ImmutableLinkedSeq<? extends E> list = this;
-        int c = 0;
-        while (list != NIL) {
-            ++c;
-            list = list.tail();
-        }
-        return c;
+        return size;
     }
 
     @Override
     public int knownSize() {
-        if (this == NIL) {
-            return 0;
-        }
-        if (tail == NIL) {
-            return 1;
-        }
-        return -1;
+        return size;
     }
-
 
     //endregion
 
-    //region Size Compare Operations
+    //region Positional Access Operations
 
     @Override
-    public int sizeCompare(int otherSize) {
-        if (otherSize < 0) {
-            return 1;
-        }
-        int i = 0;
-        ImmutableLinkedSeq<E> list = this;
-        while (list != NIL) {
-            if (i == otherSize) {
-                return 1;
-            }
+    public E get(int index) {
+        Conditions.checkElementIndex(index, size);
+        Node<E> list = this.list;
+        for (int i = 0; i < index; i++) {
             list = list.tail;
-            ++i;
         }
-        return i - otherSize;
+        return list.head;
+    }
+
+    @Override
+    public @Nullable E getOrNull(int index) {
+        if (index < 0 || index >= size) {
+            return null;
+        }
+        Node<E> list = this.list;
+        for (int i = 0; i < index; i++) {
+            list = list.tail;
+        }
+        return list.head;
+    }
+
+    @Override
+    public @NotNull Option<E> getOption(int index) {
+        if (index < 0 || index >= size) {
+            return Option.none();
+        }
+        Node<E> list = this.list;
+        for (int i = 0; i < index; i++) {
+            list = list.tail;
+        }
+        return Option.some(list.head);
     }
 
     //endregion
@@ -337,414 +438,424 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
 
     @Override
     public @NotNull ImmutableLinkedSeq<E> reversed() {
-        if (this == NIL || this.tail == NIL) {
+        final int size = this.size;
+        if (size == 0 || size == 1) {
             return this;
+        } else {
+            return new ImmutableLinkedSeq<>(list.reversed(), size);
         }
-
-        ImmutableLinkedSeq<? extends E> list = this;
-        ImmutableLinkedSeq<E> res = nil();
-        while (list != NIL) {
-            res = new ImmutableLinkedSeq<>(list.head, res);
-            list = list.tail;
-        }
-        return res;
     }
 
     @Override
     public @NotNull Iterator<E> reverseIterator() {
-        return reversed().iterator();
+        return list.reverseIterator();
+    }
+
+    //endregion
+
+    //region Addition Operations
+
+    public @NotNull ImmutableLinkedSeq<E> cons(E value) {
+        return new ImmutableLinkedSeq<>(list.cons(value), size + 1);
+    }
+
+    @Override
+    public @NotNull ImmutableLinkedSeq<E> prepended(E value) {
+        return new ImmutableLinkedSeq<>(list.prepended(value), size + 1);
+    }
+
+    @Override
+    public @NotNull ImmutableLinkedSeq<E> prependedAll(E @NotNull [] values) {
+        return prependedAllImpl(values);
+    }
+
+    @Override
+    public @NotNull ImmutableLinkedSeq<E> prependedAll(@NotNull Iterable<? extends E> values) {
+        return prependedAllImpl(values);
+    }
+
+    @Override
+    public @NotNull ImmutableLinkedSeq<E> appended(E value) {
+        return new ImmutableLinkedSeq<>(list.appended(value), size + 1);
+    }
+
+    @Override
+    public @NotNull ImmutableLinkedSeq<E> appendedAll(E @NotNull [] values) {
+        return appendedAllImpl(values);
+    }
+
+    @Override
+    public @NotNull ImmutableLinkedSeq<E> appendedAll(@NotNull Iterable<? extends E> values) {
+        return appendedAllImpl(values);
     }
 
     //endregion
 
     //region Element Retrieval Operations
 
-    public E head() {
-        if (this == NIL) {
-            throw new NoSuchElementException("ImmutableList.Nil.head()");
-        } else {
-            return head;
-        }
-    }
-
-    public @Nullable E headOrNull() {
-        return head;
-    }
-
-    public @NotNull Option<E> headOption() {
-        return this == NIL ? Option.none() : Option.some(head);
-    }
-
-    public @NotNull ImmutableLinkedSeq<E> tail() {
-        if (this == NIL) {
-            throw new NoSuchElementException("ImmutableList.Nil.tail()");
-        } else {
-            return tail;
-        }
-    }
-
-    public @Nullable ImmutableLinkedSeq<E> tailOrNull() {
-        return tail;
-    }
-
-    public @NotNull Option<@NotNull ImmutableLinkedSeq<E>> tailOption() {
-        return Option.of(tail);
+    @Override
+    public E first() {
+        return list.first();
     }
 
     @Override
-    public E first() {
-        return head();
+    public E first(@NotNull Predicate<? super E> predicate) {
+        return list.first(predicate);
+    }
+
+    @Override
+    public @Nullable E firstOrNull() {
+        return list.firstOrNull();
+    }
+
+    @Override
+    public @Nullable E firstOrNull(@NotNull Predicate<? super E> predicate) {
+        return list.firstOrNull(predicate);
+    }
+
+    @Override
+    public @NotNull Option<E> firstOption() {
+        return list.firstOption();
+    }
+
+    @Override
+    public @NotNull Option<E> firstOption(@NotNull Predicate<? super E> predicate) {
+        return list.firstOption(predicate);
     }
 
     @Override
     public E last() {
-        ImmutableLinkedSeq<E> node = this;
-        while (node.tail() != NIL) {
-            node = node.tail();
-        }
-        return node.head();
+        return list.last();
+    }
+
+    @Override
+    public E last(@NotNull Predicate<? super E> predicate) {
+        return list.last(predicate);
+    }
+
+    @Override
+    public @Nullable E lastOrNull() {
+        return list.lastOrNull();
+    }
+
+    @Override
+    public @Nullable E lastOrNull(@NotNull Predicate<? super E> predicate) {
+        return list.lastOrNull(predicate);
+    }
+
+    @Override
+    public @NotNull Option<E> lastOption() {
+        return list.lastOption();
+    }
+
+    @Override
+    public @NotNull Option<E> lastOption(@NotNull Predicate<? super E> predicate) {
+        return list.lastOption(predicate);
     }
 
     //endregion
 
-    @Contract("_ -> new")
-    public @NotNull ImmutableLinkedSeq<E> cons(E element) {
-        return new ImmutableLinkedSeq<>(element, this);
+    //region Element Conditions
+
+    @Override
+    public boolean contains(Object value) {
+        return list.contains(value);
     }
 
     @Override
-    public @NotNull ImmutableLinkedSeq<E> prepended(E value) {
-        return cons(value);
+    public boolean containsAll(Object @NotNull [] values) {
+        return list.containsAll(values);
     }
 
     @Override
-    public @NotNull ImmutableLinkedSeq<E> prependedAll(E @NotNull [] values) {
-        int prefixLength = values.length; // implicit null check of prefix
-        ImmutableLinkedSeq<E> result = this;
-        for (int i = prefixLength - 1; i >= 0; i--) {
-            result = result.cons(values[i]);
-        }
-        return result;
+    public boolean containsAll(@NotNull Iterable<?> values) {
+        return list.containsAll(values);
     }
 
     @Override
-    public @NotNull ImmutableLinkedSeq<E> prependedAll(@NotNull Iterable<? extends E> values) {
-        if (values instanceof RandomAccess) {
-            if (values instanceof Seq<?>) {
-                Seq<E> seq = (Seq<E>) values;
-                ImmutableLinkedSeq<E> res = this;
-                for (int i = seq.size() - 1; i >= 0; i--) {
-                    res = res.cons(seq.get(i));
-                }
-                return res;
-            }
-            if (values instanceof java.util.List<?>) {
-                final List<E> list = (List<E>) values;
-                ImmutableLinkedSeq<E> res = this;
-                for (int i = list.size() - 1; i >= 0; i--) {
-                    res = res.cons(list.get(i));
-                }
-                return res;
-            }
-        }
-
-        Iterator<? extends E> it = values.iterator(); // implicit null check of values
-        if (!it.hasNext()) {
-            return this;
-        }
-        final ImmutableLinkedSeq<E> res = new ImmutableLinkedSeq<>(it.next());
-        res.appendIterator(it).tail = this;
-        return res;
+    public boolean sameElements(@NotNull Iterable<?> other) {
+        return list.sameElements(other);
     }
 
     @Override
-    public @NotNull ImmutableLinkedSeq<E> appended(E value) {
-        if (this == NIL) {
-            return of(value);
-        }
-        if (tail == NIL) {
-            return of(this.head, value);
-        }
-        return appendedImpl(value);
+    public boolean sameElements(@NotNull Iterable<?> other, boolean identity) {
+        return list.sameElements(other, identity);
     }
 
     @Override
-    public @NotNull ImmutableLinkedSeq<E> appendedAll(E @NotNull [] values) {
-        if (values.length == 0) { // implicit null check of postfix
-            return this;
-        }
-        if (this == NIL) {
-            return from(values);
-        }
-        return appendedAllImpl(values);
+    public boolean anyMatch(@NotNull Predicate<? super E> predicate) {
+        return list.anyMatch(predicate);
     }
 
     @Override
-    public @NotNull ImmutableLinkedSeq<E> appendedAll(@NotNull Iterable<? extends E> values) {
-        if (AnyTraversable.knownSize(values) == 0) {
-            return this;
-        }
-        if (this == NIL) {
-            return from(values);
-        }
-        if (values instanceof ImmutableLinkedSeq) {
-            return ((ImmutableLinkedSeq<E>) values).prependedAll(this);
-        }
-        return appendedAllImpl(values);
+    public boolean allMatch(@NotNull Predicate<? super E> predicate) {
+        return list.allMatch(predicate);
     }
+
+    @Override
+    public boolean noneMatch(@NotNull Predicate<? super E> predicate) {
+        return list.noneMatch(predicate);
+    }
+
+    //endregion
+
+    //region Search Operations
+
+    @Override
+    @Contract(pure = true)
+    public int indexOf(Object value) {
+        return list.indexOf(value);
+    }
+
+    @Override
+    @Contract(pure = true)
+    public int indexWhere(@NotNull Predicate<? super E> predicate) {
+        return list.indexWhere(predicate);
+    }
+
+    @Override
+    @Contract(pure = true)
+    public int lastIndexOf(Object value) {
+        return list.lastIndexOf(value);
+    }
+
+    @Override
+    @Contract(pure = true)
+    public int lastIndexWhere(@NotNull Predicate<? super E> predicate) {
+        return list.lastIndexWhere(predicate);
+    }
+
+    //endregion
+
+    //region Misc Operations
 
     @Override
     public @NotNull ImmutableLinkedSeq<E> slice(int beginIndex, int endIndex) {
-        if (beginIndex < 0) {
-            throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") < 0");
-        }
-        if (endIndex < 0) {
-            throw new IndexOutOfBoundsException("endIndex(" + endIndex + ") < 0");
-        }
-        if (beginIndex > endIndex) {
-            throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
-        }
-        if (beginIndex == endIndex) {
-            if (sizeLessThan(beginIndex)) {
-                throw new IndexOutOfBoundsException();
+        final int size = this.size;
+        Conditions.checkPositionIndices(beginIndex, endIndex, size);
+        if (endIndex == size) {
+            if (beginIndex == 0) {
+                return this;
+            } else {
+                Node<E> list = this.list;
+                int n = beginIndex;
+                while (n-- > 0) {
+                    list = list.tail;
+                }
+                return new ImmutableLinkedSeq<>(list, size - beginIndex);
             }
-            return nil();
         }
-        if (beginIndex == 0) {
-            if (this == NIL) {
-                throw new IndexOutOfBoundsException("endIndex(" + endIndex + ") > size(0)");
-            }
-            return take(endIndex);
-        }
-
         final int ns = endIndex - beginIndex;
-
-        int i = 0;
-
-        ImmutableLinkedSeq<E> list = this;
-        while (list != NIL && i < beginIndex) {
-            list = list.tail;
-            ++i;
+        if (ns == 0) {
+            return ImmutableLinkedSeq.empty();
         }
-        if (i != beginIndex) {
-            throw new IndexOutOfBoundsException("beginIndex = " + beginIndex);
-        }
-        if (ns == 1) {
-            return ImmutableLinkedSeq.of(list.head());
-        }
-
-        i = 0;
-        LinkedBuffer<E> buffer = new LinkedBuffer<>();
-        while (list != NIL && i < ns) {
-            buffer.append(list.head);
-            list = list.tail;
-            ++i;
-        }
-        if (i != ns) {
-            throw new IndexOutOfBoundsException("endIndex = " + endIndex);
-        }
-        return buffer.toImmutableLinkedSeq();
+        return new ImmutableLinkedSeq<>(list.drop(beginIndex).take(ns), ns);
     }
 
     @Override
     public @NotNull ImmutableLinkedSeq<E> drop(int n) {
-        if (n <= 0 || this == NIL) {
+        final int size = this.size;
+        if (n <= 0) {
             return this;
         }
-        ImmutableLinkedSeq<E> list = this;
-        while (list != NIL && n-- > 0) {
+        if (n >= size) {
+            return ImmutableLinkedSeq.empty();
+        }
+
+        Node<E> list = this.list;
+        for (int i = 0; i < n; i++) {
             list = list.tail;
         }
-        return list;
+        return new ImmutableLinkedSeq<>(list, size - n);
+
     }
 
     @Override
     public @NotNull ImmutableLinkedSeq<E> dropLast(int n) {
-        return dropLastImpl(n);
+        final int size = this.size;
+        if (n <= 0) {
+            return this;
+        }
+        if (n >= size) {
+            return ImmutableLinkedSeq.empty();
+        }
+
+        final int ns = size - n;
+        return new ImmutableLinkedSeq<>(list.take(ns), ns);
     }
 
     @Override
     public @NotNull ImmutableLinkedSeq<E> dropWhile(@NotNull Predicate<? super E> predicate) {
-        ImmutableLinkedSeq<E> list = this;
-        while (list != NIL && predicate.test(list.head)) {
+        int c = 0;
+
+        Node<E> list = this.list;
+        while (list != NIL_NODE && predicate.test(list.head)) {
             list = list.tail();
+            c++;
         }
-        return list;
+
+        if (list == NIL_NODE) {
+            return ImmutableLinkedSeq.empty();
+        }
+        if (c == 0) {
+            return this;
+        }
+
+        return new ImmutableLinkedSeq<>(list, size - c);
     }
 
     @Override
     public @NotNull ImmutableLinkedSeq<E> take(int n) {
-        if (n <= 0 || this == NIL) {
-            return nil();
+        if (n <= 0) {
+            return ImmutableLinkedSeq.empty();
         }
-        return takeImpl(n);
+        final int size = this.size;
+        if (n >= size) {
+            return this;
+        }
+        return new ImmutableLinkedSeq<>(list.take(n), n);
     }
 
     @Override
     public @NotNull ImmutableLinkedSeq<E> takeLast(int n) {
         if (n <= 0) {
-            return nil();
+            return ImmutableLinkedSeq.empty();
         }
-
-        final int size = this.size();
+        final int size = this.size;
         if (n >= size) {
             return this;
         }
-
-        return drop(size - n);
+        return new ImmutableLinkedSeq<>(list.drop(size - n), n);
     }
 
     @Override
     public @NotNull ImmutableLinkedSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
-        ImmutableLinkedSeq<E> list = this;
-        if (list == NIL || !predicate.test(list.head)) {
-            return nil();
+        Node<E> list = this.list;
+        if (list == NIL_NODE || !predicate.test(list.head)) {
+            return ImmutableLinkedSeq.empty();
         }
 
-        final ImmutableLinkedSeq<E> res = new ImmutableLinkedSeq<>(list.head);
-        ImmutableLinkedSeq<E> t = res;
+        int c = 0;
+
+        final Node<E> res = new Node<>(list.head);
+        Node<E> t = res;
 
         list = list.tail;
 
         while (true) {
-            if (list == NIL) {
+            if (list == NIL_NODE) {
                 return this;
             }
             if (!predicate.test(list.head)) {
                 break;
             }
-            ImmutableLinkedSeq<E> nl = new ImmutableLinkedSeq<>(list.head);
+            Node<E> nl = new Node<>(list.head);
             t.tail = nl;
             t = nl;
-
+            c++;
             list = list.tail;
         }
 
-        t.tail = nil();
-        return res;
+        t.tail = nilNode();
+        return new ImmutableLinkedSeq<>(res, c);
     }
 
     @Override
     public @NotNull ImmutableLinkedSeq<E> updated(int index, E newValue) {
-        if (index < 0) {
-            throw new IndexOutOfBoundsException("index(" + index + ") < 0");
-        }
-        ImmutableLinkedSeq<E> list = this;
-        if (this == NIL) {
-            throw new IndexOutOfBoundsException("index(" + index + ") >= size(" + 0 + ")");
-        }
-        if (index == 0) {
-            return new ImmutableLinkedSeq<>(newValue, list.tail);
-        }
-
-        final ImmutableLinkedSeq<E> res = new ImmutableLinkedSeq<>(list.head);
-        ImmutableLinkedSeq<E> t = res;
-        list = list.tail;
-
-        for (int i = 1; i < index; i++) {
-            if (list == NIL) {
-                throw new IndexOutOfBoundsException("Index: " + index);
-            }
-            ImmutableLinkedSeq<E> nl = new ImmutableLinkedSeq<>(list.head);
-            t.tail = nl;
-            t = nl;
-
-            list = list.tail;
-        }
-        if (list == NIL) {
-            throw new IndexOutOfBoundsException("Index: " + index);
-        }
-
-        t.tail = new ImmutableLinkedSeq<>(newValue, list.tail);
-        return res;
+        final int size = this.size;
+        Conditions.checkElementIndex(index, size);
+        return new ImmutableLinkedSeq<>(list.updated(index, newValue), size);
     }
 
     @Override
     public @NotNull ImmutableLinkedSeq<E> concat(@NotNull SeqLike<? extends E> other) {
-        if (this == NIL) {
-            return ImmutableLinkedSeq.from(other);
-        }
-
-        final int oks = other.knownSize();
-        Iterator<? extends E> it = null;
-        if (oks == 0) {
+        final int size = this.size;
+        final int otherSize = other.size();
+        if (otherSize == 0) {
             return this;
-        } else if (oks < 0) {
-            it = other.iterator();
-            if (!it.hasNext()) {
-                return this;
-            }
+        }
+        if (size == 0) {
+            return new ImmutableLinkedSeq<>(nodeFrom(other), size);
         }
 
+        Node<E> list = this.list;
+        final Node<E> res = new Node<>(list.head);
+        Node<E> t = res;
+        list = list.tail;
 
-        final ImmutableLinkedSeq<E> res = new ImmutableLinkedSeq<>(this.head);
-        ImmutableLinkedSeq<E> t = res;
-
-        ImmutableLinkedSeq<E> list = this.tail;
-        while (list != NIL) {
-            ImmutableLinkedSeq<E> nl = new ImmutableLinkedSeq<>(list.head);
+        while (list != NIL_NODE) {
+            Node<E> nl = new Node<>(list.head);
             t.tail = nl;
             t = nl;
             list = list.tail;
         }
 
         if (other instanceof RandomAccess) {
-            for (int i = 0; i < other.size(); i++) {
-                ImmutableLinkedSeq<E> nl = new ImmutableLinkedSeq<>(other.get(i));
+            for (int i = 0; i < otherSize; i++) {
+                Node<E> nl = new Node<>(other.get(i));
                 t.tail = nl;
                 t = nl;
             }
+            t.tail = nilNode();
+            return new ImmutableLinkedSeq<>(res, size + otherSize);
         } else {
-            if (it == null) {
-                it = other.iterator();
-            }
-            while (it.hasNext()) {
-                ImmutableLinkedSeq<E> nl = new ImmutableLinkedSeq<>(it.next());
+            int c = this.size;
+            for (E e : other) {
+                Node<E> nl = new Node<>(e);
                 t.tail = nl;
                 t = nl;
+                c++;
             }
+            assert c == size + otherSize;
+            t.tail = nilNode();
+            return new ImmutableLinkedSeq<>(res, c);
         }
-        t.tail = nil();
-        return res;
     }
 
     @Override
-    public @NotNull ImmutableLinkedSeq<E> concat(@NotNull List<? extends E> other) {
-        if (this == NIL) {
-            return ImmutableLinkedSeq.from(other);
-        }
-
-        final int os = other.size();
-        if (os == 0) {
+    public @NotNull ImmutableLinkedSeq<E> concat(java.util.@NotNull List<? extends E> other) {
+        final int size = this.size;
+        final int otherSize = other.size();
+        if (otherSize == 0) {
             return this;
         }
+        if (size == 0) {
+            return new ImmutableLinkedSeq<>(nodeFrom(other), size);
+        }
 
-        final ImmutableLinkedSeq<E> res = new ImmutableLinkedSeq<>(this.head);
-        ImmutableLinkedSeq<E> t = res;
+        Node<E> list = this.list;
+        final Node<E> res = new Node<>(list.head);
+        Node<E> t = res;
+        list = list.tail;
 
-        ImmutableLinkedSeq<E> list = this.tail;
-        while (list != NIL) {
-            ImmutableLinkedSeq<E> nl = new ImmutableLinkedSeq<>(list.head);
+        while (list != NIL_NODE) {
+            Node<E> nl = new Node<>(list.head);
             t.tail = nl;
             t = nl;
             list = list.tail;
         }
 
         if (other instanceof RandomAccess) {
-            for (int i = 0; i < os; i++) {
-                ImmutableLinkedSeq<E> nl = new ImmutableLinkedSeq<>(other.get(i));
+            //noinspection ForLoopReplaceableByForEach
+            for (int i = 0; i < otherSize; i++) {
+                Node<E> nl = new Node<>(other.get(i));
                 t.tail = nl;
                 t = nl;
             }
+            t.tail = nilNode();
+            return new ImmutableLinkedSeq<>(res, size + otherSize);
         } else {
+            int c = this.size;
             for (E e : other) {
-                ImmutableLinkedSeq<E> nl = new ImmutableLinkedSeq<>(e);
+                Node<E> nl = new Node<>(e);
                 t.tail = nl;
                 t = nl;
+                c++;
             }
+            assert c == size + otherSize;
+            t.tail = nilNode();
+            return new ImmutableLinkedSeq<>(res, c);
         }
-        t.tail = nil();
-        return res;
     }
 
     @Override
@@ -780,7 +891,7 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
     }
 
     @Override
-    public @NotNull ImmutableLinkedSeq<@NotNull E> filterNotNull() {
+    public @NotNull ImmutableLinkedSeq<E> filterNotNull() {
         return filterNotNullImpl();
     }
 
@@ -791,12 +902,15 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
 
     @Override
     public <U> @NotNull ImmutableLinkedSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
-        return mapImpl(mapper);
+        final int size = this.size;
+        if (size == 0) {
+            return ImmutableLinkedSeq.empty();
+        }
+        return new ImmutableLinkedSeq<>(list.map(mapper), size);
     }
 
     @Override
-    public @NotNull <U, Ex extends Throwable> ImmutableLinkedSeq<U> mapChecked(
-            @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
+    public @NotNull <U, Ex extends Throwable> ImmutableLinkedSeq<U> mapChecked(@NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
         return map(mapper);
     }
 
@@ -807,7 +921,11 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
 
     @Override
     public <U> @NotNull ImmutableLinkedSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
-        return mapIndexedImpl(mapper);
+        final int size = this.size;
+        if (size == 0) {
+            return ImmutableLinkedSeq.empty();
+        }
+        return new ImmutableLinkedSeq<>(list.mapIndexed(mapper), size);
     }
 
     @Override
@@ -820,6 +938,7 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
     public @NotNull <U> ImmutableLinkedSeq<U> mapIndexedUnchecked(@NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
         return mapIndexed(mapper);
     }
+
 
     @Override
     public <U> @NotNull ImmutableLinkedSeq<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
@@ -844,7 +963,7 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
 
     @Override
     public @NotNull <U, Ex extends Throwable> ImmutableLinkedSeq<@NotNull U> mapIndexedNotNullChecked(
-            @NotNull CheckedIndexedFunction<? super E, @Nullable ? extends U, ? extends Ex> mapper) {
+            @NotNull CheckedIndexedFunction<? super E, ? extends @Nullable U, ? extends Ex> mapper) {
         return mapIndexedNotNull(mapper);
     }
 
@@ -856,16 +975,7 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
 
     @Override
     public <U> @NotNull ImmutableLinkedSeq<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
-        if (this == NIL) {
-            return nil();
-        }
-        LinkedBuffer<U> buffer = new LinkedBuffer<>();
-        ImmutableLinkedSeq<E> list = this;
-        while (list != NIL) {
-            buffer.appendAll(mapper.apply(list.head));
-            list = list.tail;
-        }
-        return buffer.toImmutableLinkedSeq();
+        return flatMapImpl(mapper);
     }
 
     @Override
@@ -882,140 +992,114 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
 
     @Override
     public @NotNull ImmutableLinkedSeq<E> sorted() {
-        if (this == NIL || tail == NIL) {
+        final int size = this.size;
+        if (size == 0 || size == 1) {
             return this;
         }
-        Object[] arr = this.toArray();
-        Arrays.sort(arr);
-        return (ImmutableLinkedSeq<E>) from(arr);
+        return new ImmutableLinkedSeq<>(list.sorted(), size);
     }
 
     @Override
     public @NotNull ImmutableLinkedSeq<E> sorted(@NotNull Comparator<? super E> comparator) {
-        if (this == NIL || tail == NIL) {
+        final int size = this.size;
+        if (size == 0 || size == 1) {
             return this;
         }
-        Object[] arr = this.toArray();
-        Arrays.sort(arr, (Comparator<Object>) comparator);
-        return (ImmutableLinkedSeq<E>) from(arr);
+        return new ImmutableLinkedSeq<>(list.sorted(comparator), size);
     }
 
-    @Override
-    public <U> @NotNull ImmutableLinkedSeq<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
-        return zipImpl(other);
-    }
-
-    @Override
-    public @NotNull ImmutableLinkedSeq<E> toImmutableLinkedSeq() {
-        return this;
-    }
-
-    @Override
-    public @NotNull ImmutableSizedLinkedSeq<E> toImmutableSizedLinkedSeq() {
-        if (this == NIL) {
-            return ImmutableSizedLinkedSeq.empty();
-        }
-        return new ImmutableSizedLinkedSeq<>(this, size());
-    }
-
-    @Override
-    public void forEach(@NotNull Consumer<? super E> action) {
-        ImmutableLinkedSeq<E> list = this;
-        while (list != NIL) {
-            action.accept(list.head);
-            list = list.tail;
-        }
-    }
-
-    @Override
-    public void forEachIndexed(@NotNull IndexedConsumer<? super E> action) {
-        ImmutableLinkedSeq<E> list = this;
-        int i = 0;
-        while (list != NIL) {
-            action.accept(i++, list.head);
-            list = list.tail;
-        }
-    }
+    //endregion
 
     private Object writeReplace() {
-        return this == NIL ? NilReplaced.INSTANCE : this;
+        return this == EMPTY ? EmptyReplaced.INSTANCE : this;
     }
 
-    static final class Itr<@Covariant E> implements Iterator<E> {
-
-        private @NotNull ImmutableLinkedSeq<? extends E> list;
-
-        Itr(@NotNull ImmutableLinkedSeq<? extends E> list) {
-            this.list = list;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return list != NIL;
-        }
-
-        @Override
-        public E next() {
-            if (list == NIL) {
-                throw new NoSuchElementException("ImmutableListIterator.next()");
-            }
-
-            E v = list.head();
-            list = list.tail();
-            return v;
-        }
-    }
-
-    static final class NilReplaced implements Serializable {
+    static final class NilNodeReplaced implements Serializable {
         private static final long serialVersionUID = 0L;
 
-        static final NilReplaced INSTANCE = new NilReplaced();
+        static final NilNodeReplaced INSTANCE = new NilNodeReplaced();
 
-        private NilReplaced() {
+        private NilNodeReplaced() {
         }
 
         private Object readResolve() {
-            return NIL;
+            return NIL_NODE;
         }
     }
 
-    private static final class Factory<E> implements CollectionFactory<E, LinkedBuffer<E>, ImmutableLinkedSeq<E>> {
-        Factory() {
+    static final class EmptyReplaced implements Serializable {
+        private static final long serialVersionUID = 0L;
+
+        static final EmptyReplaced INSTANCE = new EmptyReplaced();
+
+        private EmptyReplaced() {
+        }
+
+        private Object readResolve() {
+            return EMPTY;
+        }
+    }
+
+    static final class Factory<E> implements CollectionFactory<E, LinkedBuffer<E>, ImmutableLinkedSeq<E>> {
+
+        @Override
+        public LinkedBuffer<E> newBuilder() {
+            return new LinkedBuffer<>();
         }
 
         @Override
-        public ImmutableLinkedSeq<E> empty() {
-            return ImmutableLinkedSeq.empty();
+        public ImmutableLinkedSeq<E> build(LinkedBuffer<E> builder) {
+            return builder.toImmutableLinkedSeq();
         }
 
         @Override
-        public ImmutableLinkedSeq<E> from(E @NotNull [] values) {
-            return ImmutableLinkedSeq.from(values);
+        public void addToBuilder(@NotNull LinkedBuffer<E> builder, E value) {
+            builder.append(value);
         }
 
         @Override
-        public ImmutableLinkedSeq<E> from(@NotNull Iterable<? extends E> values) {
-            return ImmutableLinkedSeq.from(values);
+        public LinkedBuffer<E> mergeBuilder(@NotNull LinkedBuffer<E> builder1, @NotNull LinkedBuffer<E> builder2) {
+            return (LinkedBuffer<E>) Builder.merge(builder1, builder2);
+        }
+    }
+
+    public static final class NodeFactory<E> implements CollectionFactory<E, LinkedBuffer<E>, Node<E>> {
+        NodeFactory() {
         }
 
         @Override
-        public ImmutableLinkedSeq<E> from(@NotNull Iterator<? extends E> it) {
-            return ImmutableLinkedSeq.from(it);
+        public Node<E> empty() {
+            return emptyNode();
         }
 
         @Override
-        public ImmutableLinkedSeq<E> fill(int n, E value) {
-            return ImmutableLinkedSeq.fill(n, value);
+        public Node<E> from(E @NotNull [] values) {
+            return nodeFrom(values);
         }
 
         @Override
-        public ImmutableLinkedSeq<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
-            return ImmutableLinkedSeq.fill(n, supplier);
+        public Node<E> from(@NotNull Iterable<? extends E> values) {
+            return nodeFrom(values);
         }
 
         @Override
-        public ImmutableLinkedSeq<E> fill(int n, @NotNull IntFunction<? extends E> init) {
-            return ImmutableLinkedSeq.fill(n, init);
+        public Node<E> from(@NotNull Iterator<? extends E> it) {
+            return nodeFrom(it);
+        }
+
+        @Override
+        public Node<E> fill(int n, E value) {
+            return nodeFill(n, value);
+        }
+
+        @Override
+        public Node<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+            return nodeFill(n, supplier);
+        }
+
+        @Override
+        public Node<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+            return nodeFill(n, init);
         }
 
         @Override
@@ -1034,8 +1118,8 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
         }
 
         @Override
-        public ImmutableLinkedSeq<E> build(@NotNull LinkedBuffer<E> builder) {
-            return builder.toImmutableLinkedSeq();
+        public Node<E> build(@NotNull LinkedBuffer<E> builder) {
+            return builder.buildNode();
         }
     }
 
@@ -1047,8 +1131,8 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
     @ApiStatus.Internal
     @SuppressWarnings("unchecked")
     public static abstract class Builder<E> extends AbstractBuffer<E> {
-        ImmutableLinkedSeq<E> first = null;
-        ImmutableLinkedSeq<E> last = null;
+        Node<E> first = null;
+        Node<E> last = null;
 
         int len = 0;
 
@@ -1074,8 +1158,8 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
             b1.ensureUnaliased();
             b2.ensureUnaliased();
 
-            final ImmutableLinkedSeq<E> b2f = b2.first;
-            final ImmutableLinkedSeq<E> b2l = b2.last;
+            final Node<E> b2f = b2.first;
+            final Node<E> b2l = b2.last;
             b2.clear();
 
             b1.last.tail = b2f;
@@ -1096,7 +1180,7 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
 
         @Override
         public final @NotNull Iterator<E> iterator() {
-            final ImmutableLinkedSeq<E> first = this.first;
+            final Node<E> first = this.first;
             return first == null ? Iterators.empty() : first.iterator();
         }
 
@@ -1135,19 +1219,19 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
             final int i1 = Integer.min(index1, index2);
             final int i2 = Integer.max(index1, index2);
 
-            ImmutableLinkedSeq<E> list = this.first;
+            Node<E> list = this.first;
             int i = 0;
             while (i < i1) {
                 list = list.tail;
                 i++;
             }
 
-            final ImmutableLinkedSeq<E> node1 = list;
+            final Node<E> node1 = list;
             while (i < i2) {
                 list = list.tail;
                 i++;
             }
-            final ImmutableLinkedSeq<E> node2 = list;
+            final Node<E> node2 = list;
 
             final E tmp = node1.head;
             node1.head = node2.head;
@@ -1168,7 +1252,7 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
 
         @Override
         public final E first() {
-            ImmutableLinkedSeq<E> first = this.first;
+            Node<E> first = this.first;
             if (first == null) {
                 throw new NoSuchElementException();
             } else {
@@ -1178,7 +1262,7 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
 
         @Override
         public final E last() {
-            ImmutableLinkedSeq<E> last = this.last;
+            Node<E> last = this.last;
             if (last == null) {
                 throw new NoSuchElementException();
             } else {
@@ -1193,7 +1277,7 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
 
         @Override
         public final void append(E value) {
-            ImmutableLinkedSeq<E> i = of(value);
+            Node<E> i = nodeOf(value);
             if (len == 0) {
                 first = i;
             } else {
@@ -1230,7 +1314,7 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
                 return;
             }
             ensureUnaliased();
-            ImmutableLinkedSeq<E> i = first;
+            Node<E> i = first;
             int c = 1;
 
             while (c++ != index) {
@@ -1260,7 +1344,7 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
             }
 
             ensureUnaliased();
-            ImmutableLinkedSeq<E> i = first;
+            Node<E> i = first;
             int c = 1;
 
             while (c++ != index) {
@@ -1302,13 +1386,13 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
             }
 
             ensureUnaliased();
-            ImmutableLinkedSeq<E> i = first;
+            Node<E> i = first;
             int c = 1;
             while (c++ != index) {
                 i = i.tail();
             }
 
-            ImmutableLinkedSeq<E> t = i.tail();
+            Node<E> t = i.tail();
             c = count;
             while (c-- > 0) {
                 t = t.tail();
@@ -1342,22 +1426,21 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
 
         @Override
         public final @NotNull ImmutableLinkedSeq<E> toImmutableLinkedSeq() {
-            final ImmutableLinkedSeq<E> first = this.first;
-            if (first == null) {
-                return empty();
+            final Node<E> first = this.first;
+            if (first == null || first == NIL_NODE) {
+                return ImmutableLinkedSeq.empty();
+            }
+            aliased = true;
+            return new ImmutableLinkedSeq<>(first, len);
+        }
+
+        public final @NotNull Node<E> buildNode() {
+            final Node<E> first = this.first;
+            if (first == null || first == NIL_NODE) {
+                return nilNode();
             }
             aliased = true;
             return first;
-        }
-
-        @Override
-        public final @NotNull ImmutableSizedLinkedSeq<E> toImmutableSizedLinkedSeq() {
-            final ImmutableLinkedSeq<E> first = this.first;
-            if (first == null) {
-                return ImmutableSizedLinkedSeq.empty();
-            }
-            aliased = true;
-            return new ImmutableSizedLinkedSeq<>(first, len);
         }
 
         @Override
@@ -1373,7 +1456,7 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
                 return;
             }
 
-            ImmutableLinkedSeq<E> l = first;
+            Node<E> l = first;
             while (--index >= 0) {
                 l = l.tail();
             }
@@ -1389,7 +1472,7 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
             Arrays.sort(values, (Comparator<? super Object>) comparator);
 
             ensureUnaliased();
-            ImmutableLinkedSeq<E> c = first;
+            Node<E> c = first;
             for (Object value : values) {
                 c.head = (E) value;
                 c = c.tail;
@@ -1398,13 +1481,13 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
 
         @Override
         public final void replaceAll(@NotNull Function<? super E, ? extends E> operator) {
-            ImmutableLinkedSeq<E> n = first;
-            if (n == null || n == NIL) {
+            Node<E> n = first;
+            if (n == null || n == NIL_NODE) {
                 return;
             }
             ensureUnaliased();
-            while (n != NIL) {
-                ImmutableLinkedSeq<E> c = n;
+            while (n != NIL_NODE) {
+                Node<E> c = n;
                 c.head = operator.apply(c.head);
                 n = c.tail;
             }
@@ -1412,14 +1495,14 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
 
         @Override
         public final void replaceAllIndexed(@NotNull IndexedFunction<? super E, ? extends E> operator) {
-            ImmutableLinkedSeq<E> n = first;
-            if (n == null || n == NIL) {
+            Node<E> n = first;
+            if (n == null || n == NIL_NODE) {
                 return;
             }
             ensureUnaliased();
             int i = 0;
-            while (n != NIL) {
-                ImmutableLinkedSeq<E> c = n;
+            while (n != NIL_NODE) {
+                Node<E> c = n;
                 c.head = operator.apply(i++, c.head);
                 n = c.tail;
             }
@@ -1428,14 +1511,14 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
         @Override
         public final void filterInPlace(@NotNull Predicate<? super E> predicate) {
             ensureUnaliased();
-            ImmutableLinkedSeq<E> prev = null;
-            ImmutableLinkedSeq<E> cur = first;
+            Node<E> prev = null;
+            Node<E> cur = first;
             if (cur == null) {
                 return;
             }
 
-            while (cur != NIL) {
-                ImmutableLinkedSeq<E> follow = cur.tail;
+            while (cur != NIL_NODE) {
+                Node<E> follow = cur.tail;
                 if (!predicate.test(cur.head)) {
                     if (prev == null) {
                         first = follow;
@@ -1463,6 +1546,776 @@ public final class ImmutableLinkedSeq<@Covariant E> extends AbstractImmutableSeq
             this.first = newBuffer.first;
             this.last = newBuffer.last;
             this.aliased = false;
+        }
+
+    }
+
+    static final class NodeItr<@Covariant E> extends AbstractIterator<E> {
+
+        private @NotNull Node<? extends E> list;
+
+        NodeItr(@NotNull Node<? extends E> list) {
+            this.list = list;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return list != NIL_NODE;
+        }
+
+        @Override
+        public E next() {
+            if (list == NIL_NODE) {
+                throw new NoSuchElementException("ImmutableListIterator.next()");
+            }
+
+            E v = list.head();
+            list = list.tail();
+            return v;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Debug.Renderer(hasChildren = "!isEmpty()", childrenArray = "toArray()")
+    public static final class Node<@Covariant E> extends AbstractImmutableSeq<E>
+            implements ImmutableSeq<E>, ImmutableSeqOps<E, Node<?>, Node<E>>, Serializable {
+        private static final long serialVersionUID = 944030391350569673L;
+
+        E head;
+
+        Node<E> tail;
+
+        Node() {
+        }
+
+        Node(E head) {
+            this.head = head;
+        }
+
+        Node(E head, @NotNull Node<E> tail) {
+            this.head = head;
+            this.tail = tail;
+        }
+
+        Node<E> appendIterator(@NotNull Iterator<? extends E> it) {
+            Node<E> node = this;
+            while (it.hasNext()) {
+                Node<E> nn = new Node<>(it.next());
+                node.tail = nn;
+                node = nn;
+            }
+            return node;
+        }
+
+        //region Collection Operations
+
+        @Override
+        public @NotNull String className() {
+            return "ImmutableLinkedSeq.Node";
+        }
+
+        @Override
+        public <U> @NotNull CollectionFactory<U, ?, Node<U>> iterableFactory() {
+            return nodeFactory();
+        }
+
+        @Override
+        public @NotNull Iterator<E> iterator() {
+            if (this == NIL_NODE) {
+                return Iterators.empty();
+            }
+            if (tail == NIL_NODE) {
+                return Iterators.of(head);
+            }
+            return new NodeItr<>(this);
+        }
+
+        @Override
+        public @NotNull Iterator<E> iterator(int beginIndex) {
+            if (beginIndex < 0) {
+                throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") < 0");
+            }
+            if (beginIndex == 0) {
+                return iterator();
+            }
+
+            int n = beginIndex;
+            Node<E> list = this;
+            while (n-- > 0) {
+                if (list == NIL_NODE) {
+                    throw new IndexOutOfBoundsException("beginIndex: " + beginIndex);
+                }
+                list = list.tail;
+            }
+            return list.iterator();
+        }
+
+        @Override
+        public @NotNull SeqView<E> view() {
+            if (this == NIL_NODE) {
+                return SeqView.empty();
+            }
+            if (tail == NIL_NODE) {
+                return new SeqViews.Single<>(head);
+            }
+            return new SeqViews.WithCachedSize<>(this);
+        }
+
+        //endregion
+
+        //region Size Info
+
+        @Override
+        public boolean isEmpty() {
+            return this == NIL_NODE;
+        }
+
+        @Override
+        public int size() {
+            Node<? extends E> list = this;
+            int c = 0;
+            while (list != NIL_NODE) {
+                ++c;
+                list = list.tail();
+            }
+            return c;
+        }
+
+        @Override
+        public int knownSize() {
+            if (this == NIL_NODE) {
+                return 0;
+            }
+            if (tail == NIL_NODE) {
+                return 1;
+            }
+            return -1;
+        }
+
+
+        //endregion
+
+        //region Size Compare Operations
+
+        @Override
+        public int sizeCompare(int otherSize) {
+            if (otherSize < 0) {
+                return 1;
+            }
+            int i = 0;
+            Node<E> list = this;
+            while (list != NIL_NODE) {
+                if (i == otherSize) {
+                    return 1;
+                }
+                list = list.tail;
+                ++i;
+            }
+            return i - otherSize;
+        }
+
+        //endregion
+
+        //region Reversal Operations
+
+        @Override
+        public @NotNull Node<E> reversed() {
+            if (this == NIL_NODE || this.tail == NIL_NODE) {
+                return this;
+            }
+
+            Node<? extends E> list = this;
+            Node<E> res = nilNode();
+            while (list != NIL_NODE) {
+                res = new Node<>(list.head, res);
+                list = list.tail;
+            }
+            return res;
+        }
+
+        @Override
+        public @NotNull Iterator<E> reverseIterator() {
+            return reversed().iterator();
+        }
+
+        //endregion
+
+        //region Element Retrieval Operations
+
+        public E head() {
+            if (this == NIL_NODE) {
+                throw new NoSuchElementException("ImmutableList.Nil.head()");
+            } else {
+                return head;
+            }
+        }
+
+        public @Nullable E headOrNull() {
+            return head;
+        }
+
+        public @NotNull Option<E> headOption() {
+            return this == NIL_NODE ? Option.none() : Option.some(head);
+        }
+
+        public @NotNull Node<E> tail() {
+            if (this == NIL_NODE) {
+                throw new NoSuchElementException("ImmutableList.Nil.tail()");
+            } else {
+                return tail;
+            }
+        }
+
+        public @Nullable Node<E> tailOrNull() {
+            return tail;
+        }
+
+        public @NotNull Option<@NotNull Node<E>> tailOption() {
+            return Option.of(tail);
+        }
+
+        @Override
+        public E first() {
+            return head();
+        }
+
+        @Override
+        public E last() {
+            Node<E> node = this;
+            while (node.tail() != NIL_NODE) {
+                node = node.tail();
+            }
+            return node.head();
+        }
+
+        //endregion
+
+        @Contract("_ -> new")
+        public @NotNull Node<E> cons(E element) {
+            return new Node<>(element, this);
+        }
+
+        @Override
+        public @NotNull Node<E> prepended(E value) {
+            return cons(value);
+        }
+
+        @Override
+        public @NotNull Node<E> prependedAll(E @NotNull [] values) {
+            int prefixLength = values.length; // implicit null check of prefix
+            Node<E> result = this;
+            for (int i = prefixLength - 1; i >= 0; i--) {
+                result = result.cons(values[i]);
+            }
+            return result;
+        }
+
+        @Override
+        public @NotNull Node<E> prependedAll(@NotNull Iterable<? extends E> values) {
+            if (values instanceof RandomAccess) {
+                if (values instanceof Seq<?>) {
+                    Seq<E> seq = (Seq<E>) values;
+                    Node<E> res = this;
+                    for (int i = seq.size() - 1; i >= 0; i--) {
+                        res = res.cons(seq.get(i));
+                    }
+                    return res;
+                }
+                if (values instanceof List<?>) {
+                    final List<E> list = (List<E>) values;
+                    Node<E> res = this;
+                    for (int i = list.size() - 1; i >= 0; i--) {
+                        res = res.cons(list.get(i));
+                    }
+                    return res;
+                }
+            }
+
+            Iterator<? extends E> it = values.iterator(); // implicit null check of values
+            if (!it.hasNext()) {
+                return this;
+            }
+            final Node<E> res = new Node<>(it.next());
+            res.appendIterator(it).tail = this;
+            return res;
+        }
+
+        @Override
+        public @NotNull Node<E> appended(E value) {
+            if (this == NIL_NODE) {
+                return nodeOf(value);
+            }
+            if (tail == NIL_NODE) {
+                return nodeOf(this.head, value);
+            }
+            return appendedImpl(value);
+        }
+
+        @Override
+        public @NotNull Node<E> appendedAll(E @NotNull [] values) {
+            if (values.length == 0) { // implicit null check of postfix
+                return this;
+            }
+            if (this == NIL_NODE) {
+                return nodeFrom(values);
+            }
+            return appendedAllImpl(values);
+        }
+
+        @Override
+        public @NotNull Node<E> appendedAll(@NotNull Iterable<? extends E> values) {
+            if (AnyTraversable.knownSize(values) == 0) {
+                return this;
+            }
+            if (this == NIL_NODE) {
+                return nodeFrom(values);
+            }
+            if (values instanceof Node) {
+                return ((Node<E>) values).prependedAll(this);
+            }
+            return appendedAllImpl(values);
+        }
+
+        @Override
+        public @NotNull Node<E> slice(int beginIndex, int endIndex) {
+            if (beginIndex < 0) {
+                throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") < 0");
+            }
+            if (endIndex < 0) {
+                throw new IndexOutOfBoundsException("endIndex(" + endIndex + ") < 0");
+            }
+            if (beginIndex > endIndex) {
+                throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
+            }
+            if (beginIndex == endIndex) {
+                if (sizeLessThan(beginIndex)) {
+                    throw new IndexOutOfBoundsException();
+                }
+                return nilNode();
+            }
+            if (beginIndex == 0) {
+                if (this == NIL_NODE) {
+                    throw new IndexOutOfBoundsException("endIndex(" + endIndex + ") > size(0)");
+                }
+                return take(endIndex);
+            }
+
+            final int ns = endIndex - beginIndex;
+
+            int i = 0;
+
+            Node<E> list = this;
+            while (list != NIL_NODE && i < beginIndex) {
+                list = list.tail;
+                ++i;
+            }
+            if (i != beginIndex) {
+                throw new IndexOutOfBoundsException("beginIndex = " + beginIndex);
+            }
+            if (ns == 1) {
+                return nodeOf(list.head());
+            }
+
+            i = 0;
+            LinkedBuffer<E> buffer = new LinkedBuffer<>();
+            while (list != NIL_NODE && i < ns) {
+                buffer.append(list.head);
+                list = list.tail;
+                ++i;
+            }
+            if (i != ns) {
+                throw new IndexOutOfBoundsException("endIndex = " + endIndex);
+            }
+            return buffer.buildNode();
+        }
+
+        @Override
+        public @NotNull Node<E> drop(int n) {
+            if (n <= 0 || this == NIL_NODE) {
+                return this;
+            }
+            Node<E> list = this;
+            while (list != NIL_NODE && n-- > 0) {
+                list = list.tail;
+            }
+            return list;
+        }
+
+        @Override
+        public @NotNull Node<E> dropLast(int n) {
+            return dropLastImpl(n);
+        }
+
+        @Override
+        public @NotNull Node<E> dropWhile(@NotNull Predicate<? super E> predicate) {
+            Node<E> list = this;
+            while (list != NIL_NODE && predicate.test(list.head)) {
+                list = list.tail();
+            }
+            return list;
+        }
+
+        @Override
+        public @NotNull Node<E> take(int n) {
+            if (n <= 0 || this == NIL_NODE) {
+                return nilNode();
+            }
+            return takeImpl(n);
+        }
+
+        @Override
+        public @NotNull Node<E> takeLast(int n) {
+            if (n <= 0) {
+                return nilNode();
+            }
+
+            final int size = this.size();
+            if (n >= size) {
+                return this;
+            }
+
+            return drop(size - n);
+        }
+
+        @Override
+        public @NotNull Node<E> takeWhile(@NotNull Predicate<? super E> predicate) {
+            Node<E> list = this;
+            if (list == NIL_NODE || !predicate.test(list.head)) {
+                return nilNode();
+            }
+
+            final Node<E> res = new Node<>(list.head);
+            Node<E> t = res;
+
+            list = list.tail;
+
+            while (true) {
+                if (list == NIL_NODE) {
+                    return this;
+                }
+                if (!predicate.test(list.head)) {
+                    break;
+                }
+                Node<E> nl = new Node<>(list.head);
+                t.tail = nl;
+                t = nl;
+
+                list = list.tail;
+            }
+
+            t.tail = nilNode();
+            return res;
+        }
+
+        @Override
+        public @NotNull Node<E> updated(int index, E newValue) {
+            if (index < 0) {
+                throw new IndexOutOfBoundsException("index(" + index + ") < 0");
+            }
+            Node<E> list = this;
+            if (this == NIL_NODE) {
+                throw new IndexOutOfBoundsException("index(" + index + ") >= size(" + 0 + ")");
+            }
+            if (index == 0) {
+                return new Node<>(newValue, list.tail);
+            }
+
+            final Node<E> res = new Node<>(list.head);
+            Node<E> t = res;
+            list = list.tail;
+
+            for (int i = 1; i < index; i++) {
+                if (list == NIL_NODE) {
+                    throw new IndexOutOfBoundsException("Index: " + index);
+                }
+                Node<E> nl = new Node<>(list.head);
+                t.tail = nl;
+                t = nl;
+
+                list = list.tail;
+            }
+            if (list == NIL_NODE) {
+                throw new IndexOutOfBoundsException("Index: " + index);
+            }
+
+            t.tail = new Node<>(newValue, list.tail);
+            return res;
+        }
+
+        @Override
+        public @NotNull Node<E> concat(@NotNull SeqLike<? extends E> other) {
+            if (this == NIL_NODE) {
+                return nodeFrom(other);
+            }
+
+            final int oks = other.knownSize();
+            Iterator<? extends E> it = null;
+            if (oks == 0) {
+                return this;
+            } else if (oks < 0) {
+                it = other.iterator();
+                if (!it.hasNext()) {
+                    return this;
+                }
+            }
+
+
+            final Node<E> res = new Node<>(this.head);
+            Node<E> t = res;
+
+            Node<E> list = this.tail;
+            while (list != NIL_NODE) {
+                Node<E> nl = new Node<>(list.head);
+                t.tail = nl;
+                t = nl;
+                list = list.tail;
+            }
+
+            if (other instanceof RandomAccess) {
+                for (int i = 0; i < other.size(); i++) {
+                    Node<E> nl = new Node<>(other.get(i));
+                    t.tail = nl;
+                    t = nl;
+                }
+            } else {
+                if (it == null) {
+                    it = other.iterator();
+                }
+                while (it.hasNext()) {
+                    Node<E> nl = new Node<>(it.next());
+                    t.tail = nl;
+                    t = nl;
+                }
+            }
+            t.tail = nilNode();
+            return res;
+        }
+
+        @Override
+        public @NotNull Node<E> concat(@NotNull List<? extends E> other) {
+            if (this == NIL_NODE) {
+                return nodeFrom(other);
+            }
+
+            final int os = other.size();
+            if (os == 0) {
+                return this;
+            }
+
+            final Node<E> res = new Node<>(this.head);
+            Node<E> t = res;
+
+            Node<E> list = this.tail;
+            while (list != NIL_NODE) {
+                Node<E> nl = new Node<>(list.head);
+                t.tail = nl;
+                t = nl;
+                list = list.tail;
+            }
+
+            if (other instanceof RandomAccess) {
+                //noinspection ForLoopReplaceableByForEach
+                for (int i = 0; i < os; i++) {
+                    Node<E> nl = new Node<>(other.get(i));
+                    t.tail = nl;
+                    t = nl;
+                }
+            } else {
+                for (E e : other) {
+                    Node<E> nl = new Node<>(e);
+                    t.tail = nl;
+                    t = nl;
+                }
+            }
+            t.tail = nilNode();
+            return res;
+        }
+
+        @Override
+        public @NotNull Node<E> filter(@NotNull Predicate<? super E> predicate) {
+            return filterImpl(predicate);
+        }
+
+        @Override
+        public @NotNull <Ex extends Throwable> Node<E> filterChecked(
+                @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) {
+            return filter(predicate);
+        }
+
+        @Override
+        public @NotNull Node<E> filterUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
+            return filter(predicate);
+        }
+
+        @Override
+        public @NotNull Node<E> filterNot(@NotNull Predicate<? super E> predicate) {
+            return filterNotImpl(predicate);
+        }
+
+        @Override
+        public @NotNull <Ex extends Throwable> Node<E> filterNotChecked(
+                @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) {
+            return filterNot(predicate);
+        }
+
+        @Override
+        public @NotNull Node<E> filterNotUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
+            return filterNot(predicate);
+        }
+
+        @Override
+        public @NotNull Node<@NotNull E> filterNotNull() {
+            return filterNotNullImpl();
+        }
+
+        @Override
+        public @NotNull <U> Node<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
+            return ((Node<U>) filter(clazz::isInstance));
+        }
+
+        @Override
+        public <U> @NotNull Node<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+            return mapImpl(mapper);
+        }
+
+        @Override
+        public @NotNull <U, Ex extends Throwable> Node<U> mapChecked(
+                @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
+            return map(mapper);
+        }
+
+        @Override
+        public @NotNull <U> Node<U> mapUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
+            return map(mapper);
+        }
+
+        @Override
+        public <U> @NotNull Node<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+            return mapIndexedImpl(mapper);
+        }
+
+        @Override
+        @SuppressWarnings("RedundantThrows")
+        public @NotNull <U, Ex extends Throwable> Node<U> mapIndexedChecked(
+                @NotNull CheckedIndexedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
+            return mapIndexed(mapper);
+        }
+
+        @Override
+        public @NotNull <U> Node<U> mapIndexedUnchecked(@NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
+            return mapIndexed(mapper);
+        }
+
+        @Override
+        public <U> @NotNull Node<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
+            return mapNotNullImpl(mapper);
+        }
+
+        @Override
+        public @NotNull <U, Ex extends Throwable> Node<U> mapNotNullChecked(
+                @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
+            return mapNotNull(mapper);
+        }
+
+        @Override
+        public @NotNull <U> Node<U> mapNotNullUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
+            return mapNotNull(mapper);
+        }
+
+        @Override
+        public <U> @NotNull Node<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
+            return mapIndexedNotNullImpl(mapper);
+        }
+
+        @Override
+        public @NotNull <U, Ex extends Throwable> Node<@NotNull U> mapIndexedNotNullChecked(
+                @NotNull CheckedIndexedFunction<? super E, ? extends @Nullable U, ? extends Ex> mapper) {
+            return mapIndexedNotNull(mapper);
+        }
+
+        @Override
+        public @NotNull <U> Node<@NotNull U> mapIndexedNotNullUnchecked(
+                @NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
+            return mapIndexedNotNull(mapper);
+        }
+
+        @Override
+        public <U> @NotNull Node<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
+            if (this == NIL_NODE) {
+                return nilNode();
+            }
+            LinkedBuffer<U> buffer = new LinkedBuffer<>();
+            Node<E> list = this;
+            while (list != NIL_NODE) {
+                buffer.appendAll(mapper.apply(list.head));
+                list = list.tail;
+            }
+            return buffer.buildNode();
+        }
+
+        @Override
+        public <U, Ex extends Throwable> @NotNull Node<U> flatMapChecked(
+                @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ? extends Ex> mapper) throws Ex {
+            return flatMap(mapper);
+        }
+
+        @Override
+        public <U> @NotNull Node<U> flatMapUnchecked(
+                @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ?> mapper) {
+            return flatMap(mapper);
+        }
+
+        @Override
+        public @NotNull Node<E> sorted() {
+            if (this == NIL_NODE || tail == NIL_NODE) {
+                return this;
+            }
+            Object[] arr = this.toArray();
+            Arrays.sort(arr);
+            return (Node<E>) nodeFrom(arr);
+        }
+
+        @Override
+        public @NotNull Node<E> sorted(@NotNull Comparator<? super E> comparator) {
+            if (this == NIL_NODE || tail == NIL_NODE) {
+                return this;
+            }
+            Object[] arr = this.toArray();
+            Arrays.sort(arr, (Comparator<Object>) comparator);
+            return (Node<E>) nodeFrom(arr);
+        }
+
+        @Override
+        public <U> @NotNull Node<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
+            return zipImpl(other);
+        }
+
+        @Override
+        public @NotNull ImmutableLinkedSeq<E> toImmutableLinkedSeq() {
+            return ImmutableLinkedSeq.from(this);
+        }
+
+        @Override
+        public void forEach(@NotNull Consumer<? super E> action) {
+            Node<E> list = this;
+            while (list != NIL_NODE) {
+                action.accept(list.head);
+                list = list.tail;
+            }
+        }
+
+        @Override
+        public void forEachIndexed(@NotNull IndexedConsumer<? super E> action) {
+            Node<E> list = this;
+            int i = 0;
+            while (list != NIL_NODE) {
+                action.accept(i++, list.head);
+                list = list.tail;
+            }
+        }
+
+        private Object writeReplace() {
+            return this == NIL_NODE ? NilNodeReplaced.INSTANCE : this;
         }
 
     }

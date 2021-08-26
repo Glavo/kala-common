@@ -1,7 +1,7 @@
 package kala.collection.mutable;
 
-import kala.collection.immutable.ImmutableLinkedSeq;
 import kala.collection.factory.CollectionFactory;
+import kala.collection.immutable.ImmutableLinkedSeq;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;

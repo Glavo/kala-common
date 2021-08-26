@@ -63,4 +63,47 @@ public final class ImmutableLinkedSeqTest implements ImmutableSeqTestTemplate {
             return ImmutableLinkedSeq.<E>from(elements).view();
         }
     }
+
+    public static final class NodeTest implements ImmutableSeqTestTemplate {
+        @Override
+        public <E> CollectionFactory<E, ?, ImmutableLinkedSeq.Node<E>> factory() {
+            return ImmutableLinkedSeq.nodeFactory();
+        }
+
+        @Test
+        public void ofTest() {
+            assertIterableEquals(List.of(), ImmutableLinkedSeq.nodeOf());
+            assertIterableEquals(List.of("str1"), ImmutableLinkedSeq.nodeOf("str1"));
+            assertIterableEquals(List.of("str1", "str2"), ImmutableLinkedSeq.nodeOf("str1", "str2"));
+            assertIterableEquals(List.of("str1", "str2", "str3"), ImmutableLinkedSeq.nodeOf("str1", "str2", "str3"));
+            assertIterableEquals(List.of("str1", "str2", "str3", "str4"), ImmutableLinkedSeq.nodeOf("str1", "str2", "str3", "str4"));
+            assertIterableEquals(List.of("str1", "str2", "str3", "str4", "str5"), ImmutableLinkedSeq.nodeOf("str1", "str2", "str3", "str4", "str5"));
+            assertIterableEquals(List.of("str1", "str2", "str3", "str4", "str5", "str6"), ImmutableLinkedSeq.nodeOf("str1", "str2", "str3", "str4", "str5", "str6"));
+            for (Integer[] data : data1()) {
+                assertIterableEquals(Arrays.asList(data), ImmutableLinkedSeq.of(data));
+            }
+        }
+
+        @Override
+        public void fromTest() {
+            // TODO
+        }
+    }
+
+    static final class NodeViewTest implements SeqViewTestTemplate {
+        @Override
+        public <E> SeqView<E> of(E... elements) {
+            return ImmutableLinkedSeq.nodeFrom(elements).view();
+        }
+
+        @Override
+        public <E> SeqView<E> from(E[] elements) {
+            return ImmutableLinkedSeq.nodeFrom(elements).view();
+        }
+
+        @Override
+        public <E> SeqView<E> from(Iterable<? extends E> elements) {
+            return ImmutableLinkedSeq.<E>nodeFrom(elements).view();
+        }
+    }
 }

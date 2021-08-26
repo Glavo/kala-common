@@ -76,10 +76,6 @@ public interface CollectionLike<E> extends Traversable<E> {
         return ImmutableLinkedSeq.from(this);
     }
 
-    default @NotNull ImmutableSizedLinkedSeq<E> toImmutableSizedLinkedSeq() {
-        return ImmutableSizedLinkedSeq.from(this);
-    }
-
     default @NotNull ImmutableVector<E> toImmutableVector() {
         return ImmutableVector.from(this);
     }

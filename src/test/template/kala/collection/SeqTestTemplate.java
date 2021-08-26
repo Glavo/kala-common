@@ -8,7 +8,6 @@ import kala.collection.mutable.MutableArray;
 import kala.collection.factory.CollectionFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestTemplate;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandle;
@@ -132,7 +131,7 @@ public interface SeqTestTemplate extends CollectionTestTemplate, SeqLikeTestTemp
     default void equalsTest() {
         Assertions.assertEquals(ImmutableArray.empty(), factory().empty());
         assertEquals(ImmutableVector.empty(), factory().empty());
-        Assertions.assertEquals(ImmutableLinkedSeq.empty(), factory().empty());
+        Assertions.assertEquals(ImmutableLinkedSeq.emptyNode(), factory().empty());
         assertEquals(MutableArray.empty(), factory().empty());
 
         Seq<?> foo = factory().from(List.of("foo"));

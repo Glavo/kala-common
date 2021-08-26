@@ -3,10 +3,11 @@ package kala.collection;
 import kala.collection.base.Iterators;
 import kala.Conditions;
 import kala.collection.factory.MapFactory;
-import kala.collection.immutable.ImmutableLinkedSeq;
 import kala.collection.immutable.ImmutableMap;
+import kala.collection.immutable.ImmutableLinkedSeq;
 import kala.collection.internal.view.IndexedSeqViews;
 import kala.collection.base.Growable;
+import kala.collection.mutable.LinkedBuffer;
 import kala.control.Option;
 import kala.function.IndexedBiFunction;
 import kala.function.IndexedConsumer;
@@ -873,11 +874,15 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     default @NotNull ImmutableLinkedSeq<E> toImmutableLinkedSeq() {
         final int size = size();
 
-        ImmutableLinkedSeq<E> list = ImmutableLinkedSeq.nil();
-        for (int i = size - 1; i >= 0; i--) {
-            list = list.cons(get(i));
+        if (size == 0) {
+            return ImmutableLinkedSeq.empty();
         }
-        return list;
+
+        final LinkedBuffer<E> builder = new LinkedBuffer<>();
+        for (int i = 0; i < size; i++) {
+            builder.append(this.get(i));
+        }
+        return builder.toImmutableLinkedSeq();
     }
 
     @Override
