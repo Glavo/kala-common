@@ -61,10 +61,6 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         return (Factory<E>) FACTORY;
     }
 
-    public static <E> @NotNull Collector<E, ?, ImmutableLinkedSeq<E>> collector() {
-        return factory();
-    }
-
     @SuppressWarnings("unchecked")
     public static <E> ImmutableLinkedSeq<E> empty() {
         return (ImmutableLinkedSeq<E>) EMPTY;
@@ -138,7 +134,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
 
     public static <E> @NotNull ImmutableLinkedSeq<E> from(@NotNull Node<? extends E> values) {
         final int size = values.size();
-        return size == 0 ? empty() : new ImmutableLinkedSeq<E>((Node<E>) values, size);
+        return size == 0 ? empty() : new ImmutableLinkedSeq<>((Node<E>) values, size);
     }
 
     public static <E> @NotNull ImmutableLinkedSeq<E> from(@NotNull Iterator<? extends E> it) {

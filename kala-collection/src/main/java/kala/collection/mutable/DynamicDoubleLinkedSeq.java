@@ -33,10 +33,6 @@ public final class DynamicDoubleLinkedSeq<E>
         return (DynamicDoubleLinkedSeq.Factory<E>) FACTORY;
     }
 
-    public static <E> @NotNull Collector<E, ?, DynamicDoubleLinkedSeq<E>> collector() {
-        return factory();
-    }
-
     @Contract("-> new")
     public static <E> @NotNull DynamicDoubleLinkedSeq<E> of() {
         return new DynamicDoubleLinkedSeq<>();

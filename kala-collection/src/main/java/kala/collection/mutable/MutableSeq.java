@@ -24,10 +24,6 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
         return CollectionFactory.narrow(MutableArray.factory());
     }
 
-    static <E> @NotNull Collector<E, ?, MutableSeq<E>> collector() {
-        return factory();
-    }
-
     static <E> @NotNull MutableSeq<E> of() {
         return MutableArray.of();
     }

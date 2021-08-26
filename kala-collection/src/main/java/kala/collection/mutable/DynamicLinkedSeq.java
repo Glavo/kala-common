@@ -31,10 +31,6 @@ public final class DynamicLinkedSeq<E> extends ImmutableLinkedSeq.Builder<E>
         return (Factory<E>) FACTORY;
     }
 
-    public static <E> @NotNull Collector<E, ?, DynamicLinkedSeq<E>> collector() {
-        return factory();
-    }
-
     @Contract(" -> new")
     public static <E> @NotNull DynamicLinkedSeq<E> of() {
         return new DynamicLinkedSeq<>();

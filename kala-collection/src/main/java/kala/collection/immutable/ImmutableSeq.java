@@ -40,10 +40,6 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
         return (ImmutableSeqs.Factory<E>) ImmutableSeqs.FACTORY;
     }
 
-    static <E> @NotNull Collector<E, ?, ImmutableSeq<E>> collector() {
-        return factory();
-    }
-
     static <E> @NotNull ImmutableSeq<E> empty() {
         return (ImmutableSeq<E>) ImmutableSeqs.Seq0.INSTANCE;
     }

@@ -44,10 +44,6 @@ public final class DynamicSmartArraySeq<E> extends AbstractDynamicSeq<E> impleme
         return (Factory<E>) FACTORY;
     }
 
-    public static <E> @NotNull Collector<E, ?, DynamicSmartArraySeq<E>> collector() {
-        return factory();
-    }
-
     @Contract("-> new")
     public static <E> @NotNull DynamicSmartArraySeq<E> of() {
         return new DynamicSmartArraySeq<>();

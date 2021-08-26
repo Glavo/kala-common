@@ -69,10 +69,6 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
         return ((Factory<E>) FACTORY);
     }
 
-    public static <E> @NotNull Collector<E, ?, MutableHashSet<E>> collector() {
-        return factory();
-    }
-
     @Contract(value = "-> new", pure = true)
     public static <E> @NotNull MutableHashSet<E> of() {
         return new MutableHashSet<>();

@@ -65,10 +65,6 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
         return (Factory<E>) FACTORY;
     }
 
-    public static <E> @NotNull Collector<E, ?, DynamicArray<E>> collector() {
-        return DynamicArray.factory();
-    }
-
     @Contract("-> new")
     public static <E> @NotNull DynamicArray<E> of() {
         return new DynamicArray<>();

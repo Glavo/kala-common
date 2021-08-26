@@ -1,8 +1,6 @@
 package kala.collection;
 
-import java.util.ListIterator;
-
-public interface SeqIterator<E> extends ListIterator<E> {
+public interface SeqIterator<E> extends java.util.ListIterator<E> {
 
     /**
      * {@inheritDoc}
