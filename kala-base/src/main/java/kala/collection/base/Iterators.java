@@ -4,6 +4,7 @@ import kala.control.Try;
 import kala.function.CheckedConsumer;
 import kala.function.IndexedBiFunction;
 import kala.function.IndexedFunction;
+import kala.internal.InternalIdentifyObject;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import kala.annotations.StaticClass;
@@ -11,6 +12,7 @@ import kala.control.Option;
 import kala.collection.factory.CollectionFactory;
 import kala.function.IndexedConsumer;
 import kala.tuple.primitive.IntObjTuple2;
+import kala.tuple.primitive.PrimitiveTuple;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -69,7 +71,7 @@ public final class Iterators {
     }
 
     public static <E> @NotNull Iterator<E> ofEnumeration(@NotNull java.util.Enumeration<? extends E> enumeration) {
-        if (!enumeration.hasMoreElements()) {
+        if (!enumeration.hasMoreElements()) { // implicit null check of enumeration
             return Iterators.empty();
         }
 
@@ -83,6 +85,11 @@ public final class Iterators {
             public E next() {
                 return enumeration.nextElement();
             }
+
+            @Override
+            public String toString() {
+                return "Iterators.OfEnumeration[" + enumeration + "]";
+            }
         };
     }
 
@@ -92,6 +99,10 @@ public final class Iterators {
 
     public static <E> @NotNull Iterator<E> from(@NotNull Iterable<? extends E> values) {
         return narrow(values.iterator());
+    }
+
+    public static <E> @NotNull Iterator<E> from(@NotNull Iterator<? extends E> it) {
+        return narrow(Objects.requireNonNull(it));
     }
 
     public static <E> @NotNull Iterator<E> from(@NotNull Stream<? extends E> stream) {
@@ -141,7 +152,7 @@ public final class Iterators {
     }
 
     public static <E> @NotNull Iterator<E> concat(@NotNull Iterator<? extends E>... its) {
-        switch (its.length) {
+        switch (its.length) { // implicit null check of its
             case 0:
                 return Iterators.empty();
             case 1:
@@ -183,13 +194,13 @@ public final class Iterators {
         return i;
     }
 
-    public static <E> Iterator<E> reversed(@NotNull Iterator<? extends E> source) {
-        if (!source.hasNext()) {
-            return (Iterator<E>) source;
+    public static <E> Iterator<E> reversed(@NotNull Iterator<? extends E> it) {
+        if (!it.hasNext()) { // implicit null check of it
+            return (Iterator<E>) it;
         }
         ArrayList<E> list = new ArrayList<>();
-        while (source.hasNext()) {
-            list.add(source.next());
+        while (it.hasNext()) {
+            list.add(it.next());
         }
         return (Iterator<E>) GenericArrays.reverseIterator(list.toArray());
     }
@@ -275,9 +286,9 @@ public final class Iterators {
     }
 
     public static <E> E first(@NotNull Iterator<? extends E> it, @NotNull Predicate<? super E> predicate) {
-        while (it.hasNext()) {
+        while (it.hasNext()) { // implicit null check of it
             E e = it.next();
-            if (predicate.test(e)) {
+            if (predicate.test(e)) { // implicit null check of predicate
                 return e;
             }
         }
@@ -717,10 +728,10 @@ public final class Iterators {
 
     public static <E> @NotNull Iterator<E> filter(@NotNull Iterator<? extends E> it, @NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
-        if (!it.hasNext()) {
+        if (!it.hasNext()) { // implicit null check of it
             return empty();
         }
-        return new Filter<>(it, predicate, false);
+        return new Filter<>(it, predicate);
     }
 
     public static <E> @NotNull Iterator<E> filterNot(@NotNull Iterator<? extends E> it, @NotNull Predicate<? super E> predicate) {
@@ -728,7 +739,7 @@ public final class Iterators {
         if (!it.hasNext()) {
             return empty();
         }
-        return new Filter<>(it, predicate, true);
+        return new FilterNot<>(it, predicate);
     }
 
     public static <E> @NotNull Iterator<@NotNull E> filterNotNull(@NotNull Iterator<? extends E> it) {
@@ -817,23 +828,10 @@ public final class Iterators {
     }
 
     public static <E> @NotNull Iterator<IntObjTuple2<E>> withIndex(@NotNull Iterator<? extends E> it) {
-        if (!it.hasNext()) {
+        if (!it.hasNext()) { // implicit null check of it
             return Iterators.empty();
         }
-        return new AbstractIterator<IntObjTuple2<E>>() {
-            private int index = 0;
-
-            @Override
-            public boolean hasNext() {
-                return it.hasNext();
-            }
-
-            @Override
-            public IntObjTuple2<E> next() {
-                final E nextValue = it.next();
-                return IntObjTuple2.of(index++, nextValue);
-            }
-        };
+        return new WithIndex<>(it);
     }
 
     public static <E, U> @NotNull Iterator<@NotNull Tuple2<E, U>> zip(@NotNull Iterator<? extends E> it1, Iterator<? extends U> it2) {
@@ -1253,6 +1251,8 @@ public final class Iterators {
         }
     };
 
+    private static final Object TAG_VALUE = new InternalIdentifyObject();
+
     static final class OfNotNull<E> extends AbstractIterator<E> {
         private @Nullable E value;
 
@@ -1293,7 +1293,6 @@ public final class Iterators {
             return null;
         }
     }
-
 
     static final class Itr2<E> extends AbstractIterator<E> {
         private int idx = 0;
@@ -1496,7 +1495,6 @@ public final class Iterators {
             }
             final E oldValue = this.value;
             if (--n == 0) {
-
                 this.value = null;
             }
             return oldValue;
@@ -1558,6 +1556,32 @@ public final class Iterators {
         }
     }
 
+    static final class AppendedNull<E> extends AbstractIterator<E> {
+        private final Iterator<? extends E> source;
+        private boolean hasLast = true;
+
+        AppendedNull(Iterator<? extends E> source) {
+            this.source = source;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return hasLast || source.hasNext();
+        }
+
+        @Override
+        public E next() {
+            if (source.hasNext()) {
+                return source.next();
+            }
+            if (hasLast) {
+                hasLast = false;
+                return null;
+            }
+            throw new NoSuchElementException();
+        }
+    }
+
     static final class AppendedNotNull<E> extends AbstractIterator<E> {
         private final Iterator<? extends E> source;
         private E last;
@@ -1586,28 +1610,26 @@ public final class Iterators {
         }
     }
 
-    static final class AppendedNull<E> extends AbstractIterator<E> {
+    static final class PrependedNull<E> extends AbstractIterator<E> {
         private final Iterator<? extends E> source;
-        private boolean hasLast = true;
+        private boolean hasHead = true;
 
-        AppendedNull(Iterator<? extends E> source) {
+        PrependedNull(Iterator<? extends E> source) {
             this.source = source;
         }
 
         @Override
         public boolean hasNext() {
-            return hasLast || source.hasNext();
+            return hasHead || source.hasNext();
         }
 
         @Override
         public E next() {
-            if (source.hasNext()) {
-                return source.next();
-            } else if (hasLast) {
-                hasLast = false;
+            if (hasHead) {
+                hasHead = false;
                 return null;
             } else {
-                throw new NoSuchElementException();
+                return source.next();
             }
         }
     }
@@ -1638,57 +1660,27 @@ public final class Iterators {
         }
     }
 
-    static final class PrependedNull<E> extends AbstractIterator<E> {
-        private final Iterator<? extends E> source;
-        private boolean hasHead = true;
-
-        PrependedNull(Iterator<? extends E> source) {
-            this.source = source;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return hasHead || source.hasNext();
-        }
-
-        @Override
-        public E next() {
-            if (hasHead) {
-                hasHead = false;
-                return null;
-            } else {
-                return source.next();
-            }
-        }
-    }
-
     static final class Filter<E> extends AbstractIterator<E> {
-
         private final @NotNull Iterator<? extends E> source;
-
         private final @NotNull Predicate<? super E> predicate;
 
-        private E nextValue = null;
-        private boolean flag = false;
+        private Object nextValue = TAG_VALUE;
 
-        private final boolean isFlipped;
-
-        Filter(@NotNull Iterator<? extends E> source, @NotNull Predicate<? super E> predicate, boolean isFlipped) {
+        Filter(@NotNull Iterator<? extends E> source, @NotNull Predicate<? super E> predicate) {
             this.source = source;
             this.predicate = predicate;
-            this.isFlipped = isFlipped;
         }
 
         @Override
         public boolean hasNext() {
-            if (flag) {
+            if (nextValue != TAG_VALUE) {
                 return true;
             }
             if (!source.hasNext()) {
                 return false;
             }
             E v = source.next();
-            while (predicate.test(v) == isFlipped) {
+            while (!predicate.test(v)) {
                 if (!source.hasNext()) {
                     return false;
                 }
@@ -1696,7 +1688,6 @@ public final class Iterators {
             }
 
             this.nextValue = v;
-            flag = true;
             return true;
         }
 
@@ -1705,15 +1696,56 @@ public final class Iterators {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            flag = false;
-            return nextValue;
+            final E nv = (E) nextValue;
+            nextValue = TAG_VALUE;
+            return nv;
+        }
+    }
+
+    static final class FilterNot<E> extends AbstractIterator<E> {
+        private final @NotNull Iterator<? extends E> source;
+        private final @NotNull Predicate<? super E> predicate;
+
+        private Object nextValue = TAG_VALUE;
+
+        FilterNot(@NotNull Iterator<? extends E> source, @NotNull Predicate<? super E> predicate) {
+            this.source = source;
+            this.predicate = predicate;
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (nextValue != TAG_VALUE) {
+                return true;
+            }
+            if (!source.hasNext()) {
+                return false;
+            }
+            E v = source.next();
+            while (predicate.test(v)) {
+                if (!source.hasNext()) {
+                    return false;
+                }
+                v = source.next();
+            }
+
+            this.nextValue = v;
+            return true;
+        }
+
+        @Override
+        public E next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            final E nv = (E) nextValue;
+            nextValue = TAG_VALUE;
+            return nv;
         }
     }
 
     static final class FilterNotNull<E> extends AbstractIterator<E> {
-
         private final @NotNull Iterator<? extends E> source;
-
         private E nextValue = null;
 
         FilterNotNull(@NotNull Iterator<? extends E> source) {
@@ -1729,7 +1761,7 @@ public final class Iterators {
                 return false;
             }
 
-            E v = null;
+            E v;
             do {
                 v = source.next();
             } while (v == null && source.hasNext());
@@ -1754,12 +1786,10 @@ public final class Iterators {
     }
 
     static final class MapNotNull<E, U> extends AbstractIterator<U> {
-
         private final @NotNull Iterator<? extends E> source;
         private final @NotNull Function<? super E, ? extends U> mapper;
 
-        private U nextValue = null;
-        private boolean flag = false;
+        private Object nextValue = TAG_VALUE;
 
         MapNotNull(@NotNull Iterator<? extends E> source, @NotNull Function<? super E, ? extends U> mapper) {
             this.source = source;
@@ -1768,7 +1798,7 @@ public final class Iterators {
 
         @Override
         public boolean hasNext() {
-            if (flag) {
+            if (nextValue != TAG_VALUE) {
                 return true;
             }
             U v;
@@ -1780,7 +1810,6 @@ public final class Iterators {
             } while (v == null);
 
             this.nextValue = v;
-            flag = true;
             return true;
         }
 
@@ -1789,20 +1818,18 @@ public final class Iterators {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            flag = false;
-            return nextValue;
+            final U nv = (U) nextValue;
+            nextValue = TAG_VALUE;
+            return nv;
         }
     }
 
     static final class MapIndexedNotNull<E, U> extends AbstractIterator<U> {
-
         private final @NotNull Iterator<? extends E> source;
         private final @NotNull IndexedFunction<? super E, ? extends U> mapper;
 
         private int idx = 0;
-        private U nextValue = null;
-        private boolean flag = false;
-
+        private Object nextValue = TAG_VALUE;
 
         MapIndexedNotNull(@NotNull Iterator<? extends E> source, @NotNull IndexedFunction<? super E, ? extends U> mapper) {
             this.source = source;
@@ -1811,7 +1838,7 @@ public final class Iterators {
 
         @Override
         public boolean hasNext() {
-            if (flag) {
+            if (nextValue != TAG_VALUE) {
                 return true;
             }
             U v;
@@ -1823,7 +1850,6 @@ public final class Iterators {
             } while (v == null);
 
             this.nextValue = v;
-            flag = true;
             return true;
         }
 
@@ -1832,19 +1858,18 @@ public final class Iterators {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            flag = false;
-            return nextValue;
+            U nv = (U) nextValue;
+            nextValue = TAG_VALUE;
+            return nv;
         }
     }
 
     static final class TakeWhile<E> extends AbstractIterator<E> {
-
         private @NotNull Iterator<? extends E> source;
 
         private final Predicate<? super E> predicate;
 
-        private E nextValue = null;
-        private boolean tag = false;
+        private Object nextValue = TAG_VALUE;
 
         TakeWhile(@NotNull Iterator<? extends E> source, Predicate<? super E> predicate) {
             this.source = source;
@@ -1853,14 +1878,14 @@ public final class Iterators {
 
         @Override
         public boolean hasNext() {
-            if (tag) {
+            if (nextValue != TAG_VALUE) {
                 return true;
             }
 
             if (source.hasNext()) {
-                E v = nextValue = source.next();
+                E v = source.next();
                 if (predicate.test(v)) {
-                    tag = true;
+                    nextValue = v;
                     return true;
                 } else {
                     source = Iterators.empty();
@@ -1874,11 +1899,11 @@ public final class Iterators {
         @Override
         public E next() {
             if (hasNext()) {
-                tag = false;
-                return nextValue;
-            } else {
-                throw new NoSuchElementException(this + ".next()");
+                E nv = (E) nextValue;
+                nextValue = TAG_VALUE;
+                return nv;
             }
+            throw new NoSuchElementException(this + ".next()");
         }
     }
 
@@ -1921,12 +1946,11 @@ public final class Iterators {
             if (it2 != null) {
                 return it2.next();
             }
-            throw new AssertionError();
+            throw new NoSuchElementException(); // never
         }
     }
 
     static final class ConcatAll<E> extends AbstractIterator<E> {
-
         private final @NotNull Iterator<? extends Iterator<? extends E>> iterators;
 
         private Iterator<? extends E> current = null;
@@ -1972,6 +1996,26 @@ public final class Iterators {
                 throw new NoSuchElementException();
             }
             return Tuple.of(it1.next(), it2.next());
+        }
+    }
+
+    static final class WithIndex<E> extends AbstractIterator<@NotNull IntObjTuple2<E>> {
+        private final @NotNull Iterator<? extends E> it;
+        private int idx;
+
+        WithIndex(@NotNull Iterator<? extends E> it) {
+            this.it = it;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return it.hasNext();
+        }
+
+        @Override
+        public @NotNull IntObjTuple2<E> next() {
+            final E nextValue = it.next();
+            return IntObjTuple2.of(idx++, nextValue);
         }
     }
 }

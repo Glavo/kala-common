@@ -1,7 +1,7 @@
 package kala.function;
 
+import kala.internal.InternalIdentifyObject;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -9,7 +9,9 @@ import java.util.function.Function;
 
 @SuppressWarnings("unchecked")
 final class MemoizedFunction<T, R> implements Function<T, R>, Memoized, Serializable {
-    private static final Object NULL_HOLE = new Object();
+    private static final long serialVersionUID = -376053341729150782L;
+
+    private static final Object NULL_HOLE = new InternalIdentifyObject();
 
     private final @NotNull Function<? super T, ? extends R> function;
     private final @NotNull Map<T, Object> cache;
@@ -22,7 +24,7 @@ final class MemoizedFunction<T, R> implements Function<T, R>, Memoized, Serializ
     }
 
     @Override
-    public final R apply(T t) {
+    public R apply(T t) {
         final Object value = cache.getOrDefault(t, NULL_HOLE);
         if (value == NULL_HOLE) {
             if (sync) {
@@ -42,7 +44,7 @@ final class MemoizedFunction<T, R> implements Function<T, R>, Memoized, Serializ
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         return "MemoizedFunction[" +
                 "function=" + function +
                 ", cache=" + cache +
