@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SuppressWarnings("unchecked")
 public final class ImmutableArrayTest implements ImmutableSeqTestTemplate {
     @Override
-    public final <E> CollectionFactory<E, ?, ImmutableArray<E>> factory() {
+    public <E> CollectionFactory<E, ?, ImmutableArray<E>> factory() {
         return ImmutableArray.factory();
     }
 
@@ -34,7 +34,9 @@ public final class ImmutableArrayTest implements ImmutableSeqTestTemplate {
     }
 
     @Test
-    public final void ofTest() {
+    public void ofTest() {
+        ImmutableSeqTestTemplate.super.ofTest();
+
         assertIterableEquals(List.of(), ImmutableArray.of());
         assertIterableEquals(List.of("str1"), ImmutableArray.of("str1"));
         assertIterableEquals(List.of("str1", "str2"), ImmutableArray.of("str1", "str2"));
@@ -48,7 +50,8 @@ public final class ImmutableArrayTest implements ImmutableSeqTestTemplate {
     }
 
     @Test
-    public final void fromTest() {
+    public void fromTest() {
+        ImmutableSeqTestTemplate.super.fromTest();
         for (Integer[] data : data1()) {
             assertIterableEquals(Arrays.asList(data), ImmutableArray.from(new SimpleIterable<>(Arrays.asList(data))));
             assertIterableEquals(Arrays.asList(data), ImmutableArray.from(ImmutableLinkedSeq.from(data)));

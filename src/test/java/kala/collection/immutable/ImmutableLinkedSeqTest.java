@@ -13,12 +13,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class ImmutableLinkedSeqTest implements ImmutableSeqTestTemplate {
     @Override
-    public final <E> CollectionFactory<E, ?, ImmutableLinkedSeq<E>> factory() {
+    public <E> CollectionFactory<E, ?, ImmutableLinkedSeq<E>> factory() {
         return ImmutableLinkedSeq.factory();
     }
 
     @Test
-    public final void ofTest() {
+    public void ofTest() {
+        ImmutableSeqTestTemplate.super.ofTest();
+
         assertIterableEquals(List.of(), ImmutableLinkedSeq.of());
         assertIterableEquals(List.of("str1"), ImmutableLinkedSeq.of("str1"));
         assertIterableEquals(List.of("str1", "str2"), ImmutableLinkedSeq.of("str1", "str2"));
@@ -32,7 +34,7 @@ public final class ImmutableLinkedSeqTest implements ImmutableSeqTestTemplate {
     }
 
     @Test
-    public final void mergeBuilderTest() {
+    public void mergeBuilderTest() {
         LinkedBuffer<String> b1 = new LinkedBuffer<>();
         LinkedBuffer<String> b2 = new LinkedBuffer<>();
 

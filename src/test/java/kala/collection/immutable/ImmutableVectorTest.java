@@ -13,12 +13,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class ImmutableVectorTest implements ImmutableSeqTestTemplate {
     @Override
-    public final <E> CollectionFactory<E, ?, ImmutableVector<E>> factory() {
+    public <E> CollectionFactory<E, ?, ImmutableVector<E>> factory() {
         return ImmutableVector.factory();
     }
 
     @Test
-    public final void ofTest() {
+    public void ofTest() {
+        ImmutableSeqTestTemplate.super.ofTest();
+
         assertIterableEquals(List.of(),ImmutableVector.of());
 
         assertIterableEquals(List.of("str1"), ImmutableVector.of("str1"));
@@ -51,7 +53,7 @@ public final class ImmutableVectorTest implements ImmutableSeqTestTemplate {
     }
 
     @Test
-    public final void fillTest() {
+    public void fillTest() {
         ImmutableVector<String> v;
 
         v = ImmutableVector.fill(ImmutableVectors.WIDTH, "str");

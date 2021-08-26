@@ -35,6 +35,14 @@ public final class SimpleSeqTest implements SeqTestTemplate {
         return new SimpleSeq<>(list);
     }
 
+    @Override
+    public void ofTest() {
+    }
+
+    @Override
+    public void fromTest() {
+    }
+
     static final class SimpleSeq<E> extends AbstractSeq<E> {
         private final java.util.List<E> list;
 

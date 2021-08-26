@@ -148,6 +148,10 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         return new ArraySeq<>(ArrayBuffer.<E>from(it).toArray());
     }
 
+    public static <E> @NotNull ArraySeq<E> from(@NotNull Stream<? extends E> stream) {
+        return (ArraySeq<E>) stream.collect(factory());
+    }
+
     public static <E> @NotNull ArraySeq<E> fill(int n, E value) {
         if (n <= 0) {
             return empty();

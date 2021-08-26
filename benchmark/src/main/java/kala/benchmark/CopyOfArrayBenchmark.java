@@ -8,7 +8,6 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
-@SuppressWarnings("ALL")
 @State(Scope.Benchmark)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class CopyOfArrayBenchmark {
@@ -48,6 +47,7 @@ public class CopyOfArrayBenchmark {
         return copyOfObjectArray(array, N / 2);
     }
 
+    @SuppressWarnings("unchecked")
     static class TestImmutableArray1<E> {
         private static final TestImmutableArray1<?> EMPTY = new TestImmutableArray1<>(new Object[0]);
 
@@ -91,6 +91,7 @@ public class CopyOfArrayBenchmark {
 
     }
 
+    @SuppressWarnings("unchecked")
     static class TestImmutableArray2<E> {
         private static final TestImmutableArray2<?> EMPTY = new TestImmutableArray2<>(new Object[0]);
 

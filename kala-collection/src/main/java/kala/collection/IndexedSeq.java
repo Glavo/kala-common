@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Collector;
+import java.util.stream.Stream;
 
 public interface IndexedSeq<@Covariant E> extends Seq<E>, IndexedSeqLike<E>, RandomAccess {
 
@@ -32,17 +33,54 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, IndexedSeqLike<E>, Ran
         return factory();
     }
 
+    static <E> @NotNull IndexedSeq<E> empty() {
+        return ImmutableVector.empty();
+    }
+
+    static <E> @NotNull IndexedSeq<E> of() {
+        return ImmutableVector.of();
+    }
+
+    static <E> @NotNull IndexedSeq<E> of(E value1) {
+        return ImmutableVector.of(value1);
+    }
+
+    static <E> @NotNull IndexedSeq<E> of(E value1, E value2) {
+        return ImmutableVector.of(value1, value2);
+    }
+
+    static <E> @NotNull IndexedSeq<E> of(E value1, E value2, E value3) {
+        return ImmutableVector.of(value1, value2, value3);
+    }
+
+    static <E> @NotNull IndexedSeq<E> of(E value1, E value2, E value3, E value4) {
+        return ImmutableVector.of(value1, value2, value3, value4);
+    }
+
+    static <E> @NotNull IndexedSeq<E> of(E value1, E value2, E value3, E value4, E value5) {
+        return ImmutableVector.of(value1, value2, value3, value4, value5);
+    }
+
     @SafeVarargs
     static <E> @NotNull IndexedSeq<E> of(E... values) {
-        return IndexedSeq.<E>factory().from(values);
+        return ImmutableVector.of(values);
     }
 
     static <E> @NotNull IndexedSeq<E> from(E @NotNull [] values) {
-        return IndexedSeq.<E>factory().from(values);
+        return ImmutableVector.from(values);
     }
 
     static <E> @NotNull IndexedSeq<E> from(@NotNull Iterable<? extends E> values) {
-        return IndexedSeq.<E>factory().from(values);
+        return ImmutableVector.from(values);
+    }
+
+    static <E> @NotNull IndexedSeq<E> from(@NotNull Iterator<? extends E> it) {
+        return ImmutableVector.from(it);
+    }
+
+
+    static <E> @NotNull IndexedSeq<E> from(@NotNull Stream<? extends E> stream) {
+        return ImmutableVector.from(stream);
     }
 
     //endregion

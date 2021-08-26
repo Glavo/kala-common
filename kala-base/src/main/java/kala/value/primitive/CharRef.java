@@ -17,17 +17,17 @@ public final class CharRef implements MutableCharValue, Serializable {
     }
 
     @Override
-    public final char get() {
+    public char get() {
         return value;
     }
 
     @Override
-    public final void set(char value) {
+    public void set(char value) {
         this.value = value;
     }
 
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -38,12 +38,12 @@ public final class CharRef implements MutableCharValue, Serializable {
     }
 
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         return value + HASH_MAGIC;
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         return "CharRef[" + value + "]";
     }
 }

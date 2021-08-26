@@ -17,17 +17,17 @@ public final class IntRef implements MutableIntValue, Serializable {
     }
 
     @Override
-    public final int get() {
+    public int get() {
         return value;
     }
 
     @Override
-    public final void set(int value) {
+    public void set(int value) {
         this.value = value;
     }
 
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -38,12 +38,12 @@ public final class IntRef implements MutableIntValue, Serializable {
     }
 
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         return value + HASH_MAGIC;
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         return "IntRef[" + value + "]";
     }
 }

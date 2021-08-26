@@ -16,6 +16,7 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
+import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements IndexedSeq<E>, Serializable {
@@ -135,6 +136,10 @@ public final class SmartArrayBuffer<E> extends AbstractBuffer<E> implements Inde
             buffer.append(it.next());
         }
         return buffer;
+    }
+
+    public static <E> @NotNull SmartArrayBuffer<E> from(@NotNull Stream<? extends E> stream) {
+        return stream.collect(factory());
     }
 
     public static <E> @NotNull SmartArrayBuffer<E> fill(int n, E value) {

@@ -17,7 +17,9 @@ public final class ImmutableSeqTest implements ImmutableSeqTestTemplate {
     }
 
     @Test
-    public final void ofTest() {
+    public void ofTest() {
+        ImmutableSeqTestTemplate.super.ofTest();
+
         assertIterableEquals(List.of(),ImmutableSeq.of());
         assertIterableEquals(List.of("str1"), ImmutableSeq.of("str1"));
         assertIterableEquals(List.of("str1", "str2"), ImmutableSeq.of("str1", "str2"));

@@ -17,17 +17,17 @@ public final class BooleanRef implements MutableBooleanValue, Serializable {
     }
 
     @Override
-    public final boolean get() {
+    public boolean get() {
         return value;
     }
 
     @Override
-    public final void set(boolean value) {
+    public void set(boolean value) {
         this.value = value;
     }
 
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -38,12 +38,12 @@ public final class BooleanRef implements MutableBooleanValue, Serializable {
     }
 
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         return Boolean.hashCode(value) + HASH_MAGIC;
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         return "BooleanRef[" + value + "]";
     }
 }

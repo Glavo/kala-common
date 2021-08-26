@@ -16,6 +16,7 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
+import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, IndexedSeq<E>, Serializable {
@@ -133,6 +134,10 @@ public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Index
             buffer.append(it.next());
         }
         return new MutableArray<>(buffer.toArray());
+    }
+
+    public static <E> @NotNull MutableArray<E> from(@NotNull Stream<? extends E> stream) {
+        return stream.collect(factory());
     }
 
     public static <E> @NotNull MutableArray<E> fill(int n, E value) {

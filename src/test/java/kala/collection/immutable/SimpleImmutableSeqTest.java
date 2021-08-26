@@ -10,26 +10,34 @@ import java.util.*;
 public final class SimpleImmutableSeqTest implements ImmutableSeqTestTemplate {
 
     @Override
-    public final <E> CollectionFactory<E, ?, ImmutableSeq<E>> factory() {
+    public void ofTest() {
+    }
+
+    @Override
+    public void fromTest() {
+    }
+
+    @Override
+    public <E> CollectionFactory<E, ?, ImmutableSeq<E>> factory() {
         return new CollectionFactory<E, ArrayList<E>, ImmutableSeq<E>>() {
             @Override
-            public final ArrayList<E> newBuilder() {
+            public ArrayList<E> newBuilder() {
                 return new ArrayList<>();
             }
 
             @Override
-            public final void addToBuilder(@NotNull ArrayList<E> es, E value) {
+            public void addToBuilder(@NotNull ArrayList<E> es, E value) {
                 es.add(value);
             }
 
             @Override
-            public final ArrayList<E> mergeBuilder(@NotNull ArrayList<E> builder1, @NotNull ArrayList<E> builder2) {
+            public ArrayList<E> mergeBuilder(@NotNull ArrayList<E> builder1, @NotNull ArrayList<E> builder2) {
                 builder1.addAll(builder2);
                 return builder1;
             }
 
             @Override
-            public final SimpleImmutableSeq<E> build(@NotNull ArrayList<E> es) {
+            public SimpleImmutableSeq<E> build(@NotNull ArrayList<E> es) {
                 return new SimpleImmutableSeq<>(es);
             }
         };
@@ -44,7 +52,7 @@ public final class SimpleImmutableSeqTest implements ImmutableSeqTestTemplate {
         }
 
         @Override
-        public final @NotNull Iterator<E> iterator() {
+        public @NotNull Iterator<E> iterator() {
             return list.iterator();
         }
     }

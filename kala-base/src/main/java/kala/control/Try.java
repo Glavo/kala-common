@@ -52,10 +52,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
 
     @Contract("_ -> new")
     public static <T> Try.@NotNull Success<T> success(T value) {
-        if (value == null) {
-            return (Try.Success<T>) Try.Success.NULL;
-        }
-        return new Try.Success<>(value);
+        return value != null ? new Success<>(value) : (Success<T>) Success.NULL;
     }
 
     @Contract("_ -> new")

@@ -17,17 +17,17 @@ public final class LongRef implements MutableLongValue, Serializable {
     }
 
     @Override
-    public final long get() {
+    public long get() {
         return value;
     }
 
     @Override
-    public final void set(long value) {
+    public void set(long value) {
         this.value = value;
     }
 
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -38,12 +38,12 @@ public final class LongRef implements MutableLongValue, Serializable {
     }
 
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         return Long.hashCode(value) + HASH_MAGIC;
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         return "LongRef[" + value + "]";
     }
 }

@@ -151,7 +151,7 @@ public final class Option<@Covariant T> extends AnyOption<T>
         return isDefined() ? some(mapper.apply(value)) : none();
     }
 
-    public <U> Option<U> flatMap(@NotNull Function<? super T, ? extends Option<? extends U>> mapper) {
+    public <U> @NotNull Option<U> flatMap(@NotNull Function<? super T, ? extends Option<? extends U>> mapper) {
         return isDefined() ? narrow(mapper.apply(value)) : none();
     }
 
@@ -183,7 +183,7 @@ public final class Option<@Covariant T> extends AnyOption<T>
     @Override
     @Contract(pure = true)
     public boolean contains(Object value) {
-        return Objects.equals(this.value, value) && this != None;
+        return isDefined() && Objects.equals(this.value, value);
     }
 
     /**
@@ -201,12 +201,12 @@ public final class Option<@Covariant T> extends AnyOption<T>
      * @throws NullPointerException if {@link #isDefined()} but value is {@code null}
      */
     public @NotNull Optional<T> asJava() {
-        return this == None ? Optional.empty() : Optional.of(Objects.requireNonNull(value));
+        return isDefined() ? Optional.of(value) : Optional.empty();
     }
 
     @Override
     public @NotNull Iterator<T> iterator() {
-        return this == None ? Iterators.empty() : Iterators.of(value);
+        return isDefined() ? Iterators.of(value) : Iterators.empty();
     }
 
     /**
@@ -236,10 +236,9 @@ public final class Option<@Covariant T> extends AnyOption<T>
     /**
      * {@inheritDoc}
      */
-    @NotNull
     @Contract(pure = true)
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         if (this == None) {
             return "Option.None";
         } else {

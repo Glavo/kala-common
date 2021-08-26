@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
+import java.util.stream.Stream;
 
 @Debug.Renderer(hasChildren = "!isEmpty()", childrenArray = "toArray()")
 public final class LinkedBuffer<E> extends ImmutableLinkedSeq.Builder<E>
@@ -111,6 +112,11 @@ public final class LinkedBuffer<E> extends ImmutableLinkedSeq.Builder<E>
             res.append(it.next());
         }
         return res;
+    }
+
+    @Contract("_ -> new")
+    public static <E> @NotNull LinkedBuffer<E> from(@NotNull Stream<? extends E> stream) {
+        return stream.collect(factory());
     }
 
     public static <E> @NotNull LinkedBuffer<E> fill(int n, E value) {

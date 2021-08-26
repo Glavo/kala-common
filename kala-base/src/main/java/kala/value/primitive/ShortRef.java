@@ -17,17 +17,17 @@ public final class ShortRef implements MutableShortValue, Serializable {
     }
 
     @Override
-    public final short get() {
+    public short get() {
         return value;
     }
 
     @Override
-    public final void set(short value) {
+    public void set(short value) {
         this.value = value;
     }
 
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -38,12 +38,12 @@ public final class ShortRef implements MutableShortValue, Serializable {
     }
 
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         return value + HASH_MAGIC;
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         return "ShortRef[" + value + "]";
     }
 }

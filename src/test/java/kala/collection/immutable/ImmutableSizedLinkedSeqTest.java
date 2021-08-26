@@ -17,7 +17,9 @@ public final class ImmutableSizedLinkedSeqTest implements ImmutableSeqTestTempla
     }
 
     @Test
-    public final void ofTest() {
+    public void ofTest() {
+        ImmutableSeqTestTemplate.super.ofTest();
+
         assertIterableEquals(List.of(), ImmutableSizedLinkedSeq.of());
         assertIterableEquals(List.of("str1"), ImmutableSizedLinkedSeq.of("str1"));
         assertIterableEquals(List.of("str1", "str2"), ImmutableSizedLinkedSeq.of("str1", "str2"));

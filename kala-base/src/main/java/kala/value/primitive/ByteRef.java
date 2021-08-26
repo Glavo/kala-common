@@ -17,7 +17,7 @@ public final class ByteRef implements MutableByteValue, Serializable {
     }
 
     @Override
-    public final byte get() {
+    public byte get() {
         return value;
     }
 
@@ -27,7 +27,7 @@ public final class ByteRef implements MutableByteValue, Serializable {
     }
 
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -38,12 +38,12 @@ public final class ByteRef implements MutableByteValue, Serializable {
     }
 
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         return value + HASH_MAGIC;
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         return "ByteRef[" + value + "]";
     }
 }
