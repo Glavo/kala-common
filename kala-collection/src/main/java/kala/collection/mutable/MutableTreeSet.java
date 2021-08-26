@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import java.util.stream.Collector;
+import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node<E>>
@@ -50,18 +51,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     }
 
     public static <E> @NotNull CollectionFactory<E, ?, MutableTreeSet<E>> factory(Comparator<? super E> comparator) {
-        if (comparator == null) {
-            return (Factory<E>) DEFAULT_FACTORY;
-        }
-        return new Factory<>(comparator);
-    }
-
-    public static <E extends Comparable<? super E>> @NotNull Collector<E, ?, MutableTreeSet<E>> collector() {
-        return factory();
-    }
-
-    public static <E> @NotNull Collector<E, ?, MutableTreeSet<E>> collector(Comparator<? super E> comparator) {
-        return factory(comparator);
+        return comparator == null ? (Factory<E>) DEFAULT_FACTORY : new Factory<>(comparator);
     }
 
     @Contract(value = " -> new", pure = true)
@@ -213,7 +203,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     }
 
     @Contract(value = "_ -> new", pure = true)
-    public static <E extends Comparable<? super E>> @NotNull MutableTreeSet<E> from(Iterable<? extends E> values) {
+    public static <E extends Comparable<? super E>> @NotNull MutableTreeSet<E> from(@NotNull Iterable<? extends E> values) {
         Objects.requireNonNull(values);
         Comparator<? super E> comparator = null;
 
@@ -226,6 +216,20 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
         MutableTreeSet<E> s = new MutableTreeSet<>(comparator);
         s.addAll(values);
         return s;
+    }
+
+    @Contract(value = "_ -> new", pure = true)
+    public static <E extends Comparable<? super E>> @NotNull MutableTreeSet<E> from(@NotNull Iterator<? extends E> it) {
+        MutableTreeSet<E> s = new MutableTreeSet<>();
+        while (it.hasNext()) { // implicit null check of it
+            s.add(it.next());
+        }
+        return s;
+    }
+
+    @Contract(value = "_ -> new", pure = true)
+    public static <E extends Comparable<? super E>> @NotNull MutableTreeSet<E> from(@NotNull Stream<? extends E> stream) {
+        return stream.collect(factory());
     }
 
     @Contract(value = "_, _ -> new", pure = true)
@@ -244,6 +248,20 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
         return s;
     }
 
+    @Contract(value = "_, _ -> new", pure = true)
+    public static <E> @NotNull MutableTreeSet<E> from(Comparator<? super E> comparator, @NotNull Iterator<? extends E> it) {
+        MutableTreeSet<E> s = new MutableTreeSet<>(comparator);
+        while (it.hasNext()) { // implicit null check of it
+            s.add(it.next());
+        }
+        return s;
+    }
+
+
+    @Contract(value = "_, _ -> new", pure = true)
+    public static <E> @NotNull MutableTreeSet<E> from(Comparator<? super E> comparator, @NotNull Stream<? extends E> stream) {
+        return stream.collect(factory(comparator));
+    }
     //endregion
 
     //region Collection Operations

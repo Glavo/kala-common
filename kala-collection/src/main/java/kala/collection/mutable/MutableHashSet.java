@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Collector;
+import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Serializable {
@@ -148,6 +149,11 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
             s.add(it.next());
         }
         return s;
+    }
+
+    @Contract(value = "_ -> new", pure = true)
+    public static <E> @NotNull MutableHashSet<E> from(@NotNull Stream<? extends E> stream) {
+        return stream.collect(factory());
     }
 
     //endregion

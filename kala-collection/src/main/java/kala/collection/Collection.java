@@ -32,10 +32,6 @@ public interface Collection<@Covariant E> extends Traversable<E>, CollectionLike
         return CollectionFactory.narrow(ImmutableCollection.factory());
     }
 
-    static <E> @NotNull Collector<E, ?, Collection<E>> collector() {
-        return factory();
-    }
-
     //endregion
 
     //region Collection Operations

@@ -40,10 +40,6 @@ public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Index
         return (Factory<E>) FACTORY;
     }
 
-    public static <E> @NotNull Collector<E, ?, MutableArray<E>> collector() {
-        return factory();
-    }
-
     @Contract("_ -> new")
     public static <E> @NotNull MutableArray<E> create(int size) {
         return new MutableArray<>(new Object[size]);

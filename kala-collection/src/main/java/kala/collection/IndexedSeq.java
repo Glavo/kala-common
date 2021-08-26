@@ -29,10 +29,6 @@ public interface IndexedSeq<@Covariant E> extends Seq<E>, IndexedSeqLike<E>, Ran
         return CollectionFactory.narrow(ImmutableVector.factory());
     }
 
-    static <E> @NotNull Collector<E, ?, IndexedSeq<E>> collector() {
-        return factory();
-    }
-
     static <E> @NotNull IndexedSeq<E> empty() {
         return ImmutableVector.empty();
     }

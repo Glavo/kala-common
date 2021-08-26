@@ -1,5 +1,6 @@
 package kala.collection.mutable;
 
+import kala.annotations.ReplaceWith;
 import kala.collection.ArraySeq;
 import kala.collection.Collection;
 import kala.collection.base.Growable;
@@ -22,10 +23,6 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
     @Contract(pure = true)
     static <E> @NotNull CollectionFactory<E, ?, MutableSet<E>> factory() {
         return CollectionFactory.narrow(MutableHashSet.factory());
-    }
-
-    static <E> @NotNull Collector<E, ?, MutableSet<E>> collector() {
-        return factory();
     }
 
     @Contract(value = "-> new", pure = true)
@@ -74,6 +71,8 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
         return MutableHashSet.from(values);
     }
 
+
+
     //endregion
 
     //region Collection Operations
@@ -94,7 +93,7 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
     }
 
     @Override
-    default @NotNull java.util.Set<E> asJava() {
+    default java.util.@NotNull Set<E> asJava() {
         return new AsJavaConvert.MutableSetAsJava<>(this);
     }
 
@@ -124,6 +123,10 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
     default boolean addAll(
             @NotNull @Flow(sourceIsContainer = true, targetIsContainer = true) Iterable<? extends E> values
     ) {
+        if (values == this) {
+            return false;
+        }
+
         boolean m = false;
         for (E value : values) {
             if (this.add(value)) {
@@ -134,16 +137,19 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
     }
 
     @Override
+    @ReplaceWith("add(E)")
     default void plusAssign(E value) {
         add(value);
     }
 
     @Override
+    @ReplaceWith("addAll(E[])")
     default void plusAssign(E @NotNull [] values) {
         addAll(values);
     }
 
     @Override
+    @ReplaceWith("addAll(Iterable)")
     default void plusAssign(@NotNull Iterable<? extends E> values) {
         addAll(values);
     }

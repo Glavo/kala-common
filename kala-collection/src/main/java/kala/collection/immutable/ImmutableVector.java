@@ -59,10 +59,6 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
         return (Factory<E>) FACTORY;
     }
 
-    public static <E> @NotNull Collector<E, ?, ImmutableVector<E>> collector() {
-        return factory();
-    }
-
     @SuppressWarnings("unchecked")
     public static <E> @NotNull ImmutableVector<E> empty() {
         return (ImmutableVector<E>) ImmutableVectors.Vector0.INSTANCE;

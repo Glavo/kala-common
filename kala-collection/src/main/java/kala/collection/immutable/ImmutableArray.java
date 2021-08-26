@@ -67,10 +67,6 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
         return (ImmutableArray.Factory<E>) FACTORY;
     }
 
-    public static <E> @NotNull Collector<E, ?, ImmutableArray<E>> collector() {
-        return factory();
-    }
-
     public static <E> @NotNull ImmutableArray<E> empty() {
         return (ImmutableArray<E>) EMPTY;
     }

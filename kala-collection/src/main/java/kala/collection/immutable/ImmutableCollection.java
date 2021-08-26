@@ -41,10 +41,6 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E>, FullCo
         return CollectionFactory.narrow(ImmutableSeq.factory());
     }
 
-    static <E> @NotNull Collector<E, ?, ImmutableCollection<E>> collector() {
-        return factory();
-    }
-
     static <E> @NotNull ImmutableCollection<E> of() {
         return ImmutableSeq.of();
     }

@@ -30,10 +30,6 @@ public interface Buffer<E> extends MutableSeq<E>, Growable<E> {
         return CollectionFactory.narrow(ArrayBuffer.factory());
     }
 
-    static <E> @NotNull Collector<E, ?, Buffer<E>> collector() {
-        return factory();
-    }
-
     @Contract("-> new")
     static <E> @NotNull Buffer<E> create() {
         return new ArrayBuffer<>();
