@@ -650,7 +650,10 @@ public final class Iterators {
     }
 
     public static <E> @NotNull Iterator<E> take(@NotNull Iterator<? extends E> it, int n) {
-        if (!it.hasNext() || n <= 0) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0 || !it.hasNext()) { // implicit null check of it
             return empty();
         }
 

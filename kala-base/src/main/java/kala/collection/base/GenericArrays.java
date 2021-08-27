@@ -445,7 +445,10 @@ public final class GenericArrays {
     }
 
     public static <E> E @NotNull [] take(E @NotNull [] array, int n) {
-        if (n <= 0) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
             return newArrayByOldType(array, 0);
         }
         final int length = array.length;
@@ -1049,28 +1052,28 @@ public final class GenericArrays {
 
 
         @Override
-        public final E[] empty() {
+        public E[] empty() {
             return empty;
         }
 
         @Override
-        public final ArrayList<E> newBuilder() {
+        public ArrayList<E> newBuilder() {
             return new ArrayList<>();
         }
 
         @Override
-        public final void addToBuilder(@NotNull ArrayList<E> buffer, E value) {
+        public void addToBuilder(@NotNull ArrayList<E> buffer, E value) {
             buffer.add(value);
         }
 
         @Override
-        public final ArrayList<E> mergeBuilder(@NotNull ArrayList<E> builder1, @NotNull ArrayList<E> builder2) {
+        public ArrayList<E> mergeBuilder(@NotNull ArrayList<E> builder1, @NotNull ArrayList<E> builder2) {
             builder1.addAll(builder2);
             return builder1;
         }
 
         @Override
-        public final E[] build(@NotNull ArrayList<E> buffer) {
+        public E[] build(@NotNull ArrayList<E> buffer) {
             final int size = buffer.size();
 
             if (size == 0) {
@@ -1094,12 +1097,12 @@ public final class GenericArrays {
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return index < endIndex;
         }
 
         @Override
-        public final E next() {
+        public E next() {
             if (index >= endIndex) {
                 throw new NoSuchElementException(this + ".next()");
             }
@@ -1122,12 +1125,12 @@ public final class GenericArrays {
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return index >= 0;
         }
 
         @Override
-        public final E next() {
+        public E next() {
             try {
                 return array[index--];
             } catch (ArrayIndexOutOfBoundsException ignored) {
