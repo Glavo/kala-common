@@ -103,7 +103,10 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqLike<
     }
 
     default @NotNull SeqView<E> dropLast(int n) {
-        if (n <= 0) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
             return this;
         }
         final int ks = this.knownSize();
@@ -139,7 +142,10 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqLike<
     }
 
     default @NotNull SeqView<E> takeLast(int n) {
-        if (n <= 0) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
             return SeqView.empty();
         }
         final int ks = this.knownSize();

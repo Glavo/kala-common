@@ -684,8 +684,10 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
 
     @Override
     public @NotNull ImmutableLinkedSeq<E> dropLast(int n) {
-        final int size = this.size;
-        if (n <= 0) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
             return this;
         }
         if (n >= size) {
@@ -732,7 +734,10 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
 
     @Override
     public @NotNull ImmutableLinkedSeq<E> takeLast(int n) {
-        if (n <= 0) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
             return ImmutableLinkedSeq.empty();
         }
         final int size = this.size;
@@ -1991,7 +1996,10 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
 
         @Override
         public @NotNull Node<E> takeLast(int n) {
-            if (n <= 0) {
+            if (n < 0) {
+                throw new IllegalArgumentException();
+            }
+            if (n == 0) {
                 return nilNode();
             }
 

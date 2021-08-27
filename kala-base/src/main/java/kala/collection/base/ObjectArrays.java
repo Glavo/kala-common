@@ -522,7 +522,10 @@ public final class ObjectArrays {
     }
 
     public static Object @NotNull [] dropLast(Object @NotNull [] array, int n) {
-        if (n <= 0) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
             return array.clone();
         }
         return take(array, array.length - n);
@@ -556,7 +559,10 @@ public final class ObjectArrays {
     }
 
     public static Object @NotNull [] takeLast(Object @NotNull [] array, int n) {
-        if (n <= 0) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
             return EMPTY;
         }
         return drop(array, array.length - n);

@@ -101,7 +101,10 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
             int n,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
-        if (n <= 0) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
             return (T) seq;
         }
 
@@ -177,7 +180,10 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
             int n,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
-        if (n <= 0) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
             return factory.empty();
         }
         final int ss = seq.size();

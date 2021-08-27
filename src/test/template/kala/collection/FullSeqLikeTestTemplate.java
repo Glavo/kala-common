@@ -183,17 +183,18 @@ public interface FullSeqLikeTestTemplate extends FullCollectionLikeTestTemplate,
     @Test
     default void dropLastTest() {
         var empty = of();
+        assertThrows(IllegalArgumentException.class, () -> empty.dropLast(-1));
+        assertThrows(IllegalArgumentException.class, () -> empty.dropLast(Integer.MIN_VALUE));
         assertIterableEquals(List.of(), empty.dropLast(0));
         assertIterableEquals(List.of(), empty.dropLast(1));
         assertIterableEquals(List.of(), empty.dropLast(Integer.MAX_VALUE));
-        assertIterableEquals(List.of(), empty.dropLast(-1));
-        assertIterableEquals(List.of(), empty.dropLast(Integer.MIN_VALUE));
 
         List<String> list = List.of("str1", "str2", "str3", "str4", "str5");
         var seq = from(list);
+
+        assertThrows(IllegalArgumentException.class, () -> seq.dropLast(-1));
+        assertThrows(IllegalArgumentException.class, () -> seq.dropLast(Integer.MIN_VALUE));
         assertIterableEquals(list, seq.dropLast(0));
-        assertIterableEquals(list, seq.dropLast(-1));
-        assertIterableEquals(list, seq.dropLast(Integer.MIN_VALUE));
         assertIterableEquals(list.subList(0, list.size() - 1), seq.dropLast(1));
         assertIterableEquals(list.subList(0, list.size() - 2), seq.dropLast(2));
         assertIterableEquals(list.subList(0, list.size() - 3), seq.dropLast(3));
@@ -243,17 +244,17 @@ public interface FullSeqLikeTestTemplate extends FullCollectionLikeTestTemplate,
     @Test
     default void takeLastTest() {
         var empty = of();
+        assertThrows(IllegalArgumentException.class, () ->  empty.takeLast(-1));
+        assertThrows(IllegalArgumentException.class, () -> empty.takeLast(Integer.MIN_VALUE));
         assertIterableEquals(List.of(), empty.takeLast(0));
         assertIterableEquals(List.of(), empty.takeLast(1));
         assertIterableEquals(List.of(), empty.takeLast(Integer.MAX_VALUE));
-        assertIterableEquals(List.of(), empty.takeLast(-1));
-        assertIterableEquals(List.of(), empty.takeLast(Integer.MIN_VALUE));
 
         List<String> list = List.of("str1", "str2", "str3", "str4", "str5");
         var seq = from(list);
+        assertThrows(IllegalArgumentException.class, () ->  seq.takeLast(-1));
+        assertThrows(IllegalArgumentException.class, () ->  seq.takeLast(Integer.MIN_VALUE));
         assertIterableEquals(List.of(), seq.takeLast(0));
-        assertIterableEquals(List.of(), seq.takeLast(-1));
-        assertIterableEquals(List.of(), seq.takeLast(Integer.MIN_VALUE));
         assertIterableEquals(list, seq.takeLast(Integer.MAX_VALUE));
         assertIterableEquals(list, seq.takeLast(5));
         assertIterableEquals(list.subList(1, list.size()), seq.takeLast(4));

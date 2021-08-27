@@ -465,7 +465,10 @@ public final class GenericArrays {
     }
 
     public static <E> E @NotNull [] takeLast(E @NotNull [] array, int n) {
-        if (n <= 0) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
             return newArrayByOldType(array, 0);
         }
         return drop(array, array.length - n);

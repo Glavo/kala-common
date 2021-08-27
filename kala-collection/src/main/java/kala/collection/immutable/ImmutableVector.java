@@ -385,7 +385,10 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
 
     @Override
     public final @NotNull ImmutableVector<E> dropLast(int n) {
-        if (n <= 0) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
             return this;
         }
         final int size = this.size();
@@ -418,7 +421,10 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
 
     @Override
     public final @NotNull ImmutableVector<E> takeLast(int n) {
-        if (n <= 0) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
             return ImmutableVector.empty();
         }
         final int size = this.size();

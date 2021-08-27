@@ -493,7 +493,10 @@ public final class IndexedSeqViews {
 
         @Override
         public @NotNull IndexedSeqView<E> dropLast(int n) {
-            if (n <= 0) {
+            if (n < 0) {
+                throw new IllegalArgumentException();
+            }
+            if (n == 0) {
                 return this;
             }
 
@@ -525,7 +528,10 @@ public final class IndexedSeqViews {
 
         @Override
         public @NotNull IndexedSeqView<E> takeLast(int n) {
-            if (n <= 0) {
+            if (n < 0) {
+                throw new IllegalArgumentException();
+            }
+            if (n == 0) {
                 return IndexedSeqView.empty();
             }
             final int size = this.size();
