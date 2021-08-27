@@ -48,7 +48,6 @@ public class BooleanIteratorTest {
     }
 
     @Test
-    @SuppressWarnings({"BooleanConstructorCall", "deprecation"})
     public void containsTest() {
         assertAll(
                 () -> assertFalse(BooleanIterator.empty().contains(true)),
@@ -59,18 +58,14 @@ public class BooleanIteratorTest {
                 () -> assertFalse(BooleanIterator.empty().contains("foo")),
                 () -> assertTrue(BooleanIterator.of(true).contains(true)),
                 () -> assertTrue(BooleanIterator.of(true).contains(Boolean.TRUE)),
-                () -> assertTrue(BooleanIterator.of(true).contains(new Boolean(true))),
                 () -> assertFalse(BooleanIterator.of(true).contains(false)),
                 () -> assertFalse(BooleanIterator.of(true).contains(Boolean.FALSE)),
-                () -> assertFalse(BooleanIterator.of(true).contains(new Boolean(false))),
                 () -> assertFalse(BooleanIterator.of(true).contains("foo")),
                 () -> assertFalse(BooleanIterator.of(true).contains(null)),
                 () -> assertTrue(BooleanIterator.of(true, false).contains(true)),
                 () -> assertTrue(BooleanIterator.of(true, false).contains(false)),
                 () -> assertTrue(BooleanIterator.of(true, false).contains(Boolean.TRUE)),
-                () -> assertTrue(BooleanIterator.of(true, false).contains(new Boolean(true))),
                 () -> assertTrue(BooleanIterator.of(true, false).contains(Boolean.FALSE)),
-                () -> assertTrue(BooleanIterator.of(true, false).contains(new Boolean(false))),
                 () -> assertFalse(BooleanIterator.of(true, false).contains(null))
         );
     }
@@ -126,28 +121,29 @@ public class BooleanIteratorTest {
 
     @Test
     public void takeTest() {
-        assertAll(
-                () -> assertIteratorElements(BooleanIterator.empty().take(0)),
-                () -> assertIteratorElements(BooleanIterator.empty().take(-1)),
-                () -> assertIteratorElements(BooleanIterator.empty().take(Integer.MIN_VALUE)),
-                () -> assertIteratorElements(BooleanIterator.empty().take(1)),
-                () -> assertIteratorElements(BooleanIterator.empty().take(Integer.MAX_VALUE)),
-                () -> assertIteratorElements(BooleanIterator.of(true).take(0)),
-                () -> assertIteratorElements(BooleanIterator.of(true).take(-1)),
-                () -> assertIteratorElements(BooleanIterator.of(true).take(Integer.MIN_VALUE)),
-                () -> assertIteratorElements(BooleanIterator.of(true).take(1), true),
-                () -> assertIteratorElements(BooleanIterator.of(true).take(2), true),
-                () -> assertIteratorElements(BooleanIterator.of(true).take(Integer.MAX_VALUE), true),
-                () -> assertIteratorElements(BooleanIterator.of(true, false, true).take(0)),
-                () -> assertIteratorElements(BooleanIterator.of(true, false, true).take(-1)),
-                () -> assertIteratorElements(BooleanIterator.of(true, false, true).take(Integer.MIN_VALUE)),
-                () -> assertIteratorElements(BooleanIterator.of(true, false, true).take(1), true),
-                () -> assertIteratorElements(BooleanIterator.of(true, false, true).take(2), true, false),
-                () -> assertIteratorElements(BooleanIterator.of(true, false, true).take(3), true, false, true),
-                () -> assertIteratorElements(BooleanIterator.of(true, false, true).take(4), true, false, true),
-                () -> assertIteratorElements(BooleanIterator.of(true, false, true).take(Integer.MAX_VALUE), true, false, true)
+        assertThrows(IllegalArgumentException.class, () -> BooleanIterator.empty().take(-1));
+        assertThrows(IllegalArgumentException.class, () -> BooleanIterator.empty().take(Integer.MIN_VALUE));
 
-        );
+        assertIteratorElements(BooleanIterator.empty().take(0));
+        assertIteratorElements(BooleanIterator.empty().take(1));
+        assertIteratorElements(BooleanIterator.empty().take(Integer.MAX_VALUE));
+
+        assertIteratorElements(BooleanIterator.of(true).take(0));
+        assertThrows(IllegalArgumentException.class, () -> BooleanIterator.of(true).take(-1));
+        assertThrows(IllegalArgumentException.class, () -> BooleanIterator.of(true).take(Integer.MIN_VALUE));
+        assertIteratorElements(BooleanIterator.of(true).take(1), true);
+        assertIteratorElements(BooleanIterator.of(true).take(2), true);
+        assertIteratorElements(BooleanIterator.of(true).take(Integer.MAX_VALUE), true);
+
+        assertIteratorElements(BooleanIterator.of(true, false, true).take(0));
+        assertThrows(IllegalArgumentException.class, () -> BooleanIterator.of(true, false, true).take(-1));
+        assertThrows(IllegalArgumentException.class, () -> BooleanIterator.of(true, false, true).take(Integer.MIN_VALUE));
+        assertIteratorElements(BooleanIterator.of(true, false, true).take(1), true);
+        assertIteratorElements(BooleanIterator.of(true, false, true).take(2), true, false);
+        assertIteratorElements(BooleanIterator.of(true, false, true).take(3), true, false, true);
+        assertIteratorElements(BooleanIterator.of(true, false, true).take(4), true, false, true);
+        assertIteratorElements(BooleanIterator.of(true, false, true).take(Integer.MAX_VALUE), true, false, true);
+
     }
 
     @Test

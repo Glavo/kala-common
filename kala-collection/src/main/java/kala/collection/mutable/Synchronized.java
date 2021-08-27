@@ -1380,16 +1380,9 @@ final class Synchronized {
         }
 
         @Contract(mutates = "this")
-        public void retainFirst(int n) {
+        public void takeInPlace(int n) {
             synchronized (mutex) {
-                source.retainFirst(n);
-            }
-        }
-
-        @Contract(mutates = "this")
-        public void retainFirst(@NotNull Predicate<? super E> predicate) {
-            synchronized (mutex) {
-                source.retainFirst(predicate);
+                source.takeInPlace(n);
             }
         }
 
@@ -1540,16 +1533,9 @@ final class Synchronized {
         }
 
         @Contract(mutates = "this")
-        public void retainFirst(int n) {
+        public void takeInPlace(int n) {
             synchronized (mutex) {
-                source.retainFirst(n);
-            }
-        }
-
-        @Contract(mutates = "this")
-        public void retainFirst(@NotNull Predicate<? super E> predicate) {
-            synchronized (mutex) {
-                source.retainFirst(predicate);
+                source.takeInPlace(n);
             }
         }
 

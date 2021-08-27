@@ -2438,9 +2438,12 @@ final class ImmutableVectors {
         }
 
         private void take(int n) {
+            if (n < 0) {
+                throw new IllegalArgumentException();
+            }
             final int knownSize = knownSize();
             if (n < knownSize) {
-                int trunc = knownSize - Math.max(0, n);
+                int trunc = knownSize - n;
                 totalLength -= trunc;
                 len1 -= trunc;
                 if (len1 < a1len) {

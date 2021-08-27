@@ -119,7 +119,10 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqLike<
     }
 
     default @NotNull SeqView<E> take(int n) {
-        if (n <= 0) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
             return SeqView.empty();
         }
         final int ks = this.knownSize();

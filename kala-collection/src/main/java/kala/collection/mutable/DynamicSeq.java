@@ -1,5 +1,6 @@
 package kala.collection.mutable;
 
+import kala.Conditions;
 import kala.annotations.ReplaceWith;
 import kala.collection.ArraySeq;
 import kala.collection.IndexedSeq;
@@ -14,10 +15,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.RandomAccess;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -270,9 +268,58 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
 
     @Contract(mutates = "this")
     default void removeAt(int index, int count) {
+        if (count < 0) {
+            throw new IllegalArgumentException("count(" + count + ") < 0");
+        }
+        final int size = this.size();
+        Conditions.checkElementIndex(index, size);
+        if ((size - index) < count) {
+            throw new NoSuchElementException();
+        }
+
         for (int i = 0; i < count; i++) {
             removeAt(index);
         }
+    }
+
+    @Contract(mutates = "this")
+    default E removeFirst() {
+        if (isEmpty()) {
+            throw new NoSuchElementException("Seq is empty");
+        }
+        return removeAt(0);
+    }
+
+    @Contract(mutates = "this")
+    default void removeFirst(int n) {
+        if (n < 0) {
+            throw new IllegalArgumentException("n(" + n + ") < 0");
+        }
+        if (n == 0) {
+            return;
+        }
+        final int size = this.size();
+        if (n > size) {
+            throw new NoSuchElementException("n(" + n + ") > size(" + size + ")");
+        }
+        removeAt(0, n);
+    }
+
+    @Contract(mutates = "this")
+    default void removeFirst(@NotNull Predicate<? super E> predicate) {
+        Objects.requireNonNull(predicate);
+
+        int idx = indexWhere(predicate.negate());
+        if (idx < 0) {
+            clear();
+        } else {
+            removeFirst(idx);
+        }
+    }
+
+    @Contract(mutates = "this")
+    default void removeAll(@NotNull Predicate<? super E> predicate) {
+        retainAll(predicate.negate());
     }
 
     @Contract(mutates = "this")
@@ -292,40 +339,17 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
         }
 
         if (i != j) {
-            retainFirst(j);
+            takeInPlace(j);
         }
-    }
-
-    @Contract(mutates = "this")
-    default void removeAll(@NotNull Predicate<? super E> predicate) {
-        retainAll(predicate.negate());
     }
 
     @Contract(mutates = "this")
     void clear();
 
-    @Contract(mutates = "this")
-    default void removeFirst(int n) {
-        if (n <= 0) {
-            return;
-        }
-        removeAt(0, Integer.min(n, size()));
-    }
+    // ---
 
     @Contract(mutates = "this")
-    default void removeFirst(@NotNull Predicate<? super E> predicate) {
-        Objects.requireNonNull(predicate);
-
-        int idx = indexWhere(predicate.negate());
-        if (idx < 0) {
-            clear();
-        } else {
-            removeFirst(idx);
-        }
-    }
-
-    @Contract(mutates = "this")
-    default void retainFirst(int n) {
+    default void takeInPlace(int n) {
         if (n <= 0) {
             clear();
             return;
@@ -336,16 +360,6 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
             return;
         }
         removeAt(n, size - n);
-    }
-
-    @Contract(mutates = "this")
-    default void retainFirst(@NotNull Predicate<? super E> predicate) {
-        Objects.requireNonNull(predicate);
-
-        int idx = indexWhere(predicate.negate());
-        if (idx >= 0) {
-            retainFirst(idx);
-        }
     }
 
 }

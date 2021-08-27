@@ -716,10 +716,12 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
 
     @Override
     public @NotNull ImmutableLinkedSeq<E> take(int n) {
-        if (n <= 0) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
             return ImmutableLinkedSeq.empty();
         }
-        final int size = this.size;
         if (n >= size) {
             return this;
         }
@@ -1376,8 +1378,9 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
             if (count < 0) {
                 throw new IllegalArgumentException("count: " + count);
             }
-            if (index < 0 || index + count > len) {
-                throw new IndexOutOfBoundsException(String.format("%d to %d is out of bounds", index, index + count));
+            Conditions.checkElementIndex(index, len);
+            if ((len - index) < count) {
+                throw new NoSuchElementException();
             }
 
             if (count == 0) {
@@ -1419,7 +1422,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
 
         public final E removeFirst() {
             if (isEmpty()) {
-                throw new NoSuchElementException();
+                throw new NoSuchElementException("Seq is empty");
             }
 
             E v = first.head;
@@ -1972,7 +1975,10 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
 
         @Override
         public @NotNull Node<E> take(int n) {
-            if (n <= 0 || this == NIL_NODE) {
+            if (n < 0) {
+                throw new IllegalArgumentException();
+            }
+            if (n == 0 || this == NIL_NODE) {
                 return nilNode();
             }
             return takeImpl(n);

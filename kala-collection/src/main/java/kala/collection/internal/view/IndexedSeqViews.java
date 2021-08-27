@@ -59,6 +59,9 @@ public final class IndexedSeqViews {
 
         @Override
         public @NotNull IndexedSeqView<E> take(int n) {
+            if (n < 0) {
+                throw new IllegalArgumentException();
+            }
             return this;
         }
 
@@ -337,7 +340,10 @@ public final class IndexedSeqViews {
 
         @Override
         public @NotNull IndexedSeqView<E> take(int n) {
-            if (n <= 0) {
+            if (n < 0) {
+                throw new IllegalArgumentException();
+            }
+            if (n == 0) {
                 return IndexedSeqView.empty();
             }
             if (n >= this.n) {
@@ -492,7 +498,10 @@ public final class IndexedSeqViews {
 
         @Override
         public @NotNull IndexedSeqView<E> take(int n) {
-            if (n <= 0) {
+            if (n < 0) {
+                throw new IllegalArgumentException();
+            }
+            if (n == 0) {
                 return IndexedSeqView.empty();
             }
             final int size = this.size();

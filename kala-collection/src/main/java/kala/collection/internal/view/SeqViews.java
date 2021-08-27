@@ -566,7 +566,10 @@ public final class SeqViews {
 
         @Override
         public @NotNull SeqView<E> take(int n) {
-            if (n <= 0) {
+            if (n < 0) {
+                throw new IllegalArgumentException();
+            }
+            if (n == 0) {
                 return SeqView.empty();
             }
             if (this.n <= n) {

@@ -223,14 +223,15 @@ public interface FullSeqLikeTestTemplate extends FullCollectionLikeTestTemplate,
         assertIterableEquals(List.of(), empty.take(0));
         assertIterableEquals(List.of(), empty.take(1));
         assertIterableEquals(List.of(), empty.take(Integer.MAX_VALUE));
-        assertIterableEquals(List.of(), empty.take(-1));
-        assertIterableEquals(List.of(), empty.take(Integer.MIN_VALUE));
+
+        assertThrows(IllegalArgumentException.class, () -> empty.take(-1));
+        assertThrows(IllegalArgumentException.class, () -> empty.take(Integer.MIN_VALUE));
 
         List<String> list = List.of("str1", "str2", "str3", "str4", "str5");
         var seq = from(list);
+        assertThrows(IllegalArgumentException.class, () -> seq.take(-1));
+        assertThrows(IllegalArgumentException.class, () -> seq.take(Integer.MIN_VALUE));
         assertIterableEquals(List.of(), seq.take(0));
-        assertIterableEquals(List.of(), seq.take(-1));
-        assertIterableEquals(List.of(), seq.take(Integer.MIN_VALUE));
         assertIterableEquals(list, seq.take(Integer.MAX_VALUE));
         assertIterableEquals(list, seq.take(5));
         assertIterableEquals(list.subList(0, 4), seq.take(4));

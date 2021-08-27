@@ -456,7 +456,10 @@ public interface BooleanIterator
     }
 
     default @NotNull BooleanIterator take(int n) {
-        if (!hasNext() || n <= 0) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (!hasNext() || n == 0) {
             return empty();
         }
 

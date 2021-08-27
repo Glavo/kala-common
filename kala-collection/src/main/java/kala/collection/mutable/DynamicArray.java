@@ -524,7 +524,7 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
     }
 
     @Override
-    public void retainFirst(int n) {
+    public void takeInPlace(int n) {
         if (n <= 0) {
             clear();
         } else if (n < size) {

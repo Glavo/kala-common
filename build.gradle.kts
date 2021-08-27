@@ -49,11 +49,9 @@ allprojects {
         }
     }
 
-    if (this != rootProject) {
-        java {
-            withSourcesJar()
-            // withJavadocJar()
-        }
+    java {
+        withSourcesJar()
+        // withJavadocJar()
     }
 
     tasks.withType<Javadoc>().configureEach {
@@ -81,7 +79,7 @@ allprojects {
                     licenses {
                         license {
                             name.set("Apache-2.0")
-                            url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                            url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
                         }
                     }
 
@@ -121,7 +119,7 @@ tasks.test {
 }
 
 fun kalaVersion(base: String) =
-        if (System.getProperty("kala.release") == "true" || System.getenv("JITPACK") == "true")
-            base
-        else
-            "$base-SNAPSHOT"
+    if (System.getProperty("kala.release") == "true" || System.getenv("JITPACK") == "true")
+        base
+    else
+        "$base-SNAPSHOT"

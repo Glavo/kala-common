@@ -79,6 +79,10 @@ final class ImmutableSeqs {
 
         @Override
         public @NotNull ImmutableSeq<E> take(int n) {
+            if (n < 0) {
+                throw new IllegalArgumentException();
+            }
+
             return this;
         }
 
@@ -186,7 +190,10 @@ final class ImmutableSeqs {
 
         @Override
         public @NotNull ImmutableSeq<E> take(int n) {
-            if (n <= 0) {
+            if (n < 0) {
+                throw new IllegalArgumentException();
+            }
+            if (n == 0) {
                 return ImmutableSeq.empty();
             }
             return this;
@@ -319,7 +326,10 @@ final class ImmutableSeqs {
 
         @Override
         public @NotNull ImmutableSeq<E> take(int n) {
-            if (n <= 0) {
+            if (n < 0) {
+                throw new IllegalArgumentException();
+            }
+            if (n == 0) {
                 return ImmutableSeq.empty();
             }
             if (n == 1) {
@@ -470,7 +480,10 @@ final class ImmutableSeqs {
 
         @Override
         public @NotNull ImmutableSeq<E> take(int n) {
-            if (n <= 0) {
+            if (n < 0) {
+                throw new IllegalArgumentException();
+            }
+            if (n == 0) {
                 return ImmutableSeq.empty();
             }
             switch (n) {
@@ -647,7 +660,10 @@ final class ImmutableSeqs {
 
         @Override
         public @NotNull ImmutableSeq<E> take(int n) {
-            if (n <= 0) {
+            if (n < 0) {
+                throw new IllegalArgumentException();
+            }
+            if (n == 0) {
                 return ImmutableSeq.empty();
             }
             switch (n) {
@@ -846,7 +862,10 @@ final class ImmutableSeqs {
 
         @Override
         public @NotNull ImmutableSeq<E> take(int n) {
-            if (n <= 0) {
+            if (n < 0) {
+                throw new IllegalArgumentException();
+            }
+            if (n == 0) {
                 return ImmutableSeq.empty();
             }
             switch (n) {
@@ -1386,7 +1405,10 @@ final class ImmutableSeqs {
 
         @Override
         public @NotNull IndexedSeqView<E> take(int n) {
-            if (n <= 0) {
+            if (n < 0) {
+                throw new IllegalArgumentException();
+            }
+            if (n == 0) {
                 return IndexedSeqView.empty();
             }
             if (n >= size) {
@@ -1530,7 +1552,10 @@ final class ImmutableSeqs {
 
         @Override
         public @NotNull ImmutableSeq<E> take(int n) {
-            if (n <= 0) {
+            if (n < 0) {
+                throw new IllegalArgumentException();
+            }
+            if (n == 0) {
                 return ImmutableSeq.empty();
             }
             if (n >= size) {

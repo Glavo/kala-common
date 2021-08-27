@@ -212,24 +212,24 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
 
     //endregion
 
-    final Object @NotNull [] getArray() {
+    Object @NotNull [] getArray() {
         return elements;
     }
 
     //region Collection Operations
 
     @Override
-    public final @NotNull String className() {
+    public @NotNull String className() {
         return "ImmutableArray";
     }
 
     @Override
-    public final <U> @NotNull CollectionFactory<U, ?, ImmutableArray<U>> iterableFactory() {
+    public <U> @NotNull CollectionFactory<U, ?, ImmutableArray<U>> iterableFactory() {
         return factory();
     }
 
     @Override
-    public final @NotNull Spliterator<E> spliterator() {
+    public @NotNull Spliterator<E> spliterator() {
         return Spliterators.spliterator(elements, Spliterator.IMMUTABLE);
     }
 
@@ -238,7 +238,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     //region Addition Operations
 
     @Override
-    public final @NotNull ImmutableArray<E> prepended(E value) {
+    public @NotNull ImmutableArray<E> prepended(E value) {
         Object[] newValues = new Object[elements.length + 1];
         newValues[0] = value;
         System.arraycopy(elements, 0, newValues, 1, elements.length);
@@ -247,7 +247,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableArray<E> prependedAll(E @NotNull [] values) {
+    public @NotNull ImmutableArray<E> prependedAll(E @NotNull [] values) {
         if (values.length == 0) { // implicit null check of prefix
             return this;
         }
@@ -259,7 +259,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableArray<E> prependedAll(@NotNull Iterable<? extends E> values) {
+    public @NotNull ImmutableArray<E> prependedAll(@NotNull Iterable<? extends E> values) {
         Objects.requireNonNull(values);
 
         Object[] data = values instanceof ImmutableArray<?> ?
@@ -273,7 +273,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableArray<E> appended(E value) {
+    public @NotNull ImmutableArray<E> appended(E value) {
         final Object[] elements = this.elements;
         final int size = elements.length;
 
@@ -284,7 +284,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableArray<E> appendedAll(E @NotNull [] values) {
+    public @NotNull ImmutableArray<E> appendedAll(E @NotNull [] values) {
         if (values.length == 0) { // implicit null check of values
             return this;
         }
@@ -299,7 +299,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableArray<E> appendedAll(@NotNull Iterable<? extends E> values) {
+    public @NotNull ImmutableArray<E> appendedAll(@NotNull Iterable<? extends E> values) {
         Objects.requireNonNull(values);
 
         Object[] data = values instanceof ImmutableArray<?>
@@ -314,7 +314,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     //endregion
 
     @Override
-    public final @NotNull ImmutableArray<E> slice(int beginIndex, int endIndex) {
+    public @NotNull ImmutableArray<E> slice(int beginIndex, int endIndex) {
         final Object[] elements = this.elements;
         final int size = elements.length;
         checkPositionIndices(beginIndex, endIndex, size);
@@ -331,7 +331,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableArray<E> drop(int n) {
+    public @NotNull ImmutableArray<E> drop(int n) {
         if (n <= 0) {
             return this;
         }
@@ -347,15 +347,15 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableArray<E> dropLast(int n) {
+    public @NotNull ImmutableArray<E> dropLast(int n) {
         if (n <= 0) {
             return this;
         }
-        return take(size() - n);
+        return take(Integer.max(0, size() - n)); // TODO
     }
 
     @Override
-    public final @NotNull ImmutableArray<E> dropWhile(@NotNull Predicate<? super E> predicate) {
+    public @NotNull ImmutableArray<E> dropWhile(@NotNull Predicate<? super E> predicate) {
         final Object[] elements = this.elements;
         final int size = elements.length;
 
@@ -371,14 +371,15 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableArray<E> take(int n) {
-        final Object[] elements = this.elements;
-        final int size = elements.length;
-
-        if (n <= 0) {
-            return empty();
+    public @NotNull ImmutableArray<E> take(int n) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
         }
 
+        final int size = elements.length;
+        if (n == 0) {
+            return empty();
+        }
         if (n >= size) {
             return this;
         }
@@ -387,7 +388,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableArray<E> takeLast(int n) {
+    public @NotNull ImmutableArray<E> takeLast(int n) {
         if (n <= 0) {
             return empty();
         }
@@ -395,7 +396,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableArray<E> takeWhile(@NotNull Predicate<? super E> predicate) {
+    public @NotNull ImmutableArray<E> takeWhile(@NotNull Predicate<? super E> predicate) {
         final Object[] elements = this.elements;
         final int size = elements.length;
 
@@ -419,7 +420,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableArray<E> updated(int index, E newValue) {
+    public @NotNull ImmutableArray<E> updated(int index, E newValue) {
         final Object[] elements = this.elements;
         final int size = elements.length;
 
@@ -431,18 +432,18 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableArray<E> concat(@NotNull SeqLike<? extends E> other) {
+    public @NotNull ImmutableArray<E> concat(@NotNull SeqLike<? extends E> other) {
         return appendedAll(other);
     }
 
     @Override
-    public final @NotNull ImmutableArray<E> concat(@NotNull List<? extends E> other) {
+    public @NotNull ImmutableArray<E> concat(@NotNull List<? extends E> other) {
         return appendedAll(other);
     }
 
 
     @Override
-    public final @NotNull ImmutableArray<E> filter(@NotNull Predicate<? super E> predicate) {
+    public @NotNull ImmutableArray<E> filter(@NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
 
         final Object[] elements = this.elements;
@@ -473,18 +474,18 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final @NotNull <Ex extends Throwable> ImmutableArray<E> filterChecked(
+    public @NotNull <Ex extends Throwable> ImmutableArray<E> filterChecked(
             @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) {
         return filter(predicate);
     }
 
     @Override
-    public final @NotNull ImmutableArray<E> filterUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
+    public @NotNull ImmutableArray<E> filterUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
         return filter(predicate);
     }
 
     @Override
-    public final @NotNull ImmutableArray<E> filterNot(@NotNull Predicate<? super E> predicate) {
+    public @NotNull ImmutableArray<E> filterNot(@NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
 
         final Object[] elements = this.elements;
@@ -515,18 +516,18 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final @NotNull <Ex extends Throwable> ImmutableArray<E> filterNotChecked(
+    public @NotNull <Ex extends Throwable> ImmutableArray<E> filterNotChecked(
             @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) {
         return filterNot(predicate);
     }
 
     @Override
-    public final @NotNull ImmutableArray<E> filterNotUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
+    public @NotNull ImmutableArray<E> filterNotUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
         return filterNot(predicate);
     }
 
     @Override
-    public final @NotNull ImmutableArray<@NotNull E> filterNotNull() {
+    public @NotNull ImmutableArray<@NotNull E> filterNotNull() {
         final Object[] elements = this.elements;
         final int size = elements.length;
 
@@ -582,7 +583,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final <U> @NotNull ImmutableArray<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+    public <U> @NotNull ImmutableArray<U> map(@NotNull Function<? super E, ? extends U> mapper) {
         final Object[] elements = this.elements;
         final int size = elements.length;
 
@@ -600,18 +601,18 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final @NotNull <U, Ex extends Throwable> ImmutableArray<U> mapChecked(
+    public @NotNull <U, Ex extends Throwable> ImmutableArray<U> mapChecked(
             @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
         return map(mapper);
     }
 
     @Override
-    public final @NotNull <U> ImmutableArray<U> mapUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
+    public @NotNull <U> ImmutableArray<U> mapUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
         return map(mapper);
     }
 
     @Override
-    public final <U> @NotNull ImmutableArray<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+    public <U> @NotNull ImmutableArray<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
         final Object[] elements = this.elements;
         final int size = elements.length;
 
@@ -627,18 +628,18 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final @NotNull <U, Ex extends Throwable> ImmutableArray<U> mapIndexedChecked(
+    public @NotNull <U, Ex extends Throwable> ImmutableArray<U> mapIndexedChecked(
             @NotNull CheckedIndexedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
         return mapIndexed(mapper);
     }
 
     @Override
-    public final @NotNull <U> ImmutableArray<U> mapIndexedUnchecked(@NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
+    public @NotNull <U> ImmutableArray<U> mapIndexedUnchecked(@NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
         return mapIndexed(mapper);
     }
 
     @Override
-    public final <U> @NotNull ImmutableArray<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
+    public <U> @NotNull ImmutableArray<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
         final Object[] elements = this.elements;
         final int size = elements.length;
 
@@ -667,18 +668,18 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final @NotNull <U, Ex extends Throwable> ImmutableArray<U> mapNotNullChecked(
+    public @NotNull <U, Ex extends Throwable> ImmutableArray<U> mapNotNullChecked(
             @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
         return mapNotNull(mapper);
     }
 
     @Override
-    public final @NotNull <U> ImmutableArray<U> mapNotNullUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
+    public @NotNull <U> ImmutableArray<U> mapNotNullUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
         return mapNotNull(mapper);
     }
 
     @Override
-    public final @NotNull <U> ImmutableArray<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
+    public @NotNull <U> ImmutableArray<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
         final Object[] elements = this.elements;
         final int size = elements.length;
 
@@ -707,19 +708,19 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final @NotNull <U, Ex extends Throwable> ImmutableArray<@NotNull U> mapIndexedNotNullChecked(
+    public @NotNull <U, Ex extends Throwable> ImmutableArray<@NotNull U> mapIndexedNotNullChecked(
             @NotNull CheckedIndexedFunction<? super E, @Nullable ? extends U, ? extends Ex> mapper) {
         return mapIndexedNotNull(mapper);
     }
 
     @Override
-    public final <U> @NotNull ImmutableArray<@NotNull U> mapIndexedNotNullUnchecked(
+    public <U> @NotNull ImmutableArray<@NotNull U> mapIndexedNotNullUnchecked(
             @NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
         return mapIndexedNotNull(mapper);
     }
 
     @Override
-    public final <U> @NotNull ImmutableArray<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
+    public <U> @NotNull ImmutableArray<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
         final Object[] elements = this.elements;
         final int size = elements.length;
         if (size == 0) {
@@ -734,19 +735,19 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final @NotNull <U, Ex extends Throwable> ImmutableArray<U> flatMapChecked(
+    public @NotNull <U, Ex extends Throwable> ImmutableArray<U> flatMapChecked(
             @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ? extends Ex> mapper) throws Ex {
         return flatMap(mapper);
     }
 
     @Override
-    public final <U> @NotNull ImmutableArray<U> flatMapUnchecked(
+    public <U> @NotNull ImmutableArray<U> flatMapUnchecked(
             @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ?> mapper) {
         return flatMap(mapper);
     }
 
     @Override
-    public final @NotNull ImmutableArray<E> sorted() {
+    public @NotNull ImmutableArray<E> sorted() {
         final Object[] elements = this.elements;
         if (elements.length == 0 || elements.length == 1) {
             return this;
@@ -758,7 +759,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableArray<E> sorted(Comparator<? super E> comparator) {
+    public @NotNull ImmutableArray<E> sorted(Comparator<? super E> comparator) {
         final Object[] elements = this.elements;
         if (elements.length == 0 || elements.length == 1) {
             return this;
@@ -770,7 +771,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableArray<E> reversed() {
+    public @NotNull ImmutableArray<E> reversed() {
         final Object[] elements = this.elements;
         final int size = elements.length;
         if (size == 0) {
@@ -784,7 +785,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final @NotNull <U> ImmutableArray<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
+    public @NotNull <U> ImmutableArray<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
         Iterator<? extends U> it = other.iterator(); // implicit null check of other
         if (!it.hasNext()) {
             return empty();
@@ -807,7 +808,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     //@Override
-    public final @NotNull Tuple2<@NotNull ImmutableArray<E>, @NotNull ImmutableArray<E>> span(@NotNull Predicate<? super E> predicate) {
+    public @NotNull Tuple2<@NotNull ImmutableArray<E>, @NotNull ImmutableArray<E>> span(@NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
 
         final Object[] elements = this.elements;
@@ -839,7 +840,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public final @NotNull ImmutableArray<E> toImmutableArray() {
+    public @NotNull ImmutableArray<E> toImmutableArray() {
         return this;
     }
 
@@ -848,63 +849,63 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
         }
 
         @Override
-        public final ImmutableArray<E> empty() {
+        public ImmutableArray<E> empty() {
             return ImmutableArray.empty();
         }
 
         @Override
-        public final ImmutableArray<E> from(E @NotNull [] values) {
+        public ImmutableArray<E> from(E @NotNull [] values) {
             return ImmutableArray.from(values);
         }
 
         @Override
-        public final ImmutableArray<E> from(@NotNull Iterable<? extends E> values) {
+        public ImmutableArray<E> from(@NotNull Iterable<? extends E> values) {
             return ImmutableArray.from(values);
         }
 
         @Override
-        public final ImmutableArray<E> from(@NotNull Iterator<? extends E> it) {
+        public ImmutableArray<E> from(@NotNull Iterator<? extends E> it) {
             return ImmutableArray.from(it);
         }
 
         @Override
-        public final ImmutableArray<E> fill(int n, E value) {
+        public ImmutableArray<E> fill(int n, E value) {
             return ImmutableArray.fill(n, value);
         }
 
         @Override
-        public final ImmutableArray<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+        public ImmutableArray<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
             return ImmutableArray.fill(n, supplier);
         }
 
         @Override
-        public final ImmutableArray<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+        public ImmutableArray<E> fill(int n, @NotNull IntFunction<? extends E> init) {
             return ImmutableArray.fill(n, init);
         }
 
         @Override
-        public final DynamicArray<E> newBuilder() {
+        public DynamicArray<E> newBuilder() {
             return new DynamicArray<>();
         }
 
         @Override
-        public final void addToBuilder(@NotNull DynamicArray<E> buffer, E value) {
+        public void addToBuilder(@NotNull DynamicArray<E> buffer, E value) {
             buffer.append(value);
         }
 
         @Override
-        public final void sizeHint(@NotNull DynamicArray<E> buffer, int size) {
+        public void sizeHint(@NotNull DynamicArray<E> buffer, int size) {
             buffer.sizeHint(size);
         }
 
         @Override
-        public final DynamicArray<E> mergeBuilder(@NotNull DynamicArray<E> buffer1, @NotNull DynamicArray<E> buffer2) {
+        public DynamicArray<E> mergeBuilder(@NotNull DynamicArray<E> buffer1, @NotNull DynamicArray<E> buffer2) {
             buffer1.appendAll(buffer2);
             return buffer1;
         }
 
         @Override
-        public final ImmutableArray<E> build(@NotNull DynamicArray<E> buffer) {
+        public ImmutableArray<E> build(@NotNull DynamicArray<E> buffer) {
             return buffer.toImmutableArray();
         }
 
