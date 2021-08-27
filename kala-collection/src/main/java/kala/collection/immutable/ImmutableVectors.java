@@ -2412,27 +2412,31 @@ final class ImmutableVectors {
         }
 
         private void drop(int n) {
-            if (n > 0) {
-                int oldpos = i1 - len1 + totalLength;
-                int newpos = Math.min(oldpos + n, totalLength);
-                if (newpos == totalLength) {
-                    i1 = 0;
-                    len1 = 0;
-                    a1len = 0;
-                } else {
-                    while (newpos >= sliceEnd) advanceSlice();
-                    int io = newpos - sliceStart;
-                    if (sliceDim > 1) {
-                        int xor = oldPos ^ io;
-                        setA(io, xor);
-                        oldPos = io;
-                    }
-                    a1len = a1.length;
-                    i1 = io & MASK;
-                    len1 = i1 + (totalLength - newpos);
-                    if (a1len > len1) {
-                        a1len = len1;
-                    }
+            if (n < 0) {
+                throw new IllegalArgumentException();
+            }
+            if (n == 0) {
+                return;
+            }
+            int oldpos = i1 - len1 + totalLength;
+            int newpos = Math.min(oldpos + n, totalLength);
+            if (newpos == totalLength) {
+                i1 = 0;
+                len1 = 0;
+                a1len = 0;
+            } else {
+                while (newpos >= sliceEnd) advanceSlice();
+                int io = newpos - sliceStart;
+                if (sliceDim > 1) {
+                    int xor = oldPos ^ io;
+                    setA(io, xor);
+                    oldPos = io;
+                }
+                a1len = a1.length;
+                i1 = io & MASK;
+                len1 = i1 + (totalLength - newpos);
+                if (a1len > len1) {
+                    a1len = len1;
                 }
             }
         }

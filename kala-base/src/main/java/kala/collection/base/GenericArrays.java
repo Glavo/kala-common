@@ -414,7 +414,10 @@ public final class GenericArrays {
     }
 
     public static <E> E @NotNull [] drop(E @NotNull [] array, int n) {
-        if (n <= 0) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
             return array.clone();
         }
         final int length = array.length;
@@ -425,7 +428,10 @@ public final class GenericArrays {
     }
 
     public static <E> E @NotNull [] dropLast(E @NotNull [] array, int n) {
-        if (n <= 0) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
             return array.clone();
         }
         return take(array, array.length - n);

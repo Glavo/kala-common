@@ -78,10 +78,14 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
             int n,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+
         Builder builder = factory.newBuilder();
 
         int s = seq.knownSize();
-        if (s != -1) {
+        if (s >= 0) {
             factory.sizeHint(builder, Integer.max(s - n, 0));
         }
 

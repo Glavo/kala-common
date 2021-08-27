@@ -619,7 +619,10 @@ public final class Iterators {
 
     @Contract(mutates = "param1")
     public static <E> @NotNull Iterator<E> drop(@NotNull Iterator<? extends E> it, int n) {
-        while (n > 0 && it.hasNext()) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        while (n > 0 && it.hasNext()) { // implicit null check of it
             it.next();
             --n;
         }

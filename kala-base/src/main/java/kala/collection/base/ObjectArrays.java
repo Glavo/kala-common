@@ -508,7 +508,10 @@ public final class ObjectArrays {
     }
 
     public static Object @NotNull [] drop(Object @NotNull [] array, int n) {
-        if (n <= 0) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
             return EMPTY;
         }
         final int length = array.length;

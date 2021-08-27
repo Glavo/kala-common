@@ -98,6 +98,9 @@ final class ImmutableSeqs {
 
         @Override
         public @NotNull ImmutableSeq<E> drop(int n) {
+            if (n < 0) {
+                throw new IllegalArgumentException();
+            }
             return this;
         }
 
@@ -217,7 +220,10 @@ final class ImmutableSeqs {
 
         @Override
         public @NotNull ImmutableSeq<E> drop(int n) {
-            if (n <= 0) {
+            if (n < 0) {
+                throw new IllegalArgumentException();
+            }
+            if (n == 0) {
                 return this;
             }
             return ImmutableSeq.empty();
@@ -362,11 +368,14 @@ final class ImmutableSeqs {
 
         @Override
         public @NotNull ImmutableSeq<E> drop(int n) {
-            if (n <= 0) {
-                return this;
+            if (n < 0) {
+                throw new IllegalArgumentException();
             }
-            if (n == 1) {
-                return ImmutableSeq.of(value2);
+            switch (n) {
+                case 0:
+                    return this;
+                case 1:
+                    return ImmutableSeq.of(value2);
             }
             return ImmutableSeq.empty();
         }
@@ -525,10 +534,12 @@ final class ImmutableSeqs {
 
         @Override
         public @NotNull ImmutableSeq<E> drop(int n) {
-            if (n <= 0) {
-                return this;
+            if (n < 0) {
+                throw new IllegalArgumentException();
             }
             switch (n) {
+                case 0:
+                    return this;
                 case 1:
                     return ImmutableSeq.of(value2, value3);
                 case 2:
@@ -712,10 +723,12 @@ final class ImmutableSeqs {
 
         @Override
         public @NotNull ImmutableSeq<E> drop(int n) {
-            if (n <= 0) {
-                return this;
+            if (n < 0) {
+                throw new IllegalArgumentException();
             }
             switch (n) {
+                case 0:
+                    return this;
                 case 1:
                     return ImmutableSeq.of(value2, value3, value4);
                 case 2:
@@ -921,10 +934,12 @@ final class ImmutableSeqs {
 
         @Override
         public @NotNull ImmutableSeq<E> drop(int n) {
-            if (n <= 0) {
-                return this;
+            if (n < 0) {
+                throw new IllegalArgumentException();
             }
             switch (n) {
+                case 0:
+                    return this;
                 case 1:
                     return ImmutableSeq.of(value2, value3, value4, value5);
                 case 2:
@@ -1385,7 +1400,10 @@ final class ImmutableSeqs {
 
         @Override
         public @NotNull IndexedSeqView<E> drop(int n) {
-            if (n <= 0) {
+            if (n < 0) {
+                throw new IllegalArgumentException();
+            }
+            if (n == 0) {
                 return this;
             }
             if (n >= size) {
@@ -1524,7 +1542,10 @@ final class ImmutableSeqs {
 
         @Override
         public @NotNull ImmutableSeq<E> drop(int n) {
-            if (n <= 0) {
+            if (n < 0) {
+                throw new IllegalArgumentException();
+            }
+            if (n == 0) {
                 return this;
             }
             if (n >= size) {

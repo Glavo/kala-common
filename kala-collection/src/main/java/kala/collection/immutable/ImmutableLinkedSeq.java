@@ -664,8 +664,10 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
 
     @Override
     public @NotNull ImmutableLinkedSeq<E> drop(int n) {
-        final int size = this.size;
-        if (n <= 0) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
             return this;
         }
         if (n >= size) {
@@ -1949,7 +1951,10 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
 
         @Override
         public @NotNull Node<E> drop(int n) {
-            if (n <= 0 || this == NIL_NODE) {
+            if (n < 0) {
+                throw new IllegalArgumentException();
+            }
+            if (n == 0 || this == NIL_NODE) {
                 return this;
             }
             Node<E> list = this;

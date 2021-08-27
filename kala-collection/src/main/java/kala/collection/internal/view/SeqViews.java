@@ -426,7 +426,10 @@ public final class SeqViews {
 
         @Override
         public @NotNull SeqView<E> drop(int n) {
-            if (n <= 0) {
+            if (n < 0) {
+                throw new IllegalArgumentException();
+            }
+            if (n == 0) {
                 return this;
             }
             return source.drop(n + this.n);

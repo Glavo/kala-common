@@ -425,6 +425,9 @@ public interface BooleanIterator
 
     @Contract(mutates = "this")
     default @NotNull BooleanIterator drop(int n) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
         while (n > 0 && hasNext()) {
             nextBoolean();
             --n;

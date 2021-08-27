@@ -369,7 +369,10 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
 
     @Override
     public final @NotNull ImmutableVector<E> drop(int n) {
-        if (n <= 0) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
             return this;
         }
         final int size = this.size();

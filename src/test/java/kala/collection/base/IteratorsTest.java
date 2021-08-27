@@ -207,18 +207,21 @@ public class IteratorsTest {
 
     @Test
     public void dropTest() {
+        assertThrows(IllegalArgumentException.class, () -> Iterators.drop(Iterators.empty(), -1));
+        assertThrows(IllegalArgumentException.class, () -> Iterators.drop(Iterators.empty(), Integer.MIN_VALUE));
         assertIteratorElements(Iterators.drop(Iterators.empty(), 0));
         assertIteratorElements(Iterators.drop(Iterators.empty(), 1));
         assertIteratorElements(Iterators.drop(Iterators.empty(), Integer.MAX_VALUE));
-        assertIteratorElements(Iterators.drop(Iterators.empty(), -1));
-        assertIteratorElements(Iterators.drop(Iterators.empty(), Integer.MIN_VALUE));
+
+        assertThrows(IllegalArgumentException.class, () -> Iterators.drop(Iterators.of("foo"), -1));
+        assertThrows(IllegalArgumentException.class, () -> Iterators.drop(Iterators.of("foo"), Integer.MIN_VALUE));
         assertIteratorElements(Iterators.drop(Iterators.of("foo"), 0), "foo");
-        assertIteratorElements(Iterators.drop(Iterators.of("foo"), -1), "foo");
         assertIteratorElements(Iterators.drop(Iterators.of("foo"), 1));
         assertIteratorElements(Iterators.drop(Iterators.of("foo"), Integer.MAX_VALUE));
+
+        assertThrows(IllegalArgumentException.class, () -> Iterators.drop(Iterators.of("A", "B", "C"), -1));
+        assertThrows(IllegalArgumentException.class, () -> Iterators.drop(Iterators.of("A", "B", "C"), Integer.MIN_VALUE));
         assertIteratorElements(Iterators.drop(Iterators.of("A", "B", "C"), 0), "A", "B", "C");
-        assertIteratorElements(Iterators.drop(Iterators.of("A", "B", "C"), -1), "A", "B", "C");
-        assertIteratorElements(Iterators.drop(Iterators.of("A", "B", "C"), Integer.MIN_VALUE), "A", "B", "C");
         assertIteratorElements(Iterators.drop(Iterators.of("A", "B", "C"), 1), "B", "C");
         assertIteratorElements(Iterators.drop(Iterators.of("A", "B", "C"), 2), "C");
         assertIteratorElements(Iterators.drop(Iterators.of("A", "B", "C"), 3));
@@ -237,14 +240,15 @@ public class IteratorsTest {
 
     @Test
     public void takeTest() {
+        assertThrows(IllegalArgumentException.class, () -> Iterators.take(Iterators.empty(), -1));
+        assertThrows(IllegalArgumentException.class, () -> Iterators.take(Iterators.empty(), Integer.MIN_VALUE));
         assertIteratorElements(Iterators.take(Iterators.empty(), 0));
-        assertIteratorElements(Iterators.take(Iterators.empty(), -1));
-        assertIteratorElements(Iterators.take(Iterators.empty(), Integer.MIN_VALUE));
         assertIteratorElements(Iterators.take(Iterators.empty(), 1));
         assertIteratorElements(Iterators.take(Iterators.empty(), Integer.MAX_VALUE));
+
+        assertThrows(IllegalArgumentException.class, () -> Iterators.take(Iterators.of("A", "B", "C"), -1));
+        assertThrows(IllegalArgumentException.class, () -> Iterators.take(Iterators.of("A", "B", "C"), Integer.MIN_VALUE));
         assertIteratorElements(Iterators.take(Iterators.of("A", "B", "C"), 0));
-        assertIteratorElements(Iterators.take(Iterators.of("A", "B", "C"), -1));
-        assertIteratorElements(Iterators.take(Iterators.of("A", "B", "C"), Integer.MIN_VALUE));
         assertIteratorElements(Iterators.take(Iterators.of("A", "B", "C"), 1), "A");
         assertIteratorElements(Iterators.take(Iterators.of("A", "B", "C"), 2), "A", "B");
         assertIteratorElements(Iterators.take(Iterators.of("A", "B", "C"), 3), "A", "B", "C");

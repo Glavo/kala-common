@@ -93,7 +93,10 @@ public interface IndexedSeqView<@Covariant E> extends SeqView<E>, IndexedSeqLike
 
     @Override
     default @NotNull IndexedSeqView<E> drop(int n) {
-        if (n <= 0) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
             return this;
         }
         final int size = this.size();

@@ -332,7 +332,10 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
 
     @Override
     public @NotNull ImmutableArray<E> drop(int n) {
-        if (n <= 0) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
             return this;
         }
 
@@ -392,7 +395,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
         if (n <= 0) {
             return empty();
         }
-        return drop(size() - n);
+        return drop(Integer.max(0, size() - n));
     }
 
     @Override

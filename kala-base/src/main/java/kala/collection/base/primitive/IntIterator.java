@@ -207,6 +207,9 @@ public interface IntIterator
 
     @Contract(mutates = "this")
     default @NotNull IntIterator drop(int n) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
         while (n > 0 && hasNext()) {
             nextInt();
             --n;
