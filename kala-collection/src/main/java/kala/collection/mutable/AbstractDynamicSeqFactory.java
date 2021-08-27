@@ -5,8 +5,8 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractDynamicSeqFactory<E, B extends DynamicSeq<E>> implements CollectionFactory<E, B, B> {
     @Override
-    public void addToBuilder(@NotNull B buffer, E value) {
-        buffer.append(value);
+    public void addToBuilder(@NotNull B builder, E value) {
+        builder.append(value);
     }
 
     @Override
@@ -16,7 +16,7 @@ public abstract class AbstractDynamicSeqFactory<E, B extends DynamicSeq<E>> impl
     }
 
     @Override
-    public B build(@NotNull B buffer) {
-        return buffer;
+    public B build(@NotNull B builder) {
+        return builder;
     }
 }

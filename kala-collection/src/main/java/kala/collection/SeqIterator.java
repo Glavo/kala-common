@@ -38,19 +38,25 @@ public interface SeqIterator<E> extends java.util.ListIterator<E> {
      * @see kala.collection.mutable.MutableSeqIterator#set(Object)
      */
     @Deprecated
-    void set(E e) throws UnsupportedOperationException;
+    default void set(E e) throws UnsupportedOperationException {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * @see kala.collection.mutable.DynamicSeqIterator#add(Object)
      */
     @Deprecated
-    void add(E e) throws UnsupportedOperationException;
+    default void add(E e) throws UnsupportedOperationException {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * @see kala.collection.mutable.DynamicSeqIterator#remove()
      */
     @Deprecated
-    void remove() throws UnsupportedOperationException;
+    default void remove() throws UnsupportedOperationException {
+        throw new UnsupportedOperationException();
+    }
 
     //endregion
 

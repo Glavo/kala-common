@@ -194,36 +194,36 @@ public interface DynamicSeqTestTemplate extends MutableSeqTestTemplate {
     }
 
     @Test
-    default void filterInPlaceTest() {
+    default void retainAllTest() {
         final DynamicSeq<?> empty = factory().empty();
-        empty.filterInPlace(e -> true);
+        empty.retainAll(e -> true);
         assertIterableEquals(List.of(), empty);
-        empty.filterInPlace(e -> false);
+        empty.retainAll(e -> false);
         assertIterableEquals(List.of(), empty);
 
         final DynamicSeq<Integer> b1 = of(0, 1, 2, 3, 4, 5);
-        b1.filterInPlace(it -> it > 2);
+        b1.retainAll(it -> it > 2);
         assertIterableEquals(List.of(3, 4, 5), b1);
 
         final DynamicSeq<Integer> b2 = of(0, 1, 2, 3, 4, 5);
-        b2.filterInPlace(it -> it % 2 == 0);
+        b2.retainAll(it -> it % 2 == 0);
         assertIterableEquals(List.of(0, 2, 4), b2);
     }
 
     @Test
-    default void filterNotInPlaceTest() {
+    default void removeAllTest() {
         final DynamicSeq<?> empty = factory().empty();
-        empty.filterNotInPlace(e -> true);
+        empty.removeAll(e -> true);
         assertIterableEquals(List.of(), empty);
-        empty.filterNotInPlace(e -> false);
+        empty.removeAll(e -> false);
         assertIterableEquals(List.of(), empty);
 
         final DynamicSeq<Integer> b1 = of(0, 1, 2, 3, 4, 5);
-        b1.filterNotInPlace(it -> it > 2);
+        b1.removeAll(it -> it > 2);
         assertIterableEquals(List.of(0, 1, 2), b1);
 
         final DynamicSeq<Integer> b2 = of(0, 1, 2, 3, 4, 5);
-        b2.filterNotInPlace(it -> it % 2 == 0);
+        b2.removeAll(it -> it % 2 == 0);
         assertIterableEquals(List.of(1, 3, 5), b2);
     }
 }

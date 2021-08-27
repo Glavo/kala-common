@@ -23,7 +23,7 @@ public final class GenericArrays {
     private GenericArrays() {
     }
 
-    public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
+    public static final Object[] EMPTY_OBJECT_ARRAY = ObjectArrays.EMPTY;
 
     //region Static Factories
 

@@ -919,9 +919,9 @@ final class Synchronized {
         }
 
         @Contract(mutates = "this")
-        public boolean retainIf(@NotNull Predicate<? super E> predicate) {
+        public boolean removeAll(@NotNull Predicate<? super E> predicate) {
             synchronized (mutex) {
-                return source.retainIf(predicate);
+                return source.removeAll(predicate);
             }
         }
 
@@ -939,17 +939,17 @@ final class Synchronized {
             }
         }
 
+        @Contract(mutates = "this")
+        public boolean retainAll(@NotNull Predicate<? super E> predicate) {
+            synchronized (mutex) {
+                return source.retainAll(predicate);
+            }
+        }
+
         @Override
         public void clear() {
             synchronized (mutex) {
                 source.clear();
-            }
-        }
-
-        @Contract(mutates = "this")
-        public void filterInPlace(@NotNull Predicate<? super E> predicate) {
-            synchronized (mutex) {
-                source.filterInPlace(predicate);
             }
         }
 
@@ -1366,44 +1366,44 @@ final class Synchronized {
         }
 
         @Contract(mutates = "this")
-        public void dropInPlace(int n) {
+        public void removeFirst(int n) {
             synchronized (mutex) {
-                source.dropInPlace(n);
+                source.removeFirst(n);
             }
         }
 
         @Contract(mutates = "this")
-        public void dropWhileInPlace(@NotNull Predicate<? super E> predicate) {
+        public void removeFirst(@NotNull Predicate<? super E> predicate) {
             synchronized (mutex) {
-                source.dropWhileInPlace(predicate);
+                source.removeFirst(predicate);
             }
         }
 
         @Contract(mutates = "this")
-        public void takeInPlace(int n) {
+        public void retainFirst(int n) {
             synchronized (mutex) {
-                source.takeInPlace(n);
+                source.retainFirst(n);
             }
         }
 
         @Contract(mutates = "this")
-        public void takeWhileInPlace(@NotNull Predicate<? super E> predicate) {
+        public void retainFirst(@NotNull Predicate<? super E> predicate) {
             synchronized (mutex) {
-                source.takeWhileInPlace(predicate);
+                source.retainFirst(predicate);
             }
         }
 
         @Override
-        public void filterInPlace(@NotNull Predicate<? super E> predicate) {
+        public void retainAll(@NotNull Predicate<? super E> predicate) {
             synchronized (mutex) {
-                source.filterInPlace(predicate);
+                source.retainAll(predicate);
             }
         }
 
         @Override
-        public void filterNotInPlace(@NotNull Predicate<? super E> predicate) {
+        public void removeAll(@NotNull Predicate<? super E> predicate) {
             synchronized (mutex) {
-                source.filterNotInPlace(predicate);
+                source.removeAll(predicate);
             }
         }
     }
@@ -1526,44 +1526,44 @@ final class Synchronized {
         }
 
         @Contract(mutates = "this")
-        public void dropInPlace(int n) {
+        public void removeFirst(int n) {
             synchronized (mutex) {
-                source.dropInPlace(n);
+                source.removeFirst(n);
             }
         }
 
         @Contract(mutates = "this")
-        public void dropWhileInPlace(@NotNull Predicate<? super E> predicate) {
+        public void removeFirst(@NotNull Predicate<? super E> predicate) {
             synchronized (mutex) {
-                source.dropWhileInPlace(predicate);
+                source.removeFirst(predicate);
             }
         }
 
         @Contract(mutates = "this")
-        public void takeInPlace(int n) {
+        public void retainFirst(int n) {
             synchronized (mutex) {
-                source.takeInPlace(n);
+                source.retainFirst(n);
             }
         }
 
         @Contract(mutates = "this")
-        public void takeWhileInPlace(@NotNull Predicate<? super E> predicate) {
+        public void retainFirst(@NotNull Predicate<? super E> predicate) {
             synchronized (mutex) {
-                source.takeWhileInPlace(predicate);
+                source.retainFirst(predicate);
             }
         }
 
         @Override
-        public void filterInPlace(@NotNull Predicate<? super E> predicate) {
+        public void retainAll(@NotNull Predicate<? super E> predicate) {
             synchronized (mutex) {
-                source.filterInPlace(predicate);
+                source.retainAll(predicate);
             }
         }
 
         @Override
-        public void filterNotInPlace(@NotNull Predicate<? super E> predicate) {
+        public void removeAll(@NotNull Predicate<? super E> predicate) {
             synchronized (mutex) {
-                source.filterNotInPlace(predicate);
+                source.removeAll(predicate);
             }
         }
     }

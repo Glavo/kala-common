@@ -41,8 +41,20 @@ public class MutableSetEditor<E, C extends MutableSet<E>> extends MutableCollect
     }
 
     @Contract("_ -> this")
-    public @NotNull MutableSetEditor<E, C> retainIf(@NotNull Predicate<? super E> predicate) {
-        source.retainIf(predicate);
+    public @NotNull MutableSetEditor<E, C> removeAll(@NotNull Iterable<? super E> values) {
+        source.removeAll(values);
+        return this;
+    }
+
+    @Contract("_ -> this")
+    public @NotNull MutableSetEditor<E, C> removeAll(E @NotNull [] values) {
+        source.removeAll(values);
+        return this;
+    }
+
+    @Contract("_ -> this")
+    public @NotNull MutableSetEditor<E, C> removeAll(@NotNull Predicate<? super E> predicate) {
+        source.removeAll(predicate);
         return this;
     }
 
@@ -59,8 +71,8 @@ public class MutableSetEditor<E, C extends MutableSet<E>> extends MutableCollect
     }
 
     @Contract("_ -> this")
-    public @NotNull MutableSetEditor<E, C> filterInPlace(@NotNull Predicate<? super E> predicate) {
-        source.filterInPlace(predicate);
+    public @NotNull MutableSetEditor<E, C> retainAll(@NotNull Predicate<? super E> predicate) {
+        source.retainAll(predicate);
         return this;
     }
 }

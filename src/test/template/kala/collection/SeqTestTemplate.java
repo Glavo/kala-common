@@ -42,14 +42,12 @@ public interface SeqTestTemplate extends CollectionTestTemplate, SeqLikeTestTemp
 
     @Test
     default void ofTest() {
-        final String testClassName = this.getClass().getName();
-        assertTrue(testClassName.endsWith("Test"));
-
-        final String className = testClassName.substring(0, testClassName.length() - 4);
+        final Class<?> klass = collectionType();
+        if (klass == null) {
+            return;
+        }
 
         try {
-            final Class<?> klass = Class.forName(className);
-
             final MethodHandles.Lookup lookup = MethodHandles.publicLookup();
             final MethodHandle of0 = lookup.findStatic(klass, "of", MethodType.methodType(klass));
             final MethodHandle of1 = lookup.findStatic(klass, "of", MethodType.methodType(klass, Object.class));
@@ -96,16 +94,10 @@ public interface SeqTestTemplate extends CollectionTestTemplate, SeqLikeTestTemp
 
     @Test
     default void fromTest() {
-        final String testClassName = this.getClass().getName();
-        assertTrue(testClassName.endsWith("Test"));
-
-        final String className = testClassName.substring(0, testClassName.length() - 4);
+        final Class<?> klass = collectionType();
 
         try {
-            final Class<?> klass = Class.forName(className);
-
             final MethodHandles.Lookup lookup = MethodHandles.publicLookup();
-
 
             final MethodHandle fromArray = lookup.findStatic(klass, "from", MethodType.methodType(klass, Object[].class));
             final MethodHandle fromIterable = lookup.findStatic(klass, "from", MethodType.methodType(klass, Iterable.class));

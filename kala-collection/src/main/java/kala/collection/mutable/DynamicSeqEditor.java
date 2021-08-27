@@ -85,38 +85,38 @@ public class DynamicSeqEditor<E, C extends DynamicSeq<E>> extends MutableSeqEdit
     }
 
     @Contract("_ -> this")
-    public @NotNull DynamicSeqEditor<E, C> dropInPlace(int n) {
-        source.dropInPlace(n);
+    public @NotNull DynamicSeqEditor<E, C> removeFirst(int n) {
+        source.removeFirst(n);
         return this;
     }
 
     @Contract("_ -> this")
-    public @NotNull DynamicSeqEditor<E, C> dropWhileInPlace(@NotNull Predicate<? super E> predicate) {
-        source.dropWhileInPlace(predicate);
+    public @NotNull DynamicSeqEditor<E, C> removeFirst(@NotNull Predicate<? super E> predicate) {
+        source.removeFirst(predicate);
         return this;
     }
 
     @Contract("_ -> this")
-    public DynamicSeqEditor<E, C> takeInPlace(int n) {
-        source.takeInPlace(n);
+    public DynamicSeqEditor<E, C> retainFirst(int n) {
+        source.retainFirst(n);
         return this;
     }
 
     @Contract("_ -> this")
-    public DynamicSeqEditor<E, C> takeWhileInPlace(@NotNull Predicate<? super E> predicate) {
-        source.takeWhileInPlace(predicate);
+    public DynamicSeqEditor<E, C> retainFirst(@NotNull Predicate<? super E> predicate) {
+        source.retainFirst(predicate);
         return this;
     }
 
     @Contract("_ -> this")
-    public DynamicSeqEditor<E, C> filterInPlace(@NotNull Predicate<? super E> predicate) {
-        source.filterInPlace(predicate);
+    public DynamicSeqEditor<E, C> retainAll(@NotNull Predicate<? super E> predicate) {
+        source.retainAll(predicate);
         return this;
     }
 
     @Contract("_ -> this")
-    public DynamicSeqEditor<E, C> filterNotInPlace(@NotNull Predicate<? super E> predicate) {
-        source.filterNotInPlace(predicate);
+    public DynamicSeqEditor<E, C> removeAll(@NotNull Predicate<? super E> predicate) {
+        source.removeAll(predicate);
         return this;
     }
 

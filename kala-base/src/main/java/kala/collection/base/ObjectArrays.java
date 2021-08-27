@@ -31,7 +31,7 @@ public final class ObjectArrays {
     private ObjectArrays() {
     }
 
-    public static final Object[] EMPTY = GenericArrays.EMPTY_OBJECT_ARRAY;
+    public static final Object[] EMPTY = new Object[0];
 
     private static final IntFunction<Object[]> GENERATOR = (IntFunction<Object[]> & Serializable) Object[]::new;
     private static final CollectionFactory<Object, ?, Object[]> FACTORY = GenericArrays.factory(GENERATOR);
@@ -54,16 +54,7 @@ public final class ObjectArrays {
     }
 
     public static Object @NotNull [] from(Object @NotNull [] values) {
-        final int length = values.length;
-        if (length == 0) {
-            return EMPTY;
-        }
-        if (values.getClass() == Object[].class) {
-            return values.clone();
-        }
-        Object[] res = new Object[length];
-        System.arraycopy(values, 0, res, 0, length);
-        return res;
+        return values.length == 0 ? EMPTY : Arrays.copyOf(values, values.length, Object[].class);
     }
 
     public static Object @NotNull [] from(@NotNull Iterable<?> values) {

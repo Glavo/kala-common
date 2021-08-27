@@ -1,5 +1,6 @@
 package kala.collection.mutable;
 
+import kala.annotations.ReplaceWith;
 import kala.collection.ArraySeq;
 import kala.collection.IndexedSeq;
 import kala.collection.Seq;
@@ -172,16 +173,19 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
     }
 
     @Override
+    @ReplaceWith("append(E)")
     default void plusAssign(E value) {
         append(value);
     }
 
     @Override
+    @ReplaceWith("appendAll(E[])")
     default void plusAssign(E @NotNull [] values) {
         appendAll(values);
     }
 
     @Override
+    @ReplaceWith("appendAll(Iterable<E>)")
     default void plusAssign(@NotNull Iterable<? extends E> values) {
         appendAll(values);
     }
@@ -272,54 +276,7 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
     }
 
     @Contract(mutates = "this")
-    void clear();
-
-    @Contract(mutates = "this")
-    default void dropInPlace(int n) {
-        if (n <= 0) {
-            return;
-        }
-        removeAt(0, Integer.min(n, size()));
-    }
-
-    @Contract(mutates = "this")
-    default void dropWhileInPlace(@NotNull Predicate<? super E> predicate) {
-        Objects.requireNonNull(predicate);
-
-        int idx = indexWhere(predicate.negate());
-        if (idx < 0) {
-            clear();
-        } else {
-            dropInPlace(idx);
-        }
-    }
-
-    @Contract(mutates = "this")
-    default void takeInPlace(int n) {
-        if (n <= 0) {
-            clear();
-            return;
-        }
-
-        final int size = this.size();
-        if (n >= size) {
-            return;
-        }
-        removeAt(n, size - n);
-    }
-
-    @Contract(mutates = "this")
-    default void takeWhileInPlace(@NotNull Predicate<? super E> predicate) {
-        Objects.requireNonNull(predicate);
-
-        int idx = indexWhere(predicate.negate());
-        if (idx >= 0) {
-            takeInPlace(idx);
-        }
-    }
-
-    @Contract(mutates = "this")
-    default void filterInPlace(@NotNull Predicate<? super E> predicate) {
+    default void retainAll(@NotNull Predicate<? super E> predicate) {
         final int size = this.size();
         int i = 0;
         int j = 0;
@@ -335,13 +292,60 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
         }
 
         if (i != j) {
-            takeInPlace(j);
+            retainFirst(j);
         }
     }
 
     @Contract(mutates = "this")
-    default void filterNotInPlace(@NotNull Predicate<? super E> predicate) {
-        filterInPlace(predicate.negate());
+    default void removeAll(@NotNull Predicate<? super E> predicate) {
+        retainAll(predicate.negate());
+    }
+
+    @Contract(mutates = "this")
+    void clear();
+
+    @Contract(mutates = "this")
+    default void removeFirst(int n) {
+        if (n <= 0) {
+            return;
+        }
+        removeAt(0, Integer.min(n, size()));
+    }
+
+    @Contract(mutates = "this")
+    default void removeFirst(@NotNull Predicate<? super E> predicate) {
+        Objects.requireNonNull(predicate);
+
+        int idx = indexWhere(predicate.negate());
+        if (idx < 0) {
+            clear();
+        } else {
+            removeFirst(idx);
+        }
+    }
+
+    @Contract(mutates = "this")
+    default void retainFirst(int n) {
+        if (n <= 0) {
+            clear();
+            return;
+        }
+
+        final int size = this.size();
+        if (n >= size) {
+            return;
+        }
+        removeAt(n, size - n);
+    }
+
+    @Contract(mutates = "this")
+    default void retainFirst(@NotNull Predicate<? super E> predicate) {
+        Objects.requireNonNull(predicate);
+
+        int idx = indexWhere(predicate.negate());
+        if (idx >= 0) {
+            retainFirst(idx);
+        }
     }
 
 }

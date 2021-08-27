@@ -18,6 +18,20 @@ import static org.junit.jupiter.api.Assertions.*;
 public interface CollectionTestTemplate extends CollectionLikeTestTemplate {
     <E> CollectionFactory<E, ?, ? extends Collection<? extends E>> factory();
 
+    default Class<?> collectionType() {
+        final String testClassName = this.getClass().getName();
+        assertTrue(testClassName.endsWith("Test"));
+
+        final String className = testClassName.substring(0, testClassName.length() - 4);
+
+        try {
+            return Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            fail(e);
+            return null;
+        }
+    }
+
     default <E> Collection<E> of(E... elements) {
         return (Collection<E>) factory().from(elements);
     }

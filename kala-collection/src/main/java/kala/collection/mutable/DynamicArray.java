@@ -1,10 +1,12 @@
 package kala.collection.mutable;
 
 import kala.Conditions;
+import kala.collection.Collection;
 import kala.collection.IndexedSeq;
 import kala.collection.SeqLike;
 import kala.collection.base.AnyTraversable;
 import kala.collection.base.GenericArrays;
+import kala.collection.base.ObjectArrays;
 import kala.collection.immutable.ImmutableArray;
 import kala.collection.internal.CollectionHelper;
 import kala.collection.factory.CollectionFactory;
@@ -18,7 +20,6 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
-import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
@@ -45,7 +46,7 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
     }
 
     public DynamicArray() {
-        this(GenericArrays.EMPTY_OBJECT_ARRAY, 0);
+        this(ObjectArrays.EMPTY, 0);
     }
 
     public DynamicArray(int initialCapacity) {
@@ -385,8 +386,8 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
             return;
         }
 
-        if (size >= Integer.MAX_VALUE / 2) {
-            throw new AssertionError();
+        if (size > Integer.MAX_VALUE / 2) {
+            throw new OutOfMemoryError("Requested array size exceeds VM limit");
         }
 
         final int newSize = size * 2;
@@ -449,26 +450,26 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
     @Override
     public void insertAll(int index, @NotNull Iterable<? extends E> values) {
         Objects.requireNonNull(values);
-        if (index < 0 || index > size) {
-            throw new IndexOutOfBoundsException("Index out of range: " + index);
-        }
+        Conditions.checkPositionIndex(index, size);
 
-        IndexedSeq<Object> seq = CollectionHelper.asIndexedSeq(values);
-        int seqSize = seq.size();
+        final Collection<Object> other = CollectionHelper.asSizedCollection(values);
+        final int otherSize = other.size();
 
         Object[] elements = this.elements;
-        if (elements.length < size + seqSize) {
-            elements = growArray(size + seqSize);
+        if (elements.length < size + otherSize || values == this) {
+            elements = growArray(size + otherSize);
         }
         System.arraycopy(this.elements, 0, elements, 0, index);
-        System.arraycopy(this.elements, index, elements, index + seqSize, size - index);
+        System.arraycopy(this.elements, index, elements, index + otherSize, size - index);
 
-        for (int i = 0; i < seqSize; i++) {
-            elements[i + index] = seq.get(i);
+        final Iterator<Object> it = other.iterator();
+        for (int i = 0; i < otherSize; i++) {
+            elements[i + index] = it.next();
         }
+        assert !it.hasNext();
 
         this.elements = elements;
-        size += seqSize;
+        size += otherSize;
     }
 
     @Override
@@ -491,6 +492,12 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
 
         this.elements = elements;
         size += values.length;
+    }
+
+    @Override
+    public void clear() {
+        Arrays.fill(elements, null);
+        size = 0;
     }
 
     @Override
@@ -517,13 +524,7 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
     }
 
     @Override
-    public void clear() {
-        Arrays.fill(elements, null);
-        size = 0;
-    }
-
-    @Override
-    public void takeInPlace(int n) {
+    public void retainFirst(int n) {
         if (n <= 0) {
             clear();
         } else if (n < size) {
@@ -548,31 +549,28 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
 
     @Override
     public @NotNull ImmutableArray<E> toImmutableArray() {
-        final int size = this.size;
-        if (size == 0) {
-            return ImmutableArray.empty();
-        }
-        return (ImmutableArray<E>) ImmutableArray.Unsafe.wrap(Arrays.copyOf(elements, size));
+        return size == 0 ? ImmutableArray.empty() : (ImmutableArray<E>) ImmutableArray.Unsafe.wrap(Arrays.copyOf(elements, size));
     }
 
     //region Serialization
 
     private void writeObject(ObjectOutputStream out) throws IOException {
-        final int size = this.size;
         out.writeInt(size);
-        if (size != 0) {
-            Object[] values = elements.length == size ? elements : Arrays.copyOf(elements, size);
-            out.writeObject(values);
+        for (int i = 0; i < size; i++) {
+            out.writeObject(elements[i]);
         }
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        final int size = this.size = in.readInt();
-        if (size == 0) {
-            elements = GenericArrays.EMPTY_OBJECT_ARRAY;
-        } else {
-            elements = (Object[]) in.readObject();
+        final int size = in.readInt();
+        final Object[] elements = size == 0 ? ObjectArrays.EMPTY : new Object[Integer.max(DEFAULT_CAPACITY, size)];
+
+        for (int i = 0; i < size; i++) {
+            elements[i] = in.readObject();
         }
+
+        this.size = size;
+        this.elements = elements;
     }
 
     //endregion

@@ -14,7 +14,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.function.Predicate;
-import java.util.stream.Collector;
 
 public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E> {
 
@@ -70,8 +69,6 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
     static <E> @NotNull MutableSet<E> from(@NotNull Iterable<? extends E> values) {
         return MutableHashSet.from(values);
     }
-
-
 
     //endregion
 
@@ -155,6 +152,9 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
     }
 
     @Contract(mutates = "this")
+    void clear();
+
+    @Contract(mutates = "this")
     boolean remove(Object value);
 
     @Contract(mutates = "this")
@@ -176,13 +176,25 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
     }
 
     @Contract(mutates = "this")
-    void clear();
+    @SuppressWarnings("unchecked")
+    default boolean removeAll(@NotNull Predicate<? super E> predicate) {
+        Objects.requireNonNull(predicate);
+
+        final Object[] arr = toArray();
+        final int oldSize = arr.length;
+
+        for (Object e : arr) {
+            if (predicate.test((E) e)) {
+                this.remove(e);
+            }
+        }
+
+        return size() != oldSize;
+    }
 
     @Contract(mutates = "this")
-    default boolean retainIf(@NotNull Predicate<? super E> predicate) {
-        int oldSize = size();
-        filterInPlace(predicate);
-        return size() != oldSize;
+    default boolean retainAll(E @NotNull [] values) {
+        return retainAll(ArraySeq.wrap(values));
     }
 
     @Contract(mutates = "this")
@@ -198,37 +210,31 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
             return false;
         }
 
-        Object[] arr = toArray();
-        boolean m = false;
+        final Object[] arr = toArray();
+        final int oldSize = arr.length;
 
         for (Object value : arr) {
             if (!t.contains(value)) {
                 this.remove(value);
-                m = true;
             }
         }
-        return m;
-    }
-
-    @Contract(mutates = "this")
-    default boolean retainAll(E @NotNull [] values) {
-        return retainAll(ArraySeq.wrap(values));
+        return size() != oldSize;
     }
 
     @Contract(mutates = "this")
     @SuppressWarnings("unchecked")
-    default void filterInPlace(@NotNull Predicate<? super E> predicate) {
+    default boolean retainAll(@NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
 
-        if (isEmpty()) {
-            return;
-        }
+        final Object[] arr = toArray();
+        final int oldSize = arr.length;
 
-        Object[] arr = toArray();
         for (Object e : arr) {
             if (!predicate.test((E) e)) {
                 this.remove(e);
             }
         }
+
+        return size() != oldSize;
     }
 }

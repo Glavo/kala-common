@@ -63,6 +63,32 @@ public final class CollectionHelper {
         throw new IllegalArgumentException();
     }
 
+    public static <E> kala.collection.Collection<E> asSizedCollection(Object obj) {
+        if (obj instanceof IndexedSeq<?>) {
+            return (IndexedSeq<E>) obj;
+        }
+        if (obj instanceof java.util.List<?>) {
+            return Seq.wrapJava((java.util.List<E>) obj);
+        }
+        if (obj instanceof Traversable<?>) {
+            return (ArraySeq<E>) ArraySeq.wrap(((Traversable<?>) obj).toArray(Object[]::new));
+        }
+        if (obj instanceof Object[]) {
+            return ArraySeq.wrap(((E[]) obj));
+        }
+        if (obj instanceof java.util.Collection) {
+            return ArraySeq.wrap((E[]) ((Collection<?>) obj).toArray());
+        }
+        if (obj instanceof Iterable<?>) {
+            return DynamicArray.from(((Iterable<E>) obj));
+        }
+        if (obj instanceof Iterator<?>) {
+            return DynamicArray.from((Iterator<E>) obj);
+        }
+
+        throw new IllegalArgumentException();
+    }
+
     public static <E> kala.collection.Collection<E> asCollection(Object collection) {
         if (collection instanceof kala.collection.Collection<?>) {
             return ((kala.collection.Collection<E>) collection);

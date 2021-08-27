@@ -1524,7 +1524,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
-        public final void filterInPlace(@NotNull Predicate<? super E> predicate) {
+        public final void retainAll(@NotNull Predicate<? super E> predicate) {
             ensureUnaliased();
             Node<E> prev = null;
             Node<E> cur = first;
