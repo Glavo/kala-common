@@ -36,7 +36,7 @@ allprojects {
         options.release.set(9)
         options.isWarnings = false
         doLast {
-            val tree = fileTree(destinationDir)
+            val tree = fileTree(destinationDirectory)
             tree.include("**/*.class")
             tree.exclude("module-info.class")
             tree.forEach {

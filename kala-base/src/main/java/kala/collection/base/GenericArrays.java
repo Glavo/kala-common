@@ -457,8 +457,7 @@ public final class GenericArrays {
         if (n == 0) {
             return newArrayByOldType(array, 0);
         }
-        final int length = array.length;
-        if (n >= length) {
+        if (n >= array.length) {
             return array.clone();
         }
         return Arrays.copyOfRange(array, 0, n);
@@ -494,9 +493,7 @@ public final class GenericArrays {
     }
 
     public static <E> E @NotNull [] updated(E @NotNull [] array, int index, E newValue) {
-        final int size = array.length;
-
-        Conditions.checkElementIndex(index, size);
+        Conditions.checkElementIndex(index, array.length);
 
         E[] newValues = array.clone();
         newValues[index] = newValue;
@@ -504,8 +501,7 @@ public final class GenericArrays {
     }
 
     public static <E> E @NotNull [] filter(E @NotNull [] array, @NotNull Predicate<? super E> predicate) {
-        final int length = array.length;
-        if (length == 0) {
+        if (array.length == 0) {
             return array.clone();
         }
 
@@ -520,15 +516,14 @@ public final class GenericArrays {
         if (count == 0) {
             return newArrayByOldType(array, 0);
         }
-        if (count == length) {
+        if (count == array.length) {
             return tmp;
         }
         return Arrays.copyOf(array, count);
     }
 
     public static <E> E @NotNull [] filterNot(E @NotNull [] array, @NotNull Predicate<? super E> predicate) {
-        final int length = array.length;
-        if (length == 0) {
+        if (array.length == 0) { // implicit null check of array
             return array.clone();
         }
 
@@ -543,15 +538,14 @@ public final class GenericArrays {
         if (count == 0) {
             return newArrayByOldType(array, 0);
         }
-        if (count == length) {
+        if (count == array.length) {
             return tmp;
         }
         return Arrays.copyOf(array, count);
     }
 
     public static <E> @NotNull E @NotNull [] filterNotNull(E @NotNull [] array) {
-        final int length = array.length;
-        if (length == 0) {
+        if (array.length == 0) { // implicit null check of array
             return array.clone();
         }
 
@@ -566,14 +560,14 @@ public final class GenericArrays {
         if (count == 0) {
             return newArrayByOldType(array, 0);
         }
-        if (count == length) {
+        if (count == array.length) {
             return tmp;
         }
         return Arrays.copyOf(array, count);
     }
 
     public static <E, U> U @NotNull [] map(E @NotNull [] array, @NotNull IntFunction<U[]> generator, @NotNull Function<? super E, ? extends U> mapper) {
-        final int length = array.length;
+        final int length = array.length; // implicit null check of array
         final U[] res = generator.apply(length);
         for (int i = 0; i < length; i++) {
             res[i] = mapper.apply(array[i]);
@@ -633,7 +627,7 @@ public final class GenericArrays {
             E @NotNull [] array,
             @NotNull IntFunction<U[]> generator,
             @NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
-        if (array.length == 0) {
+        if (array.length == 0) { // implicit null check of array
             return generator.apply(0);
         }
         ArrayList<U> tmp = new ArrayList<>();

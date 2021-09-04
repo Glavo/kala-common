@@ -718,7 +718,7 @@ public final class ObjectArrays {
 
         final Object[] tmp = new Object[length];
         int c = 0;
-        for (int i = 0; i < array.length; i++) {
+        for (int i = 0; i < length; i++) {
             Object u = ((IndexedFunction) mapper).apply(i, array[i]);
             if (u != null) {
                 tmp[c++] = u;
@@ -733,7 +733,7 @@ public final class ObjectArrays {
     public static Object @NotNull [] flatMap(
             Object @NotNull [] array,
             @NotNull Function<?, ? extends Iterable<?>> mapper) {
-        if (array.length == 0) {
+        if (array.length == 0) {  // implicit null check of array
             return EMPTY;
         }
         ArrayList<Object> tmp = new ArrayList<>();
@@ -756,7 +756,7 @@ public final class ObjectArrays {
     }
 
     public static Tuple2<Object, Object> @NotNull [] zip(Object @NotNull [] array, Iterable<?> other) {
-        final int length = array.length;
+        final int length = array.length;  // implicit null check of array
         Tuple2<Object, Object>[] tmp = (Tuple2<Object, Object>[]) new Tuple2<?, ?>[length];
         if (length == 0) {
             return tmp;
@@ -806,7 +806,7 @@ public final class ObjectArrays {
     }
 
     public static Object @NotNull [] @NotNull [] windowed(Object @NotNull [] array, int size, int step, boolean partialWindows) {
-        final int arrayLength = array.length;
+        final int arrayLength = array.length;  // implicit null check of array
         if (size <= 0 || step <= 0) {
             if (size == step) {
                 throw new IllegalArgumentException("size " + size + " must be greater than zero.");
@@ -835,7 +835,7 @@ public final class ObjectArrays {
     //region Aggregate Operations
 
     public static Object max(Object @NotNull [] array) {
-        final int length = array.length;
+        final int length = array.length; // implicit null check of array
         if (length == 0) {
             throw new NoSuchElementException();
         }
@@ -851,7 +851,7 @@ public final class ObjectArrays {
     }
 
     public static @Nullable Object maxOrNull(Object @NotNull [] array) {
-        final int length = array.length;
+        final int length = array.length; // implicit null check of array
         if (length == 0) {
             return null;
         }
@@ -867,7 +867,7 @@ public final class ObjectArrays {
     }
 
     public static Object min(Object @NotNull [] array) {
-        final int length = array.length;
+        final int length = array.length; // implicit null check of array
         if (length == 0) {
             throw new NoSuchElementException();
         }
@@ -883,7 +883,7 @@ public final class ObjectArrays {
     }
 
     public static @Nullable Object minOrNull(Object @NotNull [] array) {
-        final int length = array.length;
+        final int length = array.length; // implicit null check of array
         if (length == 0) {
             return null;
         }
