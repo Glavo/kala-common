@@ -4,6 +4,7 @@ import kala.tuple.Tuple2;
 import kala.tuple.primitive.IntObjTuple2;
 import org.junit.jupiter.api.*;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.IntFunction;
@@ -14,15 +15,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class IteratorsTest {
     static void assertIteratorElements(Iterator<?> it, Object... values) {
-        for (Object value : values) {
-            if (it.hasNext()) {
-                assertEquals(value, it.next());
-            } else {
-                fail("too few elements");
-            }
+        final ArrayList<Object> tmp = new ArrayList<>();
+        while (it.hasNext()) {
+            tmp.add(it.next());
         }
-        assertFalse(it.hasNext());
         assertThrows(NoSuchElementException.class, it::next);
+
+        Assertions.assertArrayEquals(values, tmp.toArray());
     }
 
     @Test
@@ -134,8 +133,8 @@ public class IteratorsTest {
         assertFalse(Iterators.sameElements(Iterators.of("A", "B"), Iterators.of("A", "B", "C"), true));
         assertFalse(Iterators.sameElements(Iterators.of("A", "B", "C"), Iterators.of("A", "B", "D"), true));
         assertFalse(Iterators.sameElements(Iterators.of("A", "B", "C"), Iterators.of("A", "D", "C"), true));
-        assertFalse(Iterators.sameElements(Iterators.of("A", "B", "C"), Iterators.of("A", "B", new String("D")), true));
-        assertFalse(Iterators.sameElements(Iterators.of("A", "B", "C"), Iterators.of("A", new String("D"), "C"), true));
+        assertFalse(Iterators.sameElements(Iterators.of("A", "B", "C"), Iterators.of("A", "B", "D"), true));
+        assertFalse(Iterators.sameElements(Iterators.of("A", "B", "C"), Iterators.of("A", "D", "C"), true));
     }
 
     @Test
@@ -372,6 +371,84 @@ public class IteratorsTest {
         assertIteratorElements(Iterators.map(Iterators.of("A"), String::length), 1);
         assertIteratorElements(Iterators.map(Iterators.of("A", "foo"), String::length), 1, 3);
         assertIteratorElements(Iterators.map(Iterators.of("A", "foo", "B"), String::length), 1, 3, 1);
+    }
+
+    @Test
+    public void mapIndexedTest() {
+        assertIteratorElements(Iterators.mapIndexed(Iterators.empty(), (idx, t) -> "A"));
+        assertIteratorElements(Iterators.mapIndexed(Iterators.of("A"), (idx, s) -> idx + s.length()), 1);
+        assertIteratorElements(Iterators.mapIndexed(Iterators.of("A", "foo"), (idx, s) -> idx + s.length()), 1, 4);
+        assertIteratorElements(Iterators.mapIndexed(Iterators.of("A", "foo", "B"), (idx, s) -> idx + s.length()), 1, 4, 3);
+    }
+
+    @Test
+    public void mapNotNullTest() {
+        assertIteratorElements(Iterators.mapNotNull(Iterators.empty(), t -> "A"));
+        assertIteratorElements(Iterators.mapNotNull(Iterators.of("A"), String::length), 1);
+        assertIteratorElements(Iterators.mapNotNull(Iterators.of("A"), s -> s.length() % 2 == 0 ? s.length() : null));
+        assertIteratorElements(Iterators.mapNotNull(Iterators.of("A", "BC", "DEF", "GHIJ"), s -> s.length() % 2 == 0 ? s.length() : null), 2, 4);
+    }
+
+    @Test
+    public void mapIndexedNotNullTest() {
+        assertIteratorElements(Iterators.mapIndexedNotNull(Iterators.empty(), (idx, t) -> "A"));
+        assertIteratorElements(Iterators.mapIndexedNotNull(Iterators.of("A"), (idx, s) -> s.length()), 1);
+        assertIteratorElements(Iterators.mapIndexedNotNull(Iterators.of("A"), (idx, s) -> idx % 2 == 0 ? s.length() : null), 1);
+        assertIteratorElements(Iterators.mapIndexedNotNull(Iterators.of("A", "BC", "DEF", "GHIJ"), (idx, s) -> idx % 2 == 0 ? s.length() : null), 1, 3);
+    }
+
+    @Test
+    public void mapMultiTest() {
+        assertIteratorElements(Iterators.mapMulti(Iterators.empty(), (e, c) -> c.accept(e)));
+        assertIteratorElements(Iterators.mapMulti(Iterators.of("A"), (e, c) -> c.accept(e.length())), 1);
+        assertIteratorElements(Iterators.mapMulti(Iterators.of("A", "foo"), (e, c) -> c.accept(e.length())), 1, 3);
+        assertIteratorElements(Iterators.mapMulti(Iterators.of("A", "foo", "B"), (e, c) -> c.accept(e.length())), 1, 3, 1);
+
+        assertIteratorElements(Iterators.mapMulti(Iterators.of("A"), (e, c) -> {
+            if (e.length() % 2 == 0) {
+                c.accept(e.length());
+                c.accept(e.length() + 1);
+            }
+        }));
+        assertIteratorElements(Iterators.mapMulti(Iterators.of("A", "AB"), (e, c) -> {
+            if (e.length() % 2 == 0) {
+                c.accept(e.length());
+                c.accept(e.length() + 1);
+            }
+        }), 2, 3);
+        assertIteratorElements(Iterators.mapMulti(Iterators.of("A", "AB", "ABC", "ABCD"), (e, c) -> {
+            if (e.length() % 2 == 0) {
+                c.accept(e.length());
+                c.accept(e.length() + 1);
+            }
+        }), 2, 3, 4, 5);
+    }
+
+    @Test
+    public void mapIndexedMultiTest() {
+        assertIteratorElements(Iterators.mapIndexedMulti(Iterators.empty(), (idx, e, c) -> c.accept(e)));
+        assertIteratorElements(Iterators.mapIndexedMulti(Iterators.of("A"), (idx, e, c) -> c.accept(idx + e.length())), 1);
+        assertIteratorElements(Iterators.mapIndexedMulti(Iterators.of("A", "foo"), (idx, e, c) -> c.accept(idx + e.length())), 1, 4);
+        assertIteratorElements(Iterators.mapIndexedMulti(Iterators.of("A", "foo", "B"), (idx, e, c) -> c.accept(idx + e.length())), 1, 4, 3);
+
+        assertIteratorElements(Iterators.mapIndexedMulti(Iterators.of("A"), (idx, e, c) -> {
+            if (idx % 2 == 0) {
+                c.accept(e.length());
+                c.accept(e.length() + 1);
+            }
+        }), 1, 2);
+        assertIteratorElements(Iterators.mapIndexedMulti(Iterators.of("A", "AB"), (idx, e, c) -> {
+            if (idx % 2 == 0) {
+                c.accept(e.length());
+                c.accept(e.length() + 1);
+            }
+        }), 1, 2);
+        assertIteratorElements(Iterators.mapIndexedMulti(Iterators.of("A", "AB", "ABC", "ABCD"), (idx, e, c) -> {
+            if (idx % 2 == 0) {
+                c.accept(e.length());
+                c.accept(e.length() + 1);
+            }
+        }), 1, 2, 3, 4);
     }
 
     @Test

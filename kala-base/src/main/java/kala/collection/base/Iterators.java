@@ -1900,7 +1900,7 @@ public final class Iterators {
             if (hasNext()) {
                 return tmp.removeFirst();
             }
-            return null;
+            throw new NoSuchElementException();
         }
     }
 
@@ -1940,7 +1940,7 @@ public final class Iterators {
             if (hasNext()) {
                 return tmp.removeFirst();
             }
-            return null;
+            throw new NoSuchElementException();
         }
     }
 
