@@ -150,6 +150,8 @@
     * `mapIndexed(IndexedFunction<E, U>)`
     * `mapNotNull(Function<E, U>)`
     * `mapIndexedNotNull(IndexedFunction<E, U>)`
+    * `mapMulti(BiConsumer<E, Consumer<U>>)`
+    * `mapIndexedMulti(BiConsumer<E, Consumer<U>>)`
     * `flatMap(Function<E, Iterable<U>>)`
     * `sorted()`
     * `sorted(Comparator<E>)`

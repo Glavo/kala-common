@@ -1,6 +1,7 @@
 package kala.collection.immutable;
 
 import kala.collection.base.Iterators;
+import kala.function.IndexedBiConsumer;
 import kala.function.IndexedFunction;
 import kala.annotations.Covariant;
 import kala.Conditions;
@@ -11,6 +12,8 @@ import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 @SuppressWarnings("unchecked")
@@ -435,6 +438,23 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
         return factory.build(builder);
     }
 
+    static <E, U, T, Builder> T mapIndexedMulti(
+            @NotNull ImmutableSeq<? extends E> Seq,
+            @NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper,
+            @NotNull CollectionFactory<? super U, Builder, ? extends T> factory
+    ) {
+        Objects.requireNonNull(mapper);
+
+        Builder builder = factory.newBuilder();
+        Consumer<U> consumer = u -> factory.addToBuilder(builder, u);
+
+        int idx = 0;
+        for (E e : Seq) {
+            mapper.accept(idx++, e, consumer);
+        }
+        return factory.build(builder);
+    }
+
     @NotNull
     protected final <To extends ImmutableSeq<E>> To updatedImpl(int index, E newValue) {
         return (To) AbstractImmutableSeq.updated(this, index, newValue, iterableFactory());
@@ -539,6 +559,11 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
     @NotNull
     protected final <U, To extends ImmutableSeq<U>> To mapIndexedNotNullImpl(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
         return (To) AbstractImmutableSeq.mapIndexedNotNull(this, mapper, iterableFactory());
+    }
+
+    @NotNull
+    protected final <U, To extends ImmutableSeq<U>> To mapIndexedMultiImpl(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+        return (To) AbstractImmutableSeq.mapIndexedMulti(this, mapper, iterableFactory());
     }
 
     @Override

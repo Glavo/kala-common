@@ -7,6 +7,8 @@ import kala.annotations.Covariant;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -60,6 +62,12 @@ public interface View<@Covariant E> extends CollectionLike<E>, FullCollectionLik
     default @NotNull <U> View<U> mapNotNull(@NotNull Function<? super E, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
         return new Views.MapNotNull<>(this, mapper);
+    }
+
+    @Override
+    default @NotNull <U> View<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+        Objects.requireNonNull(mapper);
+        return new Views.MapMulti<>(this, mapper);
     }
 
     default <U> @NotNull View<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {

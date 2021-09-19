@@ -1,6 +1,7 @@
 package kala.collection;
 
 import kala.collection.internal.convert.AsJavaConvert;
+import kala.function.IndexedBiConsumer;
 import kala.function.IndexedFunction;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
@@ -15,6 +16,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -274,6 +277,18 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqLike<
     default <U> @NotNull SeqView<U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
         Objects.requireNonNull(mapper);
         return new SeqViews.MapIndexedNotNull<>(this, mapper);
+    }
+
+    @Override
+    default <U> @NotNull SeqView<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+        Objects.requireNonNull(mapper);
+        return new SeqViews.MapMulti<>(this, mapper);
+    }
+
+    @Override
+    default <U> @NotNull SeqView<U> mapIndexedMulti(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+        Objects.requireNonNull(mapper);
+        return new SeqViews.MapIndexedMulti<>(this, mapper);
     }
 
     @Override

@@ -12,12 +12,48 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 @SuppressWarnings("unchecked")
 public abstract class AbstractImmutableCollection<@Covariant E>
         extends AbstractCollection<E> implements ImmutableCollection<E> {
+
+    static <E, T, Builder> T filter(
+            @NotNull ImmutableCollection<? extends E> collection,
+            @NotNull Predicate<? super E> predicate,
+            @NotNull CollectionFactory<? super E, Builder, ? extends T> factory) {
+        Objects.requireNonNull(predicate);
+
+        Builder builder = factory.newBuilder();
+
+        for (E e : collection) {
+            if (predicate.test(e)) {
+                factory.addToBuilder(builder, e);
+            }
+        }
+
+        return factory.build(builder);
+    }
+
+    static <E, T, Builder> T filterNot(
+            @NotNull ImmutableCollection<? extends E> collection,
+            @NotNull Predicate<? super E> predicate,
+            @NotNull CollectionFactory<? super E, Builder, ? extends T> factory) {
+        Objects.requireNonNull(predicate);
+
+        Builder builder = factory.newBuilder();
+
+        for (E e : collection) {
+            if (!predicate.test(e)) {
+                factory.addToBuilder(builder, e);
+            }
+        }
+
+        return factory.build(builder);
+    }
 
     static <E, U, T, Builder> T map(
             @NotNull ImmutableCollection<? extends E> collection,
@@ -56,39 +92,22 @@ public abstract class AbstractImmutableCollection<@Covariant E>
         return factory.build(builder);
     }
 
-    static <E, T, Builder> T filter(
+    static <E, U, T, Builder> T mapMulti(
             @NotNull ImmutableCollection<? extends E> collection,
-            @NotNull Predicate<? super E> predicate,
-            @NotNull CollectionFactory<? super E, Builder, ? extends T> factory) {
-        Objects.requireNonNull(predicate);
+            @NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper,
+            @NotNull CollectionFactory<? super U, Builder, ? extends T> factory
+    ) {
+        Objects.requireNonNull(mapper);
 
         Builder builder = factory.newBuilder();
+        Consumer<U> consumer = u -> factory.addToBuilder(builder, u);
 
         for (E e : collection) {
-            if (predicate.test(e)) {
-                factory.addToBuilder(builder, e);
-            }
+            mapper.accept(e, consumer);
         }
-
         return factory.build(builder);
     }
 
-    static <E, T, Builder> T filterNot(
-            @NotNull ImmutableCollection<? extends E> collection,
-            @NotNull Predicate<? super E> predicate,
-            @NotNull CollectionFactory<? super E, Builder, ? extends T> factory) {
-        Objects.requireNonNull(predicate);
-
-        Builder builder = factory.newBuilder();
-
-        for (E e : collection) {
-            if (!predicate.test(e)) {
-                factory.addToBuilder(builder, e);
-            }
-        }
-
-        return factory.build(builder);
-    }
 
     static <E, U, T, Builder> T flatMap(
             @NotNull ImmutableCollection<? extends E> collection,
@@ -130,14 +149,6 @@ public abstract class AbstractImmutableCollection<@Covariant E>
         return factory.build(builder);
     }
 
-    protected final <U, To extends ImmutableCollection<U>> @NotNull To mapImpl(@NotNull Function<? super E, ? extends U> mapper) {
-        return (To) AbstractImmutableCollection.map(this, mapper, iterableFactory());
-    }
-
-    protected final <U, To extends ImmutableCollection<@NotNull U>> @NotNull To mapNotNullImpl(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
-        return (To) AbstractImmutableCollection.mapNotNull(this, mapper, iterableFactory());
-    }
-
     protected final <To extends ImmutableCollection<E>> @NotNull To filterImpl(@NotNull Predicate<? super E> predicate) {
         return (To) AbstractImmutableCollection.filter(this, predicate, iterableFactory());
     }
@@ -148,6 +159,18 @@ public abstract class AbstractImmutableCollection<@Covariant E>
 
     protected final <To extends ImmutableCollection<E>> @NotNull To filterNotNullImpl() {
         return (To) this.filter(Predicates.isNotNull());
+    }
+
+    protected final <U, To extends ImmutableCollection<U>> @NotNull To mapImpl(@NotNull Function<? super E, ? extends U> mapper) {
+        return (To) AbstractImmutableCollection.map(this, mapper, iterableFactory());
+    }
+
+    protected final <U, To extends ImmutableCollection<@NotNull U>> @NotNull To mapNotNullImpl(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
+        return (To) AbstractImmutableCollection.mapNotNull(this, mapper, iterableFactory());
+    }
+
+    protected final <U, To extends ImmutableCollection<U>> @NotNull To mapMultiImpl(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+        return (To) AbstractImmutableCollection.mapMulti(this, mapper, iterableFactory());
     }
 
     protected final <U, To extends ImmutableCollection<U>> @NotNull To flatMapImpl(

@@ -16,11 +16,7 @@ import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.*;
 import java.util.Collection;
-import java.util.function.Function;
-import java.util.function.IntFunction;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.stream.Collector;
+import java.util.function.*;
 import java.util.stream.Stream;
 
 @SuppressWarnings({"unchecked"})
@@ -425,18 +421,28 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     }
 
     default <U> @NotNull ImmutableSeq<@NotNull U> mapIndexedNotNull(
-            @NotNull IndexedFunction<? super E, @Nullable ? extends U> mapper) {
+            @NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
         return AbstractImmutableSeq.mapIndexedNotNull(this, mapper, this.<U>iterableFactory());
     }
 
     default <U, Ex extends Throwable> @NotNull ImmutableSeq<@NotNull U> mapIndexedNotNullChecked(
-            @NotNull CheckedIndexedFunction<? super E, @Nullable ? extends U, ? extends Ex> mapper) {
+            @NotNull CheckedIndexedFunction<? super E, ? extends @Nullable U, ? extends Ex> mapper) {
         return mapIndexedNotNull(mapper);
     }
 
     default <U> @NotNull ImmutableSeq<@NotNull U> mapIndexedNotNullUnchecked(
-            @NotNull CheckedIndexedFunction<? super E, @Nullable ? extends U, ?> mapper) {
+            @NotNull CheckedIndexedFunction<? super E, ? extends @Nullable U, ?> mapper) {
         return mapIndexedNotNull(mapper);
+    }
+
+    @Override
+    default @NotNull <U> ImmutableSeq<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+        return AbstractImmutableCollection.mapMulti(this, mapper, iterableFactory());
+    }
+
+    @Override
+    default @NotNull <U> ImmutableSeq<U> mapIndexedMulti(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+        return AbstractImmutableSeq.mapIndexedMulti(this, mapper, iterableFactory());
     }
 
     @Override

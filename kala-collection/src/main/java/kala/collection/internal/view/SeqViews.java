@@ -1,13 +1,11 @@
 package kala.collection.internal.view;
 
-import kala.collection.AbstractSeqView;
-import kala.collection.Seq;
-import kala.collection.SeqLike;
-import kala.collection.SeqView;
+import kala.collection.*;
 import kala.collection.base.GenericArrays;
 import kala.collection.base.Iterators;
 import kala.collection.base.ObjectArrays;
 import kala.control.Option;
+import kala.function.IndexedBiConsumer;
 import kala.function.IndexedConsumer;
 import kala.function.IndexedFunction;
 import kala.function.Predicates;
@@ -1070,7 +1068,6 @@ public final class SeqViews {
 
     public static class MapIndexedNotNull<E, T> extends AbstractSeqView<E> {
         private final @NotNull SeqView<T> source;
-
         private final @NotNull IndexedFunction<? super T, ? extends E> mapper;
 
         public MapIndexedNotNull(@NotNull SeqView<T> source, @NotNull IndexedFunction<? super T, ? extends E> mapper) {
@@ -1081,6 +1078,36 @@ public final class SeqViews {
         @Override
         public final @NotNull Iterator<E> iterator() {
             return Iterators.mapIndexedNotNull(source.iterator(), mapper);
+        }
+    }
+
+    public static final class MapMulti<E, T> extends AbstractSeqView<E> {
+        private final @NotNull SeqView<T> source;
+        private final @NotNull BiConsumer<? super T, ? super Consumer<? super E>> mapper;
+
+        public MapMulti(@NotNull SeqView<T> source, @NotNull BiConsumer<? super T, ? super Consumer<? super E>> mapper) {
+            this.source = source;
+            this.mapper = mapper;
+        }
+
+        @Override
+        public final @NotNull Iterator<E> iterator() {
+            return Iterators.mapMulti(source.iterator(), mapper);
+        }
+    }
+
+    public static final class MapIndexedMulti<E, T> extends AbstractSeqView<E> {
+        private final @NotNull SeqView<T> source;
+        private final @NotNull IndexedBiConsumer<? super T, ? super Consumer<? super E>> mapper;
+
+        public MapIndexedMulti(@NotNull SeqView<T> source, @NotNull IndexedBiConsumer<? super T, ? super Consumer<? super E>> mapper) {
+            this.source = source;
+            this.mapper = mapper;
+        }
+
+        @Override
+        public final @NotNull Iterator<E> iterator() {
+            return Iterators.mapIndexedMulti(source.iterator(), mapper);
         }
     }
 

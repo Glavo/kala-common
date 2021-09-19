@@ -1,11 +1,13 @@
 package kala.collection;
 
 import kala.annotations.UnstableName;
+import kala.function.IndexedBiConsumer;
 import kala.function.IndexedFunction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 @UnstableName
@@ -49,4 +51,6 @@ public interface FullSeqLikeOps<E, CC extends SeqLike<?>, COLL extends SeqLike<E
     <U> @NotNull CC mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper);
 
     <U> @NotNull CC mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper);
+
+    <U> @NotNull CC mapIndexedMulti(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper);
 }

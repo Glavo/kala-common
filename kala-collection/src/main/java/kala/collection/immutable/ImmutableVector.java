@@ -24,11 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.function.Function;
-import java.util.function.IntFunction;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.stream.Collector;
+import java.util.function.*;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
@@ -579,7 +575,7 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
 
     @Override
     public final @NotNull <U, Ex extends Throwable> ImmutableVector<@NotNull U> mapIndexedNotNullChecked(
-            @NotNull CheckedIndexedFunction<? super E, @Nullable ? extends U, ? extends Ex> mapper) {
+            @NotNull CheckedIndexedFunction<? super E, ? extends @Nullable U, ? extends Ex> mapper) {
         return mapIndexedNotNull(mapper);
     }
 
@@ -587,6 +583,16 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
     public final @NotNull <U> ImmutableVector<@NotNull U> mapIndexedNotNullUnchecked(
             @NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
         return mapIndexedNotNull(mapper);
+    }
+
+    @Override
+    public final @NotNull <U> ImmutableVector<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+        return mapMultiImpl(mapper);
+    }
+
+    @Override
+    public final @NotNull <U> ImmutableVector<U> mapIndexedMulti(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+        return mapIndexedMultiImpl(mapper);
     }
 
     @Override
@@ -637,58 +643,58 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
     static final class Factory<E> implements CollectionFactory<E, ImmutableVectors.VectorBuilder<E>, ImmutableVector<E>> {
 
         @Override
-        public final ImmutableVector<E> empty() {
+        public ImmutableVector<E> empty() {
             return ImmutableVector.empty();
         }
 
         @Override
-        public final ImmutableVectors.VectorBuilder<E> newBuilder() {
+        public ImmutableVectors.VectorBuilder<E> newBuilder() {
             return new ImmutableVectors.VectorBuilder<>();
         }
 
         @Override
-        public final void addToBuilder(ImmutableVectors.@NotNull VectorBuilder<E> builder, E value) {
+        public void addToBuilder(ImmutableVectors.@NotNull VectorBuilder<E> builder, E value) {
             builder.add(value);
         }
 
         @Override
-        public final ImmutableVectors.VectorBuilder<E> mergeBuilder(ImmutableVectors.@NotNull VectorBuilder<E> builder1, ImmutableVectors.@NotNull VectorBuilder<E> builder2) {
+        public ImmutableVectors.VectorBuilder<E> mergeBuilder(ImmutableVectors.@NotNull VectorBuilder<E> builder1, ImmutableVectors.@NotNull VectorBuilder<E> builder2) {
             builder1.addVector(builder2.build());
             return builder1;
         }
 
         @Override
-        public final ImmutableVector<E> build(ImmutableVectors.@NotNull VectorBuilder<E> builder) {
+        public ImmutableVector<E> build(ImmutableVectors.@NotNull VectorBuilder<E> builder) {
             return builder.build();
         }
 
         @Override
-        public final ImmutableVector<E> from(E @NotNull [] values) {
+        public ImmutableVector<E> from(E @NotNull [] values) {
             return ImmutableVector.from(values);
         }
 
         @Override
-        public final ImmutableVector<E> from(@NotNull Iterable<? extends E> values) {
+        public ImmutableVector<E> from(@NotNull Iterable<? extends E> values) {
             return ImmutableVector.from(values);
         }
 
         @Override
-        public final ImmutableVector<E> from(@NotNull Iterator<? extends E> it) {
+        public ImmutableVector<E> from(@NotNull Iterator<? extends E> it) {
             return ImmutableVector.from(it);
         }
 
         @Override
-        public final ImmutableVector<E> fill(int n, E value) {
+        public ImmutableVector<E> fill(int n, E value) {
             return ImmutableVector.fill(n, value);
         }
 
         @Override
-        public final ImmutableVector<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+        public ImmutableVector<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
             return ImmutableVector.fill(n, supplier);
         }
 
         @Override
-        public final ImmutableVector<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+        public ImmutableVector<E> fill(int n, @NotNull IntFunction<? extends E> init) {
             return ImmutableVector.fill(n, init);
         }
     }

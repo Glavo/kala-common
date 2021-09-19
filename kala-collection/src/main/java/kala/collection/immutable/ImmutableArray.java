@@ -1,14 +1,9 @@
 package kala.collection.immutable;
 
-import kala.collection.ArraySeq;
+import kala.collection.*;
 import kala.collection.base.GenericArrays;
 import kala.collection.base.Traversable;
-import kala.function.CheckedFunction;
-import kala.function.CheckedIndexedFunction;
-import kala.function.CheckedPredicate;
-import kala.function.IndexedFunction;
-import kala.collection.IndexedSeq;
-import kala.collection.SeqLike;
+import kala.function.*;
 import kala.collection.internal.CollectionHelper;
 import kala.Conditions;
 import kala.tuple.Tuple2;
@@ -22,10 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.function.Function;
-import java.util.function.IntFunction;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.util.function.*;
 import java.util.stream.Stream;
 
 import static kala.Conditions.checkPositionIndices;
@@ -718,7 +710,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
 
     @Override
     public @NotNull <U, Ex extends Throwable> ImmutableArray<@NotNull U> mapIndexedNotNullChecked(
-            @NotNull CheckedIndexedFunction<? super E, @Nullable ? extends U, ? extends Ex> mapper) {
+            @NotNull CheckedIndexedFunction<? super E, ? extends @Nullable U, ? extends Ex> mapper) {
         return mapIndexedNotNull(mapper);
     }
 
@@ -726,6 +718,30 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     public <U> @NotNull ImmutableArray<@NotNull U> mapIndexedNotNullUnchecked(
             @NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
         return mapIndexedNotNull(mapper);
+    }
+
+    @Override
+    public @NotNull <U> ImmutableArray<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+        final DynamicArray<U> builder = new DynamicArray<>();
+        Consumer<U> consumer = builder::append;
+
+        for (Object element : elements) {
+            mapper.accept((E) element, consumer);
+        }
+
+        return builder.toImmutableArray();
+    }
+
+    @Override
+    public @NotNull <U> ImmutableArray<U> mapIndexedMulti(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+        final DynamicArray<U> builder = new DynamicArray<>();
+        Consumer<U> consumer = builder::append;
+
+        for (int i = 0; i < elements.length; i++) {
+            mapper.accept(i, (E) elements[i], consumer);
+        }
+
+        return builder.toImmutableArray();
     }
 
     @Override

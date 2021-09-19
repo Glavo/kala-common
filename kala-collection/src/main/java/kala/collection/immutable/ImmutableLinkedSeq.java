@@ -2,9 +2,7 @@ package kala.collection.immutable;
 
 import kala.annotations.Covariant;
 import kala.annotations.StaticClass;
-import kala.collection.IndexedSeqLike;
-import kala.collection.Seq;
-import kala.collection.SeqView;
+import kala.collection.*;
 import kala.collection.base.AbstractIterator;
 import kala.collection.base.AnyTraversable;
 import kala.collection.base.Iterators;
@@ -13,7 +11,6 @@ import kala.collection.mutable.AbstractDynamicSeq;
 import kala.control.Option;
 import kala.function.*;
 import kala.Conditions;
-import kala.collection.SeqLike;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.mutable.DynamicLinkedSeq;
 import kala.tuple.Tuple2;
@@ -994,6 +991,27 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
     public @NotNull <U> ImmutableLinkedSeq<@NotNull U> mapIndexedNotNullUnchecked(
             @NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
         return mapIndexedNotNull(mapper);
+    }
+
+    @Override
+    public @NotNull <U> ImmutableLinkedSeq<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+        final Builder<U> builder = new DynamicLinkedSeq<>();
+        Consumer<U> consumer = builder::append;
+        for (E e : this) {
+            mapper.accept(e, consumer);
+        }
+        return builder.toImmutableLinkedSeq();
+    }
+
+    @Override
+    public @NotNull <U> ImmutableLinkedSeq<U> mapIndexedMulti(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+        final Builder<U> builder = new DynamicLinkedSeq<>();
+        Consumer<U> consumer = builder::append;
+        int idx = 0;
+        for (E e : this) {
+            mapper.accept(idx++, e, consumer);
+        }
+        return builder.toImmutableLinkedSeq();
     }
 
     @Override
@@ -2272,6 +2290,27 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         public @NotNull <U> Node<@NotNull U> mapIndexedNotNullUnchecked(
                 @NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
             return mapIndexedNotNull(mapper);
+        }
+
+        @Override
+        public @NotNull <U> Node<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+            final Builder<U> builder = new DynamicLinkedSeq<>();
+            Consumer<U> consumer = builder::append;
+            for (E e : this) {
+                mapper.accept(e, consumer);
+            }
+            return builder.buildNode();
+        }
+
+        @Override
+        public @NotNull <U> Node<U> mapIndexedMulti(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+            final Builder<U> builder = new DynamicLinkedSeq<>();
+            Consumer<U> consumer = builder::append;
+            int idx = 0;
+            for (E e : this) {
+                mapper.accept(idx++, e, consumer);
+            }
+            return builder.buildNode();
         }
 
         @Override

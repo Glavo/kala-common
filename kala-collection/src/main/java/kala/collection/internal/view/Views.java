@@ -2,6 +2,7 @@ package kala.collection.internal.view;
 
 import kala.collection.*;
 import kala.collection.Map;
+import kala.collection.base.AbstractIterator;
 import kala.collection.base.Iterators;
 import kala.collection.immutable.*;
 import kala.control.Option;
@@ -570,7 +571,6 @@ public final class Views {
 
     public static class MapNotNull<E, T> extends AbstractView<E> {
         private final @NotNull View<T> source;
-
         private final @NotNull Function<? super T, ? extends E> mapper;
 
         public MapNotNull(@NotNull View<T> source, @NotNull Function<? super T, ? extends E> mapper) {
@@ -581,6 +581,21 @@ public final class Views {
         @Override
         public @NotNull Iterator<E> iterator() {
             return Iterators.mapNotNull(source.iterator(), mapper);
+        }
+    }
+
+    public static class MapMulti<E, T> extends AbstractView<E> {
+        private final @NotNull View<T> source;
+        private final @NotNull BiConsumer<? super T, ? super Consumer<? super E>> mapper;
+
+        public MapMulti(@NotNull View<T> source, @NotNull BiConsumer<? super T, ? super Consumer<? super E>> mapper) {
+            this.source = source;
+            this.mapper = mapper;
+        }
+
+        @Override
+        public final @NotNull Iterator<E> iterator() {
+            return Iterators.mapMulti(source.iterator(), mapper);
         }
     }
 

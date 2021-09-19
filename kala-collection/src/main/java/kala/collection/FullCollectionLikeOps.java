@@ -5,6 +5,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -23,6 +25,8 @@ public interface FullCollectionLikeOps<E, CC extends CollectionLike<?>, COLL ext
     <U> @NotNull CC map(@NotNull Function<? super E, ? extends U> mapper);
 
     <U> @NotNull CC mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper);
+
+    <U> @NotNull CC mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper);
 
     @Contract(pure = true)
     <U> @NotNull CC flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper);

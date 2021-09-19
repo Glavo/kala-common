@@ -16,10 +16,7 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.Spliterator;
 import java.util.Spliterators;
-import java.util.function.Function;
-import java.util.function.IntFunction;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.util.function.*;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
@@ -157,6 +154,11 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E>, FullCo
     @Contract(pure = true)
     default <U> @NotNull ImmutableCollection<U> mapNotNullUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
         return mapNotNull(mapper);
+    }
+
+    @Override
+    default @NotNull <U> ImmutableCollection<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+        return AbstractImmutableCollection.mapMulti(this, mapper, iterableFactory());
     }
 
     @Contract(pure = true)

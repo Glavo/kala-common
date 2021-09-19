@@ -1,16 +1,13 @@
 package kala.collection.base;
 
 import kala.control.Try;
-import kala.function.CheckedConsumer;
-import kala.function.IndexedBiFunction;
-import kala.function.IndexedFunction;
+import kala.function.*;
 import kala.internal.InternalIdentifyObject;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import kala.annotations.StaticClass;
 import kala.control.Option;
 import kala.collection.factory.CollectionFactory;
-import kala.function.IndexedConsumer;
 import kala.tuple.primitive.IntObjTuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -799,6 +796,30 @@ public final class Iterators {
         return new MapIndexedNotNull<>(it, mapper);
     }
 
+    public static <E, U> @NotNull Iterator<U> mapMulti(
+            @NotNull Iterator<? extends E> it,
+            @NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper
+    ) {
+        Objects.requireNonNull(mapper);
+        if (!it.hasNext()) {
+            return Iterators.empty();
+        }
+
+        return new MapMulti<>(it, mapper);
+    }
+
+    public static <E, U> @NotNull Iterator<U> mapIndexedMulti(
+            @NotNull Iterator<? extends E> it,
+            @NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper
+    ) {
+        Objects.requireNonNull(mapper);
+        if (!it.hasNext()) {
+            return Iterators.empty();
+        }
+
+        return new MapIndexedMulti<>(it, mapper);
+    }
+
     public static <E, U> @NotNull Iterator<U> flatMap(
             @NotNull Iterator<? extends E> it,
             @NotNull Function<? super E, ? extends Iterable<? extends U>> mapper
@@ -1231,9 +1252,9 @@ public final class Iterators {
         }
     };
 
-    private static final Object TAG_VALUE = new InternalIdentifyObject();
+    static final Object TAG_VALUE = new InternalIdentifyObject();
 
-    static final class OfNotNull<E> extends AbstractIterator<E> {
+    private static final class OfNotNull<E> extends AbstractIterator<E> {
         private @Nullable E value;
 
         OfNotNull(@NotNull E value) {
@@ -1256,7 +1277,7 @@ public final class Iterators {
         }
     }
 
-    static final class OfNull<E> extends AbstractIterator<E> {
+    private static final class OfNull<E> extends AbstractIterator<E> {
         private boolean hasNext = true;
 
         @Override
@@ -1274,7 +1295,7 @@ public final class Iterators {
         }
     }
 
-    static final class Itr2<E> extends AbstractIterator<E> {
+    private static final class Itr2<E> extends AbstractIterator<E> {
         private int idx = 0;
 
         private E value1;
@@ -1310,7 +1331,7 @@ public final class Iterators {
         }
     }
 
-    static final class Itr3<E> extends AbstractIterator<E> {
+    private static final class Itr3<E> extends AbstractIterator<E> {
         private int idx = 0;
 
         private E value1;
@@ -1352,7 +1373,7 @@ public final class Iterators {
         }
     }
 
-    static final class Itr4<E> extends AbstractIterator<E> {
+    private static final class Itr4<E> extends AbstractIterator<E> {
         private int idx = 0;
 
         private E value1;
@@ -1400,7 +1421,7 @@ public final class Iterators {
         }
     }
 
-    static final class Itr5<E> extends AbstractIterator<E> {
+    private static final class Itr5<E> extends AbstractIterator<E> {
         private int idx = 0;
 
         private E value1;
@@ -1454,7 +1475,7 @@ public final class Iterators {
         }
     }
 
-    static final class Copies<E> extends AbstractIterator<E> {
+    private static final class Copies<E> extends AbstractIterator<E> {
         private int n;
         private E value;
 
@@ -1481,7 +1502,7 @@ public final class Iterators {
         }
     }
 
-    static final class FillSupplier<E> extends AbstractIterator<E> {
+    private static final class FillSupplier<E> extends AbstractIterator<E> {
         private int n;
         private Supplier<? extends E> supplier;
 
@@ -1508,7 +1529,7 @@ public final class Iterators {
         }
     }
 
-    static final class FillIntFunction<E> extends AbstractIterator<E> {
+    private static final class FillIntFunction<E> extends AbstractIterator<E> {
         private final int n;
         private int idx = 0;
         private IntFunction<? extends E> init;
@@ -1536,7 +1557,7 @@ public final class Iterators {
         }
     }
 
-    static final class AppendedNull<E> extends AbstractIterator<E> {
+    private static final class AppendedNull<E> extends AbstractIterator<E> {
         private final Iterator<? extends E> source;
         private boolean hasLast = true;
 
@@ -1562,7 +1583,7 @@ public final class Iterators {
         }
     }
 
-    static final class AppendedNotNull<E> extends AbstractIterator<E> {
+    private static final class AppendedNotNull<E> extends AbstractIterator<E> {
         private final Iterator<? extends E> source;
         private E last;
 
@@ -1590,7 +1611,7 @@ public final class Iterators {
         }
     }
 
-    static final class PrependedNull<E> extends AbstractIterator<E> {
+    private static final class PrependedNull<E> extends AbstractIterator<E> {
         private final Iterator<? extends E> source;
         private boolean hasHead = true;
 
@@ -1614,7 +1635,7 @@ public final class Iterators {
         }
     }
 
-    static final class PrependedNotNull<E> extends AbstractIterator<E> {
+    private static final class PrependedNotNull<E> extends AbstractIterator<E> {
         private final Iterator<? extends E> source;
         private E head;
 
@@ -1640,7 +1661,7 @@ public final class Iterators {
         }
     }
 
-    static final class Filter<E> extends AbstractIterator<E> {
+    private static final class Filter<E> extends AbstractIterator<E> {
         private final @NotNull Iterator<? extends E> source;
         private final @NotNull Predicate<? super E> predicate;
 
@@ -1682,7 +1703,7 @@ public final class Iterators {
         }
     }
 
-    static final class FilterNot<E> extends AbstractIterator<E> {
+    private static final class FilterNot<E> extends AbstractIterator<E> {
         private final @NotNull Iterator<? extends E> source;
         private final @NotNull Predicate<? super E> predicate;
 
@@ -1724,7 +1745,7 @@ public final class Iterators {
         }
     }
 
-    static final class FilterNotNull<E> extends AbstractIterator<E> {
+    private static final class FilterNotNull<E> extends AbstractIterator<E> {
         private final @NotNull Iterator<? extends E> source;
         private E nextValue = null;
 
@@ -1765,7 +1786,7 @@ public final class Iterators {
         }
     }
 
-    static final class MapNotNull<E, U> extends AbstractIterator<U> {
+    private static final class MapNotNull<E, U> extends AbstractIterator<U> {
         private final @NotNull Iterator<? extends E> source;
         private final @NotNull Function<? super E, ? extends U> mapper;
 
@@ -1804,7 +1825,7 @@ public final class Iterators {
         }
     }
 
-    static final class MapIndexedNotNull<E, U> extends AbstractIterator<U> {
+    private static final class MapIndexedNotNull<E, U> extends AbstractIterator<U> {
         private final @NotNull Iterator<? extends E> source;
         private final @NotNull IndexedFunction<? super E, ? extends U> mapper;
 
@@ -1844,7 +1865,86 @@ public final class Iterators {
         }
     }
 
-    static final class Take<E> extends AbstractIterator<E> {
+    private static final class MapMulti<E, T> extends AbstractIterator<E> {
+        private Iterator<? extends T> source;
+        private BiConsumer<? super T, ? super Consumer<? super E>> mapper;
+        private ArrayDeque<E> tmp = new ArrayDeque<>();
+        private Consumer<E> consumer = tmp::addLast;
+
+        MapMulti(@NotNull Iterator<? extends T> source, @NotNull BiConsumer<? super T, ? super Consumer<? super E>> mapper) {
+            this.source = source;
+            this.mapper = mapper;
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (source == null) {
+                return false;
+            }
+            while (tmp.isEmpty() && source.hasNext()) {
+                mapper.accept(source.next(), consumer);
+            }
+            if (tmp.isEmpty()) {
+                source = null;
+                mapper = null;
+                tmp = null;
+                consumer = null;
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        @Override
+        public E next() {
+            if (hasNext()) {
+                return tmp.removeFirst();
+            }
+            return null;
+        }
+    }
+
+    private static final class MapIndexedMulti<E, T> extends AbstractIterator<E> {
+        private Iterator<? extends T> source;
+        private IndexedBiConsumer<? super T, ? super Consumer<? super E>> mapper;
+        private ArrayDeque<E> tmp = new ArrayDeque<>();
+        private Consumer<E> consumer = tmp::addLast;
+        private int idx = 0;
+
+        MapIndexedMulti(@NotNull Iterator<? extends T> source, @NotNull IndexedBiConsumer<? super T, ? super Consumer<? super E>> mapper) {
+            this.source = source;
+            this.mapper = mapper;
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (source == null) {
+                return false;
+            }
+            while (tmp.isEmpty() && source.hasNext()) {
+                mapper.accept(idx++, source.next(), consumer);
+            }
+            if (tmp.isEmpty()) {
+                source = null;
+                mapper = null;
+                tmp = null;
+                consumer = null;
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        @Override
+        public E next() {
+            if (hasNext()) {
+                return tmp.removeFirst();
+            }
+            return null;
+        }
+    }
+
+    private static final class Take<E> extends AbstractIterator<E> {
         private final @NotNull Iterator<? extends E> source;
         private int c;
 
@@ -1868,7 +1968,7 @@ public final class Iterators {
         }
     }
 
-    static final class TakeWhile<E> extends AbstractIterator<E> {
+    private static final class TakeWhile<E> extends AbstractIterator<E> {
         private @NotNull Iterator<? extends E> source;
 
         private final Predicate<? super E> predicate;
@@ -1911,7 +2011,7 @@ public final class Iterators {
         }
     }
 
-    static final class Concat<E> extends AbstractIterator<E> {
+    private static final class Concat<E> extends AbstractIterator<E> {
         private Iterator<? extends E> it1;
         private Iterator<? extends E> it2;
 
@@ -1954,7 +2054,7 @@ public final class Iterators {
         }
     }
 
-    static final class ConcatAll<E> extends AbstractIterator<E> {
+    private static final class ConcatAll<E> extends AbstractIterator<E> {
         private final @NotNull Iterator<? extends Iterator<? extends E>> iterators;
 
         private Iterator<? extends E> current = null;
@@ -1980,7 +2080,7 @@ public final class Iterators {
         }
     }
 
-    static final class Zip<E, U> extends AbstractIterator<@NotNull Tuple2<E, U>> {
+    private static final class Zip<E, U> extends AbstractIterator<@NotNull Tuple2<E, U>> {
         private final Iterator<? extends E> it1;
         private final Iterator<? extends U> it2;
 
@@ -2003,7 +2103,7 @@ public final class Iterators {
         }
     }
 
-    static final class WithIndex<E> extends AbstractIterator<@NotNull IntObjTuple2<E>> {
+    private static final class WithIndex<E> extends AbstractIterator<@NotNull IntObjTuple2<E>> {
         private final @NotNull Iterator<? extends E> it;
         private int idx;
 
