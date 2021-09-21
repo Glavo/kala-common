@@ -6,15 +6,14 @@ import kala.collection.base.ObjectArrays;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
 import kala.function.IndexedFunction;
-import kala.internal.RandomUtils;
 import kala.comparator.Comparators;
 import kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
-import java.util.stream.Collector;
 
 public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
 
@@ -178,7 +177,7 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
     }
 
     default void shuffle() {
-        shuffle(RandomUtils.threadLocal());
+        shuffle(ThreadLocalRandom.current());
     }
 
     default void shuffle(@NotNull Random random) {

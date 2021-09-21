@@ -840,9 +840,10 @@ public final class Iterators {
     }
 
     public static <E, U> @NotNull Iterator<@NotNull Tuple2<E, U>> zip(@NotNull Iterator<? extends E> it1, Iterator<? extends U> it2) {
-        return it1.hasNext() && it2.hasNext()
-                ? new Zip<E, U>(it1, it2)
-                : Iterators.empty();
+        if (!it1.hasNext() || !it2.hasNext()) { // implicit null check of it1 and it2
+            return Iterators.empty();
+        }
+        return new Zip<>(it1, it2);
     }
 
     public static <E> @NotNull Tuple2<Iterator<E>, Iterator<E>> span(
@@ -1049,7 +1050,7 @@ public final class Iterators {
             @NotNull Collector<? super E, Builder, ? extends R> collector
     ) {
         Builder builder = collector.supplier().get();
-        if (!it.hasNext()) {
+        if (!it.hasNext()) { // implicit null check of it
             return collector.finisher().apply(builder);
         }
 
@@ -2050,7 +2051,7 @@ public final class Iterators {
             if (it2 != null) {
                 return it2.next();
             }
-            throw new NoSuchElementException(); // never
+            throw new AssertionError(); // never
         }
     }
 
@@ -2081,8 +2082,8 @@ public final class Iterators {
     }
 
     private static final class Zip<E, U> extends AbstractIterator<@NotNull Tuple2<E, U>> {
-        private final Iterator<? extends E> it1;
-        private final Iterator<? extends U> it2;
+        private Iterator<? extends E> it1;
+        private Iterator<? extends U> it2;
 
         Zip(Iterator<? extends E> it1, Iterator<? extends U> it2) {
             this.it1 = it1;
@@ -2091,15 +2092,21 @@ public final class Iterators {
 
         @Override
         public boolean hasNext() {
-            return it1.hasNext() && it2.hasNext();
+            if (it1 != null && (it1.hasNext() && it2.hasNext())) {
+                return true;
+            } else {
+                it1 = null;
+                it2 = null;
+                return false;
+            }
         }
 
         @Override
         public @NotNull Tuple2<E, U> next() {
-            if (!hasNext()) {
-                throw new NoSuchElementException();
+            if (hasNext()) {
+                return Tuple.of(it1.next(), it2.next());
             }
-            return Tuple.of(it1.next(), it2.next());
+            throw new NoSuchElementException();
         }
     }
 

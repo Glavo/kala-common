@@ -5,7 +5,6 @@ import kala.annotations.StaticClass;
 import kala.collection.factory.CollectionFactory;
 import kala.control.Option;
 import kala.function.IndexedFunction;
-import kala.internal.RandomUtils;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import org.jetbrains.annotations.Contract;
@@ -16,6 +15,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.io.UncheckedIOException;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.*;
 import java.util.stream.Stream;
 
@@ -233,7 +233,7 @@ public final class ObjectArrays {
     //endregion
 
     public static void shuffle(Object @NotNull [] array) {
-        shuffle(array, RandomUtils.threadLocal());
+        shuffle(array, ThreadLocalRandom.current());
     }
 
     public static void shuffle(Object @NotNull [] array, @NotNull Random random) {
