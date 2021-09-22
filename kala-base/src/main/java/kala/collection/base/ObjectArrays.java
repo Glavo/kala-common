@@ -4,6 +4,7 @@ import kala.Conditions;
 import kala.annotations.StaticClass;
 import kala.collection.factory.CollectionFactory;
 import kala.control.Option;
+import kala.function.IndexedBiConsumer;
 import kala.function.IndexedFunction;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
@@ -728,6 +729,35 @@ public final class ObjectArrays {
             return tmp;
         }
         return Arrays.copyOf(tmp, c);
+    }
+
+    public static Object @NotNull [] mapMulti(
+            Object @NotNull [] array,
+            @NotNull BiConsumer<?, ? super Consumer<? super Object>> mapper) {
+        if (array.length == 0) {
+            return EMPTY;
+        }
+        final ArrayList<Object> tmp = new ArrayList<>();
+        Consumer<Object> consumer = tmp::add;
+        for (Object o : array) {
+            ((BiConsumer) mapper).accept(o, consumer);
+        }
+        return tmp.toArray();
+    }
+
+    public static Object @NotNull [] mapIndexedMulti(
+            Object @NotNull [] array,
+            @NotNull IndexedBiConsumer<?, ? super Consumer<? super Object>> mapper) {
+        final int length = array.length;
+        if (length == 0) {
+            return EMPTY;
+        }
+        final ArrayList<Object> tmp = new ArrayList<>();
+        Consumer<Object> consumer = tmp::add;
+        for (int i = 0; i < length; i++) {
+            ((IndexedBiConsumer) mapper).accept(i, array[i], consumer);
+        }
+        return tmp.toArray();
     }
 
     public static Object @NotNull [] flatMap(

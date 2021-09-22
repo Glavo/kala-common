@@ -5,6 +5,7 @@ import kala.control.Option;
 import kala.annotations.Covariant;
 import kala.annotations.StaticClass;
 import kala.collection.factory.CollectionFactory;
+import kala.function.IndexedBiConsumer;
 import kala.function.IndexedFunction;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
@@ -589,7 +590,8 @@ public final class GenericArrays {
 
     public static <E, U> @NotNull U @NotNull [] mapNotNull(
             E @NotNull [] array,
-            @NotNull IntFunction<U[]> generator, @NotNull Function<? super E, ? extends @Nullable U> mapper) {
+            @NotNull IntFunction<U[]> generator,
+            @NotNull Function<? super E, ? extends @Nullable U> mapper) {
         final int length = array.length;
         final U[] tmp = generator.apply(length);
         int c = 0;
@@ -607,11 +609,12 @@ public final class GenericArrays {
 
     public static <E, U> @NotNull U @NotNull [] mapIndexedNotNull(
             E @NotNull [] array,
-            @NotNull IntFunction<U[]> generator, @NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
+            @NotNull IntFunction<U[]> generator,
+            @NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
         final int length = array.length;
         final U[] tmp = generator.apply(length);
         int c = 0;
-        for (int i = 0, arrayLength = array.length; i < arrayLength; i++) {
+        for (int i = 0; i < length; i++) {
             U u = mapper.apply(i, array[i]);
             if (u != null) {
                 tmp[c++] = u;
@@ -621,6 +624,37 @@ public final class GenericArrays {
             return tmp;
         }
         return Arrays.copyOf(tmp, c);
+    }
+
+    public static <E, U> U @NotNull [] mapMulti(
+            E @NotNull [] array,
+            @NotNull IntFunction<U[]> generator,
+            @NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+        if (array.length == 0) {
+            return generator.apply(0);
+        }
+        final ArrayList<U> tmp = new ArrayList<>();
+        Consumer<U> consumer = tmp::add;
+        for (E e : array) {
+            mapper.accept(e, consumer);
+        }
+        return tmp.toArray(generator.apply(tmp.size()));
+    }
+
+    public static <E, U> U @NotNull [] mapIndexedMulti(
+            E @NotNull [] array,
+            @NotNull IntFunction<U[]> generator,
+            @NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+        final int length = array.length;
+        if (length == 0) {
+            return generator.apply(0);
+        }
+        final ArrayList<U> tmp = new ArrayList<>();
+        Consumer<U> consumer = tmp::add;
+        for (int i = 0; i < length; i++) {
+            mapper.accept(i, array[i], consumer);
+        }
+        return tmp.toArray(generator.apply(tmp.size()));
     }
 
     public static <E, U> U @NotNull [] flatMap(
@@ -1087,7 +1121,7 @@ public final class GenericArrays {
         }
     }
 
-    static final class Itr<@Covariant E> implements Iterator<E> {
+    private static final class Itr<@Covariant E> implements Iterator<E> {
         private final E @NotNull [] array;
         private final int endIndex;
 
@@ -1113,7 +1147,7 @@ public final class GenericArrays {
         }
     }
 
-    static final class ReverseItr<@Covariant E> implements Iterator<E> {
+    private static final class ReverseItr<@Covariant E> implements Iterator<E> {
         private final E @NotNull [] array;
 
         private int index;
