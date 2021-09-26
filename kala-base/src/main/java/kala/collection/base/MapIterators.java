@@ -13,12 +13,12 @@ final class MapIterators {
 
     static final MapIterator<?, ?> EMPTY = new MapIterator<Object, Object>() {
         @Override
-        public final Object nextKey() {
+        public Object nextKey() {
             throw new NoSuchElementException();
         }
 
         @Override
-        public final Object getValue() {
+        public Object getValue() {
             return null;
         }
 
@@ -39,19 +39,19 @@ final class MapIterators {
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return source.hasNext();
         }
 
         @Override
-        public final K nextKey() {
+        public K nextKey() {
             Map.Entry<? extends K, ? extends V> n = source.next();
             this.value = n.getValue();
             return n.getKey();
         }
 
         @Override
-        public final V getValue() {
+        public V getValue() {
             return value;
         }
     }
@@ -66,12 +66,12 @@ final class MapIterators {
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return source.hasNext();
         }
 
         @Override
-        public final E next() {
+        public E next() {
             return mapper.apply(source.nextKey(), source.getValue());
         }
     }
@@ -84,12 +84,12 @@ final class MapIterators {
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return source.hasNext();
         }
 
         @Override
-        public final K next() {
+        public K next() {
             return source.nextKey();
         }
     }
@@ -102,12 +102,12 @@ final class MapIterators {
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return source.hasNext();
         }
 
         @Override
-        public final V next() {
+        public V next() {
             source.nextKey();
             return source.getValue();
         }
@@ -125,17 +125,17 @@ final class MapIterators {
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return source.hasNext();
         }
 
         @Override
-        public final K nextKey() {
+        public K nextKey() {
             return k = source.nextKey();
         }
 
         @Override
-        public final V getValue() {
+        public V getValue() {
             return mapper.apply(k, source.getValue());
         }
     }

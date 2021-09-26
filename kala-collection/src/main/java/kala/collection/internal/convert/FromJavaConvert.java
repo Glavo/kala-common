@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @StaticClass
@@ -319,6 +320,37 @@ public final class FromJavaConvert {
         }
 
         @Override
+        public V getOrDefault(K key, V defaultValue) {
+            return source.getOrDefault(key, defaultValue);
+        }
+
+        @Override
+        public V getOrElse(K key, @NotNull Supplier<? extends V> supplier) {
+            final Object res = ((Map<Object, Object>) source).getOrDefault(key, NULL_HOLE);
+            return res == NULL_HOLE ? supplier.get() : (V) res;
+        }
+
+        @Override
+        public <Ex extends Throwable> V getOrThrow(K key, @NotNull Supplier<? extends Ex> supplier) throws Ex {
+            Objects.requireNonNull(supplier);
+            final Object res = ((Map<Object, Object>) source).getOrDefault(key, NULL_HOLE);
+            if (res == null) {
+                throw supplier.get();
+            }
+            return (V) res;
+        }
+
+        @Override
+        public <Ex extends Throwable> V getOrThrowException(K key, @NotNull Ex exception) throws Ex {
+            Objects.requireNonNull(exception);
+            final Object res = ((Map<Object, Object>) source).getOrDefault(key, NULL_HOLE);
+            if (res == null) {
+                throw exception;
+            }
+            return (V) res;
+        }
+
+        @Override
         public boolean containsKey(K key) {
             return source.containsKey(key);
         }
@@ -338,6 +370,11 @@ public final class FromJavaConvert {
         }
 
         @Override
+        public @NotNull Map<K, V> asJava() {
+            return source;
+        }
+
+        @Override
         public @NotNull Option<V> put(K key, V value) {
             if (source.containsKey(key)) {
                 return Option.some(source.put(key, value));
@@ -350,6 +387,15 @@ public final class FromJavaConvert {
         @Override
         public void set(K key, V value) {
             source.put(key, value);
+        }
+
+        @Override
+        public @NotNull Option<V> putIfAbsent(K key, V value) {
+            if (source.containsKey(key)) {
+                return Option.some(source.put(key, value));
+            } else {
+                return Option.none();
+            }
         }
 
         @Override

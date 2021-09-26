@@ -264,7 +264,7 @@ public final class MutableHashMap<K, V> extends HashMapBase<K, V>
         }
     }
 
-    static final class AsJava<K, V> extends AsJavaConvert.MutableMapAsJava<K, V, MutableHashMap<K, V>> {
+    private static final class AsJava<K, V> extends AsJavaConvert.MutableMapAsJava<K, V, MutableHashMap<K, V>> {
 
         public AsJava(@NotNull MutableHashMap<K, V> source) {
             super(source);
