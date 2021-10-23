@@ -1,5 +1,6 @@
 package kala.control;
 
+import kala.function.CheckedFunction;
 import kala.function.CheckedRunnable;
 import kala.function.CheckedSupplier;
 import kala.annotations.Covariant;
@@ -17,7 +18,7 @@ import java.util.function.Function;
 
 @SuppressWarnings("unchecked")
 @Sealed(subclasses = {Try.Success.class, Try.Failure.class})
-public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializable {
+public abstract class Try<@Covariant T> implements Serializable {
     Try() {
     }
 
@@ -50,14 +51,24 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
         throw (E) throwable;
     }
 
+    public static boolean isFatal(Throwable throwable) {
+        return throwable instanceof InterruptedException
+                || throwable instanceof LinkageError
+                || throwable instanceof ThreadDeath
+                || throwable instanceof VirtualMachineError;
+    }
+
     @Contract("_ -> new")
     public static <T> Try.@NotNull Success<T> success(T value) {
-        return value != null ? new Success<>(value) : (Success<T>) Success.NULL;
+        return value == null ? (Success<T>) Success.NULL : new Success<>(value);
     }
 
     @Contract("_ -> new")
     public static <T> Try.@NotNull Failure<T> failure(@NotNull Throwable throwable) {
         Objects.requireNonNull(throwable);
+        if (isFatal(throwable)) {
+            sneakyThrow(throwable);
+        }
         return new Try.Failure<>(throwable);
     }
 
@@ -78,6 +89,16 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
             return success(callable.call());
         } catch (Throwable throwable) {
             return failure(throwable);
+        }
+    }
+
+    public static @NotNull Try<Void> run(@NotNull CheckedRunnable<?> runnable) {
+        Objects.requireNonNull(runnable);
+        try {
+            runnable.runChecked();
+            return (Try<Void>) Success.NULL;
+        } catch (Throwable ex) {
+            return Try.failure(ex);
         }
     }
 
@@ -105,9 +126,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
      *
      * @return {@code true} if the {@code Try} is {@code Failure}, otherwise {@code false}
      */
-    public final boolean isFailure() {
-        return !isSuccess();
-    }
+    public abstract boolean isFailure();
 
     /**
      * Returns {@code true} if the {@code Try} contain a value, otherwise return {@code false}.
@@ -136,43 +155,43 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
     @Flow(sourceIsContainer = true)
     public abstract T get();
 
-    public abstract @NotNull Throwable getThrowable();
+    public abstract @NotNull Throwable getCause();
 
-    public abstract @Nullable Throwable getThrowableOrNull();
+    public abstract @Nullable Throwable getCauseOrNull();
 
-    public final @NotNull Option<Throwable> getThrowableOption() {
-        return Option.of(getThrowableOrNull());
+    public final @NotNull Option<Throwable> getCauseOption() {
+        return Option.of(getCauseOrNull());
     }
 
-    public abstract @NotNull Success<T> recover(@NotNull Function<? super Throwable, ? extends T> op);
+    public abstract @NotNull Try<T> recover(@NotNull CheckedFunction<? super Throwable, ? extends T, ?> op);
 
-    public abstract @NotNull Try<T> recover(
-            @NotNull Class<? extends Throwable> type, @NotNull Function<? super Throwable, ? extends T> op);
+    public abstract <X> @NotNull Try<T> recover(
+            @NotNull Class<? extends X> type, @NotNull CheckedFunction<? super X, ? extends T, ?> op);
 
-    public abstract @NotNull Try<T> recoverWith(
-            @NotNull Class<? extends Throwable> type, @NotNull Function<? super Throwable, ? extends Try<? extends T>> op);
+    public abstract <X> @NotNull Try<T> recoverWith(
+            @NotNull Class<? extends X> type, @NotNull CheckedFunction<? super X, ? extends Try<? extends T>, ?> op);
 
-    public abstract @NotNull Try<T> recoverWith(@NotNull Function<? super Throwable, ? extends Try<? extends T>> op);
+    public abstract @NotNull Try<T> recoverWith(@NotNull CheckedFunction<? super Throwable, ? extends Try<? extends T>, ?> op);
 
     /**
      * If the {@code Try} is a {@code Failure}, throw the {@code throwable}, otherwise returns {@code this}.
      *
-     * @param <E> the type of the {@code throwable}
+     * @param <Ex> the type of the {@code throwable}
      * @return {@code this} if the {@code Try} is a {@code Success}
-     * @throws E if the {@code Try} is a {@code Failure}
+     * @throws Ex if the {@code Try} is a {@code Failure}
      */
-    public abstract <E extends Throwable> @NotNull Success<T> rethrow() throws E;
+    public abstract <Ex extends Throwable> @NotNull Success<T> rethrow() throws Ex;
 
     /**
      * If the {@code Try} is a {@code Failure} and the {@code throwable} is an instance of {@code type},
      * throw the {@code throwable}, otherwise returns {@code this}.
      *
-     * @param <E> the type of the {@code throwable}
+     * @param <Ex> the type of the {@code throwable}
      * @return {@code this} if the {@code Try} is a {@code Success}
      * or the {@code throwable} not an instance of {@code type}
-     * @throws E if the {@code Try} is a {@code Failure} and the {@code throwable}'s type is {@code type}
+     * @throws Ex if the {@code Try} is a {@code Failure} and the {@code throwable}'s type is {@code type}
      */
-    public abstract <E extends Throwable> @NotNull Try<T> rethrow(@NotNull Class<? extends E> type) throws E;
+    public abstract <Ex extends Throwable> @NotNull Try<T> rethrow(@NotNull Class<? extends Ex> type) throws Ex;
 
     @Contract("-> new")
     public abstract @NotNull Either<@NotNull Throwable, T> toEither();
@@ -180,8 +199,9 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
     /**
      * {@inheritDoc}
      */
-    @Override
-    public abstract <U> @NotNull Try<U> map(@NotNull Function<? super T, ? extends U> mapper);
+    public abstract <U> @NotNull Try<U> map(@NotNull CheckedFunction<? super T, ? extends U, ?> mapper);
+
+    public abstract <U> @NotNull Try<U> flatMap(@NotNull CheckedFunction<? super T, ? extends Try<? extends U>, ?> mapper);
 
     public static final class Success<T> extends Try<T> {
         private static final long serialVersionUID = 2848103842157024577L;
@@ -195,12 +215,14 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
             this.value = value;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public boolean isSuccess() {
             return true;
+        }
+
+        @Override
+        public boolean isFailure() {
+            return false;
         }
 
         /**
@@ -215,7 +237,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          * {@inheritDoc}
          */
         @Override
-        public @NotNull Throwable getThrowable() {
+        public @NotNull Throwable getCause() {
             throw new NoSuchElementException("Try.Success.getThrowable");
         }
 
@@ -223,7 +245,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          * {@inheritDoc}
          */
         @Override
-        public @Nullable Throwable getThrowableOrNull() {
+        public @Nullable Throwable getCauseOrNull() {
             return null;
         }
 
@@ -232,7 +254,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          */
         @Override
         @Contract("_-> this")
-        public @NotNull Success<T> recover(@NotNull Function<? super Throwable, ? extends T> op) {
+        public @NotNull Try<T> recover(@NotNull CheckedFunction<? super Throwable, ? extends T, ?> op) {
             return this;
         }
 
@@ -241,9 +263,9 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          */
         @Override
         @Contract("_, _ -> this")
-        public @NotNull Success<T> recover(
-                @NotNull Class<? extends Throwable> type,
-                @NotNull Function<? super Throwable, ? extends T> op) {
+        public <X> @NotNull Success<T> recover(
+                @NotNull Class<? extends X> type,
+                @NotNull CheckedFunction<? super X, ? extends T, ?> op) {
             return this;
         }
 
@@ -252,7 +274,7 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          */
         @Override
         @Contract("_ -> this")
-        public @NotNull Success<T> recoverWith(@NotNull Function<? super Throwable, ? extends Try<? extends T>> op) {
+        public @NotNull Success<T> recoverWith(@NotNull CheckedFunction<? super Throwable, ? extends Try<? extends T>, ?> op) {
             return this;
         }
 
@@ -261,9 +283,9 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          */
         @Override
         @Contract("_, _ -> this")
-        public @NotNull Success<T> recoverWith(
-                @NotNull Class<? extends Throwable> type,
-                @NotNull Function<? super Throwable, ? extends Try<? extends T>> op) {
+        public <X> @NotNull Success<T> recoverWith(
+                @NotNull Class<? extends X> type,
+                @NotNull CheckedFunction<? super X, ? extends Try<? extends T>, ?> op) {
             return this;
         }
 
@@ -296,8 +318,22 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          * {@inheritDoc}
          */
         @Override
-        public <U> @NotNull Success<U> map(@NotNull Function<? super T, ? extends U> mapper) {
-            return new Success<>(mapper.apply(value));
+        public <U> @NotNull Try<U> map(@NotNull CheckedFunction<? super T, ? extends U, ?> mapper) {
+            try {
+                return Try.success(mapper.applyChecked(value));
+            } catch (Throwable ex) {
+                return Try.failure(ex);
+            }
+        }
+
+        @Override
+        public <U> @NotNull Try<U> flatMap(@NotNull CheckedFunction<? super T, ? extends Try<? extends U>, ?> mapper) {
+            Objects.requireNonNull(mapper);
+            try {
+                return (Try<U>) mapper.applyChecked(value);
+            } catch (Throwable ex) {
+                return Try.failure(ex);
+            }
         }
 
         /**
@@ -343,12 +379,14 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
             this.throwable = throwable;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public boolean isSuccess() {
             return false;
+        }
+
+        @Override
+        public boolean isFailure() {
+            return true;
         }
 
         /**
@@ -361,12 +399,12 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
         }
 
         @Override
-        public @NotNull Throwable getThrowable() {
+        public @NotNull Throwable getCause() {
             return throwable;
         }
 
         @Override
-        public @NotNull Throwable getThrowableOrNull() {
+        public @NotNull Throwable getCauseOrNull() {
             return throwable;
         }
 
@@ -375,40 +413,59 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          */
         @Override
         @Contract("_ -> new")
-        public @NotNull Success<T> recover(@NotNull Function<? super Throwable, ? extends T> op) {
-            return Try.success(op.apply(throwable));
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public @NotNull Try<T> recover(
-                @NotNull Class<? extends Throwable> type,
-                @NotNull Function<? super Throwable, ? extends T> op) {
-            if (type.isInstance(throwable)) {
-                return Try.success(op.apply(throwable));
+        public @NotNull Try<T> recover(@NotNull CheckedFunction<? super Throwable, ? extends T, ?> op) {
+            Objects.requireNonNull(op);
+            try {
+                return Try.success(op.applyChecked(throwable));
+            } catch (Throwable ex) {
+                return Try.failure(ex);
             }
-            return this;
         }
 
         /**
          * {@inheritDoc}
          */
         @Override
-        public @NotNull Try<T> recoverWith(@NotNull Function<? super Throwable, ? extends Try<? extends T>> op) {
-            return narrow(op.apply(throwable));
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public @NotNull Try<T> recoverWith(
-                @NotNull Class<? extends Throwable> type,
-                @NotNull Function<? super Throwable, ? extends Try<? extends T>> op) {
+        public <X> @NotNull Try<T> recover(
+                @NotNull Class<? extends X> type,
+                @NotNull CheckedFunction<? super X, ? extends T, ?> op) {
             if (type.isInstance(throwable)) {
-                return narrow(op.apply(throwable));
+                try {
+                    return Try.success(op.applyChecked((X) throwable));
+                } catch (Throwable ex) {
+                    return Try.failure(ex);
+                }
+            } else {
+                return this;
+            }
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public @NotNull Try<T> recoverWith(@NotNull CheckedFunction<? super Throwable, ? extends Try<? extends T>, ?> op) {
+            try {
+                return (Try<T>) op.applyChecked(throwable);
+            } catch (Throwable ex) {
+                return Try.failure(ex);
+            }
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public <X> @NotNull Try<T> recoverWith(
+                @NotNull Class<? extends X> type,
+                @NotNull CheckedFunction<? super X, ? extends Try<? extends T>, ?> op) {
+            Objects.requireNonNull(op);
+            if (type.isInstance(throwable)) { // implicit null check of type
+                try {
+                    return (Try<T>) op.applyChecked((X) throwable);
+                } catch (Throwable ex) {
+                    return Try.failure(ex);
+                }
             }
             return this;
         }
@@ -443,8 +500,13 @@ public abstract class Try<@Covariant T> implements OptionContainer<T>, Serializa
          * {@inheritDoc}
          */
         @Override
-        public <U> @NotNull Failure<U> map(@NotNull Function<? super T, ? extends U> mapper) {
-            return (Failure<U>) this;
+        public <U> @NotNull Try<U> map(@NotNull CheckedFunction<? super T, ? extends U, ?> mapper) {
+            return (Try<U>) this;
+        }
+
+        @Override
+        public @NotNull <U> Try<U> flatMap(@NotNull CheckedFunction<? super T, ? extends Try<? extends U>, ?> mapper) {
+            return (Try<U>) this;
         }
 
         /**

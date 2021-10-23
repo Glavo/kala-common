@@ -1,7 +1,7 @@
 rootProject.name = "kala-common"
 
 include(
-        "kala-base",
-        "kala-collection",
-        "benchmark"
+    "kala-base",
+    "kala-collection",
+    "benchmark"
 )

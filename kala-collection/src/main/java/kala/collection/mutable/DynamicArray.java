@@ -539,10 +539,10 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
     }
 
     @Override
-    @SuppressWarnings("SuspiciousSystemArraycopy")
     public <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
         final int size = this.size;
         U[] arr = generator.apply(size);
+        //noinspection SuspiciousSystemArraycopy
         System.arraycopy(elements, 0, arr, 0, size);
         return arr;
     }

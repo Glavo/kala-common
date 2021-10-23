@@ -721,7 +721,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public @NotNull <U> ImmutableArray<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+    public <U> @NotNull ImmutableArray<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
         final DynamicArray<U> builder = new DynamicArray<>();
         Consumer<U> consumer = builder::append;
 
@@ -733,7 +733,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
     }
 
     @Override
-    public @NotNull <U> ImmutableArray<U> mapIndexedMulti(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+    public <U> @NotNull ImmutableArray<U> mapIndexedMulti(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
         final DynamicArray<U> builder = new DynamicArray<>();
         Consumer<U> consumer = builder::append;
 
