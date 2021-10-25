@@ -1,6 +1,5 @@
 package kala.control;
 
-import kala.control.Option;
 import org.junit.jupiter.api.*;
 
 import java.io.ByteArrayInputStream;
