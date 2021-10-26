@@ -37,7 +37,7 @@ public interface CheckedFunction<T, R, Ex extends Throwable> extends Function<T,
         try {
             return applyChecked(t);
         } catch (Throwable e) {
-            throw Try.sneakyThrow(e);
+            return Try.sneakyThrow(e);
         }
     }
 

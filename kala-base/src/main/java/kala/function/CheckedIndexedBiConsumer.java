@@ -19,7 +19,7 @@ public interface CheckedIndexedBiConsumer<T, U, Ex extends Throwable> extends In
         try {
             acceptChecked(index, t, u);
         } catch (Throwable e) {
-            throw Try.sneakyThrow(e);
+            Try.sneakyThrow(e);
         }
     }
 

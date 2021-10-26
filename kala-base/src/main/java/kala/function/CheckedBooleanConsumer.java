@@ -20,7 +20,7 @@ public interface CheckedBooleanConsumer<Ex extends Throwable> extends BooleanCon
         try {
             acceptChecked(value);
         } catch (Throwable e) {
-            throw Try.sneakyThrow(e);
+            Try.sneakyThrow(e);
         }
     }
 

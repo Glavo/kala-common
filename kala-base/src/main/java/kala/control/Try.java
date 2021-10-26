@@ -4,18 +4,16 @@ import kala.collection.base.Iterators;
 import kala.collection.base.Traversable;
 import kala.function.*;
 import kala.annotations.Covariant;
-import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.concurrent.Callable;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
@@ -25,7 +23,7 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
     private static final int SUCCESS_HASH_MAGIC = 518848667;
     private static final int FAILURE_HASH_MAGIC = 1918688519;
 
-    private static final Try<?> NULL = new Try<>(null, null);
+    private static final Try<Void> VOID = new Try<>(null, null);
 
     private final T value;
     private final Throwable cause;
@@ -44,15 +42,62 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
         // do nothing
     }
 
+    /**
+     * An alternative to the {@code throw} statement, used as an expression.
+     *
+     * <pre>{@code
+     * var a = condition ? value : throwException(new IllegalArgumentException());
+     * }</pre>
+     */
     @Contract("_ -> fail")
-    public static RuntimeException sneakyThrow(Throwable throwable) {
-        sneakyThrow0(throwable);
-        return null;
+    public static <R, Ex extends Throwable> R throwException(Ex exception) throws Ex {
+        throw exception;
     }
 
-    private static <Ex extends Throwable> void sneakyThrow0(Throwable throwable) throws Ex {
-        throw (Ex) throwable;
+    @Contract("_ -> fail")
+    public static <R> R sneakyThrow(Throwable exception) {
+        sneakyThrow0(exception);
+        throw new AssertionError(); // make compiler happy
     }
+
+    private static <Ex extends Throwable> void sneakyThrow0(Throwable exception) throws Ex {
+        throw (Ex) exception;
+    }
+
+    public static String getStackTraceAsString(@NotNull Throwable exception) {
+        Objects.requireNonNull(exception);
+
+        try {
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream(4096);
+            try (PrintStream stream = new PrintStream(buffer, false, "UTF-8")) {
+                exception.printStackTrace(stream);
+            }
+            return buffer.toString("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new InternalError(e);
+        }
+    }
+
+    public static String getStackTraceAsString(StackTraceElement @NotNull [] stackTrace) {
+        StringBuilder builder = new StringBuilder(4096);
+        String lineSeparator = System.getProperty("line.separator");
+
+        for (StackTraceElement traceElement : stackTrace) {
+            builder.append("\tat ").append(traceElement).append(lineSeparator);
+        }
+        return builder.toString();
+    }
+
+    public static String getStackTraceAsString(@NotNull Iterable<StackTraceElement> stackTrace) {
+        StringBuilder builder = new StringBuilder(4096);
+        String lineSeparator = System.getProperty("line.separator");
+
+        for (StackTraceElement traceElement : stackTrace) {
+            builder.append("\tat ").append(traceElement).append(lineSeparator);
+        }
+        return builder.toString();
+    }
+
 
     public static boolean isFatal(Throwable throwable) {
         return throwable instanceof InterruptedException
@@ -61,21 +106,15 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
                 || throwable instanceof VirtualMachineError;
     }
 
-    @Contract("_ -> new")
     public static <T> @NotNull Try<T> success(T value) {
-        return value == null ? (Try<T>) NULL : new Try<>(value, null);
+        return new Try<>(value, null);
     }
 
-    @Contract("_ -> new")
     public static <T> @NotNull Try<T> failure(@NotNull Throwable throwable) {
         Objects.requireNonNull(throwable);
-        if (isFatal(throwable)) {
-            sneakyThrow(throwable);
-        }
         return new Try<>(null, throwable);
     }
 
-    @Contract("_ -> new")
     public static <T> @NotNull Try<T> of(@NotNull CheckedSupplier<? extends T, ?> supplier) {
         Objects.requireNonNull(supplier);
         try {
@@ -85,7 +124,6 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
         }
     }
 
-    @Contract("_ -> new")
     public static <T> @NotNull Try<T> ofCallable(@NotNull Callable<? extends T> callable) {
         Objects.requireNonNull(callable);
         try {
@@ -99,7 +137,7 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
         Objects.requireNonNull(runnable);
         try {
             runnable.runChecked();
-            return (Try<Void>) NULL;
+            return VOID;
         } catch (Throwable ex) {
             return failure(ex);
         }
@@ -109,7 +147,7 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
         Objects.requireNonNull(runnable);
         try {
             runnable.run();
-            return (Try<Void>) NULL;
+            return VOID;
         } catch (Throwable ex) {
             return failure(ex);
         }
@@ -178,10 +216,9 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
         return cause != null;
     }
 
-    @Flow(sourceIsContainer = true)
-    public <Ex extends Throwable> T get() throws Ex {
+    public T get() {
         if (cause != null) {
-            throw (Ex) cause;
+            throw new NoSuchElementException();
         }
         return value;
     }
@@ -202,6 +239,27 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
         return cause == null ? value : supplier.get();
     }
 
+    public <Ex extends Throwable> T getOrThrow() throws Ex {
+        if (cause != null) {
+            throw (Ex) cause;
+        }
+        return value;
+    }
+
+    public <Ex extends Throwable> T getOrThrow(@NotNull Supplier<? extends Ex> supplier) throws Ex {
+        if (cause != null) {
+            throw supplier.get();
+        }
+        return value;
+    }
+
+    public <Ex extends Throwable> T getOrThrowException(Ex exception) throws Ex {
+        if (cause != null) {
+            throw exception;
+        }
+        return value;
+    }
+
     public @NotNull Throwable getCause() {
         if (cause == null) {
             throw new UnsupportedOperationException();
@@ -215,6 +273,14 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
 
     public @NotNull Option<Throwable> getCauseOption() {
         return Option.of(cause);
+    }
+
+    public Throwable getCauseOrDefault(Throwable defaultValue) {
+        return cause != null ? cause : defaultValue;
+    }
+
+    public Throwable getCauseOrElse(@NotNull Supplier<? extends Throwable> supplier) {
+        return cause != null ? cause : supplier.get();
     }
 
     public @NotNull Try<T> recover(@NotNull CheckedFunction<? super Throwable, ? extends T, ?> op) {
@@ -298,9 +364,19 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
         return this;
     }
 
-    @Contract("-> new")
+    public @NotNull Try<T> rethrowFatal() {
+        if (isFatal(cause)) {
+            sneakyThrow(cause);
+        }
+        return this;
+    }
+
     public @NotNull Either<@NotNull Throwable, T> toEither() {
         return cause == null ? Either.right(value) : Either.left(cause);
+    }
+
+    public @NotNull Result<T, @NotNull Throwable> toResult() {
+        return cause == null ? Result.ok(value) : Result.err(cause);
     }
 
     /**
@@ -337,6 +413,13 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
     }
 
     @Override
+    public void forEach(@NotNull Consumer<? super T> action) {
+        if (cause == null) {
+            action.accept(value);
+        }
+    }
+
+    @Override
     public int hashCode() {
         if (cause == null) {
             return Objects.hashCode(value) + SUCCESS_HASH_MAGIC;
@@ -347,6 +430,9 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
         if (!(o instanceof Try)) {
             return false;
         }

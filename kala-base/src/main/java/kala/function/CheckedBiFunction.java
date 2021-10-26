@@ -23,7 +23,7 @@ public interface CheckedBiFunction<T, U, R, Ex extends Throwable> extends BiFunc
         try {
             return applyChecked(t, u);
         } catch (Throwable e) {
-            throw Try.sneakyThrow(e);
+            return Try.sneakyThrow(e);
         }
     }
 

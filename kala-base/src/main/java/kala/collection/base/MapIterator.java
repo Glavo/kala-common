@@ -16,6 +16,7 @@ import java.util.function.BiPredicate;
 
 @SuppressWarnings("unchecked")
 public interface MapIterator<K, V> extends Iterator<Tuple2<K, V>> {
+
     static <K, V> @NotNull MapIterator<K, V> empty() {
         return (MapIterator<K, V>) MapIterators.EMPTY;
     }
@@ -24,6 +25,10 @@ public interface MapIterator<K, V> extends Iterator<Tuple2<K, V>> {
         if (!it.hasNext()) { // implicit null check of it
             return empty();
         }
+        if (it instanceof MapIterator) {
+            return (MapIterator<K, V>) it;
+        }
+
         return new MapIterators.OfIterator<>(it);
     }
 

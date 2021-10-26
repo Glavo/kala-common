@@ -45,7 +45,7 @@ public interface CheckedConsumer<T, Ex extends Throwable> extends Consumer<T> {
         try {
             acceptChecked(t);
         } catch (Throwable ex) {
-            throw Try.sneakyThrow(ex);
+            Try.sneakyThrow(ex);
         }
     }
 

@@ -21,7 +21,7 @@ public interface CheckedTriFunction<T, U, V, R, Ex extends Throwable> extends Tr
         try {
             return applyChecked(t, u, v);
         } catch (Throwable e) {
-            throw Try.sneakyThrow(e);
+            return Try.sneakyThrow(e);
         }
     }
 

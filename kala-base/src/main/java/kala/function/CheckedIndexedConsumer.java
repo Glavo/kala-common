@@ -20,7 +20,7 @@ public interface CheckedIndexedConsumer<T, Ex extends Throwable> extends Indexed
         try {
             acceptChecked(index, t);
         } catch (Throwable e) {
-            throw Try.sneakyThrow(e);
+            Try.sneakyThrow(e);
         }
     }
 
