@@ -12,7 +12,6 @@ import java.util.Objects;
 import java.util.function.Function;
 
 @SuppressWarnings("unchecked")
-@Sealed(subclasses = {Result.Ok.class, Result.Err.class})
 public abstract class Result<@Covariant T, @Covariant E> implements OptionContainer<T>, Serializable {
     Result() {
     }
@@ -22,23 +21,13 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
         return (Result<T, E>) result;
     }
 
-    @Contract(value = "_ -> param1", pure = true)
-    public static <T, E> Result.Ok<T, E> narrow(Result.Ok<? extends T, ? extends E> ok) {
-        return (Result.Ok<T, E>) ok;
-    }
-
-    @Contract(value = "_ -> param1", pure = true)
-    public static <T, E> Result.Err<T, E> narrow(Result.Err<? extends T, ? extends E> err) {
-        return (Result.Err<T, E>) err;
-    }
-
     @Contract("_ -> new")
-    public static <T, E> Result.@NotNull Ok<T, E> ok(T value) {
+    public static <T, E> Result<T, E> ok(T value) {
         return new Result.Ok<>(value);
     }
 
     @Contract("_ -> new")
-    public static <T, E> Result.@NotNull Err<T, E> err(E value) {
+    public static <T, E> Result<T, E> err(E value) {
         return new Result.Err<>(value);
     }
 
@@ -70,7 +59,7 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
     @Contract("-> new")
     public abstract @NotNull Either<E, T> toEither();
 
-    public static final class Ok<T, E> extends Result<T, E> {
+    private static final class Ok<T, E> extends Result<T, E> {
         private static final long serialVersionUID = -7623929614408282297L;
         private static final int HASH_MAGIC = 227556744;
 
@@ -115,7 +104,7 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
          */
         @Override
         @Contract("_ -> new")
-        public <U> @NotNull Ok<U, E> map(@NotNull Function<? super T, ? extends U> mapper) {
+        public <U> @NotNull Result<U, E> map(@NotNull Function<? super T, ? extends U> mapper) {
             return Result.ok(mapper.apply(value));
         }
 
@@ -176,7 +165,7 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
         }
     }
 
-    public static final class Err<T, E> extends Result<T, E> {
+    private static final class Err<T, E> extends Result<T, E> {
         private static final long serialVersionUID = -2334924456757611037L;
         private static final int HASH_MAGIC = 1638357662;
 
@@ -218,7 +207,7 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
 
         @Override
         @Contract("_ -> this")
-        public <U> Result.@NotNull Err<U, E> map(@NotNull Function<? super T, ? extends U> mapper) {
+        public <U> @NotNull Result<U, E> map(@NotNull Function<? super T, ? extends U> mapper) {
             return (Result.Err<U, E>) this;
         }
 
@@ -226,7 +215,7 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
          * {@inheritDoc}
          */
         @Override
-        public <U> Result.@NotNull Err<T, U> mapErr(@NotNull Function<? super E, ? extends U> mapper) {
+        public <U> @NotNull Result<T, U> mapErr(@NotNull Function<? super E, ? extends U> mapper) {
             return Result.err(mapper.apply(value));
         }
 
