@@ -1,7 +1,6 @@
 package kala.control;
 
 import kala.annotations.Covariant;
-import kala.annotations.Sealed;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,6 +12,8 @@ import java.util.function.Function;
 
 @SuppressWarnings("unchecked")
 public abstract class Result<@Covariant T, @Covariant E> implements OptionContainer<T>, Serializable {
+    private static final long serialVersionUID = -3388441653871179293L;
+
     Result() {
     }
 
@@ -48,6 +49,8 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
     public abstract E getErr();
 
     public abstract @Nullable E getErrOrNull();
+
+    public abstract @NotNull Option<E> getErrOption();
 
     @Override
     public abstract <U> @NotNull Result<U, E> map(@NotNull Function<? super T, ? extends U> mapper);
@@ -97,6 +100,11 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
         @Override
         public @Nullable E getErrOrNull() {
             return null;
+        }
+
+        @Override
+        public @NotNull Option<E> getErrOption() {
+            return Option.none();
         }
 
         /**
@@ -166,13 +174,13 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
     }
 
     private static final class Err<T, E> extends Result<T, E> {
-        private static final long serialVersionUID = -2334924456757611037L;
+        private static final long serialVersionUID = 8182313103380510810L;
         private static final int HASH_MAGIC = 1638357662;
 
-        private final E value;
+        private final E err;
 
-        Err(E value) {
-            this.value = value;
+        Err(E err) {
+            this.err = err;
         }
 
         /**
@@ -197,12 +205,17 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
          */
         @Override
         public E getErr() {
-            return value;
+            return err;
         }
 
         @Override
         public @NotNull E getErrOrNull() {
-            return value;
+            return err;
+        }
+
+        @Override
+        public @NotNull Option<E> getErrOption() {
+            return Option.some(err);
         }
 
         @Override
@@ -216,7 +229,7 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
          */
         @Override
         public <U> @NotNull Result<T, U> mapErr(@NotNull Function<? super E, ? extends U> mapper) {
-            return Result.err(mapper.apply(value));
+            return Result.err(mapper.apply(err));
         }
 
 
@@ -230,7 +243,7 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
          */
         @Override
         public @NotNull Either<E, T> toEither() {
-            return Either.left(value);
+            return Either.left(err);
         }
 
         //
@@ -249,7 +262,7 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
                 return false;
             }
 
-            return Objects.equals(value, ((Err<?, ?>) o).value);
+            return Objects.equals(err, ((Err<?, ?>) o).err);
         }
 
         /**
@@ -257,12 +270,12 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
          */
         @Override
         public int hashCode() {
-            return Objects.hashCode(value) + HASH_MAGIC;
+            return Objects.hashCode(err) + HASH_MAGIC;
         }
 
         @Override
         public String toString() {
-            return "Result.Err[" + value + "]";
+            return "Result.Err[" + err + "]";
         }
     }
 }

@@ -4,6 +4,8 @@ import kala.SerializationUtils;
 import org.junit.jupiter.api.*;
 
 import java.io.*;
+import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.LongAdder;
 
@@ -278,6 +280,12 @@ public class TryTest {
         assertSame(failure, failure.flatMap(it -> Try.success(it.length())));
         assertSame(failure, failure.flatMap(it -> failure));
         assertSame(failure, failure.flatMap(it -> Try.throwException(ex)));
+    }
+
+    @Test
+    public void iteratorTest() {
+        assertIterableEquals(List.of("foo"), Try.success("foo"));
+        assertIterableEquals(List.of(), Try.failure(new MyException()));
     }
 
     @Test

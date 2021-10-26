@@ -409,7 +409,7 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
 
     @Override
     public @NotNull Iterator<T> iterator() {
-        return cause != null ? Iterators.of(value) : Iterators.empty();
+        return cause == null ? Iterators.of(value) : Iterators.empty();
     }
 
     @Override
