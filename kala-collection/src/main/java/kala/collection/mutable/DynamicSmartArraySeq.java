@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.IntFunction;
@@ -504,6 +505,23 @@ public final class DynamicSmartArraySeq<E> extends AbstractDynamicSeq<E> impleme
                 return new Object[]{elem};
             default:
                 return Arrays.copyOf((Object[]) elem, size);
+        }
+    }
+
+    @Override
+    public <U> U @NotNull [] toArray(@NotNull Class<U> type) {
+        final int size = this.size;
+        U[] arr = (U[]) Array.newInstance(type, size);
+        switch (size) {
+            case 0:
+                return arr;
+            case 1:
+                arr[0] = (U) elem;
+                return arr;
+            default:
+                //noinspection SuspiciousSystemArraycopy
+                System.arraycopy(elem, 0, arr, 0, size);
+                return arr;
         }
     }
 

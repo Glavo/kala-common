@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -453,6 +454,20 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
         final Iterator<E> it = this.iterator();
         for (int i = 0; i < size; i++) {
             res[i] = it.next();
+        }
+        return res;
+    }
+
+    @Override
+    public <U> U @NotNull [] toArray(@NotNull Class<U> type) {
+        final int size = this.size;
+        final U[] res = (U[]) Array.newInstance(type, size);
+        if (size == 0) {
+            return res;
+        }
+        final Iterator<E> it = this.iterator();
+        for (int i = 0; i < size; i++) {
+            res[i] = (U) it.next();
         }
         return res;
     }

@@ -496,6 +496,19 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
         return toArray(Object[]::new);
     }
 
+    default <U /*super E*/> U @NotNull [] toArray(@NotNull Class<U> type) {
+        int s = knownSize();
+        if (s == 0) {
+            return (U[]) Array.newInstance(type, 0);
+        } else if (s > 0) {
+            U[] arr = (U[]) Array.newInstance(type, s);
+            this.copyToArray(arr);
+            return arr;
+        } else {
+            return Iterators.toArray((Iterator<U>) iterator(), type);
+        }
+    }
+
     default <U /*super E*/> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
         int s = knownSize();
         if (s == 0) {
@@ -547,10 +560,6 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
             throw new ConcurrentModificationException();
         }
         return res;
-    }
-
-    default <U /*super E*/> U @NotNull [] toArray(@NotNull Class<U> type) {
-        return toArray(GenericArrays.generator(type));
     }
 
     //endregion

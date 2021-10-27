@@ -598,6 +598,13 @@ final class Synchronized {
         }
 
         @Override
+        public <U> U @NotNull [] toArray(@NotNull Class<U> type) {
+            synchronized (mutex) {
+                return source.toArray(type);
+            }
+        }
+
+        @Override
         public <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
             synchronized (mutex) {
                 return source.toArray(generator);
@@ -608,13 +615,6 @@ final class Synchronized {
         public <U> U @NotNull [] toArray(U @NotNull [] array) {
             synchronized (mutex) {
                 return source.toArray(array);
-            }
-        }
-
-        @Override
-        public <U> U @NotNull [] toArray(@NotNull Class<U> type) {
-            synchronized (mutex) {
-                return source.toArray(type);
             }
         }
 

@@ -35,7 +35,7 @@ public final class ObjectArrays {
     public static final Object[] EMPTY = new Object[0];
 
     private static final IntFunction<Object[]> GENERATOR = (IntFunction<Object[]> & Serializable) Object[]::new;
-    private static final CollectionFactory<Object, ?, Object[]> FACTORY = GenericArrays.factory(GENERATOR);
+    private static final CollectionFactory<Object, ?, Object[]> FACTORY = GenericArrays.factory(Object.class);
 
     //region Static Factories
 
@@ -47,6 +47,11 @@ public final class ObjectArrays {
     @Contract(pure = true)
     public static @NotNull CollectionFactory<Object, ?, Object[]> factory() {
         return FACTORY;
+    }
+
+    @Contract("_ -> new")
+    public static Object @NotNull [] create(int length) {
+        return new Object[length];
     }
 
     @Contract(value = "_ -> param1", pure = true)
@@ -75,14 +80,7 @@ public final class ObjectArrays {
     }
 
     public static Object @NotNull [] from(@NotNull Iterator<?> it) {
-        if (!it.hasNext()) {
-            return EMPTY;
-        }
-        ArrayList<Object> list = new ArrayList<>();
-        while (it.hasNext()) {
-            list.add(it.next());
-        }
-        return list.toArray();
+        return Iterators.toArray(it);
     }
 
     public static Object @NotNull [] from(@NotNull Stream<?> stream) {
@@ -127,7 +125,7 @@ public final class ObjectArrays {
     //region Collection Operations
 
     public static @NotNull String className(Object @NotNull [] array) {
-        return "Array<Object>";
+        return "Array<java.lang.Object>";
     }
 
     public static @NotNull Iterator<Object> iterator(Object @NotNull [] array) {

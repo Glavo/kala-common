@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.lang.reflect.Array;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -853,6 +854,18 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
 
         for (int i = 0; i < size; i++) {
             arr[i] = get(i);
+        }
+        return arr;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    default <U> U @NotNull [] toArray(@NotNull Class<U> type) {
+        final int size = size();
+        U[] arr = (U[]) Array.newInstance(type, size); // implicit null check of type
+
+        for (int i = 0; i < size; i++) {
+            arr[i] = (U) get(i);
         }
         return arr;
     }

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.function.IntFunction;
 
+import kala.collection.base.GenericArrays;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -49,20 +50,24 @@ public abstract class Tuple implements AnyTuple, Serializable {
     public abstract <H> @NotNull HList<H, ? extends Tuple> cons(H head);
 
     /**
-     * Returns an array containing all of the elements in this tuple.
+     * Returns an array containing all the elements in this tuple.
      *
-     * @return an array containing all of the elements in this tuple
+     * @return an array containing all the elements in this tuple
      */
     @Contract(value = "-> new", pure = true)
     public Object @NotNull [] toArray() {
         return toArray(Object[]::new);
     }
 
+    public <U> U @NotNull [] toArray(@NotNull Class<U> type) {
+        return toArray(GenericArrays.generator(type));
+    }
+
     /**
-     * Returns an array containing all of the elements in this tuple, using the provided {@code
+     * Returns an array containing all the elements in this tuple, using the provided {@code
      * generator} function to allocate the returned array.
      *
-     * @return an array containing all of the elements in this tuple
+     * @return an array containing all the elements in this tuple
      * @throws ArrayStoreException if any element of this tuple cannot be stored in the generated
      *                             array because the runtime type does not match
      */

@@ -535,7 +535,12 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
 
     @Override
     public Object @NotNull [] toArray() {
-        return Arrays.copyOf(this.elements, size);
+        return Arrays.copyOf(elements, size);
+    }
+
+    @Override
+    public <U> U @NotNull [] toArray(@NotNull Class<U> type) {
+        return Arrays.copyOf(elements, size, GenericArrays.arrayType(type));
     }
 
     @Override

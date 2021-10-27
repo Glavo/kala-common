@@ -19,30 +19,36 @@ import java.util.function.*;
 import java.util.stream.Stream;
 
 @StaticClass
-@SuppressWarnings({"unchecked", "CastCanBeRemovedNarrowingVariableType"})
+@SuppressWarnings({"unchecked", "rawtypes", "CastCanBeRemovedNarrowingVariableType"})
 public final class GenericArrays {
     private GenericArrays() {
     }
 
     public static final Object[] EMPTY_OBJECT_ARRAY = ObjectArrays.EMPTY;
+    public static final String[] EMPTY_STRING_ARRAY = new String[0];
 
     //region Static Factories
 
     @Contract(pure = true)
     public static @NotNull <E> IntFunction<E[]> generator(@NotNull Class<E> type) {
         Objects.requireNonNull(type);
-        return length -> (E[]) Array.newInstance(type, length);
+        return length -> create(type, length);
     }
 
     @Contract(pure = true)
-    public static <E> @NotNull CollectionFactory<E, ?, E[]> factory(@NotNull Class<E> type) {
-        return factory(generator(type));
+    public static <E> @NotNull CollectionFactory<E, ?, E[]> factory(@NotNull Class<E> componentType) {
+        Objects.requireNonNull(componentType);
+        return new GenericArrays.Factory<>(componentType);
     }
 
-    @Contract(pure = true)
-    public static <E> @NotNull CollectionFactory<E, ?, E[]> factory(@NotNull IntFunction<E[]> generator) {
-        Objects.requireNonNull(generator);
-        return new GenericArrays.Factory<>(generator);
+    public static <E> @NotNull Class<E[]> arrayType(@NotNull Class<E> type) {
+        return type == Object.class
+                ? (Class) Object[].class
+                : (Class<E[]>) Array.newInstance(type, 0).getClass();
+    }
+
+    public static <E> E @NotNull [] create(@NotNull Class<E> type, int length) {
+        return (E[]) Array.newInstance(type, length);
     }
 
     @Contract(value = "_ -> param1", pure = true)
@@ -50,80 +56,73 @@ public final class GenericArrays {
         return values;
     }
 
-    public static <E> E @NotNull [] of(@NotNull IntFunction<E[]> generator, E... values) {
-        return from(generator, values);
+    public static <E> E @NotNull [] of(@NotNull Class<E> type, E... values) {
+        return from(type, values);
     }
 
     public static <E> E @NotNull [] from(E @NotNull [] values) {
         return values.clone();
     }
 
-    public static <E> E @NotNull [] from(@NotNull IntFunction<E[]> generator, E[] values) {
+    public static <E> E @NotNull [] from(@NotNull Class<E> type, E[] values) {
         final int length = values.length; // implicit null check of values
-        E[] res = generator.apply(length);
+        E[] res = create(type, length);
         System.arraycopy(values, 0, res, 0, length);
         return res;
     }
 
-    public static <E> E @NotNull [] from(@NotNull IntFunction<E[]> generator, @NotNull Iterable<? extends E> values) {
+    public static <E> E @NotNull [] from(@NotNull Class<E> type, @NotNull Iterable<? extends E> values) {
         Objects.requireNonNull(values);
-        Objects.requireNonNull(generator);
+        Objects.requireNonNull(type);
 
         if (values instanceof Collection<?>) {
-            Collection<E> collection = (Collection<E>) values;
-            int size = collection.size();
-            E[] arr = generator.apply(size);
-            int idx = 0;
-            for (E e : collection) {
-                arr[idx++] = e;
-            }
-            return arr;
+            return ((Collection<? extends E>) values).toArray(create(type, 0));
         } else if (values instanceof Traversable<?>) {
-            return ((Traversable<E>) values).toArray(generator);
+            return ((Traversable<E>) values).toArray(type);
         } else {
             ArrayList<E> tmp = new ArrayList<>();
             for (E e : values) {
                 tmp.add(e);
             }
-            return tmp.toArray(generator.apply(tmp.size()));
+            return tmp.toArray(create(type, 0));
         }
     }
 
-    public static <E> E @NotNull [] from(@NotNull IntFunction<E[]> generator, @NotNull Iterator<? extends E> it) {
-        return Iterators.toArray(it, generator);
+    public static <E> E @NotNull [] from(@NotNull Class<E> type, @NotNull Iterator<? extends E> it) {
+        return Iterators.toArray(it, type);
     }
 
-    public static <E> E @NotNull [] from(@NotNull IntFunction<E[]> generator, @NotNull Stream<? extends E> stream) {
-        return stream.toArray(generator);
+    public static <E> E @NotNull [] from(@NotNull Class<E> type, @NotNull Stream<? extends E> stream) {
+        return stream.toArray(generator(type));
     }
 
-    public static <E> E @NotNull [] fill(@NotNull IntFunction<E[]> generator, int n, E value) {
+    public static <E> E @NotNull [] fill(@NotNull Class<E> type, int n, E value) {
         if (n <= 0) {
-            return generator.apply(0);
+            return create(type, 0);
         }
-        E[] ans = generator.apply(n);
+        E[] ans = create(type, n);
         if (value != null) {
             Arrays.fill(ans, value);
         }
         return ans;
     }
 
-    public static <E> E @NotNull [] fill(@NotNull IntFunction<E[]> generator, int n, @NotNull Supplier<? extends E> supplier) {
+    public static <E> E @NotNull [] fill(@NotNull Class<E> type, int n, @NotNull Supplier<? extends E> supplier) {
         if (n <= 0) {
-            return generator.apply(0);
+            return create(type, 0);
         }
-        E[] ans = generator.apply(n);
+        E[] ans = create(type, n);
         for (int i = 0; i < n; i++) {
             ans[i] = supplier.get();
         }
         return ans;
     }
 
-    public static <E> E @NotNull [] fill(@NotNull IntFunction<E[]> generator, int n, @NotNull IntFunction<? extends E> supplier) {
+    public static <E> E @NotNull [] fill(@NotNull Class<E> type, int n, @NotNull IntFunction<? extends E> supplier) {
         if (n <= 0) {
-            return generator.apply(0);
+            return create(type, 0);
         }
-        E[] ans = generator.apply(n);
+        E[] ans = create(type, n);
         for (int i = 0; i < n; i++) {
             ans[i] = supplier.apply(i);
         }
@@ -132,9 +131,9 @@ public final class GenericArrays {
 
     public static <E> E @NotNull [] wrapInArray(E element) {
         Class<?> cls = element == null ? Object.class : element.getClass();
-        Object arr = Array.newInstance(cls, 1);
-        Array.set(arr, 0, element);
-        return (E[]) arr;
+        E[] arr = (E[]) Array.newInstance(cls, 1);
+        arr[0] = element;
+        return arr;
     }
 
     //endregion
@@ -142,7 +141,7 @@ public final class GenericArrays {
     //region Collection Operations
 
     public static @NotNull String className(Object @NotNull [] array) {
-        return "Array<" + array.getClass().getComponentType().getSimpleName() + ">";
+        return "Array<" + array.getClass().getComponentType().getName() + ">";
     }
 
     public static <E> @NotNull Iterator<E> iterator(E @NotNull [] array) {
@@ -567,9 +566,9 @@ public final class GenericArrays {
         return Arrays.copyOf(array, count);
     }
 
-    public static <E, U> U @NotNull [] map(E @NotNull [] array, @NotNull IntFunction<U[]> generator, @NotNull Function<? super E, ? extends U> mapper) {
+    public static <E, U> U @NotNull [] map(E @NotNull [] array, @NotNull Class<U> targetType, @NotNull Function<? super E, ? extends U> mapper) {
         final int length = array.length; // implicit null check of array
-        final U[] res = generator.apply(length);
+        final U[] res = create(targetType, length);
         for (int i = 0; i < length; i++) {
             res[i] = mapper.apply(array[i]);
         }
@@ -578,10 +577,10 @@ public final class GenericArrays {
 
     public static <E, U> U @NotNull [] mapIndexed(
             E @NotNull [] array,
-            @NotNull IntFunction<U[]> generator,
+            @NotNull Class<U> targetType,
             @NotNull IndexedFunction<? super E, ? extends U> mapper) {
         final int length = array.length;
-        final U[] res = generator.apply(length);
+        final U[] res = create(targetType, length);
         for (int i = 0; i < length; i++) {
             res[i] = mapper.apply(i, array[i]);
         }
@@ -590,10 +589,10 @@ public final class GenericArrays {
 
     public static <E, U> @NotNull U @NotNull [] mapNotNull(
             E @NotNull [] array,
-            @NotNull IntFunction<U[]> generator,
+            @NotNull Class<U> targetType,
             @NotNull Function<? super E, ? extends @Nullable U> mapper) {
         final int length = array.length;
-        final U[] tmp = generator.apply(length);
+        final U[] tmp = create(targetType, length);
         int c = 0;
         for (E e : array) {
             U u = mapper.apply(e);
@@ -609,10 +608,10 @@ public final class GenericArrays {
 
     public static <E, U> @NotNull U @NotNull [] mapIndexedNotNull(
             E @NotNull [] array,
-            @NotNull IntFunction<U[]> generator,
+            @NotNull Class<U> targetType,
             @NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
         final int length = array.length;
-        final U[] tmp = generator.apply(length);
+        final U[] tmp = create(targetType, length);
         int c = 0;
         for (int i = 0; i < length; i++) {
             U u = mapper.apply(i, array[i]);
@@ -628,41 +627,44 @@ public final class GenericArrays {
 
     public static <E, U> U @NotNull [] mapMulti(
             E @NotNull [] array,
-            @NotNull IntFunction<U[]> generator,
+            @NotNull Class<U> targetType,
             @NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+        final U[] emptyArray = create(targetType, 0);
         if (array.length == 0) {
-            return generator.apply(0);
+            return emptyArray;
         }
         final ArrayList<U> tmp = new ArrayList<>();
         Consumer<U> consumer = tmp::add;
         for (E e : array) {
             mapper.accept(e, consumer);
         }
-        return tmp.toArray(generator.apply(tmp.size()));
+        return tmp.toArray(emptyArray);
     }
 
     public static <E, U> U @NotNull [] mapIndexedMulti(
             E @NotNull [] array,
-            @NotNull IntFunction<U[]> generator,
+            @NotNull Class<U> targetType,
             @NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+        final U[] emptyArray = create(targetType, 0);
         final int length = array.length;
         if (length == 0) {
-            return generator.apply(0);
+            return emptyArray;
         }
         final ArrayList<U> tmp = new ArrayList<>();
         Consumer<U> consumer = tmp::add;
         for (int i = 0; i < length; i++) {
             mapper.accept(i, array[i], consumer);
         }
-        return tmp.toArray(generator.apply(tmp.size()));
+        return tmp.toArray(emptyArray);
     }
 
     public static <E, U> U @NotNull [] flatMap(
             E @NotNull [] array,
-            @NotNull IntFunction<U[]> generator,
+            @NotNull Class<U> targetType,
             @NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
+        final U[] emptyArray = create(targetType, 0);
         if (array.length == 0) { // implicit null check of array
-            return generator.apply(0);
+            return emptyArray;
         }
         ArrayList<U> tmp = new ArrayList<>();
         for (E e : array) {
@@ -671,9 +673,7 @@ public final class GenericArrays {
             }
         }
 
-        U[] res = generator.apply(tmp.size());
-        tmp.toArray(res);
-        return res;
+        return tmp.toArray(emptyArray);
     }
 
     public static <E, U> Tuple2<E, U> @NotNull [] zip(E @NotNull [] array, U @NotNull [] other) {
@@ -1077,16 +1077,13 @@ public final class GenericArrays {
     }
 
     private static final class Factory<E> implements CollectionFactory<E, ArrayList<E>, E[]> {
-        @NotNull
-        private final IntFunction<E[]> generator;
-
+        // private final Class<E> elementType;
         private final E[] empty;
 
-        public Factory(@NotNull IntFunction<E[]> generator) {
-            this.generator = generator;
-            this.empty = generator.apply(0);
+        public Factory(@NotNull Class<E> elementType) {
+            // this.elementType = elementType;
+            this.empty = (E[]) Array.newInstance(elementType, 0);
         }
-
 
         @Override
         public E[] empty() {
@@ -1111,13 +1108,7 @@ public final class GenericArrays {
 
         @Override
         public E[] build(@NotNull ArrayList<E> buffer) {
-            final int size = buffer.size();
-
-            if (size == 0) {
-                return empty;
-            }
-
-            return buffer.toArray(generator.apply(size));
+            return buffer.toArray(empty);
         }
     }
 

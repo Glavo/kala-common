@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.UncheckedIOException;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collector;
@@ -584,8 +585,12 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public final Object @NotNull [] toArray() {
-        final Object[] elements = this.elements;
         return Arrays.copyOf(elements, elements.length, Object[].class);
+    }
+
+    @Override
+    public final <U> U @NotNull [] toArray(@NotNull Class<U> type) {
+        return Arrays.copyOf(elements, elements.length, GenericArrays.arrayType(type));
     }
 
     @Override
@@ -614,7 +619,6 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public final void forEachIndexed(@NotNull IndexedConsumer<? super E> action) {
-
         final Object[] elements = this.elements;
         final int length = elements.length;
         for (int i = 0; i < length; i++) {

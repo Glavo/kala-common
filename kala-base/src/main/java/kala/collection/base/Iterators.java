@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.*;
 import java.util.function.Consumer;
@@ -1031,6 +1032,31 @@ public final class Iterators {
             e = op.apply(list.get(i), e);
         }
         return Option.some(e);
+    }
+
+    public static Object @NotNull [] toArray(@NotNull Iterator<?> it) {
+        if (!it.hasNext()) {
+            return ObjectArrays.EMPTY;
+        }
+        ArrayList<Object> buffer = new ArrayList<>();
+        while (it.hasNext()) {
+            buffer.add(it.next());
+        }
+        return buffer.toArray();
+    }
+
+    public static <E> E @NotNull [] toArray(@NotNull Iterator<? extends E> it, @NotNull Class<E> type) {
+        Objects.requireNonNull(type);
+        final E[] emptyArray = (E[]) Array.newInstance(type, 0);
+
+        if (!it.hasNext()) {
+            return emptyArray;
+        }
+        ArrayList<E> buffer = new ArrayList<>();
+        while (it.hasNext()) {
+            buffer.add(it.next());
+        }
+        return buffer.toArray(emptyArray);
     }
 
     public static <E> E @NotNull [] toArray(@NotNull Iterator<? extends E> it, @NotNull IntFunction<E[]> generator) {

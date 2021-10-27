@@ -202,9 +202,9 @@
     * `collect(Collector)`
     * `collect(CollectionFactory)`
     * `toArray()`
+    * `toArray(Class<U>)`
     * `toArray(IntFunction)`
     * `toArray(U[])`
-    * `toArray(Class<U>)`
     * `toSeq()`
     * `toImmutableSeq()`
     * `toImmutableArray()`

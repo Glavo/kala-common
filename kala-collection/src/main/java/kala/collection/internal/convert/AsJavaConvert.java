@@ -77,14 +77,7 @@ public final class AsJavaConvert {
         @Override
         @SuppressWarnings("unchecked")
         public final <T> T @NotNull [] toArray(T @NotNull [] a) {
-            Objects.requireNonNull(a);
-
-            T[] arr = toArray(i -> (T[]) Array.newInstance(a.getClass().getComponentType(), i));
-            if (a.length < arr.length) {
-                return arr;
-            }
-            System.arraycopy(arr, 0, a, 0, arr.length);
-            return a;
+            return source.toArray(a);
         }
 
         @Override

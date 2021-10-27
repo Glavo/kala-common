@@ -375,13 +375,18 @@ public final class Views {
         }
 
         @Override
+        public final <U> U @NotNull [] toArray(@NotNull Class<U> type) {
+            return source.toArray(type);
+        }
+
+        @Override
         public final <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
             return source.toArray(generator);
         }
 
         @Override
-        public final <U> U @NotNull [] toArray(@NotNull Class<U> type) {
-            return source.toArray(type);
+        public <U> U @NotNull [] toArray(U @NotNull [] array) {
+            return source.toArray(array);
         }
 
         @Override

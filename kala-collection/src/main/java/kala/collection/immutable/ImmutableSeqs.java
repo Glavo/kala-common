@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.Map;
 import java.util.function.*;
@@ -1320,6 +1321,16 @@ final class ImmutableSeqs {
         @Override
         public final Object @NotNull [] toArray() {
             final Object[] res = new Object[size];
+            final E value = this.value;
+            if (value != null) {
+                Arrays.fill(res, value);
+            }
+            return res;
+        }
+
+        @Override
+        public final <U> U @NotNull [] toArray(@NotNull Class<U> type) {
+            final U[] res = (U[]) Array.newInstance(type, size);
             final E value = this.value;
             if (value != null) {
                 Arrays.fill(res, value);
