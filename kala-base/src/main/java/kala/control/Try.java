@@ -28,7 +28,7 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
     private final T value;
     private final Throwable cause;
 
-    Try(T value, Throwable cause) {
+    private Try(T value, Throwable cause) {
         this.value = value;
         this.cause = cause;
     }
@@ -38,6 +38,26 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
         return (Try<T>) t;
     }
 
+    /**
+     * Used to prompt the compiler that an exception may be thrown here.
+     * Usually used with {@link #sneakyThrow(Throwable)}.
+     * <p>
+     * Example:
+     * <pre>{@code
+     * try {
+     *     list.forEach(value -> {
+     *        try {
+     *            // do something
+     *        } catch (IOException e) {
+     *            return sneakyThrow(e);
+     *        }
+     *     });
+     *
+     *     Try.<IOException>maybeThrows();
+     * } catch (IOException e) {
+     *     // do something
+     * }}</pre>
+     */
     public static <Ex extends Throwable> void maybeThrows() throws Ex {
         // do nothing
     }
@@ -54,6 +74,11 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
         throw exception;
     }
 
+    /**
+     * Throws the exception without telling the verifier.
+     * <p>
+     * It never returns, so you can use it as an expression of any type.
+     */
     @Contract("_ -> fail")
     public static <R> R sneakyThrow(Throwable exception) {
         sneakyThrow0(exception);
@@ -99,28 +124,28 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
     }
 
 
-    public static boolean isFatal(Throwable throwable) {
-        return throwable instanceof InterruptedException
-                || throwable instanceof LinkageError
-                || throwable instanceof ThreadDeath
-                || throwable instanceof VirtualMachineError;
+    public static boolean isFatal(Throwable exception) {
+        return exception instanceof InterruptedException
+                || exception instanceof LinkageError
+                || exception instanceof ThreadDeath
+                || exception instanceof VirtualMachineError;
     }
 
     public static <T> @NotNull Try<T> success(T value) {
         return new Try<>(value, null);
     }
 
-    public static <T> @NotNull Try<T> failure(@NotNull Throwable throwable) {
-        Objects.requireNonNull(throwable);
-        return new Try<>(null, throwable);
+    public static <T> @NotNull Try<T> failure(@NotNull Throwable exception) {
+        Objects.requireNonNull(exception);
+        return new Try<>(null, exception);
     }
 
     public static <T> @NotNull Try<T> of(@NotNull CheckedSupplier<? extends T, ?> supplier) {
         Objects.requireNonNull(supplier);
         try {
             return success(supplier.getChecked());
-        } catch (Throwable throwable) {
-            return failure(throwable);
+        } catch (Throwable ex) {
+            return failure(ex);
         }
     }
 
@@ -128,8 +153,8 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
         Objects.requireNonNull(callable);
         try {
             return success(callable.call());
-        } catch (Throwable throwable) {
-            return failure(throwable);
+        } catch (Throwable ex) {
+            return failure(ex);
         }
     }
 
