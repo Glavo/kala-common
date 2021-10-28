@@ -591,7 +591,16 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
             @NotNull A buffer,
             CharSequence separator, CharSequence prefix, CharSequence postfix
     ) {
-        return Iterators.joinTo(iterator(), buffer, separator, prefix, postfix);
+        if (knownSize() == 0) {
+            try {
+                buffer.append(prefix).append(postfix);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return buffer;
+        } else {
+            return Iterators.joinTo(iterator(), buffer, separator, prefix, postfix);
+        }
     }
 
     default <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, @NotNull Function<? super T, ? extends CharSequence> transform) {

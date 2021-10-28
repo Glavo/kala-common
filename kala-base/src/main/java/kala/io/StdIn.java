@@ -72,25 +72,17 @@ public final class StdIn {
         }
     }
 
-    @NotNull
-    public static String readLine() {
-        try {
-            return Objects.requireNonNull(reader(), "System.in is null")
-                    .readLine();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+    public static @NotNull String readLine() throws IOException {
+        return Objects.requireNonNull(reader(), "System.in is null").readLine();
     }
 
-    @NotNull
-    public static String readLine(String prompt) {
+    public static @NotNull String readLine(String prompt) throws IOException {
         System.out.print(prompt);
         System.out.flush();
         return readLine();
     }
 
-    @NotNull
-    public static char[] readPassword() throws UnsupportedOperationException {
+    public static char @NotNull [] readPassword() throws IOException, UnsupportedOperationException {
         final java.io.Console console = System.console();
         if (console == null) {
             throw new UnsupportedOperationException("System.console() is null");
@@ -98,8 +90,7 @@ public final class StdIn {
         return console.readPassword();
     }
 
-    @NotNull
-    public static char[] readPassword(String prompt) throws UnsupportedOperationException {
+    public static char @NotNull [] readPassword(String prompt) throws IOException, UnsupportedOperationException {
         final java.io.Console console = System.console();
         if (console == null) {
             throw new UnsupportedOperationException("System.console() is null");
@@ -107,7 +98,7 @@ public final class StdIn {
         return console.readPassword("%s", prompt);
     }
 
-    public static char readChar() throws InputMismatchException {
+    public static char readChar() throws IOException, InputMismatchException {
         String s = readLine();
         if (s.length() != 1) {
             throw new InputMismatchException("For input string: \"" + s + '"');
@@ -115,7 +106,7 @@ public final class StdIn {
         return s.charAt(0);
     }
 
-    public static char readChar(String prompt) throws InputMismatchException {
+    public static char readChar(String prompt) throws IOException, InputMismatchException {
         String s = readLine(prompt);
         if (s.length() != 1) {
             throw new InputMismatchException("For input string: \"" + s + '"');
@@ -123,8 +114,7 @@ public final class StdIn {
         return s.charAt(0);
     }
 
-    @Nullable
-    public static Character readCharOrNull() {
+    public static @Nullable Character readCharOrNull() throws IOException {
         String s = readLine();
         if (s.length() != 1) {
             return null;
@@ -132,8 +122,7 @@ public final class StdIn {
         return s.charAt(0);
     }
 
-    @Nullable
-    public static Character readCharOrNull(String prompt) {
+    public static @Nullable Character readCharOrNull(String prompt) throws IOException {
         String s = readLine(prompt);
         if (s.length() != 1) {
             return null;
@@ -141,11 +130,11 @@ public final class StdIn {
         return s.charAt(0);
     }
 
-    public static int readInt() throws InputMismatchException {
+    public static int readInt() throws IOException, InputMismatchException {
         return readInt(10);
     }
 
-    public static int readInt(int radix) throws InputMismatchException {
+    public static int readInt(int radix) throws IOException, InputMismatchException {
         try {
             return Integer.parseInt(readLine().trim(), radix);
         } catch (NumberFormatException e) {
@@ -153,11 +142,11 @@ public final class StdIn {
         }
     }
 
-    public static int readInt(String prompt) throws InputMismatchException {
+    public static int readInt(String prompt) throws IOException, InputMismatchException {
         return readInt(prompt, 10);
     }
 
-    public static int readInt(String prompt, int radix) throws InputMismatchException {
+    public static int readInt(String prompt, int radix) throws IOException, InputMismatchException {
         try {
             return Integer.parseInt(readLine(prompt).trim(), radix);
         } catch (NumberFormatException e) {
@@ -165,13 +154,11 @@ public final class StdIn {
         }
     }
 
-    @Nullable
-    public static Integer readIntOrNull() {
+    public static @Nullable Integer readIntOrNull() throws IOException {
         return readIntOrNull(10);
     }
 
-    @Nullable
-    public static Integer readIntOrNull(int radix) {
+    public static @Nullable Integer readIntOrNull(int radix) throws IOException {
         try {
             return Integer.parseInt(readLine().trim(), radix);
         } catch (NumberFormatException e) {
@@ -179,13 +166,11 @@ public final class StdIn {
         }
     }
 
-    @Nullable
-    public static Integer readIntOrNull(String prompt) {
+    public static @Nullable Integer readIntOrNull(String prompt) throws IOException {
         return readIntOrNull(prompt, 10);
     }
 
-    @Nullable
-    public static Integer readIntOrNull(String prompt, int radix) {
+    public static @Nullable Integer readIntOrNull(String prompt, int radix) throws IOException {
         try {
             return Integer.parseInt(readLine(prompt).trim(), radix);
         } catch (NumberFormatException e) {
@@ -193,11 +178,11 @@ public final class StdIn {
         }
     }
 
-    public static long readLong() throws InputMismatchException {
+    public static long readLong() throws IOException, InputMismatchException {
         return readLong(10);
     }
 
-    public static long readLong(int radix) throws InputMismatchException {
+    public static long readLong(int radix) throws IOException, InputMismatchException {
         try {
             return Long.parseLong(readLine().trim(), radix);
         } catch (NumberFormatException e) {
@@ -205,11 +190,11 @@ public final class StdIn {
         }
     }
 
-    public static long readLong(String prompt) throws InputMismatchException {
+    public static long readLong(String prompt) throws IOException, InputMismatchException {
         return readLong(prompt, 10);
     }
 
-    public static long readLong(String prompt, int radix) throws InputMismatchException {
+    public static long readLong(String prompt, int radix) throws IOException, InputMismatchException {
         try {
             return Long.parseLong(readLine(prompt).trim(), radix);
         } catch (NumberFormatException e) {
@@ -217,13 +202,12 @@ public final class StdIn {
         }
     }
 
-    @Nullable
-    public static Long readLongOrNull() {
+
+    public static @Nullable Long readLongOrNull() throws IOException {
         return readLongOrNull(10);
     }
 
-    @Nullable
-    public static Long readLongOrNull(int radix) {
+    public static @Nullable Long readLongOrNull(int radix) throws IOException {
         try {
             return Long.parseLong(readLine().trim(), radix);
         } catch (NumberFormatException e) {
@@ -231,13 +215,11 @@ public final class StdIn {
         }
     }
 
-    @Nullable
-    public static Long readLongOrNull(String prompt) {
+    public static @Nullable Long readLongOrNull(String prompt) throws IOException {
         return readLongOrNull(prompt, 10);
     }
 
-    @Nullable
-    public static Long readLongOrNull(String prompt, int radix) {
+    public static @Nullable Long readLongOrNull(String prompt, int radix) throws IOException {
         try {
             return Long.parseLong(readLine(prompt).trim(), radix);
         } catch (NumberFormatException e) {
@@ -245,13 +227,11 @@ public final class StdIn {
         }
     }
 
-    @NotNull
-    public static BigInteger readBigInteger() throws InputMismatchException {
+    public static @NotNull BigInteger readBigInteger() throws IOException, InputMismatchException {
         return readBigInteger(10);
     }
 
-    @NotNull
-    public static BigInteger readBigInteger(int radix) throws InputMismatchException {
+    public static @NotNull BigInteger readBigInteger(int radix) throws IOException, InputMismatchException {
         try {
             return new BigInteger(readLine().trim(), radix);
         } catch (NumberFormatException e) {
@@ -259,13 +239,11 @@ public final class StdIn {
         }
     }
 
-    @NotNull
-    public static BigInteger readBigInteger(String prompt) throws InputMismatchException {
+    public static @NotNull BigInteger readBigInteger(String prompt) throws IOException, InputMismatchException {
         return readBigInteger(prompt, 10);
     }
 
-    @NotNull
-    public static BigInteger readBigInteger(String prompt, int radix) throws InputMismatchException {
+    public static @NotNull BigInteger readBigInteger(String prompt, int radix) throws IOException, InputMismatchException {
         try {
             return new BigInteger(readLine(prompt).trim(), radix);
         } catch (NumberFormatException e) {
@@ -273,13 +251,11 @@ public final class StdIn {
         }
     }
 
-    @Nullable
-    public static BigInteger readBigIntegerOrNull() throws InputMismatchException {
+    public static @Nullable BigInteger readBigIntegerOrNull() throws IOException, InputMismatchException {
         return readBigIntegerOrNull(10);
     }
 
-    @Nullable
-    public static BigInteger readBigIntegerOrNull(int radix) throws InputMismatchException {
+    public static @Nullable BigInteger readBigIntegerOrNull(int radix)  throws IOException, InputMismatchException {
         try {
             return new BigInteger(readLine().trim(), radix);
         } catch (NumberFormatException e) {
@@ -287,13 +263,11 @@ public final class StdIn {
         }
     }
 
-    @Nullable
-    public static BigInteger readBigIntegerOrNull(String prompt) throws InputMismatchException {
+    public static @Nullable BigInteger readBigIntegerOrNull(String prompt)  throws IOException, InputMismatchException {
         return readBigIntegerOrNull(prompt, 10);
     }
 
-    @Nullable
-    public static BigInteger readBigIntegerOrNull(String prompt, int radix) throws InputMismatchException {
+    public static @Nullable BigInteger readBigIntegerOrNull(String prompt, int radix)  throws IOException, InputMismatchException {
         try {
             return new BigInteger(readLine(prompt).trim(), radix);
         } catch (NumberFormatException e) {
@@ -301,7 +275,7 @@ public final class StdIn {
         }
     }
 
-    public static double readDouble() throws InputMismatchException {
+    public static double readDouble()  throws IOException, InputMismatchException {
         try {
             return Double.parseDouble(readLine().trim());
         } catch (NumberFormatException e) {
@@ -309,7 +283,7 @@ public final class StdIn {
         }
     }
 
-    public static double readDouble(String prompt) throws InputMismatchException {
+    public static double readDouble(String prompt)  throws IOException, InputMismatchException {
         try {
             return Double.parseDouble(readLine(prompt).trim());
         } catch (NumberFormatException e) {
@@ -317,8 +291,7 @@ public final class StdIn {
         }
     }
 
-    @Nullable
-    public static Double readDoubleOrNull() throws InputMismatchException {
+    public static @Nullable Double readDoubleOrNull()  throws IOException, InputMismatchException {
         try {
             return Double.parseDouble(readLine().trim());
         } catch (NumberFormatException e) {
@@ -326,8 +299,7 @@ public final class StdIn {
         }
     }
 
-    @Nullable
-    public static Double readDoubleOrNull(String prompt) throws InputMismatchException {
+    public static @Nullable Double readDoubleOrNull(String prompt)  throws IOException, InputMismatchException {
         try {
             return Double.parseDouble(readLine(prompt).trim());
         } catch (NumberFormatException e) {
@@ -335,8 +307,7 @@ public final class StdIn {
         }
     }
 
-    @NotNull
-    public static BigDecimal readBigDecimal() throws InputMismatchException {
+    public static @NotNull BigDecimal readBigDecimal()  throws IOException, InputMismatchException {
         try {
             return new BigDecimal(readLine().trim());
         } catch (NumberFormatException e) {
@@ -344,8 +315,7 @@ public final class StdIn {
         }
     }
 
-    @NotNull
-    public static BigDecimal readBigDecimal(String prompt) throws InputMismatchException {
+    public static @NotNull BigDecimal readBigDecimal(String prompt)  throws IOException, InputMismatchException {
         try {
             return new BigDecimal(readLine(prompt).trim());
         } catch (NumberFormatException e) {
@@ -353,8 +323,7 @@ public final class StdIn {
         }
     }
 
-    @NotNull
-    public static BigDecimal readBigDecimal(@NotNull MathContext mc) throws InputMismatchException {
+    public static @NotNull BigDecimal readBigDecimal(@NotNull MathContext mc)  throws IOException, InputMismatchException {
         try {
             return new BigDecimal(readLine().trim(), mc);
         } catch (NumberFormatException e) {
@@ -362,8 +331,7 @@ public final class StdIn {
         }
     }
 
-    @NotNull
-    public static BigDecimal readBigDecimal(String prompt, @NotNull MathContext mc) throws InputMismatchException {
+    public static @NotNull BigDecimal readBigDecimal(String prompt, @NotNull MathContext mc)  throws IOException, InputMismatchException {
         try {
             return new BigDecimal(readLine(prompt).trim(), mc);
         } catch (NumberFormatException e) {
@@ -371,8 +339,7 @@ public final class StdIn {
         }
     }
 
-    @Nullable
-    public static BigDecimal readBigDecimalOrNull() throws InputMismatchException {
+    public static @Nullable BigDecimal readBigDecimalOrNull()  throws IOException, InputMismatchException {
         try {
             return new BigDecimal(readLine().trim());
         } catch (NumberFormatException e) {
@@ -380,8 +347,7 @@ public final class StdIn {
         }
     }
 
-    @Nullable
-    public static BigDecimal readBigDecimalOrNull(String prompt) throws InputMismatchException {
+    public static @Nullable BigDecimal readBigDecimalOrNull(String prompt)  throws IOException, InputMismatchException {
         try {
             return new BigDecimal(readLine(prompt).trim());
         } catch (NumberFormatException e) {
@@ -389,8 +355,7 @@ public final class StdIn {
         }
     }
 
-    @Nullable
-    public static BigDecimal readBigDecimalOrNull(@NotNull MathContext mc) throws InputMismatchException {
+    public static @Nullable BigDecimal readBigDecimalOrNull(@NotNull MathContext mc)  throws IOException, InputMismatchException {
         try {
             return new BigDecimal(readLine().trim(), mc);
         } catch (NumberFormatException e) {
@@ -398,8 +363,7 @@ public final class StdIn {
         }
     }
 
-    @Nullable
-    public static BigDecimal readBigDecimalOrNull(String prompt, @NotNull MathContext mc) throws InputMismatchException {
+    public static @Nullable BigDecimal readBigDecimalOrNull(String prompt, @NotNull MathContext mc)  throws IOException, InputMismatchException {
         try {
             return new BigDecimal(readLine(prompt).trim(), mc);
         } catch (NumberFormatException e) {
