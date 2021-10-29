@@ -15,14 +15,6 @@ public final class IntOption extends PrimitiveOption<Integer> implements IntTrav
 
     public static final IntOption None = new IntOption();
 
-    private static final IntOption[] CACHE = new IntOption[256];
-
-    static {
-        for (int i = 0; i < 256; i++) {
-            CACHE[i] = new IntOption(i - 128);
-        }
-    }
-
     private final int value;
 
     private IntOption() {
@@ -34,9 +26,6 @@ public final class IntOption extends PrimitiveOption<Integer> implements IntTrav
     }
 
     public static @NotNull IntOption some(int value) {
-        if (value >= -128 && value <= 127) {
-            return CACHE[value + 128];
-        }
         return new IntOption(value);
     }
 

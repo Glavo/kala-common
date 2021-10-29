@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TypeLiteralTest {
     @Test
     public void test() {
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(IllegalStateException.class, () -> {
             class C extends TypeLiteral<String> {
 
             }

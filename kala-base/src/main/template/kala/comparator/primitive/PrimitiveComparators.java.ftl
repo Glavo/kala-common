@@ -1,108 +1,106 @@
 package kala.comparator.primitive;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 
-final class BooleanComparators {
-    enum NaturalOrderComparator implements BooleanComparator {
+final class ${Type}Comparators {
+    enum NaturalOrderComparator implements ${Type}Comparator {
         INSTANCE;
 
         @Override
-        public final int compare(boolean b1, boolean b2) {
-            return Boolean.compare(b1, b2);
+        public final int compare(${PrimitiveType} ${var}1, ${PrimitiveType} b2) {
+            return ${WrapperType}.compare(${var}1, b2);
         }
 
         @Override
-        public final @NotNull BooleanComparator nullsFirst() {
+        public final @NotNull ${Type}Comparator nullsFirst() {
             return NaturalOrderNullComparator.NULLS_FIRST;
         }
 
         @Override
-        public final @NotNull BooleanComparator nullsLast() {
+        public final @NotNull ${Type}Comparator nullsLast() {
             return NaturalOrderNullComparator.NULLS_LAST;
         }
 
         @Override
-        public final @NotNull BooleanComparator reversed() {
+        public final @NotNull ${Type}Comparator reversed() {
             return ReverseOrderComparator.INSTANCE;
         }
     }
 
-    enum ReverseOrderComparator implements BooleanComparator {
+    enum ReverseOrderComparator implements ${Type}Comparator {
         INSTANCE;
 
         @Override
-        public final int compare(boolean b1, boolean b2) {
-            return Boolean.compare(b2, b1);
+        public final int compare(${PrimitiveType} ${var}1, ${PrimitiveType} b2) {
+            return ${WrapperType}.compare(b2, ${var}1);
         }
 
         @Override
-        public final @NotNull BooleanComparator nullsFirst() {
+        public final @NotNull ${Type}Comparator nullsFirst() {
             return ReverseOrderNullComparator.NULLS_FIRST;
         }
 
         @Override
-        public final @NotNull BooleanComparator nullsLast() {
+        public final @NotNull ${Type}Comparator nullsLast() {
             return ReverseOrderNullComparator.NULLS_LAST;
         }
 
         @Override
-        public final @NotNull BooleanComparator reversed() {
+        public final @NotNull ${Type}Comparator reversed() {
             return NaturalOrderComparator.INSTANCE;
         }
     }
 
-    static final class NullComparator implements BooleanComparator, Serializable {
-        private static final long serialVersionUID = -5396156551789118865L;
+    static final class NullComparator implements ${Type}Comparator, Serializable {
+        private static final long serialVersionUID = 0L;
 
         private final boolean nullFirst;
 
-        private final @NotNull BooleanComparator real;
+        private final @NotNull ${Type}Comparator real;
 
-        NullComparator(boolean nullFirst, @NotNull BooleanComparator real) {
+        NullComparator(boolean nullFirst, @NotNull ${Type}Comparator real) {
             this.nullFirst = nullFirst;
             this.real = real;
         }
 
         @Override
-        public final int compare(boolean b1, boolean b2) {
-            return real.compare(b1, b2);
+        public int compare(${PrimitiveType} ${var}1, ${PrimitiveType} b2) {
+            return real.compare(${var}1, b2);
         }
 
         @Override
-        public final int compare(Boolean b1, Boolean b2) {
-            if (b1 == null) {
+        public int compare(@Nullable ${WrapperType} ${var}1, @Nullable ${WrapperType} b2) {
+            if (${var}1 == null) {
                 return (b2 == null) ? 0 : (nullFirst ? -1 : 1);
             } else if (b2 == null) {
                 return nullFirst ? 1 : -1;
             } else {
-                return real.compare(b1, b2);
+                return real.compare(${var}1, b2);
             }
         }
 
-        @NotNull
         @Override
-        public final BooleanComparator nullsFirst() {
+        public @NotNull ${Type}Comparator nullsFirst() {
             return nullFirst ? this : new NullComparator(true, real);
         }
 
-        @NotNull
         @Override
-        public final BooleanComparator nullsLast() {
+        public @NotNull ${Type}Comparator nullsLast() {
             return nullFirst ? new NullComparator(false, real) : this;
         }
 
-        @NotNull
         @Override
-        public final BooleanComparator reversed() {
+        public @NotNull ${Type}Comparator reversed() {
             return new NullComparator(!nullFirst, real.reversed());
         }
 
     }
 
-    static final class NaturalOrderNullComparator implements BooleanComparator, Serializable {
-        private static final long serialVersionUID = -846684682390742051L;
+    static final class NaturalOrderNullComparator implements ${Type}Comparator, Serializable {
+        private static final long serialVersionUID = 0L;
 
         static final NaturalOrderNullComparator NULLS_FIRST = new NaturalOrderNullComparator(true);
         static final NaturalOrderNullComparator NULLS_LAST = new NaturalOrderNullComparator(false);
@@ -114,33 +112,33 @@ final class BooleanComparators {
         }
 
         @Override
-        public final int compare(boolean b1, boolean b2) {
-            return Boolean.compare(b1, b2);
+        public int compare(${PrimitiveType} ${var}1, ${PrimitiveType} b2) {
+            return ${WrapperType}.compare(${var}1, b2);
         }
 
         @Override
-        public final int compare(Boolean b1, Boolean b2) {
-            if (b1 == null) {
+        public int compare(${WrapperType} ${var}1, ${WrapperType} b2) {
+            if (${var}1 == null) {
                 return (b2 == null) ? 0 : (nullFirst ? -1 : 1);
             } else if (b2 == null) {
                 return nullFirst ? 1 : -1;
             } else {
-                return b1.compareTo(b2);
+                return ${var}1.compareTo(b2);
             }
         }
 
         @Override
-        public final @NotNull BooleanComparator nullsFirst() {
+        public @NotNull ${Type}Comparator nullsFirst() {
             return NULLS_FIRST;
         }
 
         @Override
-        public final @NotNull BooleanComparator nullsLast() {
+        public @NotNull ${Type}Comparator nullsLast() {
             return NULLS_LAST;
         }
 
         @Override
-        public final @NotNull BooleanComparator reversed() {
+        public @NotNull ${Type}Comparator reversed() {
             return nullFirst ? ReverseOrderNullComparator.NULLS_LAST : ReverseOrderNullComparator.NULLS_FIRST;
         }
 
@@ -149,8 +147,8 @@ final class BooleanComparators {
         }
     }
 
-    static final class ReverseOrderNullComparator implements BooleanComparator, Serializable {
-        private static final long serialVersionUID = -646304779903669659L;
+    static final class ReverseOrderNullComparator implements ${Type}Comparator, Serializable {
+        private static final long serialVersionUID = 0L;
 
         static final ReverseOrderNullComparator NULLS_FIRST = new ReverseOrderNullComparator(true);
         static final ReverseOrderNullComparator NULLS_LAST = new ReverseOrderNullComparator(false);
@@ -162,33 +160,33 @@ final class BooleanComparators {
         }
 
         @Override
-        public final int compare(boolean b1, boolean b2) {
-            return Boolean.compare(b2, b1);
+        public int compare(${PrimitiveType} ${var}1, ${PrimitiveType} ${var}2) {
+            return ${WrapperType}.compare(${var}2, ${var}1);
         }
 
         @Override
-        public final int compare(Boolean b1, Boolean b2) {
-            if (b1 == null) {
-                return (b2 == null) ? 0 : (nullFirst ? -1 : 1);
-            } else if (b2 == null) {
+        public int compare(${WrapperType} ${var}1, ${WrapperType} ${var}2) {
+            if (${var}1 == null) {
+                return (${var}2 == null) ? 0 : (nullFirst ? -1 : 1);
+            } else if (${var}2 == null) {
                 return nullFirst ? 1 : -1;
             } else {
-                return b2.compareTo(b1);
+                return ${var}2.compareTo(${var}1);
             }
         }
 
         @Override
-        public final @NotNull BooleanComparator nullsFirst() {
+        public @NotNull ${Type}Comparator nullsFirst() {
             return NULLS_FIRST;
         }
 
         @Override
-        public final @NotNull BooleanComparator nullsLast() {
+        public @NotNull ${Type}Comparator nullsLast() {
             return NULLS_LAST;
         }
 
         @Override
-        public final @NotNull BooleanComparator reversed() {
+        public @NotNull ${Type}Comparator reversed() {
             return nullFirst ? NaturalOrderNullComparator.NULLS_LAST : NaturalOrderNullComparator.NULLS_FIRST;
         }
 
