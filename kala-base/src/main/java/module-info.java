@@ -16,6 +16,7 @@ module kala.base {
     exports kala.collection.factory;
     exports kala.value;
     exports kala.value.primitive;
+    exports kala.reflect;
 
     exports kala.internal to kala.collection;
 }

@@ -110,7 +110,7 @@ sourceSets {
 }
 
 tasks.compileTestJava {
-    options.release.set(11)
+    options.release.set(17)
 }
 
 tasks.test {
