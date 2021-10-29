@@ -4,7 +4,6 @@ import kala.SerializationUtils;
 import org.junit.jupiter.api.*;
 
 import java.io.*;
-import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.LongAdder;

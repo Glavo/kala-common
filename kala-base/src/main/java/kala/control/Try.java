@@ -16,6 +16,13 @@ import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/**
+ * Represents a result value or the exception that caused it to fail.
+ * It provides a new way to handle exceptions, and provides some static methods to help users handle exceptions.
+ *
+ *
+ * @param <T>
+ */
 @SuppressWarnings("unchecked")
 public final class Try<@Covariant T> implements Traversable<T>, Serializable {
     private static final long serialVersionUID = -876749736621195838L;
