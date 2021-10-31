@@ -151,6 +151,10 @@ public final class Option<@Covariant T> extends AnyOption<T>
         return isDefined() ? some(mapper.apply(value)) : none();
     }
 
+    public <U> @NotNull Option<@NotNull U> mapNotNull(@NotNull Function<? super T, ? extends @Nullable U> mapper) {
+        return isDefined() ? of(mapper.apply(value)) : none();
+    }
+
     public <U> @NotNull Option<U> flatMap(@NotNull Function<? super T, ? extends Option<? extends U>> mapper) {
         return isDefined() ? narrow(mapper.apply(value)) : none();
     }
