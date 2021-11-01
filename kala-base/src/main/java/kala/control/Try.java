@@ -30,7 +30,7 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
     private static final int SUCCESS_HASH_MAGIC = 518848667;
     private static final int FAILURE_HASH_MAGIC = 1918688519;
 
-    private static final Try<Void> VOID = new Try<>(null, null);
+    public static final Try<Void> VOID = new Try<>(null, null);
 
     private final T value;
     private final Throwable cause;

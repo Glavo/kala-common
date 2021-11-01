@@ -20,7 +20,7 @@ public interface CheckedRunnable<Ex extends Throwable> extends Runnable {
     default @NotNull Try<Void> tryRun() {
         try {
             runChecked();
-            return Try.success(null);
+            return Try.VOID;
         } catch (Throwable e) {
             return Try.failure(e);
         }

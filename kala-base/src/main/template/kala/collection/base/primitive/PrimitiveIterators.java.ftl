@@ -3,72 +3,76 @@ package kala.collection.base.primitive;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;
-import java.util.function.IntPredicate;
+<#if IsSpecialized>
+import java.util.function.*;
+<#else>
+import kala.function.*;
+</#if>
 
-final class IntIterators {
-    static final IntIterator EMPTY = new AbstractIntIterator() {
+final class ${Type}Iterators {
+
+    static final ${Type}Iterator EMPTY = new Abstract${Type}Iterator() {
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return false;
         }
 
         @Override
-        public final int nextInt() {
+        public ${PrimitiveType} next${Type}() {
             throw new NoSuchElementException();
         }
 
         @Override
         public String toString() {
-            return "IntIterator[]";
+            return "${Type}Iterator[]";
         }
     };
 
-    static final class Take extends AbstractIntIterator {
-        private final IntIterator source;
+    static final class Take extends Abstract${Type}Iterator {
+        private final ${Type}Iterator source;
         private int n;
 
-        Take(IntIterator source, int n) {
+        Take(${Type}Iterator source, int n) {
             this.source = source;
             this.n = n;
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return n > 0 && source.hasNext();
         }
 
         @Override
-        public final int nextInt() {
+        public ${PrimitiveType} next${Type}() {
             if (hasNext()) {
                 --n;
-                return source.nextInt();
+                return source.next${Type}();
             }
             throw new NoSuchElementException();
         }
     }
 
-    static final class TakeWhile extends AbstractIntIterator {
-        @NotNull
-        private IntIterator source;
+    static final class TakeWhile extends Abstract${Type}Iterator {
+        private @NotNull ${Type}Iterator source;
 
-        private IntPredicate predicate;
+        private ${Type}Predicate predicate;
 
-        private int nextValue = 0;
+        private ${PrimitiveType} nextValue = 0;
         private boolean tag = false;
 
-        TakeWhile(@NotNull IntIterator source, IntPredicate predicate) {
+        TakeWhile(@NotNull ${Type}Iterator source, ${Type}Predicate predicate) {
             this.source = source;
             this.predicate = predicate;
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             if (tag) {
                 return true;
             }
 
             if (source.hasNext()) {
-                int v = nextValue = source.nextInt();
+                ${PrimitiveType} v = nextValue = source.next${Type}();
                 if (predicate.test(v)) {
                     tag = true;
                     return true;
@@ -83,7 +87,7 @@ final class IntIterators {
         }
 
         @Override
-        public final int nextInt() {
+        public ${PrimitiveType} next${Type}() {
             if (hasNext()) {
                 tag = false;
                 return nextValue;
@@ -93,87 +97,86 @@ final class IntIterators {
         }
     }
 
-    static final class Updated extends AbstractIntIterator {
-        @NotNull
-        private final IntIterator source;
+    static final class Updated extends Abstract${Type}Iterator {
+        private final @NotNull ${Type}Iterator source;
 
         private final int n;
-        private final int newValue;
+        private final ${PrimitiveType} newValue;
 
         private int idx = 0;
 
-        Updated(@NotNull IntIterator source, int n, int newValue) {
+        Updated(@NotNull ${Type}Iterator source, int n, ${PrimitiveType} newValue) {
             this.source = source;
             this.n = n;
             this.newValue = newValue;
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return source.hasNext();
         }
 
         @Override
-        public final int nextInt() {
+        public ${PrimitiveType} next${Type}() {
             if (idx++ == n) {
-                source.nextInt();
+                source.next${Type}();
                 return newValue;
             } else {
-                return source.nextInt();
+                return source.next${Type}();
             }
         }
     }
 
-    static final class Prepended extends AbstractIntIterator {
+    static final class Prepended extends Abstract${Type}Iterator {
         @NotNull
-        private final IntIterator source;
+        private final ${Type}Iterator source;
 
-        private final int value;
+        private final ${PrimitiveType} value;
 
         private boolean flag = true;
 
-        Prepended(@NotNull IntIterator source, int value) {
+        Prepended(@NotNull ${Type}Iterator source, ${PrimitiveType} value) {
             this.source = source;
             this.value = value;
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return flag || source.hasNext();
         }
 
         @Override
-        public final int nextInt() {
+        public ${PrimitiveType} next${Type}() {
             if (flag) {
                 flag = false;
                 return value;
             }
 
-            return source.nextInt();
+            return source.next${Type}();
         }
     }
 
-    static final class Appended extends AbstractIntIterator {
+    static final class Appended extends Abstract${Type}Iterator {
         @NotNull
-        private final IntIterator source;
+        private final ${Type}Iterator source;
 
-        private final int value;
+        private final ${PrimitiveType} value;
         private boolean flag = true;
 
-        Appended(@NotNull IntIterator source, int value) {
+        Appended(@NotNull ${Type}Iterator source, ${PrimitiveType} value) {
             this.source = source;
             this.value = value;
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return source.hasNext() || flag;
         }
 
         @Override
-        public final int nextInt() {
+        public ${PrimitiveType} next${Type}() {
             if (source.hasNext()) {
-                return source.nextInt();
+                return source.next${Type}();
             }
             if (flag) {
                 flag = false;
@@ -183,37 +186,37 @@ final class IntIterators {
         }
     }
 
-    static final class Filter extends AbstractIntIterator {
+    static final class Filter extends Abstract${Type}Iterator {
         @NotNull
-        private final IntIterator source;
+        private final ${Type}Iterator source;
         @NotNull
-        private final IntPredicate predicate;
+        private final ${Type}Predicate predicate;
 
-        private int nextValue = 0;
+        private ${PrimitiveType} nextValue = 0;
         private boolean flag = false;
 
         private final boolean isFlipped;
 
-        Filter(@NotNull IntIterator source, @NotNull IntPredicate predicate, boolean isFlipped) {
+        Filter(@NotNull ${Type}Iterator source, @NotNull ${Type}Predicate predicate, boolean isFlipped) {
             this.source = source;
             this.predicate = predicate;
             this.isFlipped = isFlipped;
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             if (flag) {
                 return true;
             }
             if (!source.hasNext()) {
                 return false;
             }
-            int v = source.nextInt();
+            ${PrimitiveType} v = source.next${Type}();
             while (predicate.test(v) == isFlipped) {
                 if (!source.hasNext()) {
                     return false;
                 }
-                v = source.nextInt();
+                v = source.next${Type}();
             }
 
             this.nextValue = v;
@@ -222,7 +225,7 @@ final class IntIterators {
         }
 
         @Override
-        public final int nextInt() {
+        public ${PrimitiveType} next${Type}() {
             if (hasNext()) {
                 flag = false;
                 return nextValue;

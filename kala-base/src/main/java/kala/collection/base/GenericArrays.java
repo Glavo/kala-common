@@ -141,7 +141,7 @@ public final class GenericArrays {
     //region Collection Operations
 
     public static @NotNull String className(Object @NotNull [] array) {
-        return "Array<" + array.getClass().getComponentType().getName() + ">";
+        return array.getClass().getComponentType().getName() + "[]";
     }
 
     public static <E> @NotNull Iterator<E> iterator(E @NotNull [] array) {
@@ -739,9 +739,9 @@ public final class GenericArrays {
         final int arrayLength = array.length;
         if (size <= 0 || step <= 0) {
             if (size == step) {
-                throw new IllegalArgumentException("size " + size + " must be greater than zero.");
+                throw new IllegalArgumentException("size " + size + " must be greater than zero." );
             } else {
-                throw new IllegalArgumentException("Both size " + size + " and step " + step + " must be greater than zero.");
+                throw new IllegalArgumentException("Both size " + size + " and step " + step + " must be greater than zero." );
             }
         }
 
@@ -980,7 +980,7 @@ public final class GenericArrays {
             Object @NotNull [] array,
             @NotNull A buffer
     ) {
-        return ObjectArrays.joinTo(array, buffer, ", ", "", "");
+        return ObjectArrays.joinTo(array, buffer, ", ", "", "" );
     }
 
     public static <A extends Appendable> @NotNull A joinTo(
@@ -988,7 +988,7 @@ public final class GenericArrays {
             @NotNull A buffer,
             CharSequence separator
     ) {
-        return ObjectArrays.joinTo(array, buffer, separator, "", "");
+        return ObjectArrays.joinTo(array, buffer, separator, "", "" );
     }
 
     public static <A extends Appendable> @NotNull A joinTo(
@@ -1112,7 +1112,7 @@ public final class GenericArrays {
         }
     }
 
-    private static final class Itr<@Covariant E> implements Iterator<E> {
+    private static final class Itr<@Covariant E> extends AbstractIterator<E> {
         private final E @NotNull [] array;
         private final int endIndex;
 
@@ -1132,13 +1132,13 @@ public final class GenericArrays {
         @Override
         public E next() {
             if (index >= endIndex) {
-                throw new NoSuchElementException(this + ".next()");
+                throw new NoSuchElementException(this + ".next()" );
             }
             return array[index++];
         }
     }
 
-    private static final class ReverseItr<@Covariant E> implements Iterator<E> {
+    private static final class ReverseItr<@Covariant E> extends AbstractIterator<E> {
         private final E @NotNull [] array;
 
         private int index;

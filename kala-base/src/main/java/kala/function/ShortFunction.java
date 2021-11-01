@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -24,37 +24,28 @@
  */
 package kala.function;
 
-import kala.control.Try;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
+import java.util.function.Function;
 
-import java.util.function.Consumer;
-
+/**
+ * Represents a function that accepts a short-valued argument and produces a
+ * result.  This is the {@code short}-consuming primitive specialization for
+ * {@link Function}.
+ *
+ * <p>This is a <a href="package-summary.html">functional interface</a>
+ * whose functional method is {@link #apply(short)}.
+ *
+ * @param <R> the type of the result of the function
+ *
+ * @see Function
+ */
 @FunctionalInterface
-public interface CheckedConsumer<T, Ex extends Throwable> extends Consumer<T> {
+public interface ShortFunction<R> {
 
-    @Contract(value = "_ -> param1", pure = true)
-    @SuppressWarnings("unchecked")
-    static <T, Ex extends Throwable> CheckedConsumer<T, Ex> of(CheckedConsumer<? super T, ? extends Ex> consumer) {
-        return (CheckedConsumer<T, Ex>) consumer;
-    }
-
-    void acceptChecked(T t) throws Ex;
-
-    default void accept(T t) {
-        try {
-            acceptChecked(t);
-        } catch (Throwable ex) {
-            Try.sneakyThrow(ex);
-        }
-    }
-
-    default @NotNull Try<Void> tryAccept(T t) {
-        try {
-            acceptChecked(t);
-            return Try.VOID;
-        } catch (Throwable ex) {
-            return Try.failure(ex);
-        }
-    }
+    /**
+     * Applies this function to the given argument.
+     *
+     * @param value the function argument
+     * @return the function result
+     */
+    R apply(short value);
 }

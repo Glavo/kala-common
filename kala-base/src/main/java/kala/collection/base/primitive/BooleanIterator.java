@@ -3,7 +3,7 @@ package kala.collection.base.primitive;
 import kala.collection.base.Iterators;
 import kala.control.primitive.BooleanOption;
 import kala.function.*;
-import kala.internal.InternalDynamicBooleanLinkedSeq;
+import kala.internal.InternalBooleanArrayBuilder;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import kala.collection.base.AbstractIterator;
@@ -16,7 +16,7 @@ import java.io.UncheckedIOException;
 import java.util.*;
 import java.util.function.Consumer;
 
-@SuppressWarnings("ConstantConditions")
+@SuppressWarnings("ConstantConditions" )
 public interface BooleanIterator
         extends PrimIterator<Boolean, BooleanIterator, boolean[], BooleanOption, BooleanConsumer, BooleanPredicate> {
 
@@ -34,34 +34,27 @@ public interface BooleanIterator
     }
 
     static @NotNull BooleanIterator of(boolean... values) {
-        final int length = values.length;
-        if (length == 0) {
-            return empty();
-        } else if (length == 1) {
-            return of(values[0]);
-        } else {
-            return new BooleanIterators.OfArray(values);
-        }
+        return BooleanArrays.iterator(values);
     }
 
-    static @NotNull BooleanIterator ofIterator(@NotNull Iterator<@NotNull ? extends Boolean> it) {
+    static @NotNull BooleanIterator ofIterator(@NotNull Iterator<? extends @NotNull Boolean> it) {
         Objects.requireNonNull(it);
         if (it instanceof BooleanIterator) {
             return (BooleanIterator) it;
         }
         return new BooleanIterator() {
             @Override
-            public final boolean hasNext() {
+            public boolean hasNext() {
                 return it.hasNext();
             }
 
             @Override
-            public final boolean nextBoolean() {
+            public boolean nextBoolean() {
                 return it.next();
             }
 
             @Override
-            public final String toString() {
+            public String toString() {
                 return it.toString();
             }
         };
@@ -423,7 +416,7 @@ public interface BooleanIterator
 
     //region Misc Operations
 
-    @Contract(mutates = "this")
+    @Contract(mutates = "this" )
     default @NotNull BooleanIterator drop(int n) {
         if (n < 0) {
             throw new IllegalArgumentException();
@@ -513,12 +506,12 @@ public interface BooleanIterator
         }
         return new AbstractBooleanIterator() {
             @Override
-            public final boolean hasNext() {
+            public boolean hasNext() {
                 return BooleanIterator.this.hasNext();
             }
 
             @Override
-            public final boolean nextBoolean() {
+            public boolean nextBoolean() {
                 return mapper.applyAsBoolean(BooleanIterator.this.nextBoolean());
             }
         };
@@ -531,12 +524,12 @@ public interface BooleanIterator
         }
         return new AbstractIterator<U>() {
             @Override
-            public final boolean hasNext() {
+            public boolean hasNext() {
                 return BooleanIterator.this.hasNext();
             }
 
             @Override
-            public final U next() {
+            public U next() {
                 return mapper.apply(BooleanIterator.this.nextBoolean());
             }
         };
@@ -549,20 +542,20 @@ public interface BooleanIterator
             return Tuple.of(empty(), empty());
         }
 
-        InternalDynamicBooleanLinkedSeq buffer = new InternalDynamicBooleanLinkedSeq();
+        InternalBooleanArrayBuilder builder = new InternalBooleanArrayBuilder();
         BooleanIterator it = this;
 
         while (it.hasNext()) {
             boolean e = it.nextBoolean();
             if (predicate.test(e)) {
-                buffer.append(e);
+                builder.append(e);
             } else {
                 it = it.prepended(e);
                 break;
             }
         }
 
-        return Tuple.of(buffer.iterator(), it);
+        return Tuple.of(builder.iterator(), it);
     }
 
     //endregion
@@ -614,17 +607,17 @@ public interface BooleanIterator
         if (!hasNext()) {
             return new boolean[0];
         }
-        InternalDynamicBooleanLinkedSeq buffer = new InternalDynamicBooleanLinkedSeq();
+        InternalBooleanArrayBuilder builder = new InternalBooleanArrayBuilder();
         while (hasNext()) {
-            buffer.append(nextBoolean());
+            builder.append(nextBoolean());
         }
 
-        return buffer.toArray();
+        return builder.toArray();
     }
 
     //endregion
 
-    @Contract(value = "_, _, _, _ -> param1", mutates = "param1")
+    @Contract(value = "_, _, _, _ -> param1", mutates = "param1" )
     default <A extends Appendable> @NotNull A joinTo(
             @NotNull A buffer,
             CharSequence separator, CharSequence prefix, CharSequence postfix

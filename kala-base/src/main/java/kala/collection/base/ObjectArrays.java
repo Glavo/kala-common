@@ -125,7 +125,7 @@ public final class ObjectArrays {
     //region Collection Operations
 
     public static @NotNull String className(Object @NotNull [] array) {
-        return "Array<java.lang.Object>";
+        return "java.lang.Object[]";
     }
 
     public static @NotNull Iterator<Object> iterator(Object @NotNull [] array) {
@@ -275,7 +275,6 @@ public final class ObjectArrays {
         }
         return array[length - 1];
     }
-
 
     //endregion
 
@@ -486,7 +485,6 @@ public final class ObjectArrays {
 
         return -1;
     }
-
 
     //endregion
 

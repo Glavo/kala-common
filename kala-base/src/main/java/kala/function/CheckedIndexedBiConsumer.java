@@ -26,7 +26,7 @@ public interface CheckedIndexedBiConsumer<T, U, Ex extends Throwable> extends In
     default @NotNull Try<Void> tryAccept(int index, T t, U u) {
         try {
             acceptChecked(index, t, u);
-            return Try.success(null);
+            return Try.VOID;
         } catch (Throwable e) {
             return Try.failure(e);
         }

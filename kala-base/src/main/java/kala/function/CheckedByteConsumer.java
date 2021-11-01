@@ -7,18 +7,18 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.IntConsumer;
 
 @FunctionalInterface
-public interface CheckedIntConsumer<Ex extends Throwable> extends IntConsumer {
+public interface CheckedByteConsumer<Ex extends Throwable> extends ByteConsumer {
 
     @Contract(value = "_ -> param1", pure = true)
     @SuppressWarnings("unchecked")
-    static <Ex extends Throwable> CheckedIntConsumer<Ex> of(CheckedIntConsumer<? extends Ex> consumer) {
-        return ((CheckedIntConsumer<Ex>) consumer);
+    static <Ex extends Throwable> CheckedByteConsumer<Ex> of(CheckedByteConsumer<? extends Ex> consumer) {
+        return ((CheckedByteConsumer<Ex>) consumer);
     }
 
-    void acceptChecked(int value) throws Ex;
+    void acceptChecked(byte value) throws Ex;
 
     @Override
-    default void accept(int value) {
+    default void accept(byte value) {
         try {
             acceptChecked(value);
         } catch (Throwable e) {
@@ -26,7 +26,7 @@ public interface CheckedIntConsumer<Ex extends Throwable> extends IntConsumer {
         }
     }
 
-    default @NotNull Try<Void> tryAccept(int value) {
+    default @NotNull Try<Void> tryAccept(byte value) {
         try {
             acceptChecked(value);
             return Try.VOID;

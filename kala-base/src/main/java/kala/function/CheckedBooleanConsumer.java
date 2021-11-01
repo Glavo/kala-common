@@ -27,7 +27,7 @@ public interface CheckedBooleanConsumer<Ex extends Throwable> extends BooleanCon
     default @NotNull Try<Void> tryAccept(boolean value) {
         try {
             acceptChecked(value);
-            return Try.success(null);
+            return Try.VOID;
         } catch (Throwable e) {
             return Try.failure(e);
         }

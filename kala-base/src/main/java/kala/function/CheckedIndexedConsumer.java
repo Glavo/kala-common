@@ -27,7 +27,7 @@ public interface CheckedIndexedConsumer<T, Ex extends Throwable> extends Indexed
     default @NotNull Try<Void> tryAccept(int index, T t) {
         try {
             acceptChecked(index, t);
-            return Try.success(null);
+            return Try.VOID;
         } catch (Throwable e) {
             return Try.failure(e);
         }

@@ -24,37 +24,28 @@
  */
 package kala.function;
 
-import kala.control.Try;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Consumer;
+import java.io.Serializable;
+import java.util.Objects;
 
 @FunctionalInterface
-public interface CheckedConsumer<T, Ex extends Throwable> extends Consumer<T> {
+public interface ShortPredicate {
 
-    @Contract(value = "_ -> param1", pure = true)
-    @SuppressWarnings("unchecked")
-    static <T, Ex extends Throwable> CheckedConsumer<T, Ex> of(CheckedConsumer<? super T, ? extends Ex> consumer) {
-        return (CheckedConsumer<T, Ex>) consumer;
+    boolean test(short v);
+
+    default @NotNull ShortPredicate and(ShortPredicate other) {
+        Objects.requireNonNull(other);
+        return (ShortPredicate & Serializable) b -> test(b) && other.test(b);
     }
 
-    void acceptChecked(T t) throws Ex;
-
-    default void accept(T t) {
-        try {
-            acceptChecked(t);
-        } catch (Throwable ex) {
-            Try.sneakyThrow(ex);
-        }
+    default @NotNull ShortPredicate negate() {
+        return (ShortPredicate & Serializable) b -> !test(b);
     }
 
-    default @NotNull Try<Void> tryAccept(T t) {
-        try {
-            acceptChecked(t);
-            return Try.VOID;
-        } catch (Throwable ex) {
-            return Try.failure(ex);
-        }
+    default @NotNull ShortPredicate or(@NotNull ShortPredicate other) {
+        Objects.requireNonNull(other);
+        return (ShortPredicate & Serializable) b -> test(b) || other.test(b);
     }
+
 }

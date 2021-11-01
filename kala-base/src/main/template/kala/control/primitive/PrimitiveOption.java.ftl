@@ -1,51 +1,58 @@
 package kala.control.primitive;
 
-import kala.collection.base.primitive.IntIterator;
-import kala.collection.base.primitive.IntTraversable;
+import kala.collection.base.primitive.*;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
-import java.util.OptionalInt;
-import java.util.function.IntConsumer;
+<#if IsSpecialized>
+import java.util.Optional${Type};
+import java.util.function.*;
+<#else>
 
-public final class IntOption extends PrimitiveOption<Integer> implements IntTraversable {
+import kala.function.*;
+</#if>
+
+public final class ${Type}Option extends PrimitiveOption<${WrapperType}> implements ${Type}Traversable {
     private static final long serialVersionUID = -8990024629462620023L;
     private static final int HASH_MAGIC = -818206074;
 
-    public static final IntOption None = new IntOption();
+    public static final ${Type}Option None = new ${Type}Option();
 
-    private final int value;
+    private final ${PrimitiveType} value;
 
-    private IntOption() {
+    private ${Type}Option() {
         this.value = 0;
     }
 
-    private IntOption(int value) {
+    private ${Type}Option(${PrimitiveType} value) {
         this.value = value;
     }
 
-    public static @NotNull IntOption some(int value) {
-        return new IntOption(value);
+    public static @NotNull ${Type}Option some(${PrimitiveType} value) {
+        return new ${Type}Option(value);
     }
 
-    public static @NotNull IntOption none() {
+    public static @NotNull ${Type}Option none() {
         return None;
     }
 
-    public static @NotNull IntOption of(int value) {
+    public static @NotNull ${Type}Option of(${PrimitiveType} value) {
         return some(value);
     }
 
-    public static @NotNull IntOption of(@Nullable Integer value) {
+    public static @NotNull ${Type}Option of(@Nullable ${WrapperType} value) {
         return value == null ? None : some(value);
     }
 
+<#if IsSpecialized>
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    public static @NotNull IntOption fromJava(@NotNull OptionalInt optional) {
-        return optional.isPresent() ? some(optional.getAsInt()) : none();
+    public static @NotNull ${Type}Option fromJava(@NotNull Optional${Type} optional) {
+        return optional.isPresent() ? some(optional.getAs${Type}()) : none();
     }
 
+</#if>
     public boolean isDefined() {
         return this != None;
     }
@@ -59,33 +66,33 @@ public final class IntOption extends PrimitiveOption<Integer> implements IntTrav
         if (o == this) {
             return true;
         }
-        if (!(o instanceof IntOption)) {
+        if (!(o instanceof ${Type}Option)) {
             return false;
         }
         if (this == None || o == None) {
             return false;
         }
 
-        return value == ((IntOption) o).value;
+        return value == ((${Type}Option) o).value;
     }
 
     @Override
     public int hashCode() {
-        return HASH_MAGIC + value;
+        return HASH_MAGIC + ${WrapperType}.hashCode(value);
     }
 
     @Override
     public String toString() {
-        return this == None ? "OptionInt.None" : "OptionInt[" + value + "]";
+        return this == None ? "Option${Type}.None" : "Option${Type}[" + value + "]";
     }
 
     @Override
-    public @NotNull IntIterator iterator() {
-        return isDefined() ? IntIterator.of(value) : IntIterator.empty();
+    public @NotNull ${Type}Iterator iterator() {
+        return isDefined() ? ${Type}Iterator.of(value) : ${Type}Iterator.empty();
     }
 
     @Override
-    public void forEachPrimitive(@NotNull IntConsumer action) {
+    public void forEachPrimitive(@NotNull ${Type}Consumer action) {
         if (isDefined()) {
             action.accept(value);
         }
@@ -97,9 +104,9 @@ public final class IntOption extends PrimitiveOption<Integer> implements IntTrav
 
     private static final class Data implements Serializable {
         private static final long serialVersionUID = -2044232156734869349L;
-        private final Integer value;
+        private final ${WrapperType} value;
 
-        Data(Integer value) {
+        Data(${WrapperType} value) {
             this.value = value;
         }
 

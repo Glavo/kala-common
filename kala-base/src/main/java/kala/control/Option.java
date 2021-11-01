@@ -106,6 +106,9 @@ public final class Option<@Covariant T> extends AnyOption<T>
         return this != None;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isEmpty() {
         return this == None;
