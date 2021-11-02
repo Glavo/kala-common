@@ -4,6 +4,7 @@ import kala.annotations.Covariant;
 import kala.comparator.Comparators;
 import kala.control.Option;
 import kala.collection.factory.CollectionFactory;
+import kala.function.CheckedBiFunction;
 import kala.function.CheckedConsumer;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
@@ -17,10 +18,10 @@ import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings("unchecked" )
 public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>, Object[], Option<T>, Consumer<? super T>, Predicate<? super T>> {
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked" )
     @Contract(value = "_ -> param1", pure = true)
     static <T> Traversable<T> narrow(Traversable<? extends T> traversable) {
         return (Traversable<T>) traversable;
@@ -165,7 +166,7 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
 
     //endregion
 
-    @Contract(value = "_, _ -> param1", mutates = "param1")
+    @Contract(value = "_, _ -> param1", mutates = "param1" )
     default <G extends Growable<? super T>> @NotNull G filterTo(@NotNull G destination, @NotNull Predicate<? super T> predicate) {
         for (T e : this) {
             if (predicate.test(e)) {
@@ -175,7 +176,7 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
         return destination;
     }
 
-    @Contract(value = "_, _ -> param1", mutates = "param1")
+    @Contract(value = "_, _ -> param1", mutates = "param1" )
     default <G extends Growable<? super T>> @NotNull G filterNotTo(@NotNull G destination, @NotNull Predicate<? super T> predicate) {
         for (T e : this) {
             if (!predicate.test(e)) {
@@ -185,7 +186,7 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
         return destination;
     }
 
-    @Contract(value = "_ -> param1", mutates = "param1")
+    @Contract(value = "_ -> param1", mutates = "param1" )
     default <G extends Growable<? super T>> @NotNull G filterNotNullTo(@NotNull G destination) {
         for (T e : this) {
             if (e != null) {
@@ -195,7 +196,7 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
         return destination;
     }
 
-    @Contract(value = "_, _ -> param1", mutates = "param1")
+    @Contract(value = "_, _ -> param1", mutates = "param1" )
     default <U, G extends Growable<? super U>> @NotNull G mapTo(@NotNull G destination, @NotNull Function<? super T, ? extends U> mapper) {
         for (T e : this) {
             destination.plusAssign(mapper.apply(e));
@@ -203,7 +204,7 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
         return destination;
     }
 
-    @Contract(value = "_, _ -> param1", mutates = "param1")
+    @Contract(value = "_, _ -> param1", mutates = "param1" )
     default <U, G extends Growable<? super U>> @NotNull G mapNotNullTo(
             @NotNull G destination,
             @NotNull Function<? super T, ? extends U> mapper) {
@@ -314,6 +315,33 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
         return Iterators.foldRight(iterator(), zero, op);
     }
 
+    default <Ex extends Throwable> T foldChecked(
+            T zero, @NotNull CheckedBiFunction<? super T, ? super T, ? extends T, ? extends Ex> op) throws Ex {
+        return fold(zero, op);
+    }
+
+    default T foldUnchecked(T zero, @NotNull CheckedBiFunction<? super T, ? super T, ? extends T, ?> op) {
+        return fold(zero, op);
+    }
+
+    default <U, Ex extends Throwable> U foldLeftChecked(
+            U zero, @NotNull CheckedBiFunction<? super U, ? super T, ? extends U, ? extends Ex> op) throws Ex {
+        return foldLeft(zero, op);
+    }
+
+    default <U> U foldLeftUnchecked(U zero, @NotNull CheckedBiFunction<? super U, ? super T, ? extends U, ?> op) {
+        return foldLeft(zero, op);
+    }
+
+    default <U, Ex extends Throwable> U foldRightChecked(
+            U zero, @NotNull CheckedBiFunction<? super T, ? super U, ? extends U, ? extends Ex> op) throws Ex {
+        return foldRight(zero, op);
+    }
+
+    default <U> U foldRightUnchecked(U zero, @NotNull CheckedBiFunction<? super T, ? super U, ? extends U, ?> op) {
+        return foldRight(zero, op);
+    }
+
     /**
      * Reduces this elements by apply {@code op}.
      *
@@ -321,7 +349,7 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
      * @return the reduced value
      * @throws NoSuchElementException if this {@code Traversable} is empty
      */
-    default T reduce(@NotNull BiFunction<? super T, ? super T, ? extends T> op) throws NoSuchElementException {
+    default T reduce(@NotNull BiFunction<? super T, ? super T, ? extends T> op) {
         return reduceLeft(op);
     }
 
@@ -349,7 +377,7 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
      * @return the reduced value
      * @throws NoSuchElementException if this {@code Traversable} is empty
      */
-    default T reduceLeft(@NotNull BiFunction<? super T, ? super T, ? extends T> op) throws NoSuchElementException {
+    default T reduceLeft(@NotNull BiFunction<? super T, ? super T, ? extends T> op) {
         return reduceLeftOption(op).get();
     }
 
@@ -401,48 +429,130 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
         return Iterators.reduceRightOption(iterator(), op);
     }
 
+    default <Ex extends Throwable> T reduceChecked(
+            @NotNull CheckedBiFunction<? super T, ? super T, ? extends T, ? extends Ex> op) throws Ex {
+        return reduce(op);
+    }
+
+    default T reduceUnchecked(@NotNull CheckedBiFunction<? super T, ? super T, ? extends T, ?> op) {
+        return reduce(op);
+    }
+
+    default <Ex extends Throwable> @Nullable T reduceOrNullChecked(
+            @NotNull CheckedBiFunction<? super T, ? super T, ? extends T, ? extends Ex> op) throws Ex {
+        return reduceOrNull(op);
+    }
+
+    default @Nullable T reduceOrNullUnchecked(@NotNull CheckedBiFunction<? super T, ? super T, ? extends T, ?> op) {
+        return reduceOrNull(op);
+    }
+
+    default <Ex extends Throwable> @NotNull Option<T> reduceOptionChecked(
+            @NotNull CheckedBiFunction<? super T, ? super T, ? extends T, ? extends Ex> op) throws Ex {
+        return reduceOption(op);
+    }
+
+    default @NotNull Option<T> reduceOptionUnchecked(@NotNull CheckedBiFunction<? super T, ? super T, ? extends T, ?> op) {
+        return reduceOption(op);
+    }
+
+    default <Ex extends Throwable> T reduceLeftChecked(
+            @NotNull CheckedBiFunction<? super T, ? super T, ? extends T, ? extends Ex> op) throws Ex {
+        return reduceLeft(op);
+    }
+
+    default T reduceLeftUnchecked(@NotNull CheckedBiFunction<? super T, ? super T, ? extends T, ?> op) {
+        return reduceLeft(op);
+    }
+
+    default <Ex extends Throwable> @Nullable T reduceLeftOrNullChecked(
+            @NotNull CheckedBiFunction<? super T, ? super T, ? extends T, ? extends Ex> op) throws Ex {
+        return reduceLeftOrNull(op);
+    }
+
+    default @Nullable T reduceLeftOrNullUnchecked(@NotNull CheckedBiFunction<? super T, ? super T, ? extends T, ?> op) {
+        return reduceLeftOrNull(op);
+    }
+
+    default <Ex extends Throwable> @NotNull Option<T> reduceLeftOptionChecked(
+            @NotNull CheckedBiFunction<? super T, ? super T, ? extends T, ? extends Ex> op) throws Ex {
+        return reduceLeftOption(op);
+    }
+
+    default @NotNull Option<T> reduceLeftOptionUnchecked(@NotNull CheckedBiFunction<? super T, ? super T, ? extends T, ?> op) {
+        return reduceLeftOption(op);
+    }
+
+    default <Ex extends Throwable> T reduceRightChecked(
+            @NotNull CheckedBiFunction<? super T, ? super T, ? extends T, ? extends Ex> op) throws Ex {
+        return reduceRight(op);
+    }
+
+    default T reduceRightUnchecked(@NotNull CheckedBiFunction<? super T, ? super T, ? extends T, ?> op) {
+        return reduceRight(op);
+    }
+
+    default <Ex extends Throwable> @Nullable T reduceRightOrNullChecked(
+            @NotNull CheckedBiFunction<? super T, ? super T, ? extends T, ? extends Ex> op) throws Ex {
+        return reduceRightOrNull(op);
+    }
+
+    default @Nullable T reduceRightOrNullUnchecked(@NotNull CheckedBiFunction<? super T, ? super T, ? extends T, ?> op) {
+        return reduceRightOrNull(op);
+    }
+
+    default <Ex extends Throwable> @NotNull Option<T> reduceRightOptionChecked(
+            @NotNull CheckedBiFunction<? super T, ? super T, ? extends T, ? extends Ex> op) throws Ex {
+        return reduceRightOption(op);
+    }
+
+    default @NotNull Option<T> reduceRightOptionUnchecked(@NotNull CheckedBiFunction<? super T, ? super T, ? extends T, ?> op) {
+        return reduceRightOption(op);
+    }
+
+
     //endregion
 
     //region Copy Operations
 
-    @Contract(mutates = "param1")
+    @Contract(mutates = "param1" )
     @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
     default int copyToArray(Object @NotNull [] dest) {
         return copyToArray(0, dest, 0, Integer.MAX_VALUE);
     }
 
-    @Contract(mutates = "param1")
+    @Contract(mutates = "param1" )
     @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
     default int copyToArray(Object @NotNull [] dest, int destPos) {
         return copyToArray(0, dest, destPos, Integer.MAX_VALUE);
     }
 
-    @Contract(mutates = "param1")
+    @Contract(mutates = "param1" )
     @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
     default int copyToArray(Object @NotNull [] dest, int destPos, int limit) {
         return copyToArray(0, dest, destPos, limit);
     }
 
-    @Contract(mutates = "param2")
+    @Contract(mutates = "param2" )
     @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
     default int copyToArray(int srcPos, Object @NotNull [] dest) {
         return copyToArray(srcPos, dest, 0, Integer.MAX_VALUE);
     }
 
-    @Contract(mutates = "param2")
+    @Contract(mutates = "param2" )
     @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
     default int copyToArray(int srcPos, Object @NotNull [] dest, int destPos) {
         return copyToArray(srcPos, dest, destPos, Integer.MAX_VALUE);
     }
 
-    @Contract(mutates = "param2")
+    @Contract(mutates = "param2" )
     @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
     default int copyToArray(int srcPos, Object @NotNull [] dest, int destPos, int limit) {
         if (srcPos < 0) {
-            throw new IllegalArgumentException("srcPos(" + srcPos + ") < 0");
+            throw new IllegalArgumentException("srcPos(" + srcPos + ") < 0" );
         }
         if (destPos < 0) {
-            throw new IllegalArgumentException("destPos(" + destPos + ") < 0");
+            throw new IllegalArgumentException("destPos(" + destPos + ") < 0" );
         }
 
         if (limit <= 0) {
@@ -586,7 +696,7 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
 
     //region String Representation
 
-    @Contract(value = "_, _, _, _ -> param1", mutates = "param1")
+    @Contract(value = "_, _, _, _ -> param1", mutates = "param1" )
     default <A extends Appendable> @NotNull A joinTo(
             @NotNull A buffer,
             CharSequence separator, CharSequence prefix, CharSequence postfix
@@ -611,7 +721,7 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
         return joinTo(buffer, separator, "", "", transform);
     }
 
-    @Contract(value = "_, _, _, _, _ -> param1", mutates = "param1")
+    @Contract(value = "_, _, _, _, _ -> param1", mutates = "param1" )
     default <A extends Appendable> @NotNull A joinTo(
             @NotNull A buffer,
             CharSequence separator, CharSequence prefix, CharSequence postfix,
