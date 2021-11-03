@@ -2,7 +2,9 @@ package kala.collection.mutable;
 
 import kala.collection.IndexedSeq;
 import kala.collection.Seq;
+import kala.collection.SeqIterator;
 import kala.collection.base.ObjectArrays;
+import kala.collection.internal.SeqIterators;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
 import kala.function.IndexedFunction;
@@ -89,6 +91,16 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
     @Override
     default <U> @NotNull CollectionFactory<U, ?, ? extends MutableSeq<U>> iterableFactory() {
         return factory();
+    }
+
+    @Override
+    default @NotNull MutableSeqIterator<E> seqIterator() {
+        return seqIterator(0);
+    }
+
+    @Override
+    default @NotNull MutableSeqIterator<E> seqIterator(int index) {
+        return new SeqIterators.DefaultMutableSeqIterator<>(this, index);
     }
 
     @Override

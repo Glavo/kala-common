@@ -140,6 +140,16 @@ public final class SeqViews {
             super(source);
         }
 
+        @Override
+        public @NotNull SeqIterator<E> seqIterator() {
+            return source.seqIterator();
+        }
+
+        @Override
+        public @NotNull SeqIterator<E> seqIterator(int index) {
+            return source.seqIterator(index);
+        }
+
         public E get(int index) {
             return source.get(index);
         }

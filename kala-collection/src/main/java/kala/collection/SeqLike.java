@@ -3,6 +3,7 @@ package kala.collection;
 import kala.collection.base.GenericArrays;
 import kala.collection.base.Growable;
 import kala.collection.base.Iterators;
+import kala.collection.internal.SeqIterators;
 import kala.control.Option;
 import kala.function.CheckedIndexedConsumer;
 import kala.function.IndexedBiFunction;
@@ -58,6 +59,14 @@ public interface SeqLike<E> extends CollectionLike<E> {
             it.next();
         }
         return it;
+    }
+
+    default @NotNull SeqIterator<E> seqIterator() {
+        return seqIterator(0);
+    }
+
+    default @NotNull SeqIterator<E> seqIterator(int index) {
+        return new SeqIterators.DefaultSeqIterator<>(this, index);
     }
 
     @Override

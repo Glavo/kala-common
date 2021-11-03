@@ -7,6 +7,7 @@ import kala.collection.IndexedSeq;
 import kala.collection.Seq;
 import kala.collection.base.Growable;
 import kala.collection.internal.CollectionHelper;
+import kala.collection.internal.SeqIterators;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
 import kala.collection.factory.CollectionFactory;
@@ -107,6 +108,16 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
     @Override
     default <U> @NotNull CollectionFactory<U, ?, ? extends DynamicSeq<U>> iterableFactory() {
         return factory();
+    }
+
+    @Override
+    default @NotNull DynamicSeqIterator<E> seqIterator() {
+        return seqIterator(0);
+    }
+
+    @Override
+    default @NotNull DynamicSeqIterator<E> seqIterator(int index) {
+        return new SeqIterators.DefaultDynamicSeqIterator<>(this, index);
     }
 
     @Override
@@ -297,10 +308,6 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
         }
         if (n == 0) {
             return;
-        }
-        final int size = this.size();
-        if (n > size) {
-            throw new NoSuchElementException("n(" + n + ") > size(" + size + ")");
         }
         removeAt(0, n);
     }

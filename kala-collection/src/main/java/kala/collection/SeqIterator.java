@@ -1,6 +1,13 @@
 package kala.collection;
 
+import kala.collection.internal.SeqIterators;
+
 public interface SeqIterator<E> extends java.util.ListIterator<E> {
+
+    @SuppressWarnings("unchecked")
+    static <E> SeqIterator<E> empty() {
+        return (SeqIterator<E>) SeqIterators.EMPTY;
+    }
 
     /**
      * {@inheritDoc}
@@ -37,7 +44,7 @@ public interface SeqIterator<E> extends java.util.ListIterator<E> {
     /**
      * @see kala.collection.mutable.MutableSeqIterator#set(Object)
      */
-    @Deprecated
+    // @Deprecated
     default void set(E e) throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
@@ -45,7 +52,7 @@ public interface SeqIterator<E> extends java.util.ListIterator<E> {
     /**
      * @see kala.collection.mutable.DynamicSeqIterator#add(Object)
      */
-    @Deprecated
+    // @Deprecated
     default void add(E e) throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
@@ -53,7 +60,7 @@ public interface SeqIterator<E> extends java.util.ListIterator<E> {
     /**
      * @see kala.collection.mutable.DynamicSeqIterator#remove()
      */
-    @Deprecated
+    // @Deprecated
     default void remove() throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
