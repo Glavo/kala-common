@@ -40,7 +40,7 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
 
     //region Constructors
 
-    DynamicArray(Object @NotNull [] elements, int size) {
+    private DynamicArray(Object @NotNull [] elements, int size) {
         this.elements = elements;
         this.size = size;
     }
@@ -64,6 +64,16 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
 
     public static <E> @NotNull CollectionFactory<E, ?, DynamicArray<E>> factory() {
         return (Factory<E>) FACTORY;
+    }
+
+    @Contract("-> new")
+    public static <E> @NotNull DynamicArray<E> create() {
+        return new DynamicArray<>();
+    }
+
+    @Contract("_ -> new")
+    public static <E> @NotNull DynamicArray<E> create(int initialCapacity) {
+        return new DynamicArray<>(initialCapacity);
     }
 
     @Contract("-> new")

@@ -1318,52 +1318,51 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
+        public final void prepend(E value) {
+            if (len == 0) {
+                first = last = nodeOf(value);
+            } else {
+                first = first.cons(value);
+            }
+            len++;
+        }
+
+        @Override
         public final void append(E value) {
             Node<E> i = nodeOf(value);
             if (len == 0) {
                 first = i;
             } else {
+                ensureUnaliased();
                 last.tail = i;
             }
             last = i;
-            ++len;
-        }
-
-        @Override
-        public final void prepend(E value) {
-            ensureUnaliased();
-            if (len == 0) {
-                append(value);
-                return;
-            }
-            first = first.cons(value);
-            ++len;
+            len++;
         }
 
         @Override
         public void insert(int index, E value) {
-            ensureUnaliased();
             if (index < 0 || index > len) {
                 throw new IndexOutOfBoundsException("Index out of range: " + index);
+            }
+            if (index == 0) {
+                prepend(value);
+                return;
             }
             if (index == len) {
                 append(value);
                 return;
             }
 
-            if (index == 0) {
-                prepend(value);
-                return;
-            }
             ensureUnaliased();
             Node<E> i = first;
             int c = 1;
 
             while (c++ != index) {
-                i = i.tail();
+                i = i.tail;
             }
 
-            i.tail = i.tail().cons(value);
+            i.tail = i.tail.cons(value);
             ++len;
         }
 
@@ -1381,7 +1380,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
                 } else {
                     first = first.tail;
                 }
-                --len;
+                len--;
                 return v;
             }
 
@@ -1457,7 +1456,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
             } else {
                 first = first.tail;
             }
-            --len;
+            len--;
             return v;
         }
 
@@ -1507,18 +1506,25 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
-        public final void sort(@NotNull Comparator<? super E> comparator) {
+        public final void sort(Comparator<? super E> comparator) {
             if (len == 0) {
                 return;
             }
             Object[] values = toArray();
             Arrays.sort(values, (Comparator<? super Object>) comparator);
 
-            ensureUnaliased();
-            Node<E> c = first;
-            for (Object value : values) {
-                c.head = (E) value;
-                c = c.tail;
+            if (aliased) {
+                Builder<Object> buffer = new DynamicLinkedSeq<>();
+                buffer.appendAll(values);
+                this.first = (Node<E>) buffer.first;
+                this.last = (Node<E>) buffer.last;
+                aliased = false;
+            } else {
+                Node<E> c = first;
+                for (Object value : values) {
+                    c.head = (E) value;
+                    c = c.tail;
+                }
             }
         }
 
@@ -1553,13 +1559,13 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
 
         @Override
         public final void retainAll(@NotNull Predicate<? super E> predicate) {
-            ensureUnaliased();
             Node<E> prev = null;
             Node<E> cur = first;
             if (cur == null) {
                 return;
             }
 
+            ensureUnaliased();
             while (cur != NIL_NODE) {
                 Node<E> follow = cur.tail;
                 if (!predicate.test(cur.head)) {

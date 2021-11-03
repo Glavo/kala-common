@@ -32,6 +32,11 @@ public final class DynamicLinkedSeq<E> extends ImmutableLinkedSeq.Builder<E>
     }
 
     @Contract(" -> new")
+    public static <E> @NotNull DynamicLinkedSeq<E> create() {
+        return new DynamicLinkedSeq<>();
+    }
+
+    @Contract(" -> new")
     public static <E> @NotNull DynamicLinkedSeq<E> of() {
         return new DynamicLinkedSeq<>();
     }

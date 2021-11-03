@@ -1,14 +1,18 @@
 package kala.collection.mutable;
 
 import kala.collection.factory.CollectionFactory;
+import kala.collection.immutable.ImmutableArray;
+import kala.collection.immutable.ImmutableLinkedSeq;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class DynamicLinkedSeqTest implements DynamicSeqTestTemplate {
 
     @Override
-    public final <E> CollectionFactory<E, ?, DynamicLinkedSeq<E>> factory() {
+    public <E> CollectionFactory<E, ?, DynamicLinkedSeq<E>> factory() {
         return DynamicLinkedSeq.factory();
     }
 
@@ -27,6 +31,23 @@ public final class DynamicLinkedSeqTest implements DynamicSeqTestTemplate {
         return DynamicLinkedSeq.from(elements);
     }
 
+    @Test
+    void ensureUnaliasedTest() {
+        ImmutableArray<String> values = ImmutableArray.of("value1", "value2", "value3");
+
+        DynamicLinkedSeq<String> seq = DynamicLinkedSeq.from(values);
+        ImmutableLinkedSeq<String> immSeq = seq.toImmutableLinkedSeq();
+
+        assertIterableEquals(values, immSeq);
+
+        seq.append("value4");
+        assertIterableEquals(values.appended("value4"), seq);
+        assertIterableEquals(values, immSeq);
+
+        seq.prepend("value0");
+        assertIterableEquals(values.appended("value4").prepended("value0"), seq);
+        assertIterableEquals(values, immSeq);
+    }
 
     @Test
     void removeTest() {

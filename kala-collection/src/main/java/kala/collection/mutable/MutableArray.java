@@ -255,12 +255,12 @@ public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Index
         }
 
         @Override
-        public final boolean isChecked() {
+        public boolean isChecked() {
             return true;
         }
 
         @Override
-        public final @NotNull MutableArray<E> clone() {
+        public @NotNull MutableArray<E> clone() {
             return new Checked<>(this.elements.clone());
         }
     }
@@ -270,12 +270,12 @@ public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Index
         }
 
         @Override
-        public final MutableArray<E> from(E @NotNull [] values) {
+        public MutableArray<E> from(E @NotNull [] values) {
             return MutableArray.from(values);
         }
 
         @Override
-        public final MutableArray<E> from(@NotNull Iterable<? extends E> values) {
+        public MutableArray<E> from(@NotNull Iterable<? extends E> values) {
             return MutableArray.from(values);
         }
 
@@ -285,43 +285,43 @@ public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Index
         }
 
         @Override
-        public final MutableArray<E> fill(int n, E value) {
+        public MutableArray<E> fill(int n, E value) {
             return MutableArray.fill(n, value);
         }
 
         @Override
-        public final MutableArray<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+        public MutableArray<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
             return MutableArray.fill(n, supplier);
         }
 
         @Override
-        public final MutableArray<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+        public MutableArray<E> fill(int n, @NotNull IntFunction<? extends E> init) {
             return MutableArray.fill(n, init);
         }
 
         @Override
-        public final DynamicArray<E> newBuilder() {
+        public DynamicArray<E> newBuilder() {
             return new DynamicArray<>();
         }
 
         @Override
-        public final void addToBuilder(@NotNull DynamicArray<E> buffer, E value) {
+        public void addToBuilder(@NotNull DynamicArray<E> buffer, E value) {
             buffer.append(value);
         }
 
         @Override
-        public final void sizeHint(@NotNull DynamicArray<E> buffer, int size) {
+        public void sizeHint(@NotNull DynamicArray<E> buffer, int size) {
             buffer.sizeHint(size);
         }
 
         @Override
-        public final DynamicArray<E> mergeBuilder(@NotNull DynamicArray<E> builder1, @NotNull DynamicArray<E> builder2) {
+        public DynamicArray<E> mergeBuilder(@NotNull DynamicArray<E> builder1, @NotNull DynamicArray<E> builder2) {
             builder1.appendAll(builder2);
             return builder1;
         }
 
         @Override
-        public final MutableArray<E> build(@NotNull DynamicArray<E> buffer) {
+        public MutableArray<E> build(@NotNull DynamicArray<E> buffer) {
             return new MutableArray<>(buffer.toArray());
         }
     }

@@ -34,6 +34,11 @@ public final class DynamicDoubleLinkedSeq<E>
     }
 
     @Contract("-> new")
+    public static <E> @NotNull DynamicDoubleLinkedSeq<E> create() {
+        return new DynamicDoubleLinkedSeq<>();
+    }
+
+    @Contract("-> new")
     public static <E> @NotNull DynamicDoubleLinkedSeq<E> of() {
         return new DynamicDoubleLinkedSeq<>();
     }

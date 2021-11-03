@@ -101,3 +101,7 @@ inline fun freemarker.template.Configuration.withGenerate(
 tasks.compileJava {
     dependsOn(generateSources)
 }
+
+tasks.sourcesJar {
+    dependsOn(generateSources)
+}

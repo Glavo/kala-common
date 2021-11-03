@@ -46,6 +46,11 @@ public final class DynamicSmartArraySeq<E> extends AbstractDynamicSeq<E> impleme
     }
 
     @Contract("-> new")
+    public static <E> @NotNull DynamicSmartArraySeq<E> create() {
+        return new DynamicSmartArraySeq<>();
+    }
+
+    @Contract("-> new")
     public static <E> @NotNull DynamicSmartArraySeq<E> of() {
         return new DynamicSmartArraySeq<>();
     }
