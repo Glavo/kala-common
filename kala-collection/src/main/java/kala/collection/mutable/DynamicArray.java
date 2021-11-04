@@ -33,8 +33,8 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
 
     //region Fields
 
-    private Object @NotNull [] elements;
-    private int size;
+    Object @NotNull [] elements;
+    int size;
 
     //endregion
 
@@ -263,6 +263,12 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
     @Override
     public @NotNull Iterator<E> iterator(int beginIndex) {
         return (Iterator<E>) GenericArrays.iterator(elements, beginIndex, size);
+    }
+
+    @Override
+    public @NotNull DynamicSeqIterator<E> seqIterator(int index) {
+        Conditions.checkPositionIndex(index, size);
+        return new SeqItr<>(this, index);
     }
 
     @Override
@@ -635,5 +641,94 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
         public DynamicArray<E> fill(int n, @NotNull IntFunction<? extends E> init) {
             return DynamicArray.fill(n, init);
         }
+    }
+
+    private static final class SeqItr<E> extends AbstractDynamicSeqIterator<E> {
+        private final DynamicArray<E> seq;
+        private int lastReturned = -1;
+
+        SeqItr(DynamicArray<E> seq, int index) {
+            super(index);
+            this.seq = seq;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return cursor < seq.size;
+        }
+
+        @Override
+        public E next() {
+            final int idx = cursor;
+            if (idx >= seq.size) {
+                throw new NoSuchElementException();
+            }
+            try {
+                E res = (E) seq.elements[idx];
+                lastReturned = idx;
+                cursor = idx + 1;
+                return res;
+            } catch (ArrayIndexOutOfBoundsException e) {
+                throw new ConcurrentModificationException(e);
+            }
+        }
+
+        @Override
+        public E previous() {
+            final int idx = cursor - 1;
+            if (idx < 0) {
+                throw new NoSuchElementException();
+            }
+            try {
+                E res = (E) seq.elements[idx];
+                lastReturned = idx;
+                cursor = idx;
+                return res;
+            } catch (ArrayIndexOutOfBoundsException e) {
+                throw new ConcurrentModificationException(e);
+            }
+        }
+
+        @Override
+        public void set(E e) {
+            if (lastReturned < 0) {
+                throw new IllegalStateException();
+            }
+            try {
+                seq.set(lastReturned, e);
+            } catch (IndexOutOfBoundsException ex) {
+                throw new ConcurrentModificationException(ex);
+            }
+        }
+
+        @Override
+        public void add(E e) {
+            final int idx = this.cursor;
+            try {
+                seq.insert(idx, e);
+                cursor = idx + 1;
+                lastReturned = -1;
+            } catch (IndexOutOfBoundsException ex) {
+                throw new ConcurrentModificationException(ex);
+            }
+        }
+
+
+        @Override
+        public void remove() {
+            if (lastReturned < 0) {
+                throw new IllegalStateException();
+            }
+
+            try {
+                seq.removeAt(lastReturned);
+                cursor = lastReturned;
+                lastReturned = -1;
+            } catch (IndexOutOfBoundsException ex) {
+                throw new ConcurrentModificationException(ex);
+            }
+        }
+
+
     }
 }

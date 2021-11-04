@@ -3,6 +3,7 @@ package kala.collection.internal;
 import kala.collection.AbstractSeqIterator;
 import kala.collection.SeqIterator;
 import kala.collection.SeqLike;
+import kala.collection.base.AbstractIterator;
 import kala.collection.mutable.DynamicSeq;
 import kala.collection.mutable.DynamicSeqIterator;
 import kala.collection.mutable.MutableSeq;
@@ -20,7 +21,7 @@ public final class SeqIterators {
     public static final SeqIterator<?> EMPTY = new EmptySeqIterator<>();
     public static final MutableSeqIterator<?> EMPTY_MUTABLE = new EmptyMutableSeqIterator<>();
 
-    private static class EmptySeqIterator<E> extends AbstractSeqIterator<E> implements SeqIterator<E> {
+    private static class EmptySeqIterator<E> extends AbstractIterator<E> implements SeqIterator<E> {
         @Override
         public boolean hasNext() {
             return false;
@@ -58,12 +59,11 @@ public final class SeqIterators {
     public static class DefaultSeqIterator<E, S extends SeqLike<E>> extends AbstractSeqIterator<E> {
         protected final @NotNull S seq;
 
-        protected int cursor = 0;
         protected int lastRet = -1;
 
         public DefaultSeqIterator(@NotNull S seq, int index) {
+            super(index);
             this.seq = seq;
-            this.cursor = index;
         }
 
         @Override

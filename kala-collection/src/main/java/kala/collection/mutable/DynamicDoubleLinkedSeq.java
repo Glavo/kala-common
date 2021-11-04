@@ -485,11 +485,10 @@ public final class DynamicDoubleLinkedSeq<E>
     private final class SeqItr extends AbstractDynamicSeqIterator<E> {
         private Node<E> lastReturned;
         private Node<E> next;
-        private int cursor;
 
         SeqItr(int index) {
+            super(index);
             next = (index == len) ? null : getNode(index);
-            cursor = index;
         }
 
         @Override
@@ -510,11 +509,6 @@ public final class DynamicDoubleLinkedSeq<E>
         }
 
         @Override
-        public boolean hasPrevious() {
-            return cursor > 0;
-        }
-
-        @Override
         public E previous() {
             if (!hasPrevious()) {
                 throw new NoSuchElementException();
@@ -524,15 +518,6 @@ public final class DynamicDoubleLinkedSeq<E>
             return lastReturned.value;
         }
 
-        @Override
-        public int nextIndex() {
-            return cursor;
-        }
-
-        @Override
-        public int previousIndex() {
-            return cursor - 1;
-        }
 
         @Override
         public void add(E e) {
