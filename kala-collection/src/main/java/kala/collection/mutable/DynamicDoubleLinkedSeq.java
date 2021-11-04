@@ -1,5 +1,6 @@
 package kala.collection.mutable;
 
+import kala.Conditions;
 import kala.collection.base.Iterators;
 import kala.function.IndexedFunction;
 import kala.collection.factory.CollectionFactory;
@@ -10,12 +11,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collector;
 
 @Debug.Renderer(hasChildren = "!isEmpty()", childrenArray = "toArray()")
 public final class DynamicDoubleLinkedSeq<E>
-        extends AbstractDynamicSeq<E> implements DynamicSeqOps<E, DynamicDoubleLinkedSeq<?>, DynamicDoubleLinkedSeq<E>>, MutableStack<E>, MutableQueue<E> {
+        extends AbstractDynamicSeq<E>
+        implements DynamicSeqOps<E, DynamicDoubleLinkedSeq<?>, DynamicDoubleLinkedSeq<E>>, MutableStack<E>, MutableQueue<E> {
 
     private static final Factory<?> FACTORY = new Factory<>();
 
@@ -119,7 +121,7 @@ public final class DynamicDoubleLinkedSeq<E>
 
     //endregion
 
-    private Node<E> getNode(int index) {
+    Node<E> getNode(int index) {
         final int len = this.len;
         Node<E> x;
         if (index < (len >> 1)) {
@@ -155,6 +157,12 @@ public final class DynamicDoubleLinkedSeq<E>
     }
 
     @Override
+    public @NotNull DynamicSeqIterator<E> seqIterator(int index) {
+        Conditions.checkPositionIndex(index, len);
+        return new SeqItr(index);
+    }
+
+    @Override
     public @NotNull DynamicSeqEditor<E, DynamicDoubleLinkedSeq<E>> edit() {
         return new DynamicSeqEditor<>(this);
     }
@@ -182,19 +190,6 @@ public final class DynamicDoubleLinkedSeq<E>
     }
 
     @Override
-    public void append(E value) {
-        final Node<E> last = this.last;
-        final Node<E> nn = new Node<>(last, null, value);
-        this.last = nn;
-        if (last == null) {
-            first = nn;
-        } else {
-            last.next = nn;
-        }
-        len++;
-    }
-
-    @Override
     public void prepend(E value) {
         final Node<E> first = this.first;
         final Node<E> newNode = new Node<>(null, first, value);
@@ -204,7 +199,21 @@ public final class DynamicDoubleLinkedSeq<E>
         } else {
             first.prev = newNode;
         }
-        ++len;
+        len++;
+    }
+
+
+    @Override
+    public void append(E value) {
+        final Node<E> last = this.last;
+        final Node<E> newNode = new Node<>(last, null, value);
+        this.last = newNode;
+        if (last == null) {
+            first = newNode;
+        } else {
+            last.next = newNode;
+        }
+        len++;
     }
 
     @Override
@@ -253,35 +262,40 @@ public final class DynamicDoubleLinkedSeq<E>
 
     @Override
     public void insert(int index, E value) {
-        final int len = this.len;
-        if (index < 0 || index > this.len) {
-            throw new IndexOutOfBoundsException();
-        }
+        Conditions.checkPositionIndex(index, len);
 
         if (index == len) {
             append(value);
         } else {
-            final Node<E> node = getNode(index);
-            final Node<E> prev = node.prev;
-            final Node<E> newNode = new Node<>(prev, node, value);
-            if (prev == null) {
-                first = newNode;
-            } else {
-                prev.next = newNode;
-            }
-            ++this.len;
+            insertBefore(getNode(index), value);
         }
+    }
+
+    void insertBefore(Node<E> node, E value) {
+        final Node<E> prev = node.prev;
+        final Node<E> newNode = new Node<>(prev, node, value);
+        node.prev = newNode;
+        if (prev == null) {
+            first = newNode;
+        } else {
+            prev.next = newNode;
+        }
+        len++;
     }
 
     @Override
     public E removeAt(int index) {
-        if (index < 0 || index >= len) {
-            throw new IndexOutOfBoundsException();
-        }
+        Conditions.checkElementIndex(index, len);
+
         final Node<E> node = getNode(index);
-        E res = node.value;
-        final Node<E> next = node.next;
+        final E value = node.value;
+        removeAt(node);
+        return value;
+    }
+
+    void removeAt(@NotNull Node<E> node) {
         final Node<E> prev = node.prev;
+        final Node<E> next = node.next;
 
         if (prev == null) {
             first = next;
@@ -296,9 +310,8 @@ public final class DynamicDoubleLinkedSeq<E>
             next.prev = prev;
             node.next = null;
         }
-
-        --len;
-        return res;
+        node.value = null;
+        len--;
     }
 
     @Override
@@ -423,7 +436,7 @@ public final class DynamicDoubleLinkedSeq<E>
     private static final class Itr<E> extends AbstractIterator<E> {
         private Node<E> node;
 
-        private Itr(Node<E> node) {
+        Itr(Node<E> node) {
             this.node = node;
         }
 
@@ -436,7 +449,7 @@ public final class DynamicDoubleLinkedSeq<E>
         @Override
         public E next() {
             final Node<E> node = this.node;
-            if (this.node == null) {
+            if (node == null) {
                 throw new NoSuchElementException();
             }
             E v = node.value;
@@ -448,7 +461,7 @@ public final class DynamicDoubleLinkedSeq<E>
     private static final class ReverseItr<E> extends AbstractIterator<E> {
         private Node<E> node;
 
-        private ReverseItr(Node<E> node) {
+        ReverseItr(Node<E> node) {
             this.node = node;
         }
 
@@ -460,12 +473,100 @@ public final class DynamicDoubleLinkedSeq<E>
         @Override
         public E next() {
             final Node<E> node = this.node;
-            if (this.node == null) {
+            if (node == null) {
                 throw new NoSuchElementException();
             }
             E v = node.value;
             this.node = node.prev;
             return v;
+        }
+    }
+
+    private final class SeqItr extends AbstractDynamicSeqIterator<E> {
+        private Node<E> lastReturned;
+        private Node<E> next;
+        private int cursor;
+
+        SeqItr(int index) {
+            next = (index == len) ? null : getNode(index);
+            cursor = index;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return cursor < len;
+        }
+
+        @Override
+        public E next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+
+            lastReturned = next;
+            next = next.next;
+            cursor++;
+            return lastReturned.value;
+        }
+
+        @Override
+        public boolean hasPrevious() {
+            return cursor > 0;
+        }
+
+        @Override
+        public E previous() {
+            if (!hasPrevious()) {
+                throw new NoSuchElementException();
+            }
+            lastReturned = next = (next == null) ? last : next.prev;
+            cursor--;
+            return lastReturned.value;
+        }
+
+        @Override
+        public int nextIndex() {
+            return cursor;
+        }
+
+        @Override
+        public int previousIndex() {
+            return cursor - 1;
+        }
+
+        @Override
+        public void add(E e) {
+            lastReturned = null;
+            if (next == null) {
+                append(e);
+            } else {
+                insertBefore(next, e);
+            }
+            cursor++;
+        }
+
+
+        @Override
+        public void remove() {
+            if (lastReturned == null) {
+                throw new IllegalStateException();
+            }
+            Node<E> lastReturnedNext = this.lastReturned;
+            removeAt(lastReturned);
+            if (next == lastReturned) {
+                next = lastReturnedNext;
+            } else {
+                cursor--;
+            }
+            lastReturned = null;
+        }
+
+        @Override
+        public void set(E e) {
+            if (lastReturned == null) {
+                throw new IllegalStateException();
+            }
+            lastReturned.value = e;
         }
     }
 

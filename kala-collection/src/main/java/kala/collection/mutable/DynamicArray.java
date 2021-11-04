@@ -261,6 +261,11 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
     }
 
     @Override
+    public @NotNull Iterator<E> iterator(int beginIndex) {
+        return (Iterator<E>) GenericArrays.iterator(elements, beginIndex, size);
+    }
+
+    @Override
     public @NotNull Spliterator<E> spliterator() {
         return (Spliterator<E>) Arrays.spliterator(elements, 0, size);
     }
