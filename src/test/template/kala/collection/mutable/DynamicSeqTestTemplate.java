@@ -244,4 +244,24 @@ public interface DynamicSeqTestTemplate extends MutableSeqTestTemplate {
         b2.removeAll(it -> it % 2 == 0);
         assertIterableEquals(List.of(1, 3, 5), b2);
     }
+
+    @Test
+    default void takeInPlaceTest() {
+        DynamicSeq<Object> empty = of();
+        assertThrows(IllegalArgumentException.class, () -> empty.takeInPlace(-1));
+        assertThrows(IllegalArgumentException.class, () -> empty.takeInPlace(Integer.MIN_VALUE));
+
+        DynamicSeq<String> seq = of("str0", "str1", "str2", "str3", "str4");
+        seq.takeInPlace(seq.size());
+        assertIterableEquals(List.of("str0", "str1", "str2", "str3", "str4"), seq);
+        seq.takeInPlace(seq.size() + 1);
+        assertIterableEquals(List.of("str0", "str1", "str2", "str3", "str4"), seq);
+        seq.takeInPlace(Integer.MAX_VALUE);
+        assertIterableEquals(List.of("str0", "str1", "str2", "str3", "str4"), seq);
+        seq.takeInPlace(seq.size() - 1);
+        assertIterableEquals(List.of("str0", "str1", "str2", "str3"), seq);
+        seq.takeInPlace(0);
+        assertIterableEquals(List.of(), seq);
+    }
+
 }
