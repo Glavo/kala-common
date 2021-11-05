@@ -1,9 +1,7 @@
 package kala.collection.mutable;
 
 import kala.Conditions;
-import kala.collection.IndexedSeq;
 import kala.collection.Seq;
-import kala.collection.SeqIterator;
 import kala.collection.base.ObjectArrays;
 import kala.collection.internal.SeqIterators;
 import kala.collection.internal.convert.AsJavaConvert;
@@ -116,21 +114,6 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
             return new AsJavaConvert.MutableIndexedSeqAsJava<>(this);
         }
         return new AsJavaConvert.MutableSeqAsJava<>(this);
-    }
-
-    @Override
-    default @NotNull MutableSeq<E> asSynchronized() {
-        return this instanceof IndexedSeq<?>
-                ? new Synchronized.SynchronizedIndexedSeq<>((MutableSeq<E> & IndexedSeq<E>) this)
-                : new Synchronized.SynchronizedSeq<>(this);
-    }
-
-    @Override
-    default @NotNull MutableSeq<E> asSynchronized(@NotNull Object mutex) {
-        Objects.requireNonNull(mutex);
-        return this instanceof IndexedSeq<?>
-                ? new Synchronized.SynchronizedIndexedSeq<>((MutableSeq<E> & IndexedSeq<E>) this, mutex)
-                : new Synchronized.SynchronizedSeq<>(this, mutex);
     }
 
     //endregion

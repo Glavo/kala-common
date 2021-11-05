@@ -3,7 +3,6 @@ package kala.collection.mutable;
 import kala.Conditions;
 import kala.annotations.ReplaceWith;
 import kala.collection.ArraySeq;
-import kala.collection.IndexedSeq;
 import kala.collection.Seq;
 import kala.collection.base.Growable;
 import kala.collection.internal.CollectionHelper;
@@ -14,6 +13,7 @@ import kala.collection.factory.CollectionFactory;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 import java.util.*;
@@ -136,23 +136,6 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
         return this instanceof RandomAccess
                 ? new AsJavaConvert.DynamicIndexedSeqAsJava<>(this)
                 : new AsJavaConvert.DynamicSeqAsJava<>(this);
-    }
-
-    @Override
-    default @NotNull
-    DynamicSeq<E> asSynchronized() {
-        return this instanceof IndexedSeq<?>
-                ? new Synchronized.SynchronizedDynamicIndexedSeq<>((DynamicSeq<E> & IndexedSeq<E>) this)
-                : new Synchronized.SynchronizedDynamicSeq<>(this);
-    }
-
-    @Override
-    default @NotNull
-    DynamicSeq<E> asSynchronized(@NotNull Object mutex) {
-        Objects.requireNonNull(mutex);
-        return this instanceof IndexedSeq<?>
-                ? new Synchronized.SynchronizedDynamicIndexedSeq<>((DynamicSeq<E> & IndexedSeq<E>) this, mutex)
-                : new Synchronized.SynchronizedDynamicSeq<>(this, mutex);
     }
 
     //endregion
@@ -295,31 +278,30 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
 
     @Contract(mutates = "this")
     default boolean removeAll(@NotNull Predicate<? super E> predicate) {
-        return retainAll(predicate.negate());
+        DynamicSeqIterator<E> it = this.seqIterator();
+        boolean changed = false;
+        while (it.hasNext()) {
+            E value = it.next();
+            if (predicate.test(value)) {
+                it.remove();
+                changed = true;
+            }
+        }
+        return changed;
     }
 
     @Contract(mutates = "this")
     default boolean retainAll(@NotNull Predicate<? super E> predicate) {
-        final int size = this.size();
-        int i = 0;
-        int j = 0;
-        while (i < size) {
-            final E e = get(i);
-            if (predicate.test(e)) {
-                if (i != j) {
-                    set(j, e);
-                }
-                j += 1;
+        DynamicSeqIterator<E> it = this.seqIterator();
+        boolean changed = false;
+        while (it.hasNext()) {
+            E value = it.next();
+            if (!predicate.test(value)) {
+                it.remove();
+                changed = true;
             }
-            i += 1;
         }
-
-        if (i != j) {
-            takeInPlace(j);
-            return true;
-        } else {
-            return false;
-        }
+        return changed;
     }
 
     @Contract(mutates = "this")
@@ -367,5 +349,13 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
         }
     }
 
+    @Contract(mutates = "this")
+    default void filterInPlace(@NotNull Predicate<? super E> predicate) {
+        retainAll(predicate);
+    }
 
+    @Contract(mutates = "this")
+    default void filterNotInPlace(@NotNull Predicate<? super E> predicate) {
+        removeAll(predicate);
+    }
 }

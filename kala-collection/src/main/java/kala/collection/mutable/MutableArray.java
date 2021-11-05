@@ -196,11 +196,6 @@ public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Index
         return new MutableArray<>(this.elements.clone());
     }
 
-    @Override
-    public final @NotNull MutableSeq<E> asSynchronized() {
-        return asSynchronized(elements);
-    }
-
     //endregion
 
     public final Object @NotNull [] getArray() {

@@ -82,14 +82,5 @@ public interface MutableCollection<E> extends Collection<E> {
         return new AsJavaConvert.MutableCollectionAsJava<>(this);
     }
 
-    default @NotNull MutableCollection<E> asSynchronized() {
-        return new Synchronized.SynchronizedCollection<>(this);
-    }
-
-    default @NotNull MutableCollection<E> asSynchronized(@NotNull Object mutex) {
-        Objects.requireNonNull(mutex);
-        return new Synchronized.SynchronizedCollection<>(this, mutex);
-    }
-
     //endregion
 }
