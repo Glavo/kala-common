@@ -535,27 +535,19 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
     }
 
     @Override
-    public void removeAt(int index, int count) {
-        if (count < 0) {
-            throw new IllegalArgumentException("count: " + count);
-        }
-        if (index < 0 || index > size - count) {
-            throw new IndexOutOfBoundsException(String.format("index: %d, count: %d", index, count));
-        }
-
-        System.arraycopy(elements, index + count, elements, index, size - (index + count));
-        Arrays.fill(elements, size - count, size, null);
-        size -= count;
-    }
-
-    @Override
     public void takeInPlace(int n) {
-        if (n <= 0) {
-            clear();
-        } else if (n < size) {
-            Arrays.fill(elements, n, elements.length, null);
-            size = n;
+        if (n < 0) {
+            throw new IllegalArgumentException();
         }
+        if (n == 0) {
+            clear();
+            return;
+        }
+        if (n >= size) {
+            return;
+        }
+        Arrays.fill(elements, n, elements.length, null);
+        size = n;
     }
 
     @Override

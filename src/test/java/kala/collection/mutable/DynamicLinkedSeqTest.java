@@ -61,13 +61,5 @@ public final class DynamicLinkedSeqTest implements DynamicSeqTestTemplate {
 
         assertEquals("B", buffer1.removeAt(0));
         assertEquals(DynamicLinkedSeq.of(), buffer1);
-
-        var buffer2 = DynamicLinkedSeq.of("A", "B", "C", "D", "E");
-
-        buffer2.removeAt(0, 2);
-        assertEquals(DynamicLinkedSeq.of("C", "D", "E"), buffer2);
-
-        buffer2.removeAt(1, 2);
-        assertEquals(DynamicLinkedSeq.of("C"), buffer2);
     }
 }

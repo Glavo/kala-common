@@ -1411,53 +1411,6 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
             return v;
         }
 
-        @Override
-        public final void removeAt(int index, int count) {
-            if (count < 0) {
-                throw new IllegalArgumentException("count: " + count);
-            }
-            Conditions.checkElementIndex(index, len);
-            if ((len - index) < count) {
-                throw new NoSuchElementException();
-            }
-
-            if (count == 0) {
-                return;
-            }
-            if (count == 1) {
-                removeAt(index);
-                return;
-            }
-            if (count == len) {
-                clear();
-                return;
-            }
-            if (index == 0) {
-                int c = count;
-                while (c-- > 0) {
-                    first = first.tail;
-                }
-                len -= count;
-                return;
-            }
-
-            ensureUnaliased();
-            Node<E> i = first;
-            int c = 1;
-            while (c++ != index) {
-                i = i.tail();
-            }
-
-            Node<E> t = i.tail();
-            c = count;
-            while (c-- > 0) {
-                t = t.tail();
-            }
-
-            i.tail = t;
-            len -= count;
-        }
-
         public final E removeFirst() {
             if (isEmpty()) {
                 throw new NoSuchElementException("Seq is empty");

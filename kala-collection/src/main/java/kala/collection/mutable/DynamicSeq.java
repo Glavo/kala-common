@@ -279,50 +279,11 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
     E removeAt(@Range(from = 0, to = Integer.MAX_VALUE) int index);
 
     @Contract(mutates = "this")
-    default void removeAt(int index, int count) {
-        if (count < 0) {
-            throw new IllegalArgumentException("count(" + count + ") < 0");
-        }
-        final int size = this.size();
-        Conditions.checkElementIndex(index, size);
-        if ((size - index) < count) {
-            throw new NoSuchElementException();
-        }
-
-        for (int i = 0; i < count; i++) {
-            removeAt(index);
-        }
-    }
-
-    @Contract(mutates = "this")
     default E removeFirst() {
         if (isEmpty()) {
             throw new NoSuchElementException("Seq is empty");
         }
         return removeAt(0);
-    }
-
-    @Contract(mutates = "this")
-    default void removeFirst(int n) {
-        if (n < 0) {
-            throw new IllegalArgumentException("n(" + n + ") < 0");
-        }
-        if (n == 0) {
-            return;
-        }
-        removeAt(0, n);
-    }
-
-    @Contract(mutates = "this")
-    default void removeFirst(@NotNull Predicate<? super E> predicate) {
-        Objects.requireNonNull(predicate);
-
-        int idx = indexWhere(predicate.negate());
-        if (idx < 0) {
-            clear();
-        } else {
-            removeFirst(idx);
-        }
     }
 
     @Contract(mutates = "this")
@@ -358,7 +319,11 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
 
     @Contract(mutates = "this")
     default void takeInPlace(int n) {
-        if (n <= 0) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+
+        if (n == 0) {
             clear();
             return;
         }
@@ -367,7 +332,11 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
         if (n >= size) {
             return;
         }
-        removeAt(n, size - n);
+        DynamicSeqIterator<E> it = this.seqIterator(n);
+        while (it.hasNext()) {
+            it.next();
+            it.remove();
+        }
     }
 
 }

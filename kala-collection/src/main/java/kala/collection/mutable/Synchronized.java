@@ -1352,30 +1352,9 @@ final class Synchronized {
         }
 
         @Contract(mutates = "this")
-        public void removeAt(int index, int count) {
-            synchronized (mutex) {
-                source.removeAt(index, count);
-            }
-        }
-
-        @Contract(mutates = "this")
         public void clear() {
             synchronized (mutex) {
                 source.clear();
-            }
-        }
-
-        @Contract(mutates = "this")
-        public void removeFirst(int n) {
-            synchronized (mutex) {
-                source.removeFirst(n);
-            }
-        }
-
-        @Contract(mutates = "this")
-        public void removeFirst(@NotNull Predicate<? super E> predicate) {
-            synchronized (mutex) {
-                source.removeFirst(predicate);
             }
         }
 
@@ -1505,30 +1484,9 @@ final class Synchronized {
         }
 
         @Contract(mutates = "this")
-        public void removeAt(int index, int count) {
-            synchronized (mutex) {
-                source.removeAt(index, count);
-            }
-        }
-
-        @Contract(mutates = "this")
         public void clear() {
             synchronized (mutex) {
                 source.clear();
-            }
-        }
-
-        @Contract(mutates = "this")
-        public void removeFirst(int n) {
-            synchronized (mutex) {
-                source.removeFirst(n);
-            }
-        }
-
-        @Contract(mutates = "this")
-        public void removeFirst(@NotNull Predicate<? super E> predicate) {
-            synchronized (mutex) {
-                source.removeFirst(predicate);
             }
         }
 

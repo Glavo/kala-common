@@ -72,27 +72,9 @@ public class DynamicSeqEditor<E, C extends DynamicSeq<E>> extends MutableSeqEdit
         return this;
     }
 
-    @Contract("_, _ -> this")
-    public @NotNull DynamicSeqEditor<E, C> removeAt(int index, int count) {
-        source.removeAt(index, count);
-        return this;
-    }
-
     @Contract("-> this")
     public @NotNull DynamicSeqEditor<E, C> clear() {
         source.clear();
-        return this;
-    }
-
-    @Contract("_ -> this")
-    public @NotNull DynamicSeqEditor<E, C> removeFirst(int n) {
-        source.removeFirst(n);
-        return this;
-    }
-
-    @Contract("_ -> this")
-    public @NotNull DynamicSeqEditor<E, C> removeFirst(@NotNull Predicate<? super E> predicate) {
-        source.removeFirst(predicate);
         return this;
     }
 
