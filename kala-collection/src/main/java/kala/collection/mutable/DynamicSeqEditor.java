@@ -73,6 +73,12 @@ public class DynamicSeqEditor<E, C extends DynamicSeq<E>> extends MutableSeqEdit
     }
 
     @Contract("-> this")
+    public @NotNull DynamicSeqEditor<E, C> removeFirst() {
+        source.removeFirst();
+        return this;
+    }
+
+    @Contract("-> this")
     public @NotNull DynamicSeqEditor<E, C> clear() {
         source.clear();
         return this;
