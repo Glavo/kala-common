@@ -232,6 +232,11 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
         return this.elements;
     }
 
+    private void reduceToSize(int newSize) {
+        Arrays.fill(elements, newSize, size, null);
+        this.size = newSize;
+    }
+
     public void sizeHint(int s) {
         int len = elements.length;
         int size = this.size;
@@ -532,6 +537,23 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
         elements[newSize] = null;
         size = newSize;
         return oldValue;
+    }
+
+    @Override
+    public void dropInPlace(int n) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
+            return;
+        }
+        if (n >= size) {
+            clear();
+            return;
+        }
+        final int newSize = size - n;
+        System.arraycopy(elements, n, elements, 0, newSize);
+        reduceToSize(newSize);
     }
 
     @Override
