@@ -304,13 +304,13 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
 
     @Override
     public E get(int index) {
-        checkInBound(index);
+        Conditions.checkElementIndex(index, size);
         return (E) elements[index];
     }
 
     @Override
     public void set(int index, E newValue) {
-        checkInBound(index);
+        Conditions.checkElementIndex(index, size);
         elements[index] = newValue;
     }
 
@@ -523,10 +523,14 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
 
     @Override
     public E removeAt(int index) {
-        checkInBound(index);
+        Conditions.checkElementIndex(index, size);
         E v = (E) elements[index];
-        System.arraycopy(elements, index + 1, elements, index, size - index);
-        --size;
+        if (index == size - 1) {
+            elements[index] = null;
+        } else {
+            System.arraycopy(elements, index + 1, elements, index, size - index);
+        }
+        size--;
         return v;
     }
 
