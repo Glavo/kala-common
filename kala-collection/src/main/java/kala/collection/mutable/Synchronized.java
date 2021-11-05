@@ -1343,9 +1343,7 @@ final class Synchronized {
             }
         }
 
-        @Flow(sourceIsContainer = true)
-        @Contract(mutates = "this")
-        public E removeAt(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
+        public E removeAt(int index) {
             synchronized (mutex) {
                 return source.removeAt(index);
             }
@@ -1358,24 +1356,30 @@ final class Synchronized {
             }
         }
 
+        @Override
+        public boolean retainAll(@NotNull Predicate<? super E> predicate) {
+            synchronized (mutex) {
+                return source.retainAll(predicate);
+            }
+        }
+
+        @Override
+        public boolean removeAll(@NotNull Predicate<? super E> predicate) {
+            synchronized (mutex) {
+                return source.removeAll(predicate);
+            }
+        }
+
+        @Override
+        public void dropInPlace(int n) {
+            synchronized (mutex) {
+                source.dropInPlace(n);
+            }
+        }
         @Contract(mutates = "this")
         public void takeInPlace(int n) {
             synchronized (mutex) {
                 source.takeInPlace(n);
-            }
-        }
-
-        @Override
-        public void retainAll(@NotNull Predicate<? super E> predicate) {
-            synchronized (mutex) {
-                source.retainAll(predicate);
-            }
-        }
-
-        @Override
-        public void removeAll(@NotNull Predicate<? super E> predicate) {
-            synchronized (mutex) {
-                source.removeAll(predicate);
             }
         }
     }
@@ -1490,24 +1494,31 @@ final class Synchronized {
             }
         }
 
+        @Override
+        public boolean retainAll(@NotNull Predicate<? super E> predicate) {
+            synchronized (mutex) {
+                return source.retainAll(predicate);
+            }
+        }
+
+        @Override
+        public boolean removeAll(@NotNull Predicate<? super E> predicate) {
+            synchronized (mutex) {
+                return source.removeAll(predicate);
+            }
+        }
+
+        @Override
+        public void dropInPlace(int n) {
+            synchronized (mutex) {
+                source.dropInPlace(n);
+            }
+        }
+
         @Contract(mutates = "this")
         public void takeInPlace(int n) {
             synchronized (mutex) {
                 source.takeInPlace(n);
-            }
-        }
-
-        @Override
-        public void retainAll(@NotNull Predicate<? super E> predicate) {
-            synchronized (mutex) {
-                source.retainAll(predicate);
-            }
-        }
-
-        @Override
-        public void removeAll(@NotNull Predicate<? super E> predicate) {
-            synchronized (mutex) {
-                source.removeAll(predicate);
             }
         }
     }

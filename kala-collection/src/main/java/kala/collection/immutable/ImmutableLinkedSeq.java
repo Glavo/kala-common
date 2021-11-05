@@ -1525,14 +1525,15 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
-        public final void retainAll(@NotNull Predicate<? super E> predicate) {
+        public final boolean retainAll(@NotNull Predicate<? super E> predicate) {
             Node<E> prev = null;
             Node<E> cur = first;
             if (cur == null) {
-                return;
+                return false;
             }
 
             ensureUnaliased();
+            final int oldLen = this.len;
             while (cur != NIL_NODE) {
                 Node<E> follow = cur.tail;
                 if (!predicate.test(cur.head)) {
@@ -1541,13 +1542,14 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
                     } else {
                         prev.tail = follow;
                     }
-                    --len;
+                    len--;
                 } else {
                     prev = cur;
                 }
                 cur = follow;
             }
             last = prev;
+            return len != oldLen;
         }
 
         @Override

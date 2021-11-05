@@ -294,12 +294,12 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
     }
 
     @Contract(mutates = "this")
-    default void removeAll(@NotNull Predicate<? super E> predicate) {
-        retainAll(predicate.negate());
+    default boolean removeAll(@NotNull Predicate<? super E> predicate) {
+        return retainAll(predicate.negate());
     }
 
     @Contract(mutates = "this")
-    default void retainAll(@NotNull Predicate<? super E> predicate) {
+    default boolean retainAll(@NotNull Predicate<? super E> predicate) {
         final int size = this.size();
         int i = 0;
         int j = 0;
@@ -316,6 +316,9 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
 
         if (i != j) {
             takeInPlace(j);
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -363,5 +366,6 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
             it.remove();
         }
     }
+
 
 }

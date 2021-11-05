@@ -79,12 +79,6 @@ public class DynamicSeqEditor<E, C extends DynamicSeq<E>> extends MutableSeqEdit
     }
 
     @Contract("_ -> this")
-    public DynamicSeqEditor<E, C> retainFirst(int n) {
-        source.takeInPlace(n);
-        return this;
-    }
-
-    @Contract("_ -> this")
     public DynamicSeqEditor<E, C> retainAll(@NotNull Predicate<? super E> predicate) {
         source.retainAll(predicate);
         return this;
@@ -93,6 +87,18 @@ public class DynamicSeqEditor<E, C extends DynamicSeq<E>> extends MutableSeqEdit
     @Contract("_ -> this")
     public DynamicSeqEditor<E, C> removeAll(@NotNull Predicate<? super E> predicate) {
         source.removeAll(predicate);
+        return this;
+    }
+
+    @Contract("_ -> this")
+    public DynamicSeqEditor<E, C> dropInPlace(int n) {
+        source.dropInPlace(n);
+        return this;
+    }
+
+    @Contract("_ -> this")
+    public DynamicSeqEditor<E, C> takeInPlace(int n) {
+        source.takeInPlace(n);
         return this;
     }
 

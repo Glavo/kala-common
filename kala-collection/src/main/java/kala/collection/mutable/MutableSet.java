@@ -237,4 +237,14 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
 
         return size() != oldSize;
     }
+
+    @Contract(mutates = "this")
+    default void filterInPlace(@NotNull Predicate<? super E> predicate) {
+        retainAll(predicate);
+    }
+
+    @Contract(mutates = "this")
+    default void filterNotInPlace(@NotNull Predicate<? super E> predicate) {
+        removeAll(predicate);
+    }
 }
