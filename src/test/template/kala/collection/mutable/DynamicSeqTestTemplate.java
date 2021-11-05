@@ -246,6 +246,21 @@ public interface DynamicSeqTestTemplate extends MutableSeqTestTemplate {
     }
 
     @Test
+    default void dropInPlaceTest() {
+        DynamicSeq<Object> empty = of();
+        assertThrows(IllegalArgumentException.class, () -> empty.dropInPlace(-1));
+        assertThrows(IllegalArgumentException.class, () -> empty.dropInPlace(Integer.MIN_VALUE));
+
+        DynamicSeq<String> seq = of("str0", "str1", "str2", "str3", "str4");
+        seq.dropInPlace(0);
+        assertIterableEquals(List.of("str0", "str1", "str2", "str3", "str4"), seq);
+        seq.dropInPlace(1);
+        assertIterableEquals(List.of("str1", "str2", "str3", "str4"), seq);
+        seq.dropInPlace(seq.size());
+        assertIterableEquals(List.of(), seq);
+    }
+
+    @Test
     default void takeInPlaceTest() {
         DynamicSeq<Object> empty = of();
         assertThrows(IllegalArgumentException.class, () -> empty.takeInPlace(-1));

@@ -101,7 +101,8 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
     //region Collection Operations
 
     @Override
-    default @NotNull String className() {
+    default @NotNull
+    String className() {
         return "DynamicSeq";
     }
 
@@ -111,37 +112,43 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
     }
 
     @Override
-    default @NotNull DynamicSeqIterator<E> seqIterator() {
+    default @NotNull
+    DynamicSeqIterator<E> seqIterator() {
         return seqIterator(0);
     }
 
     @Override
-    default @NotNull DynamicSeqIterator<E> seqIterator(int index) {
+    default @NotNull
+    DynamicSeqIterator<E> seqIterator(int index) {
         Conditions.checkPositionIndex(index, size());
         return new SeqIterators.DefaultDynamicSeqIterator<>(this, index);
     }
 
     @Override
-    default @NotNull DynamicSeqEditor<E, ? extends DynamicSeq<E>> edit() {
+    default @NotNull
+    DynamicSeqEditor<E, ? extends DynamicSeq<E>> edit() {
         return new DynamicSeqEditor<>(this);
     }
 
     @Override
-    default @NotNull List<E> asJava() {
+    default @NotNull
+    List<E> asJava() {
         return this instanceof RandomAccess
                 ? new AsJavaConvert.DynamicIndexedSeqAsJava<>(this)
                 : new AsJavaConvert.DynamicSeqAsJava<>(this);
     }
 
     @Override
-    default @NotNull DynamicSeq<E> asSynchronized() {
+    default @NotNull
+    DynamicSeq<E> asSynchronized() {
         return this instanceof IndexedSeq<?>
                 ? new Synchronized.SynchronizedDynamicIndexedSeq<>((DynamicSeq<E> & IndexedSeq<E>) this)
                 : new Synchronized.SynchronizedDynamicSeq<>(this);
     }
 
     @Override
-    default @NotNull DynamicSeq<E> asSynchronized(@NotNull Object mutex) {
+    default @NotNull
+    DynamicSeq<E> asSynchronized(@NotNull Object mutex) {
         Objects.requireNonNull(mutex);
         return this instanceof IndexedSeq<?>
                 ? new Synchronized.SynchronizedDynamicIndexedSeq<>((DynamicSeq<E> & IndexedSeq<E>) this, mutex)
@@ -318,6 +325,24 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
     // ---
 
     @Contract(mutates = "this")
+    default void dropInPlace(int n) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
+            return;
+        }
+        DynamicSeqIterator<E> it = this.seqIterator();
+        for (int i = 0; i < n; i++) {
+            if (!it.hasNext()) {
+                break;
+            }
+            it.next();
+            it.remove();
+        }
+    }
+
+    @Contract(mutates = "this")
     default void takeInPlace(int n) {
         if (n < 0) {
             throw new IllegalArgumentException();
@@ -328,8 +353,8 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
             return;
         }
 
-        final int size = this.size();
-        if (n >= size) {
+        final int knownSize = this.knownSize();
+        if (knownSize >= 0 && n >= knownSize) {
             return;
         }
         DynamicSeqIterator<E> it = this.seqIterator(n);

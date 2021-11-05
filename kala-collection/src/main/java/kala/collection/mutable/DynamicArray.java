@@ -524,14 +524,14 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
     @Override
     public E removeAt(int index) {
         Conditions.checkElementIndex(index, size);
-        E v = (E) elements[index];
-        if (index == size - 1) {
-            elements[index] = null;
-        } else {
-            System.arraycopy(elements, index + 1, elements, index, size - index);
+        E oldValue = (E) elements[index];
+        int newSize = size - 1;
+        if (newSize > index) {
+            System.arraycopy(elements, index + 1, elements, index, newSize - index);
         }
-        size--;
-        return v;
+        elements[newSize] = null;
+        size = newSize;
+        return oldValue;
     }
 
     @Override
@@ -721,7 +721,7 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
                 cursor = lastReturned;
                 lastReturned = -1;
             } catch (IndexOutOfBoundsException ex) {
-                throw new ConcurrentModificationException(ex);
+                throw new ConcurrentModificationException(String.format("lastReturned=%d,size=%d,array=%s", lastReturned, seq.size, Arrays.toString(seq.elements)), ex);
             }
         }
 
