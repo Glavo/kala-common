@@ -1,5 +1,6 @@
 package kala.collection;
 
+import kala.Conditions;
 import kala.collection.base.GenericArrays;
 import kala.collection.base.Growable;
 import kala.collection.base.Iterators;
@@ -40,19 +41,18 @@ public interface SeqLike<E> extends CollectionLike<E> {
         if (beginIndex < 0) {
             throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") < 0");
         }
-        final int ks = knownSize();
-        if (ks >= 0) {
-            if (beginIndex > ks) {
-                throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") > size(" + ks + ")");
+        final int knownSize = knownSize();
+        if (knownSize >= 0) {
+            if (beginIndex > knownSize) {
+                throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") > size(" + knownSize + ")");
             }
-            if (beginIndex == ks) {
+            if (beginIndex == knownSize) {
                 return Iterators.empty();
             }
         }
 
         final Iterator<E> it = iterator();
-        int n = beginIndex;
-        while (n-- > 0) {
+        for (int i = 0; i < beginIndex; i++) {
             if (!it.hasNext()) {
                 throw new IndexOutOfBoundsException("beginIndex: " + beginIndex);
             }
@@ -66,6 +66,7 @@ public interface SeqLike<E> extends CollectionLike<E> {
     }
 
     default @NotNull SeqIterator<E> seqIterator(int index) {
+        Conditions.checkPositionIndex(index, size());
         return new SeqIterators.DefaultSeqIterator<>(this, index);
     }
 

@@ -117,6 +117,7 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
 
     @Override
     default @NotNull DynamicSeqIterator<E> seqIterator(int index) {
+        Conditions.checkPositionIndex(index, size());
         return new SeqIterators.DefaultDynamicSeqIterator<>(this, index);
     }
 

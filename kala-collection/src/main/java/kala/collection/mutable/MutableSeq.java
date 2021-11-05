@@ -1,5 +1,6 @@
 package kala.collection.mutable;
 
+import kala.Conditions;
 import kala.collection.IndexedSeq;
 import kala.collection.Seq;
 import kala.collection.SeqIterator;
@@ -100,6 +101,7 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
 
     @Override
     default @NotNull MutableSeqIterator<E> seqIterator(int index) {
+        Conditions.checkPositionIndex(index, size());
         return new SeqIterators.DefaultMutableSeqIterator<>(this, index);
     }
 

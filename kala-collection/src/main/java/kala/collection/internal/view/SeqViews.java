@@ -142,12 +142,12 @@ public final class SeqViews {
 
         @Override
         public @NotNull SeqIterator<E> seqIterator() {
-            return source.seqIterator();
+            return source.seqIterator().frozen();
         }
 
         @Override
         public @NotNull SeqIterator<E> seqIterator(int index) {
-            return source.seqIterator(index);
+            return source.seqIterator(index).frozen();
         }
 
         public E get(int index) {

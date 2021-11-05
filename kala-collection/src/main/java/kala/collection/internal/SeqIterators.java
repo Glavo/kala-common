@@ -10,7 +10,6 @@ import kala.collection.mutable.MutableSeq;
 import kala.collection.mutable.MutableSeqIterator;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.AbstractList;
 import java.util.ConcurrentModificationException;
 import java.util.NoSuchElementException;
 
@@ -167,6 +166,49 @@ public final class SeqIterators {
             } catch (IndexOutOfBoundsException e) {
                 throw new ConcurrentModificationException();
             }
+        }
+    }
+
+    public static class FrozenSeqIterator<E> extends AbstractIterator<E> implements SeqIterator<E> {
+        private final @NotNull SeqIterator<E> source;
+
+        public FrozenSeqIterator(@NotNull SeqIterator<E> source) {
+            this.source = source;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return source.hasNext();
+        }
+
+        @Override
+        public E next() {
+            return source.next();
+        }
+
+        @Override
+        public boolean hasPrevious() {
+            return source.hasPrevious();
+        }
+
+        @Override
+        public E previous() {
+            return source.previous();
+        }
+
+        @Override
+        public int nextIndex() {
+            return source.nextIndex();
+        }
+
+        @Override
+        public int previousIndex() {
+            return source.previousIndex();
+        }
+
+        @Override
+        public String toString() {
+            return "FrozenSeqIterator[" + source + ']';
         }
     }
 }

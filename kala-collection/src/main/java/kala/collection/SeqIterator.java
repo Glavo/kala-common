@@ -1,6 +1,7 @@
 package kala.collection;
 
 import kala.collection.internal.SeqIterators;
+import org.jetbrains.annotations.NotNull;
 
 public interface SeqIterator<E> extends java.util.ListIterator<E> {
 
@@ -66,5 +67,9 @@ public interface SeqIterator<E> extends java.util.ListIterator<E> {
     }
 
     //endregion
+
+    default @NotNull SeqIterator<E> frozen() {
+        return this;
+    }
 
 }

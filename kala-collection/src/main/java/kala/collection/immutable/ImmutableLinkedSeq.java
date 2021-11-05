@@ -1227,6 +1227,20 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
+        public @NotNull Iterator<E> iterator(int beginIndex) {
+            Conditions.checkPositionIndex(beginIndex, len);
+            if (beginIndex == len) {
+                return Iterators.empty();
+            }
+
+            Node<E> node = this.first;
+            for (int i = 0; i < beginIndex; i++) {
+                node = node.tail;
+            }
+            return node.iterator();
+        }
+
+        @Override
         public final int size() {
             return len;
         }
@@ -1688,15 +1702,14 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
                 return iterator();
             }
 
-            int n = beginIndex;
-            Node<E> list = this;
-            while (n-- > 0) {
-                if (list == NIL_NODE) {
+            Node<E> node = this;
+            for (int i = 0; i < beginIndex; i++) {
+                if (node == NIL_NODE) {
                     throw new IndexOutOfBoundsException("beginIndex: " + beginIndex);
                 }
-                list = list.tail;
+                node = node.tail;
             }
-            return list.iterator();
+            return node.iterator();
         }
 
         @Override
@@ -1721,11 +1734,11 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
 
         @Override
         public int size() {
-            Node<? extends E> list = this;
+            Node<? extends E> node = this;
             int c = 0;
-            while (list != NIL_NODE) {
+            while (node != NIL_NODE) {
                 ++c;
-                list = list.tail();
+                node = node.tail;
             }
             return c;
         }
@@ -1752,12 +1765,12 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
                 return 1;
             }
             int i = 0;
-            Node<E> list = this;
-            while (list != NIL_NODE) {
+            Node<E> node = this;
+            while (node != NIL_NODE) {
                 if (i == otherSize) {
                     return 1;
                 }
-                list = list.tail;
+                node = node.tail;
                 ++i;
             }
             return i - otherSize;
@@ -1773,11 +1786,11 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
                 return this;
             }
 
-            Node<? extends E> list = this;
+            Node<? extends E> node = this;
             Node<E> res = nilNode();
-            while (list != NIL_NODE) {
-                res = new Node<>(list.head, res);
-                list = list.tail;
+            while (node != NIL_NODE) {
+                res = new Node<>(node.head, res);
+                node = node.tail;
             }
             return res;
         }
@@ -1830,11 +1843,14 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
 
         @Override
         public E last() {
-            Node<E> node = this;
-            while (node.tail() != NIL_NODE) {
-                node = node.tail();
+            if (this == NIL_NODE) {
+                throw new NoSuchElementException();
             }
-            return node.head();
+            Node<E> node = this;
+            while (node.tail != NIL_NODE) {
+                node = node.tail;
+            }
+            return node.head;
         }
 
         //endregion
@@ -1851,7 +1867,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
 
         @Override
         public @NotNull Node<E> prependedAll(E @NotNull [] values) {
-            int prefixLength = values.length; // implicit null check of prefix
+            final int prefixLength = values.length; // implicit null check of prefix
             Node<E> result = this;
             for (int i = prefixLength - 1; i >= 0; i--) {
                 result = result.cons(values[i]);
@@ -1862,7 +1878,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         @Override
         public @NotNull Node<E> prependedAll(@NotNull Iterable<? extends E> values) {
             if (values instanceof RandomAccess) {
-                if (values instanceof Seq<?>) {
+                if (values instanceof Seq) {
                     Seq<E> seq = (Seq<E>) values;
                     Node<E> res = this;
                     for (int i = seq.size() - 1; i >= 0; i--) {
@@ -1870,7 +1886,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
                     }
                     return res;
                 }
-                if (values instanceof List<?>) {
+                if (values instanceof List) {
                     final List<E> list = (List<E>) values;
                     Node<E> res = this;
                     for (int i = list.size() - 1; i >= 0; i--) {
@@ -1878,6 +1894,21 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
                     }
                     return res;
                 }
+            }
+
+            if (values instanceof List) {
+                final List<E> list = (List<E>) values;
+                final int listSize = list.size();
+                if (listSize == 0) {
+                    return this;
+                }
+
+                Node<E> res = this;
+                ListIterator<E> it = list.listIterator(listSize);
+                while (it.hasPrevious()) {
+                    res = res.cons(it.previous());
+                }
+                return res;
             }
 
             Iterator<? extends E> it = values.iterator(); // implicit null check of values
