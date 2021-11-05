@@ -194,6 +194,24 @@ public interface DynamicSeqTestTemplate extends MutableSeqTestTemplate {
     }
 
     @Test
+    default void remoteAtTest() {
+        DynamicSeq<Object> empty = of();
+        assertThrows(IndexOutOfBoundsException.class, () -> empty.removeAt(0));
+        assertThrows(IndexOutOfBoundsException.class, () -> empty.removeAt(1));
+        assertThrows(IndexOutOfBoundsException.class, () -> empty.removeAt(Integer.MAX_VALUE));
+        assertThrows(IndexOutOfBoundsException.class, () -> empty.removeAt(-1));
+        assertThrows(IndexOutOfBoundsException.class, () -> empty.removeAt(Integer.MIN_VALUE));
+
+        DynamicSeq<String> seq = of("str0", "str1", "str2", "str3", "str4");
+        seq.removeAt(4);
+        assertIterableEquals(List.of("str0", "str1", "str2", "str3"), seq);
+        seq.removeAt(0);
+        assertIterableEquals(List.of("str1", "str2", "str3"), seq);
+        seq.removeAt(1);
+        assertIterableEquals(List.of("str1", "str3"), seq);
+    }
+
+    @Test
     default void retainAllTest() {
         final DynamicSeq<?> empty = factory().empty();
         empty.retainAll(e -> true);
