@@ -5,6 +5,7 @@ import kala.collection.base.GenericArrays;
 import kala.collection.base.Growable;
 import kala.collection.base.Iterators;
 import kala.collection.internal.SeqIterators;
+import kala.collection.mutable.MutableArray;
 import kala.control.Option;
 import kala.function.CheckedIndexedConsumer;
 import kala.function.IndexedBiFunction;

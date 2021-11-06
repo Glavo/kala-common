@@ -586,7 +586,6 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
             dest[idx++] = it.next();
         }
         return idx - destPos;
-
     }
 
     //endregion

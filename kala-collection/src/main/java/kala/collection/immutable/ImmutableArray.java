@@ -196,7 +196,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E>
         }
 
         @Contract("_ -> new")
-        public static <E> @NotNull ImmutableArray<E> wrap(E @NotNull [] array) {
+        public static <E> @NotNull ImmutableArray<E> wrap(Object @NotNull [] array) {
             Objects.requireNonNull(array);
             return new ImmutableArray<>(array);
         }

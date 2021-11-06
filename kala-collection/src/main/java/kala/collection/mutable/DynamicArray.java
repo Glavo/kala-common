@@ -54,7 +54,7 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
             throw new IllegalArgumentException("illegal initialCapacity: " + initialCapacity);
         }
 
-        this.elements = initialCapacity == 0 ? GenericArrays.EMPTY_OBJECT_ARRAY : new Object[initialCapacity];
+        this.elements = initialCapacity == 0 ? ObjectArrays.EMPTY : new Object[initialCapacity];
         this.size = 0;
     }
 
@@ -291,7 +291,7 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
     public DynamicArray<E> clone() {
         final Object[] elements = this.elements;
         final int size = this.size;
-        return new DynamicArray<>(size == 0 ? GenericArrays.EMPTY_OBJECT_ARRAY : elements.clone(), size);
+        return new DynamicArray<>(size == 0 ? ObjectArrays.EMPTY : elements.clone(), size);
     }
 
     //endregion
@@ -565,6 +565,27 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
         }
         Arrays.fill(elements, n, elements.length, null);
         size = n;
+    }
+
+    @Override
+    public int copyToArray(int srcPos, Object @NotNull [] dest, int destPos, int limit) {
+        if (srcPos < 0) {
+            throw new IllegalArgumentException("srcPos(" + destPos + ") < 0");
+        }
+        if (destPos < 0) {
+            throw new IllegalArgumentException("destPos(" + destPos + ") < 0");
+        }
+
+        final int destLength = dest.length;
+        final int size = size();
+
+        if (destPos >= destLength || srcPos >= size) {
+            return 0;
+        }
+
+        final int n = Math.min(Math.min(size - srcPos, destLength - destPos), limit);
+        System.arraycopy(elements, srcPos, dest, destPos, n);
+        return n;
     }
 
     @Override
