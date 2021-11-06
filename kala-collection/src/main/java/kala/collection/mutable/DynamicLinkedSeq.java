@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
-@Debug.Renderer(hasChildren = "!isEmpty()", childrenArray = "toArray()")
+@Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
 public final class DynamicLinkedSeq<E> extends ImmutableLinkedSeq.Builder<E>
         implements MutableSeqOps<E, DynamicLinkedSeq<?>, DynamicLinkedSeq<E>>, MutableStack<E>, Serializable {
 

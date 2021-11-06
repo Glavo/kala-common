@@ -13,7 +13,6 @@ final class DynamicSeqStackAdapter<E> implements MutableStack<E>, Serializable {
         this.seq = seq;
     }
 
-
     @Override
     public void push(E value) {
         seq.append(value);

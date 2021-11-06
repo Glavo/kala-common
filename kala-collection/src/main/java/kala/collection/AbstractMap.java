@@ -2,7 +2,7 @@ package kala.collection;
 
 import org.jetbrains.annotations.Debug;
 
-@Debug.Renderer(hasChildren = "!isEmpty()", childrenArray = "toArray()")
+@Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
 public abstract class AbstractMap<K, V> implements Map<K, V> {
 
     @Override

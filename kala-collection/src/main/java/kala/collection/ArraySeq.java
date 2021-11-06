@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @SuppressWarnings("unchecked")
-@Debug.Renderer(hasChildren = "!isEmpty()", childrenArray = "elements")
+@Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "elements")
 public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>, Serializable {
     private static final long serialVersionUID = 4981379062449237945L;
 

@@ -14,7 +14,7 @@ import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-@Debug.Renderer(hasChildren = "!isEmpty()", childrenArray = "toArray()")
+@Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
 public final class DynamicDoubleLinkedSeq<E>
         extends AbstractDynamicSeq<E>
         implements DynamicSeqOps<E, DynamicDoubleLinkedSeq<?>, DynamicDoubleLinkedSeq<E>>, MutableStack<E>, MutableQueue<E> {

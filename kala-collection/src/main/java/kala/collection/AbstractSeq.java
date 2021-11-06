@@ -2,7 +2,7 @@ package kala.collection;
 
 import org.jetbrains.annotations.Debug;
 
-@Debug.Renderer(hasChildren = "!isEmpty()", childrenArray = "toArray()")
+@Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
 public abstract class AbstractSeq<E> extends AbstractCollection<E> implements Seq<E> {
     @Override
     public int hashCode() {

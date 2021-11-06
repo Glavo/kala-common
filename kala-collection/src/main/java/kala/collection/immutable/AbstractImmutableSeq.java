@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 @SuppressWarnings("unchecked")
-@Debug.Renderer(hasChildren = "!isEmpty()", childrenArray = "toArray()")
+@Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
 public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutableCollection<E> implements ImmutableSeq<E> {
 
     static <E, T, Builder> T updated(

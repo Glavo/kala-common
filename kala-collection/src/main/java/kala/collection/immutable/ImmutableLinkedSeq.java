@@ -1510,16 +1510,15 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
 
         @Override
         public final void replaceAllIndexed(@NotNull IndexedFunction<? super E, ? extends E> operator) {
-            Node<E> n = first;
-            if (n == null || n == NIL_NODE) {
+            Node<E> node = first;
+            if (node == null || node == NIL_NODE) {
                 return;
             }
             ensureUnaliased();
             int i = 0;
-            while (n != NIL_NODE) {
-                Node<E> c = n;
-                c.head = operator.apply(i++, c.head);
-                n = c.tail;
+            while (node != NIL_NODE) {
+                node.head = operator.apply(i++, node.head);
+                node = node.tail;
             }
         }
 
@@ -1593,7 +1592,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @SuppressWarnings("unchecked")
-    @Debug.Renderer(hasChildren = "!isEmpty()", childrenArray = "toArray()")
+    @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
     public static final class Node<@Covariant E> extends AbstractImmutableSeq<E>
             implements ImmutableSeq<E>, ImmutableSeqOps<E, Node<?>, Node<E>>, Serializable {
         private static final long serialVersionUID = 944030391350569673L;
