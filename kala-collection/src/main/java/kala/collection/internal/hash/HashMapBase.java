@@ -413,15 +413,15 @@ public class HashMapBase<K, V> extends AbstractMutableMap<K, V> implements Seria
         }
         sizeHint(m.knownSize());
         if (m instanceof MutableHashMap<?, ?>) {
-            MutableHashMap<K, V> mhm = (MutableHashMap<K, V>) m;
-            HashMapNodeIterator<K, V> itr = mhm.nodeIterator();
+            MutableHashMap<K, V> hashMap = (MutableHashMap<K, V>) m;
+            HashMapNodeIterator<K, V> itr = hashMap.nodeIterator();
             while (itr.hasNext()) {
                 HashMapNode<K, V> next = itr.next();
                 set0(next.key, next.value, next.hash);
             }
-            return;
+        } else {
+            m.forEach(this::set);
         }
-        m.forEach(this::set);
     }
 
     public final void putAll(@NotNull MutableHashMap<? extends K, ? extends V> m) {

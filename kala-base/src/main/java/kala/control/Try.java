@@ -260,7 +260,7 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
     }
 
     public @NotNull Option<T> getOption() {
-        return Option.of(value);
+        return cause == null ? Option.some(value) : Option.none();
     }
 
     public T getOrDefault(T defaultValue) {
