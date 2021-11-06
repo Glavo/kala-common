@@ -3,11 +3,23 @@ package kala.collection.mutable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 public interface MutableStack<E> {
 
     @Contract("-> new")
     static <E> @NotNull MutableStack<E> create() {
         return new DynamicLinkedSeq<>();
+    }
+
+    @SuppressWarnings("unchecked")
+    static <E> @NotNull MutableStack<E> wrapDynamicSeq(@NotNull DynamicSeq<E> seq) {
+        Objects.requireNonNull(seq);
+        if (seq instanceof MutableStack) {
+            return ((MutableStack<E>) seq);
+        } else {
+            return new DynamicSeqStackAdapter<>(seq);
+        }
     }
 
     @Contract(mutates = "this")
