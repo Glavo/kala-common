@@ -1,11 +1,12 @@
 package kala.collection.mutable;
 
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 public interface MutableStack<E> {
 
     @Contract("-> new")
-    static <E> MutableStack<E> create() {
+    static <E> @NotNull MutableStack<E> create() {
         return new DynamicLinkedSeq<>();
     }
 

@@ -27,7 +27,7 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
         implements DynamicSeqOps<E, DynamicArray<?>, DynamicArray<E>>, IndexedSeq<E>, Serializable {
     private static final long serialVersionUID = 2545219250020890853L;
 
-    private static final int DEFAULT_CAPACITY = 16;
+    static final int DEFAULT_CAPACITY = 16;
 
     private static final DynamicArray.Factory<?> FACTORY = new Factory<>();
 
@@ -444,11 +444,6 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
     }
 
     //endregion
-
-    @Override
-    public void sort() {
-        Arrays.sort(elements, 0, size);
-    }
 
     @Override
     public void sort(Comparator<? super E> comparator) {

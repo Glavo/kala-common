@@ -451,21 +451,12 @@ public final class DynamicSmartArraySeq<E> extends AbstractDynamicSeq<E> impleme
     //endregion
 
     @Override
-    public void sort() {
-        final int size = this.size;
-        if (size == 0 || size == 1) {
-            return;
-        }
-        Arrays.sort(((Object[]) elem));
-    }
-
-    @Override
     public void sort(Comparator<? super E> comparator) {
         final int size = this.size;
         if (size == 0 || size == 1) {
             return;
         }
-        Arrays.sort((Object[]) elem, (Comparator<Object>) comparator);
+        Arrays.sort((Object[]) elem, 0, size, (Comparator<Object>) comparator);
     }
 
     @Override

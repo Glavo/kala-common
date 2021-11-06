@@ -1264,9 +1264,8 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
 
         @Override
         public final void swap(int index1, int index2) {
-            final int size = this.len;
-            Conditions.checkElementIndex(index1, size);
-            Conditions.checkElementIndex(index2, size);
+            Conditions.checkElementIndex(index1, len);
+            Conditions.checkElementIndex(index2, len);
             if (index1 == index2) {
                 return;
             }
@@ -1275,19 +1274,19 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
             final int i1 = Integer.min(index1, index2);
             final int i2 = Integer.max(index1, index2);
 
-            Node<E> list = this.first;
+            Node<E> node = this.first;
             int i = 0;
             while (i < i1) {
-                list = list.tail;
+                node = node.tail;
                 i++;
             }
 
-            final Node<E> node1 = list;
+            final Node<E> node1 = node;
             while (i < i2) {
-                list = list.tail;
+                node = node.tail;
                 i++;
             }
-            final Node<E> node2 = list;
+            final Node<E> node2 = node;
 
             final E tmp = node1.head;
             node1.head = node2.head;
@@ -1308,7 +1307,6 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
 
         @Override
         public final E first() {
-            Node<E> first = this.first;
             if (first == null) {
                 throw new NoSuchElementException();
             } else {
@@ -1318,7 +1316,6 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
 
         @Override
         public final E last() {
-            Node<E> last = this.last;
             if (last == null) {
                 throw new NoSuchElementException();
             } else {
@@ -1454,10 +1451,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
 
         @Override
         public final void set(int index, E newValue) {
-            final int len = this.len;
-            if (index < 0 || index >= len) {
-                throw new IndexOutOfBoundsException("Index out of range: " + index);
-            }
+            Conditions.checkElementIndex(index, len);
 
             ensureUnaliased();
             if (index == len - 1) {
@@ -1467,7 +1461,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
 
             Node<E> l = first;
             while (--index >= 0) {
-                l = l.tail();
+                l = l.tail;
             }
             l.head = newValue;
         }
@@ -1481,10 +1475,15 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
             Arrays.sort(values, (Comparator<? super Object>) comparator);
 
             if (aliased) {
-                Builder<Object> buffer = new DynamicLinkedSeq<>();
-                buffer.appendAll(values);
-                this.first = (Node<E>) buffer.first;
-                this.last = (Node<E>) buffer.last;
+                Node<E> newLast = new Node<>((E) values[values.length - 1], nilNode());
+                Node<E> newFirst = newLast;
+
+                for (int i = values.length - 2; i >= 0; i--) {
+                    newFirst = new Node<>((E) values[i], newFirst);
+                }
+
+                first = newFirst;
+                last = newLast;
                 aliased = false;
             } else {
                 Node<E> c = first;

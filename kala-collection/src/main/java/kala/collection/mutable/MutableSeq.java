@@ -147,7 +147,7 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
 
     @Contract(mutates = "this")
     default void sort() {
-        sort(Comparators.naturalOrder());
+        sort(null);
     }
 
     @Contract(mutates = "this")
