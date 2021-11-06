@@ -24,48 +24,53 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
         return CollectionFactory.narrow(MutableHashSet.factory());
     }
 
-    @Contract(value = "-> new", pure = true)
+    @Contract(value = "-> new")
+    static <E> @NotNull MutableSet<E> create() {
+        return MutableHashSet.create();
+    }
+
+    @Contract(value = "-> new")
     static <E> @NotNull MutableSet<E> of() {
         return MutableHashSet.of();
     }
 
-    @Contract(value = "_ -> new", pure = true)
+    @Contract(value = "_ -> new")
     static <E> @NotNull MutableSet<E> of(E value1) {
         return MutableHashSet.of(value1);
     }
 
-    @Contract(value = "_, _ -> new", pure = true)
+    @Contract(value = "_, _ -> new")
     static <E> @NotNull MutableSet<E> of(E value1, E value2) {
         return MutableHashSet.of(value1, value2);
     }
 
-    @Contract(value = "_, _, _ -> new", pure = true)
+    @Contract(value = "_, _, _ -> new")
     static <E> @NotNull MutableSet<E> of(E value1, E value2, E value3) {
         return MutableHashSet.of(value1, value2, value3);
     }
 
-    @Contract(value = "_, _, _, _ -> new", pure = true)
+    @Contract(value = "_, _, _, _ -> new")
     static <E> @NotNull MutableSet<E> of(E value1, E value2, E value3, E value4) {
         return MutableHashSet.of(value1, value2, value3, value4);
     }
 
-    @Contract(value = "_, _, _, _, _ -> new", pure = true)
+    @Contract(value = "_, _, _, _, _ -> new")
     static <E> @NotNull MutableSet<E> of(E value1, E value2, E value3, E value4, E value5) {
         return MutableHashSet.of(value1, value2, value3, value4, value5);
     }
 
     @SafeVarargs
-    @Contract(value = "_ -> new", pure = true)
+    @Contract(value = "_ -> new")
     static <E> @NotNull MutableSet<E> of(E... values) {
         return from(values);
     }
 
-    @Contract(value = "_ -> new", pure = true)
+    @Contract(value = "_ -> new")
     static <E> @NotNull MutableSet<E> from(E @NotNull [] values) {
         return MutableHashSet.from(values);
     }
 
-    @Contract(value = "_ -> new", pure = true)
+    @Contract(value = "_ -> new")
     static <E> @NotNull MutableSet<E> from(@NotNull Iterable<? extends E> values) {
         return MutableHashSet.from(values);
     }

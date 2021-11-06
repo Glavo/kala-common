@@ -602,7 +602,7 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
 
     @Override
     default Object @NotNull [] toArray() {
-        return toArray(Object[]::new);
+        return toArray(Object.class);
     }
 
     default <U /*super E*/> U @NotNull [] toArray(@NotNull Class<U> type) {

@@ -29,7 +29,7 @@ public interface MutableMap<K, V> extends Map<K, V>, MutableMapLike<K, V> {
     }
 
     static <K, V> @NotNull MutableMap<K, V> create() {
-        return new MutableHashMap<>();
+        return MutableHashMap.create();
     }
 
     static <K, V> @NotNull MutableMap<K, V> of() {
@@ -139,11 +139,10 @@ public interface MutableMap<K, V> extends Map<K, V>, MutableMapLike<K, V> {
         return MutableHashMap.from(values);
     }
 
-    @SuppressWarnings("unchecked")
     static <K, V> MutableMap<K, V> wrapJava(java.util.@NotNull Map<K, V> map) {
         Objects.requireNonNull(map);
-        if (map instanceof AsJavaConvert.MutableMapAsJava<?, ?, ?>) {
-            return ((MutableMap<K, V>) map);
+        if (map instanceof AsJavaConvert.MutableMapAsJava) {
+            return ((AsJavaConvert.MutableMapAsJava<K, V, ?>) map).source;
         }
         return new FromJavaConvert.MutableMapFromJava<>(map);
     }

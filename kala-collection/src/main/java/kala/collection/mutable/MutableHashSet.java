@@ -70,6 +70,11 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
     }
 
     @Contract(value = "-> new", pure = true)
+    public static <E> @NotNull MutableHashSet<E> create() {
+        return new MutableHashSet<>();
+    }
+
+    @Contract(value = "-> new", pure = true)
     public static <E> @NotNull MutableHashSet<E> of() {
         return new MutableHashSet<>();
     }

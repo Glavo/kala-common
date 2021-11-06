@@ -54,6 +54,10 @@ public final class MutableHashMap<K, V> extends HashMapBase<K, V>
         return MapFactory.collector(factory(), keyMapper, valueMapper);
     }
 
+    public static <K, V> @NotNull MutableHashMap<K, V> create() {
+        return new MutableHashMap<>();
+    }
+
     public static <K, V> @NotNull MutableHashMap<K, V> of() {
         return new MutableHashMap<>();
     }
