@@ -64,8 +64,7 @@ public final class FromJavaConvert {
     }
 
     public static class SeqFromJava<E> implements Seq<E> {
-        protected @NotNull
-        final List<E> source;
+        protected final @NotNull List<E> source;
 
         public SeqFromJava(@NotNull List<E> source) {
             this.source = source;
@@ -99,15 +98,13 @@ public final class FromJavaConvert {
             return source.contains(value);
         }
 
-        @NotNull
         @Override
-        public final Iterator<E> iterator() {
+        public final @NotNull Iterator<E> iterator() {
             return source.iterator();
         }
 
-        @NotNull
         @Override
-        public Iterator<E> reverseIterator() {
+        public @NotNull Iterator<E> reverseIterator() {
             return new Iterator<E>() {
                 private final java.util.ListIterator<E> it = source.listIterator(source.size());
 
@@ -123,27 +120,23 @@ public final class FromJavaConvert {
             };
         }
 
-        @NotNull
         @Override
-        public final Spliterator<E> spliterator() {
+        public final @NotNull Spliterator<E> spliterator() {
             return source.spliterator();
         }
 
-        @NotNull
         @Override
-        public final Stream<E> stream() {
+        public final @NotNull Stream<E> stream() {
             return source.stream();
         }
 
-        @NotNull
         @Override
-        public final Stream<E> parallelStream() {
+        public final @NotNull Stream<E> parallelStream() {
             return source.parallelStream();
         }
 
-        @NotNull
         @Override
-        public List<E> asJava() {
+        public @NotNull List<E> asJava() {
             return source;
         }
     }
