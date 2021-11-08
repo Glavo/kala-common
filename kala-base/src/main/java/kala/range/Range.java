@@ -1,11 +1,15 @@
 package kala.range;
 
+import kala.collection.base.AbstractIterator;
+import kala.collection.base.Iterators;
+import kala.collection.base.Traversable;
 import kala.internal.ComparableUtils;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
@@ -167,37 +171,21 @@ public final class Range<T> implements AnyRange<T>, Serializable {
         return comparator;
     }
 
-    public void forEach(@NotNull UnaryOperator<T> step, @NotNull Consumer<? super T> action) {
-        Objects.requireNonNull(step);
-        Objects.requireNonNull(action);
-
+    public boolean isEmpty() {
         if (type == RangeType.EMPTY) {
-            return;
+            return true;
         }
 
         BoundType lowerBoundType = type.getLowerBoundType();
         BoundType upperBoundType = type.getUpperBoundType();
 
-        if (lowerBoundType == BoundType.INFINITY || upperBoundType == BoundType.INFINITY) {
-            throw new UnsupportedOperationException();
+        if ((lowerBoundType == BoundType.CLOSED && upperBoundType == BoundType.CLOSED)
+                || lowerBoundType == BoundType.INFINITY
+                || upperBoundType == BoundType.INFINITY) {
+            return false;
         }
 
-        T value = lowerBound;
-        if (lowerBoundType == BoundType.OPEN) {
-            value = step.apply(value);
-        }
-
-        if (upperBoundType == BoundType.OPEN) {
-            while (ComparableUtils.compare(value, upperBound) < 0) {
-                action.accept(value);
-                value = step.apply(value);
-            }
-        } else {
-            while (ComparableUtils.compare(value, upperBound) <= 0) {
-                action.accept(value);
-                value = step.apply(value);
-            }
-        }
+        return ComparableUtils.compare(lowerBound, upperBound, comparator) == 0;
     }
 
     public boolean contains(T value) {
@@ -238,6 +226,14 @@ public final class Range<T> implements AnyRange<T>, Serializable {
         }
 
         return true;
+    }
+
+    public WithStep<T> withStep(@NotNull UnaryOperator<T> step) {
+        Objects.requireNonNull(step);
+        if (getLowerBoundType() == BoundType.INFINITY) {
+            throw new UnsupportedOperationException();
+        }
+        return new WithStep<>(this, step);
     }
 
     @Override
@@ -308,5 +304,124 @@ public final class Range<T> implements AnyRange<T>, Serializable {
                 break;
         }
         return res.toString();
+    }
+
+    public static final class WithStep<T> implements Traversable<T> {
+        private final @NotNull Range<T> range;
+        private final @NotNull UnaryOperator<T> step;
+
+        WithStep(@NotNull Range<T> range, @NotNull UnaryOperator<T> step) {
+            this.range = range;
+            this.step = step;
+        }
+
+        @Override
+        public @NotNull Iterator<T> iterator() {
+            RangeType type = range.getType();
+            if (type == RangeType.EMPTY) {
+                return Iterators.empty();
+            }
+
+            BoundType lowerBoundType = type.getLowerBoundType();
+            BoundType upperBoundType = type.getUpperBoundType();
+
+            T initialValue = range.getLowerBound();
+            if (lowerBoundType == BoundType.OPEN) {
+                initialValue = step.apply(initialValue);
+            }
+
+            return new Itr(step, initialValue);
+        }
+
+        public void forEach(@NotNull Consumer<? super T> action) {
+            Objects.requireNonNull(action);
+
+            RangeType type = range.getType();
+
+            if (type == RangeType.EMPTY) {
+                return;
+            }
+
+            BoundType lowerBoundType = type.getLowerBoundType();
+            BoundType upperBoundType = type.getUpperBoundType();
+
+            final T lowerBound = range.getLowerBound();
+            final T upperBound = range.getUpperBound();
+
+            T value = lowerBound;
+            if (lowerBoundType == BoundType.OPEN) {
+                value = step.apply(value);
+            }
+
+            switch (upperBoundType) {
+                case OPEN:
+                    while (ComparableUtils.compare(value, upperBound) < 0) {
+                        action.accept(value);
+                        value = step.apply(value);
+                    }
+                    break;
+                case CLOSED:
+                    while (ComparableUtils.compare(value, upperBound) <= 0) {
+                        action.accept(value);
+                        value = step.apply(value);
+                    }
+                    break;
+                default:
+                    //noinspection InfiniteLoopStatement
+                    while (true) {
+                        action.accept(value);
+                        value = step.apply(value);
+                    }
+            }
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof WithStep)) {
+                return false;
+            }
+            WithStep<?> other = (WithStep<?>) o;
+            return range.equals(other.range) && step.equals(other.step);
+        }
+
+        @Override
+        public int hashCode() {
+            return range.hashCode() * 31 + step.hashCode();
+        }
+
+        private final class Itr extends AbstractIterator<T> {
+            private T value;
+            private final @NotNull UnaryOperator<T> step;
+
+            Itr(@NotNull UnaryOperator<T> step, T initialValue) {
+                this.value = initialValue;
+                this.step = step;
+            }
+
+            @Override
+            public boolean hasNext() {
+                switch (range.getType().getLowerBoundType()) {
+                    case OPEN:
+                        return ComparableUtils.compare(value, range.upperBound, range.comparator) < 0;
+                    case CLOSED:
+                        return ComparableUtils.compare(value, range.upperBound, range.comparator) <= 0;
+                    default:
+                        return true;
+                }
+            }
+
+            @Override
+            public T next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                T res = value;
+                value = step.apply(res);
+                return res;
+            }
+        }
     }
 }
