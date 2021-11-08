@@ -22,13 +22,13 @@ public final class Range<T> implements AnyRange<T>, Serializable {
     private final T upperBound;
 
     private final RangeType type;
-    private final @Nullable Comparator<? super T> comparator;
+    private final Comparator<? super T> comparator;
 
     private Range(T lowerBound, T upperBound, RangeType type) {
         this(lowerBound, upperBound, type, null);
     }
 
-    private Range(T lowerBound, T upperBound, RangeType type, @Nullable Comparator<? super T> comparator) {
+    private Range(T lowerBound, T upperBound, RangeType type, Comparator<? super T> comparator) {
         this.type = type;
         this.comparator = comparator;
         this.lowerBound = lowerBound;
@@ -56,7 +56,7 @@ public final class Range<T> implements AnyRange<T>, Serializable {
     }
 
     public static <T> @NotNull Range<T> open(T lowerBound, T upperBound, Comparator<? super T> comparator) {
-        if (!(ComparableUtils.compare(lowerBound, upperBound, comparator) >= 0)) {
+        if (ComparableUtils.compare(lowerBound, upperBound, comparator) >= 0) {
             throw new IllegalArgumentException();
         }
 
@@ -68,7 +68,7 @@ public final class Range<T> implements AnyRange<T>, Serializable {
     }
 
     public static <T> @NotNull Range<T> closed(T lowerBound, T upperBound, Comparator<? super T> comparator) {
-        if (!(ComparableUtils.compare(lowerBound, upperBound, comparator) > 0)) {
+        if (ComparableUtils.compare(lowerBound, upperBound, comparator) > 0) {
             throw new IllegalArgumentException();
         }
         return new Range<>(lowerBound, upperBound, RangeType.CLOSED, comparator);
@@ -79,7 +79,7 @@ public final class Range<T> implements AnyRange<T>, Serializable {
     }
 
     public static <T> @NotNull Range<T> openClosed(T lowerBound, T upperBound, Comparator<? super T> comparator) {
-        if (!(ComparableUtils.compare(lowerBound, upperBound, comparator) > 0)) {
+        if (ComparableUtils.compare(lowerBound, upperBound, comparator) > 0) {
             throw new IllegalArgumentException();
         }
         return new Range<>(lowerBound, upperBound, RangeType.OPEN_CLOSED, comparator);
@@ -90,7 +90,7 @@ public final class Range<T> implements AnyRange<T>, Serializable {
     }
 
     public static <T> @NotNull Range<T> closedOpen(T lowerBound, T upperBound, Comparator<? super T> comparator) {
-        if (!(ComparableUtils.compare(lowerBound, upperBound, comparator) > 0)) {
+        if (ComparableUtils.compare(lowerBound, upperBound, comparator) > 0) {
             throw new IllegalArgumentException();
         }
         return new Range<>(lowerBound, upperBound, RangeType.CLOSED_OPEN, comparator);
@@ -145,10 +145,16 @@ public final class Range<T> implements AnyRange<T>, Serializable {
     }
 
     public T getLowerBound() {
+        if (!hasLowerBound()) {
+            throw new UnsupportedOperationException();
+        }
         return lowerBound;
     }
 
     public T getUpperBound() {
+        if (!hasUpperBound()) {
+            throw new UnsupportedOperationException();
+        }
         return upperBound;
     }
 
@@ -182,12 +188,12 @@ public final class Range<T> implements AnyRange<T>, Serializable {
         }
 
         if (upperBoundType == BoundType.OPEN) {
-            while (ComparableUtils.compare(value, upperBoundType) < 0) {
+            while (ComparableUtils.compare(value, upperBound) < 0) {
                 action.accept(value);
                 value = step.apply(value);
             }
         } else {
-            while (ComparableUtils.compare(value, upperBoundType) <= 0) {
+            while (ComparableUtils.compare(value, upperBound) <= 0) {
                 action.accept(value);
                 value = step.apply(value);
             }
