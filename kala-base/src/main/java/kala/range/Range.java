@@ -35,7 +35,18 @@ public final class Range<T> implements AnyRange<T>, Serializable {
         return (Range<T>) ALL;
     }
 
-    public static <T> @NotNull Range<T> open(@NotNull T lowerBound, @NotNull T upperBound) {
+    public static <T extends Comparable<? super T>> @NotNull Range<T> is(T value) {
+        return is(value, null);
+    }
+
+    public static <T> @NotNull Range<T> is(T value, Comparator<? super T> comparator) {
+        if (comparator == null && !(value instanceof Comparable)) {
+            throw new IllegalArgumentException();
+        }
+        return new Range<>(value, value, RangeType.CLOSED, comparator);
+    }
+
+    public static <T extends Comparable<? super T>> @NotNull Range<T> open(@NotNull T lowerBound, @NotNull T upperBound) {
         return open(lowerBound, upperBound, null);
     }
 
@@ -47,7 +58,7 @@ public final class Range<T> implements AnyRange<T>, Serializable {
         return new Range<>(lowerBound, upperBound, RangeType.OPEN, comparator);
     }
 
-    public static <T> @NotNull Range<T> closed(@NotNull T lowerBound, @NotNull T upperBound) {
+    public static <T extends Comparable<? super T>> @NotNull Range<T> closed(@NotNull T lowerBound, @NotNull T upperBound) {
         return closed(lowerBound, upperBound, null);
     }
 
@@ -58,7 +69,7 @@ public final class Range<T> implements AnyRange<T>, Serializable {
         return new Range<>(lowerBound, upperBound, RangeType.CLOSED, comparator);
     }
 
-    public static <T> @NotNull Range<T> openClosed(@NotNull T lowerBound, @NotNull T upperBound) {
+    public static <T extends Comparable<? super T>> @NotNull Range<T> openClosed(@NotNull T lowerBound, @NotNull T upperBound) {
         return openClosed(lowerBound, upperBound, null);
     }
 
@@ -69,7 +80,7 @@ public final class Range<T> implements AnyRange<T>, Serializable {
         return new Range<>(lowerBound, upperBound, RangeType.OPEN_CLOSED, comparator);
     }
 
-    public static <T> @NotNull Range<T> closedOpen(@NotNull T lowerBound, @NotNull T upperBound) {
+    public static <T extends Comparable<? super T>> @NotNull Range<T> closedOpen(@NotNull T lowerBound, @NotNull T upperBound) {
         return closedOpen(lowerBound, upperBound, null);
     }
 
@@ -80,7 +91,7 @@ public final class Range<T> implements AnyRange<T>, Serializable {
         return new Range<>(lowerBound, upperBound, RangeType.CLOSED_OPEN, comparator);
     }
 
-    public static <T> @NotNull Range<T> greaterThan(@NotNull T lowerBound) {
+    public static <T extends Comparable<? super T>> @NotNull Range<T> greaterThan(@NotNull T lowerBound) {
         return greaterThan(lowerBound, null);
     }
 
@@ -92,7 +103,7 @@ public final class Range<T> implements AnyRange<T>, Serializable {
         return new Range<>(lowerBound, null, RangeType.GREATER_THAN, comparator);
     }
 
-    public static <T> @NotNull Range<T> atLeast(@NotNull T lowerBound) {
+    public static <T extends Comparable<? super T>> @NotNull Range<T> atLeast(@NotNull T lowerBound) {
         return atLeast(lowerBound, null);
     }
 
@@ -104,7 +115,7 @@ public final class Range<T> implements AnyRange<T>, Serializable {
         return new Range<>(lowerBound, null, RangeType.AT_LEAST, comparator);
     }
 
-    public static <T> @NotNull Range<T> lessThan(@NotNull T upperBound) {
+    public static <T extends Comparable<? super T>> @NotNull Range<T> lessThan(@NotNull T upperBound) {
         return lessThan(upperBound, null);
     }
 
@@ -116,7 +127,7 @@ public final class Range<T> implements AnyRange<T>, Serializable {
         return new Range<>(upperBound, null, RangeType.LESS_THAN, comparator);
     }
 
-    public static <T> @NotNull Range<T> atMost(@NotNull T upperBound) {
+    public static <T extends Comparable<? super T>> @NotNull Range<T> atMost(@NotNull T upperBound) {
         return atMost(upperBound, null);
     }
 
@@ -128,9 +139,21 @@ public final class Range<T> implements AnyRange<T>, Serializable {
         return new Range<>(upperBound, null, RangeType.AT_MOST, comparator);
     }
 
+    public T getLowerBound() {
+        return lowerBound;
+    }
+
+    public T getUpperBound() {
+        return upperBound;
+    }
+
     @Override
     public RangeType getType() {
         return type;
+    }
+
+    public Comparator<? super T> getComparator() {
+        return comparator;
     }
 
     public boolean contains(T value) {
@@ -193,7 +216,7 @@ public final class Range<T> implements AnyRange<T>, Serializable {
                 res.append('[').append(lowerBound);
                 break;
             case INFINITY:
-                res.append("(-∞");
+                res.append("(-Infinity");
                 break;
         }
 
@@ -207,7 +230,7 @@ public final class Range<T> implements AnyRange<T>, Serializable {
                 res.append(upperBound).append(']');
                 break;
             case INFINITY:
-                res.append("+∞)");
+                res.append("+Infinity)");
                 break;
         }
         return res.toString();
