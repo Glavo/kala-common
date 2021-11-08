@@ -1,5 +1,7 @@
 package kala.internal;
 
+import kala.comparator.Comparators;
+
 import java.util.Comparator;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
@@ -17,5 +19,16 @@ public class ComparableUtils {
         } else {
             return comparator.compare(o1, o2);
         }
+    }
+
+    public static boolean comparatorEquals(Comparator comparator1, Comparator comparator2) {
+        if (comparator1 == null) {
+            return comparator2 == null || comparator2.equals(Comparators.naturalOrder());
+        }
+        //noinspection ReplaceNullCheck
+        if (comparator2 == null) {
+            return comparator1.equals(Comparators.naturalOrder());
+        }
+        return comparator1.equals(comparator2);
     }
 }

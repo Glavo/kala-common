@@ -6,11 +6,16 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 public final class Range<T> implements AnyRange<T>, Serializable {
     private static final long serialVersionUID = 4151410859736356449L;
 
-    private static final Range<?> EMPTY = new Range<>(null, null, RangeType.CLOSED_OPEN);
+    private static final int HASH_MAGIC = 1249967851;
+
+    private static final Range<?> EMPTY = new Range<>(null, null, RangeType.EMPTY);
     private static final Range<?> ALL = new Range<>(null, null, RangeType.ALL);
 
     private final T lowerBound;
@@ -156,11 +161,44 @@ public final class Range<T> implements AnyRange<T>, Serializable {
         return comparator;
     }
 
+    public void forEach(@NotNull UnaryOperator<T> step, @NotNull Consumer<? super T> action) {
+        Objects.requireNonNull(step);
+        Objects.requireNonNull(action);
+
+        if (type == RangeType.EMPTY) {
+            return;
+        }
+
+        BoundType lowerBoundType = type.getLowerBoundType();
+        BoundType upperBoundType = type.getUpperBoundType();
+
+        if (lowerBoundType == BoundType.INFINITY || upperBoundType == BoundType.INFINITY) {
+            throw new UnsupportedOperationException();
+        }
+
+        T value = lowerBound;
+        if (lowerBoundType == BoundType.OPEN) {
+            value = step.apply(value);
+        }
+
+        if (upperBoundType == BoundType.OPEN) {
+            while (ComparableUtils.compare(value, upperBoundType) < 0) {
+                action.accept(value);
+                value = step.apply(value);
+            }
+        } else {
+            while (ComparableUtils.compare(value, upperBoundType) <= 0) {
+                action.accept(value);
+                value = step.apply(value);
+            }
+        }
+    }
+
     public boolean contains(T value) {
-        if (this == EMPTY) {
+        if (type == RangeType.EMPTY) {
             return false;
         }
-        if (this == ALL) {
+        if (type == RangeType.ALL) {
             return true;
         }
 
@@ -197,9 +235,39 @@ public final class Range<T> implements AnyRange<T>, Serializable {
     }
 
     @Override
+    public int hashCode() {
+        int result = comparator == null ? Comparator.naturalOrder().hashCode() : comparator.hashCode();
+
+        result = result * 31 + type.hashCode();
+        result = result * 31 + Objects.hashCode(lowerBound);
+        result = result * 31 + Objects.hashCode(upperBound);
+
+        return result + HASH_MAGIC;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Range)) {
+            return false;
+        }
+        Range<?> other = (Range<?>) o;
+
+        return type == other.type
+                && ComparableUtils.comparatorEquals(comparator, other.comparator)
+                && Objects.equals(lowerBound, other.lowerBound)
+                && Objects.equals(upperBound, other.upperBound);
+    }
+
+    @Override
     public String toString() {
         if (this == EMPTY) {
             return "Range.Empty";
+        }
+        if (this == ALL) {
+            return "Range.All";
         }
 
         BoundType lowerBoundType = type.getLowerBoundType();

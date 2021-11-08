@@ -9,6 +9,7 @@ public enum RangeType {
     AT_LEAST(BoundType.CLOSED, BoundType.INFINITY),
     LESS_THAN(BoundType.INFINITY, BoundType.OPEN),
     AT_MOST(BoundType.INFINITY, BoundType.CLOSED),
+    EMPTY(BoundType.OPEN, BoundType.OPEN),
     ALL(BoundType.INFINITY, BoundType.INFINITY);
 
     private final BoundType lowerBoundType;
