@@ -1,11 +1,14 @@
 package kala.collection.base;
 
 import kala.annotations.Covariant;
+import kala.annotations.UnstableName;
 import kala.comparator.Comparators;
 import kala.control.Option;
 import kala.collection.factory.CollectionFactory;
+import kala.function.CheckedBiConsumer;
 import kala.function.CheckedBiFunction;
 import kala.function.CheckedConsumer;
+import kala.internal.BreakHole;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -18,10 +21,10 @@ import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
 
-@SuppressWarnings("unchecked" )
+@SuppressWarnings("unchecked")
 public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>, Object[], Option<T>, Consumer<? super T>, Predicate<? super T>> {
 
-    @SuppressWarnings("unchecked" )
+    @SuppressWarnings("unchecked")
     @Contract(value = "_ -> param1", pure = true)
     static <T> Traversable<T> narrow(Traversable<? extends T> traversable) {
         return (Traversable<T>) traversable;
@@ -166,7 +169,7 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
 
     //endregion
 
-    @Contract(value = "_, _ -> param1", mutates = "param1" )
+    @Contract(value = "_, _ -> param1", mutates = "param1")
     default <G extends Growable<? super T>> @NotNull G filterTo(@NotNull G destination, @NotNull Predicate<? super T> predicate) {
         for (T e : this) {
             if (predicate.test(e)) {
@@ -176,7 +179,7 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
         return destination;
     }
 
-    @Contract(value = "_, _ -> param1", mutates = "param1" )
+    @Contract(value = "_, _ -> param1", mutates = "param1")
     default <G extends Growable<? super T>> @NotNull G filterNotTo(@NotNull G destination, @NotNull Predicate<? super T> predicate) {
         for (T e : this) {
             if (!predicate.test(e)) {
@@ -186,7 +189,7 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
         return destination;
     }
 
-    @Contract(value = "_ -> param1", mutates = "param1" )
+    @Contract(value = "_ -> param1", mutates = "param1")
     default <G extends Growable<? super T>> @NotNull G filterNotNullTo(@NotNull G destination) {
         for (T e : this) {
             if (e != null) {
@@ -196,7 +199,7 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
         return destination;
     }
 
-    @Contract(value = "_, _ -> param1", mutates = "param1" )
+    @Contract(value = "_, _ -> param1", mutates = "param1")
     default <U, G extends Growable<? super U>> @NotNull G mapTo(@NotNull G destination, @NotNull Function<? super T, ? extends U> mapper) {
         for (T e : this) {
             destination.plusAssign(mapper.apply(e));
@@ -204,7 +207,7 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
         return destination;
     }
 
-    @Contract(value = "_, _ -> param1", mutates = "param1" )
+    @Contract(value = "_, _ -> param1", mutates = "param1")
     default <U, G extends Growable<? super U>> @NotNull G mapNotNullTo(
             @NotNull G destination,
             @NotNull Function<? super T, ? extends U> mapper) {
@@ -515,44 +518,44 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
 
     //region Copy Operations
 
-    @Contract(mutates = "param1" )
+    @Contract(mutates = "param1")
     @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
     default int copyToArray(Object @NotNull [] dest) {
         return copyToArray(0, dest, 0, Integer.MAX_VALUE);
     }
 
-    @Contract(mutates = "param1" )
+    @Contract(mutates = "param1")
     @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
     default int copyToArray(Object @NotNull [] dest, int destPos) {
         return copyToArray(0, dest, destPos, Integer.MAX_VALUE);
     }
 
-    @Contract(mutates = "param1" )
+    @Contract(mutates = "param1")
     @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
     default int copyToArray(Object @NotNull [] dest, int destPos, int limit) {
         return copyToArray(0, dest, destPos, limit);
     }
 
-    @Contract(mutates = "param2" )
+    @Contract(mutates = "param2")
     @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
     default int copyToArray(int srcPos, Object @NotNull [] dest) {
         return copyToArray(srcPos, dest, 0, Integer.MAX_VALUE);
     }
 
-    @Contract(mutates = "param2" )
+    @Contract(mutates = "param2")
     @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
     default int copyToArray(int srcPos, Object @NotNull [] dest, int destPos) {
         return copyToArray(srcPos, dest, destPos, Integer.MAX_VALUE);
     }
 
-    @Contract(mutates = "param2" )
+    @Contract(mutates = "param2")
     @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
     default int copyToArray(int srcPos, Object @NotNull [] dest, int destPos, int limit) {
         if (srcPos < 0) {
-            throw new IllegalArgumentException("srcPos(" + srcPos + ") < 0" );
+            throw new IllegalArgumentException("srcPos(" + srcPos + ") < 0");
         }
         if (destPos < 0) {
-            throw new IllegalArgumentException("destPos(" + destPos + ") < 0" );
+            throw new IllegalArgumentException("destPos(" + destPos + ") < 0");
         }
 
         if (limit <= 0) {
@@ -691,11 +694,34 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
         forEach(action);
     }
 
+    @UnstableName
+    default void forEachBreakable(@NotNull BiConsumer<? super T, ? super @NotNull Runnable> action) {
+        Objects.requireNonNull(action);
+        BreakHole hole = new BreakHole();
+        for (T t : this) {
+            action.accept(t, hole);
+            if (hole.isBroken) {
+                break;
+            }
+        }
+    }
+
+    @UnstableName
+    default <Ex extends Throwable> void forEachBreakableChecked(
+            @NotNull CheckedBiConsumer<? super T, ? super @NotNull Runnable, ? extends Ex> action) throws Ex {
+        forEachBreakable(action);
+    }
+
+    @UnstableName
+    default void forEachBreakableUnchecked(@NotNull CheckedBiConsumer<? super T, ? super @NotNull Runnable, ?> action) {
+        forEachBreakable(action);
+    }
+
     //endregion
 
     //region String Representation
 
-    @Contract(value = "_, _, _, _ -> param1", mutates = "param1" )
+    @Contract(value = "_, _, _, _ -> param1", mutates = "param1")
     default <A extends Appendable> @NotNull A joinTo(
             @NotNull A buffer,
             CharSequence separator, CharSequence prefix, CharSequence postfix
@@ -720,7 +746,7 @@ public interface Traversable<@Covariant T> extends AnyTraversable<T, Iterator<T>
         return joinTo(buffer, separator, "", "", transform);
     }
 
-    @Contract(value = "_, _, _, _, _ -> param1", mutates = "param1" )
+    @Contract(value = "_, _, _, _, _ -> param1", mutates = "param1")
     default <A extends Appendable> @NotNull A joinTo(
             @NotNull A buffer,
             CharSequence separator, CharSequence prefix, CharSequence postfix,
