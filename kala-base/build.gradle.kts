@@ -30,9 +30,12 @@ val primitives = listOf("Boolean", "Byte", "Short", "Int", "Long", "Float", "Dou
                     "Long" -> "0L"
                     "Char" -> "'\\0'"
                     else -> "(${res["PrimitiveType"]}) 0"
-                }
+                },
+                "DefaultStep" to "1"
             )
         }
+
+        res["LiftToInt"] = type == "Byte" || type == "Short" || type == "Char"
 
         res.toMap()
     }
@@ -88,11 +91,10 @@ val generateSources = tasks.create("generateSources") {
             }
         }
 
-        /*
         conf.withGenerate("kala.range.primitive") {
             val random = Random(-977415259)
             for (model in primitives) {
-                if (model["Type"].let { it == "Boolean" || it == "Float" || it == "Double"}) {
+                if (model["Type"].let { it == "Boolean" || it == "Float" || it == "Double" || it == "Char" }) {
                     continue
                 }
                 generate(
@@ -105,7 +107,6 @@ val generateSources = tasks.create("generateSources") {
                 )
             }
         }
-         */
     }
 }
 
