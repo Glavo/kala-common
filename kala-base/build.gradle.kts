@@ -1,3 +1,5 @@
+import kotlin.random.Random
+
 buildscript {
     repositories {
         mavenCentral()
@@ -8,15 +10,31 @@ buildscript {
 }
 
 val srcGen = File(buildDir, "src-gen")
-val primitives = listOf("Boolean", "Byte", "Short", "Int", "Long", "Float", "Double")
+val primitives = listOf("Boolean", "Byte", "Short", "Int", "Long", "Float", "Double", "Char")
     .map { type ->
-        mapOf(
-            "Type" to type,
-            "PrimitiveType" to type.toLowerCase(),
-            "WrapperType" to if (type == "Int") "Integer" else type,
-            "var" to type.first().toLowerCase(),
-            "IsSpecialized" to (type == "Int" || type == "Long" || type == "Double")
-        )
+        val res: MutableMap<String, Any?> = mutableMapOf("Type" to type)
+
+        res["PrimitiveType"] = type.toLowerCase()
+        res["WrapperType"] = when (type) {
+            "Int" -> "Integer"
+            "Char" -> "Character"
+            else -> type
+        }
+        res["Var"] = type.first().toLowerCase()
+        res["IsSpecialized"] = type == "Int" || type == "Long" || type == "Double"
+
+        if (type != "Boolean") {
+            res["Values"] = mapOf(
+                "Zero" to when (type) {
+                    "Int" -> "0"
+                    "Long" -> "0L"
+                    "Char" -> "'\\0'"
+                    else -> "(${res["PrimitiveType"]}) 0"
+                }
+            )
+        }
+
+        res.toMap()
     }
 
 
@@ -69,6 +87,25 @@ val generateSources = tasks.create("generateSources") {
                 generate("Internal${model["Type"]}ArrayBuilder", model, "InternalPrimitiveArrayBuilder")
             }
         }
+
+        /*
+        conf.withGenerate("kala.range.primitive") {
+            val random = Random(-977415259)
+            for (model in primitives) {
+                if (model["Type"].let { it == "Boolean" || it == "Float" || it == "Double"}) {
+                    continue
+                }
+                generate(
+                    "${model["Type"]}Range",
+                    model + mapOf(
+                        "SerialVersionUID" to "${random.nextLong()}L",
+                        "HashMagic" to random.nextInt().toString()
+                    ),
+                    "PrimitiveRange"
+                )
+            }
+        }
+         */
     }
 }
 
@@ -83,7 +120,7 @@ class GenerateContext(
         outputDir.mkdirs()
     }
 
-    fun generate(fileName: String, model: Map<*, *>, templateName: String) {
+    fun generate(fileName: String, model: Any, templateName: String) {
         File(outputDir, "$fileName.java").bufferedWriter().use {
             conf.getTemplate(packageName.replace('.', '/') + "/" + templateName + ".java.ftl")
                 .process(model, it)

@@ -18,6 +18,7 @@ module kala.base {
     exports kala.value.primitive;
     exports kala.reflect;
     exports kala.range;
+    exports kala.range.primitive;
 
     exports kala.internal to kala.collection;
 }

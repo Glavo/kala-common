@@ -15,11 +15,11 @@ public interface ${Type}Comparator extends PrimitiveComparator<${WrapperType}, $
         return ${Type}Comparators.ReverseOrderComparator.INSTANCE;
     }
 
-    int compare(${PrimitiveType} ${var}1, ${PrimitiveType} ${var}2);
+    int compare(${PrimitiveType} ${Var}1, ${PrimitiveType} ${Var}2);
 
     @Override
-    default int compare(${WrapperType} ${var}1, ${WrapperType} ${var}2) {
-        return compare(${var}1.${PrimitiveType}Value(), ${var}2.${PrimitiveType}Value());
+    default int compare(${WrapperType} ${Var}1, ${WrapperType} ${Var}2) {
+        return compare(${Var}1.${PrimitiveType}Value(), ${Var}2.${PrimitiveType}Value());
     }
 
     default @NotNull ${Type}Comparator nullsFirst() {
@@ -32,6 +32,6 @@ public interface ${Type}Comparator extends PrimitiveComparator<${WrapperType}, $
 
     @Override
     default @NotNull ${Type}Comparator reversed() {
-        return (${Type}Comparator & Serializable) (${var}1, ${var}2) -> compare(${var}2, ${var}1);
+        return (${Type}Comparator & Serializable) (${Var}1, ${Var}2) -> compare(${Var}2, ${Var}1);
     }
 }

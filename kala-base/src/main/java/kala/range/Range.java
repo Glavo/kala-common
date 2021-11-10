@@ -14,29 +14,35 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
-public final class Range<T> implements AnyRange<T>, Serializable {
+public final class Range<T> extends AnyRange<T> implements Serializable {
     private static final long serialVersionUID = 4151410859736356449L;
 
     private static final int HASH_MAGIC = 1249967851;
 
-    private static final Range<?> EMPTY = new Range<>(null, null, RangeType.EMPTY);
-    private static final Range<?> ALL = new Range<>(null, null, RangeType.ALL);
+    private static final Range<?> EMPTY = new Range<>(RangeType.EMPTY, null, null);
+    private static final Range<?> ALL = new Range<>(RangeType.ALL, null, null);
+
+    private final @NotNull RangeType type;
 
     private final T lowerBound;
     private final T upperBound;
 
-    private final RangeType type;
     private final Comparator<? super T> comparator;
 
-    private Range(T lowerBound, T upperBound, RangeType type) {
-        this(lowerBound, upperBound, type, null);
+    private Range(RangeType type, T lowerBound, T upperBound) {
+        this(type, lowerBound, upperBound, null);
     }
 
-    private Range(T lowerBound, T upperBound, RangeType type, Comparator<? super T> comparator) {
+    private Range(RangeType type, T lowerBound, T upperBound, Comparator<? super T> comparator) {
         this.type = type;
         this.comparator = comparator;
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> @NotNull Range<T> empty() {
+        return (Range<T>) EMPTY;
     }
 
     @SuppressWarnings("unchecked")
@@ -52,7 +58,7 @@ public final class Range<T> implements AnyRange<T>, Serializable {
         if (comparator == null && !(value instanceof Comparable)) {
             throw new IllegalArgumentException();
         }
-        return new Range<>(value, value, RangeType.CLOSED, comparator);
+        return new Range<>(RangeType.CLOSED, value, value, comparator);
     }
 
     public static <T extends Comparable<? super T>> @NotNull Range<T> open(@NotNull T lowerBound, @NotNull T upperBound) {
@@ -64,7 +70,7 @@ public final class Range<T> implements AnyRange<T>, Serializable {
             throw new IllegalArgumentException();
         }
 
-        return new Range<>(lowerBound, upperBound, RangeType.OPEN, comparator);
+        return new Range<>(RangeType.OPEN, lowerBound, upperBound, comparator);
     }
 
     public static <T extends Comparable<? super T>> @NotNull Range<T> closed(@NotNull T lowerBound, @NotNull T upperBound) {
@@ -75,7 +81,7 @@ public final class Range<T> implements AnyRange<T>, Serializable {
         if (ComparableUtils.compare(lowerBound, upperBound, comparator) > 0) {
             throw new IllegalArgumentException();
         }
-        return new Range<>(lowerBound, upperBound, RangeType.CLOSED, comparator);
+        return new Range<>(RangeType.CLOSED, lowerBound, upperBound, comparator);
     }
 
     public static <T extends Comparable<? super T>> @NotNull Range<T> openClosed(@NotNull T lowerBound, @NotNull T upperBound) {
@@ -86,7 +92,7 @@ public final class Range<T> implements AnyRange<T>, Serializable {
         if (ComparableUtils.compare(lowerBound, upperBound, comparator) > 0) {
             throw new IllegalArgumentException();
         }
-        return new Range<>(lowerBound, upperBound, RangeType.OPEN_CLOSED, comparator);
+        return new Range<>(RangeType.OPEN_CLOSED, lowerBound, upperBound, comparator);
     }
 
     public static <T extends Comparable<? super T>> @NotNull Range<T> closedOpen(@NotNull T lowerBound, @NotNull T upperBound) {
@@ -97,7 +103,7 @@ public final class Range<T> implements AnyRange<T>, Serializable {
         if (ComparableUtils.compare(lowerBound, upperBound, comparator) > 0) {
             throw new IllegalArgumentException();
         }
-        return new Range<>(lowerBound, upperBound, RangeType.CLOSED_OPEN, comparator);
+        return new Range<>(RangeType.CLOSED_OPEN, lowerBound, upperBound, comparator);
     }
 
     public static <T extends Comparable<? super T>> @NotNull Range<T> greaterThan(@NotNull T lowerBound) {
@@ -109,7 +115,7 @@ public final class Range<T> implements AnyRange<T>, Serializable {
             throw new IllegalArgumentException();
         }
 
-        return new Range<>(lowerBound, null, RangeType.GREATER_THAN, comparator);
+        return new Range<>(RangeType.GREATER_THAN, lowerBound, null, comparator);
     }
 
     public static <T extends Comparable<? super T>> @NotNull Range<T> atLeast(@NotNull T lowerBound) {
@@ -121,7 +127,7 @@ public final class Range<T> implements AnyRange<T>, Serializable {
             throw new IllegalArgumentException();
         }
 
-        return new Range<>(lowerBound, null, RangeType.AT_LEAST, comparator);
+        return new Range<>(RangeType.AT_LEAST, lowerBound, null, comparator);
     }
 
     public static <T extends Comparable<? super T>> @NotNull Range<T> lessThan(@NotNull T upperBound) {
@@ -133,7 +139,7 @@ public final class Range<T> implements AnyRange<T>, Serializable {
             throw new IllegalArgumentException();
         }
 
-        return new Range<>(upperBound, null, RangeType.LESS_THAN, comparator);
+        return new Range<>(RangeType.LESS_THAN, upperBound, null, comparator);
     }
 
     public static <T extends Comparable<? super T>> @NotNull Range<T> atMost(@NotNull T upperBound) {
@@ -145,7 +151,12 @@ public final class Range<T> implements AnyRange<T>, Serializable {
             throw new IllegalArgumentException();
         }
 
-        return new Range<>(upperBound, null, RangeType.AT_MOST, comparator);
+        return new Range<>(RangeType.AT_MOST, upperBound, null, comparator);
+    }
+
+    @Override
+    public @NotNull RangeType getType() {
+        return type;
     }
 
     public T getLowerBound() {
@@ -160,11 +171,6 @@ public final class Range<T> implements AnyRange<T>, Serializable {
             throw new UnsupportedOperationException();
         }
         return upperBound;
-    }
-
-    @Override
-    public RangeType getType() {
-        return type;
     }
 
     public Comparator<? super T> getComparator() {

@@ -83,7 +83,7 @@ public final class ${Type}Option extends PrimitiveOption<${WrapperType}> impleme
 
     @Override
     public String toString() {
-        return this == None ? "Option${Type}.None" : "Option${Type}[" + value + "]";
+        return this == None ? "${Type}Option.None" : "${Type}Option[" + value + "]";
     }
 
     @Override

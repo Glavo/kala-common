@@ -10,8 +10,8 @@ final class ${Type}Comparators {
         INSTANCE;
 
         @Override
-        public final int compare(${PrimitiveType} ${var}1, ${PrimitiveType} b2) {
-            return ${WrapperType}.compare(${var}1, b2);
+        public final int compare(${PrimitiveType} ${Var}1, ${PrimitiveType} b2) {
+            return ${WrapperType}.compare(${Var}1, b2);
         }
 
         @Override
@@ -34,8 +34,8 @@ final class ${Type}Comparators {
         INSTANCE;
 
         @Override
-        public final int compare(${PrimitiveType} ${var}1, ${PrimitiveType} b2) {
-            return ${WrapperType}.compare(b2, ${var}1);
+        public final int compare(${PrimitiveType} ${Var}1, ${PrimitiveType} b2) {
+            return ${WrapperType}.compare(b2, ${Var}1);
         }
 
         @Override
@@ -67,18 +67,18 @@ final class ${Type}Comparators {
         }
 
         @Override
-        public int compare(${PrimitiveType} ${var}1, ${PrimitiveType} b2) {
-            return real.compare(${var}1, b2);
+        public int compare(${PrimitiveType} ${Var}1, ${PrimitiveType} b2) {
+            return real.compare(${Var}1, b2);
         }
 
         @Override
-        public int compare(@Nullable ${WrapperType} ${var}1, @Nullable ${WrapperType} b2) {
-            if (${var}1 == null) {
+        public int compare(@Nullable ${WrapperType} ${Var}1, @Nullable ${WrapperType} b2) {
+            if (${Var}1 == null) {
                 return (b2 == null) ? 0 : (nullFirst ? -1 : 1);
             } else if (b2 == null) {
                 return nullFirst ? 1 : -1;
             } else {
-                return real.compare(${var}1, b2);
+                return real.compare(${Var}1, b2);
             }
         }
 
@@ -112,18 +112,18 @@ final class ${Type}Comparators {
         }
 
         @Override
-        public int compare(${PrimitiveType} ${var}1, ${PrimitiveType} b2) {
-            return ${WrapperType}.compare(${var}1, b2);
+        public int compare(${PrimitiveType} ${Var}1, ${PrimitiveType} b2) {
+            return ${WrapperType}.compare(${Var}1, b2);
         }
 
         @Override
-        public int compare(${WrapperType} ${var}1, ${WrapperType} b2) {
-            if (${var}1 == null) {
+        public int compare(${WrapperType} ${Var}1, ${WrapperType} b2) {
+            if (${Var}1 == null) {
                 return (b2 == null) ? 0 : (nullFirst ? -1 : 1);
             } else if (b2 == null) {
                 return nullFirst ? 1 : -1;
             } else {
-                return ${var}1.compareTo(b2);
+                return ${Var}1.compareTo(b2);
             }
         }
 
@@ -160,18 +160,18 @@ final class ${Type}Comparators {
         }
 
         @Override
-        public int compare(${PrimitiveType} ${var}1, ${PrimitiveType} ${var}2) {
-            return ${WrapperType}.compare(${var}2, ${var}1);
+        public int compare(${PrimitiveType} ${Var}1, ${PrimitiveType} ${Var}2) {
+            return ${WrapperType}.compare(${Var}2, ${Var}1);
         }
 
         @Override
-        public int compare(${WrapperType} ${var}1, ${WrapperType} ${var}2) {
-            if (${var}1 == null) {
-                return (${var}2 == null) ? 0 : (nullFirst ? -1 : 1);
-            } else if (${var}2 == null) {
+        public int compare(${WrapperType} ${Var}1, ${WrapperType} ${Var}2) {
+            if (${Var}1 == null) {
+                return (${Var}2 == null) ? 0 : (nullFirst ? -1 : 1);
+            } else if (${Var}2 == null) {
                 return nullFirst ? 1 : -1;
             } else {
-                return ${var}2.compareTo(${var}1);
+                return ${Var}2.compareTo(${Var}1);
             }
         }
 

@@ -1,21 +1,23 @@
 package kala.range;
 
-public interface AnyRange<T> {
-    RangeType getType();
+import org.jetbrains.annotations.NotNull;
 
-    default BoundType getLowerBoundType() {
+public abstract class AnyRange<T> {
+    public abstract @NotNull RangeType getType();
+
+    public final BoundType getLowerBoundType() {
         return getType().getLowerBoundType();
     }
 
-    default BoundType getUpperBoundType() {
+    public final BoundType getUpperBoundType() {
         return getType().getUpperBoundType();
     }
 
-    default boolean hasLowerBound() {
+    public final boolean hasLowerBound() {
         return getType() != RangeType.EMPTY && getLowerBoundType() != BoundType.INFINITY;
     }
 
-    default boolean hasUpperBound() {
+    public final boolean hasUpperBound() {
         return getType() != RangeType.EMPTY && getUpperBoundType() != BoundType.INFINITY;
     }
 }
