@@ -18,7 +18,7 @@ import java.util.function.Consumer;
 
 @SuppressWarnings("ConstantConditions" )
 public interface BooleanIterator
-        extends PrimIterator<Boolean, BooleanIterator, boolean[], BooleanOption, BooleanConsumer, BooleanPredicate> {
+        extends PrimitiveIterator<Boolean, BooleanIterator, boolean[], BooleanOption, BooleanConsumer, BooleanPredicate> {
 
 
     static @NotNull BooleanIterator empty() {

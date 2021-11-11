@@ -1,17 +1,14 @@
 package kala.collection.base.primitive;
 
-import kala.annotations.ReplaceWith;
 import kala.collection.base.AnyTraversable;
 import kala.control.AnyOption;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Consumer;
-
 public interface PrimitiveTraversable<
         T,
         T_TRAVERSABLE extends PrimitiveTraversable<T, T_TRAVERSABLE, T_ITERATOR, T_ARRAY, T_OPTION, T_CONSUMER, T_PREDICATE>,
-        T_ITERATOR extends PrimIterator<T, T_ITERATOR, T_ARRAY, T_OPTION, T_CONSUMER, T_PREDICATE>,
+        T_ITERATOR extends PrimitiveIterator<T, T_ITERATOR, T_ARRAY, T_OPTION, T_CONSUMER, T_PREDICATE>,
         T_ARRAY,
         T_OPTION extends AnyOption<T>,
         T_CONSUMER,

@@ -17,15 +17,13 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.*;
-<#if IsSpecialized>
-import java.util.PrimitiveIterator;
-<#else>
+<#if !IsSpecialized>
 import kala.function.*;
 </#if>
 
 public interface ${Type}Iterator
         extends
-        PrimIterator<${WrapperType}, ${Type}Iterator, ${PrimitiveType}[], ${Type}Option, ${Type}Consumer, ${Type}Predicate><#if IsSpecialized>, PrimitiveIterator.Of${Type}</#if> {
+        PrimitiveIterator<${WrapperType}, ${Type}Iterator, ${PrimitiveType}[], ${Type}Option, ${Type}Consumer, ${Type}Predicate><#if IsSpecialized>, java.util.PrimitiveIterator.Of${Type}</#if> {
 
     static @NotNull ${Type}Iterator empty() {
         return ${Type}Iterators.EMPTY;
@@ -176,10 +174,10 @@ public interface ${Type}Iterator
     <#if IsSpecialized>
     @Override
     default boolean sameElements(@NotNull ${Type}Iterator other) {
-        return sameElements((PrimitiveIterator.Of${Type}) other);
+        return sameElements((java.util.PrimitiveIterator.Of${Type}) other);
     }
 
-    default boolean sameElements(@NotNull PrimitiveIterator.Of${Type} other) {
+    default boolean sameElements(@NotNull java.util.PrimitiveIterator.Of${Type} other) {
         while (this.hasNext() && other.hasNext()) {
             if (this.next${Type}() != other.next${Type}()) {
                 return false;
@@ -202,8 +200,8 @@ public interface ${Type}Iterator
     @Override
     default boolean sameElements(@NotNull Iterator<?> other) {
         <#if IsSpecialized>
-        if (other instanceof PrimitiveIterator.Of${Type}) {
-            return sameElements(((PrimitiveIterator.Of${Type}) other));
+        if (other instanceof java.util.PrimitiveIterator.Of${Type}) {
+            return sameElements(((java.util.PrimitiveIterator.Of${Type}) other));
         }
         <#else>
         if (other instanceof ${Type}Iterator) {

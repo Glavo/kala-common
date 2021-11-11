@@ -8,15 +8,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
-import java.util.PrimitiveIterator;
 
-public interface PrimIterator<
+public interface PrimitiveIterator<
         T,
-        T_ITERATOR extends PrimIterator<T, T_ITERATOR, T_ARRAY, T_OPTION, T_CONSUMER, T_PREDICATE>,
+        T_ITERATOR extends PrimitiveIterator<T, T_ITERATOR, T_ARRAY, T_OPTION, T_CONSUMER, T_PREDICATE>,
         T_ARRAY,
         T_OPTION extends AnyOption<T>,
         T_CONSUMER,
-        T_PREDICATE> extends PrimitiveIterator<T, T_CONSUMER> {
+        T_PREDICATE> extends java.util.PrimitiveIterator<T, T_CONSUMER> {
 
     /**
      * {@inheritDoc}
