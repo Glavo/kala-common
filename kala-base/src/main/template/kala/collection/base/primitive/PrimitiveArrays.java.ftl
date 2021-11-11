@@ -273,7 +273,9 @@ public final class ${Type}Arrays {
     }
 
     public static boolean containsAll(${PrimitiveType} @NotNull [] array, @NotNull ${Type}Traversable values) {
-        for (${PrimitiveType} value : values) {
+        ${Type}Iterator it = values.iterator();
+        while (it.hasNext()) {
+            ${PrimitiveType} value = it.next${Type}();
             if (!contains(array, value)) {
                 return false;
             }

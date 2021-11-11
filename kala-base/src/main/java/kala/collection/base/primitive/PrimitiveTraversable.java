@@ -107,15 +107,7 @@ public interface PrimitiveTraversable<
 
     //region Traverse Operations
 
-    /**
-     * @see #forEachPrimitive(Object)
-     */
-    @Override
-    @Deprecated
-    @ReplaceWith("forEachPrimitive(action::accept)")
-    void forEach(@NotNull Consumer<? super T> action);
-
-    void forEachPrimitive(@NotNull T_CONSUMER action);
+    void forEach(@NotNull T_CONSUMER action);
 
     //endregion
 

@@ -222,7 +222,6 @@
     * `associateBy(Function, Function)`
 * Traverse Operations
     * `forEach(Consumer<E>)`
-    * `forEachPrimitive(T_CONSUMER)`
     * `forEachChecked(CheckedConsumer<E>)`
     * `forEachUnchecked(CheckedConsumer<E>)`
     * `forEachIndexed(IndexedConsumer<E>)`

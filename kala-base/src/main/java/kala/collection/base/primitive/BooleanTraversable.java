@@ -168,27 +168,16 @@ public interface BooleanTraversable
     //region Traverse Operations
 
     @Override
-    default void forEachPrimitive(@NotNull BooleanConsumer action) {
+    default void forEach(@NotNull BooleanConsumer action) {
         iterator().forEach(action);
     }
 
-    @Override
-    @Deprecated
-    default void forEach(@NotNull Consumer<? super Boolean> action) {
-        Objects.requireNonNull(action);
-        if (action instanceof BooleanConsumer) {
-            forEachPrimitive(((BooleanConsumer) action));
-        } else {
-            forEachPrimitive(action::accept);
-        }
-    }
-
     default <Ex extends Throwable> void forEachChecked(@NotNull CheckedBooleanConsumer<Ex> action) throws Ex {
-        forEachPrimitive(action);
+        forEach(action);
     }
 
     default void forEachUnchecked(@NotNull CheckedBooleanConsumer<?> action) {
-        forEachPrimitive(action);
+        forEach(action);
     }
 
     //endregion

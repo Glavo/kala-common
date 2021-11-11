@@ -75,27 +75,16 @@ public interface ${Type}Traversable
     //region Traverse Operations
 
     @Override
-    @Deprecated
-    @ReplaceWith("forEachPrimitive(action::accept)")
-    default void forEach(@NotNull Consumer<? super ${WrapperType}> action) {
-        if (action instanceof ${Type}Consumer) {
-            forEachPrimitive(((${Type}Consumer) action));
-        } else {
-            forEachPrimitive(action::accept);
-        }
-    }
-
-    @Override
-    default void forEachPrimitive(@NotNull ${Type}Consumer action) {
+    default void forEach(@NotNull ${Type}Consumer action) {
         iterator().forEach(action);
     }
 
     default <Ex extends Throwable> void forEachChecked(@NotNull Checked${Type}Consumer<Ex> action) throws Ex {
-        forEachPrimitive(action);
+        forEach(action);
     }
 
     default void forEachUnchecked(@NotNull Checked${Type}Consumer<?> action) {
-        forEachPrimitive(action);
+        forEach(action);
     }
 
     //endregion

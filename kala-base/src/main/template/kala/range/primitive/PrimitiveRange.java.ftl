@@ -182,7 +182,7 @@ public final class ${Type}Range extends IntegralRange<${WrapperType}> implements
     }
 
     @Override
-    public void forEachPrimitive(@NotNull ${Type}Consumer action) {
+    public void forEach(@NotNull ${Type}Consumer action) {
         forEachByStep(DEFAULT_STEP, action);
     }
 

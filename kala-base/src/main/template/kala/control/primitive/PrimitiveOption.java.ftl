@@ -92,7 +92,7 @@ public final class ${Type}Option extends PrimitiveOption<${WrapperType}> impleme
     }
 
     @Override
-    public void forEachPrimitive(@NotNull ${Type}Consumer action) {
+    public void forEach(@NotNull ${Type}Consumer action) {
         if (isDefined()) {
             action.accept(value);
         }

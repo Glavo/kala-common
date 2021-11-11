@@ -6,9 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.BaseStream;
 import java.util.stream.StreamSupport;
 
@@ -19,7 +17,7 @@ public interface AnyTraversable<
         T_OPTION extends AnyOption<T>,
         T_CONSUMER,
         T_PREDICATE
-        > extends Iterable<T> {
+        > {
 
     static int knownSize(@NotNull Iterable<?> c) {
         Objects.requireNonNull(c);
@@ -34,8 +32,11 @@ public interface AnyTraversable<
 
     //region Collection Operations
 
-    @Override
     @NotNull T_ITERATOR iterator();
+
+    default Spliterator<T> spliterator() {
+        return Spliterators.spliteratorUnknownSize(iterator(), 0);
+    }
 
     default @NotNull BaseStream<T, ?> stream() {
         return StreamSupport.stream(spliterator(), false);
@@ -89,11 +90,13 @@ public interface AnyTraversable<
             return Integer.compare(knownSize, otherSize);
         }
         int i = 0;
-        for (T t : this) {
+        T_ITERATOR it = iterator();
+        while (it.hasNext()) {
+            it.next();
             if (i == otherSize) {
                 return 1;
             }
-            ++i;
+            i++;
         }
         return i - otherSize;
     }
