@@ -524,7 +524,7 @@ public interface ${Type}Iterator
     @Override
     default ${PrimitiveType} @NotNull [] toArray() {
         if (!hasNext()) {
-            return new ${PrimitiveType}[0];
+            return ${Type}Arrays.EMPTY;
         }
         Internal${Type}ArrayBuilder builder = new Internal${Type}ArrayBuilder();
         while (hasNext()) {

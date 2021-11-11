@@ -10,7 +10,6 @@ import org.jetbrains.annotations.Range;
 import java.io.Serializable;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.function.Consumer;
 <#if IsSpecialized>
 import java.util.function.${Type}Consumer;
 <#else>
@@ -22,7 +21,9 @@ public final class ${Type}Range extends IntegralRange<${WrapperType}> implements
     private static final long serialVersionUID = ${SerialVersionUID};
     private static final int HASH_MAGIC = ${HashMagic};
 
-    private static final ${PrimitiveType} DEFAULT_STEP = 1;
+    public static final ${StepType} DEFAULT_STEP =1;
+    public static final ${StepType} MAX_STEP = ${MaxStep};
+    public static final ${StepType} MAX_REVERSE_STEP = ${MaxReverseStep};
 
     private static final ${Type}Range ALL = new ${Type}Range(RangeType.CLOSED, ${WrapperType}.MIN_VALUE, ${WrapperType}.MAX_VALUE);
     private static final ${Type}Range EMPTY = new ${Type}Range(RangeType.EMPTY, ${Values.Zero}, ${Values.Zero});
@@ -52,7 +53,7 @@ public final class ${Type}Range extends IntegralRange<${WrapperType}> implements
 
     public static @NotNull ${Type}Range open(${PrimitiveType} lowerBound, ${PrimitiveType} upperBound) {
         if (lowerBound >= upperBound) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("");
         }
         return new ${Type}Range(RangeType.OPEN, lowerBound, upperBound);
     }
@@ -87,11 +88,11 @@ public final class ${Type}Range extends IntegralRange<${WrapperType}> implements
     }
 
     public static @NotNull ${Type}Range lessThan(${PrimitiveType} upperBound) {
-        return new ${Type}Range(RangeType.CLOSED_OPEN, ${WrapperType}.MIN_VALUE, upperBound);
+        return new ${Type}Range(RangeType.CLOSED_OPEN, ${WrapperType}.MIN_VALUE,upperBound);
     }
 
     public static @NotNull ${Type}Range atMost(${PrimitiveType} upperBound) {
-        return new ${Type}Range(RangeType.CLOSED, ${WrapperType}.MIN_VALUE, upperBound);
+        return new ${Type}Range(RangeType.CLOSED, ${WrapperType}.MIN_VALUE,upperBound);
     }
 
     @Override
@@ -116,17 +117,17 @@ public final class ${Type}Range extends IntegralRange<${WrapperType}> implements
     private ${PrimitiveType} strictLowerBound() {
         // assert this.isNotEmpty();
 
-        return type.getLowerBoundType() == BoundType.OPEN
-                ? <#if LiftToInt>(${PrimitiveType}) (</#if>lowerBound + 1<#if LiftToInt>)</#if>
-                : lowerBound;
+            return type.getLowerBoundType() == BoundType.OPEN
+            ? <#if LiftToInt>(${PrimitiveType}) (</#if>lowerBound + 1<#if LiftToInt>)</#if>
+        :lowerBound;
     }
 
     private ${PrimitiveType} strictUpperBound() {
         // assert this.isNotEmpty();
 
-        return type.getUpperBoundType() == BoundType.OPEN
-                ? <#if LiftToInt>(${PrimitiveType}) (</#if>upperBound - 1<#if LiftToInt>)</#if>
-                : upperBound;
+            return type.getUpperBoundType() == BoundType.OPEN
+            ? <#if LiftToInt>(${PrimitiveType}) (</#if>upperBound - 1<#if LiftToInt>)</#if>
+        :upperBound;
     }
 
     @UnstableName
@@ -135,14 +136,13 @@ public final class ${Type}Range extends IntegralRange<${WrapperType}> implements
             throw new UnsupportedOperationException("Range is empty");
         }
 
-        final ${PrimitiveType} strictLowerBound = strictLowerBound();
-        final ${PrimitiveType} strictUpperBound = strictUpperBound();
+        final ${PrimitiveType} strictLowerBound =strictLowerBound();
+        final ${PrimitiveType} strictUpperBound =strictUpperBound();
 
         if (strictLowerBound >= value) {
             return strictLowerBound;
         }
 
-        //noinspection ManualMinMaxCalculation
         if (strictUpperBound <= value) {
             return strictUpperBound;
         }
@@ -186,10 +186,13 @@ public final class ${Type}Range extends IntegralRange<${WrapperType}> implements
         forEachByStep(DEFAULT_STEP, action);
     }
 
-    void forEachByStep(${PrimitiveType} step, @NotNull ${Type}Consumer action) {
+    void forEachByStep(${StepType} step, @NotNull ${Type}Consumer action) {
         Objects.requireNonNull(action);
         if (step == 0) {
             throw new IllegalArgumentException("step mush not be zero");
+        }
+        if (step > MAX_STEP || step < MAX_REVERSE_STEP) {
+            throw new IllegalArgumentException("step too large");
         }
         if (isEmpty()) {
             return;
@@ -202,7 +205,7 @@ public final class ${Type}Range extends IntegralRange<${WrapperType}> implements
             ${PrimitiveType} value = strictLowerBound;
             while (value <= strictUpperBound) {
                 action.accept(value);
-                if (${WrapperType}.MAX_VALUE - step < value) {
+                if (${WrapperType}.MAX_VALUE - step < value){
                     break;
                 }
                 value += step;
@@ -211,7 +214,7 @@ public final class ${Type}Range extends IntegralRange<${WrapperType}> implements
             ${PrimitiveType} value = strictUpperBound;
             while (value >= strictLowerBound) {
                 action.accept(value);
-                if (${WrapperType}.MIN_VALUE - step > value) {
+                if (${WrapperType}.MIN_VALUE - step > value){
                     break;
                 }
                 value += step;
@@ -240,13 +243,42 @@ public final class ${Type}Range extends IntegralRange<${WrapperType}> implements
     }
 
     private static String prettyToString(${PrimitiveType} value) {
-        if (value == ${WrapperType}.MAX_VALUE) {
+        <#if Type == "Char">
+        if (value >= 32 && value <= 126 && value != '\'' && value != '\\') {
+            return "'" + value + "'";
+        }
+
+        switch (value) {
+            case 0:
+                return "'\\0'";
+            case Character.MAX_VALUE:
+                return "Character.MAX_VALUE";
+            case '\t':
+                return "'\\t'";
+            case '\'':
+                return "'\\''";
+            case '\r':
+                return "'\\r'";
+            case '\\':
+                return "'\\\\'";
+            case '\n':
+                return "'\\n'";
+            case '\f':
+                return "'\\f'";
+            case '\b':
+                return "'\\b'";
+        }
+
+        return String.format("'\\u%04X'", (int) value);
+        <#else>
+        if (value == ${WrapperType}.MAX_VALUE){
             return "${WrapperType}.MAX_VALUE";
         }
-        if (value == ${WrapperType}.MIN_VALUE) {
+        if (value == ${WrapperType}.MIN_VALUE){
             return "${WrapperType}.MIN_VALUE";
         }
         return String.valueOf(value);
+        </#if>
     }
 
     @Override
@@ -292,11 +324,11 @@ public final class ${Type}Range extends IntegralRange<${WrapperType}> implements
 
     private static final class PositiveItr extends Abstract${Type}Iterator {
         private ${PrimitiveType} upperBound;
-        private final @Range(from = 1, to = ${WrapperType}.MAX_VALUE) ${PrimitiveType} step;
+        private final @Range(from = 1, to = MAX_STEP) ${StepType} step;
 
         private ${PrimitiveType} value;
 
-        PositiveItr(${PrimitiveType} upperBound, ${PrimitiveType} step, ${PrimitiveType} initialValue) {
+        PositiveItr(${PrimitiveType} upperBound, ${StepType} step, ${PrimitiveType} initialValue) {
             this.upperBound = upperBound;
             this.step = step;
             this.value = initialValue;
@@ -312,11 +344,11 @@ public final class ${Type}Range extends IntegralRange<${WrapperType}> implements
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            final ${PrimitiveType} res = value;
-            if (${WrapperType}.MAX_VALUE - step < value) {
+            final ${PrimitiveType} res =value;
+            if (${WrapperType}.MAX_VALUE - step < value){
                 upperBound = ${WrapperType}.MIN_VALUE;
                 value = ${WrapperType}.MAX_VALUE;
-            } else {
+            } else{
                 value += step;
             }
             return res;
@@ -325,11 +357,11 @@ public final class ${Type}Range extends IntegralRange<${WrapperType}> implements
 
     private static final class ReverseItr extends Abstract${Type}Iterator {
         private ${PrimitiveType} lowerBound;
-        private final @Range(from = ${WrapperType}.MIN_VALUE, to = -1) ${PrimitiveType} step;
+        private final @Range(from = MAX_REVERSE_STEP, to = -1) ${StepType} step;
 
         private ${PrimitiveType} value;
 
-        private ReverseItr(${PrimitiveType} lowerBound, @Range(from = ${WrapperType}.MIN_VALUE, to = -1) ${PrimitiveType} step, ${PrimitiveType} initialValue) {
+        private ReverseItr(${PrimitiveType} lowerBound, @Range(from = ${WrapperType}.MIN_VALUE, to = -1) ${StepType} step, ${PrimitiveType} initialValue) {
             this.lowerBound = lowerBound;
             this.step = step;
             this.value = initialValue;
@@ -345,11 +377,11 @@ public final class ${Type}Range extends IntegralRange<${WrapperType}> implements
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            final ${PrimitiveType} res = this.value;
-            if (${WrapperType}.MIN_VALUE - step > value) {
+            final ${PrimitiveType} res =this.value;
+            if (${WrapperType}.MIN_VALUE - step > value){
                 lowerBound = ${WrapperType}.MAX_VALUE;
                 value = ${WrapperType}.MIN_VALUE;
-            } else {
+            } else{
                 value += step;
             }
             return res;

@@ -58,7 +58,7 @@ public interface ${Type}Traversable
     default ${PrimitiveType} @NotNull [] toArray() {
         int s = knownSize();
         if (s == 0) {
-            return new ${PrimitiveType}[0];
+            return ${Type}Arrays.EMPTY;
         } else if (s > 0) {
             ${PrimitiveType}[] arr = new ${PrimitiveType}[s];
             int i = 0;
