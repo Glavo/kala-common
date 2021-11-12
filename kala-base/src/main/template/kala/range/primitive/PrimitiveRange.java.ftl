@@ -53,28 +53,28 @@ public final class ${Type}Range extends IntegralRange<${WrapperType}> implements
 
     public static @NotNull ${Type}Range open(${PrimitiveType} lowerBound, ${PrimitiveType} upperBound) {
         if (lowerBound >= upperBound) {
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException("lowerBound should be less than upperBound");
         }
         return new ${Type}Range(RangeType.OPEN, lowerBound, upperBound);
     }
 
     public static @NotNull ${Type}Range closed(${PrimitiveType} lowerBound, ${PrimitiveType} upperBound) {
         if (lowerBound > upperBound) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("lowerBound should be less than or equal to upperBound");
         }
         return new ${Type}Range(RangeType.CLOSED, lowerBound, upperBound);
     }
 
     public static @NotNull ${Type}Range openClosed(${PrimitiveType} lowerBound, ${PrimitiveType} upperBound) {
         if (lowerBound > upperBound) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("lowerBound should be less than or equal to upperBound");
         }
         return new ${Type}Range(RangeType.OPEN_CLOSED, lowerBound, upperBound);
     }
 
     public static @NotNull ${Type}Range closedOpen(${PrimitiveType} lowerBound, ${PrimitiveType} upperBound) {
         if (lowerBound > upperBound) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("lowerBound should be less than or equal to upperBound");
         }
         return new ${Type}Range(RangeType.CLOSED_OPEN, lowerBound, upperBound);
     }

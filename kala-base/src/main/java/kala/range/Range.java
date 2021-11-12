@@ -67,7 +67,7 @@ public final class Range<T> extends AnyRange<T> implements Serializable {
 
     public static <T> @NotNull Range<T> open(T lowerBound, T upperBound, Comparator<? super T> comparator) {
         if (ComparableUtils.compare(lowerBound, upperBound, comparator) >= 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("lowerBound should be less than upperBound");
         }
 
         return new Range<>(RangeType.OPEN, lowerBound, upperBound, comparator);
@@ -79,7 +79,7 @@ public final class Range<T> extends AnyRange<T> implements Serializable {
 
     public static <T> @NotNull Range<T> closed(T lowerBound, T upperBound, Comparator<? super T> comparator) {
         if (ComparableUtils.compare(lowerBound, upperBound, comparator) > 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("lowerBound should be less than or equal to upperBound");
         }
         return new Range<>(RangeType.CLOSED, lowerBound, upperBound, comparator);
     }
@@ -90,7 +90,7 @@ public final class Range<T> extends AnyRange<T> implements Serializable {
 
     public static <T> @NotNull Range<T> openClosed(T lowerBound, T upperBound, Comparator<? super T> comparator) {
         if (ComparableUtils.compare(lowerBound, upperBound, comparator) > 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("lowerBound should be less than or equal to upperBound");
         }
         return new Range<>(RangeType.OPEN_CLOSED, lowerBound, upperBound, comparator);
     }
@@ -101,7 +101,7 @@ public final class Range<T> extends AnyRange<T> implements Serializable {
 
     public static <T> @NotNull Range<T> closedOpen(T lowerBound, T upperBound, Comparator<? super T> comparator) {
         if (ComparableUtils.compare(lowerBound, upperBound, comparator) > 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("lowerBound should be less than or equal to upperBound");
         }
         return new Range<>(RangeType.CLOSED_OPEN, lowerBound, upperBound, comparator);
     }
