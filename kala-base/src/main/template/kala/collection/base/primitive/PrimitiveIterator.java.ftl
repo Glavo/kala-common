@@ -70,7 +70,7 @@ public interface ${Type}Iterator
     static @NotNull ${Type}Iterator ofIterator(@NotNull Iterator<? extends @NotNull ${WrapperType}> it) {
         Objects.requireNonNull(it);
         if (it instanceof ${Type}Iterator) {
-            return ((${Type}Iterator) it);
+            return (${Type}Iterator) it;
         }
         return new ${Type}Iterator() {
             @Override
@@ -89,6 +89,31 @@ public interface ${Type}Iterator
             }
         };
     }
+
+<#if IsSpecialized>
+    static @NotNull ${Type}Iterator ofIterator(@NotNull ${PrimitiveIteratorType} it) {
+        Objects.requireNonNull(it);
+        if (it instanceof ${Type}Iterator) {
+            return (${Type}Iterator) it;
+        }
+        return new ${Type}Iterator() {
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+
+            @Override
+            public ${PrimitiveType} next${Type}() {
+                return it.next${Type}();
+            }
+
+            @Override
+            public String toString() {
+                return it.toString();
+            }
+        };
+    }
+</#if>
 
     /**
      * Returns the next {@code ${PrimitiveType}} element in the iteration.
@@ -156,6 +181,147 @@ public interface ${Type}Iterator
         return false;
     }
 
+<#if Type == "Boolean">
+    @Override
+    default boolean containsAll(boolean @NotNull [] values) {
+        if (!hasNext()) {
+            return values.length == 0;
+        }
+        boolean containsTrue = false;
+        boolean containsFalse = false;
+
+        while (hasNext()) {
+            boolean v = nextBoolean();
+            if (v) {
+                containsTrue = true;
+            } else {
+                containsFalse = true;
+            }
+            if (containsTrue && containsFalse) {
+                return true;
+            }
+        }
+
+        if (containsTrue && containsFalse) {
+            throw new AssertionError();
+        } else if (containsTrue) {
+            for (boolean value : values) {
+                if (!value) {
+                    return false;
+                }
+            }
+        } else if (containsFalse) {
+            for (boolean value : values) {
+                if (value) {
+                    return false;
+                }
+            }
+        } else {
+            throw new AssertionError();
+        }
+        return true;
+    }
+
+    @Override
+    default boolean containsAll(Boolean @NotNull [] values) {
+        if (values.length == 0) {
+            return true;
+        }
+        if (!hasNext()) {
+            return false;
+        }
+
+        boolean containsTrue = false;
+        boolean containsFalse = false;
+
+        while (hasNext()) {
+            boolean v = nextBoolean();
+            if (v) {
+                containsTrue = true;
+            } else {
+                containsFalse = true;
+            }
+            if (containsTrue && containsFalse) {
+                break;
+            }
+        }
+
+        if (containsTrue && containsFalse) {
+            for (Boolean value : values) {
+                if (value == null) {
+                    return false;
+                }
+            }
+        } else if (containsTrue) {
+            for (Boolean value : values) {
+                if (value == null || !value) {
+                    return false;
+                }
+            }
+        } else if (containsFalse) {
+            for (Boolean value : values) {
+                if (value == null || value) {
+                    return false;
+                }
+            }
+        } else {
+            throw new AssertionError();
+        }
+        return true;
+    }
+
+    @Override
+    default boolean containsAll(@NotNull Iterable<?> values) {
+        Iterator<?> it = values.iterator();
+        if (!it.hasNext()) {
+            return true;
+        }
+        if (!hasNext()) {
+            return false;
+        }
+
+        boolean containsTrue = false;
+        boolean containsFalse = false;
+
+        while (hasNext()) {
+            boolean v = nextBoolean();
+            if (v) {
+                containsTrue = true;
+            } else {
+                containsFalse = true;
+            }
+            if (containsTrue && containsFalse) {
+                break;
+            }
+        }
+
+        if (containsTrue && containsFalse) {
+            while (it.hasNext()) {
+                Object value = it.next();
+                if (!(value instanceof Boolean)) {
+                    return false;
+                }
+            }
+        } else if (containsTrue) {
+            while (it.hasNext()) {
+                Object value = it.next();
+                if (!(value instanceof Boolean) || !(Boolean) value) {
+                    return false;
+                }
+            }
+        } else if (containsFalse) {
+            while (it.hasNext()) {
+                Object value = it.next();
+                if (!(value instanceof Boolean) || (Boolean) value) {
+                    return false;
+                }
+            }
+        } else {
+            throw new AssertionError();
+        }
+        return true;
+    }
+<#else>
     @Override
     default boolean containsAll(${PrimitiveType} @NotNull [] values) {
         loop:
@@ -170,14 +336,16 @@ public interface ${Type}Iterator
         }
         return true;
     }
+</#if>
 
-    <#if IsSpecialized>
+<#if IsSpecialized>
     @Override
     default boolean sameElements(@NotNull ${Type}Iterator other) {
-        return sameElements((java.util.PrimitiveIterator.Of${Type}) other);
+        return sameElements((${PrimitiveIteratorType}) other);
     }
+</#if>
 
-    default boolean sameElements(@NotNull java.util.PrimitiveIterator.Of${Type} other) {
+    default boolean sameElements(@NotNull ${PrimitiveIteratorType} other) {
         while (this.hasNext() && other.hasNext()) {
             if (this.next${Type}() != other.next${Type}()) {
                 return false;
@@ -185,29 +353,12 @@ public interface ${Type}Iterator
         }
         return this.hasNext() == other.hasNext();
     }
-    <#else>
-    @Override
-    default boolean sameElements(@NotNull ${Type}Iterator other) {
-        while (this.hasNext() && other.hasNext()) {
-            if (this.next${Type}() != other.next${Type}()) {
-                return false;
-            }
-        }
-        return this.hasNext() == other.hasNext();
-    }
-    </#if>
 
     @Override
     default boolean sameElements(@NotNull Iterator<?> other) {
-        <#if IsSpecialized>
-        if (other instanceof java.util.PrimitiveIterator.Of${Type}) {
-            return sameElements(((java.util.PrimitiveIterator.Of${Type}) other));
+        if (other instanceof ${PrimitiveIteratorType}) {
+            return sameElements((${PrimitiveIteratorType}) other);
         }
-        <#else>
-        if (other instanceof ${Type}Iterator) {
-            return sameElements(((${Type}Iterator) other));
-        }
-        </#if>
         while (this.hasNext() && other.hasNext()) {
             Object value = other.next();
             if (!(value instanceof ${WrapperType}) || (${WrapperType}) value != this.next${Type}()) {
@@ -268,7 +419,7 @@ public interface ${Type}Iterator
             return this;
         }
 
-        ${PrimitiveType} value = 0;
+        ${PrimitiveType} value = ${Values.Default};
         boolean p = false;
         while (hasNext()) {
             if (!predicate.test(value = next${Type}())) {
@@ -424,7 +575,9 @@ public interface ${Type}Iterator
 
         ${PrimitiveType} value = next${Type}();
         while (hasNext()) {
-<#if IsSpecialized || Type == 'Float'>
+<#if Type == 'Boolean'>
+            value = nextBoolean() || value;
+<#elseif IsSpecialized || Type == 'Float'>
             value = Math.max(value, next${Type}());
 <#else>
             value = (${PrimitiveType}) Math.max(value, next${Type}());
@@ -440,7 +593,9 @@ public interface ${Type}Iterator
 
         ${PrimitiveType} value = next${Type}();
         while (hasNext()) {
-<#if IsSpecialized || Type == 'Float'>
+<#if Type == 'Boolean'>
+            value = nextBoolean() || value;
+<#elseif IsSpecialized || Type == 'Float'>
             value = Math.max(value, next${Type}());
 <#else>
             value = (${PrimitiveType}) Math.max(value, next${Type}());
@@ -457,7 +612,9 @@ public interface ${Type}Iterator
 
         ${PrimitiveType} value = next${Type}();
         while (hasNext()) {
-<#if IsSpecialized || Type == 'Float'>
+<#if Type == 'Boolean'>
+            value = nextBoolean() || value;
+<#elseif IsSpecialized || Type == 'Float'>
             value = Math.max(value, next${Type}());
 <#else>
             value = (${PrimitiveType}) Math.max(value, next${Type}());
@@ -473,7 +630,9 @@ public interface ${Type}Iterator
 
         ${PrimitiveType} value = next${Type}();
         while (hasNext()) {
-<#if IsSpecialized || Type == 'Float'>
+<#if Type == 'Boolean'>
+            value = nextBoolean() && value;
+<#elseif IsSpecialized || Type == 'Float'>
             value = Math.min(value, next${Type}());
 <#else>
             value = (${PrimitiveType}) Math.min(value, next${Type}());
@@ -489,7 +648,9 @@ public interface ${Type}Iterator
 
         ${PrimitiveType} value = next${Type}();
         while (hasNext()) {
-<#if IsSpecialized || Type == 'Float'>
+<#if Type == 'Boolean'>
+            value = nextBoolean() && value;
+<#elseif IsSpecialized || Type == 'Float'>
             value = Math.min(value, next${Type}());
 <#else>
             value = (${PrimitiveType}) Math.min(value, next${Type}());
@@ -506,7 +667,9 @@ public interface ${Type}Iterator
 
         ${PrimitiveType} value = next${Type}();
         while (hasNext()) {
-<#if IsSpecialized || Type == 'Float'>
+<#if Type == 'Boolean'>
+            value = nextBoolean() && value;
+<#elseif IsSpecialized || Type == 'Float'>
             value = Math.min(value, next${Type}());
 <#else>
             value = (${PrimitiveType}) Math.min(value, next${Type}());

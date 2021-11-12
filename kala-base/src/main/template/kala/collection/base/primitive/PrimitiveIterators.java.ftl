@@ -57,7 +57,7 @@ final class ${Type}Iterators {
 
         private ${Type}Predicate predicate;
 
-        private ${PrimitiveType} nextValue = 0;
+        private ${PrimitiveType} nextValue;
         private boolean tag = false;
 
         TakeWhile(@NotNull ${Type}Iterator source, ${Type}Predicate predicate) {
@@ -128,8 +128,7 @@ final class ${Type}Iterators {
     }
 
     static final class Prepended extends Abstract${Type}Iterator {
-        @NotNull
-        private final ${Type}Iterator source;
+        private final @NotNull ${Type}Iterator source;
 
         private final ${PrimitiveType} value;
 
@@ -157,8 +156,7 @@ final class ${Type}Iterators {
     }
 
     static final class Appended extends Abstract${Type}Iterator {
-        @NotNull
-        private final ${Type}Iterator source;
+        private final @NotNull ${Type}Iterator source;
 
         private final ${PrimitiveType} value;
         private boolean flag = true;
@@ -187,12 +185,10 @@ final class ${Type}Iterators {
     }
 
     static final class Filter extends Abstract${Type}Iterator {
-        @NotNull
-        private final ${Type}Iterator source;
-        @NotNull
-        private final ${Type}Predicate predicate;
+        private final @NotNull ${Type}Iterator source;
+        private final @NotNull ${Type}Predicate predicate;
 
-        private ${PrimitiveType} nextValue = 0;
+        private ${PrimitiveType} nextValue;
         private boolean flag = false;
 
         private final boolean isFlipped;

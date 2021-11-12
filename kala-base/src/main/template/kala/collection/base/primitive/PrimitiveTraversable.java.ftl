@@ -1,13 +1,15 @@
 package kala.collection.base.primitive;
 
-import kala.annotations.ReplaceWith;
 import kala.control.primitive.${Type}Option;
 import kala.function.*;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.NoSuchElementException;
+<#if IsSpecialized>
 import java.util.function.*;
+</#if>
 
 public interface ${Type}Traversable
         extends PrimitiveTraversable<${WrapperType}, ${Type}Traversable, ${Type}Iterator, ${PrimitiveType}[], ${Type}Option, ${Type}Consumer, ${Type}Predicate> {
@@ -15,13 +17,86 @@ public interface ${Type}Traversable
     @Override
     @NotNull ${Type}Iterator iterator();
 
+    default ${PrimitiveType} elementAt(int index) {
+        if (index < 0) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        final int knownSize = this.knownSize();
+        if (knownSize >= 0 && index >= knownSize) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        final ${Type}Iterator it = this.iterator();
+        for (int i = 0; i < index; i++) {
+            if (it.hasNext()) {
+                it.next${Type}();
+            } else {
+                throw new IndexOutOfBoundsException("index: " + index);
+            }
+        }
+        if (it.hasNext()) {
+            return it.next${Type}();
+        } else {
+            throw new IndexOutOfBoundsException("index: " + index);
+        }
+    }
+
+
     //region Element Conditions
 
     default boolean contains(${PrimitiveType} value) {
         return knownSize() != 0 && iterator().contains(value);
     }
 
+    @Override
+    default boolean containsAll(${PrimitiveType} @NotNull [] values) {
+        return iterator().containsAll(values);
+    }
+
     default boolean containsAll(@NotNull ${Type}Traversable values) {
+<#if Type == 'Boolean'>
+        BooleanIterator it1 = this.iterator();
+        BooleanIterator it2 = values.iterator();
+        if (!it2.hasNext()) {
+            return true;
+        }
+        if (!it1.hasNext()) {
+            return false;
+        }
+
+        boolean containsTrue = false;
+        boolean containsFalse = false;
+
+        while (it1.hasNext()) {
+            boolean v = it1.nextBoolean();
+            if (v) {
+                containsTrue = true;
+            } else {
+                containsFalse = true;
+            }
+            if (containsTrue && containsFalse) {
+                return true;
+            }
+        }
+
+        if (containsTrue) {
+            while (it2.hasNext()) {
+                boolean value = it2.nextBoolean();
+                if (!value) {
+                    return false;
+                }
+            }
+        } else {
+            while (it2.hasNext()) {
+                boolean value = it2.nextBoolean();
+                if (value) {
+                    return false;
+                }
+            }
+        }
+        return true;
+<#else>
         ${Type}Iterator it = values.iterator();
         if (knownSize() == 0) {
             return !it.hasNext();
@@ -32,6 +107,7 @@ public interface ${Type}Traversable
             }
         }
         return true;
+</#if>
     }
 
     //endregion
@@ -45,11 +121,31 @@ public interface ${Type}Traversable
         return iterator().max();
     }
 
+    @Override
+    default @Nullable ${WrapperType} maxOrNull() {
+        return knownSize() == 0 ? null : iterator().maxOrNull();
+    }
+
+    @Override
+    default @NotNull ${Type}Option maxOption() {
+        return knownSize() == 0 ? ${Type}Option.none() : iterator().maxOption();
+    }
+
     default ${PrimitiveType} min() {
         if (knownSize() == 0) {
             throw new NoSuchElementException();
         }
         return iterator().min();
+    }
+
+    @Override
+    default @Nullable ${WrapperType} minOrNull() {
+        return knownSize() == 0 ? null : iterator().minOrNull();
+    }
+
+    @Override
+    default @NotNull ${Type}Option minOption() {
+        return knownSize() == 0 ? ${Type}Option.none() : iterator().minOption();
     }
 
     //endregion

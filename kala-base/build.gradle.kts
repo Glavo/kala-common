@@ -23,16 +23,23 @@ val primitives = listOf("Boolean", "Byte", "Short", "Int", "Long", "Float", "Dou
         res["Var"] = type.first().toLowerCase()
         res["IsSpecialized"] = type == "Int" || type == "Long" || type == "Double"
 
-        if (type != "Boolean") {
-            res["Values"] = mapOf(
-                "Zero" to when (type) {
-                    "Int" -> "0"
-                    "Long" -> "0L"
-                    "Char" -> "'\\0'"
-                    else -> "(${res["PrimitiveType"]}) 0"
-                }
-            )
-        }
+        res["Values"] = mapOf(
+            "Zero" to when (type) {
+                "Int" -> "0"
+                "Long" -> "0L"
+                "Char" -> "'\\0'"
+                "Boolean" -> null
+                else -> "(${res["PrimitiveType"]}) 0"
+            },
+            "Default" to when (type) {
+                "Int" -> "0"
+                "Long" -> "0L"
+                "Char" -> "'\\0'"
+                "Boolean" -> "false"
+                else -> "(${res["PrimitiveType"]}) 0"
+            }
+        )
+
 
         res["LiftToInt"] = type == "Byte" || type == "Short" || type == "Char"
 
@@ -64,13 +71,18 @@ val generateSources = tasks.create("generateSources") {
 
         conf.withGenerate("kala.collection.base.primitive") {
             for (model in primitives) {
-                generate("${model["Type"]}Arrays", model, "PrimitiveArrays")
-                if (model["Type"] != "Boolean") {
-                    generate("${model["Type"]}Traversable", model, "PrimitiveTraversable")
-                    generate("${model["Type"]}Iterator", model, "PrimitiveIterator")
-                    generate("${model["Type"]}Iterators", model, "PrimitiveIterators")
-                    generate("Abstract${model["Type"]}Iterator", model, "AbstractPrimitiveIterator")
-                }
+                val type = model["Type"] as String
+
+                val newModel = model.toMutableMap()
+                newModel["PrimitiveIteratorType"] =
+                    if (model["IsSpecialized"] as Boolean) "java.util.PrimitiveIterator.Of$type" else "${type}Iterator"
+
+
+                generate("${type}Arrays", newModel, "PrimitiveArrays")
+                generate("${type}Traversable", newModel, "PrimitiveTraversable")
+                generate("${type}Iterator", newModel, "PrimitiveIterator")
+                generate("${type}Iterators", newModel, "PrimitiveIterators")
+                generate("Abstract${type}Iterator", newModel, "AbstractPrimitiveIterator")
             }
         }
 
