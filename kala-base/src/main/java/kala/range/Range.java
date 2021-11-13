@@ -281,7 +281,7 @@ public final class Range<T> extends AnyRange<T> implements Serializable {
         BoundType lowerBoundType = type.getLowerBoundType();
         BoundType upperBoundType = type.getUpperBoundType();
 
-        StringBuilder res = new StringBuilder();
+        StringBuilder res = new StringBuilder(32);
         res.append("Range");
 
         switch (lowerBoundType) {

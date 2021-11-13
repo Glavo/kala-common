@@ -106,31 +106,36 @@ val generateSources = tasks.create("generateSources") {
             val random = Random(-977415259)
             for (model in primitives) {
                 val type = model["Type"] as String
-                if (type.let { it == "Boolean" || it == "Float" || it == "Double" }) {
+                if (type == "Boolean") {
                     continue
                 }
 
                 val newModel = model.toMutableMap()
                 newModel["SerialVersionUID"] = "${random.nextLong()}L"
                 newModel["HashMagic"] = random.nextInt().toString()
-                newModel["StepType"] = when (type) {
-                    "Int", "Long" -> "long"
-                    else -> "int"
-                }
-                newModel["MaxStep"] = when (type) {
-                    "Byte" -> "Byte.MAX_VALUE - Byte.MIN_VALUE"
-                    "Short" -> "Short.MAX_VALUE - Short.MIN_VALUE"
-                    "Char" -> "Character.MAX_VALUE"
-                    "Int" -> "(long) Integer.MAX_VALUE - Integer.MIN_VALUE"
-                    "Long" -> "Long.MAX_VALUE"
-                    else -> throw AssertionError()
-                }
-                newModel["MaxReverseStep"] = when (type) {
-                    "Long" -> "Long.MIN_VALUE"
-                    else -> "-MAX_STEP"
-                }
 
-                generate("${type}Range", newModel, "PrimitiveRange")
+                if (type == "Float" || type == "Double") {
+                    generate("${type}Range", newModel, "FloatingRange")
+                } else {
+                    newModel["StepType"] = when (type) {
+                        "Int", "Long" -> "long"
+                        else -> "int"
+                    }
+                    newModel["MaxStep"] = when (type) {
+                        "Byte" -> "Byte.MAX_VALUE - Byte.MIN_VALUE"
+                        "Short" -> "Short.MAX_VALUE - Short.MIN_VALUE"
+                        "Char" -> "Character.MAX_VALUE"
+                        "Int" -> "(long) Integer.MAX_VALUE - Integer.MIN_VALUE"
+                        "Long" -> "Long.MAX_VALUE"
+                        else -> throw AssertionError()
+                    }
+                    newModel["MaxReverseStep"] = when (type) {
+                        "Long" -> "Long.MIN_VALUE"
+                        else -> "-MAX_STEP"
+                    }
+
+                    generate("${type}Range", newModel, "IntegralRange")
+                }
             }
         }
     }
