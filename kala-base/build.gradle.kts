@@ -107,6 +107,7 @@ val generateSources = tasks.create("generateSources") {
                 generate("Mutable${type}Value", model, "MutablePrimitiveValue")
 
                 generate("${type}Ref", model + ("HashMagic" to random.nextInt().toString()), "PrimitiveRef")
+                generate("Lazy${type}Value", model + ("SerialVersionUID" to "${random.nextLong()}L"), "LazyPrimitiveValue")
             }
         }
 

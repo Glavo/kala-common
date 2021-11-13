@@ -22,6 +22,14 @@ public final class LazyValue<@Covariant T> implements Traversable<T>, Mappable<T
     private transient volatile Supplier<? extends T> supplier;
     private transient T value;
 
+    private LazyValue(Supplier<? extends T> supplier) {
+        this.supplier = supplier;
+    }
+
+    private LazyValue(T value) {
+        this.value = value;
+    }
+
     @Contract(value = "_ -> param1", pure = true)
     @SuppressWarnings("unchecked")
     public static <T> LazyValue<T> narrow(LazyValue<? extends T> value) {
@@ -37,14 +45,6 @@ public final class LazyValue<@Covariant T> implements Traversable<T>, Mappable<T
     @Contract("_ -> new")
     public static <T> @NotNull LazyValue<T> ofValue(T value) {
         return new LazyValue<>(value);
-    }
-
-    private LazyValue(Supplier<? extends T> supplier) {
-        this.supplier = supplier;
-    }
-
-    private LazyValue(T value) {
-        this.value = value;
     }
 
     public T get() {
