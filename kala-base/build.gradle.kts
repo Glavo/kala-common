@@ -96,6 +96,20 @@ val generateSources = tasks.create("generateSources") {
             }
         }
 
+        conf.withGenerate("kala.value.primitive") {
+            val random = Random(-1044014905)
+            for (model in primitives) {
+                val type = model["Type"]
+
+                val newModel = model.toMutableMap()
+
+                generate("${type}Value", model, "PrimitiveValue")
+                generate("Mutable${type}Value", model, "MutablePrimitiveValue")
+
+                generate("${type}Ref", model + ("HashMagic" to random.nextInt().toString()), "PrimitiveRef")
+            }
+        }
+
         conf.withGenerate("kala.internal") {
             for (model in primitives) {
                 generate("Internal${model["Type"]}ArrayBuilder", model, "InternalPrimitiveArrayBuilder")
