@@ -97,17 +97,18 @@ val generateSources = tasks.create("generateSources") {
         }
 
         conf.withGenerate("kala.value.primitive") {
-            val random = Random(-1044014905)
+            val refHashMagicRandom = Random(-1044014905)
+            val lazyValueSerialVersionRandom = Random(-1948426996)
             for (model in primitives) {
                 val type = model["Type"]
-
-                val newModel = model.toMutableMap()
 
                 generate("${type}Value", model, "PrimitiveValue")
                 generate("Mutable${type}Value", model, "MutablePrimitiveValue")
 
-                generate("${type}Ref", model + ("HashMagic" to random.nextInt().toString()), "PrimitiveRef")
-                generate("Lazy${type}Value", model + ("SerialVersionUID" to "${random.nextLong()}L"), "LazyPrimitiveValue")
+                generate("${type}Ref", model + ("HashMagic" to refHashMagicRandom.nextInt().toString()), "PrimitiveRef")
+                generate("Lazy${type}Value", model + ("SerialVersionUID" to "${lazyValueSerialVersionRandom.nextLong()}L"), "LazyPrimitiveValue")
+                generate("LateInit${type}Value", model, "LateInitPrimitiveValue")
+                generate("MutableLateInit${type}Value", model, "MutableLateInitPrimitiveValue")
             }
         }
 

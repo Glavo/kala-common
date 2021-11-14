@@ -1,10 +1,10 @@
-package kala.value;
+package kala.value.primitive;
 
-public final class LateInitValue<T> implements Value<T> {
+public final class LateInit${Type}Value implements ${Type}Value {
     private volatile boolean initialized = false;
-    private T value;
+    private ${PrimitiveType} value;
 
-    public void initialize(T value) {
+    public void initialize(${PrimitiveType} value) {
         if (initialized) {
             throw new IllegalStateException("Value is initialized");
         }
@@ -22,7 +22,7 @@ public final class LateInitValue<T> implements Value<T> {
     }
 
     @Override
-    public T get() {
+    public ${PrimitiveType} get() {
         if (!initialized) {
             synchronized (this) {
                 if (!initialized) {
@@ -36,9 +36,9 @@ public final class LateInitValue<T> implements Value<T> {
     @Override
     public String toString() {
         if (initialized) {
-            return "LateInitValue[" + value + ']';
+            return "LateInit${Type}Value[" + value + ']';
         } else {
-            return "LateInitValue[<uninitialized>]";
+            return "LateInit${Type}Value[<uninitialized>]";
         }
     }
 }
