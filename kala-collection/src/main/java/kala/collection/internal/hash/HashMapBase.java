@@ -90,10 +90,6 @@ public class HashMapBase<K, V> extends AbstractMutableMap<K, V> implements Seria
         return hash & (table.length - 1);
     }
 
-    protected static int tableSizeFor(int capacity) {
-        return Integer.min(Integer.highestOneBit(Integer.max(capacity - 1, 4)) * 2, 1 << 30);
-    }
-
     protected final int newThreshold(int size) {
         return (int) ((double) size * loadFactor);
     }

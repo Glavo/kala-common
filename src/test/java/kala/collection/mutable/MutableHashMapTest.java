@@ -167,58 +167,6 @@ public class MutableHashMapTest implements MutableMapTestTemplate {
         }
     }
 
-    @Nested
-    @DisplayName("getOrPutTest")
-    class GetOrPutTest {
-        @Test
-        void mutationInCallback() {
-            var hm = new MutableHashMap<String, String>();
-
-            Supplier<String> add = () -> {
-                // add enough elements to resize the hash table in the callback
-                for (int i = 1; i <= 100000; i++) {
-                    hm.set(String.valueOf(i), "callback");
-                }
-                return "str";
-            };
-
-            hm.getOrPut("0", add);
-            assertEquals(100001, hm.size());
-            assertEquals("str", hm.get("0"));
-        }
-
-        @Test
-        void evalOnce() {
-            var hm = new MutableHashMap<Integer, Integer>();
-            int[] i = new int[]{0};
-            hm.getOrPut(0, () -> {
-                i[0] += 1;
-                return i[0];
-            });
-            assertEquals(1, hm.get(0));
-        }
-
-        @Test
-        void noEval() {
-            var hm = new MutableHashMap<Integer, Integer>();
-            hm.put(0, 0);
-            assertEquals(0, hm.getOrPut(0, Assertions::fail));
-        }
-
-        @Test
-        void keyIdempotence() {
-            var hm = new MutableHashMap<String, String>();
-            String key = "key";
-            hm.getOrPut(key, () -> {
-                hm.getOrPut(key, () -> "value1");
-                return "value2";
-            });
-
-            assertEquals(1, hm.size());
-            assertEquals("value2", hm.get(key));
-        }
-    }
-
     @Test
     void putTest() {
         // put null
