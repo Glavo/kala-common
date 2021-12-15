@@ -409,7 +409,7 @@ public final class Range<T> extends AnyRange<T> implements Serializable {
 
             @Override
             public boolean hasNext() {
-                switch (range.getType().getLowerBoundType()) {
+                switch (range.getType().getUpperBoundType()) {
                     case OPEN:
                         return ComparableUtils.compare(value, range.upperBound, range.comparator) < 0;
                     case CLOSED:

@@ -7,7 +7,7 @@ plugins {
 
 allprojects {
     group = "org.glavo"
-    version = kalaVersion("0.32.0")
+    version = kalaVersion("0.33.0")
 
     if (this == project(":benchmark")) {
         return@allprojects

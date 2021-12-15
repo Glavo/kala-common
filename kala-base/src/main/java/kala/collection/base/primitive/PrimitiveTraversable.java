@@ -1,6 +1,7 @@
 package kala.collection.base.primitive;
 
 import kala.collection.base.AnyTraversable;
+import kala.collection.base.Traversable;
 import kala.control.AnyOption;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,6 +15,10 @@ public interface PrimitiveTraversable<
         T_CONSUMER,
         T_PREDICATE
         > extends AnyTraversable<T, T_ITERATOR, T_ARRAY, T_OPTION, T_CONSUMER, T_PREDICATE> {
+
+    default @NotNull Traversable<T> asTraversable() {
+        return new AsGenericTraversable<>(this);
+    }
 
     //region Size Info
 
