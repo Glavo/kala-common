@@ -17,9 +17,8 @@ public interface MutableStack<E> {
         Objects.requireNonNull(seq);
         if (seq instanceof MutableStack) {
             return ((MutableStack<E>) seq);
-        } else {
-            return new DynamicSeqStackAdapter<>(seq);
         }
+        return new DynamicSeqStackAdapter<>(seq);
     }
 
     @Contract(mutates = "this")

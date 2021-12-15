@@ -177,17 +177,17 @@ public final class DynamicLinkedSeq<E> extends ImmutableLinkedSeq.Builder<E>
 
     @Override
     public void push(E value) {
-        prepend(value);
+        append(value);
     }
 
     @Override
     public E pop() {
-        return removeFirst();
+        return removeLast();
     }
 
     @Override
     public E peek() {
-        return first();
+        return last();
     }
 
     @SuppressWarnings("unchecked")

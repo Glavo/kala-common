@@ -32,4 +32,9 @@ final class DynamicSeqStackAdapter<E> implements MutableStack<E>, Serializable {
     public boolean isEmpty() {
         return seq.isEmpty();
     }
+
+    @Override
+    public String toString() {
+        return "DynamicSeqStackAdapter[" + seq + ']';
+    }
 }
