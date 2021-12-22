@@ -17,7 +17,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-@SuppressWarnings("unchecked")
 public abstract class AbstractImmutableCollection<@Covariant E>
         extends AbstractCollection<E> implements ImmutableCollection<E> {
 
@@ -147,40 +146,6 @@ public abstract class AbstractImmutableCollection<@Covariant E>
             factory.addToBuilder(builder, Tuple.of(it1.next(), it2.next()));
         }
         return factory.build(builder);
-    }
-
-    protected final <To extends ImmutableCollection<E>> @NotNull To filterImpl(@NotNull Predicate<? super E> predicate) {
-        return (To) AbstractImmutableCollection.filter(this, predicate, iterableFactory());
-    }
-
-    protected final <To extends ImmutableCollection<E>> @NotNull To filterNotImpl(@NotNull Predicate<? super E> predicate) {
-        return (To) AbstractImmutableCollection.filterNot(this, predicate, iterableFactory());
-    }
-
-    protected final <To extends ImmutableCollection<E>> @NotNull To filterNotNullImpl() {
-        return (To) this.filter(Predicates.isNotNull());
-    }
-
-    protected final <U, To extends ImmutableCollection<U>> @NotNull To mapImpl(@NotNull Function<? super E, ? extends U> mapper) {
-        return (To) AbstractImmutableCollection.map(this, mapper, iterableFactory());
-    }
-
-    protected final <U, To extends ImmutableCollection<@NotNull U>> @NotNull To mapNotNullImpl(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
-        return (To) AbstractImmutableCollection.mapNotNull(this, mapper, iterableFactory());
-    }
-
-    protected final <U, To extends ImmutableCollection<U>> @NotNull To mapMultiImpl(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
-        return (To) AbstractImmutableCollection.mapMulti(this, mapper, iterableFactory());
-    }
-
-    protected final <U, To extends ImmutableCollection<U>> @NotNull To flatMapImpl(
-            @NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
-        return (To) AbstractImmutableCollection.flatMap(this, mapper, iterableFactory());
-    }
-
-    protected final <U, To extends ImmutableCollection<Tuple2<E, U>>> @NotNull To zipImpl(
-            @NotNull Iterable<? extends U> other) {
-        return (To) AbstractImmutableCollection.zip(this, other, this.<Tuple2<E, U>>iterableFactory());
     }
 
 }

@@ -36,33 +36,6 @@ public abstract class AbstractImmutableSet<@Covariant E> extends AbstractImmutab
         return factory.build(builder);
     }
 
-    protected final <To extends ImmutableSet<E>> To addedImpl(E value) {
-        if (contains(value)) {
-            return (To) this;
-        }
-        CollectionFactory<E, ?, ? extends ImmutableSet<E>> factory =
-                this instanceof SortedSet<?>
-                        ? (CollectionFactory<E, ?, ? extends ImmutableSet<E>>) ((SortedSet<?>) this).iterableFactory(((SortedSet<?>) this).comparator())
-                        : iterableFactory();
-
-
-        return (To) AbstractImmutableSet.added(this, value, factory);
-    }
-
-    protected final <To extends ImmutableSet<E>> To addedAllImpl(@NotNull Iterable<? extends E> values) {
-        CollectionFactory<E, ?, ? extends ImmutableSet<E>> factory =
-                this instanceof SortedSet<?>
-                        ? (CollectionFactory<E, ?, ? extends ImmutableSet<E>>) ((SortedSet<?>) this).iterableFactory(((SortedSet<?>) this).comparator())
-                        : iterableFactory();
-
-
-        return (To) AbstractImmutableSet.addedAll(this, values, factory);
-    }
-
-    protected final <To extends ImmutableSet<E>> To addedAllImpl(E @NotNull [] values) {
-        return addedAllImpl(ArraySeq.wrap(values));
-    }
-
     @Override
     public int hashCode() {
         return Set.hashCode(this);

@@ -355,16 +355,6 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
         return AbstractImmutableCollection.filterNot(this, predicate, iterableFactory());
     }
 
-    default @NotNull <Ex extends Throwable> ImmutableSeq<E> filterNotChecked(
-            @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) throws Ex {
-        return filterNot(predicate);
-    }
-
-    default @NotNull ImmutableSeq<E> filterNotUnchecked(
-            @NotNull CheckedPredicate<? super E, ?> predicate) {
-        return filterNot(predicate);
-    }
-
     @Override
     default @NotNull ImmutableSeq<@NotNull E> filterNotNull() {
         return this.filter(Predicates.isNotNull());
@@ -379,29 +369,9 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
         return AbstractImmutableCollection.map(this, mapper, this.<U>iterableFactory());
     }
 
-    @Override
-    default <U, Ex extends Throwable> @NotNull ImmutableSeq<U> mapChecked(
-            @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
-        return map(mapper);
-    }
-
-    @Override
-    default <U> @NotNull ImmutableSeq<U> mapUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
-        return map(mapper);
-    }
-
     @Contract(pure = true)
     default <U> @NotNull ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
         return AbstractImmutableSeq.mapIndexed(this, mapper, this.<U>iterableFactory());
-    }
-
-    default <U, Ex extends Throwable> @NotNull ImmutableSeq<U> mapIndexedChecked(
-            @NotNull CheckedIndexedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
-        return mapIndexed(mapper);
-    }
-
-    default <U> @NotNull ImmutableSeq<U> mapIndexedUnchecked(@NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
-        return mapIndexed(mapper);
     }
 
     @Override
@@ -409,30 +379,9 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
         return AbstractImmutableCollection.mapNotNull(this, mapper, this.<U>iterableFactory());
     }
 
-    @Override
-    default <U, Ex extends Throwable> @NotNull ImmutableSeq<U> mapNotNullChecked(
-            @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
-        return mapNotNull(mapper);
-    }
-
-    @Override
-    default <U> @NotNull ImmutableSeq<U> mapNotNullUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
-        return mapNotNull(mapper);
-    }
-
     default <U> @NotNull ImmutableSeq<@NotNull U> mapIndexedNotNull(
             @NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
         return AbstractImmutableSeq.mapIndexedNotNull(this, mapper, this.<U>iterableFactory());
-    }
-
-    default <U, Ex extends Throwable> @NotNull ImmutableSeq<@NotNull U> mapIndexedNotNullChecked(
-            @NotNull CheckedIndexedFunction<? super E, ? extends @Nullable U, ? extends Ex> mapper) {
-        return mapIndexedNotNull(mapper);
-    }
-
-    default <U> @NotNull ImmutableSeq<@NotNull U> mapIndexedNotNullUnchecked(
-            @NotNull CheckedIndexedFunction<? super E, ? extends @Nullable U, ?> mapper) {
-        return mapIndexedNotNull(mapper);
     }
 
     @Override
@@ -448,18 +397,6 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     @Override
     default <U> @NotNull ImmutableSeq<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
         return AbstractImmutableCollection.flatMap(this, mapper, iterableFactory());
-    }
-
-    @Contract(pure = true)
-    default <U, Ex extends Throwable> @NotNull ImmutableSeq<U> flatMapChecked(
-            @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ? extends Ex> mapper) throws Ex {
-        return flatMap(mapper);
-    }
-
-    @Contract(pure = true)
-    default <U> @NotNull ImmutableSeq<U> flatMapUnchecked(
-            @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ?> mapper) {
-        return flatMap(mapper);
     }
 
     @Override

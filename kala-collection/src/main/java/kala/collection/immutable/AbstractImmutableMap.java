@@ -54,13 +54,4 @@ public abstract class AbstractImmutableMap<K, V> extends AbstractMap<K, V> imple
         }
         return factory.build(builder);
     }
-
-    protected final <To extends ImmutableMap<K, V>> @NotNull To updatedImpl(K key, V value) {
-        return (To) AbstractImmutableMap.updated(this, key, value, mapFactory());
-    }
-
-    protected final <To extends ImmutableMap<K, V>> @NotNull To removedImpl(K key) {
-        return (To) AbstractImmutableMap.removed(this, key, mapFactory());
-    }
-
 }

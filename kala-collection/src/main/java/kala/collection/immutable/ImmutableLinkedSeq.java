@@ -471,28 +471,8 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
     }
 
     @Override
-    public @NotNull ImmutableSeq<E> prependedAll(E @NotNull [] values) {
-        return prependedAllImpl(values);
-    }
-
-    @Override
-    public @NotNull ImmutableSeq<E> prependedAll(@NotNull Iterable<? extends E> values) {
-        return prependedAllImpl(values);
-    }
-
-    @Override
     public @NotNull ImmutableSeq<E> appended(E value) {
         return new ImmutableLinkedSeq<>((Node<E>) list.appended(value), size + 1);
-    }
-
-    @Override
-    public @NotNull ImmutableSeq<E> appendedAll(E @NotNull [] values) {
-        return appendedAllImpl(values);
-    }
-
-    @Override
-    public @NotNull ImmutableSeq<E> appendedAll(@NotNull Iterable<? extends E> values) {
-        return appendedAllImpl(values);
     }
 
     //endregion
@@ -874,26 +854,6 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
     }
 
     @Override
-    public @NotNull ImmutableSeq<E> filter(@NotNull Predicate<? super E> predicate) {
-        return filterImpl(predicate);
-    }
-
-    @Override
-    public @NotNull ImmutableSeq<E> filterNot(@NotNull Predicate<? super E> predicate) {
-        return filterNotImpl(predicate);
-    }
-
-    @Override
-    public @NotNull ImmutableSeq<E> filterNotNull() {
-        return filterNotNullImpl();
-    }
-
-    @Override
-    public @NotNull <U> ImmutableSeq<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
-        return ((ImmutableLinkedSeq<U>) filter(clazz::isInstance));
-    }
-
-    @Override
     public <U> @NotNull ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
         final int size = this.size;
         if (size == 0) {
@@ -909,16 +869,6 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
             return ImmutableLinkedSeq.empty();
         }
         return new ImmutableLinkedSeq<>((Node<U>) list.mapIndexed(mapper), size);
-    }
-
-    @Override
-    public <U> @NotNull ImmutableSeq<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
-        return mapNotNullImpl(mapper);
-    }
-
-    @Override
-    public <U> @NotNull ImmutableSeq<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
-        return mapIndexedNotNullImpl(mapper);
     }
 
     @Override
@@ -940,11 +890,6 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
             mapper.accept(idx++, e, consumer);
         }
         return builder.toImmutableLinkedSeq();
-    }
-
-    @Override
-    public <U> @NotNull ImmutableSeq<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
-        return flatMapImpl(mapper);
     }
 
     @Override
@@ -1795,7 +1740,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
             if (tail == NIL_NODE) {
                 return nodeOf(this.head, value);
             }
-            return appendedImpl(value);
+            return super.appended(value);
         }
 
         @Override
@@ -1806,7 +1751,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
             if (this == NIL_NODE) {
                 return nodeFrom(values);
             }
-            return appendedAllImpl(values);
+            return super.appendedAll(values);
         }
 
         @Override
@@ -1820,7 +1765,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
             if (values instanceof Node) {
                 return ((Node<E>) values).prependedAll(this);
             }
-            return appendedAllImpl(values);
+            return super.appendedAll(values);
         }
 
         @Override
@@ -1892,11 +1837,6 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
         }
 
         @Override
-        public @NotNull ImmutableSeq<E> dropLast(int n) {
-            return dropLastImpl(n);
-        }
-
-        @Override
         public @NotNull ImmutableSeq<E> dropWhile(@NotNull Predicate<? super E> predicate) {
             Node<E> list = this;
             while (list != NIL_NODE && predicate.test(list.head)) {
@@ -1913,7 +1853,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
             if (n == 0 || this == NIL_NODE) {
                 return nilNode();
             }
-            return takeImpl(n);
+            return super.take(n);
         }
 
         @Override
@@ -2088,46 +2028,6 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
         }
 
         @Override
-        public @NotNull ImmutableSeq<E> filter(@NotNull Predicate<? super E> predicate) {
-            return filterImpl(predicate);
-        }
-
-        @Override
-        public @NotNull Node<E> filterNot(@NotNull Predicate<? super E> predicate) {
-            return filterNotImpl(predicate);
-        }
-
-        @Override
-        public @NotNull ImmutableSeq<@NotNull E> filterNotNull() {
-            return filterNotNullImpl();
-        }
-
-        @Override
-        public @NotNull <U> ImmutableSeq<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
-            return ((Node<U>) filter(clazz::isInstance));
-        }
-
-        @Override
-        public <U> @NotNull ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
-            return mapImpl(mapper);
-        }
-
-        @Override
-        public <U> @NotNull ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
-            return mapIndexedImpl(mapper);
-        }
-
-        @Override
-        public <U> @NotNull ImmutableSeq<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
-            return mapNotNullImpl(mapper);
-        }
-
-        @Override
-        public <U> @NotNull ImmutableSeq<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
-            return mapIndexedNotNullImpl(mapper);
-        }
-
-        @Override
         public @NotNull <U> ImmutableSeq<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
             final Builder<U> builder = new DynamicLinkedSeq<>();
             Consumer<U> consumer = builder::append;
@@ -2180,11 +2080,6 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
             Object[] arr = this.toArray();
             Arrays.sort(arr, (Comparator<Object>) comparator);
             return (Node<E>) nodeFrom(arr);
-        }
-
-        @Override
-        public <U> @NotNull ImmutableSeq<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
-            return zipImpl(other);
         }
 
         @Override
