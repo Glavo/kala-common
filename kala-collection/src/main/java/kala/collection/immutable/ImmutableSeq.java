@@ -98,7 +98,6 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
             final int length = arr.length;
             //noinspection ConstantConditions
             assert length == size;
-            assert arr.getClass() == Object[].class;
             switch (length) {
                 case 1:
                     return (ImmutableSeq<E>) ImmutableSeq.of(arr[0]);

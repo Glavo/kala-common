@@ -529,7 +529,7 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
         return this;
     }
 
-    static final class Factory<E> implements CollectionFactory<E, ImmutableVectors.VectorBuilder<E>, ImmutableVector<E>> {
+    private static final class Factory<E> implements CollectionFactory<E, ImmutableVectors.VectorBuilder<E>, ImmutableVector<E>> {
 
         @Override
         public ImmutableVector<E> empty() {
