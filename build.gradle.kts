@@ -28,7 +28,7 @@ allprojects {
             testImplementation(it)
         }
 
-        testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
+        testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
     }
 
     tasks.compileJava {

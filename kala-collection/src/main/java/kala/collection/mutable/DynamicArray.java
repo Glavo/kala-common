@@ -23,8 +23,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public final class DynamicArray<E> extends AbstractDynamicSeq<E>
-        implements DynamicSeqOps<E, DynamicArray<?>, DynamicArray<E>>, IndexedSeq<E>, Serializable {
+public final class DynamicArray<E> extends AbstractDynamicSeq<E> implements IndexedSeq<E>, Serializable {
     private static final long serialVersionUID = 2545219250020890853L;
 
     static final int DEFAULT_CAPACITY = 16;
@@ -279,11 +278,6 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E>
     @Override
     public @NotNull Spliterator<E> spliterator() {
         return (Spliterator<E>) Arrays.spliterator(elements, 0, size);
-    }
-
-    @Override
-    public @NotNull DynamicSeqEditor<E, DynamicArray<E>> edit() {
-        return new DynamicSeqEditor<>(this);
     }
 
     @Override

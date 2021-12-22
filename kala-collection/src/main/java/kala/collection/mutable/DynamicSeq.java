@@ -127,12 +127,6 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
 
     @Override
     default @NotNull
-    DynamicSeqEditor<E, ? extends DynamicSeq<E>> edit() {
-        return new DynamicSeqEditor<>(this);
-    }
-
-    @Override
-    default @NotNull
     List<E> asJava() {
         return this instanceof RandomAccess
                 ? new AsJavaConvert.DynamicIndexedSeqAsJava<>(this)

@@ -13,8 +13,7 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 
 @SuppressWarnings("unchecked")
-public final class MutableHashMap<K, V> extends HashMapBase<K, V>
-        implements MutableMapOps<K, V, MutableHashMap<?, ?>, MutableHashMap<K, V>>, Cloneable {
+public final class MutableHashMap<K, V> extends HashMapBase<K, V> implements Cloneable {
     private static final long serialVersionUID = 4445503260710443405L;
 
     private static final Factory<?, ?> FACTORY = new Factory<>();

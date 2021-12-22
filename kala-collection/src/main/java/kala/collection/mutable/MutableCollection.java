@@ -73,10 +73,6 @@ public interface MutableCollection<E> extends Collection<E> {
         return factory();
     }
 
-    default @NotNull MutableCollectionEditor<E, ? extends MutableCollection<E>> edit() {
-        return new MutableCollectionEditor<>(this);
-    }
-
     @Override
     default @NotNull java.util.Collection<E> asJava() {
         return new AsJavaConvert.MutableCollectionAsJava<>(this);

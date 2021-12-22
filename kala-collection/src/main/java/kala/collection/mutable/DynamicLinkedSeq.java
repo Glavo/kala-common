@@ -17,8 +17,7 @@ import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
-public final class DynamicLinkedSeq<E> extends ImmutableLinkedSeq.Builder<E>
-        implements MutableSeqOps<E, DynamicLinkedSeq<?>, DynamicLinkedSeq<E>>, MutableStack<E>, Serializable {
+public final class DynamicLinkedSeq<E> extends ImmutableLinkedSeq.Builder<E> implements MutableStack<E>, Serializable {
 
     private static final long serialVersionUID = 4403781063629141093L;
 
@@ -156,11 +155,6 @@ public final class DynamicLinkedSeq<E> extends ImmutableLinkedSeq.Builder<E>
     @Override
     public <U> @NotNull CollectionFactory<U, ?, DynamicLinkedSeq<U>> iterableFactory() {
         return factory();
-    }
-
-    @Override
-    public @NotNull DynamicSeqEditor<E, DynamicLinkedSeq<E>> edit() {
-        return new DynamicSeqEditor<>(this);
     }
 
     @Override

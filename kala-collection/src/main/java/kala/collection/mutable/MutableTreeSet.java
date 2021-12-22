@@ -289,11 +289,6 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     }
 
     @Override
-    public @NotNull MutableSetEditor<E, MutableTreeSet<E>> edit() {
-        return new MutableSetEditor<>(this);
-    }
-
-    @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     public @NotNull MutableTreeSet<E> clone() {
         return from(comparator, this); // need to optimize

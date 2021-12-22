@@ -358,11 +358,6 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
     }
 
     @Override
-    public @NotNull MutableSetEditor<E, MutableHashSet<E>> edit() {
-        return new MutableSetEditor<>(this);
-    }
-
-    @Override
     public @NotNull Iterator<E> iterator() {
         return new Itr();
     }

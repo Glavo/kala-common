@@ -90,11 +90,6 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
     }
 
     @Override
-    default @NotNull MutableSetEditor<E, ? extends MutableSet<E>> edit() {
-        return new MutableSetEditor<>(this);
-    }
-
-    @Override
     default java.util.@NotNull Set<E> asJava() {
         return new AsJavaConvert.MutableSetAsJava<>(this);
     }

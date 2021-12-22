@@ -17,7 +17,7 @@ import java.util.function.Function;
 @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
 public final class DynamicDoubleLinkedSeq<E>
         extends AbstractDynamicSeq<E>
-        implements DynamicSeqOps<E, DynamicDoubleLinkedSeq<?>, DynamicDoubleLinkedSeq<E>>, MutableStack<E>, MutableQueue<E> {
+        implements MutableStack<E>, MutableQueue<E> {
 
     private static final Factory<?> FACTORY = new Factory<>();
 
@@ -160,11 +160,6 @@ public final class DynamicDoubleLinkedSeq<E>
     public @NotNull DynamicSeqIterator<E> seqIterator(int index) {
         Conditions.checkPositionIndex(index, len);
         return new SeqItr(index);
-    }
-
-    @Override
-    public @NotNull DynamicSeqEditor<E, DynamicDoubleLinkedSeq<E>> edit() {
-        return new DynamicSeqEditor<>(this);
     }
 
     @Override

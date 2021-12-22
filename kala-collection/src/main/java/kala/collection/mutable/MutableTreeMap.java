@@ -22,7 +22,7 @@ import java.util.stream.Collector;
 @SuppressWarnings("unchecked")
 @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
 public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.Node<K, V>>
-        implements MutableMap<K, V>, MutableMapOps<K, V, MutableTreeMap<?, ?>, MutableTreeMap<K, V>>, kala.collection.SortedMap<K, V>, Serializable {
+        implements MutableMap<K, V>, kala.collection.SortedMap<K, V>, Serializable {
     private static final long serialVersionUID = 5474475537398882423L;
 
     private static final Factory<?, ?> DEFAULT_FACTORY = new Factory<>(null);

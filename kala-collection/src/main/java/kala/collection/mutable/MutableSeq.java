@@ -104,11 +104,6 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
     }
 
     @Override
-    default @NotNull MutableSeqEditor<E, ? extends MutableSeq<E>> edit() {
-        return new MutableSeqEditor<>(this);
-    }
-
-    @Override
     default @NotNull java.util.List<E> asJava() {
         if (this instanceof RandomAccess) {
             return new AsJavaConvert.MutableIndexedSeqAsJava<>(this);
