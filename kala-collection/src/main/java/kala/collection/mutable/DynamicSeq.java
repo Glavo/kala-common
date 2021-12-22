@@ -97,6 +97,10 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
                 : new FromJavaConvert.DynamicSeqFromJava<>(list);
     }
 
+    static <E, C extends DynamicSeq<E>> @NotNull DynamicSeqEditor<E, C> edit(@NotNull C seq) {
+        return new DynamicSeqEditor<>(seq);
+    }
+
     //endregion
 
     //region Collection Operations

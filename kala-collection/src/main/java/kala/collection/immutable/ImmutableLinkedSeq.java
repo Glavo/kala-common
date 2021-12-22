@@ -23,8 +23,7 @@ import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
-        implements ImmutableSeqOps<E, ImmutableLinkedSeq<?>, ImmutableLinkedSeq<E>>, Serializable {
+public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> implements Serializable {
     private static final long serialVersionUID = 4185879054671961536L;
 
     public static final NodeFactory<?> NODE_FACTORY = new NodeFactory<>();
@@ -462,37 +461,37 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
 
     //region Addition Operations
 
-    public @NotNull ImmutableLinkedSeq<E> cons(E value) {
+    public @NotNull ImmutableSeq<E> cons(E value) {
         return new ImmutableLinkedSeq<>(list.cons(value), size + 1);
     }
 
     @Override
-    public @NotNull ImmutableLinkedSeq<E> prepended(E value) {
-        return new ImmutableLinkedSeq<>(list.prepended(value), size + 1);
+    public @NotNull ImmutableSeq<E> prepended(E value) {
+        return new ImmutableLinkedSeq<>(list.cons(value), size + 1);
     }
 
     @Override
-    public @NotNull ImmutableLinkedSeq<E> prependedAll(E @NotNull [] values) {
+    public @NotNull ImmutableSeq<E> prependedAll(E @NotNull [] values) {
         return prependedAllImpl(values);
     }
 
     @Override
-    public @NotNull ImmutableLinkedSeq<E> prependedAll(@NotNull Iterable<? extends E> values) {
+    public @NotNull ImmutableSeq<E> prependedAll(@NotNull Iterable<? extends E> values) {
         return prependedAllImpl(values);
     }
 
     @Override
-    public @NotNull ImmutableLinkedSeq<E> appended(E value) {
-        return new ImmutableLinkedSeq<>(list.appended(value), size + 1);
+    public @NotNull ImmutableSeq<E> appended(E value) {
+        return new ImmutableLinkedSeq<>((Node<E>) list.appended(value), size + 1);
     }
 
     @Override
-    public @NotNull ImmutableLinkedSeq<E> appendedAll(E @NotNull [] values) {
+    public @NotNull ImmutableSeq<E> appendedAll(E @NotNull [] values) {
         return appendedAllImpl(values);
     }
 
     @Override
-    public @NotNull ImmutableLinkedSeq<E> appendedAll(@NotNull Iterable<? extends E> values) {
+    public @NotNull ImmutableSeq<E> appendedAll(@NotNull Iterable<? extends E> values) {
         return appendedAllImpl(values);
     }
 
@@ -637,7 +636,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
     //region Misc Operations
 
     @Override
-    public @NotNull ImmutableLinkedSeq<E> slice(int beginIndex, int endIndex) {
+    public @NotNull ImmutableSeq<E> slice(int beginIndex, int endIndex) {
         final int size = this.size;
         Conditions.checkPositionIndices(beginIndex, endIndex, size);
         if (endIndex == size) {
@@ -656,11 +655,11 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         if (ns == 0) {
             return ImmutableLinkedSeq.empty();
         }
-        return new ImmutableLinkedSeq<>(list.drop(beginIndex).take(ns), ns);
+        return new ImmutableLinkedSeq<>((Node<E>) list.drop(beginIndex).take(ns), ns);
     }
 
     @Override
-    public @NotNull ImmutableLinkedSeq<E> drop(int n) {
+    public @NotNull ImmutableSeq<E> drop(int n) {
         if (n < 0) {
             throw new IllegalArgumentException();
         }
@@ -680,7 +679,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    public @NotNull ImmutableLinkedSeq<E> dropLast(int n) {
+    public @NotNull ImmutableSeq<E> dropLast(int n) {
         if (n < 0) {
             throw new IllegalArgumentException();
         }
@@ -692,11 +691,11 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         final int ns = size - n;
-        return new ImmutableLinkedSeq<>(list.take(ns), ns);
+        return new ImmutableLinkedSeq<>((Node<E>) list.take(ns), ns);
     }
 
     @Override
-    public @NotNull ImmutableLinkedSeq<E> dropWhile(@NotNull Predicate<? super E> predicate) {
+    public @NotNull ImmutableSeq<E> dropWhile(@NotNull Predicate<? super E> predicate) {
         int c = 0;
 
         Node<E> list = this.list;
@@ -716,7 +715,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    public @NotNull ImmutableLinkedSeq<E> take(int n) {
+    public @NotNull ImmutableSeq<E> take(int n) {
         if (n < 0) {
             throw new IllegalArgumentException();
         }
@@ -726,11 +725,11 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         if (n >= size) {
             return this;
         }
-        return new ImmutableLinkedSeq<>(list.take(n), n);
+        return new ImmutableLinkedSeq<>((Node<E>) list.take(n), n);
     }
 
     @Override
-    public @NotNull ImmutableLinkedSeq<E> takeLast(int n) {
+    public @NotNull ImmutableSeq<E> takeLast(int n) {
         if (n < 0) {
             throw new IllegalArgumentException();
         }
@@ -741,11 +740,11 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         if (n >= size) {
             return this;
         }
-        return new ImmutableLinkedSeq<>(list.drop(size - n), n);
+        return new ImmutableLinkedSeq<>((Node<E>) list.drop(size - n), n);
     }
 
     @Override
-    public @NotNull ImmutableLinkedSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
+    public @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
         Node<E> list = this.list;
         if (list == NIL_NODE || !predicate.test(list.head)) {
             return ImmutableLinkedSeq.empty();
@@ -777,14 +776,14 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    public @NotNull ImmutableLinkedSeq<E> updated(int index, E newValue) {
+    public @NotNull ImmutableSeq<E> updated(int index, E newValue) {
         final int size = this.size;
         Conditions.checkElementIndex(index, size);
-        return new ImmutableLinkedSeq<>(list.updated(index, newValue), size);
+        return new ImmutableLinkedSeq<>((Node<E>) list.updated(index, newValue), size);
     }
 
     @Override
-    public @NotNull ImmutableLinkedSeq<E> concat(@NotNull SeqLike<? extends E> other) {
+    public @NotNull ImmutableSeq<E> concat(@NotNull SeqLike<? extends E> other) {
         final int size = this.size;
         final int otherSize = other.size();
         if (otherSize == 0) {
@@ -829,7 +828,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    public @NotNull ImmutableLinkedSeq<E> concat(java.util.@NotNull List<? extends E> other) {
+    public @NotNull ImmutableSeq<E> concat(java.util.@NotNull List<? extends E> other) {
         final int size = this.size;
         final int otherSize = other.size();
         if (otherSize == 0) {
@@ -875,126 +874,55 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    public @NotNull ImmutableLinkedSeq<E> filter(@NotNull Predicate<? super E> predicate) {
+    public @NotNull ImmutableSeq<E> filter(@NotNull Predicate<? super E> predicate) {
         return filterImpl(predicate);
     }
 
     @Override
-    public @NotNull <Ex extends Throwable> ImmutableLinkedSeq<E> filterChecked(
-            @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) {
-        return filter(predicate);
-    }
-
-    @Override
-    public @NotNull ImmutableLinkedSeq<E> filterUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
-        return filter(predicate);
-    }
-
-    @Override
-    public @NotNull ImmutableLinkedSeq<E> filterNot(@NotNull Predicate<? super E> predicate) {
+    public @NotNull ImmutableSeq<E> filterNot(@NotNull Predicate<? super E> predicate) {
         return filterNotImpl(predicate);
     }
 
     @Override
-    public @NotNull <Ex extends Throwable> ImmutableLinkedSeq<E> filterNotChecked(
-            @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) {
-        return filterNot(predicate);
-    }
-
-    @Override
-    public @NotNull ImmutableLinkedSeq<E> filterNotUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
-        return filterNot(predicate);
-    }
-
-    @Override
-    public @NotNull ImmutableLinkedSeq<E> filterNotNull() {
+    public @NotNull ImmutableSeq<E> filterNotNull() {
         return filterNotNullImpl();
     }
 
     @Override
-    public @NotNull <U> ImmutableLinkedSeq<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
+    public @NotNull <U> ImmutableSeq<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
         return ((ImmutableLinkedSeq<U>) filter(clazz::isInstance));
     }
 
     @Override
-    public <U> @NotNull ImmutableLinkedSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+    public <U> @NotNull ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
         final int size = this.size;
         if (size == 0) {
             return ImmutableLinkedSeq.empty();
         }
-        return new ImmutableLinkedSeq<>(list.map(mapper), size);
+        return new ImmutableLinkedSeq<>((Node<U>) list.map(mapper), size);
     }
 
     @Override
-    @SuppressWarnings("RedundantThrows")
-    public @NotNull <U, Ex extends Throwable> ImmutableLinkedSeq<U> mapChecked(
-            @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
-        return map(mapper);
-    }
-
-    @Override
-    public @NotNull <U> ImmutableLinkedSeq<U> mapUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
-        return map(mapper);
-    }
-
-    @Override
-    public <U> @NotNull ImmutableLinkedSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+    public <U> @NotNull ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
         final int size = this.size;
         if (size == 0) {
             return ImmutableLinkedSeq.empty();
         }
-        return new ImmutableLinkedSeq<>(list.mapIndexed(mapper), size);
+        return new ImmutableLinkedSeq<>((Node<U>) list.mapIndexed(mapper), size);
     }
 
     @Override
-    @SuppressWarnings("RedundantThrows")
-    public @NotNull <U, Ex extends Throwable> ImmutableLinkedSeq<U> mapIndexedChecked(
-            @NotNull CheckedIndexedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
-        return mapIndexed(mapper);
-    }
-
-    @Override
-    public @NotNull <U> ImmutableLinkedSeq<U> mapIndexedUnchecked(@NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
-        return mapIndexed(mapper);
-    }
-
-
-    @Override
-    public <U> @NotNull ImmutableLinkedSeq<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
+    public <U> @NotNull ImmutableSeq<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
         return mapNotNullImpl(mapper);
     }
 
     @Override
-    @SuppressWarnings("RedundantThrows")
-    public @NotNull <U, Ex extends Throwable> ImmutableLinkedSeq<U> mapNotNullChecked(
-            @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
-        return mapNotNull(mapper);
-    }
-
-    @Override
-    public @NotNull <U> ImmutableLinkedSeq<U> mapNotNullUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
-        return mapNotNull(mapper);
-    }
-
-    @Override
-    public <U> @NotNull ImmutableLinkedSeq<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
+    public <U> @NotNull ImmutableSeq<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
         return mapIndexedNotNullImpl(mapper);
     }
 
     @Override
-    public @NotNull <U, Ex extends Throwable> ImmutableLinkedSeq<@NotNull U> mapIndexedNotNullChecked(
-            @NotNull CheckedIndexedFunction<? super E, ? extends @Nullable U, ? extends Ex> mapper) {
-        return mapIndexedNotNull(mapper);
-    }
-
-    @Override
-    public @NotNull <U> ImmutableLinkedSeq<@NotNull U> mapIndexedNotNullUnchecked(
-            @NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
-        return mapIndexedNotNull(mapper);
-    }
-
-    @Override
-    public @NotNull <U> ImmutableLinkedSeq<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+    public @NotNull <U> ImmutableSeq<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
         final Builder<U> builder = new DynamicLinkedSeq<>();
         Consumer<U> consumer = builder::append;
         for (E e : this) {
@@ -1004,7 +932,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    public @NotNull <U> ImmutableLinkedSeq<U> mapIndexedMulti(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+    public @NotNull <U> ImmutableSeq<U> mapIndexedMulti(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
         final Builder<U> builder = new DynamicLinkedSeq<>();
         Consumer<U> consumer = builder::append;
         int idx = 0;
@@ -1015,39 +943,26 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
     }
 
     @Override
-    public <U> @NotNull ImmutableLinkedSeq<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
+    public <U> @NotNull ImmutableSeq<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
         return flatMapImpl(mapper);
     }
 
     @Override
-    @SuppressWarnings("RedundantThrows")
-    public <U, Ex extends Throwable> @NotNull ImmutableLinkedSeq<U> flatMapChecked(
-            @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ? extends Ex> mapper) throws Ex {
-        return flatMap(mapper);
-    }
-
-    @Override
-    public <U> @NotNull ImmutableLinkedSeq<U> flatMapUnchecked(
-            @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ?> mapper) {
-        return flatMap(mapper);
-    }
-
-    @Override
-    public @NotNull ImmutableLinkedSeq<E> sorted() {
+    public @NotNull ImmutableSeq<E> sorted() {
         final int size = this.size;
         if (size == 0 || size == 1) {
             return this;
         }
-        return new ImmutableLinkedSeq<>(list.sorted(), size);
+        return new ImmutableLinkedSeq<>((Node<E>) list.sorted(), size);
     }
 
     @Override
-    public @NotNull ImmutableLinkedSeq<E> sorted(@NotNull Comparator<? super E> comparator) {
+    public @NotNull ImmutableSeq<E> sorted(@NotNull Comparator<? super E> comparator) {
         final int size = this.size;
         if (size == 0 || size == 1) {
             return this;
         }
-        return new ImmutableLinkedSeq<>(list.sorted(comparator), size);
+        return new ImmutableLinkedSeq<>((Node<E>) list.sorted(comparator), size);
     }
 
     //endregion
@@ -1593,8 +1508,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
 
     @SuppressWarnings("unchecked")
     @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
-    public static final class Node<@Covariant E> extends AbstractImmutableSeq<E>
-            implements ImmutableSeq<E>, ImmutableSeqOps<E, Node<?>, Node<E>>, Serializable {
+    public static final class Node<@Covariant E> extends AbstractImmutableSeq<E> implements Serializable {
         private static final long serialVersionUID = 944030391350569673L;
 
         E head;
@@ -1814,12 +1728,12 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
-        public @NotNull Node<E> prepended(E value) {
+        public @NotNull ImmutableSeq<E> prepended(E value) {
             return cons(value);
         }
 
         @Override
-        public @NotNull Node<E> prependedAll(E @NotNull [] values) {
+        public @NotNull ImmutableSeq<E> prependedAll(E @NotNull [] values) {
             final int prefixLength = values.length; // implicit null check of prefix
             Node<E> result = this;
             for (int i = prefixLength - 1; i >= 0; i--) {
@@ -1829,7 +1743,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
-        public @NotNull Node<E> prependedAll(@NotNull Iterable<? extends E> values) {
+        public @NotNull ImmutableSeq<E> prependedAll(@NotNull Iterable<? extends E> values) {
             if (values instanceof RandomAccess) {
                 if (values instanceof Seq) {
                     Seq<E> seq = (Seq<E>) values;
@@ -1874,7 +1788,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
-        public @NotNull Node<E> appended(E value) {
+        public @NotNull ImmutableSeq<E> appended(E value) {
             if (this == NIL_NODE) {
                 return nodeOf(value);
             }
@@ -1885,7 +1799,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
-        public @NotNull Node<E> appendedAll(E @NotNull [] values) {
+        public @NotNull ImmutableSeq<E> appendedAll(E @NotNull [] values) {
             if (values.length == 0) { // implicit null check of postfix
                 return this;
             }
@@ -1896,7 +1810,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
-        public @NotNull Node<E> appendedAll(@NotNull Iterable<? extends E> values) {
+        public @NotNull ImmutableSeq<E> appendedAll(@NotNull Iterable<? extends E> values) {
             if (AnyTraversable.knownSize(values) == 0) {
                 return this;
             }
@@ -1910,7 +1824,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
-        public @NotNull Node<E> slice(int beginIndex, int endIndex) {
+        public @NotNull ImmutableSeq<E> slice(int beginIndex, int endIndex) {
             if (beginIndex < 0) {
                 throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") < 0");
             }
@@ -1963,7 +1877,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
-        public @NotNull Node<E> drop(int n) {
+        public @NotNull ImmutableSeq<E> drop(int n) {
             if (n < 0) {
                 throw new IllegalArgumentException();
             }
@@ -1978,12 +1892,12 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
-        public @NotNull Node<E> dropLast(int n) {
+        public @NotNull ImmutableSeq<E> dropLast(int n) {
             return dropLastImpl(n);
         }
 
         @Override
-        public @NotNull Node<E> dropWhile(@NotNull Predicate<? super E> predicate) {
+        public @NotNull ImmutableSeq<E> dropWhile(@NotNull Predicate<? super E> predicate) {
             Node<E> list = this;
             while (list != NIL_NODE && predicate.test(list.head)) {
                 list = list.tail();
@@ -1992,7 +1906,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
-        public @NotNull Node<E> take(int n) {
+        public @NotNull ImmutableSeq<E> take(int n) {
             if (n < 0) {
                 throw new IllegalArgumentException();
             }
@@ -2003,7 +1917,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
-        public @NotNull Node<E> takeLast(int n) {
+        public @NotNull ImmutableSeq<E> takeLast(int n) {
             if (n < 0) {
                 throw new IllegalArgumentException();
             }
@@ -2020,7 +1934,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
-        public @NotNull Node<E> takeWhile(@NotNull Predicate<? super E> predicate) {
+        public @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
             Node<E> list = this;
             if (list == NIL_NODE || !predicate.test(list.head)) {
                 return nilNode();
@@ -2050,7 +1964,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
-        public @NotNull Node<E> updated(int index, E newValue) {
+        public @NotNull ImmutableSeq<E> updated(int index, E newValue) {
             if (index < 0) {
                 throw new IndexOutOfBoundsException("index(" + index + ") < 0");
             }
@@ -2085,7 +1999,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
-        public @NotNull Node<E> concat(@NotNull SeqLike<? extends E> other) {
+        public @NotNull ImmutableSeq<E> concat(@NotNull SeqLike<? extends E> other) {
             if (this == NIL_NODE) {
                 return nodeFrom(other);
             }
@@ -2134,7 +2048,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
-        public @NotNull Node<E> concat(@NotNull List<? extends E> other) {
+        public @NotNull ImmutableSeq<E> concat(@NotNull List<? extends E> other) {
             if (this == NIL_NODE) {
                 return nodeFrom(other);
             }
@@ -2174,19 +2088,8 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
-        public @NotNull Node<E> filter(@NotNull Predicate<? super E> predicate) {
+        public @NotNull ImmutableSeq<E> filter(@NotNull Predicate<? super E> predicate) {
             return filterImpl(predicate);
-        }
-
-        @Override
-        public @NotNull <Ex extends Throwable> Node<E> filterChecked(
-                @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) {
-            return filter(predicate);
-        }
-
-        @Override
-        public @NotNull Node<E> filterUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
-            return filter(predicate);
         }
 
         @Override
@@ -2195,95 +2098,37 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
-        public @NotNull <Ex extends Throwable> Node<E> filterNotChecked(
-                @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) {
-            return filterNot(predicate);
-        }
-
-        @Override
-        public @NotNull Node<E> filterNotUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
-            return filterNot(predicate);
-        }
-
-        @Override
-        public @NotNull Node<@NotNull E> filterNotNull() {
+        public @NotNull ImmutableSeq<@NotNull E> filterNotNull() {
             return filterNotNullImpl();
         }
 
         @Override
-        public @NotNull <U> Node<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
+        public @NotNull <U> ImmutableSeq<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
             return ((Node<U>) filter(clazz::isInstance));
         }
 
         @Override
-        public <U> @NotNull Node<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+        public <U> @NotNull ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
             return mapImpl(mapper);
         }
 
         @Override
-        @SuppressWarnings("RedundantThrows")
-        public @NotNull <U, Ex extends Throwable> Node<U> mapChecked(
-                @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
-            return map(mapper);
-        }
-
-        @Override
-        public @NotNull <U> Node<U> mapUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
-            return map(mapper);
-        }
-
-        @Override
-        public <U> @NotNull Node<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+        public <U> @NotNull ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
             return mapIndexedImpl(mapper);
         }
 
         @Override
-        @SuppressWarnings("RedundantThrows")
-        public @NotNull <U, Ex extends Throwable> Node<U> mapIndexedChecked(
-                @NotNull CheckedIndexedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
-            return mapIndexed(mapper);
-        }
-
-        @Override
-        public @NotNull <U> Node<U> mapIndexedUnchecked(@NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
-            return mapIndexed(mapper);
-        }
-
-        @Override
-        public <U> @NotNull Node<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
+        public <U> @NotNull ImmutableSeq<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
             return mapNotNullImpl(mapper);
         }
 
         @Override
-        public @NotNull <U, Ex extends Throwable> Node<U> mapNotNullChecked(
-                @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
-            return mapNotNull(mapper);
-        }
-
-        @Override
-        public @NotNull <U> Node<U> mapNotNullUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
-            return mapNotNull(mapper);
-        }
-
-        @Override
-        public <U> @NotNull Node<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
+        public <U> @NotNull ImmutableSeq<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
             return mapIndexedNotNullImpl(mapper);
         }
 
         @Override
-        public @NotNull <U, Ex extends Throwable> Node<@NotNull U> mapIndexedNotNullChecked(
-                @NotNull CheckedIndexedFunction<? super E, ? extends @Nullable U, ? extends Ex> mapper) {
-            return mapIndexedNotNull(mapper);
-        }
-
-        @Override
-        public @NotNull <U> Node<@NotNull U> mapIndexedNotNullUnchecked(
-                @NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
-            return mapIndexedNotNull(mapper);
-        }
-
-        @Override
-        public @NotNull <U> Node<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+        public @NotNull <U> ImmutableSeq<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
             final Builder<U> builder = new DynamicLinkedSeq<>();
             Consumer<U> consumer = builder::append;
             for (E e : this) {
@@ -2293,7 +2138,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
-        public @NotNull <U> Node<U> mapIndexedMulti(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+        public @NotNull <U> ImmutableSeq<U> mapIndexedMulti(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
             final Builder<U> builder = new DynamicLinkedSeq<>();
             Consumer<U> consumer = builder::append;
             int idx = 0;
@@ -2304,7 +2149,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
-        public <U> @NotNull Node<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
+        public <U> @NotNull ImmutableSeq<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
             if (this == NIL_NODE) {
                 return nilNode();
             }
@@ -2318,19 +2163,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
-        public <U, Ex extends Throwable> @NotNull Node<U> flatMapChecked(
-                @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ? extends Ex> mapper) throws Ex {
-            return flatMap(mapper);
-        }
-
-        @Override
-        public <U> @NotNull Node<U> flatMapUnchecked(
-                @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ?> mapper) {
-            return flatMap(mapper);
-        }
-
-        @Override
-        public @NotNull Node<E> sorted() {
+        public @NotNull ImmutableSeq<E> sorted() {
             if (this == NIL_NODE || tail == NIL_NODE) {
                 return this;
             }
@@ -2340,7 +2173,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
-        public @NotNull Node<E> sorted(@NotNull Comparator<? super E> comparator) {
+        public @NotNull ImmutableSeq<E> sorted(@NotNull Comparator<? super E> comparator) {
             if (this == NIL_NODE || tail == NIL_NODE) {
                 return this;
             }
@@ -2350,7 +2183,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E>
         }
 
         @Override
-        public <U> @NotNull Node<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
+        public <U> @NotNull ImmutableSeq<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
             return zipImpl(other);
         }
 

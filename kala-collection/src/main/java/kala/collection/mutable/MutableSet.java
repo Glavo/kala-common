@@ -75,6 +75,10 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
         return MutableHashSet.from(values);
     }
 
+    static <E, C extends MutableSet<E>> MutableSetEditor<E, C> edit(@NotNull C set) {
+        return new MutableSetEditor<>(set);
+    }
+
     //endregion
 
     //region Collection Operations

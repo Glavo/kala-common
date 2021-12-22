@@ -32,11 +32,11 @@ public interface MutableSeqTestTemplate extends MutableCollectionTestTemplate, S
 
         assertIterableEquals(
                 List.of("A", "B", "C"),
-                of("A", "C", "B").edit().swap(1, 2).done()
+                MutableSeq.edit(of("A", "C", "B")).swap(1, 2).done()
         );
         assertIterableEquals(
                 List.of("A", "B", "C"),
-                of("A", "C", "B").edit().swap(2, 1).done()
+                MutableSeq.edit(of("A", "C", "B")).swap(2, 1).done()
         );
     }
 

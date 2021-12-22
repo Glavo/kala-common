@@ -29,84 +29,84 @@ final class ImmutableVectors {
         }
 
         @Override
-        final int vectorSliceCount() {
+        int vectorSliceCount() {
             return 0;
         }
 
         @Override
-        final Object[] vectorSlice(int idx) {
+        Object[] vectorSlice(int idx) {
             return null;
         }
 
         @Override
-        final int vectorSlicePrefixLength(int idx) {
+        int vectorSlicePrefixLength(int idx) {
             return 0;
         }
 
         @Override
-        public final @NotNull Iterator<Object> iterator() {
+        public @NotNull Iterator<Object> iterator() {
             return Iterators.empty();
         }
 
         @Override
-        public final @NotNull Spliterator<Object> spliterator() {
+        public @NotNull Spliterator<Object> spliterator() {
             return Spliterators.emptySpliterator();
         }
 
         @Override
-        public final int size() {
+        public int size() {
             return 0;
         }
 
         @Override
-        public final Object get(int index) {
+        public Object get(int index) {
             throw new IndexOutOfBoundsException();
         }
 
         @Override
-        public final @NotNull ImmutableVector<Object> reversed() {
+        public @NotNull ImmutableVector<Object> reversed() {
             return this;
         }
 
         //region Addition Operations
 
         @Override
-        public final @NotNull ImmutableVector<Object> appended(Object value) {
+        public @NotNull ImmutableVector<Object> appended(Object value) {
             return new Vector1<>(new Object[]{value});
         }
 
         @Override
-        public final @NotNull ImmutableVector<Object> appendedAll(Object @NotNull [] values) {
+        public @NotNull ImmutableVector<Object> appendedAll(Object @NotNull [] values) {
             return from(values);
         }
 
         @Override
-        public final @NotNull ImmutableVector<Object> appendedAll(@NotNull ImmutableVector<?> values) {
+        public @NotNull ImmutableVector<Object> appendedAll(@NotNull ImmutableVector<?> values) {
             return (ImmutableVector<Object>) Objects.requireNonNull(values);
         }
 
         @Override
-        public final @NotNull ImmutableVector<Object> appendedAll(@NotNull Iterable<?> values) {
+        public @NotNull ImmutableVector<Object> appendedAll(@NotNull Iterable<?> values) {
             return from(values);
         }
 
         @Override
-        public final @NotNull ImmutableVector<Object> prepended(Object value) {
+        public @NotNull ImmutableVector<Object> prepended(Object value) {
             return new Vector1<>(new Object[]{value});
         }
 
         @Override
-        public final @NotNull ImmutableVector<Object> prependedAll(@NotNull Iterable<?> values) {
+        public @NotNull ImmutableVector<Object> prependedAll(@NotNull Iterable<?> values) {
             return from(values);
         }
 
         @Override
-        public final @NotNull ImmutableVector<Object> prependedAll(@NotNull ImmutableVector<?> values) {
+        public @NotNull ImmutableVector<Object> prependedAll(@NotNull ImmutableVector<?> values) {
             return (ImmutableVector<Object>) Objects.requireNonNull(values);
         }
 
         @Override
-        public final @NotNull ImmutableVector<Object> prependedAll(Object @NotNull [] values) {
+        public @NotNull ImmutableVector<Object> prependedAll(Object @NotNull [] values) {
             return from(values);
         }
 
@@ -114,42 +114,42 @@ final class ImmutableVectors {
 
 
         @Override
-        final @NotNull ImmutableVector<Object> slice0(int lo, int hi) {
+        @NotNull ImmutableVector<Object> slice0(int lo, int hi) {
             throw new AssertionError();
         }
 
         @Override
-        final ImmutableVector<Object> filterImpl(Predicate<? super Object> predicate, boolean isFlipped) {
+        ImmutableVector<Object> filterImpl(Predicate<? super Object> predicate, boolean isFlipped) {
             return this;
         }
 
         @Override
-        public final @NotNull <U> ImmutableVector<U> map(@NotNull Function<? super Object, ? extends U> mapper) {
+        public @NotNull <U> ImmutableVector<U> map(@NotNull Function<? super Object, ? extends U> mapper) {
             return (ImmutableVector<U>) this;
         }
 
         @Override
-        public final @NotNull <U> ImmutableVector<@NotNull U> mapNotNull(@NotNull Function<? super Object, ? extends @Nullable U> mapper) {
+        public @NotNull <U> ImmutableVector<@NotNull U> mapNotNull(@NotNull Function<? super Object, ? extends @Nullable U> mapper) {
             return (ImmutableVector<U>) this;
         }
 
         @Override
-        public final @NotNull <U> ImmutableVector<U> mapIndexed(@NotNull IndexedFunction<? super Object, ? extends U> mapper) {
+        public @NotNull <U> ImmutableVector<U> mapIndexed(@NotNull IndexedFunction<? super Object, ? extends U> mapper) {
             return (ImmutableVector<U>) this;
         }
 
         @Override
-        public final @NotNull <U> ImmutableVector<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super Object, ? extends @Nullable U> mapper) {
+        public @NotNull <U> ImmutableVector<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super Object, ? extends @Nullable U> mapper) {
             return (ImmutableVector<U>) this;
         }
 
         @Override
-        public final void forEach(@NotNull Consumer<? super Object> action) {
+        public void forEach(@NotNull Consumer<? super Object> action) {
             // do nothing
         }
 
         @Override
-        public final void forEachIndexed(@NotNull IndexedConsumer<? super Object> action) {
+        public void forEachIndexed(@NotNull IndexedConsumer<? super Object> action) {
             // do nothing
         }
 
@@ -167,37 +167,37 @@ final class ImmutableVectors {
         }
 
         @Override
-        final int vectorSliceCount() {
+        int vectorSliceCount() {
             return 1;
         }
 
         @Override
-        final Object[] vectorSlice(int idx) {
+        Object[] vectorSlice(int idx) {
             return prefix1;
         }
 
         @Override
-        final int vectorSlicePrefixLength(int idx) {
+        int vectorSlicePrefixLength(int idx) {
             return prefix1.length;
         }
 
         @Override
-        public final @NotNull Iterator<E> iterator() {
+        public @NotNull Iterator<E> iterator() {
             return (Iterator<E>) GenericArrays.iterator(prefix1);
         }
 
         @Override
-        public final @NotNull Spliterator<E> spliterator() {
+        public @NotNull Spliterator<E> spliterator() {
             return (Spliterator<E>) Arrays.spliterator(prefix1);
         }
 
         @Override
-        public final int size() {
+        public int size() {
             return prefix1.length;
         }
 
         @Override
-        public final E get(int index) {
+        public E get(int index) {
             try {
                 return (E) prefix1[index];
             } catch (ArrayIndexOutOfBoundsException e) {
@@ -206,7 +206,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        public final @NotNull ImmutableVector<E> reversed() {
+        public @NotNull ImmutableVector<E> reversed() {
             return new Vector1<>(ObjectArrays.reversed(prefix1));
         }
 
@@ -214,7 +214,7 @@ final class ImmutableVectors {
 
 
         @Override
-        public final @NotNull ImmutableVector<E> appended(E value) {
+        public @NotNull ImmutableVector<E> appended(E value) {
             final Object[] prefix1 = this.prefix1;
             final int len1 = prefix1.length;
             if (len1 < WIDTH) {
@@ -225,7 +225,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        public final @NotNull ImmutableVector<E> appendedAll(E @NotNull [] values) {
+        public @NotNull ImmutableVector<E> appendedAll(E @NotNull [] values) {
             final int vl = values.length;
             if (vl == 0) {
                 return this;
@@ -248,7 +248,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        public final @NotNull ImmutableVector<E> prepended(E value) {
+        public @NotNull ImmutableVector<E> prepended(E value) {
             final Object[] prefix1 = this.prefix1;
             final int len1 = prefix1.length;
             if (len1 < WIDTH) {
@@ -259,7 +259,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        public final @NotNull ImmutableVector<E> prependedAll(E @NotNull [] values) {
+        public @NotNull ImmutableVector<E> prependedAll(E @NotNull [] values) {
             int vl = values.length;
             if (vl == 0) {
                 return this;
@@ -283,17 +283,17 @@ final class ImmutableVectors {
         //endregion
 
         @Override
-        public final E first() {
+        public E first() {
             return (E) prefix1[0];
         }
 
         @Override
-        public final E last() {
+        public E last() {
             return (E) prefix1[prefix1.length - 1];
         }
 
         @Override
-        final @NotNull ImmutableVector<E> slice0(int lo, int hi) {
+        @NotNull ImmutableVector<E> slice0(int lo, int hi) {
             final Object[] elements = this.prefix1;
             final int size = elements.length;
 
@@ -305,7 +305,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        public final @NotNull ImmutableVector<E> updated(int index, E newValue) {
+        public @NotNull ImmutableVector<E> updated(int index, E newValue) {
             final Object[] prefix1 = this.prefix1;
             final int size = prefix1.length;
             checkElementIndex(index, size);
@@ -315,7 +315,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        final ImmutableVector<E> filterImpl(Predicate<? super E> predicate, boolean isFlipped) {
+        ImmutableVector<E> filterImpl(Predicate<? super E> predicate, boolean isFlipped) {
             final Object[] prefix1 = this.prefix1;
             final int size = prefix1.length;
 
@@ -340,7 +340,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        public final @NotNull <U> ImmutableVector<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+        public @NotNull <U> ImmutableVector<U> map(@NotNull Function<? super E, ? extends U> mapper) {
             final Object[] prefix1 = this.prefix1;
             final int size = prefix1.length;
 
@@ -352,7 +352,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        public final @NotNull <U> ImmutableVector<@NotNull U> mapNotNull(
+        public @NotNull <U> ImmutableVector<@NotNull U> mapNotNull(
                 @NotNull Function<? super E, ? extends @Nullable U> mapper) {
             final Object[] prefix1 = this.prefix1;
             final int size = prefix1.length;
@@ -377,7 +377,7 @@ final class ImmutableVectors {
 
 
         @Override
-        public final @NotNull <U> ImmutableVector<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+        public @NotNull <U> ImmutableVector<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
             final Object[] prefix1 = this.prefix1;
             final int size = prefix1.length;
 
@@ -389,7 +389,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        public final @NotNull <U> ImmutableVector<@NotNull U> mapIndexedNotNull(
+        public @NotNull <U> ImmutableVector<@NotNull U> mapIndexedNotNull(
                 @NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
             final Object[] prefix1 = this.prefix1;
             final int size = prefix1.length;
@@ -413,14 +413,14 @@ final class ImmutableVectors {
         }
 
         @Override
-        public final void forEach(@NotNull Consumer<? super E> action) {
+        public void forEach(@NotNull Consumer<? super E> action) {
             for (Object element : prefix1) {
                 action.accept((E) element);
             }
         }
 
         @Override
-        public final void forEachIndexed(@NotNull IndexedConsumer<? super E> action) {
+        public void forEachIndexed(@NotNull IndexedConsumer<? super E> action) {
             final Object[] prefix1 = this.prefix1;
             final int size = prefix1.length;
             for (int i = 0; i < size; i++) {
@@ -807,12 +807,12 @@ final class ImmutableVectors {
         }
 
         @Override
-        final int vectorSliceCount() {
+        int vectorSliceCount() {
             return 3;
         }
 
         @Override
-        final Object[] vectorSlice(int idx) {
+        Object[] vectorSlice(int idx) {
             switch (idx) {
                 case 0:
                     return prefix1;
@@ -825,7 +825,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        final int vectorSlicePrefixLength(int idx) {
+        int vectorSlicePrefixLength(int idx) {
             switch (idx) {
                 case 0:
                     return len1;
@@ -838,7 +838,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        public final E get(int index) {
+        public E get(int index) {
             checkElementIndex(index, length0);
 
             int io = index - len1;
@@ -856,7 +856,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        final @NotNull ImmutableVector<E> slice0(int lo, int hi) {
+        @NotNull ImmutableVector<E> slice0(int lo, int hi) {
             VectorSliceBuilder b = new VectorSliceBuilder(lo, hi);
             b.consider(1, prefix1);
             b.consider(2, data2);
@@ -882,12 +882,12 @@ final class ImmutableVectors {
         }
 
         @Override
-        final int vectorSliceCount() {
+        int vectorSliceCount() {
             return 5;
         }
 
         @Override
-        final Object[] vectorSlice(int idx) {
+        Object[] vectorSlice(int idx) {
             switch (idx) {
                 case 0:
                     return prefix1;
@@ -904,7 +904,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        final int vectorSlicePrefixLength(int idx) {
+        int vectorSlicePrefixLength(int idx) {
             switch (idx) {
                 case 0:
                     return len1;
@@ -921,7 +921,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        public final E get(int index) {
+        public E get(int index) {
             checkElementIndex(index, length0);
 
             int io = index - len12;
@@ -946,7 +946,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        final @NotNull ImmutableVector<E> slice0(int lo, int hi) {
+        @NotNull ImmutableVector<E> slice0(int lo, int hi) {
             VectorSliceBuilder b = new VectorSliceBuilder(lo, hi);
             b.consider(1, prefix1);
             b.consider(2, prefix2);
@@ -988,12 +988,12 @@ final class ImmutableVectors {
         }
 
         @Override
-        final int vectorSliceCount() {
+        int vectorSliceCount() {
             return 7;
         }
 
         @Override
-        final Object[] vectorSlice(int idx) {
+        Object[] vectorSlice(int idx) {
             switch (idx) {
                 case 0:
                     return prefix1;
@@ -1014,7 +1014,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        final int vectorSlicePrefixLength(int idx) {
+        int vectorSlicePrefixLength(int idx) {
             switch (idx) {
                 case 0:
                     return len1;
@@ -1035,7 +1035,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        public final E get(int index) {
+        public E get(int index) {
             checkElementIndex(index, length0);
             int io = index - len123;
             if (io >= 0) {
@@ -1063,7 +1063,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        final @NotNull ImmutableVector<E> slice0(int lo, int hi) {
+        @NotNull ImmutableVector<E> slice0(int lo, int hi) {
             VectorSliceBuilder b = new VectorSliceBuilder(lo, hi);
             b.consider(1, prefix1);
             b.consider(2, prefix2);
@@ -1114,12 +1114,12 @@ final class ImmutableVectors {
         }
 
         @Override
-        final int vectorSliceCount() {
+        int vectorSliceCount() {
             return 9;
         }
 
         @Override
-        final Object[] vectorSlice(int idx) {
+        Object[] vectorSlice(int idx) {
             switch (idx) {
                 case 0:
                     return prefix1;
@@ -1144,7 +1144,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        final int vectorSlicePrefixLength(int idx) {
+        int vectorSlicePrefixLength(int idx) {
             switch (idx) {
                 case 0:
                     return len1;
@@ -1169,7 +1169,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        public final E get(int index) {
+        public E get(int index) {
             checkElementIndex(index, length0);
             int io = index - len1234;
             if (io >= 0) {
@@ -1204,7 +1204,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        final @NotNull ImmutableVector<E> slice0(int lo, int hi) {
+        @NotNull ImmutableVector<E> slice0(int lo, int hi) {
             VectorSliceBuilder b = new VectorSliceBuilder(lo, hi);
             b.consider(1, prefix1);
             b.consider(2, prefix2);
@@ -1265,12 +1265,12 @@ final class ImmutableVectors {
         }
 
         @Override
-        final int vectorSliceCount() {
+        int vectorSliceCount() {
             return 11;
         }
 
         @Override
-        final Object[] vectorSlice(int idx) {
+        Object[] vectorSlice(int idx) {
             switch (idx) {
                 case 0:
                     return prefix1;
@@ -1299,7 +1299,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        final int vectorSlicePrefixLength(int idx) {
+        int vectorSlicePrefixLength(int idx) {
             switch (idx) {
                 case 0:
                     return len1;
@@ -1328,7 +1328,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        public final E get(int index) {
+        public E get(int index) {
             checkElementIndex(index, length0);
             int io = index - len12345;
             if (io >= 0) {
@@ -1369,7 +1369,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        final @NotNull ImmutableVector<E> slice0(int lo, int hi) {
+        @NotNull ImmutableVector<E> slice0(int lo, int hi) {
             VectorSliceBuilder b = new VectorSliceBuilder(lo, hi);
             b.consider(1, prefix1);
             b.consider(2, prefix2);
@@ -1408,7 +1408,7 @@ final class ImmutableVectors {
             return 11 - n;
         }
 
-        public final <T> void consider(int n, T[] a) {
+        public <T> void consider(int n, T[] a) {
             //println(s"*****   consider($n, /${a.length})")
             final int count = a.length * (1 << (BITS * (n - 1)));
             final int lo0 = Math.max(lo - pos, 0);
@@ -1468,7 +1468,7 @@ final class ImmutableVectors {
             slices[idx] = a;
         }
 
-        public final <T> ImmutableVector<T> build() {
+        public <T> ImmutableVector<T> build() {
             //println(s"*****   result: $len, $maxDim")
             if (len <= 32) {
                 if (len == 0) {
@@ -1682,7 +1682,7 @@ final class ImmutableVectors {
             return builder1;
         }
 
-        final int size() {
+        int size() {
             return len1 + lenRest - offset;
         }
 
@@ -2001,7 +2001,7 @@ final class ImmutableVectors {
             }
         }
 
-        final ImmutableVector<E> build() {
+        ImmutableVector<E> build() {
             final int len = len1 + lenRest;
             final int realLen = len - offset;
             if (realLen == 0) {
@@ -2094,7 +2094,7 @@ final class ImmutableVectors {
             }
         }
 
-        final ImmutableSeq<E> buildSeq() {
+        ImmutableSeq<E> buildSeq() {
             final int len = len1 + lenRest;
             final int realLen = len - offset;
             if (realLen == 0) {
@@ -2328,12 +2328,12 @@ final class ImmutableVectors {
         }
 
         @Override
-        public final boolean hasNext() {
+        public boolean hasNext() {
             return len1 > i1;
         }
 
         @Override
-        public final E next() {
+        public E next() {
             if (i1 == a1len) {
                 advance();
             }
@@ -2341,14 +2341,14 @@ final class ImmutableVectors {
         }
 
         @Override
-        public final void forEachRemaining(Consumer<? super E> action) {
+        public void forEachRemaining(Consumer<? super E> action) {
             while (hasNext()) {
                 action.accept(next());
             }
         }
 
         @Override
-        public final boolean tryAdvance(Consumer<? super E> action) {
+        public boolean tryAdvance(Consumer<? super E> action) {
             if (hasNext()) {
                 action.accept(next());
                 return true;
@@ -2365,7 +2365,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        public final Spliterator<E> trySplit() {
+        public Spliterator<E> trySplit() {
             int len = knownSize();
             if (len > 1) {
                 return split(len >>> 1);
@@ -2373,17 +2373,17 @@ final class ImmutableVectors {
             return null;
         }
 
-        final int knownSize() {
+        int knownSize() {
             return len1 - i1;
         }
 
         @Override
-        public final long estimateSize() {
+        public long estimateSize() {
             return knownSize();
         }
 
         @Override
-        public final int characteristics() {
+        public int characteristics() {
             return Spliterator.ORDERED | Spliterator.SIZED | Spliterator.SUBSIZED;
         }
 
@@ -2460,7 +2460,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        protected final ImmutableVectors.Itr<E> clone() {
+        protected ImmutableVectors.Itr<E> clone() {
             try {
                 return (Itr<E>) super.clone();
             } catch (CloneNotSupportedException e) {

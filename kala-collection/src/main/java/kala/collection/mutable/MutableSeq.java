@@ -78,6 +78,10 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
                 : new FromJavaConvert.MutableSeqFromJava<>(list);
     }
 
+    static <E, C extends MutableSeq<E>> @NotNull MutableSeqEditor<E, C> edit(@NotNull C seq) {
+        return new MutableSeqEditor<>(seq);
+    }
+
     //endregion
 
     //region Collection Operations

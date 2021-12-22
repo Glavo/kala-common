@@ -28,8 +28,7 @@ import java.util.function.*;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq<E>
-        implements IndexedSeq<E>, ImmutableSeqOps<E, ImmutableVector<?>, ImmutableVector<E>>, Serializable {
+public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq<E> implements IndexedSeq<E>, Serializable {
 
     final Object[] prefix1;
 
@@ -254,7 +253,7 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
     }
 
     @Override
-    public @NotNull ImmutableVector<E> reversed() {
+    public @NotNull ImmutableSeq<E> reversed() {
         final ImmutableVectors.VectorBuilder<E> builder = new ImmutableVectors.VectorBuilder<>();
         final Iterator<E> it = this.reverseIterator();
         while (it.hasNext()) {
@@ -350,7 +349,7 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
     abstract @NotNull ImmutableVector<E> slice0(int lo, int hi);
 
     @Override
-    public final @NotNull ImmutableVector<E> slice(int beginIndex, int endIndex) {
+    public final @NotNull ImmutableSeq<E> slice(int beginIndex, int endIndex) {
         final int size = this.size();
         Conditions.checkPositionIndices(beginIndex, endIndex, size);
         final int newSize = endIndex - beginIndex;
@@ -364,7 +363,7 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
     }
 
     @Override
-    public final @NotNull ImmutableVector<E> drop(int n) {
+    public final @NotNull ImmutableSeq<E> drop(int n) {
         if (n < 0) {
             throw new IllegalArgumentException();
         }
@@ -380,7 +379,7 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
     }
 
     @Override
-    public final @NotNull ImmutableVector<E> dropLast(int n) {
+    public final @NotNull ImmutableSeq<E> dropLast(int n) {
         if (n < 0) {
             throw new IllegalArgumentException();
         }
@@ -396,12 +395,12 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
     }
 
     @Override
-    public @NotNull ImmutableVector<E> dropWhile(@NotNull Predicate<? super E> predicate) {
+    public @NotNull ImmutableSeq<E> dropWhile(@NotNull Predicate<? super E> predicate) {
         return dropWhileImpl(predicate);
     }
 
     @Override
-    public final @NotNull ImmutableVector<E> take(int n) {
+    public final @NotNull ImmutableSeq<E> take(int n) {
         if (n < 0) {
             throw new IllegalArgumentException();
         }
@@ -416,7 +415,7 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
     }
 
     @Override
-    public final @NotNull ImmutableVector<E> takeLast(int n) {
+    public final @NotNull ImmutableSeq<E> takeLast(int n) {
         if (n < 0) {
             throw new IllegalArgumentException();
         }
@@ -432,71 +431,71 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
     }
 
     @Override
-    public @NotNull ImmutableVector<E> takeWhile(@NotNull Predicate<? super E> predicate) {
+    public @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
         return takeWhileImpl(predicate);
     }
 
     @Override
-    public @NotNull ImmutableVector<E> updated(int index, E newValue) {
+    public @NotNull ImmutableSeq<E> updated(int index, E newValue) {
         return updatedImpl(index, newValue);
     }
 
     @Override
-    public final @NotNull ImmutableVector<E> concat(@NotNull SeqLike<? extends E> other) {
+    public final @NotNull ImmutableSeq<E> concat(@NotNull SeqLike<? extends E> other) {
         return appendedAll(other);
     }
 
     @Override
-    public final @NotNull ImmutableVector<E> concat(java.util.@NotNull List<? extends E> other) {
+    public final @NotNull ImmutableSeq<E> concat(java.util.@NotNull List<? extends E> other) {
         return appendedAll(other);
     }
 
-    abstract ImmutableVector<E> filterImpl(Predicate<? super E> predicate, boolean isFlipped);
+    abstract ImmutableSeq<E> filterImpl(Predicate<? super E> predicate, boolean isFlipped);
 
     @Override
-    public final @NotNull ImmutableVector<E> filter(@NotNull Predicate<? super E> predicate) {
+    public final @NotNull ImmutableSeq<E> filter(@NotNull Predicate<? super E> predicate) {
         return filterImpl(predicate, false);
     }
 
     @Override
-    public final @NotNull <Ex extends Throwable> ImmutableVector<E> filterChecked(
+    public final @NotNull <Ex extends Throwable> ImmutableSeq<E> filterChecked(
             @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) {
         return filter(predicate);
     }
 
     @Override
-    public final @NotNull ImmutableVector<E> filterUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
+    public final @NotNull ImmutableSeq<E> filterUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
         return filter(predicate);
     }
 
     @Override
-    public final @NotNull ImmutableVector<E> filterNot(@NotNull Predicate<? super E> predicate) {
+    public final @NotNull ImmutableSeq<E> filterNot(@NotNull Predicate<? super E> predicate) {
         return filterImpl(predicate, true);
     }
 
     @Override
-    public final @NotNull <Ex extends Throwable> ImmutableVector<E> filterNotChecked(
+    public final @NotNull <Ex extends Throwable> ImmutableSeq<E> filterNotChecked(
             @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) {
         return filterNot(predicate);
     }
 
     @Override
-    public final @NotNull ImmutableVector<E> filterNotUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
+    public final @NotNull ImmutableSeq<E> filterNotUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
         return filterNot(predicate);
     }
 
     @Override
-    public final @NotNull ImmutableVector<E> filterNotNull() {
+    public final @NotNull ImmutableSeq<E> filterNotNull() {
         return filter(Predicates.isNotNull());
     }
 
     @Override
-    public @NotNull <U> ImmutableVector<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
+    public @NotNull <U> ImmutableSeq<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
         return ((ImmutableVector<U>) filter(clazz::isInstance));
     }
 
     @Override
-    public @NotNull <U> ImmutableVector<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+    public @NotNull <U> ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
         ImmutableVectors.VectorBuilder<U> builder = new ImmutableVectors.VectorBuilder<>();
         for (E e : this) {
             builder.add(mapper.apply(e));
@@ -505,18 +504,18 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
     }
 
     @Override
-    public final @NotNull <U, Ex extends Throwable> ImmutableVector<U> mapChecked(
+    public final @NotNull <U, Ex extends Throwable> ImmutableSeq<U> mapChecked(
             @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
         return map(mapper);
     }
 
     @Override
-    public final @NotNull <U> ImmutableVector<U> mapUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
+    public final @NotNull <U> ImmutableSeq<U> mapUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
         return map(mapper);
     }
 
     @Override
-    public @NotNull <U> ImmutableVector<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+    public @NotNull <U> ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
         ImmutableVectors.VectorBuilder<U> builder = new ImmutableVectors.VectorBuilder<>();
         int idx = 0;
         for (E e : this) {
@@ -526,18 +525,18 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
     }
 
     @Override
-    public final @NotNull <U, Ex extends Throwable> ImmutableVector<U> mapIndexedChecked(
+    public final @NotNull <U, Ex extends Throwable> ImmutableSeq<U> mapIndexedChecked(
             @NotNull CheckedIndexedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
         return mapIndexed(mapper);
     }
 
     @Override
-    public final @NotNull <U> ImmutableVector<U> mapIndexedUnchecked(@NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
+    public final @NotNull <U> ImmutableSeq<U> mapIndexedUnchecked(@NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
         return mapIndexed(mapper);
     }
 
     @Override
-    public @NotNull <U> ImmutableVector<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
+    public @NotNull <U> ImmutableSeq<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
         ImmutableVectors.VectorBuilder<U> builder = new ImmutableVectors.VectorBuilder<>();
 
         for (E e : this) {
@@ -550,18 +549,18 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
     }
 
     @Override
-    public final @NotNull <U, Ex extends Throwable> ImmutableVector<U> mapNotNullChecked(
+    public final @NotNull <U, Ex extends Throwable> ImmutableSeq<U> mapNotNullChecked(
             @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
         return mapNotNull(mapper);
     }
 
     @Override
-    public final @NotNull <U> ImmutableVector<U> mapNotNullUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
+    public final @NotNull <U> ImmutableSeq<U> mapNotNullUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
         return mapNotNull(mapper);
     }
 
     @Override
-    public @NotNull <U> ImmutableVector<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
+    public @NotNull <U> ImmutableSeq<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
         ImmutableVectors.VectorBuilder<U> builder = new ImmutableVectors.VectorBuilder<>();
         int idx = 0;
         for (E e : this) {
@@ -574,29 +573,29 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
     }
 
     @Override
-    public final @NotNull <U, Ex extends Throwable> ImmutableVector<@NotNull U> mapIndexedNotNullChecked(
+    public final @NotNull <U, Ex extends Throwable> ImmutableSeq<@NotNull U> mapIndexedNotNullChecked(
             @NotNull CheckedIndexedFunction<? super E, ? extends @Nullable U, ? extends Ex> mapper) {
         return mapIndexedNotNull(mapper);
     }
 
     @Override
-    public final @NotNull <U> ImmutableVector<@NotNull U> mapIndexedNotNullUnchecked(
+    public final @NotNull <U> ImmutableSeq<@NotNull U> mapIndexedNotNullUnchecked(
             @NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
         return mapIndexedNotNull(mapper);
     }
 
     @Override
-    public final @NotNull <U> ImmutableVector<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+    public final @NotNull <U> ImmutableSeq<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
         return mapMultiImpl(mapper);
     }
 
     @Override
-    public final @NotNull <U> ImmutableVector<U> mapIndexedMulti(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+    public final @NotNull <U> ImmutableSeq<U> mapIndexedMulti(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
         return mapIndexedMultiImpl(mapper);
     }
 
     @Override
-    public @NotNull <U> ImmutableVector<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
+    public @NotNull <U> ImmutableSeq<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
         if (this == ImmutableVectors.Vector0.INSTANCE) {
             return ImmutableVector.empty();
         }
@@ -608,30 +607,30 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
     }
 
     @Override
-    public final <U, Ex extends Throwable> @NotNull ImmutableVector<U> flatMapChecked(
+    public final <U, Ex extends Throwable> @NotNull ImmutableSeq<U> flatMapChecked(
             @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ? extends Ex> mapper) throws Ex {
         return flatMap(mapper);
     }
 
     @Override
-    public final <U> @NotNull ImmutableVector<U> flatMapUnchecked(
+    public final <U> @NotNull ImmutableSeq<U> flatMapUnchecked(
             @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ?> mapper) {
         return flatMap(mapper);
     }
 
 
     @Override
-    public final @NotNull ImmutableVector<E> sorted() {
+    public final @NotNull ImmutableSeq<E> sorted() {
         return sorted(Comparators.naturalOrder());
     }
 
     @Override
-    public final @NotNull ImmutableVector<E> sorted(Comparator<? super E> comparator) {
+    public final @NotNull ImmutableSeq<E> sorted(Comparator<? super E> comparator) {
         return AbstractImmutableSeq.sorted(this, comparator, iterableFactory());
     }
 
     @Override
-    public @NotNull <U> ImmutableVector<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
+    public @NotNull <U> ImmutableSeq<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
         return zipImpl(other);
     }
 

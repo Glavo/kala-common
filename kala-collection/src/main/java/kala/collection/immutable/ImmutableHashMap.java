@@ -19,8 +19,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 
 @SuppressWarnings("unchecked")
-public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V>
-        implements ImmutableMapOps<K, V, ImmutableHashMap<?, ?>, ImmutableHashMap<K, V>>, Serializable {
+public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V> implements Serializable {
     private static final long serialVersionUID = 4088221143962926192L;
 
     private static final ImmutableHashMap<?, ?> EMPTY = new ImmutableHashMap<>(new Impl<>());

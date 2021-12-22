@@ -59,6 +59,10 @@ public interface MutableCollection<E> extends Collection<E> {
         return MutableSeq.from(values);
     }
 
+    static <E, C extends MutableCollection<E>> @NotNull MutableCollectionEditor<E, C> edit(@NotNull C collection) {
+        return new MutableCollectionEditor<>(collection);
+    }
+
     //endregion
 
     //region Collection Operations
