@@ -124,7 +124,7 @@ public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Index
         if (!it.hasNext()) { // implicit null check of it
             return empty();
         }
-        DynamicArray<E> buffer = new DynamicArray<>();
+        MutableArrayList<E> buffer = new MutableArrayList<>();
         while (it.hasNext()) {
             buffer.append(it.next());
         }
@@ -260,7 +260,7 @@ public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Index
         }
     }
 
-    private static final class Factory<E> implements CollectionFactory<E, DynamicArray<E>, MutableArray<E>> {
+    private static final class Factory<E> implements CollectionFactory<E, MutableArrayList<E>, MutableArray<E>> {
         Factory() {
         }
 
@@ -295,28 +295,28 @@ public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Index
         }
 
         @Override
-        public DynamicArray<E> newBuilder() {
-            return new DynamicArray<>();
+        public MutableArrayList<E> newBuilder() {
+            return new MutableArrayList<>();
         }
 
         @Override
-        public void addToBuilder(@NotNull DynamicArray<E> buffer, E value) {
+        public void addToBuilder(@NotNull MutableArrayList<E> buffer, E value) {
             buffer.append(value);
         }
 
         @Override
-        public void sizeHint(@NotNull DynamicArray<E> buffer, int size) {
+        public void sizeHint(@NotNull MutableArrayList<E> buffer, int size) {
             buffer.sizeHint(size);
         }
 
         @Override
-        public DynamicArray<E> mergeBuilder(@NotNull DynamicArray<E> builder1, @NotNull DynamicArray<E> builder2) {
+        public MutableArrayList<E> mergeBuilder(@NotNull MutableArrayList<E> builder1, @NotNull MutableArrayList<E> builder2) {
             builder1.appendAll(builder2);
             return builder1;
         }
 
         @Override
-        public MutableArray<E> build(@NotNull DynamicArray<E> buffer) {
+        public MutableArray<E> build(@NotNull MutableArrayList<E> buffer) {
             return new MutableArray<>(buffer.toArray());
         }
     }

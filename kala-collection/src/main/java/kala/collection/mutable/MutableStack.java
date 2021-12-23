@@ -9,16 +9,16 @@ public interface MutableStack<E> {
 
     @Contract("-> new")
     static <E> @NotNull MutableStack<E> create() {
-        return new DynamicLinkedSeq<>();
+        return new MutableSinglyLinkedList<>();
     }
 
     @SuppressWarnings("unchecked")
-    static <E> @NotNull MutableStack<E> wrapDynamicSeq(@NotNull DynamicSeq<E> seq) {
+    static <E> @NotNull MutableStack<E> wrapMutableList(@NotNull MutableList<E> seq) {
         Objects.requireNonNull(seq);
         if (seq instanceof MutableStack) {
             return ((MutableStack<E>) seq);
         }
-        return new DynamicSeqStackAdapter<>(seq);
+        return new MutableListStackAdapter<>(seq);
     }
 
     @Contract(mutates = "this")

@@ -23,12 +23,12 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public final class DynamicArray<E> extends AbstractDynamicSeq<E> implements IndexedSeq<E>, Serializable {
+public final class MutableArrayList<E> extends AbstractMutableList<E> implements IndexedSeq<E>, Serializable {
     private static final long serialVersionUID = 2545219250020890853L;
 
     static final int DEFAULT_CAPACITY = 16;
 
-    private static final DynamicArray.Factory<?> FACTORY = new Factory<>();
+    private static final MutableArrayList.Factory<?> FACTORY = new Factory<>();
 
     //region Fields
 
@@ -39,16 +39,16 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E> implements Inde
 
     //region Constructors
 
-    private DynamicArray(Object @NotNull [] elements, int size) {
+    private MutableArrayList(Object @NotNull [] elements, int size) {
         this.elements = elements;
         this.size = size;
     }
 
-    public DynamicArray() {
+    public MutableArrayList() {
         this(ObjectArrays.EMPTY, 0);
     }
 
-    public DynamicArray(int initialCapacity) {
+    public MutableArrayList(int initialCapacity) {
         if (initialCapacity < 0) {
             throw new IllegalArgumentException("illegal initialCapacity: " + initialCapacity);
         }
@@ -61,138 +61,138 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E> implements Inde
 
     //region Static Factories
 
-    public static <E> @NotNull CollectionFactory<E, ?, DynamicArray<E>> factory() {
+    public static <E> @NotNull CollectionFactory<E, ?, MutableArrayList<E>> factory() {
         return (Factory<E>) FACTORY;
     }
 
     @Contract("-> new")
-    public static <E> @NotNull DynamicArray<E> create() {
-        return new DynamicArray<>();
+    public static <E> @NotNull MutableArrayList<E> create() {
+        return new MutableArrayList<>();
     }
 
     @Contract("_ -> new")
-    public static <E> @NotNull DynamicArray<E> create(int initialCapacity) {
-        return new DynamicArray<>(initialCapacity);
+    public static <E> @NotNull MutableArrayList<E> create(int initialCapacity) {
+        return new MutableArrayList<>(initialCapacity);
     }
 
     @Contract("-> new")
-    public static <E> @NotNull DynamicArray<E> of() {
-        return new DynamicArray<>();
+    public static <E> @NotNull MutableArrayList<E> of() {
+        return new MutableArrayList<>();
     }
 
     @Contract("_ -> new")
-    public static <E> @NotNull DynamicArray<E> of(E value1) {
+    public static <E> @NotNull MutableArrayList<E> of(E value1) {
         Object[] arr = new Object[DEFAULT_CAPACITY];
         arr[0] = value1;
-        return new DynamicArray<>(arr, 1);
+        return new MutableArrayList<>(arr, 1);
     }
 
     @Contract("_, _ -> new")
-    public static <E> @NotNull DynamicArray<E> of(E value1, E value2) {
+    public static <E> @NotNull MutableArrayList<E> of(E value1, E value2) {
         Object[] arr = new Object[DEFAULT_CAPACITY];
         arr[0] = value1;
         arr[1] = value2;
-        return new DynamicArray<>(arr, 2);
+        return new MutableArrayList<>(arr, 2);
     }
 
     @Contract("_, _, _ -> new")
-    public static <E> @NotNull DynamicArray<E> of(E value1, E value2, E value3) {
+    public static <E> @NotNull MutableArrayList<E> of(E value1, E value2, E value3) {
         Object[] arr = new Object[DEFAULT_CAPACITY];
         arr[0] = value1;
         arr[1] = value2;
         arr[2] = value3;
-        return new DynamicArray<>(arr, 3);
+        return new MutableArrayList<>(arr, 3);
     }
 
     @Contract("_, _, _, _ -> new")
-    public static <E> @NotNull DynamicArray<E> of(E value1, E value2, E value3, E value4) {
+    public static <E> @NotNull MutableArrayList<E> of(E value1, E value2, E value3, E value4) {
         Object[] arr = new Object[DEFAULT_CAPACITY];
         arr[0] = value1;
         arr[1] = value2;
         arr[2] = value3;
         arr[3] = value4;
-        return new DynamicArray<>(arr, 4);
+        return new MutableArrayList<>(arr, 4);
     }
 
     @Contract("_, _, _, _, _ -> new")
-    public static <E> @NotNull DynamicArray<E> of(E value1, E value2, E value3, E value4, E value5) {
+    public static <E> @NotNull MutableArrayList<E> of(E value1, E value2, E value3, E value4, E value5) {
         Object[] arr = new Object[DEFAULT_CAPACITY];
         arr[0] = value1;
         arr[1] = value2;
         arr[2] = value3;
         arr[3] = value4;
         arr[4] = value5;
-        return new DynamicArray<>(arr, 5);
+        return new MutableArrayList<>(arr, 5);
     }
 
     @Contract("_ -> new")
-    public static <E> @NotNull DynamicArray<E> of(E... values) {
+    public static <E> @NotNull MutableArrayList<E> of(E... values) {
         return from(values);
     }
 
     @Contract("_ -> new")
-    public static <E> @NotNull DynamicArray<E> from(E @NotNull [] values) {
+    public static <E> @NotNull MutableArrayList<E> from(E @NotNull [] values) {
         int length = values.length; // implicit null check of values
         if (length == 0) {
-            return new DynamicArray<>();
+            return new MutableArrayList<>();
         }
         Object[] newValues = new Object[length];
         System.arraycopy(values, 0, newValues, 0, length);
-        return new DynamicArray<>(newValues, length);
+        return new MutableArrayList<>(newValues, length);
     }
 
-    public static <E> @NotNull DynamicArray<E> from(@NotNull Iterable<? extends E> values) {
-        DynamicArray<E> buffer = new DynamicArray<>();
+    public static <E> @NotNull MutableArrayList<E> from(@NotNull Iterable<? extends E> values) {
+        MutableArrayList<E> buffer = new MutableArrayList<>();
         buffer.appendAll(values);
         return buffer;
     }
 
-    public static <E> @NotNull DynamicArray<E> from(@NotNull Iterator<? extends E> it) {
-        DynamicArray<E> buffer = new DynamicArray<>();
+    public static <E> @NotNull MutableArrayList<E> from(@NotNull Iterator<? extends E> it) {
+        MutableArrayList<E> buffer = new MutableArrayList<>();
         while (it.hasNext()) {
             buffer.append(it.next());
         }
         return buffer;
     }
 
-    public static <E> @NotNull DynamicArray<E> from(@NotNull Stream<? extends E> stream) {
+    public static <E> @NotNull MutableArrayList<E> from(@NotNull Stream<? extends E> stream) {
         return stream.collect(factory());
     }
 
-    public static <E> @NotNull DynamicArray<E> fill(int n, E value) {
+    public static <E> @NotNull MutableArrayList<E> fill(int n, E value) {
         if (n <= 0) {
-            return new DynamicArray<>();
+            return new MutableArrayList<>();
         }
 
         Object[] arr = new Object[Integer.max(DEFAULT_CAPACITY, n)];
         if (value != null) {
             Arrays.fill(arr, 0, n, value);
         }
-        return new DynamicArray<>(arr, n);
+        return new MutableArrayList<>(arr, n);
     }
 
-    public static <E> @NotNull DynamicArray<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+    public static <E> @NotNull MutableArrayList<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
         if (n <= 0) {
-            return new DynamicArray<>();
+            return new MutableArrayList<>();
         }
 
         Object[] arr = new Object[Integer.max(DEFAULT_CAPACITY, n)];
         for (int i = 0; i < n; i++) {
             arr[i] = supplier.get();
         }
-        return new DynamicArray<>(arr, n);
+        return new MutableArrayList<>(arr, n);
     }
 
-    public static <E> @NotNull DynamicArray<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+    public static <E> @NotNull MutableArrayList<E> fill(int n, @NotNull IntFunction<? extends E> init) {
         if (n <= 0) {
-            return new DynamicArray<>();
+            return new MutableArrayList<>();
         }
 
         Object[] arr = new Object[Integer.max(DEFAULT_CAPACITY, n)];
         for (int i = 0; i < n; i++) {
             arr[i] = init.apply(i);
         }
-        return new DynamicArray<>(arr, n);
+        return new MutableArrayList<>(arr, n);
     }
 
     //endregion
@@ -251,11 +251,11 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E> implements Inde
 
     @Override
     public @NotNull String className() {
-        return "DynamicArray";
+        return "MutableArrayList";
     }
 
     @Override
-    public <U> @NotNull CollectionFactory<U, ?, DynamicArray<U>> iterableFactory() {
+    public <U> @NotNull CollectionFactory<U, ?, MutableArrayList<U>> iterableFactory() {
         return factory();
     }
 
@@ -270,7 +270,7 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E> implements Inde
     }
 
     @Override
-    public @NotNull DynamicSeqIterator<E> seqIterator(int index) {
+    public @NotNull MutableListIterator<E> seqIterator(int index) {
         Conditions.checkPositionIndex(index, size);
         return new SeqItr<>(this, index);
     }
@@ -282,10 +282,10 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E> implements Inde
 
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public DynamicArray<E> clone() {
+    public MutableArrayList<E> clone() {
         final Object[] elements = this.elements;
         final int size = this.size;
-        return new DynamicArray<>(size == 0 ? ObjectArrays.EMPTY : elements.clone(), size);
+        return new MutableArrayList<>(size == 0 ? ObjectArrays.EMPTY : elements.clone(), size);
     }
 
     //endregion
@@ -629,53 +629,53 @@ public final class DynamicArray<E> extends AbstractDynamicSeq<E> implements Inde
 
     //endregion
 
-    private static final class Factory<E> extends AbstractDynamicSeqFactory<E, DynamicArray<E>> {
+    private static final class Factory<E> extends AbstractMutableListFactory<E, MutableArrayList<E>> {
         @Override
-        public DynamicArray<E> newBuilder() {
-            return new DynamicArray<>();
+        public MutableArrayList<E> newBuilder() {
+            return new MutableArrayList<>();
         }
 
         @Override
-        public void sizeHint(@NotNull DynamicArray<E> buffer, int size) {
+        public void sizeHint(@NotNull MutableArrayList<E> buffer, int size) {
             buffer.sizeHint(size);
         }
 
         @Override
-        public DynamicArray<E> from(E @NotNull [] values) {
-            return DynamicArray.from(values);
+        public MutableArrayList<E> from(E @NotNull [] values) {
+            return MutableArrayList.from(values);
         }
 
         @Override
-        public DynamicArray<E> from(@NotNull Iterable<? extends E> values) {
-            return DynamicArray.from(values);
+        public MutableArrayList<E> from(@NotNull Iterable<? extends E> values) {
+            return MutableArrayList.from(values);
         }
 
         @Override
-        public DynamicArray<E> from(@NotNull Iterator<? extends E> it) {
-            return DynamicArray.from(it);
+        public MutableArrayList<E> from(@NotNull Iterator<? extends E> it) {
+            return MutableArrayList.from(it);
         }
 
         @Override
-        public DynamicArray<E> fill(int n, E value) {
-            return DynamicArray.fill(n, value);
+        public MutableArrayList<E> fill(int n, E value) {
+            return MutableArrayList.fill(n, value);
         }
 
         @Override
-        public DynamicArray<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
-            return DynamicArray.fill(n, supplier);
+        public MutableArrayList<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+            return MutableArrayList.fill(n, supplier);
         }
 
         @Override
-        public DynamicArray<E> fill(int n, @NotNull IntFunction<? extends E> init) {
-            return DynamicArray.fill(n, init);
+        public MutableArrayList<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+            return MutableArrayList.fill(n, init);
         }
     }
 
-    private static final class SeqItr<E> extends AbstractDynamicSeqIterator<E> {
-        private final DynamicArray<E> seq;
+    private static final class SeqItr<E> extends AbstractMutableListIterator<E> {
+        private final MutableArrayList<E> seq;
         private int lastReturned = -1;
 
-        SeqItr(DynamicArray<E> seq, int index) {
+        SeqItr(MutableArrayList<E> seq, int index) {
             super(index);
             this.seq = seq;
         }

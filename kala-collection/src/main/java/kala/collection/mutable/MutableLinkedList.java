@@ -11,13 +11,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
-public final class DynamicDoubleLinkedSeq<E>
-        extends AbstractDynamicSeq<E>
-        implements MutableStack<E>, MutableQueue<E> {
+public final class MutableLinkedList<E> extends AbstractMutableList<E> implements MutableStack<E>, MutableQueue<E> {
 
     private static final Factory<?> FACTORY = new Factory<>();
 
@@ -25,44 +22,44 @@ public final class DynamicDoubleLinkedSeq<E>
     private Node<E> first = null;
     private Node<E> last = null;
 
-    public DynamicDoubleLinkedSeq() {
+    public MutableLinkedList() {
     }
 
     //region Static Factories
 
     @SuppressWarnings("unchecked")
-    public static <E> @NotNull CollectionFactory<E, ?, DynamicDoubleLinkedSeq<E>> factory() {
-        return (DynamicDoubleLinkedSeq.Factory<E>) FACTORY;
+    public static <E> @NotNull CollectionFactory<E, ?, MutableLinkedList<E>> factory() {
+        return (MutableLinkedList.Factory<E>) FACTORY;
     }
 
     @Contract("-> new")
-    public static <E> @NotNull DynamicDoubleLinkedSeq<E> create() {
-        return new DynamicDoubleLinkedSeq<>();
+    public static <E> @NotNull MutableLinkedList<E> create() {
+        return new MutableLinkedList<>();
     }
 
     @Contract("-> new")
-    public static <E> @NotNull DynamicDoubleLinkedSeq<E> of() {
-        return new DynamicDoubleLinkedSeq<>();
+    public static <E> @NotNull MutableLinkedList<E> of() {
+        return new MutableLinkedList<>();
     }
 
     @Contract("_ -> new")
-    public static <E> @NotNull DynamicDoubleLinkedSeq<E> of(E value1) {
-        DynamicDoubleLinkedSeq<E> res = new DynamicDoubleLinkedSeq<>();
+    public static <E> @NotNull MutableLinkedList<E> of(E value1) {
+        MutableLinkedList<E> res = new MutableLinkedList<>();
         res.append(value1);
         return res;
     }
 
     @Contract("_, _ -> new")
-    public static <E> @NotNull DynamicDoubleLinkedSeq<E> of(E value1, E value2) {
-        DynamicDoubleLinkedSeq<E> res = new DynamicDoubleLinkedSeq<>();
+    public static <E> @NotNull MutableLinkedList<E> of(E value1, E value2) {
+        MutableLinkedList<E> res = new MutableLinkedList<>();
         res.append(value1);
         res.append(value2);
         return res;
     }
 
     @Contract("_, _, _ -> new")
-    public static <E> @NotNull DynamicDoubleLinkedSeq<E> of(E value1, E value2, E value3) {
-        DynamicDoubleLinkedSeq<E> res = new DynamicDoubleLinkedSeq<>();
+    public static <E> @NotNull MutableLinkedList<E> of(E value1, E value2, E value3) {
+        MutableLinkedList<E> res = new MutableLinkedList<>();
         res.append(value1);
         res.append(value2);
         res.append(value3);
@@ -70,8 +67,8 @@ public final class DynamicDoubleLinkedSeq<E>
     }
 
     @Contract("_, _, _, _ -> new")
-    public static <E> @NotNull DynamicDoubleLinkedSeq<E> of(E value1, E value2, E value3, E value4) {
-        DynamicDoubleLinkedSeq<E> res = new DynamicDoubleLinkedSeq<>();
+    public static <E> @NotNull MutableLinkedList<E> of(E value1, E value2, E value3, E value4) {
+        MutableLinkedList<E> res = new MutableLinkedList<>();
         res.append(value1);
         res.append(value2);
         res.append(value3);
@@ -80,8 +77,8 @@ public final class DynamicDoubleLinkedSeq<E>
     }
 
     @Contract("_, _, _, _, _ -> new")
-    public static <E> @NotNull DynamicDoubleLinkedSeq<E> of(E value1, E value2, E value3, E value4, E value5) {
-        DynamicDoubleLinkedSeq<E> res = new DynamicDoubleLinkedSeq<>();
+    public static <E> @NotNull MutableLinkedList<E> of(E value1, E value2, E value3, E value4, E value5) {
+        MutableLinkedList<E> res = new MutableLinkedList<>();
         res.append(value1);
         res.append(value2);
         res.append(value3);
@@ -92,27 +89,27 @@ public final class DynamicDoubleLinkedSeq<E>
 
     @SafeVarargs
     @Contract("_ -> new")
-    public static <E> @NotNull DynamicDoubleLinkedSeq<E> of(E... values) {
+    public static <E> @NotNull MutableLinkedList<E> of(E... values) {
         return from(values);
     }
 
     @Contract("_ -> new")
-    public static <E> @NotNull DynamicDoubleLinkedSeq<E> from(E @NotNull [] values) {
-        DynamicDoubleLinkedSeq<E> res = new DynamicDoubleLinkedSeq<>();
+    public static <E> @NotNull MutableLinkedList<E> from(E @NotNull [] values) {
+        MutableLinkedList<E> res = new MutableLinkedList<>();
         res.appendAll(values);
         return res;
     }
 
     @Contract("_ -> new")
-    public static <E> @NotNull DynamicDoubleLinkedSeq<E> from(@NotNull Iterable<? extends E> values) {
-        DynamicDoubleLinkedSeq<E> res = new DynamicDoubleLinkedSeq<>();
+    public static <E> @NotNull MutableLinkedList<E> from(@NotNull Iterable<? extends E> values) {
+        MutableLinkedList<E> res = new MutableLinkedList<>();
         res.appendAll(values);
         return res;
     }
 
     @Contract("_ -> new")
-    public static <E> @NotNull DynamicDoubleLinkedSeq<E> from(@NotNull Iterator<? extends E> iterator) {
-        DynamicDoubleLinkedSeq<E> res = new DynamicDoubleLinkedSeq<>();
+    public static <E> @NotNull MutableLinkedList<E> from(@NotNull Iterator<? extends E> iterator) {
+        MutableLinkedList<E> res = new MutableLinkedList<>();
         while (iterator.hasNext()) {
             res.append(iterator.next());
         }
@@ -142,12 +139,12 @@ public final class DynamicDoubleLinkedSeq<E>
 
     @Override
     public @NotNull String className() {
-        return "DynamicDoubleLinkedSeq";
+        return "MutableLinkedList";
     }
 
     @Override
-    public @NotNull <U> CollectionFactory<U, ?, ? extends DynamicSeq<U>> iterableFactory() {
-        return DynamicDoubleLinkedSeq.factory();
+    public @NotNull <U> CollectionFactory<U, ?, ? extends MutableList<U>> iterableFactory() {
+        return MutableLinkedList.factory();
     }
 
     @Override
@@ -157,15 +154,15 @@ public final class DynamicDoubleLinkedSeq<E>
     }
 
     @Override
-    public @NotNull DynamicSeqIterator<E> seqIterator(int index) {
+    public @NotNull MutableListIterator<E> seqIterator(int index) {
         Conditions.checkPositionIndex(index, len);
         return new SeqItr(index);
     }
 
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public @NotNull DynamicDoubleLinkedSeq<E> clone() {
-        DynamicDoubleLinkedSeq<E> res = new DynamicDoubleLinkedSeq<>();
+    public @NotNull MutableLinkedList<E> clone() {
+        MutableLinkedList<E> res = new MutableLinkedList<>();
         if (len != 0) {
             for (E e : this) {
                 res.append(e);
@@ -477,7 +474,7 @@ public final class DynamicDoubleLinkedSeq<E>
         }
     }
 
-    private final class SeqItr extends AbstractDynamicSeqIterator<E> {
+    private final class SeqItr extends AbstractMutableListIterator<E> {
         private Node<E> lastReturned;
         private Node<E> next;
 
@@ -550,10 +547,10 @@ public final class DynamicDoubleLinkedSeq<E>
         }
     }
 
-    private static final class Factory<E> extends AbstractDynamicSeqFactory<E, DynamicDoubleLinkedSeq<E>> {
+    private static final class Factory<E> extends AbstractMutableListFactory<E, MutableLinkedList<E>> {
         @Override
-        public DynamicDoubleLinkedSeq<E> newBuilder() {
-            return new DynamicDoubleLinkedSeq<>();
+        public MutableLinkedList<E> newBuilder() {
+            return new MutableLinkedList<>();
         }
     }
 }

@@ -4,8 +4,8 @@ import kala.collection.AbstractSeqIterator;
 import kala.collection.SeqIterator;
 import kala.collection.SeqLike;
 import kala.collection.base.AbstractIterator;
-import kala.collection.mutable.DynamicSeq;
-import kala.collection.mutable.DynamicSeqIterator;
+import kala.collection.mutable.MutableList;
+import kala.collection.mutable.MutableListIterator;
 import kala.collection.mutable.MutableSeq;
 import kala.collection.mutable.MutableSeqIterator;
 import org.jetbrains.annotations.NotNull;
@@ -132,9 +132,9 @@ public final class SeqIterators {
         }
     }
 
-    public static class DefaultDynamicSeqIterator<E, S extends DynamicSeq<E>> extends DefaultMutableSeqIterator<E, S>
-            implements DynamicSeqIterator<E> {
-        public DefaultDynamicSeqIterator(@NotNull S seq, int index) {
+    public static class DefaultMutableListIterator<E, S extends MutableList<E>> extends DefaultMutableSeqIterator<E, S>
+            implements MutableListIterator<E> {
+        public DefaultMutableListIterator(@NotNull S seq, int index) {
             super(seq, index);
         }
 

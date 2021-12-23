@@ -8,7 +8,7 @@ import kala.collection.immutable.ImmutableArray;
 import kala.collection.immutable.ImmutableSeq;
 import kala.collection.internal.convert.FromJavaConvert;
 import kala.annotations.StaticClass;
-import kala.collection.mutable.DynamicArray;
+import kala.collection.mutable.MutableArrayList;
 import kala.collection.mutable.MutableArray;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +29,7 @@ public final class CollectionHelper {
         if (it instanceof java.util.Collection<?>) {
             return ((java.util.Collection<?>) it).toArray();
         }
-        DynamicArray<Object> buffer = new DynamicArray<>();
+        MutableArrayList<Object> buffer = new MutableArrayList<>();
         for (Object o : it) {
             buffer.append(o);
         }
@@ -54,10 +54,10 @@ public final class CollectionHelper {
             return (ArraySeq<E>) ArraySeq.wrap(((java.util.Collection<E>) collection).toArray());
         }
         if (collection instanceof Iterable<?>) {
-            return DynamicArray.from(((Iterable<E>) collection));
+            return MutableArrayList.from(((Iterable<E>) collection));
         }
         if (collection instanceof Iterator<?>) {
-            return DynamicArray.from((Iterator<E>) collection);
+            return MutableArrayList.from((Iterator<E>) collection);
         }
 
         throw new IllegalArgumentException();
@@ -80,10 +80,10 @@ public final class CollectionHelper {
             return ArraySeq.wrap((E[]) ((Collection<?>) obj).toArray());
         }
         if (obj instanceof Iterable<?>) {
-            return DynamicArray.from(((Iterable<E>) obj));
+            return MutableArrayList.from(((Iterable<E>) obj));
         }
         if (obj instanceof Iterator<?>) {
-            return DynamicArray.from((Iterator<E>) obj);
+            return MutableArrayList.from((Iterator<E>) obj);
         }
 
         throw new IllegalArgumentException();
@@ -103,7 +103,7 @@ public final class CollectionHelper {
             if (!iterator.hasNext()) {
                 return ImmutableSeq.empty();
             }
-            DynamicArray<E> buffer = new DynamicArray<>();
+            MutableArrayList<E> buffer = new MutableArrayList<>();
             while (iterator.hasNext()) {
                 buffer.append(((E) iterator.next()));
             }
@@ -111,7 +111,7 @@ public final class CollectionHelper {
         }
 
         if (collection instanceof Iterable<?>) {
-            DynamicArray<E> buffer = new DynamicArray<>();
+            MutableArrayList<E> buffer = new MutableArrayList<>();
             buffer.appendAll(((Iterable<E>) collection));
             return buffer;
         }

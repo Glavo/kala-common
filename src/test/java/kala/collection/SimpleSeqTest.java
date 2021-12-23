@@ -1,7 +1,7 @@
 package kala.collection;
 
-import kala.collection.internal.DynamicArrayBasedFactory;
-import kala.collection.mutable.DynamicArray;
+import kala.collection.internal.MutableArrayListBasedFactory;
+import kala.collection.mutable.MutableArrayList;
 import kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,7 +13,7 @@ import java.util.List;
 public final class SimpleSeqTest implements SeqTestTemplate {
     @Override
     public <E> CollectionFactory<E, ?, SimpleSeq<E>> factory() {
-        return (SimpleFactory<E>) SimpleFactory.INSTANCE;
+        return (SimpleListFactory<E>) SimpleListFactory.INSTANCE;
     }
 
     @Override
@@ -60,11 +60,11 @@ public final class SimpleSeqTest implements SeqTestTemplate {
         }
     }
 
-    static final class SimpleFactory<E> extends DynamicArrayBasedFactory<E, SimpleSeq<E>> {
-        static final SimpleFactory<?> INSTANCE = new SimpleFactory<>();
+    static final class SimpleListFactory<E> extends MutableArrayListBasedFactory<E, SimpleSeq<E>> {
+        static final SimpleListFactory<?> INSTANCE = new SimpleListFactory<>();
 
         @Override
-        public SimpleSeq<E> build(DynamicArray<E> builder) {
+        public SimpleSeq<E> build(MutableArrayList<E> builder) {
             return new SimpleSeq<>(List.copyOf(builder.asJava()));
         }
     }

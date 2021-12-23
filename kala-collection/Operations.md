@@ -212,10 +212,10 @@
     * `toImmutableVector()`
     * `toMutableSeq()`
     * `toMutableArray()`
-    * `toDynamicSeq()`
-    * `toDynamicArray()`
-    * `toDynamicLinkedSeq()`
-    * `toDynamicDoubleLinkedSeq()`
+    * `toMutableList()`
+    * `toMutableArrayList()`
+    * `toMutableLinkedList()`
+    * `toMutableSinglyLinkedList()`
     * `toMap()`
     * `associate(Function)`
     * `associateBy(Function)`

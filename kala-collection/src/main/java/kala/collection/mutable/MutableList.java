@@ -22,83 +22,83 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
+public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
 
     //region Static Factories
 
-    static <E> @NotNull CollectionFactory<E, ?, DynamicSeq<E>> factory() {
-        return CollectionFactory.narrow(DynamicArray.factory());
+    static <E> @NotNull CollectionFactory<E, ?, MutableList<E>> factory() {
+        return CollectionFactory.narrow(MutableArrayList.factory());
     }
 
     @Contract("-> new")
-    static <E> @NotNull DynamicSeq<E> create() {
-        return new DynamicArray<>();
+    static <E> @NotNull MutableList<E> create() {
+        return new MutableArrayList<>();
     }
 
     @Contract("-> new")
-    static <E> @NotNull DynamicSeq<E> of() {
-        return DynamicArray.of();
+    static <E> @NotNull MutableList<E> of() {
+        return MutableArrayList.of();
     }
 
     @Contract("_ -> new")
-    static <E> @NotNull DynamicSeq<E> of(E value1) {
-        return DynamicArray.of(value1);
+    static <E> @NotNull MutableList<E> of(E value1) {
+        return MutableArrayList.of(value1);
     }
 
     @Contract("_, _ -> new")
-    static <E> @NotNull DynamicSeq<E> of(E value1, E value2) {
-        return DynamicArray.of(value1, value2);
+    static <E> @NotNull MutableList<E> of(E value1, E value2) {
+        return MutableArrayList.of(value1, value2);
     }
 
     @Contract("_, _, _ -> new")
-    static <E> @NotNull DynamicSeq<E> of(E value1, E value2, E value3) {
-        return DynamicArray.of(value1, value2, value3);
+    static <E> @NotNull MutableList<E> of(E value1, E value2, E value3) {
+        return MutableArrayList.of(value1, value2, value3);
     }
 
     @Contract("_, _, _, _ -> new")
-    static <E> @NotNull DynamicSeq<E> of(E value1, E value2, E value3, E value4) {
-        return DynamicArray.of(value1, value2, value3, value4);
+    static <E> @NotNull MutableList<E> of(E value1, E value2, E value3, E value4) {
+        return MutableArrayList.of(value1, value2, value3, value4);
     }
 
     @Contract("_, _, _, _, _ -> new")
-    static <E> @NotNull DynamicSeq<E> of(E value1, E value2, E value3, E value4, E value5) {
-        return DynamicArray.of(value1, value2, value3, value4, value5);
+    static <E> @NotNull MutableList<E> of(E value1, E value2, E value3, E value4, E value5) {
+        return MutableArrayList.of(value1, value2, value3, value4, value5);
     }
 
     @SafeVarargs
-    static <E> @NotNull DynamicSeq<E> of(E... values) {
+    static <E> @NotNull MutableList<E> of(E... values) {
         return from(values);
     }
 
-    static <E> @NotNull DynamicSeq<E> from(E @NotNull [] values) {
-        return DynamicArray.from(values);
+    static <E> @NotNull MutableList<E> from(E @NotNull [] values) {
+        return MutableArrayList.from(values);
     }
 
-    static <E> @NotNull DynamicSeq<E> from(@NotNull Iterable<? extends E> values) {
-        return DynamicArray.from(values);
+    static <E> @NotNull MutableList<E> from(@NotNull Iterable<? extends E> values) {
+        return MutableArrayList.from(values);
     }
 
-    static <E> @NotNull DynamicSeq<E> from(@NotNull Iterator<? extends E> it) {
-        return DynamicArray.from(it);
+    static <E> @NotNull MutableList<E> from(@NotNull Iterator<? extends E> it) {
+        return MutableArrayList.from(it);
     }
 
-    static <E> @NotNull DynamicSeq<E> from(@NotNull Stream<? extends E> stream) {
-        return DynamicArray.from(stream);
+    static <E> @NotNull MutableList<E> from(@NotNull Stream<? extends E> stream) {
+        return MutableArrayList.from(stream);
     }
 
     @Contract("_ -> new")
-    static <E> @NotNull DynamicSeq<E> wrapJava(@NotNull List<E> list) {
+    static <E> @NotNull MutableList<E> wrapJava(@NotNull List<E> list) {
         Objects.requireNonNull(list);
-        if (list instanceof AsJavaConvert.DynamicSeqAsJava<?, ?>) {
-            return ((AsJavaConvert.DynamicSeqAsJava<E, DynamicSeq<E>>) list).source;
+        if (list instanceof AsJavaConvert.MutableListAsJava<?, ?>) {
+            return ((AsJavaConvert.MutableListAsJava<E, MutableList<E>>) list).source;
         }
         return list instanceof RandomAccess
-                ? new FromJavaConvert.DynamicIndexedSeqFromJava<>(list)
-                : new FromJavaConvert.DynamicSeqFromJava<>(list);
+                ? new FromJavaConvert.MutableIndexedListFromJava<>(list)
+                : new FromJavaConvert.MutableListFromJava<>(list);
     }
 
-    static <E, C extends DynamicSeq<E>> @NotNull DynamicSeqEditor<E, C> edit(@NotNull C seq) {
-        return new DynamicSeqEditor<>(seq);
+    static <E, C extends MutableList<E>> @NotNull MutableListEditor<E, C> edit(@NotNull C seq) {
+        return new MutableListEditor<>(seq);
     }
 
     //endregion
@@ -108,33 +108,33 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
     @Override
     default @NotNull
     String className() {
-        return "DynamicSeq";
+        return "MutableList";
     }
 
     @Override
-    default <U> @NotNull CollectionFactory<U, ?, ? extends DynamicSeq<U>> iterableFactory() {
+    default <U> @NotNull CollectionFactory<U, ?, ? extends MutableList<U>> iterableFactory() {
         return factory();
     }
 
     @Override
     default @NotNull
-    DynamicSeqIterator<E> seqIterator() {
+    MutableListIterator<E> seqIterator() {
         return seqIterator(0);
     }
 
     @Override
     default @NotNull
-    DynamicSeqIterator<E> seqIterator(int index) {
+    MutableListIterator<E> seqIterator(int index) {
         Conditions.checkPositionIndex(index, size());
-        return new SeqIterators.DefaultDynamicSeqIterator<>(this, index);
+        return new SeqIterators.DefaultMutableListIterator<>(this, index);
     }
 
     @Override
     default @NotNull
     List<E> asJava() {
         return this instanceof RandomAccess
-                ? new AsJavaConvert.DynamicIndexedSeqAsJava<>(this)
-                : new AsJavaConvert.DynamicSeqAsJava<>(this);
+                ? new AsJavaConvert.MutableIndexedListAsJava<>(this)
+                : new AsJavaConvert.MutableListAsJava<>(this);
     }
 
     //endregion
@@ -308,7 +308,7 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
 
     @Contract(mutates = "this")
     default boolean removeAll(@NotNull Predicate<? super E> predicate) {
-        DynamicSeqIterator<E> it = this.seqIterator();
+        MutableListIterator<E> it = this.seqIterator();
         boolean changed = false;
         while (it.hasNext()) {
             E value = it.next();
@@ -322,7 +322,7 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
 
     @Contract(mutates = "this")
     default boolean retainAll(@NotNull Predicate<? super E> predicate) {
-        DynamicSeqIterator<E> it = this.seqIterator();
+        MutableListIterator<E> it = this.seqIterator();
         boolean changed = false;
         while (it.hasNext()) {
             E value = it.next();
@@ -347,7 +347,7 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
         if (n == 0) {
             return;
         }
-        DynamicSeqIterator<E> it = this.seqIterator();
+        MutableListIterator<E> it = this.seqIterator();
         for (int i = 0; i < n; i++) {
             if (!it.hasNext()) {
                 break;
@@ -372,7 +372,7 @@ public interface DynamicSeq<E> extends MutableSeq<E>, Growable<E> {
         if (knownSize >= 0 && n >= knownSize) {
             return;
         }
-        DynamicSeqIterator<E> it = this.seqIterator(n);
+        MutableListIterator<E> it = this.seqIterator(n);
         while (it.hasNext()) {
             it.next();
             it.remove();

@@ -172,9 +172,9 @@ public final class FromJavaConvert {
         }
     }
 
-    public static class DynamicSeqFromJava<E>
-            extends MutableSeqFromJava<E> implements DynamicSeq<E> {
-        public DynamicSeqFromJava(@NotNull List<E> list) {
+    public static class MutableListFromJava<E>
+            extends MutableSeqFromJava<E> implements MutableList<E> {
+        public MutableListFromJava(@NotNull List<E> list) {
             super(list);
         }
 
@@ -204,9 +204,8 @@ public final class FromJavaConvert {
         }
     }
 
-    public static class DynamicIndexedSeqFromJava<E>
-            extends DynamicSeqFromJava<E> implements IndexedSeq<E> {
-        public DynamicIndexedSeqFromJava(@NotNull List<E> list) {
+    public static class MutableIndexedListFromJava<E> extends MutableListFromJava<E> implements IndexedSeq<E> {
+        public MutableIndexedListFromJava(@NotNull List<E> list) {
             super(list);
         }
     }

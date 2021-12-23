@@ -7,19 +7,17 @@ import kala.collection.base.AbstractIterator;
 import kala.collection.base.AnyTraversable;
 import kala.collection.base.Iterators;
 import kala.collection.internal.view.SeqViews;
-import kala.collection.mutable.AbstractDynamicSeq;
+import kala.collection.mutable.AbstractMutableList;
+import kala.collection.mutable.MutableSinglyLinkedList;
 import kala.control.Option;
 import kala.function.*;
 import kala.Conditions;
 import kala.collection.factory.CollectionFactory;
-import kala.collection.mutable.DynamicLinkedSeq;
-import kala.tuple.Tuple2;
 import org.jetbrains.annotations.*;
 
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.*;
-import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
@@ -873,7 +871,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
 
     @Override
     public @NotNull <U> ImmutableSeq<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
-        final Builder<U> builder = new DynamicLinkedSeq<>();
+        final Builder<U> builder = new MutableSinglyLinkedList<>();
         Consumer<U> consumer = builder::append;
         for (E e : this) {
             mapper.accept(e, consumer);
@@ -883,7 +881,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
 
     @Override
     public @NotNull <U> ImmutableSeq<U> mapIndexedMulti(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
-        final Builder<U> builder = new DynamicLinkedSeq<>();
+        final Builder<U> builder = new MutableSinglyLinkedList<>();
         Consumer<U> consumer = builder::append;
         int idx = 0;
         for (E e : this) {
@@ -942,30 +940,30 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
         }
     }
 
-    static final class Factory<E> implements CollectionFactory<E, DynamicLinkedSeq<E>, ImmutableLinkedSeq<E>> {
+    static final class Factory<E> implements CollectionFactory<E, MutableSinglyLinkedList<E>, ImmutableLinkedSeq<E>> {
 
         @Override
-        public DynamicLinkedSeq<E> newBuilder() {
-            return new DynamicLinkedSeq<>();
+        public MutableSinglyLinkedList<E> newBuilder() {
+            return new MutableSinglyLinkedList<>();
         }
 
         @Override
-        public ImmutableLinkedSeq<E> build(DynamicLinkedSeq<E> builder) {
+        public ImmutableLinkedSeq<E> build(MutableSinglyLinkedList<E> builder) {
             return builder.toImmutableLinkedSeq();
         }
 
         @Override
-        public void addToBuilder(@NotNull DynamicLinkedSeq<E> builder, E value) {
+        public void addToBuilder(@NotNull MutableSinglyLinkedList<E> builder, E value) {
             builder.append(value);
         }
 
         @Override
-        public DynamicLinkedSeq<E> mergeBuilder(@NotNull DynamicLinkedSeq<E> builder1, @NotNull DynamicLinkedSeq<E> builder2) {
-            return (DynamicLinkedSeq<E>) Builder.merge(builder1, builder2);
+        public MutableSinglyLinkedList<E> mergeBuilder(@NotNull MutableSinglyLinkedList<E> builder1, @NotNull MutableSinglyLinkedList<E> builder2) {
+            return (MutableSinglyLinkedList<E>) Builder.merge(builder1, builder2);
         }
     }
 
-    public static final class NodeFactory<E> implements CollectionFactory<E, DynamicLinkedSeq<E>, Node<E>> {
+    public static final class NodeFactory<E> implements CollectionFactory<E, MutableSinglyLinkedList<E>, Node<E>> {
         NodeFactory() {
         }
 
@@ -1005,34 +1003,34 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
         }
 
         @Override
-        public DynamicLinkedSeq<E> newBuilder() {
-            return new DynamicLinkedSeq<>();
+        public MutableSinglyLinkedList<E> newBuilder() {
+            return new MutableSinglyLinkedList<>();
         }
 
         @Override
-        public void addToBuilder(@NotNull DynamicLinkedSeq<E> builder, E value) {
+        public void addToBuilder(@NotNull MutableSinglyLinkedList<E> builder, E value) {
             builder.append(value);
         }
 
         @Override
-        public DynamicLinkedSeq<E> mergeBuilder(@NotNull DynamicLinkedSeq<E> builder1, @NotNull DynamicLinkedSeq<E> builder2) {
-            return (DynamicLinkedSeq<E>) Builder.merge(builder1, builder2);
+        public MutableSinglyLinkedList<E> mergeBuilder(@NotNull MutableSinglyLinkedList<E> builder1, @NotNull MutableSinglyLinkedList<E> builder2) {
+            return (MutableSinglyLinkedList<E>) Builder.merge(builder1, builder2);
         }
 
         @Override
-        public Node<E> build(@NotNull DynamicLinkedSeq<E> builder) {
+        public Node<E> build(@NotNull MutableSinglyLinkedList<E> builder) {
             return builder.buildNode();
         }
     }
 
     /**
-     * Internal implementation of {@link DynamicLinkedSeq}.
+     * Internal implementation of {@link MutableSinglyLinkedList}.
      *
-     * @see DynamicLinkedSeq
+     * @see MutableSinglyLinkedList
      */
     @ApiStatus.Internal
     @SuppressWarnings("unchecked")
-    public static abstract class Builder<E> extends AbstractDynamicSeq<E> {
+    public static abstract class Builder<E> extends AbstractMutableList<E> {
         Node<E> first = null;
         Node<E> last = null;
 
@@ -1072,7 +1070,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
 
         private void ensureUnaliased() {
             if (aliased) {
-                Builder<E> buffer = new DynamicLinkedSeq<>();
+                Builder<E> buffer = new MutableSinglyLinkedList<>();
                 buffer.appendAll(this);
                 this.first = buffer.first;
                 this.last = buffer.last;
@@ -1415,7 +1413,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
             if (len <= 1) {
                 return;
             }
-            Builder<E> newBuilder = new DynamicLinkedSeq<>();
+            Builder<E> newBuilder = new MutableSinglyLinkedList<>();
             for (E e : this) {
                 newBuilder.prepend(e);
             }
@@ -1809,7 +1807,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
             }
 
             i = 0;
-            DynamicLinkedSeq<E> buffer = new DynamicLinkedSeq<>();
+            MutableSinglyLinkedList<E> buffer = new MutableSinglyLinkedList<>();
             while (list != NIL_NODE && i < ns) {
                 buffer.append(list.head);
                 list = list.tail;
@@ -2029,7 +2027,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
 
         @Override
         public @NotNull <U> ImmutableSeq<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
-            final Builder<U> builder = new DynamicLinkedSeq<>();
+            final Builder<U> builder = new MutableSinglyLinkedList<>();
             Consumer<U> consumer = builder::append;
             for (E e : this) {
                 mapper.accept(e, consumer);
@@ -2039,7 +2037,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
 
         @Override
         public @NotNull <U> ImmutableSeq<U> mapIndexedMulti(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
-            final Builder<U> builder = new DynamicLinkedSeq<>();
+            final Builder<U> builder = new MutableSinglyLinkedList<>();
             Consumer<U> consumer = builder::append;
             int idx = 0;
             for (E e : this) {
@@ -2053,7 +2051,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
             if (this == NIL_NODE) {
                 return nilNode();
             }
-            DynamicLinkedSeq<U> buffer = new DynamicLinkedSeq<>();
+            MutableSinglyLinkedList<U> buffer = new MutableSinglyLinkedList<>();
             Node<E> list = this;
             while (list != NIL_NODE) {
                 buffer.appendAll(mapper.apply(list.head));

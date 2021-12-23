@@ -1,6 +1,7 @@
 package kala.collection;
 
 import kala.collection.internal.SeqIterators;
+import kala.collection.mutable.MutableListIterator;
 import org.jetbrains.annotations.NotNull;
 
 public interface SeqIterator<E> extends java.util.ListIterator<E> {
@@ -51,7 +52,7 @@ public interface SeqIterator<E> extends java.util.ListIterator<E> {
     }
 
     /**
-     * @see kala.collection.mutable.DynamicSeqIterator#add(Object)
+     * @see MutableListIterator#add(Object)
      */
     // @Deprecated
     default void add(E e) throws UnsupportedOperationException {
@@ -59,7 +60,7 @@ public interface SeqIterator<E> extends java.util.ListIterator<E> {
     }
 
     /**
-     * @see kala.collection.mutable.DynamicSeqIterator#remove()
+     * @see MutableListIterator#remove()
      */
     // @Deprecated
     default void remove() throws UnsupportedOperationException {

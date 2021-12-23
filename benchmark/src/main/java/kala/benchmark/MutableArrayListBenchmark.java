@@ -1,6 +1,6 @@
 package kala.benchmark;
 
-import kala.collection.mutable.DynamicArray;
+import kala.collection.mutable.MutableArrayList;
 import org.openjdk.jmh.annotations.*;
 
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 @State(Scope.Benchmark)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-public class DynamicArrayBenchmark {
+public class MutableArrayListBenchmark {
 
     private static final int N = 500000;
 
@@ -34,8 +34,8 @@ public class DynamicArrayBenchmark {
     }
 
     @Benchmark
-    public Object testDynamicArrayAppend() {
-        DynamicArray<Integer> buffer = new DynamicArray<>();
+    public Object testMutableArrayListAppend() {
+        MutableArrayList<Integer> buffer = new MutableArrayList<>();
 
         for (Integer i : data) {
             buffer.append(i);

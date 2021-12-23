@@ -3,7 +3,7 @@ package kala.collection.mutable;
 import kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class AbstractDynamicSeqFactory<E, B extends DynamicSeq<E>> implements CollectionFactory<E, B, B> {
+public abstract class AbstractMutableListFactory<E, B extends MutableList<E>> implements CollectionFactory<E, B, B> {
     @Override
     public void addToBuilder(@NotNull B builder, E value) {
         builder.append(value);

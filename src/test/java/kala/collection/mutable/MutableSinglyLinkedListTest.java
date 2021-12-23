@@ -13,33 +13,33 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class DynamicLinkedSeqTest implements DynamicSeqTestTemplate {
+public final class MutableSinglyLinkedListTest implements MutableListTestTemplate {
 
     @Override
-    public <E> CollectionFactory<E, ?, DynamicLinkedSeq<E>> factory() {
-        return DynamicLinkedSeq.factory();
+    public <E> CollectionFactory<E, ?, MutableSinglyLinkedList<E>> factory() {
+        return MutableSinglyLinkedList.factory();
     }
 
     @Override
-    public <E> DynamicLinkedSeq<E> of(E... elements) {
-        return DynamicLinkedSeq.from(elements);
+    public <E> MutableSinglyLinkedList<E> of(E... elements) {
+        return MutableSinglyLinkedList.from(elements);
     }
 
     @Override
-    public <E> DynamicLinkedSeq<E> from(E[] elements) {
-        return DynamicLinkedSeq.from(elements);
+    public <E> MutableSinglyLinkedList<E> from(E[] elements) {
+        return MutableSinglyLinkedList.from(elements);
     }
 
     @Override
-    public <E> DynamicLinkedSeq<E> from(Iterable<? extends E> elements) {
-        return DynamicLinkedSeq.from(elements);
+    public <E> MutableSinglyLinkedList<E> from(Iterable<? extends E> elements) {
+        return MutableSinglyLinkedList.from(elements);
     }
 
     @Test
     void ensureUnaliasedTest() {
         ImmutableArray<String> values = ImmutableArray.of("value1", "value2", "value3");
 
-        DynamicLinkedSeq<String> seq = DynamicLinkedSeq.from(values);
+        MutableSinglyLinkedList<String> seq = MutableSinglyLinkedList.from(values);
         ImmutableLinkedSeq<String> immSeq = seq.toImmutableLinkedSeq();
 
         assertIterableEquals(values, immSeq);
@@ -55,16 +55,16 @@ public final class DynamicLinkedSeqTest implements DynamicSeqTestTemplate {
 
     @Test
     void removeTest() {
-        var buffer1 = DynamicLinkedSeq.of("A", "B", "C");
+        var buffer1 = MutableSinglyLinkedList.of("A", "B", "C");
 
         assertEquals("A", buffer1.removeAt(0));
-        assertEquals(DynamicLinkedSeq.of("B", "C"), buffer1);
+        assertEquals(MutableSinglyLinkedList.of("B", "C"), buffer1);
 
         assertEquals("C", buffer1.removeAt(1));
-        assertEquals(DynamicLinkedSeq.of("B"), buffer1);
+        assertEquals(MutableSinglyLinkedList.of("B"), buffer1);
 
         assertEquals("B", buffer1.removeAt(0));
-        assertEquals(DynamicLinkedSeq.of(), buffer1);
+        assertEquals(MutableSinglyLinkedList.of(), buffer1);
     }
 
     @Test

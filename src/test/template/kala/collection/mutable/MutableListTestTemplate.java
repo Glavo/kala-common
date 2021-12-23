@@ -11,22 +11,22 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("unchecked")
-public interface DynamicSeqTestTemplate extends MutableSeqTestTemplate {
+public interface MutableListTestTemplate extends MutableSeqTestTemplate {
     @Override
-    <E> CollectionFactory<E, ?, ? extends DynamicSeq<? extends E>> factory();
+    <E> CollectionFactory<E, ?, ? extends MutableList<? extends E>> factory();
 
     @Override
-    <E> DynamicSeq<E> of(E... elements);
+    <E> MutableList<E> of(E... elements);
 
     @Override
-    <E> DynamicSeq<E> from(E[] elements);
+    <E> MutableList<E> from(E[] elements);
 
     @Override
-    <E> DynamicSeq<E> from(Iterable<? extends E> elements);
+    <E> MutableList<E> from(Iterable<? extends E> elements);
 
     @Test
     default void appendTest() {
-        DynamicSeq<Object> b = (DynamicSeq<Object>) factory().empty();
+        MutableList<Object> b = (MutableList<Object>) factory().empty();
         assertIterableEquals(List.of(), b);
         b.append("foo");
         assertIterableEquals(List.of("foo"), b);
@@ -36,7 +36,7 @@ public interface DynamicSeqTestTemplate extends MutableSeqTestTemplate {
         assertIterableEquals(Arrays.asList("foo", "bar", null), b);
 
         for (Integer[] data : data1()) {
-            b = (DynamicSeq<Object>) factory().empty();
+            b = (MutableList<Object>) factory().empty();
             for (Integer i : data) {
                 b.append(i);
             }
@@ -46,7 +46,7 @@ public interface DynamicSeqTestTemplate extends MutableSeqTestTemplate {
 
     @Test
     default void appendAllTest() {
-        DynamicSeq<Object> b = of();
+        MutableList<Object> b = of();
         assertIterableEquals(List.of(), b);
 
         b.appendAll(List.of());
@@ -64,7 +64,7 @@ public interface DynamicSeqTestTemplate extends MutableSeqTestTemplate {
         b.appendAll(List.of("str4", "str5", "str6"));
         assertIterableEquals(List.of("str1", "str2", "str3", "str4", "str5", "str6"), b);
 
-        b = (DynamicSeq<Object>) factory().empty();
+        b = (MutableList<Object>) factory().empty();
         b.appendAll(b);
         assertIterableEquals(List.of(), b);
 
@@ -81,7 +81,7 @@ public interface DynamicSeqTestTemplate extends MutableSeqTestTemplate {
             d12.addAll(Arrays.asList(d2));
 
             {
-                b = (DynamicSeq<Object>) factory().empty();
+                b = (MutableList<Object>) factory().empty();
                 assertIterableEquals(List.of(), b);
                 b.appendAll(d1);
                 assertIterableEquals(Arrays.asList(d1), b);
@@ -89,7 +89,7 @@ public interface DynamicSeqTestTemplate extends MutableSeqTestTemplate {
                 assertIterableEquals(d12, b);
             }
             {
-                b = (DynamicSeq<Object>) factory().empty();
+                b = (MutableList<Object>) factory().empty();
                 assertIterableEquals(List.of(), b);
                 b.appendAll(Arrays.asList(d1));
                 assertIterableEquals(Arrays.asList(d1), b);
@@ -102,7 +102,7 @@ public interface DynamicSeqTestTemplate extends MutableSeqTestTemplate {
             l.addAll(Arrays.asList(data));
             l.addAll(Arrays.asList(data));
 
-            b = (DynamicSeq<Object>) factory().empty();
+            b = (MutableList<Object>) factory().empty();
             b.appendAll(data);
             b.appendAll(b);
             assertIterableEquals(l, b);
@@ -111,7 +111,7 @@ public interface DynamicSeqTestTemplate extends MutableSeqTestTemplate {
 
     @Test
     default void prependTest() {
-        DynamicSeq<Object> b = (DynamicSeq<Object>) factory().empty();
+        MutableList<Object> b = (MutableList<Object>) factory().empty();
         assertIterableEquals(List.of(), b);
         b.prepend("foo");
         assertIterableEquals(List.of("foo"), b);
@@ -120,7 +120,7 @@ public interface DynamicSeqTestTemplate extends MutableSeqTestTemplate {
         b.prepend(null);
         assertIterableEquals(Arrays.asList(null, "bar", "foo"), b);
         for (Integer[] data : data1()) {
-            b = (DynamicSeq<Object>) factory().empty();
+            b = (MutableList<Object>) factory().empty();
             for (int i = data.length - 1; i >= 0; i--) {
                 b.prepend(data[i]);
             }
@@ -130,7 +130,7 @@ public interface DynamicSeqTestTemplate extends MutableSeqTestTemplate {
 
     @Test
     default void prependAllTest() {
-        DynamicSeq<Object> b = (DynamicSeq<Object>) factory().empty();
+        MutableList<Object> b = (MutableList<Object>) factory().empty();
         assertIterableEquals(List.of(), b);
 
         b.prependAll(List.of());
@@ -148,7 +148,7 @@ public interface DynamicSeqTestTemplate extends MutableSeqTestTemplate {
         b.prependAll(List.of("str4", "str5", "str6"));
         assertIterableEquals(List.of("str4", "str5", "str6", "str2", "str3", "str1"), b);
 
-        b = (DynamicSeq<Object>) factory().empty();
+        b = (MutableList<Object>) factory().empty();
         b.prependAll(b);
         assertIterableEquals(List.of(), b);
 
@@ -165,7 +165,7 @@ public interface DynamicSeqTestTemplate extends MutableSeqTestTemplate {
             d21.addAll(Arrays.asList(d1));
 
             {
-                b = (DynamicSeq<Object>) factory().empty();
+                b = (MutableList<Object>) factory().empty();
                 assertIterableEquals(List.of(), b);
                 b.prependAll(d1);
                 assertIterableEquals(Arrays.asList(d1), b);
@@ -173,7 +173,7 @@ public interface DynamicSeqTestTemplate extends MutableSeqTestTemplate {
                 assertIterableEquals(d21, b);
             }
             {
-                b = (DynamicSeq<Object>) factory().empty();
+                b = (MutableList<Object>) factory().empty();
                 assertIterableEquals(List.of(), b);
                 b.prependAll(Arrays.asList(d1));
                 assertIterableEquals(Arrays.asList(d1), b);
@@ -186,7 +186,7 @@ public interface DynamicSeqTestTemplate extends MutableSeqTestTemplate {
             l.addAll(Arrays.asList(data));
             l.addAll(Arrays.asList(data));
 
-            b = (DynamicSeq<Object>) factory().empty();
+            b = (MutableList<Object>) factory().empty();
             b.prependAll(data);
             b.prependAll(b);
             assertIterableEquals(l, b);
@@ -195,14 +195,14 @@ public interface DynamicSeqTestTemplate extends MutableSeqTestTemplate {
 
     @Test
     default void remoteAtTest() {
-        DynamicSeq<Object> empty = of();
+        MutableList<Object> empty = of();
         assertThrows(IndexOutOfBoundsException.class, () -> empty.removeAt(0));
         assertThrows(IndexOutOfBoundsException.class, () -> empty.removeAt(1));
         assertThrows(IndexOutOfBoundsException.class, () -> empty.removeAt(Integer.MAX_VALUE));
         assertThrows(IndexOutOfBoundsException.class, () -> empty.removeAt(-1));
         assertThrows(IndexOutOfBoundsException.class, () -> empty.removeAt(Integer.MIN_VALUE));
 
-        DynamicSeq<String> seq = of("str0", "str1", "str2", "str3", "str4");
+        MutableList<String> seq = of("str0", "str1", "str2", "str3", "str4");
         seq.removeAt(4);
         assertIterableEquals(List.of("str0", "str1", "str2", "str3"), seq);
         seq.removeAt(0);
@@ -213,45 +213,45 @@ public interface DynamicSeqTestTemplate extends MutableSeqTestTemplate {
 
     @Test
     default void retainAllTest() {
-        final DynamicSeq<?> empty = factory().empty();
+        final MutableList<?> empty = factory().empty();
         empty.retainAll(e -> true);
         assertIterableEquals(List.of(), empty);
         empty.retainAll(e -> false);
         assertIterableEquals(List.of(), empty);
 
-        final DynamicSeq<Integer> b1 = of(0, 1, 2, 3, 4, 5);
+        final MutableList<Integer> b1 = of(0, 1, 2, 3, 4, 5);
         b1.retainAll(it -> it > 2);
         assertIterableEquals(List.of(3, 4, 5), b1);
 
-        final DynamicSeq<Integer> b2 = of(0, 1, 2, 3, 4, 5);
+        final MutableList<Integer> b2 = of(0, 1, 2, 3, 4, 5);
         b2.retainAll(it -> it % 2 == 0);
         assertIterableEquals(List.of(0, 2, 4), b2);
     }
 
     @Test
     default void removeAllTest() {
-        final DynamicSeq<?> empty = factory().empty();
+        final MutableList<?> empty = factory().empty();
         empty.removeAll(e -> true);
         assertIterableEquals(List.of(), empty);
         empty.removeAll(e -> false);
         assertIterableEquals(List.of(), empty);
 
-        final DynamicSeq<Integer> b1 = of(0, 1, 2, 3, 4, 5);
+        final MutableList<Integer> b1 = of(0, 1, 2, 3, 4, 5);
         b1.removeAll(it -> it > 2);
         assertIterableEquals(List.of(0, 1, 2), b1);
 
-        final DynamicSeq<Integer> b2 = of(0, 1, 2, 3, 4, 5);
+        final MutableList<Integer> b2 = of(0, 1, 2, 3, 4, 5);
         b2.removeAll(it -> it % 2 == 0);
         assertIterableEquals(List.of(1, 3, 5), b2);
     }
 
     @Test
     default void dropInPlaceTest() {
-        DynamicSeq<Object> empty = of();
+        MutableList<Object> empty = of();
         assertThrows(IllegalArgumentException.class, () -> empty.dropInPlace(-1));
         assertThrows(IllegalArgumentException.class, () -> empty.dropInPlace(Integer.MIN_VALUE));
 
-        DynamicSeq<String> seq = of("str0", "str1", "str2", "str3", "str4");
+        MutableList<String> seq = of("str0", "str1", "str2", "str3", "str4");
         seq.dropInPlace(0);
         assertIterableEquals(List.of("str0", "str1", "str2", "str3", "str4"), seq);
         seq.dropInPlace(1);
@@ -262,11 +262,11 @@ public interface DynamicSeqTestTemplate extends MutableSeqTestTemplate {
 
     @Test
     default void takeInPlaceTest() {
-        DynamicSeq<Object> empty = of();
+        MutableList<Object> empty = of();
         assertThrows(IllegalArgumentException.class, () -> empty.takeInPlace(-1));
         assertThrows(IllegalArgumentException.class, () -> empty.takeInPlace(Integer.MIN_VALUE));
 
-        DynamicSeq<String> seq = of("str0", "str1", "str2", "str3", "str4");
+        MutableList<String> seq = of("str0", "str1", "str2", "str3", "str4");
         seq.takeInPlace(seq.size());
         assertIterableEquals(List.of("str0", "str1", "str2", "str3", "str4"), seq);
         seq.takeInPlace(seq.size() + 1);

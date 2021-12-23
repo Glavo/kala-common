@@ -3,13 +3,13 @@ package kala.collection.immutable;
 import kala.collection.*;
 import kala.collection.base.GenericArrays;
 import kala.collection.base.Traversable;
+import kala.collection.mutable.MutableArrayList;
 import kala.function.*;
 import kala.collection.internal.CollectionHelper;
 import kala.Conditions;
 import kala.tuple.Tuple2;
 import kala.annotations.Covariant;
 import kala.annotations.StaticClass;
-import kala.collection.mutable.DynamicArray;
 import kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -134,14 +134,14 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E> implements I
             return from(((java.util.Collection<E>) values));
         }
 
-        return DynamicArray.<E>from(values).toImmutableArray();
+        return MutableArrayList.<E>from(values).toImmutableArray();
     }
 
     public static <E> @NotNull ImmutableArray<E> from(@NotNull Iterator<? extends E> it) {
         if (!it.hasNext()) {
             return empty();
         }
-        DynamicArray<E> buffer = new DynamicArray<>();
+        MutableArrayList<E> buffer = new MutableArrayList<>();
         while (it.hasNext()) {
             buffer.append(it.next());
         }
@@ -665,7 +665,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E> implements I
 
     @Override
     public <U> @NotNull ImmutableSeq<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
-        final DynamicArray<U> builder = new DynamicArray<>();
+        final MutableArrayList<U> builder = new MutableArrayList<>();
         Consumer<U> consumer = builder::append;
 
         for (Object element : elements) {
@@ -677,7 +677,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E> implements I
 
     @Override
     public <U> @NotNull ImmutableSeq<U> mapIndexedMulti(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
-        final DynamicArray<U> builder = new DynamicArray<>();
+        final MutableArrayList<U> builder = new MutableArrayList<>();
         Consumer<U> consumer = builder::append;
 
         for (int i = 0; i < elements.length; i++) {
@@ -695,7 +695,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E> implements I
             return empty();
         }
 
-        DynamicArray<U> builder = new DynamicArray<>();
+        MutableArrayList<U> builder = new MutableArrayList<>();
         for (Object value : elements) {
             builder.appendAll(mapper.apply((E) value));
         }
@@ -800,7 +800,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E> implements I
         return this;
     }
 
-    private static final class Factory<E> implements CollectionFactory<E, DynamicArray<E>, ImmutableArray<E>> {
+    private static final class Factory<E> implements CollectionFactory<E, MutableArrayList<E>, ImmutableArray<E>> {
         Factory() {
         }
 
@@ -840,28 +840,28 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E> implements I
         }
 
         @Override
-        public DynamicArray<E> newBuilder() {
-            return new DynamicArray<>();
+        public MutableArrayList<E> newBuilder() {
+            return new MutableArrayList<>();
         }
 
         @Override
-        public void addToBuilder(@NotNull DynamicArray<E> buffer, E value) {
+        public void addToBuilder(@NotNull MutableArrayList<E> buffer, E value) {
             buffer.append(value);
         }
 
         @Override
-        public void sizeHint(@NotNull DynamicArray<E> buffer, int size) {
+        public void sizeHint(@NotNull MutableArrayList<E> buffer, int size) {
             buffer.sizeHint(size);
         }
 
         @Override
-        public DynamicArray<E> mergeBuilder(@NotNull DynamicArray<E> buffer1, @NotNull DynamicArray<E> buffer2) {
+        public MutableArrayList<E> mergeBuilder(@NotNull MutableArrayList<E> buffer1, @NotNull MutableArrayList<E> buffer2) {
             buffer1.appendAll(buffer2);
             return buffer1;
         }
 
         @Override
-        public ImmutableArray<E> build(@NotNull DynamicArray<E> buffer) {
+        public ImmutableArray<E> build(@NotNull MutableArrayList<E> buffer) {
             return buffer.toImmutableArray();
         }
 

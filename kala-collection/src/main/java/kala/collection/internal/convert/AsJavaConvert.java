@@ -260,8 +260,8 @@ public final class AsJavaConvert {
         }
     }
 
-    public static class DynamicSeqAsJava<E, C extends DynamicSeq<E>> extends MutableSeqAsJava<E, C> {
-        public DynamicSeqAsJava(@NotNull C source) {
+    public static class MutableListAsJava<E, C extends MutableList<E>> extends MutableSeqAsJava<E, C> {
+        public MutableListAsJava(@NotNull C source) {
             super(source);
         }
 
@@ -293,9 +293,9 @@ public final class AsJavaConvert {
         }
     }
 
-    public static class DynamicIndexedSeqAsJava<E, C extends DynamicSeq<E>>
-            extends DynamicSeqAsJava<E, C> implements RandomAccess {
-        public DynamicIndexedSeqAsJava(@NotNull C source) {
+    public static class MutableIndexedListAsJava<E, C extends MutableList<E>>
+            extends MutableListAsJava<E, C> implements RandomAccess {
+        public MutableIndexedListAsJava(@NotNull C source) {
             super(source);
         }
     }

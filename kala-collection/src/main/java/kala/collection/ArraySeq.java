@@ -6,7 +6,7 @@ import kala.collection.base.Traversable;
 import kala.Conditions;
 import kala.collection.immutable.ImmutableArray;
 import kala.collection.internal.view.IndexedSeqViews;
-import kala.collection.mutable.DynamicArray;
+import kala.collection.mutable.MutableArrayList;
 import kala.collection.factory.CollectionFactory;
 import kala.control.Option;
 import kala.function.IndexedConsumer;
@@ -17,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.UncheckedIOException;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collector;
@@ -135,14 +134,14 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
             return from(((java.util.Collection<E>) values));
         }
 
-        return new ArraySeq<>(DynamicArray.<E>from(values).toArray());
+        return new ArraySeq<>(MutableArrayList.<E>from(values).toArray());
     }
 
     public static <E> @NotNull ArraySeq<E> from(@NotNull Iterator<? extends E> it) {
         if (!it.hasNext()) { // implicit null check of it
             return empty();
         }
-        return new ArraySeq<>(DynamicArray.<E>from(it).toArray());
+        return new ArraySeq<>(MutableArrayList.<E>from(it).toArray());
     }
 
     public static <E> @NotNull ArraySeq<E> from(@NotNull Stream<? extends E> stream) {
@@ -688,7 +687,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     //endregion
 
-    private static final class Factory<E> implements CollectionFactory<E, DynamicArray<E>, ArraySeq<E>> {
+    private static final class Factory<E> implements CollectionFactory<E, MutableArrayList<E>, ArraySeq<E>> {
 
         @Override
         public ArraySeq<E> empty() {
@@ -726,28 +725,28 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         }
 
         @Override
-        public DynamicArray<E> newBuilder() {
-            return new DynamicArray<>();
+        public MutableArrayList<E> newBuilder() {
+            return new MutableArrayList<>();
         }
 
         @Override
-        public void addToBuilder(@NotNull DynamicArray<E> buffer, E value) {
+        public void addToBuilder(@NotNull MutableArrayList<E> buffer, E value) {
             buffer.append(value);
         }
 
         @Override
-        public DynamicArray<E> mergeBuilder(@NotNull DynamicArray<E> builder1, @NotNull DynamicArray<E> builder2) {
+        public MutableArrayList<E> mergeBuilder(@NotNull MutableArrayList<E> builder1, @NotNull MutableArrayList<E> builder2) {
             builder1.appendAll(builder2);
             return builder1;
         }
 
         @Override
-        public void sizeHint(@NotNull DynamicArray<E> buffer, int size) {
+        public void sizeHint(@NotNull MutableArrayList<E> buffer, int size) {
             buffer.sizeHint(size);
         }
 
         @Override
-        public ArraySeq<E> build(@NotNull DynamicArray<E> buffer) {
+        public ArraySeq<E> build(@NotNull MutableArrayList<E> buffer) {
             return new ArraySeq<>(buffer.toArray());
         }
     }

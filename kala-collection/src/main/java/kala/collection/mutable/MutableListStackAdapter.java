@@ -4,12 +4,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 
-final class DynamicSeqStackAdapter<E> implements MutableStack<E>, Serializable {
+final class MutableListStackAdapter<E> implements MutableStack<E>, Serializable {
     private static final long serialVersionUID = -146156819892776856L;
 
-    private final @NotNull DynamicSeq<E> seq;
+    private final @NotNull MutableList<E> seq;
 
-    DynamicSeqStackAdapter(@NotNull DynamicSeq<E> seq) {
+    MutableListStackAdapter(@NotNull MutableList<E> seq) {
         this.seq = seq;
     }
 
@@ -35,6 +35,6 @@ final class DynamicSeqStackAdapter<E> implements MutableStack<E>, Serializable {
 
     @Override
     public String toString() {
-        return "DynamicSeqStackAdapter[" + seq + ']';
+        return "MutableListStackAdapter[" + seq + ']';
     }
 }

@@ -5,7 +5,7 @@ import kala.collection.base.GenericArrays;
 import kala.collection.base.Growable;
 import kala.collection.base.Iterators;
 import kala.collection.internal.SeqIterators;
-import kala.collection.mutable.MutableArray;
+import kala.collection.mutable.MutableArrayList;
 import kala.control.Option;
 import kala.function.CheckedIndexedConsumer;
 import kala.function.IndexedBiFunction;
@@ -14,7 +14,6 @@ import kala.function.IndexedFunction;
 import kala.tuple.Tuple2;
 import kala.tuple.primitive.IntObjTuple2;
 import kala.collection.internal.view.SeqViews;
-import kala.collection.mutable.DynamicArray;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -135,9 +134,9 @@ public interface SeqLike<E> extends CollectionLike<E> {
         if (!it.hasNext()) {
             return it;
         }
-        DynamicArray<E> buffer = ks > 0
-                ? new DynamicArray<>(ks)
-                : new DynamicArray<>();
+        MutableArrayList<E> buffer = ks > 0
+                ? new MutableArrayList<>(ks)
+                : new MutableArrayList<>();
         while (it.hasNext()) {
             buffer.append(it.next());
         }

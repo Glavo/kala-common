@@ -9,7 +9,7 @@ public interface MutableQueue<E> {
 
     @Contract("-> new")
     static <E> MutableQueue<E> create() {
-        return new DynamicDoubleLinkedSeq<>();
+        return new MutableLinkedList<>();
     }
 
     static <E> @NotNull MutableQueue<E> wrapJava(@NotNull java.util.Queue<E> queue) {

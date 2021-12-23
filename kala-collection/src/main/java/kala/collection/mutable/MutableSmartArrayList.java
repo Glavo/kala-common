@@ -16,11 +16,10 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
-import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public final class DynamicSmartArraySeq<E> extends AbstractDynamicSeq<E> implements IndexedSeq<E>, Serializable {
+public final class MutableSmartArrayList<E> extends AbstractMutableList<E> implements IndexedSeq<E>, Serializable {
     private static final long serialVersionUID = 85150510977824651L;
 
     private static final int DEFAULT_CAPACITY = 16;
@@ -31,70 +30,70 @@ public final class DynamicSmartArraySeq<E> extends AbstractDynamicSeq<E> impleme
 
     private int size = 0;
 
-    private DynamicSmartArraySeq(int size, Object[] elements) {
+    private MutableSmartArrayList(int size, Object[] elements) {
         this.size = size;
         this.elem = elements;
     }
 
-    public DynamicSmartArraySeq() {
+    public MutableSmartArrayList() {
     }
 
     //region Static Factories
 
-    public static <E> @NotNull CollectionFactory<E, ?, DynamicSmartArraySeq<E>> factory() {
+    public static <E> @NotNull CollectionFactory<E, ?, MutableSmartArrayList<E>> factory() {
         return (Factory<E>) FACTORY;
     }
 
     @Contract("-> new")
-    public static <E> @NotNull DynamicSmartArraySeq<E> create() {
-        return new DynamicSmartArraySeq<>();
+    public static <E> @NotNull MutableSmartArrayList<E> create() {
+        return new MutableSmartArrayList<>();
     }
 
     @Contract("-> new")
-    public static <E> @NotNull DynamicSmartArraySeq<E> of() {
-        return new DynamicSmartArraySeq<>();
+    public static <E> @NotNull MutableSmartArrayList<E> of() {
+        return new MutableSmartArrayList<>();
     }
 
     @Contract("_ -> new")
-    public static <E> @NotNull DynamicSmartArraySeq<E> of(E value1) {
-        DynamicSmartArraySeq<E> buffer = new DynamicSmartArraySeq<>();
+    public static <E> @NotNull MutableSmartArrayList<E> of(E value1) {
+        MutableSmartArrayList<E> buffer = new MutableSmartArrayList<>();
         buffer.size = 1;
         buffer.elem = value1;
         return buffer;
     }
 
     @Contract("_, _ -> new")
-    public static <E> @NotNull DynamicSmartArraySeq<E> of(E value1, E value2) {
+    public static <E> @NotNull MutableSmartArrayList<E> of(E value1, E value2) {
         Object[] arr = new Object[DEFAULT_CAPACITY];
         arr[0] = value1;
         arr[1] = value2;
 
-        return new DynamicSmartArraySeq<>(2, arr);
+        return new MutableSmartArrayList<>(2, arr);
     }
 
     @Contract("_, _, _ -> new")
-    public static <E> @NotNull DynamicSmartArraySeq<E> of(E value1, E value2, E value3) {
+    public static <E> @NotNull MutableSmartArrayList<E> of(E value1, E value2, E value3) {
         Object[] arr = new Object[DEFAULT_CAPACITY];
         arr[0] = value1;
         arr[1] = value2;
         arr[2] = value3;
 
-        return new DynamicSmartArraySeq<>(3, arr);
+        return new MutableSmartArrayList<>(3, arr);
     }
 
     @Contract("_, _, _, _ -> new")
-    public static <E> @NotNull DynamicSmartArraySeq<E> of(E value1, E value2, E value3, E value4) {
+    public static <E> @NotNull MutableSmartArrayList<E> of(E value1, E value2, E value3, E value4) {
         Object[] arr = new Object[DEFAULT_CAPACITY];
         arr[0] = value1;
         arr[1] = value2;
         arr[2] = value3;
         arr[3] = value4;
 
-        return new DynamicSmartArraySeq<>(4, arr);
+        return new MutableSmartArrayList<>(4, arr);
     }
 
     @Contract("_, _, _, _, _ -> new")
-    public static <E> @NotNull DynamicSmartArraySeq<E> of(E value1, E value2, E value3, E value4, E value5) {
+    public static <E> @NotNull MutableSmartArrayList<E> of(E value1, E value2, E value3, E value4, E value5) {
         Object[] arr = new Object[DEFAULT_CAPACITY];
         arr[0] = value1;
         arr[1] = value2;
@@ -102,54 +101,54 @@ public final class DynamicSmartArraySeq<E> extends AbstractDynamicSeq<E> impleme
         arr[3] = value4;
         arr[4] = value5;
 
-        return new DynamicSmartArraySeq<>(5, arr);
+        return new MutableSmartArrayList<>(5, arr);
     }
 
     @Contract("_ -> new")
-    public static <E> @NotNull DynamicSmartArraySeq<E> of(E... values) {
+    public static <E> @NotNull MutableSmartArrayList<E> of(E... values) {
         return from(values);
     }
 
     @Contract("_ -> new")
-    public static <E> @NotNull DynamicSmartArraySeq<E> from(E @NotNull [] values) {
+    public static <E> @NotNull MutableSmartArrayList<E> from(E @NotNull [] values) {
         final int length = values.length; // implicit null check of values
         switch (length) {
             case 0:
-                return new DynamicSmartArraySeq<>();
+                return new MutableSmartArrayList<>();
             case 1:
-                return DynamicSmartArraySeq.of(values[0]);
+                return MutableSmartArrayList.of(values[0]);
             default:
-                return new DynamicSmartArraySeq<>(
+                return new MutableSmartArrayList<>(
                         length,
                         Arrays.copyOf(values, Math.max(length, DEFAULT_CAPACITY), Object[].class)
                 );
         }
     }
 
-    public static <E> @NotNull DynamicSmartArraySeq<E> from(@NotNull Iterable<? extends E> values) {
-        DynamicSmartArraySeq<E> buffer = new DynamicSmartArraySeq<>();
+    public static <E> @NotNull MutableSmartArrayList<E> from(@NotNull Iterable<? extends E> values) {
+        MutableSmartArrayList<E> buffer = new MutableSmartArrayList<>();
         buffer.appendAll(values);
         return buffer;
     }
 
-    public static <E> @NotNull DynamicSmartArraySeq<E> from(@NotNull Iterator<? extends E> it) {
-        DynamicSmartArraySeq<E> buffer = new DynamicSmartArraySeq<>();
+    public static <E> @NotNull MutableSmartArrayList<E> from(@NotNull Iterator<? extends E> it) {
+        MutableSmartArrayList<E> buffer = new MutableSmartArrayList<>();
         while (it.hasNext()) {
             buffer.append(it.next());
         }
         return buffer;
     }
 
-    public static <E> @NotNull DynamicSmartArraySeq<E> from(@NotNull Stream<? extends E> stream) {
+    public static <E> @NotNull MutableSmartArrayList<E> from(@NotNull Stream<? extends E> stream) {
         return stream.collect(factory());
     }
 
-    public static <E> @NotNull DynamicSmartArraySeq<E> fill(int n, E value) {
+    public static <E> @NotNull MutableSmartArrayList<E> fill(int n, E value) {
         if (n <= 0) {
-            return new DynamicSmartArraySeq<>();
+            return new MutableSmartArrayList<>();
         }
         if (n == 1) {
-            return DynamicSmartArraySeq.of(value);
+            return MutableSmartArrayList.of(value);
         }
 
         Object[] arr = new Object[Integer.max(DEFAULT_CAPACITY, n)];
@@ -157,37 +156,37 @@ public final class DynamicSmartArraySeq<E> extends AbstractDynamicSeq<E> impleme
             Arrays.fill(arr, 0, n, value);
         }
 
-        return new DynamicSmartArraySeq<>(n, arr);
+        return new MutableSmartArrayList<>(n, arr);
     }
 
-    public static <E> @NotNull DynamicSmartArraySeq<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+    public static <E> @NotNull MutableSmartArrayList<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
         if (n <= 0) {
-            return new DynamicSmartArraySeq<>();
+            return new MutableSmartArrayList<>();
         }
         if (n == 1) {
-            return DynamicSmartArraySeq.of(supplier.get());
+            return MutableSmartArrayList.of(supplier.get());
         }
 
         Object[] arr = new Object[Integer.max(DEFAULT_CAPACITY, n)];
         for (int i = 0; i < n; i++) {
             arr[i] = supplier.get();
         }
-        return new DynamicSmartArraySeq<>(n, arr);
+        return new MutableSmartArrayList<>(n, arr);
     }
 
-    public static <E> @NotNull DynamicSmartArraySeq<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+    public static <E> @NotNull MutableSmartArrayList<E> fill(int n, @NotNull IntFunction<? extends E> init) {
         if (n <= 0) {
-            return new DynamicSmartArraySeq<>();
+            return new MutableSmartArrayList<>();
         }
         if (n == 1) {
-            return DynamicSmartArraySeq.of(init.apply(0));
+            return MutableSmartArrayList.of(init.apply(0));
         }
 
         Object[] arr = new Object[Integer.max(DEFAULT_CAPACITY, n)];
         for (int i = 0; i < n; i++) {
             arr[i] = init.apply(i);
         }
-        return new DynamicSmartArraySeq<>(n, arr);
+        return new MutableSmartArrayList<>(n, arr);
     }
 
     //endregion
@@ -225,7 +224,7 @@ public final class DynamicSmartArraySeq<E> extends AbstractDynamicSeq<E> impleme
 
     @Override
     public @NotNull String className() {
-        return "DynamicSmartArraySeq";
+        return "MutableSmartArrayList";
     }
 
     @Override
@@ -538,10 +537,10 @@ public final class DynamicSmartArraySeq<E> extends AbstractDynamicSeq<E> impleme
         }
     }
 
-    private static final class Factory<E> extends AbstractDynamicSeqFactory<E, DynamicSmartArraySeq<E>> {
+    private static final class Factory<E> extends AbstractMutableListFactory<E, MutableSmartArrayList<E>> {
         @Override
-        public DynamicSmartArraySeq<E> newBuilder() {
-            return new DynamicSmartArraySeq<>();
+        public MutableSmartArrayList<E> newBuilder() {
+            return new MutableSmartArrayList<>();
         }
     }
 }
