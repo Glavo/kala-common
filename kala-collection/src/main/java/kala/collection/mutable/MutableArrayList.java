@@ -26,9 +26,10 @@ import java.util.stream.Stream;
 public final class MutableArrayList<E> extends AbstractMutableList<E> implements IndexedSeq<E>, Serializable {
     private static final long serialVersionUID = 2545219250020890853L;
 
-    static final int DEFAULT_CAPACITY = 16;
-
     private static final MutableArrayList.Factory<?> FACTORY = new Factory<>();
+
+    static final int DEFAULT_CAPACITY = 10;
+    static final Object[] DEFAULT_EMPTY_ARRAY = new Object[0];
 
     //region Fields
 
@@ -45,7 +46,7 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
     }
 
     public MutableArrayList() {
-        this(ObjectArrays.EMPTY, 0);
+        this(DEFAULT_EMPTY_ARRAY, 0);
     }
 
     public MutableArrayList(int initialCapacity) {
@@ -213,7 +214,7 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
 
     private Object[] growArray(int minCapacity) {
         int oldCapacity = elements.length;
-        if (oldCapacity == 0) {
+        if (elements == DEFAULT_EMPTY_ARRAY && oldCapacity == 0) {
             return new Object[Math.max(DEFAULT_CAPACITY, minCapacity)];
         }
 
@@ -507,6 +508,12 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
 
         this.elements = elements;
         size += values.length;
+    }
+
+    public void trimToSize() {
+        if (size < elements.length) {
+            elements = size == 0 ? ObjectArrays.EMPTY : Arrays.copyOf(elements, size);
+        }
     }
 
     @Override
