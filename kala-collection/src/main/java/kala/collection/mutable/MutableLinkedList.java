@@ -14,7 +14,7 @@ import java.util.NoSuchElementException;
 import java.util.function.Function;
 
 @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
-public final class MutableLinkedList<E> extends AbstractMutableList<E> implements MutableStack<E>, MutableQueue<E>, MutableDeque<E> {
+public final class MutableLinkedList<E> extends AbstractMutableList<E> implements MutableStack<E>, MutableQueue<E> {
 
     private static final Factory<?> FACTORY = new Factory<>();
 
