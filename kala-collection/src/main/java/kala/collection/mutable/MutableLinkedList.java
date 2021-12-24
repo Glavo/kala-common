@@ -14,7 +14,7 @@ import java.util.NoSuchElementException;
 import java.util.function.Function;
 
 @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
-public final class MutableLinkedList<E> extends AbstractMutableList<E> implements MutableStack<E>, MutableQueue<E> {
+public final class MutableLinkedList<E> extends AbstractMutableList<E> implements MutableStack<E>, MutableQueue<E>, MutableDeque<E> {
 
     private static final Factory<?> FACTORY = new Factory<>();
 
@@ -157,6 +157,10 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
     public @NotNull MutableListIterator<E> seqIterator(int index) {
         Conditions.checkPositionIndex(index, len);
         return new SeqItr(index);
+    }
+
+    public @NotNull MutableStack<E> asStack() {
+        return this;
     }
 
     @Override

@@ -12,15 +12,6 @@ public interface MutableStack<E> {
         return new MutableSinglyLinkedList<>();
     }
 
-    @SuppressWarnings("unchecked")
-    static <E> @NotNull MutableStack<E> wrapMutableList(@NotNull MutableList<E> seq) {
-        Objects.requireNonNull(seq);
-        if (seq instanceof MutableStack) {
-            return ((MutableStack<E>) seq);
-        }
-        return new MutableListStackAdapter<>(seq);
-    }
-
     @Contract(mutates = "this")
     void push(E value);
 

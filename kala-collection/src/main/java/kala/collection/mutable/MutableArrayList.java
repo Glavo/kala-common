@@ -286,7 +286,7 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
     public MutableArrayList<E> clone() {
         final Object[] elements = this.elements;
         final int size = this.size;
-        return new MutableArrayList<>(size == 0 ? ObjectArrays.EMPTY : elements.clone(), size);
+        return new MutableArrayList<>(elements.length == 0 ? elements : elements.clone(), size);
     }
 
     //endregion

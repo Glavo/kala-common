@@ -10,11 +10,11 @@ public final class MutableArraySliceView<E> extends IndexedSeqViews.OfArraySlice
     }
 
     @Override
-    public final @NotNull String className() {
+    public @NotNull String className() {
         return "MutableArraySliceView";
     }
 
-    public final void set(int index, E value) {
+    public void set(int index, E value) {
         Conditions.checkElementIndex(index, endIndex - beginIndex);
         array[beginIndex + index] = value;
     }
