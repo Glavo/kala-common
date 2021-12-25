@@ -1,6 +1,7 @@
 package kala.collection.immutable;
 
 import kala.collection.base.*;
+import kala.control.Option;
 import kala.function.IndexedConsumer;
 import kala.function.IndexedFunction;
 import org.jetbrains.annotations.Debug;
@@ -25,7 +26,7 @@ final class ImmutableVectors {
         static final Vector0 INSTANCE = new Vector0();
 
         private Vector0() {
-            super(GenericArrays.EMPTY_OBJECT_ARRAY);
+            super(ObjectArrays.EMPTY);
         }
 
         @Override
@@ -287,9 +288,30 @@ final class ImmutableVectors {
             return (E) prefix1[0];
         }
 
+
+        @Override
+        public @Nullable E firstOrNull() {
+            return first();
+        }
+
+        @Override
+        public @NotNull Option<E> firstOption() {
+            return Option.some((E) prefix1[0]);
+        }
+
         @Override
         public E last() {
             return (E) prefix1[prefix1.length - 1];
+        }
+
+        @Override
+        public @Nullable E lastOrNull() {
+            return last();
+        }
+
+        @Override
+        public @NotNull Option<E> lastOption() {
+            return Option.some((E) prefix1[prefix1.length - 1]);
         }
 
         @Override
@@ -461,8 +483,28 @@ final class ImmutableVectors {
         }
 
         @Override
+        public @Nullable E firstOrNull() {
+            return first();
+        }
+
+        @Override
+        public @NotNull Option<E> firstOption() {
+            return Option.some((E) prefix1[0]);
+        }
+
+        @Override
         public final E last() {
             return (E) suffix1[suffix1.length - 1];
+        }
+
+        @Override
+        public @Nullable E lastOrNull() {
+            return last();
+        }
+
+        @Override
+        public @NotNull Option<E> lastOption() {
+            return Option.some((E) suffix1[suffix1.length - 1]);
         }
 
         @Override

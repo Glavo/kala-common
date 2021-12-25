@@ -14,7 +14,7 @@ import java.util.NoSuchElementException;
 import java.util.function.Function;
 
 @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
-public final class MutableLinkedList<E> extends AbstractMutableList<E> implements MutableStack<E>, MutableQueue<E> {
+public final class MutableLinkedList<E> extends AbstractMutableList<E> implements MutableStack<E>, MutableListDeque<E> {
 
     private static final Factory<?> FACTORY = new Factory<>();
 
@@ -198,7 +198,6 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
         len++;
     }
 
-
     @Override
     public void append(E value) {
         final Node<E> last = this.last;
@@ -210,16 +209,6 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
             last.next = newNode;
         }
         len++;
-    }
-
-    @Override
-    public void enqueue(E value) {
-        prepend(value);
-    }
-
-    @Override
-    public E dequeue() {
-        return removeLast();
     }
 
     public E removeFirst() {

@@ -1,7 +1,9 @@
 package kala.collection.mutable;
 
+import kala.control.Option;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -17,25 +19,33 @@ public interface MutableQueue<E> {
 
         return new MutableQueue<E>() {
             @Override
+            public boolean isEmpty() {
+                return queue.isEmpty();
+            }
+
+            @Override
             public void enqueue(E value) {
                 queue.add(value);
             }
 
             @Override
-            public E dequeue() {
-                return queue.remove();
-            }
-
-            @Override
-            public boolean isEmpty() {
-                return queue.isEmpty();
+            public @NotNull Option<E> dequeueOption() {
+                return queue.isEmpty() ? Option.none() : Option.some(queue.remove());
             }
         };
     }
 
+    boolean isEmpty();
+
     void enqueue(E value);
 
-    E dequeue();
+    default E dequeue() {
+        return dequeueOption().get();
+    }
 
-    boolean isEmpty();
+    default @Nullable E dequeueOrNull() {
+        return dequeueOption().getOrNull();
+    }
+
+    @NotNull Option<E> dequeueOption();
 }

@@ -164,32 +164,19 @@ public interface SeqLike<E> extends CollectionLike<E> {
     }
 
     default E first() {
-        if (knownSize() == 0) {
-            throw new NoSuchElementException();
-        }
-        return iterator().next();
+        return firstOption().get();
     }
 
     default E first(@NotNull Predicate<? super E> predicate) {
-        if (knownSize() == 0) {
-            throw new NoSuchElementException();
-        }
-        return Iterators.first(iterator(), predicate);
+        return firstOption(predicate).get();
     }
 
     default @Nullable E firstOrNull() {
-        if (knownSize() == 0) {
-            return null;
-        }
-        Iterator<E> it = this.iterator();
-        return it.hasNext() ? it.next() : null;
+        return firstOption().getOrNull();
     }
 
     default @Nullable E firstOrNull(@NotNull Predicate<? super E> predicate) {
-        if (knownSize() == 0) {
-            return null;
-        }
-        return Iterators.firstOrNull(iterator(), predicate);
+        return firstOption(predicate).getOrNull();
     }
 
     default @NotNull Option<E> firstOption() {
@@ -208,29 +195,19 @@ public interface SeqLike<E> extends CollectionLike<E> {
     }
 
     default E last() {
-        return reverseIterator().next();
+        return lastOption().get();
     }
 
     default E last(@NotNull Predicate<? super E> predicate) {
-        if (knownSize() == 0) {
-            throw new NoSuchElementException();
-        }
-        return Iterators.first(reverseIterator(), predicate);
+        return lastOption(predicate).get();
     }
 
     default @Nullable E lastOrNull() {
-        if (knownSize() == 0) {
-            return null;
-        }
-        Iterator<E> it = reverseIterator();
-        return it.hasNext() ? it.next() : null;
+        return lastOption().getOrNull();
     }
 
     default @Nullable E lastOrNull(@NotNull Predicate<? super E> predicate) {
-        if (knownSize() == 0) {
-            return null;
-        }
-        return Iterators.firstOrNull(reverseIterator(), predicate);
+        return lastOption(predicate).getOrNull();
     }
 
     default @NotNull Option<E> lastOption() {
