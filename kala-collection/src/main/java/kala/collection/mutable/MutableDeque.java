@@ -6,6 +6,10 @@ import org.jetbrains.annotations.Nullable;
 
 public interface MutableDeque<E> extends MutableQueue<E> {
 
+    static <E> @NotNull MutableDeque<E> create() {
+        return new MutableCircularArrayList<>();
+    }
+
     boolean isEmpty();
 
     default boolean isNotEmpty() {

@@ -180,7 +180,7 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
 
     @Override
     default @Nullable E firstOrNull() {
-        return isEmpty() ? null : get(0);
+        return isEmpty() ? null : first();
     }
 
     @Override
@@ -197,7 +197,7 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
 
     @Override
     default @NotNull Option<E> firstOption() {
-        return isEmpty() ? Option.none() : Option.some(get(0));
+        return isEmpty() ? Option.none() : Option.some(first());
     }
 
     @Override
@@ -235,8 +235,7 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
 
     @Override
     default @Nullable E lastOrNull() {
-        final int size = size();
-        return size == 0 ? null : get(size - 1);
+        return isEmpty() ? null : last();
     }
 
     @Override
@@ -253,8 +252,7 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
 
     @Override
     default @NotNull Option<E> lastOption() {
-        final int size = size();
-        return size == 0 ? Option.none() : Option.some(get(size - 1));
+        return isEmpty() ? Option.none() : Option.some(last());
     }
 
     @Override

@@ -15,7 +15,6 @@ import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -270,7 +269,7 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
 
     @Contract(mutates = "this")
     @Flow(sourceIsContainer = true)
-    E removeAt(@Range(from = 0, to = Integer.MAX_VALUE) int index);
+    E removeAt(int index);
 
     @Contract(mutates = "this")
     default E removeFirst() {
