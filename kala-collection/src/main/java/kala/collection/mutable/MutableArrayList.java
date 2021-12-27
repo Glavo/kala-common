@@ -453,6 +453,7 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
         }
         if (index == size) {
             append(value);
+            return;
         }
         if (elements.length == size) {
             grow();
