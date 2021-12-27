@@ -95,27 +95,28 @@ public interface SeqTestTemplate extends CollectionTestTemplate, SeqLikeTestTemp
     @Test
     default void fromTest() {
         final Class<?> klass = collectionType();
+        if (klass != null) {
+            try {
+                final MethodHandles.Lookup lookup = MethodHandles.publicLookup();
 
-        try {
-            final MethodHandles.Lookup lookup = MethodHandles.publicLookup();
-
-            final MethodHandle fromArray = lookup.findStatic(klass, "from", MethodType.methodType(klass, Object[].class));
-            final MethodHandle fromIterable = lookup.findStatic(klass, "from", MethodType.methodType(klass, Iterable.class));
-            final MethodHandle fromIterator = lookup.findStatic(klass, "from", MethodType.methodType(klass, Iterator.class));
-            final MethodHandle fromStream = lookup.findStatic(klass, "from", MethodType.methodType(klass, Stream.class));
+                final MethodHandle fromArray = lookup.findStatic(klass, "from", MethodType.methodType(klass, Object[].class));
+                final MethodHandle fromIterable = lookup.findStatic(klass, "from", MethodType.methodType(klass, Iterable.class));
+                final MethodHandle fromIterator = lookup.findStatic(klass, "from", MethodType.methodType(klass, Iterator.class));
+                final MethodHandle fromStream = lookup.findStatic(klass, "from", MethodType.methodType(klass, Stream.class));
 
 
-            for (Integer[] data : data1()) {
-                final List<Integer> dataList = Arrays.asList(data);
+                for (Integer[] data : data1()) {
+                    final List<Integer> dataList = Arrays.asList(data);
 
-                assertIterableEquals(dataList, (Seq<Integer>) fromArray.invoke((Object[]) data));
-                assertIterableEquals(dataList, (Seq<Integer>) fromIterable.invoke(dataList));
-                assertIterableEquals(dataList, (Seq<Integer>) fromIterator.invoke(dataList.iterator()));
-                assertIterableEquals(dataList, (Seq<Integer>) fromStream.invoke(dataList.stream()));
+                    assertIterableEquals(dataList, (Seq<Integer>) fromArray.invoke((Object[]) data));
+                    assertIterableEquals(dataList, (Seq<Integer>) fromIterable.invoke(dataList));
+                    assertIterableEquals(dataList, (Seq<Integer>) fromIterator.invoke(dataList.iterator()));
+                    assertIterableEquals(dataList, (Seq<Integer>) fromStream.invoke(dataList.stream()));
+                }
+
+            } catch (Throwable e) {
+                fail(e);
             }
-
-        } catch (Throwable e) {
-            fail(e);
         }
     }
 

@@ -4,42 +4,7 @@ import kala.control.Option;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface MutableListDeque<E> extends MutableList<E>, MutableDeque<E> {
-    @Override
-    default boolean isEmpty() {
-        return MutableList.super.isEmpty();
-    }
-
-    @Override
-    default E first() {
-        return MutableList.super.first();
-    }
-
-    @Override
-    default @Nullable E firstOrNull() {
-        return MutableList.super.firstOrNull();
-    }
-
-    @Override
-    default @NotNull Option<E> firstOption() {
-        return MutableList.super.firstOption();
-    }
-
-    @Override
-    default E last() {
-        return MutableList.super.last();
-    }
-
-    @Override
-    default @Nullable E lastOrNull() {
-        return MutableList.super.lastOrNull();
-    }
-
-    @Override
-    default @NotNull Option<E> lastOption() {
-        return MutableList.super.lastOption();
-    }
-
+public interface MutableListDeque<E> extends MutableList<E>, MutableDeque<E>, MutableSeqDeque<E> {
     @Override
     default E removeFirst() {
         return MutableList.super.removeFirst();

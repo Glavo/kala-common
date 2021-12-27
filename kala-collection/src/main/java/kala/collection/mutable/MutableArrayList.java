@@ -198,7 +198,7 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
 
     //endregion
 
-    //region ArrayBuffer helpers
+    //region Internal
 
     private void grow() {
         grow(size + 1);

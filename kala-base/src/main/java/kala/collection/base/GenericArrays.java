@@ -27,6 +27,8 @@ public final class GenericArrays {
     public static final Object[] EMPTY_OBJECT_ARRAY = ObjectArrays.EMPTY;
     public static final String[] EMPTY_STRING_ARRAY = new String[0];
 
+    public static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
+
     //region Static Factories
 
     @Contract(pure = true)

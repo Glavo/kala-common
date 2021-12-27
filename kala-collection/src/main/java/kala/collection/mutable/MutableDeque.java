@@ -8,49 +8,53 @@ public interface MutableDeque<E> extends MutableQueue<E> {
 
     boolean isEmpty();
 
+    default boolean isNotEmpty() {
+        return !isEmpty();
+    }
+
     void prepend(E value);
 
     void append(E value);
 
-    E removeFirst();
+    default E removeFirst() {
+        return removeFirstOption().get();
+    }
 
     default @Nullable E removeFirstOrNull() {
-        return isEmpty() ? null : removeFirst();
+        return removeFirstOption().getOrNull();
     }
 
-    default @NotNull Option<E> removeFirstOption() {
-        return isEmpty() ? Option.none() : Option.some(removeFirst());
-    }
+    @NotNull Option<E> removeFirstOption();
 
-    E removeLast();
+    default E removeLast() {
+        return removeLastOption().get();
+    }
 
     default @Nullable E removeLastOrNull() {
-        return isEmpty() ? null : removeLast();
+        return removeLastOption().getOrNull();
     }
 
-    default @NotNull Option<E> removeLastOption() {
-        return isEmpty() ? Option.none() : Option.some(removeLast());
-    }
+    @NotNull Option<E> removeLastOption();
 
-    E first();
+    default E first() {
+        return firstOption().get();
+    }
 
     default @Nullable E firstOrNull() {
-        return isEmpty() ? null : first();
+        return firstOption().getOrNull();
     }
 
-    default @NotNull Option<E> firstOption() {
-        return isEmpty() ? Option.none() : Option.some(first());
-    }
+    @NotNull Option<E> firstOption();
 
-    E last();
+    default E last() {
+        return lastOption().get();
+    }
 
     default @Nullable E lastOrNull() {
-        return isEmpty() ? null : last();
+        return lastOption().getOrNull();
     }
 
-    default @NotNull Option<E> lastOption() {
-        return isEmpty() ? Option.none() : Option.some(last());
-    }
+    @NotNull Option<E> lastOption();
 
     @Override
     default void enqueue(E value) {
@@ -59,12 +63,12 @@ public interface MutableDeque<E> extends MutableQueue<E> {
 
     @Override
     default E dequeue() {
-        return removeLast();
+        return dequeueOption().get();
     }
 
     @Override
     default @Nullable E dequeueOrNull() {
-        return removeLastOrNull();
+        return dequeueOption().getOrNull();
     }
 
     @Override
