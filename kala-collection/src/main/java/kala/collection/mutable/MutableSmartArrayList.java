@@ -324,6 +324,17 @@ public final class MutableSmartArrayList<E> extends AbstractMutableList<E> imple
         if (oldSize == 0) {
             elem = value;
             this.size = 1;
+        } else if (oldSize == 1) {
+            Object[] arr = new Object[DEFAULT_CAPACITY];
+            if (index == 0) {
+                arr[0] = value;
+                arr[1] = this.elem;
+            } else {
+                arr[0] = this.elem;
+                arr[1] = value;
+            }
+            this.elem = arr;
+            this.size = 2;
         } else {
             Object[] arr = (Object[]) this.elem;
             if (arr.length == oldSize) {

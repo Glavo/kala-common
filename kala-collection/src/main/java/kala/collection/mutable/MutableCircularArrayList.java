@@ -19,7 +19,8 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public final class MutableCircularArrayList<E> extends AbstractMutableList<E> implements MutableIndexedListDeque<E>, Serializable {
+public final class MutableCircularArrayList<E> extends AbstractMutableList<E>
+        implements MutableIndexedListDeque<E>, Serializable {
     private static final long serialVersionUID = -4166302067142375121L;
 
     private static final Factory<?> FACTORY = new Factory<>();
@@ -91,9 +92,15 @@ public final class MutableCircularArrayList<E> extends AbstractMutableList<E> im
             newElements = Arrays.copyOf(elements, newCapacity);
         } else {
             newElements = new Object[newCapacity];
+            /*
             System.arraycopy(elements, 0, newElements, 0, end);
             System.arraycopy(elements, begin, newElements, begin + (newCapacity - oldCapacity), oldCapacity - begin);
             begin += newCapacity - oldCapacity;
+             */
+            System.arraycopy(elements, begin, newElements, 0, elements.length - begin);
+            System.arraycopy(elements, 0, newElements, elements.length - begin, end);
+            begin = 0;
+            end = size;
         }
         this.elements = newElements;
     }
@@ -338,12 +345,13 @@ public final class MutableCircularArrayList<E> extends AbstractMutableList<E> im
             }
             elements[targetIndex] = value;
         } else {
-            final int targetIndex = inc(begin, index, elements.length);
+            int targetIndex = inc(begin, index, elements.length);
             if (targetIndex <= end) {
                 System.arraycopy(elements, targetIndex, elements, targetIndex + 1, end - targetIndex);
                 elements[targetIndex] = value;
                 end++;
             } else {
+                targetIndex--;
                 System.arraycopy(elements, begin, elements, begin - 1, targetIndex - begin + 1);
                 elements[targetIndex] = value;
                 begin--;

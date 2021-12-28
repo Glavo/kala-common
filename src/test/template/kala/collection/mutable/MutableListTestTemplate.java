@@ -4,9 +4,7 @@ import kala.collection.base.GenericArrays;
 import kala.collection.factory.CollectionFactory;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -194,7 +192,7 @@ public interface MutableListTestTemplate extends MutableSeqTestTemplate {
     }
 
     @Test
-    default void remoteAtTest() {
+    default void removeAtTest() {
         MutableList<Object> empty = of();
         assertThrows(IndexOutOfBoundsException.class, () -> empty.removeAt(0));
         assertThrows(IndexOutOfBoundsException.class, () -> empty.removeAt(1));
@@ -243,6 +241,83 @@ public interface MutableListTestTemplate extends MutableSeqTestTemplate {
         final MutableList<Integer> b2 = of(0, 1, 2, 3, 4, 5);
         b2.removeAll(it -> it % 2 == 0);
         assertIterableEquals(List.of(1, 3, 5), b2);
+    }
+
+    @Test
+    default void insertTest() {
+        MutableList<String> empty = of();
+        assertThrows(IndexOutOfBoundsException.class, () -> empty.insert(-1, "value"));
+        assertThrows(IndexOutOfBoundsException.class, () -> empty.insert(Integer.MAX_VALUE, "value"));
+        assertThrows(IndexOutOfBoundsException.class, () -> empty.insert(2, "value"));
+        assertThrows(IndexOutOfBoundsException.class, () -> empty.insert(Integer.MIN_VALUE, "value"));
+
+        MutableList<String> l1 = of();
+        l1.insert(0, "value0");
+        assertIterableEquals(List.of("value0"), l1);
+
+        l1.insert(0, "value1");
+        assertIterableEquals(List.of("value1", "value0"), l1);
+
+        l1.insert(2, "value2");
+        assertIterableEquals(List.of("value1", "value0", "value2"), l1);
+
+        {
+            final int testListCount = 4;
+
+            List<MutableList<String>> listList = new ArrayList<>();
+            List<LinkedList<String>> resList = new ArrayList<>();
+
+            for (int i = 0; i < testListCount; i++) {
+                listList.add(of());
+                resList.add(new LinkedList<>());
+            }
+
+            for (int i = 0; i < 32; i++) {
+                String value = "value" + i;
+
+                listList.get(0).insert(0, value);
+                resList.get(0).add(0, value);
+
+                listList.get(1).insert(listList.get(1).size(), value);
+                resList.get(1).add(resList.get(1).size(), value);
+
+                if (i % 2 == 0) {
+                    listList.get(2).insert(0, value);
+                    resList.get(2).add(0, value);
+
+                    listList.get(3).prepend(value);
+                    resList.get(3).addFirst(value);
+                } else {
+                    listList.get(2).insert(listList.get(2).size(), value);
+                    resList.get(2).add(resList.get(2).size(), value);
+
+                    listList.get(3).append(value);
+                    resList.get(3).addLast(value);
+                }
+            }
+            // assert
+            for (int i = 0; i < testListCount; i++) {
+                assertIterableEquals(resList.get(i), listList.get(i));
+            }
+
+            Random random = new Random(0);
+            for (int i = 0; i < 128; i++) {
+                var idx = random.nextInt(32 + i);
+                String value = "random insert value" + i;
+
+                for (int li = 0; li < testListCount; li++) {
+                    listList.get(li).insert(idx, value);
+                    resList.get(li).add(idx, value);
+                }
+            }
+
+            // assert
+            for (int i = 0; i < testListCount; i++) {
+                int finalI = i;
+                assertIterableEquals(resList.get(i), listList.get(i), () ->
+                        "expected: %s, actual: %s".formatted(resList.get(finalI), listList.get(finalI)));
+            }
+        }
     }
 
     @Test
