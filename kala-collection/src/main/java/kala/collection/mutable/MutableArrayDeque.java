@@ -7,10 +7,8 @@ import kala.collection.factory.CollectionFactory;
 import kala.control.Option;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Range;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -19,7 +17,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public final class MutableCircularArrayList<E> extends AbstractMutableList<E>
+public final class MutableArrayDeque<E> extends AbstractMutableList<E>
         implements MutableIndexedListDeque<E>, Serializable {
     private static final long serialVersionUID = -4166302067142375121L;
 
@@ -31,17 +29,17 @@ public final class MutableCircularArrayList<E> extends AbstractMutableList<E>
     private int begin = -1;
     private int end = 0;
 
-    private MutableCircularArrayList(Object[] elements, int begin, int end) {
+    private MutableArrayDeque(Object[] elements, int begin, int end) {
         this.elements = elements;
         this.begin = begin;
         this.end = end;
     }
 
-    public MutableCircularArrayList() {
+    public MutableArrayDeque() {
         this.elements = ObjectArrays.EMPTY;
     }
 
-    public MutableCircularArrayList(int initialCapacity) {
+    public MutableArrayDeque(int initialCapacity) {
         if (initialCapacity < 0) {
             throw new IllegalArgumentException("illegal initialCapacity: " + initialCapacity);
         }
@@ -115,136 +113,136 @@ public final class MutableCircularArrayList<E> extends AbstractMutableList<E>
 
     //region Static Factories
 
-    public static <E> @NotNull CollectionFactory<E, ?, MutableCircularArrayList<E>> factory() {
+    public static <E> @NotNull CollectionFactory<E, ?, MutableArrayDeque<E>> factory() {
         return (Factory<E>) FACTORY;
     }
 
-    public static <E> MutableCircularArrayList<E> create() {
-        return new MutableCircularArrayList<>();
+    public static <E> MutableArrayDeque<E> create() {
+        return new MutableArrayDeque<>();
     }
 
-    public static <E> MutableCircularArrayList<E> create(int initialCapacity) {
-        return new MutableCircularArrayList<>(initialCapacity);
+    public static <E> MutableArrayDeque<E> create(int initialCapacity) {
+        return new MutableArrayDeque<>(initialCapacity);
     }
 
     @Contract("-> new")
-    public static <E> @NotNull MutableCircularArrayList<E> of() {
-        return new MutableCircularArrayList<>();
+    public static <E> @NotNull MutableArrayDeque<E> of() {
+        return new MutableArrayDeque<>();
     }
 
     @Contract("_ -> new")
-    public static <E> @NotNull MutableCircularArrayList<E> of(E value1) {
+    public static <E> @NotNull MutableArrayDeque<E> of(E value1) {
         Object[] arr = new Object[DEFAULT_CAPACITY];
         arr[0] = value1;
-        return new MutableCircularArrayList<>(arr, 0, 1);
+        return new MutableArrayDeque<>(arr, 0, 1);
     }
 
     @Contract("_, _ -> new")
-    public static <E> @NotNull MutableCircularArrayList<E> of(E value1, E value2) {
+    public static <E> @NotNull MutableArrayDeque<E> of(E value1, E value2) {
         Object[] arr = new Object[DEFAULT_CAPACITY];
         arr[0] = value1;
         arr[1] = value2;
-        return new MutableCircularArrayList<>(arr, 0, 2);
+        return new MutableArrayDeque<>(arr, 0, 2);
     }
 
     @Contract("_, _, _ -> new")
-    public static <E> @NotNull MutableCircularArrayList<E> of(E value1, E value2, E value3) {
+    public static <E> @NotNull MutableArrayDeque<E> of(E value1, E value2, E value3) {
         Object[] arr = new Object[DEFAULT_CAPACITY];
         arr[0] = value1;
         arr[1] = value2;
         arr[2] = value3;
-        return new MutableCircularArrayList<>(arr, 0, 3);
+        return new MutableArrayDeque<>(arr, 0, 3);
     }
 
     @Contract("_, _, _, _ -> new")
-    public static <E> @NotNull MutableCircularArrayList<E> of(E value1, E value2, E value3, E value4) {
+    public static <E> @NotNull MutableArrayDeque<E> of(E value1, E value2, E value3, E value4) {
         Object[] arr = new Object[DEFAULT_CAPACITY];
         arr[0] = value1;
         arr[1] = value2;
         arr[2] = value3;
         arr[3] = value4;
-        return new MutableCircularArrayList<>(arr, 0, 4);
+        return new MutableArrayDeque<>(arr, 0, 4);
     }
 
     @Contract("_, _, _, _, _ -> new")
-    public static <E> @NotNull MutableCircularArrayList<E> of(E value1, E value2, E value3, E value4, E value5) {
+    public static <E> @NotNull MutableArrayDeque<E> of(E value1, E value2, E value3, E value4, E value5) {
         Object[] arr = new Object[DEFAULT_CAPACITY];
         arr[0] = value1;
         arr[1] = value2;
         arr[2] = value3;
         arr[3] = value4;
         arr[4] = value5;
-        return new MutableCircularArrayList<>(arr, 0, 5);
+        return new MutableArrayDeque<>(arr, 0, 5);
     }
 
     @Contract("_ -> new")
-    public static <E> @NotNull MutableCircularArrayList<E> of(E... values) {
+    public static <E> @NotNull MutableArrayDeque<E> of(E... values) {
         return from(values);
     }
 
     @Contract("_ -> new")
-    public static <E> @NotNull MutableCircularArrayList<E> from(E @NotNull [] values) {
+    public static <E> @NotNull MutableArrayDeque<E> from(E @NotNull [] values) {
         int length = values.length; // implicit null check of values
         if (length == 0) {
-            return new MutableCircularArrayList<>();
+            return new MutableArrayDeque<>();
         }
 
         Object[] newValues = Arrays.copyOf(values, length, Object[].class);
-        return new MutableCircularArrayList<>(newValues, 0, length);
+        return new MutableArrayDeque<>(newValues, 0, length);
     }
 
-    public static <E> @NotNull MutableCircularArrayList<E> from(@NotNull Iterable<? extends E> values) {
-        MutableCircularArrayList<E> buffer = new MutableCircularArrayList<>();
+    public static <E> @NotNull MutableArrayDeque<E> from(@NotNull Iterable<? extends E> values) {
+        MutableArrayDeque<E> buffer = new MutableArrayDeque<>();
         buffer.appendAll(values);
         return buffer;
     }
 
-    public static <E> @NotNull MutableCircularArrayList<E> from(@NotNull Iterator<? extends E> it) {
-        MutableCircularArrayList<E> buffer = new MutableCircularArrayList<>();
+    public static <E> @NotNull MutableArrayDeque<E> from(@NotNull Iterator<? extends E> it) {
+        MutableArrayDeque<E> buffer = new MutableArrayDeque<>();
         while (it.hasNext()) {
             buffer.append(it.next());
         }
         return buffer;
     }
 
-    public static <E> @NotNull MutableCircularArrayList<E> from(@NotNull Stream<? extends E> stream) {
+    public static <E> @NotNull MutableArrayDeque<E> from(@NotNull Stream<? extends E> stream) {
         return stream.collect(factory());
     }
 
-    public static <E> @NotNull MutableCircularArrayList<E> fill(int n, E value) {
+    public static <E> @NotNull MutableArrayDeque<E> fill(int n, E value) {
         if (n <= 0) {
-            return new MutableCircularArrayList<>();
+            return new MutableArrayDeque<>();
         }
 
         Object[] arr = new Object[Integer.max(DEFAULT_CAPACITY, n)];
         if (value != null) {
             Arrays.fill(arr, 0, n, value);
         }
-        return new MutableCircularArrayList<>(arr, 0, n);
+        return new MutableArrayDeque<>(arr, 0, n);
     }
 
-    public static <E> @NotNull MutableCircularArrayList<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+    public static <E> @NotNull MutableArrayDeque<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
         if (n <= 0) {
-            return new MutableCircularArrayList<>();
+            return new MutableArrayDeque<>();
         }
 
         Object[] arr = new Object[Integer.max(DEFAULT_CAPACITY, n)];
         for (int i = 0; i < n; i++) {
             arr[i] = supplier.get();
         }
-        return new MutableCircularArrayList<>(arr, 0, n);
+        return new MutableArrayDeque<>(arr, 0, n);
     }
 
-    public static <E> @NotNull MutableCircularArrayList<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+    public static <E> @NotNull MutableArrayDeque<E> fill(int n, @NotNull IntFunction<? extends E> init) {
         if (n <= 0) {
-            return new MutableCircularArrayList<>();
+            return new MutableArrayDeque<>();
         }
 
         Object[] arr = new Object[Integer.max(DEFAULT_CAPACITY, n)];
         for (int i = 0; i < n; i++) {
             arr[i] = init.apply(i);
         }
-        return new MutableCircularArrayList<>(arr, 0, n);
+        return new MutableArrayDeque<>(arr, 0, n);
     }
 
     //endregion
@@ -253,7 +251,7 @@ public final class MutableCircularArrayList<E> extends AbstractMutableList<E>
 
     @Override
     public @NotNull String className() {
-        return "MutableCircularArrayList";
+        return "MutableArrayDeque";
     }
 
     @Override
@@ -501,10 +499,10 @@ public final class MutableCircularArrayList<E> extends AbstractMutableList<E>
 
     //endregion
 
-    private static final class Factory<E> extends AbstractMutableListFactory<E, MutableCircularArrayList<E>> {
+    private static final class Factory<E> extends AbstractMutableListFactory<E, MutableArrayDeque<E>> {
         @Override
-        public MutableCircularArrayList<E> newBuilder() {
-            return new MutableCircularArrayList<>();
+        public MutableArrayDeque<E> newBuilder() {
+            return new MutableArrayDeque<>();
         }
     }
 }
