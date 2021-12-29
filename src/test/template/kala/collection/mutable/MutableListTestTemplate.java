@@ -200,13 +200,15 @@ public interface MutableListTestTemplate extends MutableSeqTestTemplate {
         assertThrows(IndexOutOfBoundsException.class, () -> empty.removeAt(-1));
         assertThrows(IndexOutOfBoundsException.class, () -> empty.removeAt(Integer.MIN_VALUE));
 
-        MutableList<String> seq = of("str0", "str1", "str2", "str3", "str4");
-        seq.removeAt(4);
-        assertIterableEquals(List.of("str0", "str1", "str2", "str3"), seq);
-        seq.removeAt(0);
-        assertIterableEquals(List.of("str1", "str2", "str3"), seq);
-        seq.removeAt(1);
-        assertIterableEquals(List.of("str1", "str3"), seq);
+        MutableList<String> list = of("str0", "str1", "str2", "str3", "str4");
+        list.removeAt(4);
+        assertIterableEquals(List.of("str0", "str1", "str2", "str3"), list);
+        list.removeAt(0);
+        assertIterableEquals(List.of("str1", "str2", "str3"), list);
+        list.removeAt(1);
+        assertIterableEquals(List.of("str1", "str3"), list);
+
+
     }
 
     @Test

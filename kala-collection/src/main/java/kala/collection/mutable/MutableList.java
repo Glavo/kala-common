@@ -5,6 +5,7 @@ import kala.annotations.ReplaceWith;
 import kala.collection.ArraySeq;
 import kala.collection.Seq;
 import kala.collection.base.Growable;
+import kala.collection.base.Traversable;
 import kala.collection.internal.CollectionHelper;
 import kala.collection.internal.SeqIterators;
 import kala.collection.internal.convert.AsJavaConvert;
@@ -247,6 +248,14 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
             int index,
             @Flow(sourceIsContainer = true, targetIsContainer = true) E @NotNull [] values) {
         insertAll(index, ArraySeq.wrap(values));
+    }
+
+    @Contract(mutates = "this")
+    default void insertAll(
+            int index,
+            @NotNull @Flow(sourceIsContainer = true, targetIsContainer = true) Traversable<? extends E> values
+    ) {
+        insertAll(index, (Iterable<? extends E>) values);
     }
 
     @Contract(mutates = "this")

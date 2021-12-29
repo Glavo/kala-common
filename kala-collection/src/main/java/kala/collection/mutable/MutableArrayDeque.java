@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.DoubleSummaryStatistics;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.IntFunction;
@@ -25,9 +26,9 @@ public final class MutableArrayDeque<E> extends AbstractMutableList<E>
 
     static final int DEFAULT_CAPACITY = 16;
 
-    private Object[] elements;
-    private int begin = -1;
-    private int end = 0;
+    Object[] elements;
+    int begin = -1;
+    int end = 0;
 
     private MutableArrayDeque(Object[] elements, int begin, int end) {
         this.elements = elements;
@@ -90,11 +91,6 @@ public final class MutableArrayDeque<E> extends AbstractMutableList<E>
             newElements = Arrays.copyOf(elements, newCapacity);
         } else {
             newElements = new Object[newCapacity];
-            /*
-            System.arraycopy(elements, 0, newElements, 0, end);
-            System.arraycopy(elements, begin, newElements, begin + (newCapacity - oldCapacity), oldCapacity - begin);
-            begin += newCapacity - oldCapacity;
-             */
             System.arraycopy(elements, begin, newElements, 0, elements.length - begin);
             System.arraycopy(elements, 0, newElements, elements.length - begin, end);
             begin = 0;
@@ -349,10 +345,58 @@ public final class MutableArrayDeque<E> extends AbstractMutableList<E>
                 elements[targetIndex] = value;
                 end++;
             } else {
-                targetIndex--;
-                System.arraycopy(elements, begin, elements, begin - 1, targetIndex - begin + 1);
-                elements[targetIndex] = value;
+                System.arraycopy(elements, begin, elements, begin - 1, targetIndex - begin);
+                elements[targetIndex - 1] = value;
                 begin--;
+            }
+        }
+    }
+
+    @Override
+    public void insertAll(int index, E @NotNull [] values) {
+        final int oldSize = size();
+        Conditions.checkPositionIndex(index, oldSize);
+
+        final int valuesLength = values.length;
+        if (valuesLength == 0) {
+            return;
+        }
+
+        final int newSize = oldSize + valuesLength;
+        if (newSize < 0) {
+            throw new OutOfMemoryError();
+        }
+
+        if (newSize > elements.length) {
+            grow(newSize);
+        }
+
+        if (oldSize == 0) {
+            System.arraycopy(values, 0, elements, 0, valuesLength);
+            begin = 0;
+            end = valuesLength;
+        } else if (begin < end) {
+            if (newSize <= elements.length - begin) {
+                System.arraycopy(elements, begin + index, elements, begin + index + valuesLength, valuesLength);
+                System.arraycopy(values, 0, elements, begin + index, valuesLength);
+                end = begin + newSize;
+            } else {
+                System.arraycopy(elements, begin, elements, 0, index);
+                System.arraycopy(elements, begin + index, elements, begin + index + valuesLength, oldSize - index);
+                System.arraycopy(values, 0, elements, index, valuesLength);
+                begin = 0;
+                end = newSize;
+            }
+        } else {
+            int targetIndex = inc(begin, index, elements.length);
+            if (targetIndex <= end) {
+                System.arraycopy(elements, targetIndex, elements, targetIndex + valuesLength, end - targetIndex);
+                System.arraycopy(values, 0, elements, targetIndex, valuesLength);
+                end += valuesLength;
+            } else {
+                System.arraycopy(elements, begin, elements, begin - valuesLength, targetIndex - begin);
+                System.arraycopy(values, 0, elements, targetIndex - valuesLength, valuesLength);
+                begin -= valuesLength;
             }
         }
     }
@@ -381,8 +425,8 @@ public final class MutableArrayDeque<E> extends AbstractMutableList<E>
                 System.arraycopy(elements, targetIndex + 1, elements, targetIndex, end - targetIndex - 1);
                 end--;
             } else {
-                System.arraycopy(elements, begin, elements, begin + 1, targetIndex - begin + 1);
-                begin++;
+                System.arraycopy(elements, begin, elements, begin + 1, targetIndex - begin);
+                begin = inc(begin, elements.length);
             }
         }
 
@@ -414,12 +458,12 @@ public final class MutableArrayDeque<E> extends AbstractMutableList<E>
         if (oldSize == elements.length) {
             grow();
         }
+        elements[end] = value;
+        end = inc(end, elements.length);
+
         if (oldSize == 0) {
             begin = 0;
         }
-
-        elements[end] = value;
-        end = inc(end, elements.length);
     }
 
     @Override
