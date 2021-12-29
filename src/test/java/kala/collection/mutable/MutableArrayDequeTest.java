@@ -62,11 +62,10 @@ public final class MutableArrayDequeTest implements MutableListTestTemplate {
 
         MutableArrayDeque<String> l = new MutableArrayDeque<>(4);
         l.appendAll(List.of("value0", "value1", "value2", "value3"));
-        fail("%s %s %s %s".formatted(Arrays.toString(l.elements), l.begin, l.end, l));
         l.removeFirst();
         l.removeFirst();
         l.insert(0, "insert value");
 
-        assertIterableEquals(List.of("insert value", "value2", "value3"), l, () -> "%s %s %s".formatted(Arrays.toString(l.elements), l.begin, l.end));
+        assertIterableEquals(List.of("insert value", "value2", "value3"), l);
     }
 }
