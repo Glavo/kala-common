@@ -33,7 +33,7 @@ public final class Conditions {
         if (index >= size) {
             throw new IndexOutOfBoundsException("index(" + index + ") >= size(" + size + ")");
         }
-        assert false;
+        throw new AssertionError();
     }
 
     public static void checkPositionIndex(int index, @Range(from = 0, to = Integer.MAX_VALUE) int size) throws IndexOutOfBoundsException {
@@ -54,7 +54,7 @@ public final class Conditions {
         if (index > size) {
             throw new IndexOutOfBoundsException("index(" + index + ") > size(" + size + ")");
         }
-        assert false;
+        throw new AssertionError();
     }
 
     public static void checkPositionIndices(int beginIndex, int endIndex,

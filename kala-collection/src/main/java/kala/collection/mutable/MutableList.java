@@ -141,7 +141,6 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
     }
 
 
-
     //endregion
 
     @Contract(mutates = "this")
@@ -264,15 +263,13 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
             @NotNull @Flow(sourceIsContainer = true, targetIsContainer = true) Iterable<? extends E> values
     ) {
         Objects.requireNonNull(values);
-        if (values == this) {
-            for (E e : this.toImmutableSeq()) { // avoid mutating under our own iterator
-                //noinspection ConstantConditions
-                insert(index++, e);
-            }
-        } else {
-            for (E e : values) {
-                insert(index++, e);
-            }
+        if (isEmpty() && index != 0) {
+            throw new IndexOutOfBoundsException("Index out of range: " + index);
+        }
+
+        Object[] valuesArray = CollectionHelper.asArray(values);
+        for (Object e : valuesArray) {
+            insert(index++, (E) e);
         }
     }
 

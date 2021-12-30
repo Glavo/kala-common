@@ -13,7 +13,7 @@ public final class SimpleIterable<E> implements Iterable<E> {
     }
 
     @Override
-    public final @NotNull Iterator<E> iterator() {
+    public @NotNull Iterator<E> iterator() {
         return (Iterator<E>) source.iterator();
     }
 }

@@ -1,5 +1,6 @@
 package kala.collection.mutable;
 
+import kala.collection.SimpleIterable;
 import kala.collection.base.GenericArrays;
 import kala.collection.factory.CollectionFactory;
 import org.junit.jupiter.api.Test;
@@ -250,6 +251,7 @@ public interface MutableListTestTemplate extends MutableSeqTestTemplate {
         MutableList<String> empty = of();
         assertThrows(IndexOutOfBoundsException.class, () -> empty.insert(-1, "value"));
         assertThrows(IndexOutOfBoundsException.class, () -> empty.insert(Integer.MAX_VALUE, "value"));
+        assertThrows(IndexOutOfBoundsException.class, () -> empty.insert(1, "value"));
         assertThrows(IndexOutOfBoundsException.class, () -> empty.insert(2, "value"));
         assertThrows(IndexOutOfBoundsException.class, () -> empty.insert(Integer.MIN_VALUE, "value"));
 
@@ -318,6 +320,39 @@ public interface MutableListTestTemplate extends MutableSeqTestTemplate {
                 int finalI = i;
                 assertIterableEquals(resList.get(i), listList.get(i), () ->
                         "expected: %s, actual: %s".formatted(resList.get(finalI), listList.get(finalI)));
+            }
+        }
+    }
+
+    @Test
+    default void insertAllTest() {
+        // empty test
+        {
+            String[][] arrays = {
+                    {},
+                    {"value"},
+                    {"value0", "value1", "value2", "value3", "value4", "value5", "value6", "value7"}
+            };
+
+            Iterable<String>[] iterables =
+                    Arrays.stream(arrays)
+                            .map(it -> new SimpleIterable<>(Arrays.asList(it)))
+                            .toArray(Iterable[]::new);
+
+            MutableList<String> empty = of();
+
+            for (String[] array : arrays) {
+                assertThrows(IndexOutOfBoundsException.class, () -> empty.insertAll(-1, array));
+                assertThrows(IndexOutOfBoundsException.class, () -> empty.insertAll(1, array));
+                assertThrows(IndexOutOfBoundsException.class, () -> empty.insertAll(Integer.MAX_VALUE, array));
+                assertThrows(IndexOutOfBoundsException.class, () -> empty.insertAll(Integer.MIN_VALUE, array));
+            }
+
+            for (Iterable<String> iterable : iterables) {
+                assertThrows(IndexOutOfBoundsException.class, () -> empty.insertAll(-1, iterable));
+                assertThrows(IndexOutOfBoundsException.class, () -> empty.insertAll(1, iterable));
+                assertThrows(IndexOutOfBoundsException.class, () -> empty.insertAll(Integer.MAX_VALUE, iterable));
+                assertThrows(IndexOutOfBoundsException.class, () -> empty.insertAll(Integer.MIN_VALUE, iterable));
             }
         }
     }
