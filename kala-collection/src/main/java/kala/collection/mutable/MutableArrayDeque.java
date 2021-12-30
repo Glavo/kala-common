@@ -467,6 +467,44 @@ public final class MutableArrayDeque<E> extends AbstractMutableList<E>
     }
 
     @Override
+    public void appendAll(E @NotNull [] values) {
+        final int valuesLength = values.length;
+        final int oldSize = size();
+
+        if (valuesLength == 0) {
+            return;
+        }
+
+        final int newSize = oldSize + valuesLength;
+        if (newSize < 0) {
+            throw new OutOfMemoryError();
+        }
+
+        if (newSize > elements.length) {
+            grow(newSize);
+        }
+
+        if (oldSize == 0) {
+            System.arraycopy(values, 0, elements, 0, valuesLength);
+            begin = 0;
+            end = valuesLength;
+        } else if (begin < end) {
+            if (newSize <= elements.length - begin) {
+                System.arraycopy(values, 0, elements, end, valuesLength);
+                end += valuesLength;
+            } else {
+                System.arraycopy(elements, begin, elements, 0, oldSize);
+                System.arraycopy(values, 0, elements, oldSize, valuesLength);
+                begin = 0;
+                end = newSize;
+            }
+        } else {
+            System.arraycopy(values, 0, elements, end, valuesLength);
+            end += valuesLength;
+        }
+    }
+
+    @Override
     public @NotNull Option<E> removeFirstOption() {
         final int oldSize = size();
         if (oldSize == 0) {
