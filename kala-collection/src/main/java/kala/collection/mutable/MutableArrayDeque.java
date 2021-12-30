@@ -453,6 +453,40 @@ public final class MutableArrayDeque<E> extends AbstractMutableList<E>
     }
 
     @Override
+    public void prependAll(E @NotNull [] values) {
+        final int valuesLength = values.length;
+        final int oldSize = size();
+
+        final int newSize = oldSize + valuesLength;
+        if (newSize < 0) {
+            throw new OutOfMemoryError();
+        }
+
+        if (newSize > elements.length) {
+            grow(newSize);
+        }
+
+        if (oldSize == 0) {
+            System.arraycopy(values, 0, elements, 0, valuesLength);
+            begin = 0;
+            end = valuesLength;
+        } else if (begin < end) {
+            if (valuesLength <= begin) {
+                System.arraycopy(values, 0, elements, begin - valuesLength, valuesLength);
+                begin -= valuesLength;
+            } else {
+                System.arraycopy(elements, begin, elements, valuesLength, oldSize);
+                System.arraycopy(values, 0, elements, 0, valuesLength);
+                begin = 0;
+                end = newSize;
+            }
+        } else {
+            System.arraycopy(values, 0, elements, begin - valuesLength, valuesLength);
+            begin -= valuesLength;
+        }
+    }
+
+    @Override
     public void append(E value) {
         final int oldSize = size();
         if (oldSize == elements.length) {
