@@ -3,6 +3,7 @@ package kala.collection.mutable;
 import kala.collection.SimpleIterable;
 import kala.collection.base.GenericArrays;
 import kala.collection.factory.CollectionFactory;
+import kala.control.Option;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -339,22 +340,45 @@ public interface MutableListTestTemplate extends MutableSeqTestTemplate {
                             .map(it -> new SimpleIterable<>(Arrays.asList(it)))
                             .toArray(Iterable[]::new);
 
-            MutableList<String> empty = of();
-
             for (String[] array : arrays) {
+                MutableList<String> empty = of();
                 assertThrows(IndexOutOfBoundsException.class, () -> empty.insertAll(-1, array));
                 assertThrows(IndexOutOfBoundsException.class, () -> empty.insertAll(1, array));
                 assertThrows(IndexOutOfBoundsException.class, () -> empty.insertAll(Integer.MAX_VALUE, array));
                 assertThrows(IndexOutOfBoundsException.class, () -> empty.insertAll(Integer.MIN_VALUE, array));
+
+                empty.insertAll(0, array);
+                assertIterableEquals(Arrays.asList(array), empty);
             }
 
             for (Iterable<String> iterable : iterables) {
+                MutableList<String> empty = of();
                 assertThrows(IndexOutOfBoundsException.class, () -> empty.insertAll(-1, iterable));
                 assertThrows(IndexOutOfBoundsException.class, () -> empty.insertAll(1, iterable));
                 assertThrows(IndexOutOfBoundsException.class, () -> empty.insertAll(Integer.MAX_VALUE, iterable));
                 assertThrows(IndexOutOfBoundsException.class, () -> empty.insertAll(Integer.MIN_VALUE, iterable));
+
+                empty.insertAll(0, iterable);
+                assertIterableEquals(iterable, empty);
             }
+
         }
+    }
+
+    @Test
+    default void removeFirstTest() {
+        MutableList<Object> empty = of();
+        assertThrows(NoSuchElementException.class, empty::removeFirst);
+        assertNull(empty.removeFirstOrNull());
+        assertEquals(Option.none(), empty.removeFirstOption());
+    }
+
+    @Test
+    default void removeLastTest() {
+        MutableList<Object> empty = of();
+        assertThrows(NoSuchElementException.class, empty::removeLast);
+        assertNull(empty.removeLastOrNull());
+        assertEquals(Option.none(), empty.removeLastOption());
     }
 
     @Test

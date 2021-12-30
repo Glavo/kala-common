@@ -9,12 +9,17 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
-public final class MutableLinkedList<E> extends AbstractMutableList<E> implements MutableStack<E>, MutableListDeque<E> {
+public final class MutableLinkedList<E> extends AbstractMutableList<E> implements MutableStack<E>, MutableListDeque<E>, Serializable {
+    private static final long serialVersionUID = 8463536184690478447L;
 
     private static final Factory<?> FACTORY = new Factory<>();
 
@@ -114,6 +119,11 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
             res.append(iterator.next());
         }
         return res;
+    }
+
+    @Contract("_ -> new")
+    public static <E> @NotNull MutableLinkedList<E> from(@NotNull Stream<? extends E> stream) {
+        return stream.collect(factory());
     }
 
     //endregion
@@ -404,6 +414,38 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
     public @NotNull Iterator<E> reverseIterator() {
         final Node<E> last = this.last;
         return last == null ? Iterators.empty() : new ReverseItr<>(last);
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+        out.writeInt(len);
+        Node<E> node = this.first;
+        for (int i = 0; i < len; i++) {
+            out.writeObject(node.value);
+            node = node.next;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void readObject(java.io.ObjectInputStream in)
+            throws IOException, ClassNotFoundException {
+        clear();
+        final int size = in.readInt();
+        if (size == 0) {
+            return;
+        }
+
+        final Node<E> first = new Node<>(null, null, (E) in.readObject());
+        Node<E> last = first;
+
+        for (int i = 1; i < size; i++) {
+            Node<E> node = new Node<>(null, null, (E) in.readObject());
+            last.next = node;
+            last = node;
+        }
+
+        this.len = size;
+        this.first = first;
+        this.last = last;
     }
 
     private static final class Node<E> {
