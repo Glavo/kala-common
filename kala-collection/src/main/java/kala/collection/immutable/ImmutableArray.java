@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 import static kala.Conditions.checkPositionIndices;
 
 @SuppressWarnings("unchecked")
-public final class ImmutableArray<@Covariant E> extends ArraySeq<E> implements ImmutableSeq<E>, IndexedSeq<E>, Serializable {
+public final class ImmutableArray<@Covariant E> extends ArraySeq<E> implements ImmutableSeq<E>, Serializable {
     private static final long serialVersionUID = 1845940935381169058L;
 
     public static final ImmutableArray<?> EMPTY = new ImmutableArray<>();

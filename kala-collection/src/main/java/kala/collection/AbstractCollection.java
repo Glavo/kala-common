@@ -6,6 +6,11 @@ import kala.collection.base.Iterators;
 public abstract class AbstractCollection<@Covariant E> implements Collection<E> {
 
     @Override
+    public boolean isNotEmpty() {
+        return Collection.super.isNotEmpty();
+    }
+
+    @Override
     public int hashCode() {
         return Iterators.hash(iterator());
     }

@@ -4,34 +4,34 @@ import kala.control.Option;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface MutableIndexedListDeque<E> extends MutableList<E>, MutableIndexedSeqDeque<E> {
+public abstract class AbstractMutableIndexedList<E> extends AbstractMutableIndexedSeq<E> implements MutableList<E> {
     @Override
-    default E removeFirst() {
+    public E removeFirst() {
         return MutableList.super.removeFirst();
     }
 
     @Override
-    default @Nullable E removeFirstOrNull() {
+    public @Nullable E removeFirstOrNull() {
         return MutableList.super.removeFirstOrNull();
     }
 
     @Override
-    default @NotNull Option<E> removeFirstOption() {
+    public @NotNull Option<E> removeFirstOption() {
         return MutableList.super.removeFirstOption();
     }
 
     @Override
-    default E removeLast() {
+    public E removeLast() {
         return MutableList.super.removeLast();
     }
 
     @Override
-    default @Nullable E removeLastOrNull() {
+    public @Nullable E removeLastOrNull() {
         return MutableList.super.removeLastOrNull();
     }
 
     @Override
-    default @NotNull Option<E> removeLastOption() {
+    public @NotNull Option<E> removeLastOption() {
         return MutableList.super.removeLastOption();
     }
 }

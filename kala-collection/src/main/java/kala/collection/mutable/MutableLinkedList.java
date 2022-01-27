@@ -2,6 +2,7 @@ package kala.collection.mutable;
 
 import kala.Conditions;
 import kala.collection.base.Iterators;
+import kala.control.Option;
 import kala.function.IndexedFunction;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.base.AbstractIterator;
@@ -18,7 +19,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
-public final class MutableLinkedList<E> extends AbstractMutableList<E> implements MutableStack<E>, MutableListDeque<E>, Serializable {
+public final class MutableLinkedList<E> extends AbstractMutableList<E> implements MutableStack<E>, MutableDeque<E>, Serializable {
     private static final long serialVersionUID = 8463536184690478447L;
 
     private static final Factory<?> FACTORY = new Factory<>();
@@ -334,12 +335,24 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
     }
 
     @Override
+    public @NotNull Option<E> firstOption() {
+        final Node<E> first = this.first;
+        return first != null ? Option.some(first.value) : Option.none();
+    }
+
+    @Override
     public E last() {
         final Node<E> last = this.last;
         if (last == null) {
             throw new NoSuchElementException();
         }
         return last.value;
+    }
+
+    @Override
+    public @NotNull Option<E> lastOption() {
+        final Node<E> last = this.last;
+        return last != null ? Option.some(last.value) : Option.none();
     }
 
     @Override

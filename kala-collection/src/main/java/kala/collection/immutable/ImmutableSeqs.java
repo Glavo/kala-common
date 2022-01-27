@@ -2,12 +2,12 @@ package kala.collection.immutable;
 
 import kala.collection.*;
 import kala.collection.base.Iterators;
+import kala.collection.internal.view.SeqViews;
 import kala.control.Option;
 import kala.function.IndexedConsumer;
 import kala.function.IndexedFunction;
 import kala.Conditions;
 import kala.collection.factory.CollectionFactory;
-import kala.collection.internal.view.IndexedSeqViews;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -24,8 +24,7 @@ final class ImmutableSeqs {
     private ImmutableSeqs() {
     }
 
-    static abstract class SeqN<E> extends AbstractImmutableSeq<E> implements IndexedSeq<E> {
-
+    static abstract class SeqN<E> extends AbstractImmutableIndexedSeq<E> {
     }
 
     static final class Seq0<E> extends SeqN<E> implements Serializable {
@@ -54,8 +53,8 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public @NotNull IndexedSeqView<E> view() {
-            return IndexedSeqView.empty();
+        public @NotNull SeqView<E> view() {
+            return SeqView.empty();
         }
 
         @Override
@@ -1063,8 +1062,7 @@ final class ImmutableSeqs {
     }
 
     @SuppressWarnings("unchecked")
-    static abstract class CopiesSeqBase<E>
-            implements IndexedSeqLike<E>, Serializable {
+    static abstract class CopiesSeqBase<E> implements IndexedSeqLike<E>,  Serializable {
         protected final @Range(from = 1, to = Integer.MAX_VALUE) int size;
         protected final E value;
 
@@ -1394,7 +1392,7 @@ final class ImmutableSeqs {
         //endregion
     }
 
-    static final class CopiesSeqView<E> extends CopiesSeqBase<E> implements IndexedSeqView<E> {
+    static final class CopiesSeqView<E> extends CopiesSeqBase<E> implements SeqView<E> {
         public CopiesSeqView(@Range(from = 1, to = Integer.MAX_VALUE) int size, E value) {
             super(size, value);
         }
@@ -1405,43 +1403,43 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public @NotNull IndexedSeqView<E> prepended(E value) {
+        public @NotNull SeqView<E> prepended(E value) {
             if (value == this.value) {
                 return new CopiesSeqView<>(size + 1, value);
             }
-            return IndexedSeqView.super.prepended(value);
+            return SeqView.super.prepended(value);
         }
 
         @Override
-        public @NotNull IndexedSeqView<E> appended(E value) {
+        public @NotNull SeqView<E> appended(E value) {
             if (value == this.value) {
                 return new CopiesSeqView<>(size + 1, value);
             }
-            return IndexedSeqView.super.appended(value);
+            return SeqView.super.appended(value);
         }
 
         @Override
-        public @NotNull ImmutableSeqs.CopiesSeqView<E> reversed() {
+        public @NotNull SeqView<E> reversed() {
             return this;
         }
 
         //region Misc Operations
 
         @Override
-        public @NotNull IndexedSeqView<E> slice(int beginIndex, int endIndex) {
+        public @NotNull SeqView<E> slice(int beginIndex, int endIndex) {
             Conditions.checkPositionIndices(beginIndex, endIndex, size);
             final int ns = endIndex - beginIndex;
             if (ns == 0) {
-                return IndexedSeqView.empty();
+                return SeqView.empty();
             }
             if (ns == 1) {
-                return new IndexedSeqViews.Single<>(value);
+                return new SeqViews.Single<>(value);
             }
             return new CopiesSeqView<>(ns, value);
         }
 
         @Override
-        public @NotNull IndexedSeqView<E> drop(int n) {
+        public @NotNull SeqView<E> drop(int n) {
             if (n < 0) {
                 throw new IllegalArgumentException();
             }
@@ -1449,54 +1447,54 @@ final class ImmutableSeqs {
                 return this;
             }
             if (n >= size) {
-                return IndexedSeqView.empty();
+                return SeqView.empty();
             }
             final int ns = size - n;
             if (ns == 1) {
-                return new IndexedSeqViews.Single<>(value);
+                return new SeqViews.Single<>(value);
             }
             return new CopiesSeqView<>(ns, value);
         }
 
         @Override
-        public @NotNull IndexedSeqView<E> dropLast(int n) {
+        public @NotNull SeqView<E> dropLast(int n) {
             return drop(n);
         }
 
         @Override
-        public @NotNull IndexedSeqView<E> take(int n) {
+        public @NotNull SeqView<E> take(int n) {
             if (n < 0) {
                 throw new IllegalArgumentException();
             }
             if (n == 0) {
-                return IndexedSeqView.empty();
+                return SeqView.empty();
             }
             if (n >= size) {
                 return this;
             }
             if (n == 1) {
-                return new IndexedSeqViews.Single<>(value);
+                return new SeqViews.Single<>(value);
             }
             return new CopiesSeqView<>(n, value);
         }
 
         @Override
-        public @NotNull IndexedSeqView<E> takeLast(int n) {
+        public @NotNull SeqView<E> takeLast(int n) {
             return take(n);
         }
 
         @Override
-        public @NotNull IndexedSeqView<@NotNull E> filterNotNull() {
-            return value == null ? IndexedSeqView.empty() : this;
+        public @NotNull SeqView<@NotNull E> filterNotNull() {
+            return value == null ? SeqView.empty() : this;
         }
 
         @Override
-        public @NotNull IndexedSeqView<E> sorted() {
+        public @NotNull SeqView<E> sorted() {
             return this;
         }
 
         @Override
-        public @NotNull IndexedSeqView<E> sorted(Comparator<? super E> comparator) {
+        public @NotNull SeqView<E> sorted(Comparator<? super E> comparator) {
             return this;
         }
 
@@ -1505,8 +1503,7 @@ final class ImmutableSeqs {
     }
 
     @SuppressWarnings("unchecked")
-    static final class CopiesSeq<E> extends CopiesSeqBase<E>
-            implements ImmutableSeq<E>, IndexedSeq<E>, Serializable {
+    static final class CopiesSeq<E> extends CopiesSeqBase<E> implements ImmutableSeq<E>, Serializable {
         private static final long serialVersionUID = 6615175156982747837L;
 
         CopiesSeq(@Range(from = 1, to = Integer.MAX_VALUE) int size, E value) {
@@ -1521,8 +1518,8 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public @NotNull IndexedSeqView<E> view() {
-            return size == 1 ? new IndexedSeqViews.Single<>(value) : new CopiesSeqView<>(size, value);
+        public @NotNull SeqView<E> view() {
+            return size == 1 ? new SeqViews.Single<>(value) : new CopiesSeqView<>(size, value);
         }
 
         @Override

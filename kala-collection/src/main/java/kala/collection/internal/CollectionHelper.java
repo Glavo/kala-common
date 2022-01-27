@@ -1,7 +1,6 @@
 package kala.collection.internal;
 
 import kala.collection.ArraySeq;
-import kala.collection.IndexedSeq;
 import kala.collection.Seq;
 import kala.collection.base.Traversable;
 import kala.collection.immutable.ImmutableArray;
@@ -36,9 +35,9 @@ public final class CollectionHelper {
         return buffer.toArray();
     }
 
-    public static <E> IndexedSeq<E> asIndexedSeq(Object collection) {
-        if (collection instanceof IndexedSeq<?>) {
-            return (IndexedSeq<E>) collection;
+    public static <E> Seq<E> asIndexedSeq(Object collection) {
+        if (collection instanceof Seq && ((Seq<?>) collection).supportsFastRandomAccess()) {
+            return (Seq<E>) collection;
         }
         if (collection instanceof java.util.List<?> && collection instanceof RandomAccess) {
             return new FromJavaConvert.IndexedSeqFromJava<>(((List<E>) collection));
@@ -64,8 +63,8 @@ public final class CollectionHelper {
     }
 
     public static <E> kala.collection.Collection<E> asSizedCollection(Object obj) {
-        if (obj instanceof IndexedSeq<?>) {
-            return (IndexedSeq<E>) obj;
+        if (obj instanceof Seq && ((Seq<?>) obj).supportsFastRandomAccess()) {
+            return (Seq<E>) obj;
         }
         if (obj instanceof java.util.List<?>) {
             return Seq.wrapJava((java.util.List<E>) obj);

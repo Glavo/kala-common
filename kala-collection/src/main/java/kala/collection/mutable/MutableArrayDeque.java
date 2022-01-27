@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.DoubleSummaryStatistics;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.IntFunction;
@@ -18,8 +17,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public final class MutableArrayDeque<E> extends AbstractMutableList<E>
-        implements MutableIndexedListDeque<E>, Serializable {
+public final class MutableArrayDeque<E> extends AbstractMutableIndexedList<E> implements MutableDeque<E>, Serializable {
     private static final long serialVersionUID = -4166302067142375121L;
 
     private static final Factory<?> FACTORY = new Factory<>();

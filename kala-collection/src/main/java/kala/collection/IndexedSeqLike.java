@@ -1,18 +1,15 @@
 package kala.collection;
 
-import kala.collection.base.Iterators;
 import kala.Conditions;
-import kala.collection.factory.MapFactory;
-import kala.collection.immutable.ImmutableMap;
-import kala.collection.immutable.ImmutableLinkedSeq;
-import kala.collection.internal.view.IndexedSeqViews;
 import kala.collection.base.Growable;
+import kala.collection.base.Iterators;
+import kala.collection.factory.MapFactory;
+import kala.collection.immutable.ImmutableLinkedSeq;
+import kala.collection.immutable.ImmutableMap;
 import kala.control.Option;
 import kala.function.IndexedBiFunction;
 import kala.function.IndexedConsumer;
 import kala.function.IndexedFunction;
-import kala.tuple.Tuple2;
-import kala.tuple.primitive.IntObjTuple2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,11 +19,10 @@ import java.lang.reflect.Array;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.RandomAccess;
 import java.util.Objects;
 import java.util.function.*;
 
-public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
+public interface IndexedSeqLike<E> extends SeqLike<E> {
 
     //region Collection Operations
 
@@ -83,11 +79,6 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
         };
     }
 
-    @Override
-    default @NotNull IndexedSeqView<E> view() {
-        return new IndexedSeqViews.Of<>(this);
-    }
-
     //endregion
 
     //region Size Info
@@ -105,6 +96,11 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     //endregion
 
     //region Positional Access Operations
+
+    @Override
+    default boolean supportsFastRandomAccess() {
+        return true;
+    }
 
     @Override
     default boolean isDefinedAt(int index) {
@@ -591,15 +587,6 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
         return destination;
     }
 
-    @Override
-    default @NotNull IndexedSeqView<IntObjTuple2<E>> withIndex() {
-        return view().withIndex();
-    }
-
-    default <U> @NotNull SeqView<@NotNull Tuple2<E, U>> zipView(@NotNull IndexedSeqLike<? extends U> other) {
-        return SeqLike.super.zipView(other);
-    }
-
     //region Aggregate Operations
 
     @Override
@@ -1035,5 +1022,4 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
             action.accept(i, get(i));
         }
     }
-
 }

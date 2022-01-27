@@ -1,5 +1,6 @@
 package kala.collection.immutable;
 
+import kala.collection.AbstractSeq;
 import kala.collection.base.Iterators;
 import kala.function.IndexedBiConsumer;
 import kala.function.IndexedFunction;
@@ -7,18 +8,16 @@ import kala.annotations.Covariant;
 import kala.Conditions;
 import kala.collection.SeqLike;
 import kala.collection.factory.CollectionFactory;
-import kala.collection.Seq;
 import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 @SuppressWarnings("unchecked")
 @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
-public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutableCollection<E> implements ImmutableSeq<E> {
+public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractSeq<E> implements ImmutableSeq<E> {
 
     static <E, T, Builder> T updated(
             @NotNull ImmutableSeq<? extends E> seq,
@@ -453,15 +452,5 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractImmutab
             mapper.accept(idx++, e, consumer);
         }
         return factory.build(builder);
-    }
-
-    @Override
-    public int hashCode() {
-        return Seq.hashCode(this);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof Seq<?> && Seq.equals(this, (Seq<?>) obj);
     }
 }

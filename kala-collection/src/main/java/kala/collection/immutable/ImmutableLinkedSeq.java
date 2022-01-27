@@ -97,14 +97,6 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
         return new ImmutableLinkedSeq<>(nodeFrom(values), size);
     }
 
-    public static <E> @NotNull ImmutableLinkedSeq<E> from(@NotNull IndexedSeqLike<? extends E> values) {
-        final int size = values.size();
-        if (size == 0) {
-            return empty();
-        }
-        return new ImmutableLinkedSeq<>(nodeFrom(values), size);
-    }
-
     public static <E> @NotNull ImmutableLinkedSeq<E> from(@NotNull java.util.List<? extends E> values) {
         final int size = values.size();
         if (size == 0) {
@@ -269,14 +261,6 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
         Node<E> res = nilNode();
         for (int i = values.length - 1; i >= 0; i--) {
             res = new Node<>(values[i], res);
-        }
-        return res;
-    }
-
-    public static <E> @NotNull Node<E> nodeFrom(@NotNull IndexedSeqLike<? extends E> values) {
-        Node<E> res = nilNode();
-        for (int i = values.size() - 1; i >= 0; i--) { // implicit null check of values
-            res = res.cons(values.get(i));
         }
         return res;
     }

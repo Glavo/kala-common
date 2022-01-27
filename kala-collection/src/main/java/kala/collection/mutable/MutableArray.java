@@ -2,7 +2,6 @@ package kala.collection.mutable;
 
 import kala.Conditions;
 import kala.collection.ArraySeq;
-import kala.collection.IndexedSeq;
 import kala.collection.base.GenericArrays;
 import kala.collection.base.Traversable;
 import kala.function.IndexedFunction;
@@ -18,7 +17,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, IndexedSeq<E>, Serializable {
+public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Serializable {
     private static final long serialVersionUID = 8060307722127719792L;
 
     public static final MutableArray<?> EMPTY = new MutableArray<>(GenericArrays.EMPTY_OBJECT_ARRAY);

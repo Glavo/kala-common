@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Range;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.RandomAccess;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
@@ -78,6 +79,10 @@ public interface SeqLike<E> extends CollectionLike<E> {
     }
 
     //region Positional Access Operations
+
+    default boolean supportsFastRandomAccess() {
+        return this instanceof RandomAccess;
+    }
 
     @Contract(pure = true)
     default boolean isDefinedAt(int index) {

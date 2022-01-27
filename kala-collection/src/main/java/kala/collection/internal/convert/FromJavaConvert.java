@@ -1,6 +1,5 @@
 package kala.collection.internal.convert;
 
-import kala.collection.IndexedSeq;
 import kala.collection.mutable.*;
 import kala.control.Option;
 import kala.internal.InternalIdentifyObject;
@@ -141,7 +140,7 @@ public final class FromJavaConvert {
         }
     }
 
-    public static class IndexedSeqFromJava<E> extends SeqFromJava<E> implements IndexedSeq<E> {
+    public static class IndexedSeqFromJava<E> extends SeqFromJava<E> implements RandomAccess {
         public IndexedSeqFromJava(@NotNull List<E> list) {
             super(list);
         }
@@ -166,7 +165,7 @@ public final class FromJavaConvert {
     }
 
     public static class MutableIndexedSeqFromJava<E>
-            extends MutableSeqFromJava<E> implements IndexedSeq<E> {
+            extends MutableSeqFromJava<E> implements RandomAccess {
         public MutableIndexedSeqFromJava(@NotNull List<E> list) {
             super(list);
         }
@@ -204,7 +203,7 @@ public final class FromJavaConvert {
         }
     }
 
-    public static class MutableIndexedListFromJava<E> extends MutableListFromJava<E> implements IndexedSeq<E> {
+    public static class MutableIndexedListFromJava<E> extends MutableListFromJava<E> implements RandomAccess {
         public MutableIndexedListFromJava(@NotNull List<E> list) {
             super(list);
         }

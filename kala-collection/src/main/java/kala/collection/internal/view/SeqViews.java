@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 
 @SuppressWarnings("ALL")
 public final class SeqViews {
-    public static class Empty<E> extends Views.Empty<E> implements SeqView<E> {
+    public static class Empty<E> extends Views.Empty<E> implements IndexedSeqView<E> {
 
         public static final Empty<?> INSTANCE = new Empty<>();
 
@@ -97,7 +97,7 @@ public final class SeqViews {
         }
     }
 
-    public static class Single<E> extends Views.Single<E> implements SeqView<E> {
+    public static class Single<E> extends Views.Single<E> implements IndexedSeqView<E> {
         public Single(E value) {
             super(value);
         }
@@ -148,6 +148,11 @@ public final class SeqViews {
         @Override
         public @NotNull SeqIterator<E> seqIterator(int index) {
             return source.seqIterator(index).frozen();
+        }
+
+        @Override
+        public boolean supportsFastRandomAccess() {
+            return source.supportsFastRandomAccess();
         }
 
         public E get(int index) {

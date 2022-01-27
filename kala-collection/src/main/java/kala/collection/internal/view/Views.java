@@ -2,7 +2,6 @@ package kala.collection.internal.view;
 
 import kala.collection.*;
 import kala.collection.Map;
-import kala.collection.base.AbstractIterator;
 import kala.collection.base.Iterators;
 import kala.collection.immutable.*;
 import kala.control.Option;
@@ -152,6 +151,11 @@ public final class Views {
         }
 
         //endregion
+
+        @Override
+        public void forEach(@NotNull Consumer<? super E> action) {
+            action.accept(value);
+        }
     }
 
     public static class Of<@Covariant E, C extends CollectionLike<E>> extends AbstractView<E> {

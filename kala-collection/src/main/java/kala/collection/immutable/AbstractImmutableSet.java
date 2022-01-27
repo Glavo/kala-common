@@ -1,14 +1,11 @@
 package kala.collection.immutable;
 
-import kala.collection.ArraySeq;
-import kala.collection.SortedSet;
+import kala.collection.AbstractSet;
 import kala.annotations.Covariant;
-import kala.collection.Set;
 import kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.NotNull;
 
-@SuppressWarnings("unchecked")
-public abstract class AbstractImmutableSet<@Covariant E> extends AbstractImmutableCollection<E> implements ImmutableSet<E> {
+public abstract class AbstractImmutableSet<@Covariant E> extends AbstractSet<E> implements ImmutableSet<E> {
     static <E, T, Builder> T added(
             @NotNull ImmutableSet<? extends E> set,
             E value,
@@ -34,15 +31,5 @@ public abstract class AbstractImmutableSet<@Covariant E> extends AbstractImmutab
         factory.addAllToBuilder(builder, values);
 
         return factory.build(builder);
-    }
-
-    @Override
-    public int hashCode() {
-        return Set.hashCode(this);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof Set<?> && Set.equals(this, ((Set<?>) obj));
     }
 }

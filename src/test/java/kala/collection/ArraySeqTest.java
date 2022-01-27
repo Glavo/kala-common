@@ -11,17 +11,17 @@ public class ArraySeqTest implements SeqTestTemplate {
     static final class ViewTest implements SeqViewTestTemplate {
 
         @Override
-        public <E> IndexedSeqView<E> of(E... elements) {
+        public <E> SeqView<E> of(E... elements) {
             return ArraySeq.from(elements).view();
         }
 
         @Override
-        public <E> IndexedSeqView<E> from(E[] elements) {
+        public <E> SeqView<E> from(E[] elements) {
             return ArraySeq.from(elements).view();
         }
 
         @Override
-        public <E> IndexedSeqView<E> from(Iterable<? extends E> elements) {
+        public <E> SeqView<E> from(Iterable<? extends E> elements) {
             return ArraySeq.<E>from(elements).view();
         }
     }

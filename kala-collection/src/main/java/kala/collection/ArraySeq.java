@@ -26,7 +26,7 @@ import java.util.stream.StreamSupport;
 
 @SuppressWarnings("unchecked")
 @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "elements")
-public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>, Serializable {
+public class ArraySeq<E> extends AbstractIndexedSeq<E> implements Seq<E>, Serializable {
     private static final long serialVersionUID = 4981379062449237945L;
 
     public static final ArraySeq<?> EMPTY = new ArraySeq<>(GenericArrays.EMPTY_OBJECT_ARRAY);
@@ -430,14 +430,14 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     //endregion
 
     @Override
-    public @NotNull IndexedSeqView<E> sliceView(int beginIndex, int endIndex) {
+    public @NotNull SeqView<E> sliceView(int beginIndex, int endIndex) {
         Conditions.checkPositionIndices(beginIndex, endIndex, elements.length);
         final int ns = endIndex - beginIndex;
         switch (ns) {
             case 0:
-                return IndexedSeqView.empty();
+                return SeqView.empty();
             case 1:
-                return new IndexedSeqViews.Single<>((E) elements[beginIndex]);
+                return SeqView.of((E) elements[beginIndex]);
         }
         return new IndexedSeqViews.OfArraySlice<>(elements, beginIndex, endIndex);
     }
