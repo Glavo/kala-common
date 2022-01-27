@@ -10,7 +10,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Predicate;
@@ -261,27 +263,31 @@ public interface CollectionLikeTestTemplate {
 
     @Test
     default void forEachParallel() {
-        Runnable testAction = () -> {
-            LongAdder adder = new LongAdder();
+        var pools = List.of(
+                ForkJoinPool.commonPool(),
+                Executors.newSingleThreadExecutor(),
+                Executors.newFixedThreadPool(4)
+        );
 
-            of().forEachParallel(value -> {
-                adder.increment();
-            });
-            assertEquals(0L, adder.sumThenReset());
+        for (ExecutorService pool : pools) {
+            try (var scope = ConcurrentScope.withExecutorService(pool, pool != ForkJoinPool.commonPool())) {
+                LongAdder adder = new LongAdder();
 
-            of(0, 1, 2).forEachParallel(value -> {
-                adder.increment();
-            });
-            assertEquals(3L, adder.sumThenReset());
+                of().forEachParallel(value -> {
+                    adder.increment();
+                });
+                assertEquals(0L, adder.sumThenReset());
 
-            var set = ConcurrentHashMap.<String>newKeySet();
-            var values = java.util.Set.of("value0", "value1", "value2", "value3", "value4", "value5");
-            from(values).forEachParallel(set::add);
-            assertEquals(values, set);
-        };
+                of(0, 1, 2).forEachParallel(value -> {
+                    adder.increment();
+                });
+                assertEquals(3L, adder.sumThenReset());
 
-        testAction.run();
-
-        ConcurrentScope.withExecutorService(Executors.newFixedThreadPool(4), true, testAction::run);
+                var set = ConcurrentHashMap.<String>newKeySet();
+                var values = java.util.Set.of("value0", "value1", "value2", "value3", "value4", "value5");
+                from(values).forEachParallel(set::add);
+                assertEquals(values, set);
+            }
+        }
     }
 }
