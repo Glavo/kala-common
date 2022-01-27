@@ -3,6 +3,8 @@ package kala.collection.base;
 import kala.annotations.Covariant;
 import kala.annotations.UnstableName;
 import kala.comparator.Comparators;
+import kala.concurrent.Granularity;
+import kala.concurrent.ConcurrentScope;
 import kala.control.Option;
 import kala.collection.factory.CollectionFactory;
 import kala.function.CheckedBiConsumer;
@@ -18,6 +20,10 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.Phaser;
 import java.util.function.*;
 import java.util.stream.*;
 
@@ -716,6 +722,40 @@ public interface Traversable<@Covariant T>
     @UnstableName
     default void forEachBreakableUnchecked(@NotNull CheckedBiConsumer<? super T, ? super @NotNull Runnable, ?> action) {
         forEachBreakable(action);
+    }
+
+    default void forEachParallel(@NotNull Consumer<? super T> action) {
+        forEachParallel(ConcurrentScope.currentExecutorService(), Granularity.DEFAULT, action);
+    }
+
+    default void forEachParallel(Granularity granularity, @NotNull Consumer<? super T> action) {
+        forEachParallel(ConcurrentScope.currentExecutorService(), granularity, action);
+    }
+
+    default void forEachParallel(@NotNull ExecutorService executorService, @NotNull Consumer<? super T> action) {
+        forEachParallel(executorService, Granularity.DEFAULT, action);
+    }
+
+    default void forEachParallel(
+            @NotNull ExecutorService executorService, @NotNull Granularity granularity, @NotNull Consumer<? super T> action) {
+        if (granularity != Granularity.ATOM && executorService instanceof ForkJoinPool) {
+            try {
+                executorService.submit(() -> parallelStream().forEach(action)).get();
+            } catch (InterruptedException | ExecutionException ignored) {
+            }
+        } else {
+            Phaser phaser = new Phaser(1);
+            forEach(value -> {
+                phaser.register();
+                try {
+                    action.accept(value);
+                } catch (Throwable ignored) {
+                } finally {
+                    phaser.arrive();
+                }
+            });
+            phaser.arriveAndAwaitAdvance();
+        }
     }
 
     //endregion

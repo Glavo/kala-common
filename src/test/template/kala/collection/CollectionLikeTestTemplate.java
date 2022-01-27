@@ -2,12 +2,17 @@ package kala.collection;
 
 import kala.collection.base.GenericArrays;
 import kala.collection.immutable.ImmutableLinkedSeq;
+import kala.concurrent.ConcurrentScope;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -252,5 +257,31 @@ public interface CollectionLikeTestTemplate {
             assertIterableEquals(Arrays.asList(data), al);
             al.clear();
         }
+    }
+
+    @Test
+    default void forEachParallel() {
+        Runnable testAction = () -> {
+            LongAdder adder = new LongAdder();
+
+            of().forEachParallel(value -> {
+                adder.increment();
+            });
+            assertEquals(0L, adder.sumThenReset());
+
+            of(0, 1, 2).forEachParallel(value -> {
+                adder.increment();
+            });
+            assertEquals(3L, adder.sumThenReset());
+
+            var set = ConcurrentHashMap.<String>newKeySet();
+            var values = java.util.Set.of("value0", "value1", "value2", "value3", "value4", "value5");
+            from(values).forEachParallel(set::add);
+            assertEquals(values, set);
+        };
+
+        testAction.run();
+
+        ConcurrentScope.withExecutorService(Executors.newFixedThreadPool(4), true, testAction::run);
     }
 }
