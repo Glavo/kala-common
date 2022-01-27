@@ -7,6 +7,7 @@ module kala.base {
     exports kala.comparator.primitive;
     exports kala.control;
     exports kala.control.primitive;
+    exports kala.concurrent;
     exports kala.function;
     exports kala.io;
     exports kala.tuple;
