@@ -5,46 +5,56 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
 
 public final class ConcurrentScope implements AutoCloseable {
     private static final ThreadLocal<ConcurrentScope> current = new ThreadLocal<>();
 
-    public static ExecutorService currentExecutorService() {
+    public static Executor currentExecutor() {
         ConcurrentScope currentScope = current.get();
-        return currentScope == null ? ForkJoinPool.commonPool() : currentScope.executorService;
+        return currentScope == null ? ForkJoinPool.commonPool() : currentScope.executor;
     }
 
     private final ConcurrentScope parent;
-    private final ExecutorService executorService;
+    private final Executor executor;
     private final boolean shutdownOnExit;
 
-    private ConcurrentScope(ConcurrentScope parent, ExecutorService executorService, boolean shutdownOnExit) {
+    private ConcurrentScope(ConcurrentScope parent, Executor executor, boolean shutdownOnExit) {
         this.parent = parent;
-        this.executorService = executorService;
+        this.executor = executor;
         this.shutdownOnExit = shutdownOnExit;
     }
 
-    public static ConcurrentScope withExecutorService(@Nullable ExecutorService executorService) {
-        return withExecutorService(executorService, false);
+    public static ConcurrentScope withExecutor(@Nullable Executor executor) {
+        return withExecutor(executor, false);
     }
 
-    public static ConcurrentScope withExecutorService(@Nullable ExecutorService executorService, boolean shutdownOnExit) {
-        Objects.requireNonNull(executorService);
-        ConcurrentScope scope = new ConcurrentScope(current.get(), executorService, shutdownOnExit);
+    public static ConcurrentScope withExecutorAndShutdown(@Nullable ExecutorService executor) {
+        return withExecutor(executor, true);
+    }
+
+    private static ConcurrentScope withExecutor(@Nullable Executor executor, boolean shutdownOnExit) {
+        Objects.requireNonNull(executor);
+        ConcurrentScope scope = new ConcurrentScope(current.get(), executor, shutdownOnExit);
         current.set(scope);
         return scope;
     }
 
-    public static <Ex extends Throwable> void withExecutorService(
-            @Nullable ExecutorService executorService, @NotNull CheckedRunnable<Ex> action) throws Ex {
-        withExecutorService(executorService, false, action);
+    public static <Ex extends Throwable> void withExecutor(
+            @Nullable Executor executor, @NotNull CheckedRunnable<Ex> action) throws Ex {
+        withExecutor(executor, false, action);
     }
 
-    public static <Ex extends Throwable> void withExecutorService(
-            @Nullable ExecutorService executorService, boolean shutdownOnExit, @NotNull CheckedRunnable<Ex> action) throws Ex {
-        try (ConcurrentScope scope = withExecutorService(executorService, shutdownOnExit)) {
+    public static <Ex extends Throwable> void withExecutorAndShutdown(
+            @Nullable ExecutorService executor, @NotNull CheckedRunnable<Ex> action) throws Ex {
+        withExecutor(executor, true, action);
+    }
+
+    private static <Ex extends Throwable> void withExecutor(
+            @Nullable Executor executor, boolean shutdownOnExit, @NotNull CheckedRunnable<Ex> action) throws Ex {
+        try (ConcurrentScope scope = withExecutor(executor, shutdownOnExit)) {
             action.runChecked();
         } catch (Throwable ex) {
             @SuppressWarnings("unchecked")
@@ -61,7 +71,7 @@ public final class ConcurrentScope implements AutoCloseable {
 
         current.set(parent);
         if (shutdownOnExit) {
-            executorService.shutdown();
+            ((ExecutorService) executor).shutdown();
         }
     }
 }

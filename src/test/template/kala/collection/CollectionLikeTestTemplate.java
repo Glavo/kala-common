@@ -13,7 +13,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -270,23 +269,23 @@ public interface CollectionLikeTestTemplate {
         );
 
         for (ExecutorService pool : pools) {
-            try (var scope = ConcurrentScope.withExecutorService(pool, pool != ForkJoinPool.commonPool())) {
+            try (var scope = ConcurrentScope.withExecutor(pool)) {
                 LongAdder adder = new LongAdder();
 
-                of().forEachParallel(value -> {
-                    adder.increment();
-                });
+                of().forEachParallel(value -> adder.increment());
                 assertEquals(0L, adder.sumThenReset());
 
-                of(0, 1, 2).forEachParallel(value -> {
-                    adder.increment();
-                });
+                of(0, 1, 2).forEachParallel(value -> adder.increment());
                 assertEquals(3L, adder.sumThenReset());
 
                 var set = ConcurrentHashMap.<String>newKeySet();
                 var values = java.util.Set.of("value0", "value1", "value2", "value3", "value4", "value5");
                 from(values).forEachParallel(set::add);
                 assertEquals(values, set);
+            }
+
+            if (pool != ForkJoinPool.commonPool()) {
+                pool.shutdown();
             }
         }
     }

@@ -7,13 +7,19 @@ import kala.collection.internal.convert.AsJavaConvert;
 import kala.annotations.Covariant;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.internal.view.SeqViews;
+import kala.concurrent.ConcurrentScope;
+import kala.function.CheckedConsumer;
+import kala.io.StdOut;
 import org.jetbrains.annotations.*;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.RandomAccess;
-import java.util.stream.Collector;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.function.IntFunction;
+import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
 public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E> {
@@ -78,6 +84,19 @@ public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E> {
     static <E> @NotNull Seq<E> from(@NotNull Iterator<? extends E> it) {
         return ImmutableSeq.from(it);
     }
+
+    static <E> @NotNull Seq<E> fill(int n, E value) {
+        return ImmutableSeq.fill(n, value);
+    }
+
+    static <E> @NotNull Seq<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+        return ImmutableSeq.fill(n, supplier);
+    }
+
+    static <E> @NotNull Seq<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+        return ImmutableSeq.fill(n, init);
+    }
+
 
     static <E> @NotNull Seq<E> wrapJava(java.util.@NotNull List<? extends E> source) {
         Objects.requireNonNull(source);

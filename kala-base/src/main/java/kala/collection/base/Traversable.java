@@ -5,12 +5,14 @@ import kala.annotations.UnstableName;
 import kala.comparator.Comparators;
 import kala.concurrent.Granularity;
 import kala.concurrent.ConcurrentScope;
+import kala.concurrent.LateInitCountDownLatch;
 import kala.control.Option;
 import kala.collection.factory.CollectionFactory;
 import kala.function.CheckedBiConsumer;
 import kala.function.CheckedBiFunction;
 import kala.function.CheckedConsumer;
 import kala.internal.BreakHole;
+import kala.value.primitive.IntRef;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -20,10 +22,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Array;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.Phaser;
+import java.util.concurrent.*;
 import java.util.function.*;
 import java.util.stream.*;
 
@@ -725,36 +724,78 @@ public interface Traversable<@Covariant T>
     }
 
     default void forEachParallel(@NotNull Consumer<? super T> action) {
-        forEachParallel(ConcurrentScope.currentExecutorService(), Granularity.DEFAULT, action);
+        forEachParallel(ConcurrentScope.currentExecutor(), Granularity.DEFAULT, action);
     }
 
     default void forEachParallel(Granularity granularity, @NotNull Consumer<? super T> action) {
-        forEachParallel(ConcurrentScope.currentExecutorService(), granularity, action);
+        forEachParallel(ConcurrentScope.currentExecutor(), granularity, action);
     }
 
-    default void forEachParallel(@NotNull ExecutorService executorService, @NotNull Consumer<? super T> action) {
-        forEachParallel(executorService, Granularity.DEFAULT, action);
+    default void forEachParallel(@NotNull Executor executor, @NotNull Consumer<? super T> action) {
+        forEachParallel(executor, Granularity.DEFAULT, action);
     }
 
     default void forEachParallel(
-            @NotNull ExecutorService executorService, @NotNull Granularity granularity, @NotNull Consumer<? super T> action) {
-        if (granularity != Granularity.ATOM && executorService instanceof ForkJoinPool) {
+            @NotNull Executor executor, @NotNull Granularity granularity, @NotNull Consumer<? super T> action) {
+        if (granularity != Granularity.ATOM && executor instanceof ForkJoinPool) {
             try {
-                executorService.submit(() -> parallelStream().forEach(action)).get();
+                ((ForkJoinPool) executor).submit(() -> parallelStream().forEach(action)).get();
             } catch (InterruptedException | ExecutionException ignored) {
             }
         } else {
-            Phaser phaser = new Phaser(1);
+            LateInitCountDownLatch latch = new LateInitCountDownLatch();
+            IntRef count = new IntRef();
             forEach(value -> {
-                phaser.register();
-                try {
-                    action.accept(value);
-                } catch (Throwable ignored) {
-                } finally {
-                    phaser.arrive();
-                }
+                count.increment();
+                executor.execute(() -> {
+                    try {
+                        action.accept(value);
+                    } catch (Throwable ignored) {
+                    } finally {
+                        latch.countDown();
+                    }
+                });
             });
-            phaser.arriveAndAwaitAdvance();
+            latch.init(count.value);
+            try {
+                latch.await();
+            } catch (InterruptedException ignored) {
+            }
+        }
+    }
+
+    default @NotNull Future<Void> forEachAsync(@NotNull Consumer<? super T> action) {
+        return forEachAsync(ConcurrentScope.currentExecutor(), Granularity.DEFAULT, action);
+    }
+
+    default @NotNull Future<Void> forEachAsync(Granularity granularity, @NotNull Consumer<? super T> action) {
+        return forEachAsync(ConcurrentScope.currentExecutor(), granularity, action);
+    }
+
+    default @NotNull Future<Void> forEachAsync(@NotNull Executor executor, @NotNull Consumer<? super T> action) {
+        return forEachAsync(executor, Granularity.DEFAULT, action);
+    }
+
+    default @NotNull Future<Void> forEachAsync(
+            @NotNull Executor executor, @NotNull Granularity granularity, @NotNull Consumer<? super T> action) {
+        if (granularity != Granularity.ATOM && executor instanceof ForkJoinPool) {
+            return ((ForkJoinPool) executor).submit(() -> parallelStream().forEach(action), null);
+        } else {
+            LateInitCountDownLatch latch = new LateInitCountDownLatch();
+            IntRef count = new IntRef();
+            forEach(value -> {
+                count.increment();
+                executor.execute(() -> {
+                    try {
+                        action.accept(value);
+                    } catch (Throwable ignored) {
+                    } finally {
+                        latch.countDown();
+                    }
+                });
+            });
+            latch.init(count.value);
+            return latch.awaitFuture();
         }
     }
 
