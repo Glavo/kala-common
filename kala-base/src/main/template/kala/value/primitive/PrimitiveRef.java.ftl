@@ -26,6 +26,16 @@ public final class ${Type}Ref implements Mutable${Type}Value, Serializable {
         this.value = value;
     }
 
+<#if IsIntegral>
+    public void increment() {
+        value++;
+    }
+
+    public void decrement() {
+        value--;
+    }
+
+</#if>
     @Override
     public boolean equals(Object o) {
         if (this == o) {

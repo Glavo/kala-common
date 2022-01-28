@@ -22,6 +22,7 @@ val primitives = listOf("Boolean", "Byte", "Short", "Int", "Long", "Float", "Dou
         }
         res["Var"] = type.first().toLowerCase()
         res["IsSpecialized"] = type == "Int" || type == "Long" || type == "Double"
+        res["IsIntegral"] = type == "Byte" || type == "Short" || type == "Int" || type == "Long"
 
         res["Values"] = mapOf(
             "Zero" to when (type) {
@@ -106,7 +107,11 @@ val generateSources = tasks.create("generateSources") {
                 generate("Mutable${type}Value", model, "MutablePrimitiveValue")
 
                 generate("${type}Ref", model + ("HashMagic" to refHashMagicRandom.nextInt().toString()), "PrimitiveRef")
-                generate("Lazy${type}Value", model + ("SerialVersionUID" to "${lazyValueSerialVersionRandom.nextLong()}L"), "LazyPrimitiveValue")
+                generate(
+                    "Lazy${type}Value",
+                    model + ("SerialVersionUID" to "${lazyValueSerialVersionRandom.nextLong()}L"),
+                    "LazyPrimitiveValue"
+                )
                 generate("LateInit${type}Value", model, "LateInitPrimitiveValue")
                 generate("MutableLateInit${type}Value", model, "MutableLateInitPrimitiveValue")
             }
