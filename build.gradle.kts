@@ -23,7 +23,7 @@ allprojects {
     }
 
     dependencies {
-        "org.jetbrains:annotations:21.0.1".also {
+        "org.jetbrains:annotations:23.0.0".also {
             compileOnly(it)
             testImplementation(it)
         }
