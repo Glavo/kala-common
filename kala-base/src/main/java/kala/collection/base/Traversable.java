@@ -737,30 +737,9 @@ public interface Traversable<@Covariant T>
 
     default void forEachParallel(
             @NotNull Executor executor, @NotNull Granularity granularity, @NotNull Consumer<? super T> action) {
-        if (granularity != Granularity.ATOM && executor instanceof ForkJoinPool) {
-            try {
-                ((ForkJoinPool) executor).submit(() -> parallelStream().forEach(action)).get();
-            } catch (InterruptedException | ExecutionException ignored) {
-            }
-        } else {
-            LateInitCountDownLatch latch = new LateInitCountDownLatch();
-            IntRef count = new IntRef();
-            forEach(value -> {
-                count.increment();
-                executor.execute(() -> {
-                    try {
-                        action.accept(value);
-                    } catch (Throwable ignored) {
-                    } finally {
-                        latch.countDown();
-                    }
-                });
-            });
-            latch.init(count.value);
-            try {
-                latch.await();
-            } catch (InterruptedException ignored) {
-            }
+        try {
+            forEachAsync(executor, granularity, action).get();
+        } catch (InterruptedException | ExecutionException ignored) {
         }
     }
 
