@@ -28,8 +28,7 @@ public interface IndexedSeqView<@Covariant E> extends IndexedSeqLike<E>, SeqView
 
     @Override
     default @NotNull SeqView<E> concat(@NotNull SeqLike<? extends E> other) {
-        Objects.requireNonNull(other);
-        return other instanceof RandomAccess
+        return other.supportsFastRandomAccess()
                 ? new IndexedSeqViews.Concat<>(this, other)
                 : new SeqViews.Concat<>(this, other);
     }

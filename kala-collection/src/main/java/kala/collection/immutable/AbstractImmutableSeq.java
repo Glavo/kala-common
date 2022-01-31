@@ -62,7 +62,7 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractSeq<E> 
         Builder builder = factory.newBuilder();
         factory.sizeHint(builder, ns);
 
-        if (seq instanceof RandomAccess) {
+        if (seq.supportsFastRandomAccess()) {
             for (int i = beginIndex; i < endIndex; i++) {
                 factory.addToBuilder(builder, seq.get(i));
             }
@@ -119,7 +119,7 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractSeq<E> 
         Builder builder = factory.newBuilder();
         factory.sizeHint(builder, ns);
 
-        if (seq instanceof RandomAccess) {
+        if (seq.supportsFastRandomAccess()) {
             for (int i = 0; i < ns; i++) {
                 factory.addToBuilder(builder, seq.get(i));
             }
@@ -196,7 +196,7 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractSeq<E> 
         Builder builder = factory.newBuilder();
         factory.sizeHint(builder, n);
 
-        if (seq instanceof RandomAccess) {
+        if (seq.supportsFastRandomAccess()) {
             for (int i = ss - n; i < ss; i++) {
                 factory.addToBuilder(builder, seq.get(i));
             }

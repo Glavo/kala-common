@@ -767,7 +767,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
             list = list.tail;
         }
 
-        if (other instanceof RandomAccess) {
+        if (other.supportsFastRandomAccess()) {
             for (int i = 0; i < otherSize; i++) {
                 Node<E> nl = new Node<>(other.get(i));
                 t.tail = nl;
@@ -1949,7 +1949,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
                 list = list.tail;
             }
 
-            if (other instanceof RandomAccess) {
+            if (other.supportsFastRandomAccess()) {
                 for (int i = 0; i < other.size(); i++) {
                     Node<E> nl = new Node<>(other.get(i));
                     t.tail = nl;

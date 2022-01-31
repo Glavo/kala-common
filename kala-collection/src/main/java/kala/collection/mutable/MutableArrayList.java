@@ -338,7 +338,7 @@ public final class MutableArrayList<E> extends AbstractMutableIndexedList<E> imp
         }
 
         final int size = this.size;
-        if (values instanceof SeqLike<?> && values instanceof RandomAccess) {
+        if (values instanceof SeqLike<?> && ((SeqLike<? extends E>) values).supportsFastRandomAccess()) {
             SeqLike<?> seq = (SeqLike<?>) values;
             int s = seq.size();
             if (s == 0) {

@@ -144,7 +144,7 @@ public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E> {
 
     @Override
     default @NotNull @UnmodifiableView List<E> asJava() {
-        return this instanceof RandomAccess
+        return this.supportsFastRandomAccess()
                 ? new AsJavaConvert.IndexedSeqAsJava<>(this)
                 : new AsJavaConvert.SeqAsJava<>(this);
     }

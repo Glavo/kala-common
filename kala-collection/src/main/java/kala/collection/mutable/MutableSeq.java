@@ -109,10 +109,9 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
 
     @Override
     default @NotNull java.util.List<E> asJava() {
-        if (this instanceof RandomAccess) {
-            return new AsJavaConvert.MutableIndexedSeqAsJava<>(this);
-        }
-        return new AsJavaConvert.MutableSeqAsJava<>(this);
+        return this.supportsFastRandomAccess()
+                ? new AsJavaConvert.MutableIndexedSeqAsJava<>(this)
+                : new AsJavaConvert.MutableSeqAsJava<>(this);
     }
 
     //endregion
@@ -181,7 +180,7 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
         if (ks == 0 || ks == 1) {
             return;
         }
-        if (this instanceof RandomAccess || (ks > 0 && ks <= AbstractMutableSeq.SHUFFLE_THRESHOLD)) {
+        if (supportsFastRandomAccess() || (ks > 0 && ks <= AbstractMutableSeq.SHUFFLE_THRESHOLD)) {
             assert ks > 0;
             for (int i = ks; i > 1; i--) {
                 swap(i - 1, random.nextInt(i));
