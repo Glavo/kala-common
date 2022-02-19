@@ -724,39 +724,39 @@ public interface Traversable<@Covariant T>
     }
 
     default void forEachParallel(@NotNull Consumer<? super T> action) {
-        forEachParallel(ConcurrentScope.currentExecutor(), Granularity.DEFAULT, action);
+        forEachParallel(action, ConcurrentScope.currentExecutor(), Granularity.DEFAULT);
     }
 
-    default void forEachParallel(Granularity granularity, @NotNull Consumer<? super T> action) {
-        forEachParallel(ConcurrentScope.currentExecutor(), granularity, action);
+    default void forEachParallel(@NotNull Consumer<? super T> action, Granularity granularity) {
+        forEachParallel(action, ConcurrentScope.currentExecutor(), granularity);
     }
 
-    default void forEachParallel(@NotNull Executor executor, @NotNull Consumer<? super T> action) {
-        forEachParallel(executor, Granularity.DEFAULT, action);
+    default void forEachParallel(@NotNull Consumer<? super T> action, @NotNull Executor executor) {
+        forEachParallel(action, executor, Granularity.DEFAULT);
     }
 
     default void forEachParallel(
-            @NotNull Executor executor, @NotNull Granularity granularity, @NotNull Consumer<? super T> action) {
+            @NotNull Consumer<? super T> action, @NotNull Executor executor, @NotNull Granularity granularity) {
         try {
-            forEachAsync(executor, granularity, action).get();
+            forEachAsync(action, executor, granularity).get();
         } catch (InterruptedException | ExecutionException ignored) {
         }
     }
 
     default @NotNull Future<Void> forEachAsync(@NotNull Consumer<? super T> action) {
-        return forEachAsync(ConcurrentScope.currentExecutor(), Granularity.DEFAULT, action);
+        return forEachAsync(action, ConcurrentScope.currentExecutor(), Granularity.DEFAULT);
     }
 
-    default @NotNull Future<Void> forEachAsync(Granularity granularity, @NotNull Consumer<? super T> action) {
-        return forEachAsync(ConcurrentScope.currentExecutor(), granularity, action);
+    default @NotNull Future<Void> forEachAsync(@NotNull Consumer<? super T> action, @NotNull Executor executor) {
+        return forEachAsync(action, executor, Granularity.DEFAULT);
     }
 
-    default @NotNull Future<Void> forEachAsync(@NotNull Executor executor, @NotNull Consumer<? super T> action) {
-        return forEachAsync(executor, Granularity.DEFAULT, action);
+    default @NotNull Future<Void> forEachAsync(@NotNull Consumer<? super T> action, Granularity granularity) {
+        return forEachAsync(action, ConcurrentScope.currentExecutor(), granularity);
     }
 
     default @NotNull Future<Void> forEachAsync(
-            @NotNull Executor executor, @NotNull Granularity granularity, @NotNull Consumer<? super T> action) {
+            @NotNull Consumer<? super T> action, @NotNull Executor executor, @NotNull Granularity granularity) {
         if (granularity != Granularity.ATOM && executor instanceof ForkJoinPool) {
             return ((ForkJoinPool) executor).submit(() -> parallelStream().forEach(action), null);
         } else {
