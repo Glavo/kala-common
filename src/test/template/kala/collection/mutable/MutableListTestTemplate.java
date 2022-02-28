@@ -308,7 +308,7 @@ public interface MutableListTestTemplate extends MutableSeqTestTemplate {
             Random random = new Random(0);
             for (int i = 0; i < 128; i++) {
                 var idx = random.nextInt(32 + i);
-                String value = "random insert value" + i;
+                String value = "random insertNonFull value" + i;
 
                 for (int li = 0; li < testListCount; li++) {
                     listList.get(li).insert(idx, value);

@@ -64,8 +64,8 @@ public final class MutableArrayDequeTest implements MutableListTestTemplate {
         l.appendAll(List.of("value0", "value1", "value2", "value3"));
         l.removeFirst();
         l.removeFirst();
-        l.insert(0, "insert value");
+        l.insert(0, "insertNonFull value");
 
-        assertIterableEquals(List.of("insert value", "value2", "value3"), l);
+        assertIterableEquals(List.of("insertNonFull value", "value2", "value3"), l);
     }
 }
