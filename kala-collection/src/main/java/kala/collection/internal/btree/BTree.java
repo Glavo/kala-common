@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 
@@ -184,10 +185,11 @@ public class BTree<K> {
         }
         Collections.shuffle(list, new Random(0));
 
-        list.forEach(t::insert);
+        for (Integer integer : list) {
+            t.insert(integer);
+        }
 
         t.forEachKey(t.root, System.out::println);
-
     }
 
     public static final class Node<K> {
