@@ -3,10 +3,6 @@ package kala.collection.internal.btree;
 import kala.internal.ComparableUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 
@@ -146,6 +142,52 @@ public class BTree<K> {
         parent.n++;
     }
 
+    /*
+    protected void delete(K key) {
+        delete(root, key);
+
+        if (root.n == 0) {
+            root = null;
+        }
+
+        size--;
+    }
+
+    protected void delete(Node<K> node, K key) {
+        int idx = binarySearch(node, key);
+
+        if (idx >= 0) {
+            if (node.isLeaf()) {
+                node.removeKey(idx);
+            } else {
+                Node<K> predecessorChild = node.getNode(idx);
+                if (predecessorChild.n > MIN_KEY_NUMBER) {
+                    K successor = deleteSuccessor(predecessorChild);
+                    node.setKey(idx, successor);
+                } else {
+                    Node<K> successorChild = node.getNode(idx + 1);
+                    if (successorChild.n >= T) {
+                        K successor = deleteSuccessor(predecessorChild);
+                        node.setKey(idx, successor);
+                    } else {
+                        predecessorChild.setKey(predecessorChild.n++, node.getKey(idx));
+
+                        int i;
+                        for (i = 0; i < successorChild.n; i++) {
+                            predecessorChild.setKey(predecessorChild.n + i + 1, successorChild.getKey(i));
+                            predecessorChild.setNode(predecessorChild.n + i + 2, successorChild.getNode(i));
+                        }
+                    }
+                }
+
+            }
+
+            return;
+        }
+
+        // TODO
+    }
+
     private K deletePredecessor(Node<K> node) {
         while (!node.isLeaf()) {
             node = node.n0;
@@ -175,23 +217,7 @@ public class BTree<K> {
         node.n = (byte) newN;
         return res;
     }
-
-    public static void main(String[] args) {
-        BTree<Integer> t = new BTree<>();
-
-        ArrayList<Integer> list = new ArrayList<>();
-        for (int i = 0; i < 100000; i++) {
-            list.add(i);
-        }
-        Collections.shuffle(list, new Random(0));
-
-        for (Integer integer : list) {
-            t.insert(integer);
-        }
-
-        t.forEachKey(t.root, System.out::println);
-    }
-
+     */
     public static final class Node<K> {
         byte n;
 
@@ -263,6 +289,15 @@ public class BTree<K> {
             setKey(idx, key);
         }
 
+        void removeKey(int idx) {
+            setKey(idx, null);
+            for (int i = idx; i < MAX_KEY_NUMBER - 1; i++) {
+                setKey(idx, getKey(i + 1));
+            }
+
+            setKey(MAX_KEY_NUMBER - 1, null);
+        }
+
         Node<K> getNode(int idx) {
             switch (idx) {
                 case 0:
@@ -328,7 +363,6 @@ public class BTree<K> {
         public boolean isLeaf() {
             return n0 == null;
         }
-
 
         // For Debug
         @Override
