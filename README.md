@@ -59,7 +59,8 @@ Here are the ways to donate: [捐赠支持 Glavo](https://donate.glavo.site/)
 
 ## Thanks
 
-This project is developed using JetBrains IntelliJ IDEA, thanks to the free license provided by JetBrains for me.
+This project is developed using JetBrains IDEA. 
+Thanks to JetBrains for providing me with a free license, which is a strong support for me.
 
 ![JetBrains Logo (Main) logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png)
 
