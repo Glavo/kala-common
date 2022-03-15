@@ -32,6 +32,7 @@ final class Balances {
     }
 
     private static final class Identity<T> implements Balance<T>, Serializable {
+        private static final long serialVersionUID = 0L;
 
         @Override
         public int hash(T obj) {
