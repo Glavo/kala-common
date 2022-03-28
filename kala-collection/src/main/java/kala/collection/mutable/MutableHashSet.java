@@ -143,14 +143,14 @@ public final class MutableHashSet<E> extends HashBase<E, MutableHashSet.Node<E>>
 
     @Override
     protected Node<E>[] createNodeArray(int length) {
-        return (Node<E>[]) new Node<?>[0];
+        return (Node<E>[]) new Node<?>[length];
     }
 
     protected void growTable(int newLen) {
         int oldLen = table.length;
         threshold = newThreshold(newLen);
         if (isEmpty()) {
-            table = (Node<E>[]) new Node<?>[newLen];
+            table = createNodeArray(newLen);
         } else {
             table = Arrays.copyOf(table, newLen);
             Node<E> preLow = new Node<>(null, 0);
