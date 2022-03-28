@@ -66,7 +66,7 @@ public final class SimpleSeqTest implements SeqTestTemplate {
 
         @Override
         public SimpleSeq<E> build(MutableArrayList<E> builder) {
-            return new SimpleSeq<>(List.copyOf(builder.asJava()));
+            return new SimpleSeq<>(new ArrayList<>(builder.asJava()));
         }
     }
 }
