@@ -3,6 +3,7 @@ package kala.function;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.WeakHashMap;
@@ -36,7 +37,7 @@ public final class Functions {
         if (function instanceof kala.function.Memoized) {
             return narrow(function);
         }
-        return new MemoizedFunction<>(function, new HashMap<>(), sync);
+        return new MemoizedFunction<>(function, sync ? Collections.synchronizedMap(new HashMap<>()) : new HashMap<>());
     }
 
     public static <T, R> @NotNull Function<T, R> weakMemoized(@NotNull Function<? super T, ? extends R> function) {
@@ -45,10 +46,7 @@ public final class Functions {
 
     public static <T, R> @NotNull Function<T, R> weakMemoized(@NotNull Function<? super T, ? extends R> function, boolean sync) {
         Objects.requireNonNull(function);
-        if (function instanceof Memoized) {
-            return narrow(function);
-        }
-        return new MemoizedFunction<>(function, new WeakHashMap<>(), sync);
+        return new MemoizedFunction<>(function, sync ? Collections.synchronizedMap(new WeakHashMap<>()) : new WeakHashMap<>());
     }
 
     enum Identity implements Function<Object, Object> {
