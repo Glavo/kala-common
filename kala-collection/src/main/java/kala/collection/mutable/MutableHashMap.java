@@ -2,12 +2,12 @@ package kala.collection.mutable;
 
 import kala.collection.base.MapBase;
 import kala.collection.internal.convert.AsJavaConvert;
+import kala.collection.internal.hash.HashBase;
 import kala.collection.internal.hash.HashMapBase;
 import kala.tuple.Tuple2;
 import kala.collection.factory.MapFactory;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collector;
@@ -18,8 +18,8 @@ public final class MutableHashMap<K, V> extends HashMapBase<K, V> implements Clo
 
     private static final Factory<?, ?> FACTORY = new Factory<>();
 
-    public static final int DEFAULT_INITIAL_CAPACITY = HashMapBase.DEFAULT_INITIAL_CAPACITY;
-    public static final double DEFAULT_LOAD_FACTOR = HashMapBase.DEFAULT_LOAD_FACTOR;
+    public static final int DEFAULT_INITIAL_CAPACITY = HashBase.DEFAULT_INITIAL_CAPACITY;
+    public static final double DEFAULT_LOAD_FACTOR = HashBase.DEFAULT_LOAD_FACTOR;
 
     public MutableHashMap() {
         this(DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR);

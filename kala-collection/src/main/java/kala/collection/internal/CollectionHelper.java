@@ -18,6 +18,21 @@ import java.util.*;
 @StaticClass
 @ApiStatus.Internal
 public final class CollectionHelper {
+
+    public static Object[] copyToArray(@NotNull Iterable<?> it) {
+        if (it instanceof Traversable<?>) {
+            return ((Traversable<?>) it).toArray();
+        }
+        if (it instanceof java.util.Collection<?>) {
+            return ((java.util.Collection<?>) it).toArray();
+        }
+        MutableArrayList<Object> buffer = new MutableArrayList<>();
+        for (Object o : it) {
+            buffer.append(o);
+        }
+        return buffer.toArray();
+    }
+
     public static Object[] asArray(@NotNull Iterable<?> it) {
         if (it instanceof MutableArray<?>) {
             return ((MutableArray<?>) it).getArray();

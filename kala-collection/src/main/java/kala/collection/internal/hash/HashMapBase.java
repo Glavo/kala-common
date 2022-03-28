@@ -1,12 +1,12 @@
 package kala.collection.internal.hash;
 
+import kala.collection.Map;
 import kala.collection.base.MapBase;
 import kala.collection.base.MapIterator;
 import kala.collection.internal.convert.AsJavaConvert;
+import kala.collection.mutable.MutableMap;
 import kala.control.Option;
-import kala.collection.mutable.AbstractMutableMap;
 import kala.collection.mutable.MutableHashMap;
-import kala.function.CheckedBiConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,75 +23,19 @@ import java.util.function.Supplier;
 import static kala.collection.internal.hash.HashUtils.*;
 
 @SuppressWarnings("unchecked")
-public class HashMapBase<K, V> extends AbstractMutableMap<K, V> implements Serializable {
-    private static final long serialVersionUID = 5898767589365493454L;
-
-    public static final int DEFAULT_INITIAL_CAPACITY = 16;
-    public static final double DEFAULT_LOAD_FACTOR = 0.75;
-
-    protected final double loadFactor;
-
-    protected transient HashMapNode<K, V>[] table;
-    protected int threshold;
-
-    protected transient int contentSize = 0;
-
+public class HashMapBase<K, V> extends HashBase<K, HashMapNode<K, V>> implements MutableMap<K, V>, Serializable {
+    private static final long serialVersionUID = 3288021412242809743L;
     protected HashMapBase(int initialCapacity, double loadFactor) {
-        if (initialCapacity < 0) {
-            throw new IllegalArgumentException("Illegal initial capacity: " + initialCapacity);
-        }
-        if (loadFactor <= 0 || Double.isNaN(loadFactor)) {
-            throw new IllegalArgumentException("Illegal load factor: " + loadFactor);
-        }
-
-        this.loadFactor = loadFactor;
-
-        final int tableSize = tableSizeFor(initialCapacity);
-        this.table = (HashMapNode<K, V>[]) new HashMapNode<?, ?>[tableSize];
-        this.threshold = newThreshold(tableSize);
+        super(initialCapacity, loadFactor);
     }
 
     protected HashMapBase(@NotNull HashMapBase<K, V> old) {
-        this.loadFactor = old.loadFactor;
-        this.threshold = old.threshold;
-        this.contentSize = old.contentSize;
-
-        HashMapNode<K, V>[] oldTable = old.table;
-        HashMapNode<K, V>[] newTable = (HashMapNode<K, V>[]) new HashMapNode<?, ?>[oldTable.length];
-        this.table = newTable;
-
-        for (int i = 0; i < oldTable.length; i++) {
-            HashMapNode<K, V> oldNode = oldTable[i];
-            if (oldNode != null) {
-                newTable[i] = oldNode.deepClone();
-            }
-        }
+        super(old);
     }
 
-    //region HashMap helpers
-
-    private void reinitialize(int initialCapacity) throws IOException {
-        if (initialCapacity < 0) {
-            throw new InvalidObjectException("Illegal initial capacity: " + initialCapacity);
-        }
-
-        if (loadFactor <= 0 || Double.isNaN(loadFactor)) {
-            throw new InvalidObjectException("Illegal load factor: " + loadFactor);
-        }
-
-        contentSize = 0;
-
-        final int tableSize = tableSizeFor(initialCapacity);
-        this.table = (HashMapNode<K, V>[]) new HashMapNode<?, ?>[tableSize];
-        this.threshold = newThreshold(tableSize);
-    }
-
-    protected final int index(int hash) {
-        return hash & (table.length - 1);
-    }
-
-    protected final int newThreshold(int size) {
-        return (int) ((double) size * loadFactor);
+    @Override
+    protected HashMapNode<K, V>[] createNodeArray(int length) {
+        return new HashMapNode[length];
     }
 
     protected final void growTable(int newLen) {
@@ -102,7 +46,7 @@ public class HashMapBase<K, V> extends AbstractMutableMap<K, V> implements Seria
         int oldLen = oldTable.length;
         this.threshold = newThreshold(newLen);
         if (contentSize == 0) {
-            this.table = (HashMapNode<K, V>[]) new HashMapNode<?, ?>[newLen];
+            this.table = createNodeArray(newLen);
         } else {
             final HashMapNode<K, V>[] newTable = Arrays.copyOf(oldTable, newLen);
             this.table = newTable;
@@ -152,17 +96,6 @@ public class HashMapBase<K, V> extends AbstractMutableMap<K, V> implements Seria
         }
     }
 
-    protected final @Nullable HashMapNode<K, V> findNode(K key) {
-        final int hash = computeHash(key);
-        HashMapNode<K, V> fn = table[index(hash)];
-        if (fn == null) {
-            return null;
-        }
-        return fn.findNode(key, hash);
-    }
-
-    //endregion
-
     //region Collection Operations
 
     @Override
@@ -172,27 +105,6 @@ public class HashMapBase<K, V> extends AbstractMutableMap<K, V> implements Seria
 
     protected final @NotNull HashMapNodeIterator<K, V> nodeIterator() {
         return new HashMapNodeIterator<>(table);
-    }
-
-    //endregion
-
-    //region Size Info
-
-    @Override
-    public final int size() {
-        return contentSize;
-    }
-
-    @Override
-    public final int knownSize() {
-        return contentSize;
-    }
-
-    public final void sizeHint(int size) {
-        final int target = tableSizeFor((int) ((size + 1) / loadFactor));
-        if (target > table.length) {
-            growTable(target);
-        }
     }
 
     //endregion
@@ -267,41 +179,6 @@ public class HashMapBase<K, V> extends AbstractMutableMap<K, V> implements Seria
         }
         contentSize += 1;
         return Option.none();
-    }
-
-    protected final HashMapNode<K, V> remove0(K elem) {
-        return remove0(elem, computeHash(elem));
-    }
-
-    protected final HashMapNode<K, V> remove0(K elem, int hash) {
-        final HashMapNode<K, V>[] table = this.table;
-        final int idx = index(hash);
-
-        HashMapNode<K, V> nd = this.table[idx];
-        if (nd == null) {
-            return null;
-        }
-
-        if (nd.hash == hash && Objects.equals(nd.key, elem)) {
-            table[idx] = nd.next;
-            contentSize -= 1;
-            return nd;
-        }
-
-        // find an element that matches
-        HashMapNode<K, V> prev = nd;
-        HashMapNode<K, V> next = nd.next;
-
-        while (next != null && next.hash <= hash) {
-            if (next.hash == hash && Objects.equals(next.key, elem)) {
-                prev.next = next.next;
-                contentSize -= 1;
-                return next;
-            }
-            prev = next;
-            next = next.next;
-        }
-        return null;
     }
 
     //endregion
@@ -435,14 +312,8 @@ public class HashMapBase<K, V> extends AbstractMutableMap<K, V> implements Seria
 
     @Override
     public final @NotNull Option<V> remove(K key) {
-        HashMapNode<K, V> node = remove0(key);
+        HashMapNode<K, V> node = removeNode(key);
         return node == null ? Option.none() : Option.some(node.value);
-    }
-
-    @Override
-    public final void clear() {
-        Arrays.fill(table, null);
-        contentSize = 0;
     }
 
     @Override
@@ -501,29 +372,53 @@ public class HashMapBase<K, V> extends AbstractMutableMap<K, V> implements Seria
         }
     }
 
-    private void writeObject(java.io.ObjectOutputStream stream) throws IOException {
-        final int capacity = table != null ? table.length : (threshold > 0 ? threshold : DEFAULT_INITIAL_CAPACITY);
-
-        stream.defaultWriteObject();
-        stream.writeInt(capacity);
-        stream.writeInt(contentSize);
-        this.forEachUnchecked((k, v) -> {
-            stream.writeObject(k);
-            stream.writeObject(v);
-        });
+    @Override
+    public int hashCode() {
+        return Map.hashCode(this);
     }
 
-    private void readObject(java.io.ObjectInputStream stream) throws IOException, ClassNotFoundException {
-        stream.defaultReadObject();
-        final int capacity = stream.readInt();
-        reinitialize(capacity);
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj || (obj instanceof Map<?, ?> && Map.equals(this, ((Map<?, ?>) obj)));
+    }
 
-        final int size = stream.readInt();
+    @Override
+    public String toString() {
+        return className() + '{' + joinToString() + '}';
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+        final int size = in.readInt();
+        final double loadFactor = in.readDouble();
+
+        if (size < 0) {
+            throw new InvalidObjectException("Illegal initial capacity: " + size);
+        }
+
+        if (loadFactor <= 0 || Double.isNaN(loadFactor)) {
+            throw new InvalidObjectException("Illegal load factor: " + loadFactor);
+        }
+
+        this.contentSize = 0;
+        this.loadFactor = loadFactor;
+        this.table = createNodeArray(HashUtils.tableSizeFor(size));
+        this.threshold = newThreshold(table.length);
+
+
         for (int i = 0; i < size; i++) {
-            Object key = stream.readObject();
-            Object value = stream.readObject();
+            Object key = in.readObject();
+            Object value = in.readObject();
 
             this.set((K) key, (V) value);
         }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+        out.writeInt(contentSize);
+        out.writeDouble(loadFactor);
+        this.forEachUnchecked((k, v) -> {
+            out.writeObject(k);
+            out.writeObject(v);
+        });
     }
 }

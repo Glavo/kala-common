@@ -1,5 +1,6 @@
 package kala.collection.immutable;
 
+import kala.collection.internal.hash.HashBase;
 import kala.control.Option;
 import kala.collection.base.MapBase;
 import kala.collection.base.MapIterator;
@@ -382,7 +383,7 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V> imp
         private static final long serialVersionUID = -3496307994182942597L;
 
         Impl() {
-            super(HashMapBase.DEFAULT_INITIAL_CAPACITY, HashMapBase.DEFAULT_LOAD_FACTOR);
+            super(HashBase.DEFAULT_INITIAL_CAPACITY, HashBase.DEFAULT_LOAD_FACTOR);
         }
 
         public Impl(@NotNull HashMapBase<K, V> old) {

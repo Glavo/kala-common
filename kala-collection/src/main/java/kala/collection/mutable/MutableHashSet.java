@@ -1,5 +1,8 @@
 package kala.collection.mutable;
 
+import kala.collection.Set;
+import kala.collection.internal.hash.HashBase;
+import kala.collection.internal.hash.HashNode;
 import kala.collection.internal.hash.HashUtils;
 import kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.Contract;
@@ -7,32 +10,18 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 import java.io.IOException;
+import java.io.InvalidObjectException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Serializable {
-    private static final long serialVersionUID = 56207218679792671L;
-
-    private static final int DEFAULT_INITIAL_CAPACITY = 16;
-    private static final double DEFAULT_LOAD_FACTOR = 0.75;
-    private static final int MAXIMUM_CAPACITY = 1 << 30;
-
+public final class MutableHashSet<E> extends HashBase<E, MutableHashSet.Node<E>> implements MutableSet<E>, Serializable {
+    private static final long serialVersionUID =  2267952928135789371L;
     private static final MutableHashSet.Factory<?> FACTORY = new Factory<>();
-
-    //region Fields
-
-    private Node<E>[] table;
-    private int threshold;
-    private double loadFactor;
-    private int size = 0;
-
-    //endregion
 
     //region Constructors
 
@@ -45,20 +34,7 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
     }
 
     public MutableHashSet(@Range(from = 0, to = MAXIMUM_CAPACITY) int initialCapacity, double loadFactor) {
-        //noinspection ConstantConditions
-        if (initialCapacity < 0) {
-            throw new IllegalArgumentException("Illegal initial capacity: " + initialCapacity);
-        }
-        //noinspection ConstantConditions
-        if (initialCapacity > MAXIMUM_CAPACITY) {
-            initialCapacity = MAXIMUM_CAPACITY;
-        }
-        if (loadFactor <= 0 || Double.isNaN(loadFactor)) {
-            throw new IllegalArgumentException("Illegal load factor: " + loadFactor);
-        }
-        this.loadFactor = loadFactor;
-        this.table = (Node<E>[]) new Node<?>[tableSizeFor(initialCapacity)];
-        this.threshold = newThreshold(table.length);
+        super(initialCapacity, loadFactor);
     }
 
     //endregion
@@ -161,52 +137,19 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
 
     //region HashSet helpers
 
-    private static int tableSizeFor(int capacity) {
-        return Math.min(Integer.highestOneBit(Math.max(capacity - 1, 4)) * 2, MAXIMUM_CAPACITY);
-    }
-
-    private int newThreshold(int size) {
-        return (int) ((double) size * loadFactor);
-    }
-
     private int indexOf(int hash) {
         return hash & (table.length - 1);
     }
 
-    private Node<E> findNode(E value) {
-        final int hash = HashUtils.computeHash(value);
-        Node<E> n = table[indexOf(hash)];
-        if (n == null) {
-            return null;
-        }
-
-        if (value == null) {
-            while (true) {
-                if (n.hash == 0 && n.value == null) {
-                    return n;
-                }
-                if (n.next == null || n.hash > 0) {
-                    return null;
-                }
-                n = n.next;
-            }
-        } else {
-            while (true) {
-                if (n.hash == hash && value.equals(n.value)) {
-                    return n;
-                }
-                if (n.next == null || n.hash > hash) {
-                    return null;
-                }
-                n = n.next;
-            }
-        }
+    @Override
+    protected Node<E>[] createNodeArray(int length) {
+        return (Node<E>[]) new Node<?>[0];
     }
 
-    private void growTable(int newLen) {
+    protected void growTable(int newLen) {
         int oldLen = table.length;
         threshold = newThreshold(newLen);
-        if (size == 0) {
+        if (isEmpty()) {
             table = (Node<E>[]) new Node<?>[newLen];
         } else {
             table = Arrays.copyOf(table, newLen);
@@ -250,13 +193,6 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
         }
     }
 
-    void sizeHint(int size) {
-        int target = tableSizeFor((int) ((double) (size + 1) / loadFactor));
-        if (target > table.length) {
-            growTable(target);
-        }
-    }
-
     //endregion
 
     //region MutableSet members
@@ -270,7 +206,7 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
             final Node<E> old = n;
             Node<E> prev = null;
             while ((n != null) && n.hash <= hash) {
-                if (n.hash == hash && Objects.equals(value, n.value)) {
+                if (n.hash == hash && Objects.equals(value, n.key)) {
                     return false;
                 }
                 prev = n;
@@ -282,13 +218,13 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
                 prev.next = new Node<>(value, hash, prev.next);
             }
         }
-        ++size;
+        contentSize++;
         return true;
     }
 
     @Override
     public boolean add(E value) {
-        if (size + 1 >= threshold) {
+        if (contentSize + 1 >= threshold) {
             growTable(table.length * 2);
         }
         return add(value, HashUtils.computeHash(value));
@@ -307,40 +243,9 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
         return true;
     }
 
-    private boolean remove(Object value, int hash) {
-        int idx = indexOf(hash);
-        Node<E> n = table[idx];
-        if (n == null) {
-            return false;
-        }
-        if (n.hash == hash && Objects.equals(n.value, value)) {
-            table[idx] = n.next;
-            --size;
-            return true;
-        }
-        Node<E> prev = n;
-        Node<E> next = n.next;
-        while ((next != null) && next.hash <= hash) {
-            if (next.hash == hash && Objects.equals(next.value, value)) {
-                prev.next = next.next;
-                --size;
-                return true;
-            }
-            prev = next;
-            next = next.next;
-        }
-        return false;
-    }
-
     @Override
     public boolean remove(Object value) {
-        return remove(value, HashUtils.computeHash(value));
-    }
-
-    @Override
-    public void clear() {
-        Arrays.fill(table, null);
-        size = 0;
+        return removeNode((E) value, HashUtils.computeHash(value)) != null;
     }
 
     //endregion
@@ -362,41 +267,52 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
         return new Itr();
     }
 
-    @Override
-    public int size() {
-        return size;
-    }
-
-    @Override
-    public int knownSize() {
-        return size;
-    }
-
     //endregion
+
+    public int hashCode() {
+        return Set.hashCode(this);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Set<?> && Set.equals(this, ((Set<?>) obj));
+    }
+
+
+    @Override
+    public String toString() {
+        return joinToString(", ", className() + "[", "]");
+    }
 
     //region Serialization
 
     private void readObject(java.io.ObjectInputStream in)
             throws IOException, ClassNotFoundException {
-        this.size = 0;
-        this.loadFactor = in.readDouble();
-        this.table = (Node<E>[]) new Node<?>[tableSizeFor(DEFAULT_INITIAL_CAPACITY)];
+        final int size = in.readInt();
+        final double loadFactor = in.readDouble();
+
+        if (size < 0) {
+            throw new InvalidObjectException("Illegal size: " + size);
+        }
+
+        if (loadFactor <= 0 || Double.isNaN(loadFactor)) {
+            throw new InvalidObjectException("Illegal load factor: " + loadFactor);
+        }
+
+        this.contentSize = 0;
+        this.loadFactor = loadFactor;
+        this.table = createNodeArray(HashUtils.tableSizeFor(size));
         this.threshold = newThreshold(table.length);
 
-        int s = in.readInt();
-        if (s == 0) {
-            return;
-        }
-        sizeHint(s);
-        for (int i = 0; i < s; i++) {
+        for (int i = 0; i < size; i++) {
             this.add((E) in.readObject());
         }
     }
 
     private void writeObject(java.io.ObjectOutputStream out)
             throws IOException {
+        out.writeInt(contentSize);
         out.writeDouble(loadFactor);
-        out.writeInt(size);
         for (E e : this) {
             out.writeObject(e);
         }
@@ -431,27 +347,35 @@ public final class MutableHashSet<E> extends AbstractMutableSet<E> implements Se
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            E res = node.value;
+            E res = node.key;
             node = node.next;
             return res;
         }
     }
 
-    private static final class Node<E> {
-        final E value;
-        final int hash;
+    protected static final class Node<E> extends HashNode<E, Node<E>> {
 
-        Node<E> next;
-
-        private Node(E value, int hash) {
-            this.value = value;
-            this.hash = hash;
+        private Node(E key, int hash) {
+            super(key, hash);
         }
 
-        private Node(E value, int hash, Node<E> next) {
-            this.value = value;
-            this.hash = hash;
-            this.next = next;
+        private Node(E key, int hash, Node<E> next) {
+            super(key, hash, next);
+        }
+
+        @Override
+        public Node<E> deepClone() {
+            final Node<E> head = new Node<>(key, hash, next);
+
+            Node<E> node = head;
+            Node<E> nextNode;
+            while ((nextNode = node.next) != null) {
+                nextNode = new Node<>(nextNode.key, nextNode.hash, nextNode.next);
+                node.next = nextNode;
+                node = nextNode;
+            }
+
+            return head;
         }
     }
 

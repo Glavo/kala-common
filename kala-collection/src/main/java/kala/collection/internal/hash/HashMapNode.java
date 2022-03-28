@@ -5,48 +5,18 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
-public class HashMapNode<K, V> implements java.util.Map.Entry<K, V> {
-    public final K key;
-    public final int hash;
+public class HashMapNode<K, V> extends HashNode<K, HashMapNode<K, V>> implements java.util.Map.Entry<K, V> {
     public V value;
 
-    public HashMapNode<K, V> next;
-
     public HashMapNode(K key, int hash, V value) {
-        this(key, hash, value, null);
+        super(key, hash);
+        this.value = value;
     }
 
     public HashMapNode(K key, int hash, V value, HashMapNode<K, V> next) {
-        this.key = key;
-        this.hash = hash;
+        super(key, hash);
         this.value = value;
         this.next = next;
-    }
-
-
-    public final HashMapNode<K, V> findNode(K k, int h) {
-        HashMapNode<K, V> node = this;
-
-        while (true) {
-            final int nodeHash = node.hash;
-            if (h == nodeHash && Objects.equals(k, node.key)) {
-                return node;
-            }
-
-            final HashMapNode<K, V> nextNode = node.next;
-            if (nextNode == null || nodeHash > h) {
-                return null;
-            }
-            node = nextNode;
-        }
-    }
-
-    public final void forEach(@NotNull BiConsumer<? super K, ? super V> consumer) {
-        HashMapNode<K, V> node = this;
-        while (node != null) {
-            consumer.accept(node.key, node.value);
-            node = node.next;
-        }
     }
 
     @Override
@@ -66,25 +36,12 @@ public class HashMapNode<K, V> implements java.util.Map.Entry<K, V> {
         return oldValue;
     }
 
-    public String toString(boolean debug) {
-        if (!debug) {
-            return toString();
-        }
-
-        StringBuilder builder = new StringBuilder();
+    public final void forEach(@NotNull BiConsumer<? super K, ? super V> consumer) {
         HashMapNode<K, V> node = this;
-        while (true) {
-            final HashMapNode<K, V> nextNode = node.next;
-            builder.append(node);
-
-            if (nextNode == null) {
-                break;
-            }
-
-            builder.append(" -> ");
-            node = nextNode;
+        while (node != null) {
+            consumer.accept(node.key, node.value);
+            node = node.next;
         }
-        return builder.toString();
     }
 
     @Override
