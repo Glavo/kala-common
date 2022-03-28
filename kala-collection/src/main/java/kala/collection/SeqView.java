@@ -3,6 +3,7 @@ package kala.collection;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.function.IndexedBiConsumer;
 import kala.function.IndexedFunction;
+import kala.function.Predicates;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import kala.tuple.primitive.IntObjTuple2;
@@ -22,7 +23,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 @SuppressWarnings("unchecked")
-public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqLike<E> {
+public interface SeqView<@Covariant E> extends View<E>, SeqLike<E> {
 
     //region Narrow method
 
@@ -251,7 +252,7 @@ public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, FullSeqLike<
 
     @Override
     default <U> @NotNull SeqView<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
-        return ((SeqView<U>) filter(clazz::isInstance));
+        return (SeqView<U>) filter(Predicates.instanceOf(clazz));
     }
 
     @Override

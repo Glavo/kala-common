@@ -1,11 +1,10 @@
 package kala.collection.immutable;
 
-import kala.collection.FullSeqLikeTestTemplate;
 import kala.collection.SeqTestTemplate;
 import kala.collection.factory.CollectionFactory;
 
 @SuppressWarnings({"unchecked"})
-public interface ImmutableSeqTestTemplate extends ImmutableCollectionTestTemplate, SeqTestTemplate, FullSeqLikeTestTemplate {
+public interface ImmutableSeqTestTemplate extends ImmutableCollectionTestTemplate, SeqTestTemplate {
     @Override
     <E> CollectionFactory<E, ?, ? extends ImmutableSeq<? extends E>> factory();
 

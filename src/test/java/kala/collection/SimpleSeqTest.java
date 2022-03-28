@@ -6,6 +6,7 @@ import kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public final class SimpleSeqTest implements SeqTestTemplate {
 
     @Override
     public <E> SimpleSeq<E> of(E... elements) {
-        return new SimpleSeq<>(List.of(elements));
+        return new SimpleSeq<>(Arrays.asList(elements));
     }
 
     @Override

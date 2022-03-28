@@ -1,6 +1,6 @@
 package kala.collection;
 
-public interface ViewTestTemplate extends FullCollectionLikeTestTemplate{
+public interface ViewTestTemplate extends CollectionLikeTestTemplate {
     @Override
     <E> View<E> of(E... elements);
 

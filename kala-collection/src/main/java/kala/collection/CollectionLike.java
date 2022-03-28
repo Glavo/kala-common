@@ -4,12 +4,17 @@ import kala.collection.base.Traversable;
 import kala.collection.factory.MapFactory;
 import kala.collection.immutable.*;
 import kala.collection.mutable.MutableArray;
+import kala.tuple.Tuple2;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public interface CollectionLike<E> extends Traversable<E> {
 
@@ -18,6 +23,43 @@ public interface CollectionLike<E> extends Traversable<E> {
     }
 
     @NotNull View<E> view();
+
+    default @NotNull CollectionLike<E> filter(@NotNull Predicate<? super E> predicate) {
+        throw new UnsupportedOperationException();
+    }
+
+    default @NotNull CollectionLike<E> filterNot(@NotNull Predicate<? super E> predicate) {
+        throw new UnsupportedOperationException();
+    }
+
+    default @NotNull CollectionLike<@NotNull E> filterNotNull() {
+        throw new UnsupportedOperationException();
+    }
+
+    default <U> @NotNull CollectionLike<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
+        throw new UnsupportedOperationException();
+    }
+
+    default <U> @NotNull CollectionLike<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+        throw new UnsupportedOperationException();
+    }
+
+    default <U> @NotNull CollectionLike<U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
+        throw new UnsupportedOperationException();
+    }
+
+    default <U> @NotNull CollectionLike<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Contract(pure = true)
+    default <U> @NotNull CollectionLike<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
+        throw new UnsupportedOperationException();
+    }
+
+    default <U> @NotNull CollectionLike<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
+        throw new UnsupportedOperationException();
+    }
 
     //region Copy Operations
 

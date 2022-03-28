@@ -4,13 +4,14 @@ import kala.Conditions;
 import kala.collection.base.GenericArrays;
 import kala.collection.base.Growable;
 import kala.collection.base.Iterators;
+import kala.collection.immutable.AbstractImmutableCollection;
+import kala.collection.immutable.AbstractImmutableSeq;
+import kala.collection.immutable.ImmutableSeq;
 import kala.collection.internal.SeqIterators;
 import kala.collection.mutable.MutableArrayList;
+import kala.comparator.Comparators;
 import kala.control.Option;
-import kala.function.CheckedIndexedConsumer;
-import kala.function.IndexedBiFunction;
-import kala.function.IndexedConsumer;
-import kala.function.IndexedFunction;
+import kala.function.*;
 import kala.tuple.Tuple2;
 import kala.tuple.primitive.IntObjTuple2;
 import kala.collection.internal.view.SeqViews;
@@ -20,11 +21,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.RandomAccess;
-import java.util.function.BiFunction;
-import java.util.function.Predicate;
+import java.util.*;
+import java.util.function.*;
 
 public interface SeqLike<E> extends CollectionLike<E> {
     @Contract(value = "_ -> param1", pure = true)
@@ -372,6 +370,164 @@ public interface SeqLike<E> extends CollectionLike<E> {
     }
 
     //endregion
+
+    @Contract(pure = true)
+    default @NotNull SeqLike<E> slice(int beginIndex, int endIndex) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Contract(pure = true)
+    default @NotNull SeqLike<E> drop(int n) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Contract(pure = true)
+    default @NotNull SeqLike<E> dropLast(int n) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Contract(pure = true)
+    default @NotNull SeqLike<E> dropWhile(@NotNull Predicate<? super E> predicate) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Contract(pure = true)
+    default @NotNull SeqLike<E> take(int n) {
+        throw new UnsupportedOperationException();
+    }
+
+    default @NotNull SeqLike<E> takeLast(int n) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Contract(pure = true)
+    default @NotNull SeqLike<E> takeWhile(@NotNull Predicate<? super E> predicate) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Contract(pure = true)
+    default @NotNull SeqLike<E> updated(int index, E newValue) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Contract(pure = true)
+    default @NotNull SeqLike<E> concat(@NotNull SeqLike<? extends E> other) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Contract(pure = true)
+    default @NotNull SeqLike<E> concat(@NotNull List<? extends E> other) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Contract(pure = true)
+    default @NotNull SeqLike<E> prepended(E value) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Contract(pure = true)
+    default @NotNull SeqLike<E> prependedAll(E @NotNull [] values) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Contract(pure = true)
+    default @NotNull SeqLike<E> prependedAll(@NotNull Iterable<? extends E> values) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Contract(pure = true)
+    default @NotNull SeqLike<E> appended(E value) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Contract(pure = true)
+    default @NotNull SeqLike<E> appendedAll(@NotNull Iterable<? extends E> values) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Contract(pure = true)
+    default @NotNull SeqLike<E> appendedAll(E @NotNull [] values) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Contract(pure = true)
+    default @NotNull SeqLike<E> sorted() {
+        return sorted(Comparators.naturalOrder());
+    }
+
+    @Contract(pure = true)
+    default @NotNull SeqLike<E> sorted(Comparator<? super E> comparator) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Contract(pure = true)
+    default @NotNull SeqLike<E> reversed() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    @Contract(pure = true)
+    default @NotNull SeqLike<E> filter(@NotNull Predicate<? super E> predicate) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    @Contract(pure = true)
+    default @NotNull SeqLike<E> filterNot(@NotNull Predicate<? super E> predicate) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    @Contract(pure = true)
+    default @NotNull SeqLike<@NotNull E> filterNotNull() {
+        return this.filter(Predicates.isNotNull());
+    }
+
+    @Override
+    @Contract(pure = true)
+    default <U> @NotNull SeqLike<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    @Contract(pure = true)
+    default <U> @NotNull SeqLike<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Contract(pure = true)
+    default <U> @NotNull SeqLike<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    @Contract(pure = true)
+    default <U> @NotNull SeqLike<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Contract(pure = true)
+    default <U> @NotNull SeqLike<@NotNull U> mapIndexedNotNull(
+            @NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    @Contract(pure = true)
+    default @NotNull <U> SeqLike<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Contract(pure = true)
+    default @NotNull <U> SeqLike<U> mapIndexedMulti(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    @Contract(pure = true)
+    default <U> @NotNull SeqLike<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
+        throw new UnsupportedOperationException();
+    }
 
     @Contract(value = "_, _ -> param1", mutates = "param1")
     default <U, G extends Growable<? super U>> @NotNull G mapIndexedTo(

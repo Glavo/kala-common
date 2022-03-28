@@ -1,6 +1,5 @@
 package kala.collection.immutable;
 
-import kala.collection.FullSeqLike;
 import kala.collection.Seq;
 import kala.collection.SeqLike;
 import kala.collection.base.Traversable;
@@ -20,7 +19,7 @@ import java.util.function.*;
 import java.util.stream.Stream;
 
 @SuppressWarnings({"unchecked"})
-public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<E>, FullSeqLike<E> {
+public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<E> {
     //region Narrow method
 
     @Contract(value = "_ -> param1", pure = true)
@@ -265,6 +264,7 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
         return AbstractImmutableSeq.take(this, n, iterableFactory());
     }
 
+    @Contract(pure = true)
     default @NotNull ImmutableSeq<E> takeLast(int n) {
         return AbstractImmutableSeq.takeLast(this, n, iterableFactory());
     }
@@ -337,16 +337,6 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     @Override
     default @NotNull ImmutableSeq<E> filter(@NotNull Predicate<? super E> predicate) {
         return AbstractImmutableCollection.filter(this, predicate, iterableFactory());
-    }
-
-    default @NotNull <Ex extends Throwable> ImmutableSeq<E> filterChecked(
-            @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) throws Ex {
-        return filter(predicate);
-    }
-
-    default @NotNull ImmutableSeq<E> filterUnchecked(
-            @NotNull CheckedPredicate<? super E, ?> predicate) {
-        return filter(predicate);
     }
 
     @Override

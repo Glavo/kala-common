@@ -1,7 +1,6 @@
 package kala.collection.immutable;
 
 import kala.collection.Collection;
-import kala.collection.FullCollectionLike;
 import kala.function.CheckedFunction;
 import kala.function.CheckedPredicate;
 import kala.function.Predicates;
@@ -13,15 +12,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.*;
-import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public interface ImmutableCollection<@Covariant E> extends Collection<E>, FullCollectionLike<E> {
+public interface ImmutableCollection<@Covariant E> extends Collection<E> {
 
     //region Narrow method
 
@@ -125,70 +122,13 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E>, FullCo
     //endregion
 
     @Contract(pure = true)
-    default <U> @NotNull ImmutableCollection<U> map(@NotNull Function<? super E, ? extends U> mapper) {
-        return AbstractImmutableCollection.map(this, mapper, this.<U>iterableFactory());
-    }
-
-    @Contract(pure = true)
-    default <U, Ex extends Throwable> @NotNull ImmutableCollection<U> mapChecked(
-            @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
-        return map(mapper);
-    }
-
-    @Contract(pure = true)
-    default <U> @NotNull ImmutableCollection<U> mapUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
-        return map(mapper);
-    }
-
-    @Contract(pure = true)
-    default <U> @NotNull ImmutableCollection<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
-        return AbstractImmutableCollection.mapNotNull(this, mapper, this.<U>iterableFactory());
-    }
-
-    @Contract(pure = true)
-    default <U, Ex extends Throwable> @NotNull ImmutableCollection<U> mapNotNullChecked(
-            @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
-        return mapNotNull(mapper);
-    }
-
-    @Contract(pure = true)
-    default <U> @NotNull ImmutableCollection<U> mapNotNullUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
-        return mapNotNull(mapper);
-    }
-
-    @Override
-    default @NotNull <U> ImmutableCollection<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
-        return AbstractImmutableCollection.mapMulti(this, mapper, iterableFactory());
-    }
-
-    @Contract(pure = true)
     default @NotNull ImmutableCollection<E> filter(@NotNull Predicate<? super E> predicate) {
         return AbstractImmutableCollection.filter(this, predicate, iterableFactory());
-    }
-
-    default @NotNull <Ex extends Throwable> ImmutableCollection<E> filterChecked(
-            @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) throws Ex {
-        return filter(predicate);
-    }
-
-    default @NotNull ImmutableCollection<E> filterUnchecked(
-            @NotNull CheckedPredicate<? super E, ?> predicate) {
-        return filter(predicate);
     }
 
     @Contract(pure = true)
     default @NotNull ImmutableCollection<E> filterNot(@NotNull Predicate<? super E> predicate) {
         return AbstractImmutableCollection.filterNot(this, predicate, iterableFactory());
-    }
-
-    default @NotNull <Ex extends Throwable> ImmutableCollection<E> filterNotChecked(
-            @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) throws Ex {
-        return filterNot(predicate);
-    }
-
-    default @NotNull ImmutableCollection<E> filterNotUnchecked(
-            @NotNull CheckedPredicate<? super E, ?> predicate) {
-        return filterNot(predicate);
     }
 
     @Contract(pure = true)
@@ -202,20 +142,22 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E>, FullCo
     }
 
     @Contract(pure = true)
+    default <U> @NotNull ImmutableCollection<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+        return AbstractImmutableCollection.map(this, mapper, this.<U>iterableFactory());
+    }
+    @Contract(pure = true)
+    default <U> @NotNull ImmutableCollection<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
+        return AbstractImmutableCollection.mapNotNull(this, mapper, this.<U>iterableFactory());
+    }
+
+    @Override
+    default @NotNull <U> ImmutableCollection<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+        return AbstractImmutableCollection.mapMulti(this, mapper, iterableFactory());
+    }
+
+    @Contract(pure = true)
     default <U> @NotNull ImmutableCollection<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
         return AbstractImmutableCollection.flatMap(this, mapper, iterableFactory());
-    }
-
-    @Contract(pure = true)
-    default <U, Ex extends Throwable> @NotNull ImmutableCollection<U> flatMapChecked(
-            @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ? extends Ex> mapper) throws Ex {
-        return flatMap(mapper);
-    }
-
-    @Contract(pure = true)
-    default <U> @NotNull ImmutableCollection<U> flatMapUnchecked(
-            @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ?> mapper) {
-        return flatMap(mapper);
     }
 
     default <U> @NotNull ImmutableCollection<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
