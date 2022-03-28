@@ -1,11 +1,10 @@
 package kala.collection.immutable;
 
-import kala.collection.internal.hash.HashBase;
+import kala.collection.mutable.MutableHashMap;
 import kala.control.Option;
 import kala.collection.base.MapBase;
 import kala.collection.base.MapIterator;
 import kala.collection.factory.MapFactory;
-import kala.collection.internal.hash.HashMapBase;
 import kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,12 +22,12 @@ import java.util.stream.Collector;
 public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V> implements Serializable {
     private static final long serialVersionUID = 4088221143962926192L;
 
-    private static final ImmutableHashMap<?, ?> EMPTY = new ImmutableHashMap<>(new Impl<>());
+    private static final ImmutableHashMap<?, ?> EMPTY = new ImmutableHashMap<>(new MutableHashMap<>());
     private static final Factory<?, ?> FACTORY = new Factory<>();
 
-    final Impl<K, V> source;
+    final MutableHashMap<K, V> source;
 
-    private ImmutableHashMap(Impl<K, V> source) {
+    private ImmutableHashMap(MutableHashMap<K, V> source) {
         this.source = source;
     }
 
@@ -55,7 +54,7 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V> imp
     }
 
     public static <K, V> @NotNull ImmutableHashMap<K, V> of(K k1, V v1) {
-        Impl<K, V> impl = new Impl<>();
+        MutableHashMap<K, V> impl = new MutableHashMap<>();
         impl.set(k1, v1);
         return new ImmutableHashMap<>(impl);
     }
@@ -64,7 +63,7 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V> imp
             K k1, V v1,
             K k2, V v2
     ) {
-        Impl<K, V> impl = new Impl<>();
+        MutableHashMap<K, V> impl = new MutableHashMap<>();
         impl.set(k1, v1);
         impl.set(k2, v2);
         return new ImmutableHashMap<>(impl);
@@ -75,7 +74,7 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V> imp
             K k2, V v2,
             K k3, V v3
     ) {
-        Impl<K, V> impl = new Impl<>();
+        MutableHashMap<K, V> impl = new MutableHashMap<>();
         impl.set(k1, v1);
         impl.set(k2, v2);
         impl.set(k3, v3);
@@ -88,7 +87,7 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V> imp
             K k3, V v3,
             K k4, V v4
     ) {
-        Impl<K, V> impl = new Impl<>();
+        MutableHashMap<K, V> impl = new MutableHashMap<>();
         impl.set(k1, v1);
         impl.set(k2, v2);
         impl.set(k3, v3);
@@ -103,7 +102,7 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V> imp
             K k4, V v4,
             K k5, V v5
     ) {
-        Impl<K, V> impl = new Impl<>();
+        MutableHashMap<K, V> impl = new MutableHashMap<>();
         impl.set(k1, v1);
         impl.set(k2, v2);
         impl.set(k3, v3);
@@ -119,7 +118,7 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V> imp
     public static <K, V> @NotNull ImmutableHashMap<K, V> ofEntries(
             @NotNull Tuple2<? extends K, ? extends V> entry1
     ) {
-        Impl<K, V> impl = new Impl<>();
+        MutableHashMap<K, V> impl = new MutableHashMap<>();
         impl.set(entry1);
         return new ImmutableHashMap<>(impl);
     }
@@ -128,7 +127,7 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V> imp
             @NotNull Tuple2<? extends K, ? extends V> entry1,
             @NotNull Tuple2<? extends K, ? extends V> entry2
     ) {
-        Impl<K, V> impl = new Impl<>();
+        MutableHashMap<K, V> impl = new MutableHashMap<>();
         impl.set(entry1);
         impl.set(entry2);
         return new ImmutableHashMap<>(impl);
@@ -139,7 +138,7 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V> imp
             @NotNull Tuple2<? extends K, ? extends V> entry2,
             @NotNull Tuple2<? extends K, ? extends V> entry3
     ) {
-        Impl<K, V> impl = new Impl<>();
+        MutableHashMap<K, V> impl = new MutableHashMap<>();
         impl.set(entry1);
         impl.set(entry2);
         impl.set(entry3);
@@ -152,7 +151,7 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V> imp
             @NotNull Tuple2<? extends K, ? extends V> entry3,
             @NotNull Tuple2<? extends K, ? extends V> entry4
     ) {
-        Impl<K, V> impl = new Impl<>();
+        MutableHashMap<K, V> impl = new MutableHashMap<>();
         impl.set(entry1);
         impl.set(entry2);
         impl.set(entry3);
@@ -167,7 +166,7 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V> imp
             @NotNull Tuple2<? extends K, ? extends V> entry4,
             @NotNull Tuple2<? extends K, ? extends V> entry5
     ) {
-        Impl<K, V> impl = new Impl<>();
+        MutableHashMap<K, V> impl = new MutableHashMap<>();
         impl.set(entry1);
         impl.set(entry2);
         impl.set(entry3);
@@ -178,7 +177,7 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V> imp
 
     @SafeVarargs
     public static <K, V> @NotNull ImmutableHashMap<K, V> ofEntries(Tuple2<? extends K, ? extends V> @NotNull ... entries) {
-        Impl<K, V> impl = new Impl<>();
+        MutableHashMap<K, V> impl = new MutableHashMap<>();
         for (Tuple2<? extends K, ? extends V> entry : entries) {
             impl.set(entry);
         }
@@ -189,7 +188,7 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V> imp
         if (values.isEmpty()) {
             return empty();
         }
-        Impl<K, V> impl = new Impl<>();
+        MutableHashMap<K, V> impl = new MutableHashMap<>();
         impl.putAll(values);
         return new ImmutableHashMap<>(impl);
     }
@@ -198,7 +197,7 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V> imp
         if (values.isEmpty()) {
             return empty();
         }
-        Impl<K, V> impl = new Impl<>();
+        MutableHashMap<K, V> impl = new MutableHashMap<>();
         impl.putAll(values);
         return new ImmutableHashMap<>(impl);
     }
@@ -207,7 +206,7 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V> imp
         if (values.length == 0) {
             return empty();
         }
-        Impl<K, V> impl = new Impl<>();
+        MutableHashMap<K, V> impl = new MutableHashMap<>();
         for (Map.Entry<? extends K, ? extends V> value : values) {
             impl.set(value.getKey(), value.getValue());
         }
@@ -219,7 +218,7 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V> imp
         if (!it.hasNext()) {
             return empty();
         }
-        Impl<K, V> impl = new Impl<>();
+        MutableHashMap<K, V> impl = new MutableHashMap<>();
         while (it.hasNext()) {
             Map.Entry<? extends K, ? extends V> entry = it.next();
             impl.set(entry.getKey(), entry.getValue());
@@ -337,7 +336,7 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V> imp
         if (source.contains(key, value)) {
             return this;
         }
-        Impl<K, V> nm = source.clone();
+        MutableHashMap<K, V> nm = source.clone();
         nm.put(key, value);
         return new ImmutableHashMap<>(nm);
     }
@@ -347,7 +346,7 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V> imp
         if (!source.containsKey(key)) {
             return this;
         }
-        Impl<K, V> nm = source.clone();
+        MutableHashMap<K, V> nm = source.clone();
         nm.remove(key);
         return nm.isEmpty() ? empty() : new ImmutableHashMap<>(nm);
     }
@@ -378,57 +377,38 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V> imp
             builder.sizeHint(size);
         }
     }
-
-    static final class Impl<K, V> extends HashMapBase<K, V> {
-        private static final long serialVersionUID = -3496307994182942597L;
-
-        Impl() {
-            super(HashBase.DEFAULT_INITIAL_CAPACITY, HashBase.DEFAULT_LOAD_FACTOR);
-        }
-
-        public Impl(@NotNull HashMapBase<K, V> old) {
-            super(old);
-        }
-
-        @Override
-        @SuppressWarnings("MethodDoesntCallSuperMethod")
-        public Impl<K, V> clone() {
-            return new Impl<>(this);
-        }
-    }
-
     static final class Builder<K, V> {
-        Impl<K, V> impl = new Impl<>();
+        MutableHashMap<K, V> source = new MutableHashMap<>();
         boolean aliased = false;
 
         private void ensureUnaliased() {
             if (aliased) {
-                impl = impl.clone();
+                source = source.clone();
             }
         }
 
         void add(K key, V value) {
             ensureUnaliased();
-            impl.set(key, value);
+            source.set(key, value);
         }
 
         Builder<K, V> merge(Builder<K, V> other) {
             ensureUnaliased();
-            this.impl.putAll(other.impl);
+            this.source.putAll(other.source);
             return this;
         }
 
         void sizeHint(int size) {
             ensureUnaliased();
-            impl.sizeHint(size);
+            source.sizeHint(size);
         }
 
         ImmutableHashMap<K, V> build() {
-            if (impl.isEmpty()) {
+            if (source.isEmpty()) {
                 return ImmutableHashMap.empty();
             }
             aliased = true;
-            return new ImmutableHashMap<>(impl);
+            return new ImmutableHashMap<>(source);
         }
     }
 }
