@@ -136,10 +136,9 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
                 : new AsJavaConvert.MutableListAsJava<>(this);
     }
 
-    default @NotNull MutableStack<E> asStack() {
+    default @NotNull MutableStack<E> asMutableStack() {
         return this instanceof MutableStack ? (MutableStack<E>) this : new MutableListStackAdapter<>(this);
     }
-
 
     //endregion
 

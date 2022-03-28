@@ -298,10 +298,10 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
     }
 
 
-    //region Internal put and remove helper
+    //region Internal put helper
 
     private void set0(K key, V value, int hash) {
-        if (contentSize + 1 >= threshold) {
+        if (contentSize >= threshold - 1) {
             growTable(table.length * 2);
         }
         final int idx = index(hash);

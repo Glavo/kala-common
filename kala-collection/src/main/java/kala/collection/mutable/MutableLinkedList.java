@@ -170,7 +170,7 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
         return new SeqItr(index);
     }
 
-    public @NotNull MutableStack<E> asStack() {
+    public @NotNull MutableStack<E> asMutableStack() {
         return this;
     }
 
