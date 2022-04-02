@@ -209,8 +209,20 @@ public interface MutableListTestTemplate extends MutableSeqTestTemplate {
         assertIterableEquals(List.of("str1", "str2", "str3"), list);
         list.removeAt(1);
         assertIterableEquals(List.of("str1", "str3"), list);
+    }
 
+    @Test
+    default void removeInRangeTest() {
+        MutableList<String> list = of("str0", "str1", "str2", "str3", "str4", "str5", "str6", "str7", "str8", "str9");
 
+        list.removeInRange(0, 0);
+        assertIterableEquals(List.of("str0", "str1", "str2", "str3", "str4", "str5", "str6", "str7", "str8", "str9"), list);
+        list.removeInRange(1, 3);
+        assertIterableEquals(List.of("str0", "str3", "str4", "str5", "str6", "str7", "str8", "str9"), list);
+        list.removeInRange(0, 5);
+        assertIterableEquals(List.of("str7", "str8", "str9"), list);
+        list.removeInRange(0, list.size());
+        assertIterableEquals(List.of(), list);
     }
 
     @Test
