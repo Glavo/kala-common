@@ -5,6 +5,7 @@ import kala.collection.internal.hash.HashBase;
 import kala.collection.internal.hash.HashNode;
 import kala.collection.internal.hash.HashUtils;
 import kala.collection.factory.CollectionFactory;
+import kala.function.Balance;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
@@ -20,7 +21,7 @@ import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 public final class MutableHashSet<E> extends HashBase<E, MutableHashSet.Node<E>> implements MutableSet<E>, Serializable {
-    private static final long serialVersionUID =  2267952928135789371L;
+    private static final long serialVersionUID = 2267952928135789371L;
     private static final MutableHashSet.Factory<?> FACTORY = new Factory<>();
 
     //region Constructors
@@ -29,13 +30,26 @@ public final class MutableHashSet<E> extends HashBase<E, MutableHashSet.Node<E>>
         this(DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR);
     }
 
-    public MutableHashSet(@Range(from = 0, to = MAXIMUM_CAPACITY) int initialCapacity) {
+    public MutableHashSet(int initialCapacity) {
         this(initialCapacity, DEFAULT_LOAD_FACTOR);
     }
 
-    public MutableHashSet(@Range(from = 0, to = MAXIMUM_CAPACITY) int initialCapacity, double loadFactor) {
-        super(initialCapacity, loadFactor);
+    public MutableHashSet(int initialCapacity, double loadFactor) {
+        super(Balance.optimizedBalance(), initialCapacity, loadFactor);
     }
+
+    public MutableHashSet(Balance<? super E> balance) {
+        this(balance, DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR);
+    }
+
+    public MutableHashSet(Balance<? super E> balance, int initialCapacity) {
+        this(balance, initialCapacity, DEFAULT_LOAD_FACTOR);
+    }
+
+    public MutableHashSet(Balance<? super E> balance, int initialCapacity, double loadFactor) {
+        super(balance, initialCapacity, loadFactor);
+    }
+
 
     //endregion
 
@@ -206,7 +220,7 @@ public final class MutableHashSet<E> extends HashBase<E, MutableHashSet.Node<E>>
             final Node<E> old = n;
             Node<E> prev = null;
             while ((n != null) && n.hash <= hash) {
-                if (n.hash == hash && Objects.equals(value, n.key)) {
+                if (n.hash == hash && balance.test(value, n.key)) {
                     return false;
                 }
                 prev = n;

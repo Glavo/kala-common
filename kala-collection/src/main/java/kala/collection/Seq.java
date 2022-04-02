@@ -323,14 +323,14 @@ public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E> {
 
     @Override
     @Contract(pure = true)
-    default <U, Ex extends Throwable> @NotNull ImmutableCollection<U> mapChecked(
+    default <U, Ex extends Throwable> @NotNull ImmutableSeq<U> mapChecked(
             @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
         return map(mapper);
     }
 
     @Override
     @Contract(pure = true)
-    default <U> @NotNull ImmutableCollection<U> mapUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
+    default <U> @NotNull ImmutableSeq<U> mapUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
         return map(mapper);
     }
 
@@ -340,11 +340,34 @@ public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E> {
         return view().<U>mapIndexed(mapper).toImmutableSeq();
     }
 
+    @Contract(pure = true)
+    default <U, Ex extends Throwable> @NotNull ImmutableSeq<U> mapIndexedChecked(
+            @NotNull CheckedIndexedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
+        return mapIndexed(mapper);
+    }
+
+    @Contract(pure = true)
+    default <U> @NotNull ImmutableSeq<U> mapIndexedUnchecked(@NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
+        return mapIndexed(mapper);
+    }
+
     @Override
     @Contract(pure = true)
     default <U> @NotNull ImmutableSeq<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
         return view().<U>mapNotNull(mapper).toImmutableSeq();
     }
+
+    @Contract(pure = true)
+    default <U, Ex extends Throwable> @NotNull ImmutableSeq<U> mapNotNullChecked(
+            @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
+        return mapNotNull(mapper);
+    }
+
+    @Contract(pure = true)
+    default <U> @NotNull ImmutableSeq<U> mapNotNullUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
+        return mapNotNull(mapper);
+    }
+
 
     @Override
     @Contract(pure = true)

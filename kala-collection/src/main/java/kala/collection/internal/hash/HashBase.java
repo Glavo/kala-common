@@ -1,14 +1,12 @@
 package kala.collection.internal.hash;
 
+import kala.function.Balance;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
-import java.io.InvalidObjectException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static kala.collection.internal.hash.HashUtils.computeHash;
 import static kala.collection.internal.hash.HashUtils.tableSizeFor;
 
 public abstract class HashBase<K, N extends HashNode<K, N>> implements Serializable {
@@ -19,6 +17,7 @@ public abstract class HashBase<K, N extends HashNode<K, N>> implements Serializa
 
     protected static final int MAXIMUM_CAPACITY = 1 << 30;
 
+    protected Balance<? super K> balance;
     protected double loadFactor;
 
     protected transient N[] table;
@@ -26,7 +25,7 @@ public abstract class HashBase<K, N extends HashNode<K, N>> implements Serializa
 
     protected transient int contentSize = 0;
 
-    protected HashBase(int initialCapacity, double loadFactor) {
+    protected HashBase(Balance<? super K> balance, int initialCapacity, double loadFactor) {
         if (initialCapacity < 0) {
             throw new IllegalArgumentException("Illegal initial capacity: " + initialCapacity);
         }
@@ -38,6 +37,7 @@ public abstract class HashBase<K, N extends HashNode<K, N>> implements Serializa
             initialCapacity = MAXIMUM_CAPACITY;
         }
 
+        this.balance = Objects.requireNonNull(balance);
         this.loadFactor = loadFactor;
 
         final int tableSize = tableSizeFor(initialCapacity);
@@ -46,6 +46,7 @@ public abstract class HashBase<K, N extends HashNode<K, N>> implements Serializa
     }
 
     protected HashBase(HashBase<K, N> old) {
+        this.balance = old.balance;
         this.loadFactor = old.loadFactor;
         this.threshold = old.threshold;
         this.contentSize = old.contentSize;
@@ -78,7 +79,7 @@ public abstract class HashBase<K, N extends HashNode<K, N>> implements Serializa
     }
 
     protected final @Nullable N findNode(K key) {
-        final int hash = computeHash(key);
+        final int hash = balance.hash(key);
         N fn = table[index(hash)];
         if (fn == null) {
             return null;
@@ -87,7 +88,7 @@ public abstract class HashBase<K, N extends HashNode<K, N>> implements Serializa
     }
 
     protected final N removeNode(K elem) {
-        return removeNode(elem, computeHash(elem));
+        return removeNode(elem, balance.hash(elem));
     }
 
     protected final N removeNode(K elem, int hash) {
@@ -99,7 +100,7 @@ public abstract class HashBase<K, N extends HashNode<K, N>> implements Serializa
             return null;
         }
 
-        if (nd.hash == hash && Objects.equals(nd.key, elem)) {
+        if (nd.hash == hash && balance.test(nd.key, elem)) {
             table[idx] = nd.next;
             contentSize -= 1;
             return nd;
@@ -110,7 +111,7 @@ public abstract class HashBase<K, N extends HashNode<K, N>> implements Serializa
         N next = nd.next;
 
         while (next != null && next.hash <= hash) {
-            if (next.hash == hash && Objects.equals(next.key, elem)) {
+            if (next.hash == hash && balance.test(next.key, elem)) {
                 prev.next = next.next;
                 contentSize -= 1;
                 return next;
@@ -122,6 +123,11 @@ public abstract class HashBase<K, N extends HashNode<K, N>> implements Serializa
     }
 
     //endregion
+
+
+    public Balance<? super K> getBalance() {
+        return balance;
+    }
 
     public final int size() {
         return contentSize;

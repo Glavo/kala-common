@@ -332,7 +332,7 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V> imp
     }
 
     @Override
-    public @NotNull ImmutableHashMap<K, V> updated(K key, V value) {
+    public @NotNull ImmutableHashMap<K, V> putted(K key, V value) {
         if (source.contains(key, value)) {
             return this;
         }

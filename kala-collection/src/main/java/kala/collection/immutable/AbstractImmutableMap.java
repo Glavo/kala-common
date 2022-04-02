@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("unchecked")
 public abstract class AbstractImmutableMap<K, V> extends AbstractMap<K, V> implements ImmutableMap<K, V> {
-    static <K, V, T extends ImmutableMap<K, ? extends V>, Builder> T updated(
+    static <K, V, T extends ImmutableMap<K, ? extends V>, Builder> T putted(
             @NotNull ImmutableMap<K, ? extends V> map,
             K key, V value,
             MapFactory<K, V, Builder, ? extends T> factory
