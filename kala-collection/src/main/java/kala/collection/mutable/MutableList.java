@@ -12,6 +12,7 @@ import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
 import kala.collection.factory.CollectionFactory;
 import kala.control.Option;
+import kala.range.primitive.IntRange;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -275,6 +276,26 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
     @Contract(mutates = "this")
     @Flow(sourceIsContainer = true)
     E removeAt(int index);
+
+    default void removeInRange(int beginIndex, int toIndex) {
+        int size = this.size();
+        Conditions.checkPositionIndices(beginIndex, toIndex, size);
+
+        int rangeLength = toIndex - beginIndex;
+
+        if (rangeLength == 0) {
+            return;
+        }
+
+        if (rangeLength == size) {
+            clear();
+            return;
+        }
+
+        for (int i = 0; i < rangeLength; i++) {
+            this.removeAt(beginIndex);
+        }
+    }
 
     @Contract(mutates = "this")
     default E removeFirst() {
