@@ -5,9 +5,10 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Iterator;
 import java.util.Objects;
 
-public interface MutableQueue<E> {
+public interface MutableQueue<E> extends MutableCollection<E> {
 
     @Contract("-> new")
     static <E> MutableQueue<E> create() {
@@ -18,6 +19,11 @@ public interface MutableQueue<E> {
         Objects.requireNonNull(queue);
 
         return new MutableQueue<E>() {
+            @Override
+            public @NotNull Iterator<E> iterator() {
+                return queue.iterator();
+            }
+
             @Override
             public boolean isEmpty() {
                 return queue.isEmpty();

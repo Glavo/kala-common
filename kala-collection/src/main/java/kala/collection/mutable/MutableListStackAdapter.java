@@ -1,8 +1,10 @@
 package kala.collection.mutable;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 import java.io.Serializable;
+import java.util.Iterator;
 
 final class MutableListStackAdapter<E> implements MutableStack<E>, Serializable {
     private static final long serialVersionUID = -146156819892776856L;
@@ -11,6 +13,21 @@ final class MutableListStackAdapter<E> implements MutableStack<E>, Serializable 
 
     MutableListStackAdapter(@NotNull MutableList<E> seq) {
         this.seq = seq;
+    }
+
+    @Override
+    public @NotNull Iterator<E> iterator() {
+        return seq.iterator();
+    }
+
+    @Override
+    public int knownSize() {
+        return seq.knownSize();
+    }
+
+    @Override
+    public int size() {
+        return seq.size();
     }
 
     @Override
