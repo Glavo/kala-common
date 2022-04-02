@@ -536,6 +536,36 @@ public final class MutableArrayList<E> extends AbstractMutableIndexedList<E> imp
     }
 
     @Override
+    public void removeInRange(int beginIndex, int endIndex) {
+        int size = this.size();
+        Conditions.checkPositionIndices(beginIndex, endIndex, size);
+
+        int rangeLength = endIndex - beginIndex;
+
+        if (rangeLength == 0) {
+            return;
+        }
+
+        if (rangeLength == size) {
+            clear();
+            return;
+        }
+
+        if (rangeLength == 1) {
+            removeAt(beginIndex);
+            return;
+        }
+
+        int tailElementsCount = size - endIndex;
+        System.arraycopy(elements, endIndex, elements, beginIndex, tailElementsCount);
+        if (tailElementsCount < rangeLength) {
+            Arrays.fill(elements, beginIndex + tailElementsCount, beginIndex + rangeLength, null);
+        }
+
+        this.size = size - rangeLength;
+    }
+
+    @Override
     public void dropInPlace(int n) {
         if (n < 0) {
             throw new IllegalArgumentException();

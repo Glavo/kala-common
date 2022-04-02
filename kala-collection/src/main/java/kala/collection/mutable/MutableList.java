@@ -277,11 +277,11 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
     @Flow(sourceIsContainer = true)
     E removeAt(int index);
 
-    default void removeInRange(int beginIndex, int toIndex) {
+    default void removeInRange(int beginIndex, int endIndex) {
         int size = this.size();
-        Conditions.checkPositionIndices(beginIndex, toIndex, size);
+        Conditions.checkPositionIndices(beginIndex, endIndex, size);
 
-        int rangeLength = toIndex - beginIndex;
+        int rangeLength = endIndex - beginIndex;
 
         if (rangeLength == 0) {
             return;
