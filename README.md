@@ -1,7 +1,6 @@
 # kala-common
 
 ![Gradle Check](https://github.com/Glavo/kala-common/workflows/Gradle%20Check/badge.svg?branch=main)
-[![](https://jitpack.io/v/Glavo/kala-common.svg)](https://jitpack.io/#Glavo/kala-common)
 
 This is a powerful set of Java base libraries that provide a series of easy-to-use abstractions and collections.
 If you have used Scala, it should be easy for you to get started with this collection library.
@@ -14,31 +13,12 @@ Its documentation is not ready, please contact me if you have any questions.
 
 ## Adding Kala to your build
 
-First, you need to add the jitpack repository to your build:
-
-Maven:
-```xml
-<repositories>
-  <repository>
-    <id>jitpack</id>
-    <url>https://jitpack.io</url>
-  </repository>
-</repositories>
-```
-
-Gradle:
-```groovy
-repositories {
-    maven { url 'https://jitpack.io' }
-}
-```
-
-Then add dependencies (replace `kala_version` with the current kala version):
+Please replace `kala_version` with the current kala version.
 
 Maven:
 ```xml
 <dependency>
-  <groupId>org.glavo</groupId>
+  <groupId>org.glavo.kala</groupId>
   <artifactId>kala-common</artifactId>
   <version>kala_version</version>
 </dependency>
@@ -46,7 +26,7 @@ Maven:
 
 Gradle:
 ```groovy
-implementation group: 'org.glavo', name: 'kala-common', version: kala_version
+implementation group: 'org.glavo.kala', name: 'kala-common', version: kala_version
 ```
 
 ## Donate
