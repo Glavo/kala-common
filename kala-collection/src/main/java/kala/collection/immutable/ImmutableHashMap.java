@@ -111,6 +111,24 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V> imp
         return new ImmutableHashMap<>(impl);
     }
 
+    public static <K, V> @NotNull ImmutableHashMap<K, V> of(Object... values) {
+        if (values.length % 2 != 0) {
+            throw new IllegalArgumentException();
+        }
+
+        if (values.length == 0) {
+            return empty();
+        }
+
+        MutableHashMap<K, V> impl = new MutableHashMap<>();
+
+        for (int i = 0; i < values.length; i += 2) {
+            impl.set((K) values[i], (V) values[i + 1]);
+        }
+
+        return new ImmutableHashMap<>(impl);
+    }
+
     public static <K, V> @NotNull ImmutableHashMap<K, V> ofEntries() {
         return empty();
     }
@@ -377,6 +395,7 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V> imp
             builder.sizeHint(size);
         }
     }
+
     static final class Builder<K, V> {
         MutableHashMap<K, V> source = new MutableHashMap<>();
         boolean aliased = false;

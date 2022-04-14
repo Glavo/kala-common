@@ -10,6 +10,7 @@ import kala.control.Option;
 import kala.function.Balance;
 import kala.tuple.Tuple2;
 import kala.collection.factory.MapFactory;
+import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,6 +27,7 @@ import java.util.stream.Collector;
 import static kala.collection.internal.hash.HashUtils.computeHash;
 
 @SuppressWarnings("unchecked")
+@Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
 public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<K, V>> implements MutableMap<K, V>, Cloneable, Serializable {
     private static final long serialVersionUID = 4445503260710443405L;
 
@@ -143,6 +145,20 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
         m.set(k4, v4);
         m.set(k5, v5);
         return m;
+    }
+
+    public static <K, V> @NotNull MutableHashMap<K, V> of(Object... values) {
+        if (values.length % 2 != 0) {
+            throw new IllegalArgumentException();
+        }
+
+        MutableHashMap<K, V> res = new MutableHashMap<>();
+
+        for (int i = 0; i < values.length; i += 2) {
+            res.set((K) values[i], (V) values[i + 1]);
+        }
+
+        return res;
     }
 
     public static <K, V> @NotNull MutableHashMap<K, V> ofEntries() {

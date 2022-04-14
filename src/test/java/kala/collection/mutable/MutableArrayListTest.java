@@ -5,7 +5,7 @@ import kala.collection.factory.CollectionFactory;
 public final class MutableArrayListTest implements MutableListTestTemplate {
 
     @Override
-    public final <E> CollectionFactory<E, ?, MutableArrayList<E>> factory() {
+    public <E> CollectionFactory<E, ?, MutableArrayList<E>> factory() {
         return MutableArrayList.factory();
     }
 

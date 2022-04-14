@@ -74,6 +74,10 @@ public interface MutableMap<K, V> extends Map<K, V>, MutableMapLike<K, V> {
         return MutableHashMap.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5);
     }
 
+    static <K, V> @NotNull MutableMap<K, V> of(Object ...values) {
+        return MutableHashMap.of(values);
+    }
+
     static <K, V> @NotNull MutableMap<K, V> ofEntries() {
         return MutableHashMap.ofEntries();
     }

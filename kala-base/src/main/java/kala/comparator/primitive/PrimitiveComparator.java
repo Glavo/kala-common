@@ -11,7 +11,6 @@ public interface PrimitiveComparator<T, C extends PrimitiveComparator<T, C>>
 
     @NotNull C nullsLast();
 
-    @NotNull
     @Override
-    C reversed();
+    @NotNull C reversed();
 }

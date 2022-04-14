@@ -71,6 +71,10 @@ public interface ImmutableMap<K, V> extends Map<K, V> {
         return ImmutableHashMap.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5);
     }
 
+    static <K, V> @NotNull ImmutableMap<K, V> of(Object ...values) {
+        return ImmutableHashMap.of(values);
+    }
+
     static <K, V> @NotNull ImmutableMap<K, V> ofEntries() {
         return empty();
     }

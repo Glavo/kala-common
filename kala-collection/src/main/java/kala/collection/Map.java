@@ -105,6 +105,10 @@ public interface Map<K, V> extends MapLike<K, V>, Equatable {
         return ImmutableMap.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5);
     }
 
+    static <K, V> @NotNull Map<K, V> of(Object ...values) {
+        return ImmutableMap.of(values);
+    }
+
     static <K, V> @NotNull Map<K, V> ofEntries() {
         return empty();
     }
