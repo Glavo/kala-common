@@ -382,7 +382,7 @@ public final class FromJavaConvert {
 
         @Override
         public @NotNull Option<V> putIfAbsent(K key, V value) {
-            if (source.containsKey(key)) {
+            if (!source.containsKey(key)) {
                 return Option.some(source.put(key, value));
             } else {
                 return Option.none();
