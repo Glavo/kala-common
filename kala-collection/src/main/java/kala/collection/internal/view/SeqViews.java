@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Range;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @SuppressWarnings("ALL")
 public final class SeqViews {
@@ -525,12 +526,12 @@ public final class SeqViews {
 
         @Override
         public @NotNull Stream<E> stream() {
-            return source.stream().dropWhile(predicate);
+            return StreamSupport.stream(spliterator(), false);
         }
 
         @Override
         public @NotNull Stream<E> parallelStream() {
-            return source.parallelStream().dropWhile(predicate);
+            return StreamSupport.stream(spliterator(), true);
         }
     }
 
@@ -713,12 +714,12 @@ public final class SeqViews {
 
         @Override
         public @NotNull Stream<E> stream() {
-            return source.stream().takeWhile(predicate);
+            return StreamSupport.stream(spliterator(), false);
         }
 
         @Override
         public @NotNull Stream<E> parallelStream() {
-            return source.parallelStream().takeWhile(predicate);
+            return StreamSupport.stream(spliterator(), true);
         }
     }
 

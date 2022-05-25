@@ -1,4 +1,3 @@
-import java.io.RandomAccessFile
 import java.util.Properties
 
 plugins {
@@ -6,13 +5,14 @@ plugins {
     `maven-publish`
     signing
     id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
+    id("org.glavo.compile-module-info-plugin") version "2.0"
 }
 
 loadMavenPublishProperties()
 
 allprojects {
     group = "org.glavo.kala"
-    version = "0.38.0"// + "-SNAPSHOT"
+    version = "0.39.0"// + "-SNAPSHOT"
 
     description = "Basic components of Kala"
 
@@ -24,6 +24,7 @@ allprojects {
         plugin("java-library")
         plugin("maven-publish")
         plugin("signing")
+        plugin("org.glavo.compile-module-info-plugin")
     }
 
     repositories {
@@ -40,21 +41,8 @@ allprojects {
     }
 
     tasks.compileJava {
-        modularity.inferModulePath.set(true)
-        options.release.set(9)
+        options.release.set(8)
         options.isWarnings = false
-        doLast {
-            val tree = fileTree(destinationDirectory)
-            tree.include("**/*.class")
-            tree.exclude("module-info.class")
-            tree.forEach {
-                RandomAccessFile(it, "rw").use { rf ->
-                    rf.seek(7)   // major version
-                    rf.write(52)   // java 8
-                    rf.close()
-                }
-            }
-        }
     }
 
     java {
