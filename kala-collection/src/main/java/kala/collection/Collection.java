@@ -101,7 +101,7 @@ public interface Collection<@Covariant E> extends Traversable<E>, CollectionLike
     }
 
     @Contract(pure = true)
-    default <U> @NotNull ImmutableCollection<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
+    default <U> @NotNull ImmutableCollection<U> filterIsInstance(@NotNull Class<? extends U> clazz) {
         return view().<U>filterIsInstance(clazz).toImmutableSeq();
     }
 

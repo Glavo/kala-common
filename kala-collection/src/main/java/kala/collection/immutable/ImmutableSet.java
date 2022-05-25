@@ -101,7 +101,7 @@ public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<
 
     @Override
     @SuppressWarnings("unchecked")
-    default <U> @NotNull ImmutableSet<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
+    default <U> @NotNull ImmutableSet<U> filterIsInstance(@NotNull Class<? extends U> clazz) {
         return (ImmutableSet<U>) filter(clazz::isInstance);
     }
 }

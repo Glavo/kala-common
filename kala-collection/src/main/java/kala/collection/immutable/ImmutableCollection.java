@@ -137,7 +137,7 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E> {
     }
 
     @Override
-    default <U> @NotNull ImmutableCollection<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
+    default <U> @NotNull ImmutableCollection<U> filterIsInstance(@NotNull Class<? extends U> clazz) {
         return (ImmutableCollection<U>) filter(clazz::isInstance);
     }
 

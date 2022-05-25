@@ -546,7 +546,6 @@ public class ArraySeq<E> extends AbstractIndexedSeq<E> implements Seq<E>, Serial
 
     //endregion
 
-
     @Override
     public final int copyToArray(int srcPos, Object @NotNull [] dest, int destPos, int limit) {
         if (srcPos < 0) {
