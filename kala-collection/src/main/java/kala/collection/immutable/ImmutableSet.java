@@ -9,10 +9,9 @@ import kala.function.Predicates;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-import java.util.Spliterator;
-import java.util.Spliterators;
+import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<E> {
@@ -26,7 +25,56 @@ public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<
     //region Static Factories
 
     static <E> CollectionFactory<E, ?, ? extends ImmutableSet<E>> factory() {
-        throw new UnsupportedOperationException();// TODO
+        return ImmutableHashSet.factory();
+    }
+
+
+    static <E> @NotNull ImmutableSet<E> empty() {
+        return ImmutableHashSet.empty();
+    }
+
+    static <E> @NotNull ImmutableSet<E> of() {
+        return ImmutableHashSet.of();
+    }
+
+    static <E> @NotNull ImmutableSet<E> of(E value1) {
+        return ImmutableHashSet.of(value1);
+    }
+
+    static <E> @NotNull ImmutableSet<E> of(E value1, E value2) {
+        return ImmutableHashSet.of(value1, value2);
+    }
+
+    static <E> @NotNull ImmutableSet<E> of(E value1, E value2, E value3) {
+        return ImmutableHashSet.of(value1, value2, value3);
+    }
+
+    static <E> @NotNull ImmutableSet<E> of(E value1, E value2, E value3, E value4) {
+        return ImmutableHashSet.of(value1, value2, value3, value4);
+    }
+
+    static <E> @NotNull ImmutableSet<E> of(E value1, E value2, E value3, E value4, E value5) {
+        return ImmutableHashSet.of(value1, value2, value3, value4, value5);
+    }
+
+    static <E> @NotNull ImmutableSet<E> of(E... values) {
+        return ImmutableHashSet.of(values);
+    }
+
+    static <E> @NotNull ImmutableSet<E> from(E @NotNull [] values) {
+        return ImmutableHashSet.from(values);
+    }
+
+    static <E> @NotNull ImmutableSet<E> from(@NotNull Iterable<? extends E> values) {
+        return ImmutableHashSet.from(values);
+    }
+
+    static <E> @NotNull ImmutableSet<E> from(@NotNull Iterator<? extends E> it) {
+        return ImmutableHashSet.from(it);
+    }
+
+    static <E> @NotNull ImmutableSet<E> from(@NotNull Stream<? extends E> stream) {
+        return ImmutableHashSet.from(stream);
     }
 
     //endregion
