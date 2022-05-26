@@ -5,7 +5,7 @@ import kala.collection.internal.convert.FromJavaConvert;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -144,6 +144,10 @@ public class ImmutableHashSet<E> extends FromJavaConvert.SetFromJava<E> implemen
         return factory();
     }
 
+    private Object writeReplace() {
+        return new SerializationWrapper<>(this);
+    }
+
     private static final class Builder<E> {
         private boolean aliased = false;
         private HashSet<E> set = new HashSet<>();
@@ -192,6 +196,43 @@ public class ImmutableHashSet<E> extends FromJavaConvert.SetFromJava<E> implemen
         @Override
         public Builder<E> mergeBuilder(@NotNull Builder<E> builder1, @NotNull Builder<E> builder2) {
             return builder1.merge(builder2);
+        }
+    }
+
+    private static final class SerializationWrapper<E> implements Externalizable {
+        private ImmutableHashSet<E> value;
+
+        public SerializationWrapper() {
+        }
+
+        SerializationWrapper(ImmutableHashSet<E> value) {
+            this.value = value;
+        }
+
+        @Override
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeInt(value.size());
+            for (E e : value) {
+                out.writeObject(e);
+            }
+        }
+
+        @Override
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            assert value != null;
+
+            HashSet<E> set = new HashSet<>();
+
+            int len = in.readInt();
+            for (int i = 0; i < len; i++) {
+                set.add((E) in.readObject());
+            }
+
+            value = set.isEmpty() ? ImmutableHashSet.empty() : new ImmutableHashSet<>(set);
+        }
+
+        private Object readResolve() {
+            return value;
         }
     }
 }
