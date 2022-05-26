@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate {
+public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, SequentialCollectionLikeTestTemplate {
     @Override
     @SuppressWarnings("unchecked")
     <E> SeqLike<E> of(E... elements);
