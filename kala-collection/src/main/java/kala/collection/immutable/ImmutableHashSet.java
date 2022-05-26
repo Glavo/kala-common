@@ -219,7 +219,7 @@ public class ImmutableHashSet<E> extends FromJavaConvert.SetFromJava<E> implemen
 
         @Override
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            assert value != null;
+            assert value == null;
 
             HashSet<E> set = new HashSet<>();
 
