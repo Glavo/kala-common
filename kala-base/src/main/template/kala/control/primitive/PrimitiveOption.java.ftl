@@ -6,10 +6,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 <#if IsSpecialized>
 import java.util.Optional${Type};
 import java.util.function.*;
 <#else>
+import java.util.function.Supplier;
 
 import kala.function.*;
 </#if>
@@ -59,6 +62,41 @@ public final class ${Type}Option extends PrimitiveOption<${WrapperType}> impleme
 
     public boolean isEmpty() {
         return this == None;
+    }
+
+    public ${PrimitiveType} get() {
+        if (isEmpty()) {
+            throw new NoSuchElementException("${Type}Option.None");
+        }
+        return value;
+    }
+
+    public @Nullable ${WrapperType} getOrNull() {
+        return isDefined() ? value : null;
+    }
+
+    public ${PrimitiveType} getOrDefault(${PrimitiveType} defaultValue) {
+        return isDefined() ? value : defaultValue;
+    }
+
+    public ${PrimitiveType} getOrElse(@NotNull ${Type}Supplier supplier) {
+        return isDefined() ? get() : supplier.getAs${Type}();
+    }
+
+    public <Ex extends Throwable> ${PrimitiveType} getOrThrowException(@NotNull Ex exception) throws Ex {
+        if (isEmpty()) {
+            Objects.requireNonNull(exception);
+            throw exception;
+        }
+        return value;
+    }
+
+    public <Ex extends Throwable> ${PrimitiveType} getOrThrow(@NotNull Supplier<? extends Ex> supplier) throws Ex {
+        if (isEmpty()) {
+            Objects.requireNonNull(supplier);
+            throw supplier.get();
+        }
+        return value;
     }
 
     @Override
