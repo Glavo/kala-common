@@ -3,13 +3,13 @@ package kala.function;
 import java.io.Serializable;
 import java.util.Objects;
 
-final class Balances {
-    static final Balance<?> DEFAULT = new Default<>();
-    static final Balance<?> OPTIMIZED = new Optimized<>();
-    static final Balance<?> IDENTITY = new Identity<>();
+final class Hashers {
+    static final Hasher<?> DEFAULT = new Default<>();
+    static final Hasher<?> OPTIMIZED = new Optimized<>();
+    static final Hasher<?> IDENTITY = new Identity<>();
 
 
-    private static final class Default<T> implements Balance<T>, Serializable {
+    private static final class Default<T> implements Hasher<T>, Serializable {
         private static final long serialVersionUID = 0L;
 
         @Override
@@ -27,7 +27,7 @@ final class Balances {
         }
     }
 
-    private static final class Optimized<T> implements Balance<T>, Serializable {
+    private static final class Optimized<T> implements Hasher<T>, Serializable {
         private static final long serialVersionUID = 0L;
 
         @Override
@@ -51,7 +51,7 @@ final class Balances {
         }
     }
 
-    private static final class Identity<T> implements Balance<T>, Serializable {
+    private static final class Identity<T> implements Hasher<T>, Serializable {
         private static final long serialVersionUID = 0L;
 
         @Override

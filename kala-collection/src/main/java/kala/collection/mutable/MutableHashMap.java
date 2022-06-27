@@ -7,7 +7,7 @@ import kala.collection.base.MapIterator;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.hash.*;
 import kala.control.Option;
-import kala.function.Balance;
+import kala.function.Hasher;
 import kala.tuple.Tuple2;
 import kala.collection.factory.MapFactory;
 import org.jetbrains.annotations.Debug;
@@ -45,19 +45,19 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
     }
 
     public MutableHashMap(int initialCapacity, double loadFactor) {
-        this(Balance.optimizedBalance(), initialCapacity, loadFactor);
+        this(Hasher.optimizedHasher(), initialCapacity, loadFactor);
     }
 
-    public MutableHashMap(Balance<? super K> balance) {
-        this(balance, DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR);
+    public MutableHashMap(Hasher<? super K> hasher) {
+        this(hasher, DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR);
     }
 
-    public MutableHashMap(Balance<? super K> balance, int initialCapacity) {
-        this(balance, initialCapacity, DEFAULT_LOAD_FACTOR);
+    public MutableHashMap(Hasher<? super K> hasher, int initialCapacity) {
+        this(hasher, initialCapacity, DEFAULT_LOAD_FACTOR);
     }
 
-    public MutableHashMap(Balance<? super K> balance, int initialCapacity, double loadFactor) {
-        super(balance, initialCapacity, loadFactor);
+    public MutableHashMap(Hasher<? super K> hasher, int initialCapacity, double loadFactor) {
+        super(hasher, initialCapacity, loadFactor);
     }
 
 
@@ -348,7 +348,7 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
             Node<K, V> n = old;
 
             while (n != null && n.hash <= hash) {
-                if (n.hash == hash && balance.test(key, n.key)) {
+                if (n.hash == hash && hasher.test(key, n.key)) {
                     n.value = value;
                     return;
                 }
@@ -382,7 +382,7 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
             Node<K, V> n = old;
 
             while (n != null && n.hash <= hash) {
-                if (n.hash == hash && balance.test(key, n.key)) {
+                if (n.hash == hash && hasher.test(key, n.key)) {
                     V oldValue = n.value;
                     n.value = value;
                     return Option.some(oldValue);
@@ -656,7 +656,7 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
     private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
         final int size = in.readInt();
         final double loadFactor = in.readDouble();
-        final Balance<K> balance = (Balance<K>) in.readObject();
+        final Hasher<K> hasher = (Hasher<K>) in.readObject();
 
         if (size < 0) {
             throw new InvalidObjectException("Illegal initial capacity: " + size);
@@ -666,9 +666,9 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
             throw new InvalidObjectException("Illegal load factor: " + loadFactor);
         }
 
-        Objects.requireNonNull(balance);
+        Objects.requireNonNull(hasher);
 
-        this.balance = balance;
+        this.hasher = hasher;
         this.contentSize = 0;
         this.loadFactor = loadFactor;
         this.table = createNodeArray(HashUtils.tableSizeFor(size));
@@ -686,7 +686,7 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
     private void writeObject(java.io.ObjectOutputStream out) throws IOException {
         out.writeInt(contentSize);
         out.writeDouble(loadFactor);
-        out.writeObject(balance);
+        out.writeObject(hasher);
         this.forEachUnchecked((k, v) -> {
             out.writeObject(k);
             out.writeObject(v);

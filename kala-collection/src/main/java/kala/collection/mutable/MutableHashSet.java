@@ -5,10 +5,9 @@ import kala.collection.internal.hash.HashBase;
 import kala.collection.internal.hash.HashNode;
 import kala.collection.internal.hash.HashUtils;
 import kala.collection.factory.CollectionFactory;
-import kala.function.Balance;
+import kala.function.Hasher;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Range;
 
 import java.io.IOException;
 import java.io.InvalidObjectException;
@@ -16,7 +15,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
@@ -35,19 +33,19 @@ public final class MutableHashSet<E> extends HashBase<E, MutableHashSet.Node<E>>
     }
 
     public MutableHashSet(int initialCapacity, double loadFactor) {
-        super(Balance.optimizedBalance(), initialCapacity, loadFactor);
+        super(Hasher.optimizedHasher(), initialCapacity, loadFactor);
     }
 
-    public MutableHashSet(Balance<? super E> balance) {
-        this(balance, DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR);
+    public MutableHashSet(Hasher<? super E> hasher) {
+        this(hasher, DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR);
     }
 
-    public MutableHashSet(Balance<? super E> balance, int initialCapacity) {
-        this(balance, initialCapacity, DEFAULT_LOAD_FACTOR);
+    public MutableHashSet(Hasher<? super E> hasher, int initialCapacity) {
+        this(hasher, initialCapacity, DEFAULT_LOAD_FACTOR);
     }
 
-    public MutableHashSet(Balance<? super E> balance, int initialCapacity, double loadFactor) {
-        super(balance, initialCapacity, loadFactor);
+    public MutableHashSet(Hasher<? super E> hasher, int initialCapacity, double loadFactor) {
+        super(hasher, initialCapacity, loadFactor);
     }
 
 
@@ -220,7 +218,7 @@ public final class MutableHashSet<E> extends HashBase<E, MutableHashSet.Node<E>>
             final Node<E> old = n;
             Node<E> prev = null;
             while ((n != null) && n.hash <= hash) {
-                if (n.hash == hash && balance.test(value, n.key)) {
+                if (n.hash == hash && hasher.test(value, n.key)) {
                     return false;
                 }
                 prev = n;
