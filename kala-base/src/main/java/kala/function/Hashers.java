@@ -17,11 +17,6 @@ final class Hashers {
             return Objects.hashCode(obj);
         }
 
-        @Override
-        public boolean test(T t1, T t2) {
-            return Objects.equals(t1, t2);
-        }
-
         private Object readResolve() {
             return DEFAULT;
         }
@@ -41,11 +36,6 @@ final class Hashers {
             return originalHash ^ (originalHash >>> 16);
         }
 
-        @Override
-        public boolean test(T t1, T t2) {
-            return Objects.equals(t1, t2);
-        }
-
         private Object readResolve() {
             return OPTIMIZED;
         }
@@ -60,7 +50,7 @@ final class Hashers {
         }
 
         @Override
-        public boolean test(T t1, T t2) {
+        public boolean equals(T t1, T t2) {
             return t1 == t2;
         }
 
