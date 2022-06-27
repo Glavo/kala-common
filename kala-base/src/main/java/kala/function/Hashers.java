@@ -8,7 +8,6 @@ final class Hashers {
     static final Hasher<?> OPTIMIZED = new Optimized<>();
     static final Hasher<?> IDENTITY = new Identity<>();
 
-
     private static final class Default<T> implements Hasher<T>, Serializable {
         private static final long serialVersionUID = 0L;
 
