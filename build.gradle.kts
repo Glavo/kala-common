@@ -41,6 +41,7 @@ allprojects {
     }
 
     tasks.compileJava {
+        sourceCompatibility = "9"
         options.release.set(8)
         options.isWarnings = false
     }
@@ -120,6 +121,7 @@ allprojects {
 dependencies {
     api(project(":kala-base"))
     api(project(":kala-collection"))
+    api(project(":kala-collection-primitive"))
 }
 
 sourceSets {
