@@ -7,15 +7,19 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.io.UncheckedIOException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.IntFunction;
 <#if IsSpecialized>
 import java.util.function.${Type}Predicate;
+import java.util.function.${Type}Function;
 import java.util.stream.${Type}Stream;
 <#else>
 import kala.function.${Type}Predicate;
+import kala.function.${Type}Function;
 </#if>
 
 @StaticClass
@@ -308,6 +312,244 @@ public final class ${Type}Arrays {
             }
         }
         return true;
+    }
+
+    //endregion
+
+    //region Search Operations
+
+    @Contract(pure = true)
+    public static int indexOf(${PrimitiveType} @NotNull [] array, ${PrimitiveType} value) {
+        final int length = array.length;
+
+        for (int i = 0; i < length; i++) {
+            if (value == array[i]) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    @Contract(pure = true)
+    public static int indexOf(${PrimitiveType} @NotNull [] array, ${PrimitiveType} value, int beginIndex) {
+        final int length = array.length;
+
+        if (beginIndex >= length) {
+            return -1;
+        }
+
+        for (int i = Math.max(beginIndex, 0); i < length; i++) {
+            if (value == array[i]) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    @Contract(pure = true)
+    public static int indexWhere(${PrimitiveType} @NotNull [] array, @NotNull ${Type}Predicate predicate) {
+        final int length = array.length;
+        for (int i = 0; i < length; i++) {
+            if (predicate.test(array[i])) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    @Contract(pure = true)
+    public static int indexWhere(${PrimitiveType} @NotNull [] array, @NotNull ${Type}Predicate predicate, int beginIndex) {
+        final int length = array.length;
+
+        if (beginIndex >= length) {
+            return -1;
+        }
+
+        for (int i = Math.max(beginIndex, 0); i < length; i++) {
+            if (predicate.test(array[i])) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    @Contract(pure = true)
+    public static int lastIndexOf(${PrimitiveType} @NotNull [] array, ${PrimitiveType} value) {
+        for (int i = array.length - 1; i >= 0; i--) {
+            if (value == array[i]) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    @Contract(pure = true)
+    public static int lastIndexOf(${PrimitiveType} @NotNull [] array, ${PrimitiveType} value, int endIndex) {
+        if (endIndex < 0) {
+            return -1;
+        }
+
+        for (int i = endIndex; i >= 0; i--) {
+            if (value == array[i]) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    @Contract(pure = true)
+    public static int lastIndexWhere(${PrimitiveType} @NotNull [] array, @NotNull ${Type}Predicate predicate) {
+        for (int i = array.length - 1; i >= 0; i--) {
+            if (predicate.test(array[i])) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    @Contract(pure = true)
+    public static int lastIndexWhere(${PrimitiveType} @NotNull [] array, @NotNull ${Type}Predicate predicate, int endIndex) {
+        if (endIndex < 0) {
+            return -1;
+        }
+
+        for (int i = endIndex; i >= 0; i--) {
+            if (predicate.test(array[i])) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    //endregion
+
+    //region String Representation
+
+    public static <A extends Appendable> @NotNull A joinTo(
+            ${PrimitiveType} @NotNull [] array,
+            @NotNull A buffer
+    ) {
+        return joinTo(array, buffer, ", ", "", "" );
+    }
+
+    public static <A extends Appendable> @NotNull A joinTo(
+            ${PrimitiveType} @NotNull [] array,
+            @NotNull A buffer,
+            CharSequence separator
+    ) {
+        return joinTo(array, buffer, separator, "", "" );
+    }
+
+    public static <A extends Appendable> @NotNull A joinTo(
+            ${PrimitiveType} @NotNull [] array,
+            @NotNull A buffer,
+            CharSequence separator, CharSequence prefix, CharSequence postfix
+    ) {
+        final int length = array.length;
+        try {
+            if (length == 0) {
+                buffer.append(prefix).append(postfix);
+                return buffer;
+            }
+            buffer.append(prefix).append(String.valueOf(array[0]));
+            for (int i = 1; i < length; i++) {
+                buffer.append(separator);
+                buffer.append(Objects.toString(array[i]));
+            }
+            buffer.append(postfix);
+            return buffer;
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static <A extends Appendable> @NotNull A joinTo(
+            ${PrimitiveType} @NotNull [] array,
+            @NotNull A buffer,
+            @NotNull ${Type}Function<? extends CharSequence> transform
+    ) {
+        return joinTo(array, buffer, ", ", "", "", transform);
+    }
+
+    public static <A extends Appendable> @NotNull A joinTo(
+            ${PrimitiveType} @NotNull [] array,
+            @NotNull A buffer,
+            CharSequence separator,
+            @NotNull ${Type}Function<? extends CharSequence> transform
+    ) {
+        return joinTo(array, buffer, separator, "", "", transform);
+    }
+
+    public static <A extends Appendable> @NotNull A joinTo(
+            ${PrimitiveType} @NotNull [] array,
+            @NotNull A buffer,
+            CharSequence separator, CharSequence prefix, CharSequence postfix,
+            @NotNull ${Type}Function<? extends CharSequence> transform
+    ) {
+        final int length = array.length;
+        try {
+            if (length == 0) {
+                buffer.append(prefix).append(postfix);
+                return buffer;
+            }
+            buffer.append(prefix).append(transform.apply(array[0]));
+            for (int i = 1; i < length; i++) {
+                buffer.append(separator);
+                buffer.append(transform.apply(array[i]));
+            }
+            buffer.append(postfix);
+            return buffer;
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static @NotNull String joinToString(
+            ${PrimitiveType} @NotNull [] array
+    ) {
+        return joinTo(array, new StringBuilder()).toString();
+    }
+
+    public static @NotNull String joinToString(
+            ${PrimitiveType} @NotNull [] array,
+            CharSequence separator
+    ) {
+        return joinTo(array, new StringBuilder(), separator).toString();
+    }
+
+    public static @NotNull String joinToString(
+            ${PrimitiveType} @NotNull [] array,
+            CharSequence separator, CharSequence prefix, CharSequence postfix
+    ) {
+        return joinTo(array, new StringBuilder(), separator, prefix, postfix).toString();
+    }
+
+    public static @NotNull String joinToString(
+            ${PrimitiveType} @NotNull [] array,
+            @NotNull ${Type}Function<? extends CharSequence> transform
+    ) {
+        return joinTo(array, new StringBuilder(), transform).toString();
+    }
+
+    public static @NotNull String joinToString(
+            ${PrimitiveType} @NotNull [] array,
+            CharSequence separator,
+            @NotNull ${Type}Function<? extends CharSequence> transform
+    ) {
+        return joinTo(array, new StringBuilder(), separator, transform).toString();
+    }
+
+    public static @NotNull String joinToString(
+            ${PrimitiveType} @NotNull [] array,
+            CharSequence separator, CharSequence prefix, CharSequence postfix,
+            @NotNull ${Type}Function<? extends CharSequence> transform
+    ) {
+        return joinTo(array, new StringBuilder(), separator, prefix, postfix, transform).toString();
     }
 
     //endregion

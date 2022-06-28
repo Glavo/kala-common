@@ -319,7 +319,6 @@ public final class GenericArrays {
         return array[length - 1];
     }
 
-
     //endregion
 
     //region Element Conditions
