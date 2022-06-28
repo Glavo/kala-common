@@ -27,8 +27,7 @@ import java.util.function.*;
 import java.util.stream.*;
 
 @SuppressWarnings("unchecked")
-public interface Traversable<@Covariant T>
-        extends Iterable<T>, AnyTraversable<T, Iterator<T>, Object[], Option<T>, Consumer<? super T>, Predicate<? super T>> {
+public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T> {
 
     @SuppressWarnings("unchecked")
     @Contract(value = "_ -> param1", pure = true)
@@ -121,7 +120,7 @@ public interface Traversable<@Covariant T>
         return true;
     }
 
-    @Override
+    //@Override
     default boolean containsAll(@NotNull Iterable<?> values) {
         for (Object value : values) {
             if (!contains(value)) {

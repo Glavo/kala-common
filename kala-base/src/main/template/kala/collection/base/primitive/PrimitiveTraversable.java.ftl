@@ -11,8 +11,7 @@ import java.util.NoSuchElementException;
 import java.util.function.*;
 </#if>
 
-public interface ${Type}Traversable
-        extends PrimitiveTraversable<${WrapperType}, ${Type}Traversable, ${Type}Iterator, ${PrimitiveType}[], ${Type}Option, ${Type}Consumer, ${Type}Predicate> {
+public interface ${Type}Traversable extends PrimitiveTraversable<${WrapperType}> {
 
     @Override
     @NotNull ${Type}Iterator iterator();
@@ -49,7 +48,6 @@ public interface ${Type}Traversable
         return knownSize() != 0 && iterator().contains(value);
     }
 
-    @Override
     default boolean containsAll(${PrimitiveType} @NotNull [] values) {
         return iterator().containsAll(values);
     }
@@ -150,7 +148,6 @@ public interface ${Type}Traversable
 
     //endregion
 
-    @Override
     default ${PrimitiveType} @NotNull [] toArray() {
         int s = knownSize();
         if (s == 0) {
@@ -170,7 +167,6 @@ public interface ${Type}Traversable
 
     //region Traverse Operations
 
-    @Override
     default void forEach(@NotNull ${Type}Consumer action) {
         iterator().forEach(action);
     }

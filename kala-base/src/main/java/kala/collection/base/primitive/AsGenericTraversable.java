@@ -6,9 +6,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Iterator;
 
 final class AsGenericTraversable<T> implements Traversable<T> {
-    private final PrimitiveTraversable<T, ?, ?, ?, ?, ?, ?> source;
+    private final PrimitiveTraversable<T> source;
 
-    AsGenericTraversable(PrimitiveTraversable<T, ?, ?, ?, ?, ?, ?> source) {
+    AsGenericTraversable(PrimitiveTraversable<T> source) {
         this.source = source;
     }
 

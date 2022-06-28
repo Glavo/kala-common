@@ -21,9 +21,7 @@ import java.util.function.*;
 import kala.function.*;
 </#if>
 
-public interface ${Type}Iterator
-        extends
-        PrimitiveIterator<${WrapperType}, ${Type}Iterator, ${PrimitiveType}[], ${Type}Option, ${Type}Consumer, ${Type}Predicate><#if IsSpecialized>, java.util.PrimitiveIterator.Of${Type}</#if> {
+public interface ${Type}Iterator extends PrimitiveIterator<${WrapperType}, ${Type}Consumer><#if IsSpecialized>, java.util.PrimitiveIterator.Of${Type}</#if> {
 
     static @NotNull ${Type}Iterator empty() {
         return ${Type}Iterators.EMPTY;
@@ -144,7 +142,6 @@ public interface ${Type}Iterator
         return next${Type}();
     }
 
-    @Override
     default @NotNull ${Type}Option find(@NotNull ${Type}Predicate predicate) {
         while (hasNext()) {
             ${PrimitiveType} value = next${Type}();
@@ -182,7 +179,6 @@ public interface ${Type}Iterator
     }
 
 <#if Type == "Boolean">
-    @Override
     default boolean containsAll(boolean @NotNull [] values) {
         if (!hasNext()) {
             return values.length == 0;
@@ -322,7 +318,6 @@ public interface ${Type}Iterator
         return true;
     }
 <#else>
-    @Override
     default boolean containsAll(${PrimitiveType} @NotNull [] values) {
         loop:
         while (hasNext()) {
@@ -339,7 +334,6 @@ public interface ${Type}Iterator
 </#if>
 
 <#if IsSpecialized>
-    @Override
     default boolean sameElements(@NotNull ${Type}Iterator other) {
         return sameElements((${PrimitiveIteratorType}) other);
     }
@@ -368,7 +362,6 @@ public interface ${Type}Iterator
         return this.hasNext() == other.hasNext();
     }
 
-    @Override
     default boolean anyMatch(@NotNull ${Type}Predicate predicate) {
         while (hasNext()) {
             if (predicate.test(next${Type}())) {
@@ -378,7 +371,6 @@ public interface ${Type}Iterator
         return false;
     }
 
-    @Override
     default boolean allMatch(@NotNull ${Type}Predicate predicate) {
         while (hasNext()) {
             if (!predicate.test(next${Type}())) {
@@ -388,7 +380,6 @@ public interface ${Type}Iterator
         return true;
     }
 
-    @Override
     default boolean noneMatch(@NotNull ${Type}Predicate predicate) {
         while (hasNext()) {
             if (predicate.test(next${Type}())) {
@@ -402,7 +393,7 @@ public interface ${Type}Iterator
 
     //region Misc Operations
 
-    @Contract(mutates = "this")
+    @Override
     default @NotNull ${Type}Iterator drop(int n) {
         if (n < 0) {
             throw new IllegalArgumentException();
@@ -447,7 +438,6 @@ public interface ${Type}Iterator
         return new ${Type}Iterators.Take(this, n);
     }
 
-    @Override
     default @NotNull ${Type}Iterator takeWhile(@NotNull ${Type}Predicate predicate) {
         Objects.requireNonNull(predicate);
         if (!hasNext()) {
@@ -477,7 +467,6 @@ public interface ${Type}Iterator
         return new ${Type}Iterators.Appended(this, value);
     }
 
-    @Override
     default @NotNull ${Type}Iterator filter(@NotNull ${Type}Predicate predicate) {
         Objects.requireNonNull(predicate);
         if (!hasNext()) {
@@ -486,7 +475,6 @@ public interface ${Type}Iterator
         return new ${Type}Iterators.Filter(this, predicate, false);
     }
 
-    @Override
     default @NotNull ${Type}Iterator filterNot(@NotNull ${Type}Predicate predicate) {
         Objects.requireNonNull(predicate);
         if (!hasNext()) {
@@ -531,7 +519,6 @@ public interface ${Type}Iterator
         };
     }
 
-    @Override
     default @NotNull Tuple2<${r'@NotNull'} ${Type}Iterator, @NotNull ${Type}Iterator> span(@NotNull ${Type}Predicate predicate) {
         if (!hasNext()) {
             return Tuple.of(empty(), empty());
@@ -557,7 +544,6 @@ public interface ${Type}Iterator
 
     //region Aggregate Operations
 
-    @Override
     default int count(@NotNull ${Type}Predicate predicate) {
         int c = 0;
         while (hasNext()) {
@@ -586,6 +572,7 @@ public interface ${Type}Iterator
         return value;
     }
 
+    @Override
     default @Nullable ${WrapperType} maxOrNull() {
         if (!hasNext()) {
             return null;
@@ -641,6 +628,7 @@ public interface ${Type}Iterator
         return value;
     }
 
+    @Override
     default @Nullable ${WrapperType} minOrNull() {
         if (!hasNext()) {
             return null;

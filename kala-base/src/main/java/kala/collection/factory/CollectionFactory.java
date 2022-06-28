@@ -96,7 +96,7 @@ public interface CollectionFactory<E, Builder, @Covariant R>
             int s = ((Collection<?>) it).size();
             this.sizeHint(builder, s + delta);
         } else if (it instanceof AnyTraversable) {
-            final int ks = ((AnyTraversable<?, ?, ?, ?, ?, ?>) it).knownSize();
+            final int ks = ((AnyTraversable<?>) it).knownSize();
             if (ks >= 0) {
                 this.sizeHint(builder, ks + delta);
             }

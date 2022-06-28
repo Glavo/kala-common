@@ -1,23 +1,14 @@
 package kala.collection.base;
 
-import kala.control.AnyOption;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 import java.util.*;
 import java.util.stream.BaseStream;
 import java.util.stream.StreamSupport;
 
-public interface AnyTraversable<
-        T,
-        T_ITERATOR extends Iterator<T>,
-        T_ARRAY,
-        T_OPTION extends AnyOption<T>,
-        T_CONSUMER,
-        T_PREDICATE
-        > {
+public interface AnyTraversable<T> {
 
     static int knownSize(@NotNull Iterable<?> c) {
         Objects.requireNonNull(c);
@@ -25,14 +16,14 @@ public interface AnyTraversable<
             return ((Collection<?>) c).size();
         }
         if (c instanceof AnyTraversable) {
-            return ((AnyTraversable<?, ?, ?, ?, ?, ?>) c).knownSize();
+            return ((AnyTraversable<?>) c).knownSize();
         }
         return -1;
     }
 
     //region Collection Operations
 
-    @NotNull T_ITERATOR iterator();
+    @NotNull Iterator<T> iterator();
 
     default Spliterator<T> spliterator() {
         return Spliterators.spliteratorUnknownSize(iterator(), 0);
@@ -90,7 +81,7 @@ public interface AnyTraversable<
             return Integer.compare(knownSize, otherSize);
         }
         int i = 0;
-        T_ITERATOR it = iterator();
+        Iterator<T> it = iterator();
         while (it.hasNext()) {
             it.next();
             if (i == otherSize) {
@@ -184,48 +175,9 @@ public interface AnyTraversable<
 
     //endregion
 
-    //region Element Conditions
+    //boolean containsAll(@NotNull Iterable<?> values);
 
-    boolean containsAll(@NotNull T_ARRAY values);
-
-    boolean containsAll(@NotNull Iterable<?> values);
-
-    boolean sameElements(@NotNull Iterable<?> other);
-
-    boolean anyMatch(@NotNull T_PREDICATE predicate);
-
-    boolean allMatch(@NotNull T_PREDICATE predicate);
-
-    boolean noneMatch(@NotNull T_PREDICATE predicate);
-
-    //endregion
-
-    //region Aggregate Operations
-
-    int count(@NotNull T_PREDICATE predicate);
-
-    @NotNull
-    T_OPTION find(@NotNull T_PREDICATE predicate);
-
-    @Nullable
-    T maxOrNull();
-
-    @NotNull
-    T_OPTION maxOption();
-
-    @Nullable
-    T minOrNull();
-
-    @NotNull
-    T_OPTION minOption();
-
-    //endregion
-
-    //region Conversion Operations
-
-    @NotNull T_ARRAY toArray();
-
-    //endregion
+    @NotNull Object toArray();
 
     //region String Representation
 

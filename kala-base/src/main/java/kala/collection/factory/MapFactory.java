@@ -57,7 +57,7 @@ public interface MapFactory<K, V, Builder, R> extends Factory<Builder, R> {
             int s = ((Collection<?>) it).size();
             this.sizeHint(builder, s + delta);
         } else if (it instanceof AnyTraversable) {
-            int ks = ((AnyTraversable<?, ?, ?, ?, ?, ?>) it).knownSize();
+            int ks = ((AnyTraversable<?>) it).knownSize();
             if (ks > 0) {
                 this.sizeHint(builder, ks + delta);
             }
