@@ -4,7 +4,6 @@ import kala.annotations.Contravariant;
 import org.jetbrains.annotations.NotNull;
 
 public interface Growable<@Contravariant T> {
-    
     void plusAssign(T value);
 
     default void plusAssign(@NotNull Iterable<? extends T> values) {

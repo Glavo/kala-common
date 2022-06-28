@@ -24,6 +24,7 @@ tasks.getByName<GenerateTask>("generateSources") {
             generate("${type}Traversable", newModel, "PrimitiveTraversable")
             generate("${type}Iterator", newModel, "PrimitiveIterator")
             generate("${type}Iterators", newModel, "PrimitiveIterators")
+            generate("${type}Growable", newModel, "PrimitiveGrowable")
             generate("Abstract${type}Iterator", newModel, "AbstractPrimitiveIterator")
         }
     }
