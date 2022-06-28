@@ -126,15 +126,6 @@ public interface ${Type}Iterator extends PrimitiveIterator<${WrapperType}, ${Typ
         next${Type}();
     }
 
-    default int size() {
-        int i = 0;
-        while (hasNext()) {
-            next${Type}();
-            ++i;
-        }
-        return i;
-    }
-
     @Override
     @Deprecated
     @ReplaceWith("next${Type}()")

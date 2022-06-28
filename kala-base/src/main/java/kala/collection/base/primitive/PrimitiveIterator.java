@@ -25,6 +25,12 @@ public interface PrimitiveIterator<T, T_CONSUMER> extends java.util.PrimitiveIte
     @Override
     @NotNull T next();
 
+    /**
+     * Equivalent to calling {@link #next()} and ignoring the return value.
+     * <p>
+     * Useful when you only need to count the number of Iterator elements and don't care about the value.
+     * The difference between this method and {@link #next()} is that boxing the return value can be avoided.
+     */
     void nextIgnoreResult();
 
     //region Size Info
@@ -34,7 +40,14 @@ public interface PrimitiveIterator<T, T_CONSUMER> extends java.util.PrimitiveIte
     }
 
     @Contract(mutates = "this")
-    int size();
+    default int size() {
+        int i = 0;
+        while (hasNext()) {
+            nextIgnoreResult();
+            ++i;
+        }
+        return i;
+    }
 
     default int knownSize() {
         return hasNext() ? -1 : 0;
