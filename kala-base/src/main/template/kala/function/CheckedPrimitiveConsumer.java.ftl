@@ -3,20 +3,24 @@ package kala.function;
 import kala.control.Try;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+<#if IsSpecialized>
+
+import java.util.function.${Type}Consumer;
+</#if>
 
 @FunctionalInterface
-public interface CheckedFloatConsumer<Ex extends Throwable> extends FloatConsumer {
+public interface Checked${Type}Consumer<Ex extends Throwable> extends ${Type}Consumer {
 
     @Contract(value = "_ -> param1", pure = true)
     @SuppressWarnings("unchecked")
-    static <Ex extends Throwable> CheckedFloatConsumer<Ex> of(CheckedFloatConsumer<? extends Ex> consumer) {
-        return ((CheckedFloatConsumer<Ex>) consumer);
+    static <Ex extends Throwable> Checked${Type}Consumer<Ex> of(Checked${Type}Consumer<? extends Ex> consumer) {
+        return (Checked${Type}Consumer<Ex>) consumer;
     }
 
-    void acceptChecked(float value) throws Ex;
+    void acceptChecked(${PrimitiveType} value) throws Ex;
 
     @Override
-    default void accept(float value) {
+    default void accept(${PrimitiveType} value) {
         try {
             acceptChecked(value);
         } catch (Throwable e) {
@@ -24,7 +28,7 @@ public interface CheckedFloatConsumer<Ex extends Throwable> extends FloatConsume
         }
     }
 
-    default @NotNull Try<Void> tryAccept(float value) {
+    default @NotNull Try<Void> tryAccept(${PrimitiveType} value) {
         try {
             acceptChecked(value);
             return Try.VOID;
