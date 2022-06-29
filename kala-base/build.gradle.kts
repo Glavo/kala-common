@@ -68,6 +68,7 @@ tasks.getByName<GenerateTask>("generateSources") {
                 generate("${type}Consumer", model, "PrimitiveConsumer")
                 generate("${type}Predicate", model, "PrimitivePredicate")
                 generate("${type}Function", model, "PrimitiveFunction")
+                generate("${type}UnaryOperator", model, "PrimitiveUnaryOperator")
         }
     }
 
