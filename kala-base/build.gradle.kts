@@ -65,6 +65,7 @@ tasks.getByName<GenerateTask>("generateSources") {
 
             if (model != Primitives.Boolean)
                 generate("${type}Supplier", model, "PrimitiveSupplier")
+                generate("${type}Consumer", model, "PrimitiveConsumer")
         }
     }
 
