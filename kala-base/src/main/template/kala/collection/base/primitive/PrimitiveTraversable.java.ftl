@@ -1,20 +1,54 @@
 package kala.collection.base.primitive;
 
+import kala.collection.base.Growable;
 import kala.control.primitive.${Type}Option;
 import kala.function.*;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Contract;
 
 import java.util.NoSuchElementException;
 <#if IsSpecialized>
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.*;
+import java.util.stream.${Type}Stream;
+import java.util.stream.StreamSupport;
 </#if>
 
 public interface ${Type}Traversable extends PrimitiveTraversable<${WrapperType}> {
 
+    //region Collection Operations
+
     @Override
     @NotNull ${Type}Iterator iterator();
+<#if IsSpecialized>
+
+    @Override
+    default @NotNull Spliterator.Of${Type} spliterator() {
+        final int ks = this.knownSize();
+        if (ks == 0) {
+            return Spliterators.empty${Type}Spliterator();
+        } else if (ks > 0) {
+            return Spliterators.spliterator(iterator(), ks, 0);
+        } else {
+            return Spliterators.spliteratorUnknownSize(iterator(), 0);
+        }
+    }
+
+    @Override
+    default @NotNull ${Type}Stream stream() {
+        return StreamSupport.${PrimitiveType}Stream(spliterator(), false);
+    }
+
+    @Override
+    default @NotNull ${Type}Stream parallelStream() {
+        return StreamSupport.${PrimitiveType}Stream(spliterator(), true);
+    }
+</#if>
+
+    //endregion
 
     default ${PrimitiveType} elementAt(int index) {
         if (index < 0) {
@@ -41,6 +75,14 @@ public interface ${Type}Traversable extends PrimitiveTraversable<${WrapperType}>
         }
     }
 
+
+    //region Element Retrieval Operations
+
+    default @NotNull ${Type}Option find(@NotNull ${Type}Predicate predicate) {
+        return iterator().find(predicate);
+    }
+
+    //endregion
 
     //region Element Conditions
 
@@ -108,7 +150,59 @@ public interface ${Type}Traversable extends PrimitiveTraversable<${WrapperType}>
 </#if>
     }
 
+    /**
+      * Tests whether any element of this {@code ${Type}Traversable} match the {@code predicate}.
+      *
+      * @return {@code true} if either any element of this {@code Traversable} match the {@code predicate},
+      * otherwise {@code false}
+      */
+    default boolean anyMatch(@NotNull ${Type}Predicate predicate) {
+        return iterator().anyMatch(predicate);
+    }
+
+    /**
+     * Tests whether all elements of this {@code ${Type}Traversable} match the {@code predicate}.
+     *
+     * @return {@code true} if either all elements of this {@code Traversable} match the {@code predicate} or
+     * the {@code Traversable} is empty, otherwise {@code false}
+     */
+    default boolean allMatch(@NotNull ${Type}Predicate predicate) {
+        return iterator().allMatch(predicate);
+    }
+
+    /**
+     * Tests whether none elements of this {@code ${Type}Traversable} match the {@code predicate}.
+     *
+     * @return {@code true} if either none elements of this {@code Traversable} match the {@code predicate} or
+     * the {@code Traversable} is empty, otherwise {@code false}
+     */
+    default boolean noneMatch(@NotNull ${Type}Predicate predicate) {
+        return iterator().noneMatch(predicate);
+    }
+
     //endregion
+
+
+    @Contract(value = "_, _ -> param1", mutates = "param1")
+    default <G extends ${Type}Growable> @NotNull G filterTo(@NotNull G destination, @NotNull ${Type}Predicate predicate) {
+        return iterator().filterTo(destination, predicate);
+    }
+
+    @Contract(value = "_, _ -> param1", mutates = "param1")
+    default <G extends ${Type}Growable> @NotNull G filterNotTo(@NotNull G destination, @NotNull ${Type}Predicate predicate) {
+        return iterator().filterNotTo(destination, predicate);
+    }
+
+    @Contract(value = "_, _ -> param1", mutates = "param1")
+    default <G extends ${Type}Growable> @NotNull G mapTo(@NotNull G destination, @NotNull ${Type}UnaryOperator mapper) {
+        return iterator().mapTo(destination, mapper);
+    }
+
+    @Contract(value = "_, _ -> param1", mutates = "param1")
+    default <U, G extends Growable<? super U>> @NotNull G mapToObjTo(@NotNull G destination, @NotNull ${Type}Function<? extends U> mapper) {
+        return iterator().mapToObjTo(destination, mapper);
+    }
+
 
     //region Aggregate Operations
 

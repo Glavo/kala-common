@@ -1,6 +1,7 @@
 package kala.collection.base.primitive;
 
 import kala.annotations.ReplaceWith;
+import kala.collection.base.Growable;
 import kala.collection.base.Iterators;
 import kala.control.primitive.${Type}Option;
 import kala.internal.*;
@@ -532,6 +533,48 @@ public interface ${Type}Iterator extends PrimitiveIterator<${WrapperType}, ${Typ
     }
 
     //endregion
+
+    @Contract(value = "_, _ -> param1", mutates = "param1")
+    default <G extends ${Type}Growable> @NotNull G filterTo(@NotNull G destination, @NotNull ${Type}Predicate predicate) {
+        ${Type}Iterator it = this;
+        while (it.hasNext()) {
+            ${PrimitiveType} e = it.next${Type}();
+            if (predicate.test(e)) {
+                destination.plusAssign(e);
+            }
+        }
+        return destination;
+    }
+
+    @Contract(value = "_, _ -> param1", mutates = "param1")
+    default <G extends ${Type}Growable> @NotNull G filterNotTo(@NotNull G destination, @NotNull ${Type}Predicate predicate) {
+        ${Type}Iterator it = this;
+        while (it.hasNext()) {
+            ${PrimitiveType} e = it.next${Type}();
+            if (!predicate.test(e)) {
+                destination.plusAssign(e);
+            }
+        }
+        return destination;
+    }
+
+    @Contract(value = "_, _ -> param1", mutates = "param1")
+    default <G extends ${Type}Growable> @NotNull G mapTo(@NotNull G destination, @NotNull ${Type}UnaryOperator mapper) {
+        ${Type}Iterator it = this;
+        while (it.hasNext()) {
+            destination.plusAssign(mapper.applyAs${Type}(it.next${Type}()));
+        }
+        return destination;
+    }
+
+    @Contract(value = "_, _ -> param1", mutates = "param1")
+    default <U, G extends Growable<? super U>> @NotNull G mapToObjTo(@NotNull G destination, @NotNull ${Type}Function<? extends U> mapper) {
+        ${Type}Iterator it = this;
+        while (it.hasNext()) {
+            destination.plusAssign(mapper.apply(it.next${Type}()));
+        }
+        return destination;
+    }
 
     //region Aggregate Operations
 
