@@ -1,7 +1,6 @@
 package kala.function;
 
 import java.util.Objects;
-import java.io.Serializable;
 
 /**
  * Represents an operation that accepts a single {@code ${PrimitiveType}}-valued argument and
@@ -38,6 +37,6 @@ public interface ${Type}Consumer {
      */
     default ${Type}Consumer andThen(${Type}Consumer after) {
         Objects.requireNonNull(after);
-        return (${Type}Consumer & Serializable) (${PrimitiveType} t) -> { accept(t); after.accept(t); };
+        return (${PrimitiveType} t) -> { accept(t); after.accept(t); };
     }
 }
