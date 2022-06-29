@@ -60,8 +60,7 @@ public final class BooleanTuple2 implements PrimitiveTuple {
             return false;
         }
         BooleanTuple2 that = (BooleanTuple2) o;
-        return _1 == that._1 &&
-                _2 == that._2;
+        return _1 == that._1 && _2 == that._2;
     }
 
     @Override
@@ -79,10 +78,6 @@ public final class BooleanTuple2 implements PrimitiveTuple {
     }
 
     private Object readResolve() {
-        if (_1) {
-            return _2 ? TT : TF;
-        } else {
-            return _2 ? FT : FF;
-        }
+        return of(_1, _2);
     }
 }

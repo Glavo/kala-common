@@ -52,9 +52,7 @@ public final class IntTuple3 implements PrimitiveTuple {
             return false;
         }
         IntTuple3 other = (IntTuple3) o;
-        return _1 == other._1 &&
-                _2 == other._2 &&
-                _3 == other._3;
+        return _1 == other._1 && _2 == other._2 && _3 == other._3;
     }
 
     @Override

@@ -46,8 +46,7 @@ public final class IntTuple2 implements PrimitiveTuple {
             return false;
         }
         IntTuple2 that = (IntTuple2) o;
-        return _1 == that._1 &&
-                _2 == that._2;
+        return _1 == that._1 && _2 == that._2;
     }
 
     @Override

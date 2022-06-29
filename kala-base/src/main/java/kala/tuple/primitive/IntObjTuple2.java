@@ -48,8 +48,7 @@ public final class IntObjTuple2<T> implements PrimitiveTuple {
             return false;
         }
         IntObjTuple2<?> that = (IntObjTuple2<?>) o;
-        return _1 == that._1 &&
-                Objects.equals(_2, that._2);
+        return _1 == that._1 && Objects.equals(_2, that._2);
     }
 
     @Override
