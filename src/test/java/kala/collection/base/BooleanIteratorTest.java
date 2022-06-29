@@ -109,13 +109,13 @@ public class BooleanIteratorTest {
     @Test
     public void dropWhileTest() {
         assertAll(
-                () -> assertIteratorElements(BooleanIterator.empty().dropWhile(BooleanPredicate.IS_TRUE)),
-                () -> assertIteratorElements(BooleanIterator.empty().dropWhile(BooleanPredicate.IS_FALSE)),
-                () -> assertIteratorElements(BooleanIterator.of(true).dropWhile(BooleanPredicate.IS_TRUE)),
-                () -> assertIteratorElements(BooleanIterator.of(true, true).dropWhile(BooleanPredicate.IS_TRUE)),
-                () -> assertIteratorElements(BooleanIterator.of(true, true, true).dropWhile(BooleanPredicate.IS_TRUE)),
-                () -> assertIteratorElements(BooleanIterator.of(true, true, true, false).dropWhile(BooleanPredicate.IS_TRUE), false),
-                () -> assertIteratorElements(BooleanIterator.of(true, true, true, false).dropWhile(BooleanPredicate.IS_FALSE), true, true, true, false)
+                () -> assertIteratorElements(BooleanIterator.empty().dropWhile(BooleanPredicate.isEqual(true))),
+                () -> assertIteratorElements(BooleanIterator.empty().dropWhile(BooleanPredicate.isEqual(false))),
+                () -> assertIteratorElements(BooleanIterator.of(true).dropWhile(BooleanPredicate.isEqual(true))),
+                () -> assertIteratorElements(BooleanIterator.of(true, true).dropWhile(BooleanPredicate.isEqual(true))),
+                () -> assertIteratorElements(BooleanIterator.of(true, true, true).dropWhile(BooleanPredicate.isEqual(true))),
+                () -> assertIteratorElements(BooleanIterator.of(true, true, true, false).dropWhile(BooleanPredicate.isEqual(true)), false),
+                () -> assertIteratorElements(BooleanIterator.of(true, true, true, false).dropWhile(BooleanPredicate.isEqual(false)), true, true, true, false)
         );
     }
 
@@ -149,14 +149,14 @@ public class BooleanIteratorTest {
     @Test
     public void takeWhileTest() {
         assertAll(
-                () -> assertIteratorElements(BooleanIterator.empty().takeWhile(BooleanPredicate.IS_TRUE)),
-                () -> assertIteratorElements(BooleanIterator.empty().takeWhile(BooleanPredicate.IS_FALSE)),
-                () -> assertIteratorElements(BooleanIterator.of(true).takeWhile(BooleanPredicate.IS_TRUE), true),
-                () -> assertIteratorElements(BooleanIterator.of(true).takeWhile(BooleanPredicate.IS_FALSE)),
-                () -> assertIteratorElements(BooleanIterator.of(true, true).takeWhile(BooleanPredicate.IS_TRUE), true, true),
-                () -> assertIteratorElements(BooleanIterator.of(true, true).takeWhile(BooleanPredicate.IS_FALSE)),
-                () -> assertIteratorElements(BooleanIterator.of(true, true, false).takeWhile(BooleanPredicate.IS_TRUE), true, true),
-                () -> assertIteratorElements(BooleanIterator.of(true, true, false).takeWhile(BooleanPredicate.IS_FALSE))
+                () -> assertIteratorElements(BooleanIterator.empty().takeWhile(BooleanPredicate.isEqual(true))),
+                () -> assertIteratorElements(BooleanIterator.empty().takeWhile(BooleanPredicate.isEqual(false))),
+                () -> assertIteratorElements(BooleanIterator.of(true).takeWhile(BooleanPredicate.isEqual(true)), true),
+                () -> assertIteratorElements(BooleanIterator.of(true).takeWhile(BooleanPredicate.isEqual(false))),
+                () -> assertIteratorElements(BooleanIterator.of(true, true).takeWhile(BooleanPredicate.isEqual(true)), true, true),
+                () -> assertIteratorElements(BooleanIterator.of(true, true).takeWhile(BooleanPredicate.isEqual(false))),
+                () -> assertIteratorElements(BooleanIterator.of(true, true, false).takeWhile(BooleanPredicate.isEqual(true)), true, true),
+                () -> assertIteratorElements(BooleanIterator.of(true, true, false).takeWhile(BooleanPredicate.isEqual(false)))
         );
     }
 
