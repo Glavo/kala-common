@@ -13,11 +13,6 @@ public final class Consumers {
     }
 
     @Contract(value = "_ -> param1", pure = true)
-    public static <T> Consumer<T> narrow(Consumer<? super T> supplier) {
-        return (Consumer<T>) supplier;
-    }
-
-    @Contract(value = "_ -> param1", pure = true)
     public static <T> Consumer<T> of(Consumer<? super T> supplier) {
         return (Consumer<T>) supplier;
     }
@@ -26,7 +21,7 @@ public final class Consumers {
         return (Consumer<T>) Noop.INSTANCE;
     }
 
-    enum Noop implements Consumer<Object> {
+    private enum Noop implements Consumer<Object> {
         INSTANCE;
 
         @Override
@@ -36,7 +31,7 @@ public final class Consumers {
 
         @Override
         public @NotNull Consumer<Object> andThen(@NotNull Consumer<? super Object> after) {
-            return narrow(after);
+            return after;
         }
 
         @Override
