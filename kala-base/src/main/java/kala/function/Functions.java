@@ -15,11 +15,6 @@ public final class Functions {
     }
 
     @Contract(value = "_ -> param1", pure = true)
-    public static <T, R> Function<T, R> narrow(Function<? super T, ? extends R> function) {
-        return (Function<T, R>) function;
-    }
-
-    @Contract(value = "_ -> param1", pure = true)
     public static <T, R> Function<T, R> of(Function<? super T, ? extends R> function) {
         return (Function<T, R>) function;
     }
@@ -35,7 +30,7 @@ public final class Functions {
     public static <T, R> @NotNull Function<T, R> memoized(@NotNull Function<? super T, ? extends R> function, boolean sync) {
         Objects.requireNonNull(function);
         if (function instanceof kala.function.Memoized) {
-            return narrow(function);
+            return (Function<T, R>) function;
         }
         return new MemoizedFunction<>(function, sync ? Collections.synchronizedMap(new HashMap<>()) : new HashMap<>());
     }
@@ -49,7 +44,7 @@ public final class Functions {
         return new MemoizedFunction<>(function, sync ? Collections.synchronizedMap(new WeakHashMap<>()) : new WeakHashMap<>());
     }
 
-    enum Identity implements Function<Object, Object> {
+    private enum Identity implements Function<Object, Object> {
         INSTANCE;
 
         @Override
@@ -59,12 +54,12 @@ public final class Functions {
 
         @Override
         public <V> @NotNull Function<V, Object> compose(@NotNull Function<? super V, ?> before) {
-            return narrow(before);
+            return (Function<V, Object>) before;
         }
 
         @Override
         public <V> @NotNull Function<Object, V> andThen(@NotNull Function<? super Object, ? extends V> after) {
-            return narrow(after);
+            return (Function<Object, V>) after;
         }
 
         @Override
