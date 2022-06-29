@@ -55,6 +55,13 @@ tasks.getByName<GenerateTask>("generateSources") {
         }
     }
 
+    withPackage("kala.function") {
+        for (model in Primitives.all) {
+            val type = model.type
+            generate("${type}Hasher", model, "PrimitiveHasher")
+        }
+    }
+
     withPackage("kala.internal") {
         for (model in Primitives.all) {
             generate("Internal${model["Type"]}ArrayBuilder", model, "InternalPrimitiveArrayBuilder")
