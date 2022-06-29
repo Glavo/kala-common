@@ -39,6 +39,9 @@ enum class Primitives(private val properties: MutableMap<String, Any?> = mutable
     val type: String
         get() = this.name
 
+    val isSpecialized: kotlin.Boolean
+        get() = properties["IsSpecialized"] as kotlin.Boolean
+
     companion object {
         val all = values()
         val allWithoutBoolean = all.filterNot { it == Boolean }

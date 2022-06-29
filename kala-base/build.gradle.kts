@@ -59,6 +59,12 @@ tasks.getByName<GenerateTask>("generateSources") {
         for (model in Primitives.all) {
             val type = model.type
             generate("${type}Hasher", model, "PrimitiveHasher")
+
+
+            if (model.isSpecialized) continue
+
+            if (model != Primitives.Boolean)
+                generate("${type}Supplier", model, "PrimitiveSupplier")
         }
     }
 
