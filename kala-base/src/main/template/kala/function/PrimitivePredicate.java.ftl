@@ -78,7 +78,7 @@ public interface ${Type}Predicate {
     }
 
     static ${Type}Predicate isEqual(${PrimitiveType} target) {
-        return (value) -> value == target;
+        return (value) -> ${PrimitiveEquals("value", "target")};
     }
 
     static ${Type}Predicate not(${Type}Predicate target) {

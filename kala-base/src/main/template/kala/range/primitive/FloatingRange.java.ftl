@@ -231,13 +231,6 @@ public final class ${Type}Range extends FloatingRange<${WrapperType}> {
         return result + HASH_MAGIC;
     }
 
-    /*
-    boolean ${PrimitiveType}Equals(${PrimitiveType} d1, ${PrimitiveType} d2) {
-        // assert !${WrapperType}.isNaN(d1) && !${WrapperType}.isNaN(d2);
-        return ${WrapperType}.${PrimitiveType}ToLongBits(d1) == ${WrapperType}.${PrimitiveType}ToLongBits(d2) || Math.abs(d1 - d2) <= absoluteTolerance;
-    }
-     */
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -248,8 +241,8 @@ public final class ${Type}Range extends FloatingRange<${WrapperType}> {
         }
         ${Type}Range other = (${Type}Range) o;
         return type == other.type
-                && lowerBound == other.lowerBound
-                && upperBound == other.upperBound;
+                && ${PrimitiveEquals("lowerBound", "other.lowerBound")}
+                && ${PrimitiveEquals("upperBound", "other.upperBound")};
     }
 
     @Override

@@ -259,7 +259,7 @@ public final class ${Type}Arrays {
 
     public static boolean contains(${PrimitiveType} @NotNull [] array, ${PrimitiveType} value) {
         for (${PrimitiveType} o : array) {
-            if (value == o) {
+            if (${PrimitiveEquals("value", "o")}) {
                 return true;
             }
         }
@@ -323,7 +323,7 @@ public final class ${Type}Arrays {
         final int length = array.length;
 
         for (int i = 0; i < length; i++) {
-            if (value == array[i]) {
+            if (${PrimitiveEquals("value", "array[i]")}) {
                 return i;
             }
         }
@@ -339,7 +339,7 @@ public final class ${Type}Arrays {
         }
 
         for (int i = Math.max(beginIndex, 0); i < length; i++) {
-            if (value == array[i]) {
+            if (${PrimitiveEquals("value", "array[i]")}) {
                 return i;
             }
         }
@@ -377,7 +377,7 @@ public final class ${Type}Arrays {
     @Contract(pure = true)
     public static int lastIndexOf(${PrimitiveType} @NotNull [] array, ${PrimitiveType} value) {
         for (int i = array.length - 1; i >= 0; i--) {
-            if (value == array[i]) {
+            if (${PrimitiveEquals("value", "array[i]")}) {
                 return i;
             }
         }
@@ -392,7 +392,7 @@ public final class ${Type}Arrays {
         }
 
         for (int i = endIndex; i >= 0; i--) {
-            if (value == array[i]) {
+            if (${PrimitiveEquals("value", "array[i]")}) {
                 return i;
             }
         }

@@ -58,17 +58,19 @@ tasks.getByName<GenerateTask>("generateSources") {
     withPackage("kala.function") {
         for (model in Primitives.all) {
             val type = model.type
-            generate("${type}Hasher", model, "PrimitiveHasher")
+
             generate("Checked${type}Consumer", model, "CheckedPrimitiveConsumer")
+            generate("${type}Hasher", model, "PrimitiveHasher")
 
-            if (model.isSpecialized) continue
+            if (!model.isSpecialized) {
+                if (model != Primitives.Boolean)
+                    generate("${type}Supplier", model, "PrimitiveSupplier")
 
-            if (model != Primitives.Boolean)
-                generate("${type}Supplier", model, "PrimitiveSupplier")
                 generate("${type}Consumer", model, "PrimitiveConsumer")
                 generate("${type}Predicate", model, "PrimitivePredicate")
                 generate("${type}Function", model, "PrimitiveFunction")
                 generate("${type}UnaryOperator", model, "PrimitiveUnaryOperator")
+            }
         }
     }
 

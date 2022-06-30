@@ -111,7 +111,7 @@ public final class ${Type}Option extends PrimitiveOption<${WrapperType}> impleme
             return false;
         }
 
-        return value == ((${Type}Option) o).value;
+        return ${PrimitiveEquals("value", "((${Type}Option) o).value")};
     }
 
     @Override

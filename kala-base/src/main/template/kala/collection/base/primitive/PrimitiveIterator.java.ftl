@@ -148,7 +148,7 @@ public interface ${Type}Iterator extends PrimitiveIterator<${WrapperType}, ${Typ
 
     default boolean contains(${PrimitiveType} value) {
         while (hasNext()) {
-            if (next${Type}() == value) {
+            if (${PrimitiveEquals("value", "next${Type}()")}) {
                 return true;
             }
         }
@@ -163,7 +163,7 @@ public interface ${Type}Iterator extends PrimitiveIterator<${WrapperType}, ${Typ
         ${PrimitiveType} v = (${WrapperType}) value;
 
         while (hasNext()) {
-            if (next${Type}() == v) {
+            if (${PrimitiveEquals("v", "next${Type}()")}) {
                 return true;
             }
         }
@@ -315,7 +315,7 @@ public interface ${Type}Iterator extends PrimitiveIterator<${WrapperType}, ${Typ
         while (hasNext()) {
             final ${PrimitiveType} v = next${Type}();
             for (${PrimitiveType} i : values) {
-                if (i == v) {
+                if (${PrimitiveEquals("i", "v")}) {
                     continue loop;
                 }
             }
@@ -333,7 +333,7 @@ public interface ${Type}Iterator extends PrimitiveIterator<${WrapperType}, ${Typ
 
     default boolean sameElements(@NotNull ${PrimitiveIteratorType} other) {
         while (this.hasNext() && other.hasNext()) {
-            if (this.next${Type}() != other.next${Type}()) {
+            if (${PrimitiveNotEquals("this.next${Type}()", "other.next${Type}()")}) {
                 return false;
             }
         }
@@ -347,7 +347,9 @@ public interface ${Type}Iterator extends PrimitiveIterator<${WrapperType}, ${Typ
         }
         while (this.hasNext() && other.hasNext()) {
             Object value = other.next();
-            if (!(value instanceof ${WrapperType}) || (${WrapperType}) value != this.next${Type}()) {
+            if(!(value instanceof ${WrapperType})) return false;
+
+            if ((${PrimitiveNotEquals("(${WrapperType}) value", "this.next${Type}()")})) {
                 return false;
             }
         }

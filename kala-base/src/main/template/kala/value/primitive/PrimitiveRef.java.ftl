@@ -44,7 +44,7 @@ public final class ${Type}Ref implements Mutable${Type}Value, Serializable {
         if (!(o instanceof ${Type}Ref)) {
             return false;
         }
-        return value == ((${Type}Ref) o).value;
+        return ${PrimitiveEquals("value", "((${Type}Ref) o).value")};
     }
 
     @Override
