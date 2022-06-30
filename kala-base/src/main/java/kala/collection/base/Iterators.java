@@ -944,12 +944,32 @@ public final class Iterators {
         return reduceLeft(it, op);
     }
 
+    public static <E> @Nullable E reduceOrNull(@NotNull Iterator<? extends E> it, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
+        return reduceLeftOrNull(it, op);
+    }
+
+    public static <E> @NotNull Option<E> reduceOption(@NotNull Iterator<? extends E> it, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
+        return reduceLeftOption(it, op);
+    }
+
     public static <E> E reduceLeft(@NotNull Iterator<? extends E> it, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
         E e = it.next(); // implicit null check of it
         while (it.hasNext()) {
             e = op.apply(e, it.next());
         }
         return e;
+    }
+
+    public static <E> @Nullable E reduceLeftOrNull(@NotNull Iterator<? extends E> it, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
+        return it.hasNext() // implicit null check of it
+                ? reduceLeft(it, op)
+                : null;
+    }
+
+    public static <E> @NotNull Option<E> reduceLeftOption(@NotNull Iterator<? extends E> it, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
+        return it.hasNext() // implicit null check of it
+                ? Option.some(reduceLeft(it, op))
+                : Option.none();
     }
 
     public static <E> E reduceRight(@NotNull Iterator<? extends E> it, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
@@ -970,68 +990,16 @@ public final class Iterators {
         return e;
     }
 
-    public static <E> @Nullable E reduceOrNull(@NotNull Iterator<? extends E> it, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-        return reduceLeftOrNull(it, op);
-    }
-
-    public static <E> @Nullable E reduceLeftOrNull(@NotNull Iterator<? extends E> it, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-        if (!it.hasNext()) { // implicit null check of it
-            return null;
-        }
-        E e = it.next();
-        while (it.hasNext()) {
-            e = op.apply(e, it.next());
-        }
-        return e;
-    }
-
     public static <E> @Nullable E reduceRightOrNull(@NotNull Iterator<? extends E> it, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-        if (!it.hasNext()) { // implicit null check of it
-            return null;
-        }
-        ArrayList<E> list = new ArrayList<>();
-        while (it.hasNext()) {
-            list.add(it.next());
-        }
-        assert !list.isEmpty();
-        E e = list.get(list.size() - 1);
-
-        for (int i = list.size() - 2; i >= 0; i--) {
-            e = op.apply(list.get(i), e);
-        }
-        return e;
-    }
-
-    public static <E> @NotNull Option<E> reduceOption(@NotNull Iterator<? extends E> it, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-        return reduceLeftOption(it, op);
-    }
-
-    public static <E> @NotNull Option<E> reduceLeftOption(@NotNull Iterator<? extends E> it, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-        if (!it.hasNext()) { // implicit null check of it
-            return Option.none();
-        }
-        E e = it.next();
-        while (it.hasNext()) {
-            e = op.apply(e, it.next());
-        }
-        return Option.some(e);
+        return it.hasNext() // implicit null check of it
+                ? reduceRight(it, op)
+                : null;
     }
 
     public static <E> @NotNull Option<E> reduceRightOption(@NotNull Iterator<? extends E> it, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-        if (!it.hasNext()) {
-            return Option.none();
-        }
-        ArrayList<E> list = new ArrayList<>();
-        while (it.hasNext()) {
-            list.add(it.next());
-        }
-        assert !list.isEmpty();
-        E e = list.get(list.size() - 1);
-
-        for (int i = list.size() - 2; i >= 0; i--) {
-            e = op.apply(list.get(i), e);
-        }
-        return Option.some(e);
+        return it.hasNext() // implicit null check of it
+                ? Option.some(reduceRight(it, op))
+                : Option.none();
     }
 
     public static Object @NotNull [] toArray(@NotNull Iterator<?> it) {

@@ -386,11 +386,12 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
      * @throws NoSuchElementException if this {@code Traversable} is empty
      */
     default T reduceLeft(@NotNull BiFunction<? super T, ? super T, ? extends T> op) {
-        return reduceLeftOption(op).get();
+        return Iterators.reduceLeft(iterator(), op);
     }
 
     default @Nullable T reduceLeftOrNull(@NotNull BiFunction<? super T, ? super T, ? extends T> op) {
-        return reduceLeftOption(op).getOrNull();
+        return this.isNotEmpty() ? reduceLeft(op) : null;
+
     }
 
     /**
@@ -403,7 +404,8 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
      * @return an {@code Option} contain the reduced value or a empty {@code Option} if the {@code Traversable} is empty
      */
     default @NotNull Option<T> reduceLeftOption(@NotNull BiFunction<? super T, ? super T, ? extends T> op) {
-        return Iterators.reduceLeftOption(iterator(), op);
+        return this.isNotEmpty() ? Option.some(reduceLeft(op)) : Option.none();
+
     }
 
     /**
@@ -417,11 +419,11 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
      * @throws NoSuchElementException if this {@code Traversable} is empty
      */
     default T reduceRight(@NotNull BiFunction<? super T, ? super T, ? extends T> op) throws NoSuchElementException {
-        return reduceRightOption(op).get();
+        return Iterators.reduceRight(iterator(), op);
     }
 
     default @Nullable T reduceRightOrNull(@NotNull BiFunction<? super T, ? super T, ? extends T> op) {
-        return reduceRightOption(op).getOrNull();
+        return this.isNotEmpty() ? reduceRight(op) : null;
     }
 
     /**
@@ -434,7 +436,7 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
      * @return an {@code Option} contain the reduced value or a empty {@code Option} if the {@code Foldable} is empty
      */
     default @NotNull Option<T> reduceRightOption(@NotNull BiFunction<? super T, ? super T, ? extends T> op) {
-        return Iterators.reduceRightOption(iterator(), op);
+        return this.isNotEmpty() ? Option.some(reduceRight(op)) : Option.none();
     }
 
     default <Ex extends Throwable> T reduceChecked(

@@ -592,113 +592,71 @@ public interface ${Type}Iterator extends PrimitiveIterator<${WrapperType}, ${Typ
         if (!hasNext()) {
             throw new NoSuchElementException();
         }
+<#if Type == 'Boolean'>
 
+        while (hasNext()) {
+            if (nextBoolean()) return true;
+        }
+
+        return false;
+<#else>
         ${PrimitiveType} value = next${Type}();
         while (hasNext()) {
-<#if Type == 'Boolean'>
-            value = nextBoolean() || value;
-<#elseif IsSpecialized || Type == 'Float'>
+<#if IsSpecialized || Type == 'Float'>
             value = Math.max(value, next${Type}());
 <#else>
             value = (${PrimitiveType}) Math.max(value, next${Type}());
 </#if>
         }
         return value;
+</#if>
     }
 
     @Override
     default @Nullable ${WrapperType} maxOrNull() {
-        if (!hasNext()) {
-            return null;
-        }
-
-        ${PrimitiveType} value = next${Type}();
-        while (hasNext()) {
-<#if Type == 'Boolean'>
-            value = nextBoolean() || value;
-<#elseif IsSpecialized || Type == 'Float'>
-            value = Math.max(value, next${Type}());
-<#else>
-            value = (${PrimitiveType}) Math.max(value, next${Type}());
-</#if>
-        }
-        return value;
+        return hasNext() ? max() : null;
     }
 
     @Override
     default @NotNull ${Type}Option maxOption() {
-        if (!hasNext()) {
-            return ${Type}Option.None;
-        }
-
-        ${PrimitiveType} value = next${Type}();
-        while (hasNext()) {
-<#if Type == 'Boolean'>
-            value = nextBoolean() || value;
-<#elseif IsSpecialized || Type == 'Float'>
-            value = Math.max(value, next${Type}());
-<#else>
-            value = (${PrimitiveType}) Math.max(value, next${Type}());
-</#if>
-        }
-        return ${Type}Option.some(value);
+        return hasNext() ? ${Type}Option.some(max()) : ${Type}Option.none();
     }
 
     default ${PrimitiveType} min() {
         if (!hasNext()) {
             throw new NoSuchElementException();
         }
+<#if Type == 'Boolean'>
 
+        while (hasNext()) {
+            if (!nextBoolean()) return false;
+        }
+
+        return true;
+<#else>
         ${PrimitiveType} value = next${Type}();
         while (hasNext()) {
-<#if Type == 'Boolean'>
-            value = nextBoolean() && value;
-<#elseif IsSpecialized || Type == 'Float'>
+<#if IsSpecialized || Type == 'Float'>
             value = Math.min(value, next${Type}());
 <#else>
             value = (${PrimitiveType}) Math.min(value, next${Type}());
 </#if>
         }
         return value;
+</#if>
     }
 
     @Override
     default @Nullable ${WrapperType} minOrNull() {
-        if (!hasNext()) {
-            return null;
-        }
-
-        ${PrimitiveType} value = next${Type}();
-        while (hasNext()) {
-<#if Type == 'Boolean'>
-            value = nextBoolean() && value;
-<#elseif IsSpecialized || Type == 'Float'>
-            value = Math.min(value, next${Type}());
-<#else>
-            value = (${PrimitiveType}) Math.min(value, next${Type}());
-</#if>
-        }
-        return value;
+        return hasNext() ? min() : null;
     }
 
     @Override
     default @NotNull ${Type}Option minOption() {
-        if (!hasNext()) {
-            return ${Type}Option.None;
-        }
-
-        ${PrimitiveType} value = next${Type}();
-        while (hasNext()) {
-<#if Type == 'Boolean'>
-            value = nextBoolean() && value;
-<#elseif IsSpecialized || Type == 'Float'>
-            value = Math.min(value, next${Type}());
-<#else>
-            value = (${PrimitiveType}) Math.min(value, next${Type}());
-</#if>
-        }
-        return ${Type}Option.some(value);
+        return hasNext() ? ${Type}Option.some(min()) : ${Type}Option.none();
     }
+
+
 
     //endregion
 

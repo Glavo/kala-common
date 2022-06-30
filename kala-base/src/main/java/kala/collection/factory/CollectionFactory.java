@@ -27,27 +27,27 @@ public interface CollectionFactory<E, Builder, @Covariant R>
         }
         return new CollectionFactory<E, Builder, R>() {
             @Override
-            public final Builder newBuilder() {
+            public Builder newBuilder() {
                 return collector.supplier().get();
             }
 
             @Override
-            public final R build(@NotNull Builder builder) {
+            public R build(@NotNull Builder builder) {
                 return collector.finisher().apply(builder);
             }
 
             @Override
-            public final void addToBuilder(@NotNull Builder builder, E value) {
+            public void addToBuilder(@NotNull Builder builder, E value) {
                 collector.accumulator().accept(builder, value);
             }
 
             @Override
-            public final Builder mergeBuilder(@NotNull Builder builder1, @NotNull Builder builder2) {
+            public Builder mergeBuilder(@NotNull Builder builder1, @NotNull Builder builder2) {
                 return collector.combiner().apply(builder1, builder2);
             }
 
             @Override
-            public final Set<Characteristics> characteristics() {
+            public Set<Characteristics> characteristics() {
                 return collector.characteristics();
             }
         };
@@ -191,27 +191,27 @@ public interface CollectionFactory<E, Builder, @Covariant R>
         Objects.requireNonNull(mapper);
         final class MappedFactory implements CollectionFactory<E, Builder, U> {
             @Override
-            public final Builder newBuilder() {
+            public Builder newBuilder() {
                 return CollectionFactory.this.newBuilder();
             }
 
             @Override
-            public final U build(@NotNull Builder builder) {
+            public U build(@NotNull Builder builder) {
                 return mapper.apply(CollectionFactory.this.build(builder));
             }
 
             @Override
-            public final void addToBuilder(@NotNull Builder builder, E value) {
+            public void addToBuilder(@NotNull Builder builder, E value) {
                 CollectionFactory.this.addToBuilder(builder, value);
             }
 
             @Override
-            public final Builder mergeBuilder(@NotNull Builder builder1, @NotNull Builder builder2) {
+            public Builder mergeBuilder(@NotNull Builder builder1, @NotNull Builder builder2) {
                 return CollectionFactory.this.mergeBuilder(builder1, builder2);
             }
 
             @Override
-            public final void sizeHint(@NotNull Builder builder, int size) {
+            public void sizeHint(@NotNull Builder builder, int size) {
                 CollectionFactory.this.sizeHint(builder, size);
             }
         }

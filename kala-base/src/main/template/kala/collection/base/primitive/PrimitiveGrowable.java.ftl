@@ -16,7 +16,7 @@ public interface ${Type}Growable extends PrimitiveGrowable<${WrapperType}> {
     }
 
     @Override
-    default void plusAssign(${WrapperType} value) {
+    default void plusAssign(@NotNull ${WrapperType} value) {
         plusAssign(value.${PrimitiveType}Value());
     }
 }
