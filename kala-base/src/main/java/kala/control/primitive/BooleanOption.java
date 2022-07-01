@@ -1,5 +1,6 @@
 package kala.control.primitive;
 
+import kala.annotations.ReplaceWith;
 import kala.control.Option;
 import kala.collection.base.primitive.BooleanIterator;
 import kala.collection.base.primitive.BooleanTraversable;
@@ -44,11 +45,19 @@ public final class BooleanOption extends PrimitiveOption<Boolean> implements Boo
         return None;
     }
 
+    @Deprecated
+    @ReplaceWith("some(boolean)")
     public static @NotNull BooleanOption of(boolean value) {
         return value ? True : False;
     }
 
+    @Deprecated
+    @ReplaceWith("ofNullable(Boolean)")
     public static @NotNull BooleanOption of(@Nullable Boolean value) {
+        return ofNullable(value);
+    }
+
+    public static @NotNull BooleanOption ofNullable(@Nullable Boolean value) {
         if (value == null) {
             return None;
         }

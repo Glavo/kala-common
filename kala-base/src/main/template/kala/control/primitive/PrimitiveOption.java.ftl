@@ -2,6 +2,7 @@ package kala.control.primitive;
 
 import kala.collection.base.primitive.*;
 
+import kala.annotations.ReplaceWith;
 import kala.control.Option;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -41,11 +42,19 @@ public final class ${Type}Option extends PrimitiveOption<${WrapperType}> impleme
         return None;
     }
 
+    @Deprecated
+    @ReplaceWith("some(${PrimitiveType})")
     public static @NotNull ${Type}Option of(${PrimitiveType} value) {
         return some(value);
     }
 
+    @Deprecated
+    @ReplaceWith("ofNullable(${WrapperType})")
     public static @NotNull ${Type}Option of(@Nullable ${WrapperType} value) {
+        return ofNullable(value);
+    }
+
+    public static @NotNull ${Type}Option ofNullable(@Nullable ${WrapperType} value) {
         return value == null ? None : some(value);
     }
 
