@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 import java.util.stream.Collector;
 
-public interface MutableCollection<E> extends Collection<E> {
+public interface MutableCollection<E> extends Collection<E>, MutableAnyCollection<E> {
 
     //region Static Factories
 

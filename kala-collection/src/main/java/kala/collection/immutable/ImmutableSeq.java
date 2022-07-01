@@ -19,7 +19,7 @@ import java.util.function.*;
 import java.util.stream.Stream;
 
 @SuppressWarnings({"unchecked"})
-public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<E> {
+public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<E>, ImmutableAnySeq<E> {
     //region Narrow method
 
     @Contract(value = "_ -> param1", pure = true)

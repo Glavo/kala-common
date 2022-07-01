@@ -20,7 +20,7 @@ import java.util.concurrent.Future;
 import java.util.function.*;
 
 @SuppressWarnings("unchecked")
-public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E> {
+public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E>, AnySeq<E> {
 
     //region Narrow method
 
@@ -392,11 +392,5 @@ public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E> {
     @Contract(pure = true)
     default <U> @NotNull ImmutableSeq<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
         return view().flatMap(mapper).toImmutableSeq();
-    }
-
-
-    @Override
-    default boolean canEqual(Object other) {
-        return other instanceof Seq<?>;
     }
 }

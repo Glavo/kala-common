@@ -18,7 +18,7 @@ import java.util.function.*;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public interface ImmutableCollection<@Covariant E> extends Collection<E> {
+public interface ImmutableCollection<@Covariant E> extends Collection<E>, ImmutableAnyCollection<E> {
 
     //region Narrow method
 

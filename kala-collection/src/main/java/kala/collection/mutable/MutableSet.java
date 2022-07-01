@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E> {
+public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>, MutableAnySet<E> {
 
     //region Static Factories
 

@@ -2,7 +2,7 @@ package kala.collection;
 
 import org.jetbrains.annotations.NotNull;
 
-public interface SetLike<E> extends CollectionLike<E> {
+public interface SetLike<E> extends CollectionLike<E>, AnySetLike<E> {
     @Override
     default @NotNull String className() {
         return "SetLike";

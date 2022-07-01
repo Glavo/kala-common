@@ -16,7 +16,7 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 
-public interface MutableSeq<E> extends MutableCollection<E>, Seq<E> {
+public interface MutableSeq<E> extends MutableCollection<E>, Seq<E>, MutableAnySeq<E> {
 
     //region Static Factories
 

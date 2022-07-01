@@ -21,7 +21,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collector;
 
-public interface Collection<@Covariant E> extends Traversable<E>, CollectionLike<E>, Equatable {
+public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollection<E> {
 
     int SEQ_HASH_MAGIC = -1140647423;
 
@@ -162,12 +162,6 @@ public interface Collection<@Covariant E> extends Traversable<E>, CollectionLike
     @Contract(pure = true)
     default <U> @NotNull ImmutableCollection<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
         return view().<U>zip(other).toImmutableSeq();
-    }
-
-
-    @Override
-    default boolean canEqual(Object other) {
-        return other instanceof Collection<?>;
     }
 
 }

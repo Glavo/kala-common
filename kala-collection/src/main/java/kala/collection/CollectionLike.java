@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public interface CollectionLike<E> extends Traversable<E> {
+public interface CollectionLike<E> extends Traversable<E>, AnyCollectionLike<E> {
 
     default @NotNull String className() {
         return "CollectionLike";

@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Range;
 import java.util.*;
 import java.util.function.*;
 
-public interface SeqLike<E> extends CollectionLike<E> {
+public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E> {
     @Contract(value = "_ -> param1", pure = true)
     @SuppressWarnings("unchecked")
     static <E> SeqLike<E> narrow(SeqLike<? extends E> view) {

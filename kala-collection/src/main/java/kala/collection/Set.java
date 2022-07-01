@@ -13,7 +13,7 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Predicate;
 
-public interface Set<E> extends Collection<E>, SetLike<E> {
+public interface Set<E> extends Collection<E>, SetLike<E>, AnySet<E> {
 
     //region Static Factories
 
@@ -84,9 +84,4 @@ public interface Set<E> extends Collection<E>, SetLike<E> {
     }
 
     //endregion
-
-    @Override
-    default boolean canEqual(Object other) {
-        return other instanceof Set<?>;
-    }
 }

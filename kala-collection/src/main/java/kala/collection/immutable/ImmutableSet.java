@@ -14,8 +14,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<E> {
-
+public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<E>, ImmutableAnySet<E> {
 
     @Contract(value = "_ -> param1", pure = true)
     static <E> ImmutableSet<E> narrow(ImmutableSet<? extends E> set) {
