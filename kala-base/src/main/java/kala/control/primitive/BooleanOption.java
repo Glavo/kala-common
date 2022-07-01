@@ -26,7 +26,7 @@ public final class BooleanOption extends PrimitiveOption<Boolean> implements Boo
         this.isDefined = false;
         this.value = false;
         this.name = "OptionBoolean.None";
-        this.hashCode = HASH_MAGIC;
+        this.hashCode = NONE_HASH;
     }
 
     private BooleanOption(boolean value) {
@@ -101,7 +101,17 @@ public final class BooleanOption extends PrimitiveOption<Boolean> implements Boo
 
     @Override
     public boolean equals(Object o) {
-        return this == o;
+        if (this == o) return true;
+        if (o instanceof Option) {
+            Option<?> other = (Option<?>) o;
+            if (this.isEmpty()) return other.isEmpty();
+            if (other.isEmpty()) return false;
+
+            Object v = other.get();
+            return v instanceof Boolean && get() == (Boolean) v;
+        }
+
+        return false;
     }
 
     @Override

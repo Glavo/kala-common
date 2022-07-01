@@ -2,6 +2,7 @@ package kala.control;
 
 import kala.annotations.ReplaceWith;
 import kala.collection.base.Iterators;
+import kala.control.primitive.PrimitiveOption;
 import kala.tuple.Tuple2;
 import kala.annotations.Covariant;
 import org.intellij.lang.annotations.Flow;
@@ -30,9 +31,6 @@ import java.util.function.Predicate;
 public final class Option<@Covariant T> extends AnyOption<T>
         implements OptionContainer<T>, Serializable {
     private static final long serialVersionUID = 4055633765420871779L;
-
-    private static final int HASH_MAGIC = -1623337737;
-    private static final int NONE_HASH = 1937147281;
 
     /**
      * The single instance of empty {@code Option}.
@@ -231,12 +229,15 @@ public final class Option<@Covariant T> extends AnyOption<T>
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Option<?>)) {
-            return false;
+        if (o instanceof Option) {
+            return Objects.equals(value, ((Option<?>) o).value)
+                    && this != None
+                    && o != None;
         }
-        return Objects.equals(value, ((Option<?>) o).value)
-                && this != None
-                && o != None;
+        if (o instanceof PrimitiveOption) {
+            return o.equals(this);
+        }
+        return false;
     }
 
     /**

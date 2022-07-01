@@ -2,6 +2,7 @@ package kala.control.primitive;
 
 import kala.collection.base.primitive.*;
 
+import kala.control.Option;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,7 +20,6 @@ import kala.function.*;
 
 public final class ${Type}Option extends PrimitiveOption<${WrapperType}> implements ${Type}Traversable {
     private static final long serialVersionUID = -8990024629462620023L;
-    private static final int HASH_MAGIC = -818206074;
 
     public static final ${Type}Option None = new ${Type}Option();
 
@@ -101,22 +101,28 @@ public final class ${Type}Option extends PrimitiveOption<${WrapperType}> impleme
 
     @Override
     public boolean equals(Object o) {
-        if (o == this) {
-            return true;
-        }
-        if (!(o instanceof ${Type}Option)) {
-            return false;
-        }
-        if (this == None || o == None) {
-            return false;
+        if (o == this) return true;
+
+        if (o instanceof ${Type}Option) {
+            return this != None && o != None
+                    && ${PrimitiveEquals("value", "((${Type}Option) o).value")};
         }
 
-        return ${PrimitiveEquals("value", "((${Type}Option) o).value")};
+        if (o instanceof Option) {
+            Option<?> other = (Option<?>) o;
+            if (this.isEmpty()) return other.isEmpty();
+            if (other.isEmpty()) return false;
+
+            Object v = other.get();
+            return v instanceof ${WrapperType}
+                    && ${PrimitiveEquals("value", "(${WrapperType}) v")};
+        }
+
+        return false;
     }
-
     @Override
     public int hashCode() {
-        return HASH_MAGIC + ${WrapperType}.hashCode(value);
+        return this.isDefined() ? HASH_MAGIC + ${WrapperType}.hashCode(value) : NONE_HASH;
     }
 
     @Override

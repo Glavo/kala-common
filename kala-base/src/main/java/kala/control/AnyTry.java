@@ -1,12 +1,15 @@
 package kala.control;
 
 import kala.annotations.Covariant;
+import kala.annotations.Sealed;
+import kala.control.primitive.PrimitiveTry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.function.Supplier;
 
+@Sealed(subclasses = {Try.class, PrimitiveTry.class})
 public abstract class AnyTry<@Covariant T> implements Serializable {
 
     protected static final int SUCCESS_HASH_MAGIC = 518848667;
