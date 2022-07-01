@@ -215,7 +215,7 @@ public interface ${Type}Traversable extends PrimitiveTraversable<${WrapperType}>
 
     @Override
     default @Nullable ${WrapperType} maxOrNull() {
-        return knownSize() == 0 ? null : iterator().maxOrNull();
+        return isNotEmpty() ? max() : null;
     }
 
     @Override

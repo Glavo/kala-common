@@ -103,6 +103,18 @@ public interface CollectionFactory<E, Builder, @Covariant R>
         }
     }
 
+    default void sizeHint(@NotNull Builder builder, @NotNull AnyTraversable<?> it) {
+        this.sizeHint(builder, it, 0);
+    }
+
+    default void sizeHint(@NotNull Builder builder, @NotNull AnyTraversable<?> it, int delta) {
+        Objects.requireNonNull(it);
+        final int ks = it.knownSize();
+        if (ks >= 0) {
+            this.sizeHint(builder, ks + delta);
+        }
+    }
+
     default R empty() {
         return build(newBuilder());
     }
@@ -114,9 +126,7 @@ public interface CollectionFactory<E, Builder, @Covariant R>
 
         Builder builder = newBuilder();
         sizeHint(builder, values.length);
-        for (E element : values) {
-            addToBuilder(builder, element);
-        }
+        addAllToBuilder(builder, values);
         return build(builder);
     }
 
@@ -127,11 +137,7 @@ public interface CollectionFactory<E, Builder, @Covariant R>
         }
         Builder builder = newBuilder();
         sizeHint(builder, values);
-
-        while (iterator.hasNext()) {
-            E e = iterator.next();
-            addToBuilder(builder, e);
-        }
+        addAllToBuilder(builder, iterator);
         return build(builder);
     }
 
@@ -140,11 +146,7 @@ public interface CollectionFactory<E, Builder, @Covariant R>
             return empty();
         }
         Builder builder = newBuilder();
-
-        while (it.hasNext()) {
-            E e = it.next();
-            addToBuilder(builder, e);
-        }
+        addAllToBuilder(builder, it);
         return build(builder);
     }
 
@@ -189,33 +191,34 @@ public interface CollectionFactory<E, Builder, @Covariant R>
 
     default <U> @NotNull CollectionFactory<E, Builder, U> mapResult(@NotNull Function<? super R, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
-        final class MappedFactory implements CollectionFactory<E, Builder, U> {
+
+        final CollectionFactory<E, Builder, R> self = this;
+        return new CollectionFactory<E, Builder, U>() {
             @Override
             public Builder newBuilder() {
-                return CollectionFactory.this.newBuilder();
+                return self.newBuilder();
             }
 
             @Override
             public U build(@NotNull Builder builder) {
-                return mapper.apply(CollectionFactory.this.build(builder));
+                return mapper.apply(self.build(builder));
             }
 
             @Override
             public void addToBuilder(@NotNull Builder builder, E value) {
-                CollectionFactory.this.addToBuilder(builder, value);
+                self.addToBuilder(builder, value);
             }
 
             @Override
             public Builder mergeBuilder(@NotNull Builder builder1, @NotNull Builder builder2) {
-                return CollectionFactory.this.mergeBuilder(builder1, builder2);
+                return self.mergeBuilder(builder1, builder2);
             }
 
             @Override
             public void sizeHint(@NotNull Builder builder, int size) {
-                CollectionFactory.this.sizeHint(builder, size);
+                self.sizeHint(builder, size);
             }
-        }
-        return new MappedFactory();
+        };
     }
 
     @Override

@@ -82,27 +82,27 @@ public interface MapFactory<K, V, Builder, R> extends Factory<Builder, R> {
         final class MappedFactory implements MapFactory<K, V, Builder, U> {
 
             @Override
-            public final Builder newBuilder() {
+            public Builder newBuilder() {
                 return MapFactory.this.newBuilder();
             }
 
             @Override
-            public final U build(Builder builder) {
+            public U build(Builder builder) {
                 return mapper.apply(MapFactory.this.build(builder));
             }
 
             @Override
-            public final void addToBuilder(Builder builder, K key, V value) {
+            public void addToBuilder(Builder builder, K key, V value) {
                 MapFactory.this.addToBuilder(builder, key, value);
             }
 
             @Override
-            public final Builder mergeBuilder(Builder builder1, Builder builder2) {
+            public Builder mergeBuilder(Builder builder1, Builder builder2) {
                 return MapFactory.this.mergeBuilder(builder1, builder2);
             }
 
             @Override
-            public final void sizeHint(@NotNull Builder builder, int size) {
+            public void sizeHint(@NotNull Builder builder, int size) {
                 MapFactory.this.sizeHint(builder, size);
             }
         }

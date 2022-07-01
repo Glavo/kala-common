@@ -236,47 +236,51 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
     }
 
     default T max(Comparator<? super T> comparator) {
-        return maxOption(comparator).getOrThrow(NoSuchElementException::new);
+        if (isEmpty()) throw new NoSuchElementException();
+
+        return Iterators.max(iterator(), comparator);
     }
 
     default @Nullable T maxOrNull() {
-        return maxOrNull(Comparators.naturalOrder());
+        return isNotEmpty() ? max() : null;
     }
 
     default @Nullable T maxOrNull(@NotNull Comparator<? super T> comparator) {
-        return maxOption(comparator).getOrNull();
+        return isNotEmpty() ? max(comparator) : null;
     }
 
     default @NotNull Option<T> maxOption() {
-        return maxOption((Comparator<T>) Comparator.naturalOrder());
+        return isNotEmpty() ? Option.some(max()) : Option.none();
     }
 
     default @NotNull Option<T> maxOption(Comparator<? super T> comparator) {
-        return Iterators.maxOption(iterator(), comparator);
+        return isNotEmpty() ? Option.some(max(comparator)) : Option.none();
     }
 
     default T min() {
-        return min((Comparator<T>) Comparator.naturalOrder());
+        return min(Comparators.naturalOrder());
     }
 
     default T min(Comparator<? super T> comparator) {
-        return minOption(comparator).getOrThrow(NoSuchElementException::new);
+        if (isEmpty()) throw new NoSuchElementException();
+
+        return Iterators.min(iterator(), comparator);
     }
 
     default @Nullable T minOrNull() {
-        return minOrNull((Comparator<T>) Comparator.naturalOrder());
+        return isNotEmpty() ? min() : null;
     }
 
     default @Nullable T minOrNull(@NotNull Comparator<? super T> comparator) {
-        return minOption(comparator).getOrNull();
+        return isNotEmpty() ? min(comparator) : null;
     }
 
     default @NotNull Option<T> minOption() {
-        return minOption((Comparator<T>) Comparator.naturalOrder());
+        return isNotEmpty() ? Option.some(min()) : Option.none();
     }
 
     default @NotNull Option<T> minOption(Comparator<? super T> comparator) {
-        return Iterators.minOption(iterator(), comparator);
+        return isNotEmpty() ? Option.some(min(comparator)) : Option.none();
     }
 
     /**
@@ -519,7 +523,6 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
     default @NotNull Option<T> reduceRightOptionUnchecked(@NotNull CheckedBiFunction<? super T, ? super T, ? extends T, ?> op) {
         return reduceRightOption(op);
     }
-
 
     //endregion
 

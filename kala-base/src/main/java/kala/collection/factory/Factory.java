@@ -16,12 +16,12 @@ public interface Factory<Builder, @Covariant R> {
 
         final class MappedFactory implements Factory<Builder, U> {
             @Override
-            public final Builder newBuilder() {
+            public Builder newBuilder() {
                 return Factory.this.newBuilder();
             }
 
             @Override
-            public final U build(@NotNull Builder builder) {
+            public U build(@NotNull Builder builder) {
                 return mapper.apply(Factory.this.build(builder));
             }
         }

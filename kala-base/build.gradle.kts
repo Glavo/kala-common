@@ -29,6 +29,14 @@ tasks.getByName<GenerateTask>("generateSources") {
         }
     }
 
+    withPackage("kala.collection.factory.primitive") {
+        for (model in Primitives.all) {
+            val type = model.type
+
+            generate("${type}CollectionFactory", model, "PrimitiveCollectionFactory")
+        }
+    }
+
     withPackage("kala.control.primitive") {
         for (model in Primitives.allWithoutBoolean) {
             generate("${model["Type"]}Option", model, "PrimitiveOption")
