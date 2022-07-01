@@ -1,5 +1,6 @@
 package kala.control;
 
+import kala.annotations.ReplaceWith;
 import kala.collection.base.Iterators;
 import kala.tuple.Tuple2;
 import kala.annotations.Covariant;
@@ -74,6 +75,12 @@ public final class Option<@Covariant T> extends AnyOption<T>
         return (Option<T>) None;
     }
 
+    @Deprecated
+    @ReplaceWith("ofNullable(T)")
+    public static <T> @NotNull Option<T> of(@Nullable T value) {
+        return value == null ? none() : new Option<>(value);
+    }
+
     /**
      * Returns {@code Option.some(value)} if value is not null, otherwise returns {@code Option.none()}.
      *
@@ -81,8 +88,8 @@ public final class Option<@Covariant T> extends AnyOption<T>
      * @param <T>   the type of the value
      * @return {@code Option.some(value)} if value is not null, otherwise {@code Option.none()}
      */
-    public static <T> @NotNull Option<T> of(@Nullable T value) {
-        return value == null ? none() : new Option<>(value);
+    public static <T> @NotNull Option<T> ofNullable(@Nullable T value) {
+        return value != null ? new Option<>(value) : none();
     }
 
     /**
@@ -94,7 +101,7 @@ public final class Option<@Covariant T> extends AnyOption<T>
      */
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public static <T> @NotNull Option<T> fromJava(@NotNull Optional<? extends T> optional) {
-        return of(optional.orElse(null));
+        return ofNullable(optional.orElse(null));
     }
 
     /**
@@ -122,7 +129,7 @@ public final class Option<@Covariant T> extends AnyOption<T>
      */
     @Flow(sourceIsContainer = true)
     public T get() {
-        if (this == None) {
+        if (isEmpty()) {
             throw new NoSuchElementException("Option.None");
         }
         return value;
@@ -155,7 +162,7 @@ public final class Option<@Covariant T> extends AnyOption<T>
     }
 
     public <U> @NotNull Option<@NotNull U> mapNotNull(@NotNull Function<? super T, ? extends @Nullable U> mapper) {
-        return isDefined() ? of(mapper.apply(value)) : none();
+        return isDefined() ? ofNullable(mapper.apply(value)) : none();
     }
 
     public <U> @NotNull Option<U> flatMap(@NotNull Function<? super T, ? extends Option<? extends U>> mapper) {
@@ -237,7 +244,7 @@ public final class Option<@Covariant T> extends AnyOption<T>
      */
     @Override
     public int hashCode() {
-        return this == None ? NONE_HASH : Objects.hashCode(value) + HASH_MAGIC;
+        return isDefined() ? Objects.hashCode(value) + HASH_MAGIC : NONE_HASH;
     }
 
     /**

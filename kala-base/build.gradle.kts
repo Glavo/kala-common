@@ -32,6 +32,7 @@ tasks.getByName<GenerateTask>("generateSources") {
     withPackage("kala.control.primitive") {
         for (model in Primitives.allWithoutBoolean) {
             generate("${model["Type"]}Option", model, "PrimitiveOption")
+            generate("${model["Type"]}Try", model, "PrimitiveTry")
         }
     }
 
@@ -60,6 +61,7 @@ tasks.getByName<GenerateTask>("generateSources") {
             val type = model.type
 
             generate("Checked${type}Consumer", model, "CheckedPrimitiveConsumer")
+            generate("Checked${type}Supplier", model, "CheckedPrimitiveSupplier")
             generate("${type}Hasher", model, "PrimitiveHasher")
 
             if (!model.isSpecialized) {

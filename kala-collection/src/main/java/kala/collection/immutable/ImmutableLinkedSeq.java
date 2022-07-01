@@ -1627,7 +1627,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
         }
 
         public @NotNull Option<@NotNull Node<E>> tailOption() {
-            return Option.of(tail);
+            return Option.ofNullable(tail);
         }
 
         @Override

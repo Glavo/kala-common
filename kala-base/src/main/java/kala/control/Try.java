@@ -1,5 +1,6 @@
 package kala.control;
 
+import kala.annotations.ReplaceWith;
 import kala.collection.base.Iterators;
 import kala.collection.base.Traversable;
 import kala.function.*;
@@ -20,15 +21,11 @@ import java.util.function.Supplier;
  * Represents a result value or the exception that caused it to fail.
  * It provides a new way to handle exceptions, and provides some static methods to help users handle exceptions.
  *
- *
  * @param <T>
  */
 @SuppressWarnings("unchecked")
-public final class Try<@Covariant T> implements Traversable<T>, Serializable {
+public final class Try<@Covariant T> extends AnyTry<T> implements Traversable<T>, Serializable {
     private static final long serialVersionUID = -876749736621195838L;
-
-    private static final int SUCCESS_HASH_MAGIC = 518848667;
-    private static final int FAILURE_HASH_MAGIC = 1918688519;
 
     public static final Try<Void> VOID = new Try<>(null, null);
 
@@ -129,7 +126,6 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
         }
         return builder.toString();
     }
-
 
     public static boolean isFatal(Throwable exception) {
         return exception instanceof InterruptedException
@@ -235,6 +231,7 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
      *
      * @return {@code true} if the {@code Try} is {@code Success}, otherwise {@code false}
      */
+    @Override
     public boolean isSuccess() {
         return cause == null;
     }
@@ -244,14 +241,20 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
      *
      * @return {@code true} if the {@code Try} is {@code Failure}, otherwise {@code false}
      */
+    @Override
     public boolean isFailure() {
         return cause != null;
     }
 
+    @Override
+    @Deprecated
+    @ReplaceWith("get()")
+    public T getValue() {
+        return get();
+    }
+
     public T get() {
-        if (cause != null) {
-            throw new NoSuchElementException();
-        }
+        if (isFailure()) throw new NoSuchElementException();
         return value;
     }
 
@@ -260,64 +263,49 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
     }
 
     public @NotNull Option<T> getOption() {
-        return cause == null ? Option.some(value) : Option.none();
+        return isSuccess() ? Option.some(value) : Option.none();
     }
 
     public T getOrDefault(T defaultValue) {
-        return cause == null ? value : defaultValue;
+        return isSuccess() ? value : defaultValue;
     }
 
     public T getOrElse(@NotNull Supplier<? extends T> supplier) {
-        return cause == null ? value : supplier.get();
+        return isSuccess() ? value : supplier.get();
     }
 
     public <Ex extends Throwable> T getOrThrow() throws Ex {
-        if (cause != null) {
+        if (isFailure()) {
             throw (Ex) cause;
         }
         return value;
     }
 
     public <Ex extends Throwable> T getOrThrow(@NotNull Supplier<? extends Ex> supplier) throws Ex {
-        if (cause != null) {
+        if (isFailure()) {
             throw supplier.get();
         }
         return value;
     }
 
     public <Ex extends Throwable> T getOrThrowException(Ex exception) throws Ex {
-        if (cause != null) {
+        if (isFailure()) {
             throw exception;
         }
         return value;
     }
 
+    @Override
     public @NotNull Throwable getCause() {
-        if (cause == null) {
+        if (isSuccess()) {
             throw new UnsupportedOperationException();
         }
         return cause;
     }
 
-    public @Nullable Throwable getCauseOrNull() {
-        return cause;
-    }
-
-    public @NotNull Option<Throwable> getCauseOption() {
-        return Option.of(cause);
-    }
-
-    public Throwable getCauseOrDefault(Throwable defaultValue) {
-        return cause != null ? cause : defaultValue;
-    }
-
-    public Throwable getCauseOrElse(@NotNull Supplier<? extends Throwable> supplier) {
-        return cause != null ? cause : supplier.get();
-    }
-
     public @NotNull Try<T> recover(@NotNull CheckedFunction<? super Throwable, ? extends T, ?> op) {
         Objects.requireNonNull(op);
-        if (cause == null) {
+        if (isSuccess()) {
             return this;
         }
         try {
@@ -343,7 +331,7 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
 
     public @NotNull Try<T> recoverWith(@NotNull CheckedFunction<? super Throwable, ? extends Try<? extends T>, ?> op) {
         Objects.requireNonNull(op);
-        if (cause == null) {
+        if (isSuccess()) {
             return this;
         }
         try {
@@ -373,10 +361,9 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
      * @return {@code this} if the {@code Try} is a {@code Success}
      * @throws Ex if the {@code Try} is a {@code Failure}
      */
+    @Override
     public <Ex extends Throwable> @NotNull Try<T> rethrow() throws Ex {
-        if (cause != null) {
-            throw (Ex) cause;
-        }
+        if (isFailure()) throw (Ex) cause;
         return this;
     }
 
@@ -389,13 +376,13 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
      * or the {@code throwable} not an instance of {@code type}
      * @throws Ex if the {@code Try} is a {@code Failure} and the {@code throwable}'s type is {@code type}
      */
+    @Override
     public <Ex extends Throwable> @NotNull Try<T> rethrow(@NotNull Class<? extends Ex> type) throws Ex {
-        if (type.isInstance(cause)) {
-            throw (Ex) cause;
-        }
+        if (type.isInstance(cause)) throw (Ex) cause;
         return this;
     }
 
+    @Override
     public @NotNull Try<T> rethrowFatal() {
         if (isFatal(cause)) {
             sneakyThrow(cause);
@@ -404,11 +391,11 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
     }
 
     public @NotNull Either<@NotNull Throwable, T> toEither() {
-        return cause == null ? Either.right(value) : Either.left(cause);
+        return isSuccess() ? Either.right(value) : Either.left(cause);
     }
 
     public @NotNull Result<T, @NotNull Throwable> toResult() {
-        return cause == null ? Result.ok(value) : Result.err(cause);
+        return isSuccess() ? Result.ok(value) : Result.err(cause);
     }
 
     /**
@@ -416,7 +403,7 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
      */
     public <U> @NotNull Try<U> map(@NotNull CheckedFunction<? super T, ? extends U, ?> mapper) {
         Objects.requireNonNull(mapper);
-        if (cause != null) {
+        if (isFailure()) {
             return (Try<U>) this;
         }
         try {
@@ -428,7 +415,7 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
 
     public <U> @NotNull Try<U> flatMap(@NotNull CheckedFunction<? super T, ? extends Try<? extends U>, ?> mapper) {
         Objects.requireNonNull(mapper);
-        if (cause != null) {
+        if (isFailure()) {
             return (Try<U>) this;
         }
 
@@ -441,40 +428,44 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
 
     @Override
     public @NotNull Iterator<T> iterator() {
-        return cause == null ? Iterators.of(value) : Iterators.empty();
+        return isSuccess() ? Iterators.of(value) : Iterators.empty();
     }
 
     @Override
     public void forEach(@NotNull Consumer<? super T> action) {
-        if (cause == null) {
+        if (isSuccess()) {
             action.accept(value);
         }
     }
 
     @Override
     public int hashCode() {
-        if (cause == null) {
+        if (isSuccess()) {
             return Objects.hashCode(value) + SUCCESS_HASH_MAGIC;
         } else {
-            return cause.hashCode() + FAILURE_HASH_MAGIC;
+            return getCause().hashCode() + FAILURE_HASH_MAGIC;
         }
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Try)) {
+        if (this == o) return true;
+        if (!(o instanceof AnyTry)) return false;
+
+        AnyTry<?> other = (AnyTry<?>) o;
+
+        if (this.isSuccess() && other.isSuccess()) {
+            return Objects.equals(this.get(), other.getValue());
+        } else if (this.isFailure() && other.isFailure()) {
+            return this.getCause().equals(other.getCause());
+        } else {
             return false;
         }
-        Try<?> other = (Try<?>) o;
-        return Objects.equals(value, other.value) && Objects.equals(cause, other.cause);
     }
 
     @Override
     public String toString() {
-        if (cause == null) {
+        if (isSuccess()) {
             return "Try.Success[" + value + "]";
         } else {
             return "Try.Failure[" + cause + "]";
@@ -482,7 +473,7 @@ public final class Try<@Covariant T> implements Traversable<T>, Serializable {
     }
 
     private Object writeReplace() {
-        if (cause == null) {
+        if (isSuccess()) {
             return new Replaced(true, value);
         } else {
             return new Replaced(false, cause);

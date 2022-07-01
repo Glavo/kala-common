@@ -32,10 +32,12 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
         return new Result.Err<>(value);
     }
 
-    public abstract boolean isOk();
+    public final boolean isOk() {
+        return this instanceof Ok;
+    }
 
     public final boolean isErr() {
-        return !isOk();
+        return this instanceof Err;
     }
 
     @Override
@@ -70,12 +72,12 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
     }
 
     @Contract("-> new")
-    public @NotNull Either<E, T> toEither() {
+    public final @NotNull Either<E, T> toEither() {
         return isOk() ? Either.right(get()) : Either.left(getErr());
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         if (isOk()) {
             return "Result.Ok[" + get() + "]";
         } else {
@@ -91,14 +93,6 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
 
         Ok(T value) {
             this.value = value;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public boolean isOk() {
-            return true;
         }
 
         /**
@@ -154,14 +148,6 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
 
         Err(E err) {
             this.err = err;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public boolean isOk() {
-            return false;
         }
 
         /**
