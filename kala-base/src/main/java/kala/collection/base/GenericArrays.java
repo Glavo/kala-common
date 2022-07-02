@@ -1081,7 +1081,7 @@ public final class GenericArrays {
         // private final Class<E> elementType;
         private final E[] empty;
 
-        public Factory(@NotNull Class<E> elementType) {
+        Factory(@NotNull Class<E> elementType) {
             // this.elementType = elementType;
             this.empty = (E[]) Array.newInstance(elementType, 0);
         }

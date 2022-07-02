@@ -93,17 +93,7 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E> {
     @Contract(pure = true)
     @Flow(sourceIsContainer = true)
     default E get(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
-        if (index < 0)
-            throw new IndexOutOfBoundsException();
-
-        int i = index;
-        for (E e : this) {
-            if (i-- == 0) {
-                return e;
-            }
-        }
-
-        throw new IndexOutOfBoundsException();
+        return iterator(index).next();
     }
 
     @Contract(pure = true)
@@ -115,7 +105,7 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E> {
     @Contract(pure = true)
     @Flow(sourceIsContainer = true, targetIsContainer = true)
     @DelegateBy("get(int)")
-    default @NotNull Option<E> getOption(int index) {
+    default @NotNull Option<E>  getOption(int index) {
         return isDefinedAt(index) ? Option.some(get(index)) : Option.none();
     }
 

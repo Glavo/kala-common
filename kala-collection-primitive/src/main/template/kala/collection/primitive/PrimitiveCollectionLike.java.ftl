@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.*;
 
-public interface ${Type}CollectionLike extends PrimitiveCollectionLike<${WrapperType}> {
+public interface ${Type}CollectionLike extends PrimitiveCollectionLike<${WrapperType}>, ${Type}Traversable {
     @Override
     default @NotNull String className() {
         return "${Type}CollectionLike";
