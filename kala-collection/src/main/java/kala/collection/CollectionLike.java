@@ -17,7 +17,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public interface CollectionLike<E> extends Traversable<E>, AnyCollectionLike<E> {
-
     @Override
     default @NotNull String className() {
         return "CollectionLike";

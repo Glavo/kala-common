@@ -1,11 +1,9 @@
 package kala.collection;
 
-import kala.Equatable;
 import kala.annotations.Covariant;
 import kala.collection.immutable.*;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.factory.CollectionFactory;
-import kala.collection.base.Traversable;
 import kala.collection.internal.view.Views;
 import kala.function.CheckedFunction;
 import kala.function.CheckedPredicate;
@@ -19,7 +17,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collector;
 
 public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollection<E> {
 

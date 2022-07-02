@@ -6,7 +6,7 @@ apply {
 
 tasks.getByName<GenerateTask>("generateSources") {
     withPackage("kala.comparator.primitive") {
-        for (model in Primitives.values()) {
+        for (model in Primitives.all) {
             generate("${model["Type"]}Comparator", model, "PrimitiveComparator")
             generate("${model["Type"]}Comparators", model, "PrimitiveComparators")
         }
