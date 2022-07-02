@@ -537,10 +537,10 @@ public final class MutableArrayDeque<E> extends AbstractMutableIndexedList<E> im
     }
 
     @Override
-    public @NotNull Option<E> removeFirstOption() {
+    public E removeFirst() {
         final int oldSize = size();
         if (oldSize == 0) {
-            return Option.none();
+            throw new NoSuchElementException();
         }
 
         Object res = elements[begin];
@@ -552,14 +552,14 @@ public final class MutableArrayDeque<E> extends AbstractMutableIndexedList<E> im
         } else {
             begin = inc(begin, elements.length);
         }
-        return Option.some((E) res);
+        return (E) res;
     }
 
     @Override
-    public @NotNull Option<E> removeLastOption() {
+    public @NotNull E removeLast() {
         final int oldSize = size();
         if (oldSize == 0) {
-            return Option.none();
+            throw new NoSuchElementException();
         }
         final int lastIdx = dec(end, elements.length);
         Object res = elements[lastIdx];
@@ -571,7 +571,7 @@ public final class MutableArrayDeque<E> extends AbstractMutableIndexedList<E> im
         } else {
             end = lastIdx;
         }
-        return Option.some((E) res);
+        return (E) res;
     }
 
     @Override

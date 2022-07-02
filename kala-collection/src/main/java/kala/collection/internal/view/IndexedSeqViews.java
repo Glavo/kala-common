@@ -191,12 +191,19 @@ public final class IndexedSeqViews {
         }
 
         @Override
-        public final @NotNull Option<E> getOption(int index) {
-            if (n <= 0) {
-                return source.getOption(index);
-            }
+        public @Nullable E getOrNull(int index) {
+            if (n <= 0)
+                return source.getOrNull(index);
+            else
+                return source.getOrNull(index + n);
+        }
 
-            return source.getOption(index + n);
+        @Override
+        public final @NotNull Option<E> getOption(int index) {
+            if (n <= 0)
+                return source.getOption(index);
+            else
+                return source.getOption(index + n);
         }
 
         @Override
@@ -241,6 +248,13 @@ public final class IndexedSeqViews {
         }
 
         @Override
+        public @Nullable E getOrNull(int index) {
+            return index >= 0 && index < size()
+                    ? source.getOrNull(index)
+                    : null;
+        }
+
+        @Override
         public final @NotNull Option<E> getOption(int index) {
             return index >= 0 && index < size()
                     ? source.getOption(index)
@@ -279,6 +293,14 @@ public final class IndexedSeqViews {
                 return value;
             }
             return source.get(index);
+        }
+
+        @Override
+        public @Nullable E getOrNull(int index) {
+            if (index == source.size()) {
+                return value;
+            }
+            return source.getOrNull(index);
         }
 
         @Override

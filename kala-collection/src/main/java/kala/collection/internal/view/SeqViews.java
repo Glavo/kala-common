@@ -394,6 +394,14 @@ public final class SeqViews {
         }
 
         @Override
+        public @Nullable E getOrNull(int index) {
+            if (index == this.index) {
+                return newValue;
+            }
+            return source.getOrNull(index);
+        }
+
+        @Override
         public final @NotNull Option<E> getOption(int index) {
             if (index == this.index) {
                 return Option.some(newValue);
@@ -781,6 +789,14 @@ public final class SeqViews {
         }
 
         @Override
+        public @Nullable E getOrNull(int index) {
+            if (index < 0) {
+                return null;
+            }
+            return index == 0 ? value : source.getOrNull(index + 1);
+        }
+
+        @Override
         public final @NotNull Option<E> getOption(int index) {
             if (index < 0) {
                 return Option.none();
@@ -1058,6 +1074,11 @@ public final class SeqViews {
         @Override
         public final E get(int index) {
             return mapper.apply(index, source.get(index));
+        }
+
+        @Override
+        public @Nullable E getOrNull(int index) {
+            return getOption(index).getOrNull();
         }
 
         @Override
@@ -1442,6 +1463,11 @@ public final class SeqViews {
         @Override
         public final @NotNull Tuple2<E, U> get(int index) {
             return Tuple.of(source.get(index), other.get(index));
+        }
+
+        @Override
+        public @Nullable Tuple2<E, U> getOrNull(int index) {
+            return getOption(index).getOrNull();
         }
 
         @Override

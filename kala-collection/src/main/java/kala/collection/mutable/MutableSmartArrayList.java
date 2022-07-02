@@ -279,32 +279,6 @@ public final class MutableSmartArrayList<E> extends AbstractMutableIndexedList<E
     }
 
     @Override
-    public E getOrNull(int index) {
-        final int size = this.size;
-        if (index < 0 || index >= size) {
-            return null;
-        }
-        if (size == 1) {
-            return (E) elem;
-        } else {
-            return (E) ((Object[]) elem)[index];
-        }
-    }
-
-    @Override
-    public @NotNull Option<E> getOption(int index) {
-        final int size = this.size;
-        if (index < 0 || index >= size) {
-            return Option.none();
-        }
-        if (size == 1) {
-            return Option.some((E) elem);
-        } else {
-            return Option.some((E) ((Object[]) elem)[index]);
-        }
-    }
-
-    @Override
     public void set(int index, E newValue) {
         final int size = this.size;
         Conditions.checkElementIndex(index, size);

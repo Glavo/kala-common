@@ -462,13 +462,18 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
     //region Element Retrieval Operations
 
     @Override
-    public E first() {
-        return list.first();
+    public @NotNull Option<E> findFirst(@NotNull Predicate<? super E> predicate) {
+        return list.findFirst(predicate);
     }
 
     @Override
-    public E first(@NotNull Predicate<? super E> predicate) {
-        return list.first(predicate);
+    public @NotNull Option<E> findLast(@NotNull Predicate<? super E> predicate) {
+        return list.findLast(predicate);
+    }
+
+    @Override
+    public E first() {
+        return list.first();
     }
 
     @Override
@@ -477,18 +482,8 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
     }
 
     @Override
-    public @Nullable E firstOrNull(@NotNull Predicate<? super E> predicate) {
-        return list.firstOrNull(predicate);
-    }
-
-    @Override
     public @NotNull Option<E> firstOption() {
         return list.firstOption();
-    }
-
-    @Override
-    public @NotNull Option<E> firstOption(@NotNull Predicate<? super E> predicate) {
-        return list.firstOption(predicate);
     }
 
     @Override
@@ -497,28 +492,13 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
     }
 
     @Override
-    public E last(@NotNull Predicate<? super E> predicate) {
-        return list.last(predicate);
-    }
-
-    @Override
     public @Nullable E lastOrNull() {
         return list.lastOrNull();
     }
 
     @Override
-    public @Nullable E lastOrNull(@NotNull Predicate<? super E> predicate) {
-        return list.lastOrNull(predicate);
-    }
-
-    @Override
     public @NotNull Option<E> lastOption() {
         return list.lastOption();
-    }
-
-    @Override
-    public @NotNull Option<E> lastOption(@NotNull Predicate<? super E> predicate) {
-        return list.lastOption(predicate);
     }
 
     //endregion
@@ -1133,18 +1113,6 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
             final E tmp = node1.head;
             node1.head = node2.head;
             node2.head = tmp;
-        }
-
-        @Override
-        public final @NotNull Option<E> getOption(int index) {
-            if (index < 0 || index >= len) {
-                return Option.none();
-            }
-            if (index == len - 1) {
-                return Option.some(last.head);
-            }
-
-            return Option.some(first.get(index));
         }
 
         @Override

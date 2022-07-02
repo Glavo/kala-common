@@ -9,27 +9,27 @@ import org.jetbrains.annotations.Nullable;
 public abstract class AbstractSeq<E> extends AbstractCollection<E> implements Seq<E> {
 
     public E first() {
-        return firstOption().get();
+        return Seq.super.first();
     }
 
     public @Nullable E firstOrNull() {
-        return firstOption().getOrNull();
+        return Seq.super.firstOrNull();
     }
 
     public @NotNull Option<E> firstOption() {
-        return isNotEmpty() ? Option.some(iterator().next()) : Option.none();
+        return Seq.super.firstOption();
     }
 
     public E last() {
-        return lastOption().get();
+        return Seq.super.last();
     }
 
     public @Nullable E lastOrNull() {
-        return lastOption().getOrNull();
+        return Seq.super.lastOrNull();
     }
 
     public @NotNull Option<E> lastOption() {
-        return isNotEmpty() ? Option.some(reverseIterator().next()) : Option.none();
+        return Seq.super.lastOption();
     }
 
     @Override

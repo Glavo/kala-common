@@ -110,22 +110,6 @@ public interface IndexedSeqLike<E> extends SeqLike<E> {
     @Override
     E get(int index);
 
-    @Override
-    default @Nullable E getOrNull(int index) {
-        if (index < 0 || index >= size()) {
-            return null;
-        }
-        return get(index);
-    }
-
-    @Override
-    default @NotNull Option<E> getOption(int index) {
-        if (index < 0 || index >= size()) {
-            return Option.none();
-        }
-        return Option.some(get(index));
-    }
-
     //endregion
 
     //region Reversal Operations
@@ -154,6 +138,31 @@ public interface IndexedSeqLike<E> extends SeqLike<E> {
 
     //region Element Retrieval Operations
 
+
+    @Override
+    default @NotNull Option<E> findFirst(@NotNull Predicate<? super E> predicate) {
+        final int size = this.size();
+        for (int i = 0; i < size; i++) {
+            E e = get(i);
+            if (predicate.test(e)) {
+                return Option.some(e);
+            }
+        }
+        return Option.none();
+    }
+
+    @Override
+    default @NotNull Option<E> findLast(@NotNull Predicate<? super E> predicate) {
+        final int size = this.size();
+        for (int i = size - 1; i >= 0; i--) {
+            E e = get(i);
+            if (predicate.test(e)) {
+                return Option.some(e);
+            }
+        }
+        return Option.none();
+    }
+
     @Override
     default E first() {
         if (isEmpty()) {
@@ -163,104 +172,12 @@ public interface IndexedSeqLike<E> extends SeqLike<E> {
     }
 
     @Override
-    default E first(@NotNull Predicate<? super E> predicate) {
-        final int size = this.size();
-        for (int i = 0; i < size; i++) {
-            E e = get(i);
-            if (predicate.test(e)) {
-                return e;
-            }
-        }
-        throw new NoSuchElementException();
-    }
-
-    @Override
-    default @Nullable E firstOrNull() {
-        return isEmpty() ? null : first();
-    }
-
-    @Override
-    default @Nullable E firstOrNull(@NotNull Predicate<? super E> predicate) {
-        final int size = this.size();
-        for (int i = 0; i < size; i++) {
-            E e = get(i);
-            if (predicate.test(e)) {
-                return e;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    default @NotNull Option<E> firstOption() {
-        return isEmpty() ? Option.none() : Option.some(first());
-    }
-
-    @Override
-    default @NotNull Option<E> firstOption(@NotNull Predicate<? super E> predicate) {
-        final int size = this.size();
-        for (int i = 0; i < size; i++) {
-            E e = get(i);
-            if (predicate.test(e)) {
-                return Option.some(e);
-            }
-        }
-        return Option.none();
-    }
-
-    @Override
     default E last() {
         final int size = size();
         if (size == 0) {
             throw new NoSuchElementException();
         }
         return get(size - 1);
-    }
-
-    @Override
-    default E last(@NotNull Predicate<? super E> predicate) {
-        final int size = this.size();
-        for (int i = size - 1; i >= 0; i--) {
-            E e = get(i);
-            if (predicate.test(e)) {
-                return e;
-            }
-        }
-        throw new NoSuchElementException();
-    }
-
-    @Override
-    default @Nullable E lastOrNull() {
-        return isEmpty() ? null : last();
-    }
-
-    @Override
-    default @Nullable E lastOrNull(@NotNull Predicate<? super E> predicate) {
-        final int size = this.size();
-        for (int i = size - 1; i >= 0; i--) {
-            E e = get(i);
-            if (predicate.test(e)) {
-                return e;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    default @NotNull Option<E> lastOption() {
-        return isEmpty() ? Option.none() : Option.some(last());
-    }
-
-    @Override
-    default @NotNull Option<E> lastOption(@NotNull Predicate<? super E> predicate) {
-        final int size = this.size();
-        for (int i = size - 1; i >= 0; i--) {
-            E e = get(i);
-            if (predicate.test(e)) {
-                return Option.some(e);
-            }
-        }
-        return Option.none();
     }
 
     //endregion

@@ -1,6 +1,8 @@
 package kala.collection;
 
 import kala.Conditions;
+import kala.annotations.DelegateBy;
+import kala.annotations.ReplaceWith;
 import kala.collection.base.GenericArrays;
 import kala.collection.base.Growable;
 import kala.collection.base.Iterators;
@@ -91,33 +93,30 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E> {
     @Contract(pure = true)
     @Flow(sourceIsContainer = true)
     default E get(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
-        return getOption(index).getOrThrow(IndexOutOfBoundsException::new);
-    }
-
-    @Contract(pure = true)
-    default @Nullable E getOrNull(int index) {
-        return getOption(index).getOrNull();
-    }
-
-    @Contract(pure = true)
-    @Flow(sourceIsContainer = true, targetIsContainer = true)
-    default @NotNull Option<E> getOption(int index) {
-        if (index < 0) {
-            return Option.none();
-        }
-
-        int s = knownSize();
-        if (s >= 0 && index >= s) {
-            return Option.none();
-        }
+        if (index < 0)
+            throw new IndexOutOfBoundsException();
 
         int i = index;
         for (E e : this) {
             if (i-- == 0) {
-                return Option.some(e);
+                return e;
             }
         }
-        return Option.none();
+
+        throw new IndexOutOfBoundsException();
+    }
+
+    @Contract(pure = true)
+    @DelegateBy("get(int)")
+    default @Nullable E getOrNull(int index) {
+        return isDefinedAt(index) ? get(index) : null;
+    }
+
+    @Contract(pure = true)
+    @Flow(sourceIsContainer = true, targetIsContainer = true)
+    @DelegateBy("get(int)")
+    default @NotNull Option<E> getOption(int index) {
+        return isDefinedAt(index) ? Option.some(get(index)) : Option.none();
     }
 
     //endregion
@@ -151,76 +150,73 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E> {
 
     @Override
     default @NotNull Option<E> find(@NotNull Predicate<? super E> predicate) {
-        return firstOption(predicate);
+        return findFirst(predicate);
     }
 
     default @NotNull Option<E> findFirst(@NotNull Predicate<? super E> predicate) {
-        return firstOption(predicate);
-    }
-
-    default @NotNull Option<E> findLast(@NotNull Predicate<? super E> predicate) {
-        return lastOption(predicate);
-    }
-
-    default E first() {
-        return firstOption().get();
-    }
-
-    default E first(@NotNull Predicate<? super E> predicate) {
-        return firstOption(predicate).get();
-    }
-
-    default @Nullable E firstOrNull() {
-        return firstOption().getOrNull();
-    }
-
-    default @Nullable E firstOrNull(@NotNull Predicate<? super E> predicate) {
-        return firstOption(predicate).getOrNull();
-    }
-
-    default @NotNull Option<E> firstOption() {
-        if (knownSize() == 0) {
-            return Option.none();
-        }
-        Iterator<E> it = this.iterator();
-        return it.hasNext() ? Option.some(it.next()) : Option.none();
-    }
-
-    default @NotNull Option<E> firstOption(@NotNull Predicate<? super E> predicate) {
-        if (knownSize() == 0) {
-            return Option.none();
-        }
         return Iterators.firstOption(iterator(), predicate);
     }
 
-    default E last() {
-        return lastOption().get();
-    }
-
-    default E last(@NotNull Predicate<? super E> predicate) {
-        return lastOption(predicate).get();
-    }
-
-    default @Nullable E lastOrNull() {
-        return lastOption().getOrNull();
-    }
-
-    default @Nullable E lastOrNull(@NotNull Predicate<? super E> predicate) {
-        return lastOption(predicate).getOrNull();
-    }
-
-    default @NotNull Option<E> lastOption() {
-        if (knownSize() == 0) {
-            return Option.none();
-        }
-        return Iterators.firstOption(reverseIterator());
-    }
-
-    default @NotNull Option<E> lastOption(@NotNull Predicate<? super E> predicate) {
-        if (knownSize() == 0) {
-            return Option.none();
-        }
+    default @NotNull Option<E> findLast(@NotNull Predicate<? super E> predicate) {
         return Iterators.firstOption(reverseIterator(), predicate);
+    }
+
+    default E first() {
+        return this.iterator().next();
+    }
+
+    @DelegateBy("first()")
+    default @Nullable E firstOrNull() {
+        return isNotEmpty() ? first() : null;
+    }
+
+    @DelegateBy("first()")
+    default @NotNull Option<E> firstOption() {
+        return isNotEmpty() ? Option.some(first()) : Option.none();
+    }
+
+    default E last() {
+        return reverseIterator().next();
+    }
+
+    @DelegateBy("last()")
+    default @Nullable E lastOrNull() {
+        return isNotEmpty() ? last() : null;
+    }
+
+    @DelegateBy("last()")
+    default @NotNull Option<E> lastOption() {
+        return isNotEmpty() ? Option.some(last()) : Option.none();
+    }
+
+    @DelegateBy("findFirst(Predicate<E>)")
+    default E first(@NotNull Predicate<? super E> predicate) {
+        return findFirst(predicate).get();
+    }
+
+    @DelegateBy("findFirst(Predicate<E>)")
+    default @Nullable E firstOrNull(@NotNull Predicate<? super E> predicate) {
+        return findFirst(predicate).getOrNull();
+    }
+
+    @DelegateBy("findFirst(Predicate<E>)")
+    default @NotNull Option<E> firstOption(@NotNull Predicate<? super E> predicate) {
+        return findFirst(predicate);
+    }
+
+    @DelegateBy("findLast(Predicate<E>)")
+    default E last(@NotNull Predicate<? super E> predicate) {
+        return findLast(predicate).get();
+    }
+
+    @DelegateBy("findLast(Predicate<E>)")
+    default @Nullable E lastOrNull(@NotNull Predicate<? super E> predicate) {
+        return findLast(predicate).getOrNull();
+    }
+
+    @DelegateBy("findLast(Predicate<E>)")
+    default @NotNull Option<E> lastOption(@NotNull Predicate<? super E> predicate) {
+        return findLast(predicate);
     }
 
     //endregion
