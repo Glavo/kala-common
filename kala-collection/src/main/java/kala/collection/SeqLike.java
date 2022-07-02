@@ -93,7 +93,10 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E> {
     @Contract(pure = true)
     @Flow(sourceIsContainer = true)
     default E get(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
-        return iterator(index).next();
+        Iterator<E> it = iterator(index);
+        if (!it.hasNext()) throw new IndexOutOfBoundsException();
+
+        return it.next();
     }
 
     @Contract(pure = true)
