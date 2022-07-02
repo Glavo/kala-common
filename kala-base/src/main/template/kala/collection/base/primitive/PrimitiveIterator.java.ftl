@@ -658,7 +658,84 @@ public interface ${Type}Iterator extends PrimitiveIterator<${WrapperType}, ${Typ
         return hasNext() ? ${Type}Option.some(min()) : ${Type}Option.none();
     }
 
+    default ${PrimitiveType} fold(${PrimitiveType} zero, @NotNull ${Type}BinaryOperator op) {
+        return foldLeft(zero, op);
+    }
 
+    default ${PrimitiveType} foldLeft(${PrimitiveType} zero, @NotNull ${Type}BinaryOperator op) {
+        while (hasNext()) {
+            zero = op.applyAs${Type}(zero, this.next${Type}());
+        }
+        return zero;
+    }
+
+    default ${PrimitiveType} foldRight(${PrimitiveType} zero, @NotNull ${Type}BinaryOperator op) {
+        if (!hasNext()) {
+            return zero;
+        }
+        Internal${Type}ArrayBuilder builder = new Internal${Type}ArrayBuilder();
+        while (hasNext()) {
+            builder.append(next${Type}());
+        }
+        for (int i = builder.size() - 1; i >= 0; i--) {
+            zero = op.applyAs${Type}(builder.get(i), zero);
+        }
+        return zero;
+    }
+
+    default ${PrimitiveType} reduce(@NotNull ${Type}BinaryOperator op) {
+        return reduceLeft(op);
+    }
+
+    default @Nullable ${WrapperType} reduceOrNull(@NotNull ${Type}BinaryOperator op) {
+        return reduceLeftOrNull(op);
+    }
+
+    default @NotNull ${Type}Option reduceOption(@NotNull ${Type}BinaryOperator op) {
+        return reduceLeftOption(op);
+    }
+
+    default ${PrimitiveType} reduceLeft(@NotNull ${Type}BinaryOperator op) {
+        ${PrimitiveType} e = next${Type}();
+        while (hasNext()) {
+            e = op.applyAs${Type}(e, next${Type}());
+        }
+        return e;
+    }
+
+    default @Nullable ${WrapperType} reduceLeftOrNull(@NotNull ${Type}BinaryOperator op) {
+        return hasNext() ? reduceLeft(op) : null;
+    }
+
+    default @NotNull ${Type}Option reduceLeftOption(@NotNull ${Type}BinaryOperator op) {
+        return hasNext() ? ${Type}Option.some(reduceLeft(op)) : ${Type}Option.none();
+    }
+
+    default ${PrimitiveType} reduceRight(@NotNull ${Type}BinaryOperator op) {
+        if (!hasNext()) {
+            throw new NoSuchElementException();
+        }
+        Internal${Type}ArrayBuilder list = new Internal${Type}ArrayBuilder();
+        list.append(next${Type}());
+        while (hasNext()) {
+            list.append(next${Type}());
+        }
+        final int size = list.size();
+        ${PrimitiveType} e = list.get(size - 1);
+
+        for (int i = size - 2; i >= 0; i--) {
+            e = op.applyAs${Type}(list.get(i), e);
+        }
+        return e;
+    }
+
+    default @Nullable ${WrapperType} reduceRightOrNull(@NotNull ${Type}BinaryOperator op) {
+        return hasNext() ? reduceRight(op) : null;
+    }
+
+    default @NotNull ${Type}Option reduceRightOption(@NotNull ${Type}BinaryOperator op) {
+        return hasNext() ? ${Type}Option.some(reduceRight(op)) : ${Type}Option.none();
+    }
 
     //endregion
 

@@ -29,6 +29,14 @@ public final class Internal${Type}ArrayBuilder {
         elements = newArray;
     }
 
+    public int size() {
+        return size;
+    }
+
+    public ${PrimitiveType} get(int idx) {
+        return elements[idx];
+    }
+
     public void append(${PrimitiveType} value) {
         if (size == elements.length) {
             grow();

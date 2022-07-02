@@ -183,7 +183,6 @@ public interface ${Type}Traversable extends PrimitiveTraversable<${WrapperType}>
 
     //endregion
 
-
     @Contract(value = "_, _ -> param1", mutates = "param1")
     default <G extends ${Type}Growable> @NotNull G filterTo(@NotNull G destination, @NotNull ${Type}Predicate predicate) {
         return iterator().filterTo(destination, predicate);
