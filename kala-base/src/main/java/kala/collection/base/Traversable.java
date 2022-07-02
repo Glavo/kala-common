@@ -8,10 +8,9 @@ import kala.concurrent.ConcurrentScope;
 import kala.concurrent.LateInitCountDownLatch;
 import kala.control.Option;
 import kala.collection.factory.CollectionFactory;
-import kala.function.CheckedBiConsumer;
 import kala.function.CheckedBiFunction;
 import kala.function.CheckedConsumer;
-import kala.internal.BreakHole;
+import kala.function.CheckedPredicate;
 import kala.value.primitive.IntRef;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
@@ -705,12 +704,10 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
     }
 
     @UnstableName
-    default void forEachBreakable(@NotNull BiConsumer<? super T, ? super @NotNull Runnable> action) {
+    default void forEachBreakable(@NotNull Predicate<? super T> action) {
         Objects.requireNonNull(action);
-        BreakHole hole = new BreakHole();
         for (T t : this) {
-            action.accept(t, hole);
-            if (hole.isBroken) {
+            if (!action.test(t)) {
                 break;
             }
         }
@@ -718,12 +715,12 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
 
     @UnstableName
     default <Ex extends Throwable> void forEachBreakableChecked(
-            @NotNull CheckedBiConsumer<? super T, ? super @NotNull Runnable, ? extends Ex> action) throws Ex {
+            @NotNull CheckedPredicate<? super T, ? extends Ex> action) throws Ex {
         forEachBreakable(action);
     }
 
     @UnstableName
-    default void forEachBreakableUnchecked(@NotNull CheckedBiConsumer<? super T, ? super @NotNull Runnable, ?> action) {
+    default void forEachBreakableUnchecked(@NotNull CheckedPredicate<? super T, ?> action) {
         forEachBreakable(action);
     }
 
