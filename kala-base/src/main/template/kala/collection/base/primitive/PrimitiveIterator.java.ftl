@@ -4,6 +4,7 @@ import kala.annotations.ReplaceWith;
 import kala.collection.base.Growable;
 import kala.collection.base.Iterators;
 import kala.control.primitive.${Type}Option;
+import kala.function.*;
 import kala.internal.*;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
@@ -18,9 +19,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.*;
-<#if !IsSpecialized>
-import kala.function.*;
-</#if>
 
 public interface ${Type}Iterator extends PrimitiveIterator<${WrapperType}, ${Type}Consumer><#if IsSpecialized>, java.util.PrimitiveIterator.Of${Type}</#if> {
 
@@ -669,6 +667,13 @@ public interface ${Type}Iterator extends PrimitiveIterator<${WrapperType}, ${Typ
         return zero;
     }
 
+    default <U> U foldLeftToObj(U zero, @NotNull Obj${Type}BiFunction<U, U> op) {
+        while (hasNext()) {
+            zero = op.apply(zero, this.next${Type}());
+        }
+        return zero;
+    }
+
     default ${PrimitiveType} foldRight(${PrimitiveType} zero, @NotNull ${Type}BinaryOperator op) {
         if (!hasNext()) {
             return zero;
@@ -679,6 +684,20 @@ public interface ${Type}Iterator extends PrimitiveIterator<${WrapperType}, ${Typ
         }
         for (int i = builder.size() - 1; i >= 0; i--) {
             zero = op.applyAs${Type}(builder.get(i), zero);
+        }
+        return zero;
+    }
+
+    default <U> U foldRightToObj(U zero, @NotNull ${Type}ObjBiFunction<U, U> op) {
+        if (!hasNext()) {
+            return zero;
+        }
+        Internal${Type}ArrayBuilder builder = new Internal${Type}ArrayBuilder();
+        while (hasNext()) {
+            builder.append(next${Type}());
+        }
+        for (int i = builder.size() - 1; i >= 0; i--) {
+            zero = op.apply(builder.get(i), zero);
         }
         return zero;
     }

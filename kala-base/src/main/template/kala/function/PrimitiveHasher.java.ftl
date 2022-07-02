@@ -60,6 +60,7 @@ public interface ${Type}Hasher extends Hasher<${WrapperType}> {
         }
     }
 <#if IsFloating>
+
     final class RawBits implements ${Type}Hasher, Serializable {
         private static final long serialVersionUID = 0L;
 

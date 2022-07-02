@@ -71,6 +71,8 @@ tasks.getByName<GenerateTask>("generateSources") {
             generate("Checked${type}Consumer", model, "CheckedPrimitiveConsumer")
             generate("Checked${type}Supplier", model, "CheckedPrimitiveSupplier")
             generate("${type}Hasher", model, "PrimitiveHasher")
+            generate("Obj${type}BiFunction", model, "ObjPrimitiveBiFunction")
+            generate("${type}ObjBiFunction", model, "PrimitiveObjBiFunction")
 
             if (!model.isSpecialized) {
                 if (model != Primitives.Boolean)
