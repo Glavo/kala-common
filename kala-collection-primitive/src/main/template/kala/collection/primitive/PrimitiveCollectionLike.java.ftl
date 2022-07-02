@@ -1,5 +1,6 @@
 package kala.collection.primitive;
 
+import kala.collection.CollectionLike;
 import kala.function.*;
 import kala.collection.base.primitive.${Type}Traversable;
 import org.jetbrains.annotations.Contract;
@@ -22,6 +23,10 @@ public interface ${Type}CollectionLike extends PrimitiveCollectionLike<${Wrapper
     }
 
     default @NotNull ${Type}CollectionLike map(@NotNull ${Type}UnaryOperator mapper) {
+        throw new UnsupportedOperationException();
+    }
+
+    default <U> @NotNull CollectionLike<U> mapToObj(@NotNull ${Type}Function<? extends U> mapper) {
         throw new UnsupportedOperationException();
     }
 

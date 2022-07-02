@@ -19,11 +19,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollection<E> {
-
-    int SEQ_HASH_MAGIC = -1140647423;
-
-    int SET_HASH_MAGIC = 1045751549;
-
     //region Static Factories
 
     @SuppressWarnings("unchecked")

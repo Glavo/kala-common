@@ -11,6 +11,7 @@ tasks.getByName<GenerateTask>("generateSources") {
     withPackage("kala.collection.primitive") {
         for (model in Primitives.all) {
             generate("${model["Type"]}CollectionLike", model, "PrimitiveCollectionLike")
+            generate("${model["Type"]}Collection", model, "PrimitiveCollection")
         }
     }
 }
