@@ -2,6 +2,8 @@ package kala.collection.factory;
 
 import kala.annotations.Covariant;
 import kala.collection.base.AnyTraversable;
+import kala.collection.base.Traversable;
+import kala.collection.base.primitive.PrimitiveTraversable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -113,6 +115,14 @@ public interface CollectionFactory<E, Builder, @Covariant R>
         if (ks >= 0) {
             this.sizeHint(builder, ks + delta);
         }
+    }
+
+    default void sizeHint(@NotNull Builder builder, @NotNull Traversable<?> it) {
+        this.sizeHint(builder, it, 0);
+    }
+
+    default void sizeHint(@NotNull Builder builder, @NotNull Traversable<?> it, int delta) {
+        this.sizeHint(builder, (AnyTraversable<?>) it, delta);
     }
 
     default R empty() {

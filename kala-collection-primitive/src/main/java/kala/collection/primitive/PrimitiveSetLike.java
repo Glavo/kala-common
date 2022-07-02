@@ -2,5 +2,5 @@ package kala.collection.primitive;
 
 import kala.collection.AnyCollectionLike;
 
-public interface PrimitiveCollectionLike<E> extends AnyCollectionLike<E> {
+public interface PrimitiveSetLike<E> extends AnyCollectionLike<E> {
 }

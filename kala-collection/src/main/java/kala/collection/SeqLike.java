@@ -78,10 +78,6 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E> {
 
     //region Positional Access Operations
 
-    default boolean supportsFastRandomAccess() {
-        return this instanceof RandomAccess;
-    }
-
     @Contract(pure = true)
     default boolean isDefinedAt(int index) {
         return index >= 0 && sizeGreaterThan(index);
