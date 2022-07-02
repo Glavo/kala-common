@@ -4,6 +4,7 @@ import kala.collection.base.Growable;
 import kala.control.primitive.${Type}Option;
 import kala.function.*;
 
+import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Contract;
@@ -238,6 +239,83 @@ public interface ${Type}Traversable extends PrimitiveTraversable<${WrapperType}>
     @Override
     default @NotNull ${Type}Option minOption() {
         return knownSize() == 0 ? ${Type}Option.none() : iterator().minOption();
+    }
+
+    //endregion
+
+    //region Copy Operations
+
+    @Contract(mutates = "param1")
+    @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
+    default int copyToArray(${PrimitiveType} @NotNull [] dest) {
+        return copyToArray(0, dest, 0, Integer.MAX_VALUE);
+    }
+
+    @Contract(mutates = "param1")
+    @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
+    default int copyToArray(${PrimitiveType} @NotNull [] dest, int destPos) {
+        return copyToArray(0, dest, destPos, Integer.MAX_VALUE);
+    }
+
+    @Contract(mutates = "param1")
+    @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
+    default int copyToArray(${PrimitiveType} @NotNull [] dest, int destPos, int limit) {
+        return copyToArray(0, dest, destPos, limit);
+    }
+
+    @Contract(mutates = "param2")
+    @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
+    default int copyToArray(int srcPos, ${PrimitiveType} @NotNull [] dest) {
+        return copyToArray(srcPos, dest, 0, Integer.MAX_VALUE);
+    }
+
+    @Contract(mutates = "param2")
+    @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
+    default int copyToArray(int srcPos, ${PrimitiveType} @NotNull [] dest, int destPos) {
+        return copyToArray(srcPos, dest, destPos, Integer.MAX_VALUE);
+    }
+
+    @Contract(mutates = "param2")
+    @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
+    default int copyToArray(int srcPos, ${PrimitiveType} @NotNull [] dest, int destPos, int limit) {
+        if (srcPos < 0) {
+            throw new IllegalArgumentException("srcPos(" + srcPos + ") < 0");
+        }
+        if (destPos < 0) {
+            throw new IllegalArgumentException("destPos(" + destPos + ") < 0");
+        }
+
+        if (limit <= 0) {
+            return 0;
+        }
+
+        final int dl = dest.length; //implicit null check of dest
+        if (destPos > dl) {
+            return 0;
+        }
+
+        final int kn = this.knownSize();
+        if (kn >= 0 && srcPos >= kn) {
+            return 0;
+        }
+
+        int end = Math.min(dl - destPos, limit) + destPos;
+
+        int n = 0;
+        ${Type}Iterator it = this.iterator();
+        while (n++ < srcPos) {
+            if (it.hasNext()) {
+                it.next${Type}();
+            } else {
+                return 0;
+            }
+        }
+
+        int idx = destPos;
+        while (it.hasNext() && idx < end) {
+            dest[idx++] = it.next${Type}();
+        }
+        return idx - destPos;
     }
 
     //endregion
