@@ -49,6 +49,7 @@ public interface CheckedConsumer<T, Ex extends Throwable> extends Consumer<T> {
         }
     }
 
+    @Deprecated
     default @NotNull Try<Void> tryAccept(T t) {
         try {
             acceptChecked(t);

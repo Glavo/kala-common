@@ -28,10 +28,4 @@ public interface Checked${Type}Supplier<Ex extends Throwable> extends ${Type}Sup
 
         throw new AssertionError();
     }
-
-    /*
-    default @NotNull ${Type}Try tryGetAs${Type}() {
-        return ${Type}Try.of(this);
-    }
-    */
 }

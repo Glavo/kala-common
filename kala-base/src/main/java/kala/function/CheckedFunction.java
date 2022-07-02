@@ -41,6 +41,7 @@ public interface CheckedFunction<T, R, Ex extends Throwable> extends Function<T,
         }
     }
 
+    @Deprecated
     default @NotNull Try<R> tryApply(T t) {
         try {
             return Try.success(applyChecked(t));

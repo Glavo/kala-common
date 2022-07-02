@@ -27,6 +27,7 @@ public interface CheckedBiFunction<T, U, R, Ex extends Throwable> extends BiFunc
         }
     }
 
+    @Deprecated
     default @NotNull Try<R> tryApply(T t, U u) {
         try {
             return Try.success(applyChecked(t, u));

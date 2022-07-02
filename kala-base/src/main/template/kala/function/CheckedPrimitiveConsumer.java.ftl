@@ -28,6 +28,7 @@ public interface Checked${Type}Consumer<Ex extends Throwable> extends ${Type}Con
         }
     }
 
+    @Deprecated
     default @NotNull Try<Void> tryAccept(${PrimitiveType} value) {
         try {
             acceptChecked(value);

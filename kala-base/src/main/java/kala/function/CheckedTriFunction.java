@@ -25,6 +25,7 @@ public interface CheckedTriFunction<T, U, V, R, Ex extends Throwable> extends Tr
         }
     }
 
+    @Deprecated
     default @NotNull Try<R> tryApply(T t, U u, V v) {
         try {
             return Try.success(applyChecked(t, u, v));

@@ -27,6 +27,7 @@ public interface CheckedPredicate<T, Ex extends Throwable> extends Predicate<T> 
         }
     }
 
+    @Deprecated
     default @NotNull Try<Boolean> tryTest(T t) {
         try {
             return Try.success(testChecked(t));

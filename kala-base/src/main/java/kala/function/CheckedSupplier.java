@@ -37,6 +37,7 @@ public interface CheckedSupplier<T, Ex extends Throwable> extends Supplier<T> {
         }
     }
 
+    @Deprecated
     default @NotNull Try<T> tryGet() {
         try {
             return Try.success(getChecked());

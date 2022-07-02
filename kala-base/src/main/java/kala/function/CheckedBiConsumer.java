@@ -26,6 +26,7 @@ public interface CheckedBiConsumer<T, U, Ex extends Throwable> extends BiConsume
         }
     }
 
+    @Deprecated
     default @NotNull Try<Void> tryAccept(T t, U u) {
         try {
             acceptChecked(t, u);

@@ -24,6 +24,7 @@ public interface CheckedIndexedConsumer<T, Ex extends Throwable> extends Indexed
         }
     }
 
+    @Deprecated
     default @NotNull Try<Void> tryAccept(int index, T t) {
         try {
             acceptChecked(index, t);

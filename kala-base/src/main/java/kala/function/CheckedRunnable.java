@@ -17,6 +17,7 @@ public interface CheckedRunnable<Ex extends Throwable> extends Runnable {
         }
     }
 
+    @Deprecated
     default @NotNull Try<Void> tryRun() {
         try {
             runChecked();

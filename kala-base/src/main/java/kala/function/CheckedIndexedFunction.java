@@ -25,6 +25,7 @@ public interface CheckedIndexedFunction<T, R, Ex extends Throwable> extends Inde
         }
     }
 
+    @Deprecated
     default @NotNull Try<R> tryApply(int index, T t) {
         try {
             return Try.success(applyChecked(index, t));
