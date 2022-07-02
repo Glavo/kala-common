@@ -13,7 +13,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 @SuppressWarnings("unchecked")
-public interface View<@Covariant E> extends CollectionLike<E> {
+public interface View<@Covariant E> extends CollectionLike<E>, AnyView<E> {
 
     @SuppressWarnings("unchecked")
     static <E> @NotNull View<E> empty() {
