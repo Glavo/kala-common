@@ -820,4 +820,13 @@ public interface ${Type}Iterator extends PrimitiveIterator<${WrapperType}, ${Typ
     }
 
     //endregion
+
+    @Override
+    default int hash() {
+        int res = 0;
+        while (hasNext()) {
+            res = res * 31 + ${WrapperType}.hashCode(next${Type}());
+        }
+        return res;
+    }
 }

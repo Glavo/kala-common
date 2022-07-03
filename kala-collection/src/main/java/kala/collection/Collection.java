@@ -36,6 +36,7 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
 
     //region Collection Operations
 
+    @Override
     default @NotNull String className() {
         return "Collection";
     }
@@ -44,6 +45,7 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
         return factory();
     }
 
+    @Override
     default @NotNull View<E> view() {
         return knownSize() == 0 ? View.empty() : new Views.Of<>(this);
     }
@@ -54,6 +56,7 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
 
     //endregion
 
+    @Override
     @Contract(pure = true)
     default @NotNull ImmutableCollection<E> filter(@NotNull Predicate<? super E> predicate) {
         return view().filter(predicate).toImmutableSeq();
@@ -71,6 +74,7 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
         return filter(predicate);
     }
 
+    @Override
     @Contract(pure = true)
     default @NotNull ImmutableCollection<E> filterNot(@NotNull Predicate<? super E> predicate) {
         return view().filterNot(predicate).toImmutableSeq();
@@ -87,6 +91,8 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
             @NotNull CheckedPredicate<? super E, ?> predicate) {
         return filterNot(predicate);
     }
+
+    @Override
     @Contract(pure = true)
     default @NotNull ImmutableCollection<@NotNull E> filterNotNull() {
         return view().filterNotNull().toImmutableSeq();

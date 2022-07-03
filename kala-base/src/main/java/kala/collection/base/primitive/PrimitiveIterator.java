@@ -1,6 +1,7 @@
 package kala.collection.base.primitive;
 
 import kala.annotations.ReplaceWith;
+import kala.collection.base.Iterators;
 import kala.control.AnyOption;
 import kala.control.primitive.CharOption;
 import kala.tuple.Tuple2;
@@ -154,4 +155,8 @@ public interface PrimitiveIterator<T, T_CONSUMER> extends java.util.PrimitiveIte
     }
 
     //endregion
+
+    default int hash() {
+        return Iterators.hash(this);
+    }
 }
