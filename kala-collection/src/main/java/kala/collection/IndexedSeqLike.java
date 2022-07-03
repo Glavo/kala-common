@@ -509,7 +509,6 @@ public interface IndexedSeqLike<E> extends SeqLike<E> {
     @Override
     default int count(@NotNull Predicate<? super E> predicate) {
         final int size = size();
-
         int c = 0;
         for (int i = 0; i < size; i++) {
             if (predicate.test(get(i))) {
@@ -549,14 +548,6 @@ public interface IndexedSeqLike<E> extends SeqLike<E> {
     }
 
     @Override
-    default @NotNull Option<E> maxOption(Comparator<? super E> comparator) {
-        if (isEmpty()) {
-            return Option.none();
-        }
-        return Option.some(max(comparator));
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
     default E min(Comparator<? super E> comparator) {
         final int size = size();
@@ -582,14 +573,6 @@ public interface IndexedSeqLike<E> extends SeqLike<E> {
             }
         }
         return res;
-    }
-
-    @Override
-    default @NotNull Option<E> minOption(Comparator<? super E> comparator) {
-        if (isEmpty()) {
-            return Option.none();
-        }
-        return Option.some(min(comparator));
     }
 
     @Override
@@ -660,66 +643,6 @@ public interface IndexedSeqLike<E> extends SeqLike<E> {
             e = op.apply(get(i), e);
         }
         return e;
-    }
-
-    @Override
-    default @Nullable E reduceLeftOrNull(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-        final int size = size();
-
-        if (size == 0) {
-            return null;
-        }
-
-        E e = get(0);
-        for (int i = 1; i < size; i++) {
-            e = op.apply(e, get(i));
-        }
-        return e;
-    }
-
-    @Override
-    default @Nullable E reduceRightOrNull(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-        final int size = size();
-
-        if (size == 0) {
-            return null;
-        }
-
-        E e = get(size - 1);
-        for (int i = size - 2; i >= 0; i--) {
-            e = op.apply(get(i), e);
-        }
-        return e;
-    }
-
-    @Override
-    default @NotNull Option<E> reduceLeftOption(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-        final int size = size();
-
-        if (size == 0) {
-            return Option.none();
-        }
-
-        E e = get(0);
-        for (int i = 1; i < size; i++) {
-            e = op.apply(e, get(i));
-        }
-        return Option.some(e);
-    }
-
-    @Override
-    default @NotNull Option<E> reduceRightOption(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-        final int size = size();
-
-        if (size == 0) {
-            return Option.none();
-        }
-
-        E e = get(size - 1);
-        for (int i = size - 2; i >= 0; i--) {
-            e = op.apply(get(i), e);
-        }
-        return Option.some(e);
     }
 
     //endregion

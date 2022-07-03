@@ -14,24 +14,17 @@ public interface ${Type}CollectionLike extends PrimitiveCollectionLike<${Wrapper
         return "${Type}CollectionLike";
     }
 
-    default @NotNull ${Type}CollectionLike filter(@NotNull ${Type}Predicate predicate) {
-        throw new UnsupportedOperationException();
-    }
+    @Override
+    @NotNull ${Type}CollectionView view();
 
-    default @NotNull ${Type}CollectionLike filterNot(@NotNull ${Type}Predicate predicate) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull ${Type}CollectionLike filter(@NotNull ${Type}Predicate predicate);
 
-    default @NotNull ${Type}CollectionLike map(@NotNull ${Type}UnaryOperator mapper) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull ${Type}CollectionLike filterNot(@NotNull ${Type}Predicate predicate);
 
-    default <U> @NotNull CollectionLike<U> mapToObj(@NotNull ${Type}Function<? extends U> mapper) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull ${Type}CollectionLike map(@NotNull ${Type}UnaryOperator mapper);
+
+    <U> @NotNull CollectionLike<U> mapToObj(@NotNull ${Type}Function<? extends U> mapper);
 
     @Contract(pure = true)
-    default @NotNull ${Type}CollectionLike flatMap(@NotNull ${Type}Function<? extends ${Type}Traversable> mapper) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull ${Type}CollectionLike flatMap(@NotNull ${Type}Function<? extends ${Type}Traversable> mapper);
 }

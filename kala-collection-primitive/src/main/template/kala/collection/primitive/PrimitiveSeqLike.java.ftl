@@ -23,6 +23,9 @@ public interface ${Type}SeqLike extends PrimitiveSeqLike<${WrapperType}>, ${Type
         return "${Type}SeqLike";
     }
 
+    @Override
+    @NotNull ${Type}SeqView view();
+
     default @NotNull ${Type}Iterator iterator(int beginIndex) {
         if (beginIndex < 0) {
             throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") < 0");
@@ -289,116 +292,72 @@ public interface ${Type}SeqLike extends PrimitiveSeqLike<${WrapperType}>, ${Type
     //endregion
 
     @Contract(pure = true)
-    default @NotNull ${Type}SeqLike slice(int beginIndex, int endIndex) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull ${Type}SeqLike slice(int beginIndex, int endIndex);
 
     @Contract(pure = true)
-    default @NotNull ${Type}SeqLike drop(int n) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull ${Type}SeqLike drop(int n);
 
     @Contract(pure = true)
-    default @NotNull ${Type}SeqLike dropLast(int n) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull ${Type}SeqLike dropLast(int n);
 
     @Contract(pure = true)
-    default @NotNull ${Type}SeqLike dropWhile(@NotNull ${Type}Predicate predicate) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull ${Type}SeqLike dropWhile(@NotNull ${Type}Predicate predicate);
 
     @Contract(pure = true)
-    default @NotNull ${Type}SeqLike take(int n) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull ${Type}SeqLike take(int n);
 
-    default @NotNull ${Type}SeqLike takeLast(int n) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull ${Type}SeqLike takeLast(int n);
 
     @Contract(pure = true)
-    default @NotNull ${Type}SeqLike takeWhile(@NotNull ${Type}Predicate predicate) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull ${Type}SeqLike takeWhile(@NotNull ${Type}Predicate predicate);
 
     @Contract(pure = true)
-    default @NotNull ${Type}SeqLike updated(int index, ${PrimitiveType} newValue) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull ${Type}SeqLike updated(int index, ${PrimitiveType} newValue);
 
     @Contract(pure = true)
-    default @NotNull ${Type}SeqLike concat(@NotNull ${Type}SeqLike other) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull ${Type}SeqLike concat(@NotNull ${Type}SeqLike other);
 
     @Contract(pure = true)
-    default @NotNull ${Type}SeqLike prepended(${PrimitiveType} value) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull ${Type}SeqLike prepended(${PrimitiveType} value);
 
     @Contract(pure = true)
-    default @NotNull ${Type}SeqLike prependedAll(${PrimitiveType} @NotNull [] values) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull ${Type}SeqLike prependedAll(${PrimitiveType} @NotNull [] values);
 
     @Contract(pure = true)
-    default @NotNull ${Type}SeqLike prependedAll(@NotNull ${Type}Traversable values) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull ${Type}SeqLike prependedAll(@NotNull ${Type}Traversable values);
 
     @Contract(pure = true)
-    default @NotNull ${Type}SeqLike appended(${PrimitiveType} value) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull ${Type}SeqLike appended(${PrimitiveType} value);
 
     @Contract(pure = true)
-    default @NotNull ${Type}SeqLike appendedAll(@NotNull ${Type}Traversable values) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull ${Type}SeqLike appendedAll(@NotNull ${Type}Traversable values);
 
     @Contract(pure = true)
-    default @NotNull ${Type}SeqLike appendedAll(${PrimitiveType} @NotNull [] values) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull ${Type}SeqLike appendedAll(${PrimitiveType} @NotNull [] values);
 
     @Contract(pure = true)
-    default @NotNull ${Type}SeqLike sorted() {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull ${Type}SeqLike sorted();
 
     @Contract(pure = true)
-    default @NotNull ${Type}SeqLike reversed() {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull ${Type}SeqLike reversed();
 
     @Override
     @Contract(pure = true)
-    default @NotNull ${Type}SeqLike filter(@NotNull ${Type}Predicate predicate) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull ${Type}SeqLike filter(@NotNull ${Type}Predicate predicate);
 
     @Override
     @Contract(pure = true)
-    default @NotNull ${Type}SeqLike filterNot(@NotNull ${Type}Predicate predicate) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull ${Type}SeqLike filterNot(@NotNull ${Type}Predicate predicate);
 
     @Override
     @Contract(pure = true)
-    default @NotNull ${Type}SeqLike map(@NotNull ${Type}UnaryOperator mapper) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull ${Type}SeqLike map(@NotNull ${Type}UnaryOperator mapper);
 
     @Override
     @Contract(pure = true)
-    default <U> @NotNull SeqLike<U> mapToObj(@NotNull ${Type}Function<? extends U> mapper) {
-        throw new UnsupportedOperationException();
-    }
+    <U> @NotNull SeqLike<U> mapToObj(@NotNull ${Type}Function<? extends U> mapper);
 
     @Override
     @Contract(pure = true)
-    default @NotNull ${Type}SeqLike flatMap(@NotNull ${Type}Function<? extends ${Type}Traversable> mapper) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull ${Type}SeqLike flatMap(@NotNull ${Type}Function<? extends ${Type}Traversable> mapper);
 }

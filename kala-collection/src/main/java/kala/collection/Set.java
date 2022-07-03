@@ -2,6 +2,7 @@ package kala.collection;
 
 import kala.collection.base.Iterators;
 import kala.collection.factory.CollectionFactory;
+import kala.collection.immutable.ImmutableCollection;
 import kala.collection.immutable.ImmutableSet;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
@@ -84,4 +85,14 @@ public interface Set<E> extends Collection<E>, SetLike<E>, AnySet<E> {
     }
 
     //endregion
+
+    @Override
+    default @NotNull ImmutableSet<E> filter(@NotNull Predicate<? super E> predicate) {
+        return ImmutableSet.from(view().filter(predicate)); // TODO
+    }
+
+    @Override
+    default @NotNull ImmutableSet<E> filterNot(@NotNull Predicate<? super E> predicate) {
+        return ImmutableSet.from(view().filterNot(predicate)); // TODO
+    }
 }

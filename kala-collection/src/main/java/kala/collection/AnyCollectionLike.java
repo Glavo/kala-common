@@ -5,4 +5,6 @@ import org.jetbrains.annotations.NotNull;
 
 public interface AnyCollectionLike<E> extends AnyTraversable<E> {
     @NotNull String className();
+
+    @NotNull AnyCollectionView<E> view();
 }

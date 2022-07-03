@@ -22,44 +22,27 @@ public interface CollectionLike<E> extends Traversable<E>, AnyCollectionLike<E> 
         return "CollectionLike";
     }
 
+    @Override
     @NotNull CollectionView<E> view();
 
-    default @NotNull CollectionLike<E> filter(@NotNull Predicate<? super E> predicate) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull CollectionLike<E> filter(@NotNull Predicate<? super E> predicate);
 
-    default @NotNull CollectionLike<E> filterNot(@NotNull Predicate<? super E> predicate) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull CollectionLike<E> filterNot(@NotNull Predicate<? super E> predicate);
 
-    default @NotNull CollectionLike<@NotNull E> filterNotNull() {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull CollectionLike<@NotNull E> filterNotNull();
 
-    default <U> @NotNull CollectionLike<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
-        throw new UnsupportedOperationException();
-    }
+    <U> @NotNull CollectionLike<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz);
 
-    default <U> @NotNull CollectionLike<U> map(@NotNull Function<? super E, ? extends U> mapper) {
-        throw new UnsupportedOperationException();
-    }
+    <U> @NotNull CollectionLike<U> map(@NotNull Function<? super E, ? extends U> mapper);
 
-    default <U> @NotNull CollectionLike<U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
-        throw new UnsupportedOperationException();
-    }
+    <U> @NotNull CollectionLike<U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper);
 
-    default <U> @NotNull CollectionLike<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
-        throw new UnsupportedOperationException();
-    }
+    <U> @NotNull CollectionLike<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper);
 
     @Contract(pure = true)
-    default <U> @NotNull CollectionLike<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
-        throw new UnsupportedOperationException();
-    }
+    <U> @NotNull CollectionLike<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper);
 
-    default <U> @NotNull CollectionLike<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
-        throw new UnsupportedOperationException();
-    }
+    <U> @NotNull CollectionLike<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other);
 
     //region Copy Operations
 
@@ -109,9 +92,8 @@ public interface CollectionLike<E> extends Traversable<E>, AnyCollectionLike<E> 
         return toImmutableVector();
     }
 
-    @SuppressWarnings("unchecked")
     default @NotNull ImmutableArray<E> toImmutableArray() {
-        return (ImmutableArray<E>) ImmutableArray.Unsafe.wrap(toArray());
+        return ImmutableArray.Unsafe.wrap(toArray());
     }
 
     default @NotNull ImmutableLinkedSeq<E> toImmutableLinkedSeq() {

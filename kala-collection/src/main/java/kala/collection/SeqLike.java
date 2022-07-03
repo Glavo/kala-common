@@ -357,162 +357,102 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E> {
     //endregion
 
     @Contract(pure = true)
-    default @NotNull SeqLike<E> slice(int beginIndex, int endIndex) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull SeqLike<E> slice(int beginIndex, int endIndex);
 
     @Contract(pure = true)
-    default @NotNull SeqLike<E> drop(int n) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull SeqLike<E> drop(int n);
 
     @Contract(pure = true)
-    default @NotNull SeqLike<E> dropLast(int n) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull SeqLike<E> dropLast(int n);
 
     @Contract(pure = true)
-    default @NotNull SeqLike<E> dropWhile(@NotNull Predicate<? super E> predicate) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull SeqLike<E> dropWhile(@NotNull Predicate<? super E> predicate);
 
     @Contract(pure = true)
-    default @NotNull SeqLike<E> take(int n) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull SeqLike<E> take(int n);
 
-    default @NotNull SeqLike<E> takeLast(int n) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull SeqLike<E> takeLast(int n);
 
     @Contract(pure = true)
-    default @NotNull SeqLike<E> takeWhile(@NotNull Predicate<? super E> predicate) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull SeqLike<E> takeWhile(@NotNull Predicate<? super E> predicate);
 
     @Contract(pure = true)
-    default @NotNull SeqLike<E> updated(int index, E newValue) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull SeqLike<E> updated(int index, E newValue);
 
     @Contract(pure = true)
-    default @NotNull SeqLike<E> concat(@NotNull SeqLike<? extends E> other) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull SeqLike<E> concat(@NotNull SeqLike<? extends E> other);
 
     @Contract(pure = true)
-    default @NotNull SeqLike<E> concat(@NotNull List<? extends E> other) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull SeqLike<E> concat(@NotNull List<? extends E> other);
 
     @Contract(pure = true)
-    default @NotNull SeqLike<E> prepended(E value) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull SeqLike<E> prepended(E value);
 
     @Contract(pure = true)
-    default @NotNull SeqLike<E> prependedAll(E @NotNull [] values) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull SeqLike<E> prependedAll(E @NotNull [] values);
 
     @Contract(pure = true)
-    default @NotNull SeqLike<E> prependedAll(@NotNull Iterable<? extends E> values) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull SeqLike<E> prependedAll(@NotNull Iterable<? extends E> values);
 
     @Contract(pure = true)
-    default @NotNull SeqLike<E> appended(E value) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull SeqLike<E> appended(E value);
 
     @Contract(pure = true)
-    default @NotNull SeqLike<E> appendedAll(@NotNull Iterable<? extends E> values) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull SeqLike<E> appendedAll(@NotNull Iterable<? extends E> values);
 
     @Contract(pure = true)
-    default @NotNull SeqLike<E> appendedAll(E @NotNull [] values) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull SeqLike<E> appendedAll(E @NotNull [] values);
 
     @Contract(pure = true)
-    default @NotNull SeqLike<E> sorted() {
-        return sorted(Comparators.naturalOrder());
-    }
+    @NotNull SeqLike<E> sorted();
 
     @Contract(pure = true)
-    default @NotNull SeqLike<E> sorted(Comparator<? super E> comparator) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull SeqLike<E> sorted(Comparator<? super E> comparator);
 
     @Contract(pure = true)
-    default @NotNull SeqLike<E> reversed() {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull SeqLike<E> reversed();
 
     @Override
     @Contract(pure = true)
-    default @NotNull SeqLike<E> filter(@NotNull Predicate<? super E> predicate) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull SeqLike<E> filter(@NotNull Predicate<? super E> predicate);
 
     @Override
     @Contract(pure = true)
-    default @NotNull SeqLike<E> filterNot(@NotNull Predicate<? super E> predicate) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull SeqLike<E> filterNot(@NotNull Predicate<? super E> predicate);
 
     @Override
     @Contract(pure = true)
-    default @NotNull SeqLike<@NotNull E> filterNotNull() {
-        return this.filter(Predicates.isNotNull());
-    }
+    @NotNull SeqLike<@NotNull E> filterNotNull();
 
     @Override
     @Contract(pure = true)
-    default <U> @NotNull SeqLike<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
-        throw new UnsupportedOperationException();
-    }
+    <U> @NotNull SeqLike<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz);
 
     @Override
     @Contract(pure = true)
-    default <U> @NotNull SeqLike<U> map(@NotNull Function<? super E, ? extends U> mapper) {
-        throw new UnsupportedOperationException();
-    }
+    <U> @NotNull SeqLike<U> map(@NotNull Function<? super E, ? extends U> mapper);
 
     @Contract(pure = true)
-    default <U> @NotNull SeqLike<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
-        throw new UnsupportedOperationException();
-    }
+    <U> @NotNull SeqLike<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper);
 
     @Override
     @Contract(pure = true)
-    default <U> @NotNull SeqLike<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
-        throw new UnsupportedOperationException();
-    }
+    <U> @NotNull SeqLike<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper);
 
     @Contract(pure = true)
-    default <U> @NotNull SeqLike<@NotNull U> mapIndexedNotNull(
-            @NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
-        throw new UnsupportedOperationException();
-    }
+    <U> @NotNull SeqLike<@NotNull U> mapIndexedNotNull(
+            @NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper);
 
     @Override
     @Contract(pure = true)
-    default @NotNull <U> SeqLike<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull <U> SeqLike<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper);
 
     @Contract(pure = true)
-    default @NotNull <U> SeqLike<U> mapIndexedMulti(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
-        throw new UnsupportedOperationException();
-    }
+    @NotNull <U> SeqLike<U> mapIndexedMulti(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper);
 
     @Override
     @Contract(pure = true)
-    default <U> @NotNull SeqLike<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
-        throw new UnsupportedOperationException();
-    }
+    <U> @NotNull SeqLike<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper);
 
     @Contract(value = "_, _ -> param1", mutates = "param1")
     default <U, G extends Growable<? super U>> @NotNull G mapIndexedTo(
@@ -547,19 +487,19 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E> {
     }
 
     @Override
-    default @NotNull Option<E> reduceRightOption(@NotNull BiFunction<? super E, ? super E, ? extends E> op) {
+    default E reduceRight(@NotNull BiFunction<? super E, ? super E, ? extends E> op) throws NoSuchElementException {
         if (this.knownSize() == 0) {
-            return Option.none();
+            throw new NoSuchElementException();
         }
         final Iterator<E> it = this.reverseIterator();
         if (!it.hasNext()) {
-            return Option.none();
+            throw new NoSuchElementException();
         }
         E e = it.next();
         while (it.hasNext()) {
             e = op.apply(it.next(), e);
         }
-        return Option.some(e);
+        return e;
     }
 
     //endregion
