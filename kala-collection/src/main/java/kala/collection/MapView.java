@@ -32,7 +32,7 @@ public interface MapView<K, V> extends MapLike<K, V> {
 
     //endregion
 
-    default <U> @NotNull View<U> map(@NotNull BiFunction<? super K, ? super V, ? extends U> mapper) {
+    default <U> @NotNull CollectionView<U> map(@NotNull BiFunction<? super K, ? super V, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
         return new MapViews.Mapped<>(this, mapper);
     }

@@ -1,7 +1,7 @@
 package kala.collection.immutable;
 
-import kala.collection.View;
-import kala.collection.ViewTestTemplate;
+import kala.collection.CollectionView;
+import kala.collection.CollectionViewTestTemplate;
 import kala.collection.factory.CollectionFactory;
 import org.junit.jupiter.api.Test;
 
@@ -33,19 +33,19 @@ public final class ImmutableSeqTest implements ImmutableSeqTestTemplate {
         of().view().appended("zero").joinToString("::");
     }
 
-    static final class ViewTest implements ViewTestTemplate {
+    static final class ViewTest implements CollectionViewTestTemplate {
         @Override
-        public <E> View<E> of(E... elements) {
+        public <E> CollectionView<E> of(E... elements) {
             return ImmutableSeq.from(elements).view();
         }
 
         @Override
-        public <E> View<E> from(E[] elements) {
+        public <E> CollectionView<E> from(E[] elements) {
             return ImmutableSeq.from(elements).view();
         }
 
         @Override
-        public <E> View<E> from(Iterable<? extends E> elements) {
+        public <E> CollectionView<E> from(Iterable<? extends E> elements) {
             return ImmutableSeq.<E>from(elements).view();
         }
     }

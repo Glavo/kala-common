@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-public interface SetView<@Covariant E> extends View<E>, SetLike<E>, AnySetView<E> {
+public interface SetView<@Covariant E> extends CollectionView<E>, SetLike<E>, AnySetView<E> {
 
     @Override
     default @NotNull String className() {

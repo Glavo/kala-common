@@ -28,7 +28,7 @@ import java.util.stream.StreamSupport;
 
 @SuppressWarnings("ALL")
 public final class SeqViews {
-    public static class Empty<E> extends Views.Empty<E> implements IndexedSeqView<E> {
+    public static class Empty<E> extends CollectionViews.Empty<E> implements IndexedSeqView<E> {
 
         public static final Empty<?> INSTANCE = new Empty<>();
 
@@ -98,7 +98,7 @@ public final class SeqViews {
         }
     }
 
-    public static class Single<E> extends Views.Single<E> implements IndexedSeqView<E> {
+    public static class Single<E> extends CollectionViews.Single<E> implements IndexedSeqView<E> {
         public Single(E value) {
             super(value);
         }
@@ -136,7 +136,7 @@ public final class SeqViews {
         }
     }
 
-    public static class Of<E, C extends SeqLike<E>> extends Views.Of<E, C> implements SeqView<E> {
+    public static class Of<E, C extends SeqLike<E>> extends CollectionViews.Of<E, C> implements SeqView<E> {
         public Of(@NotNull C source) {
             super(source);
         }

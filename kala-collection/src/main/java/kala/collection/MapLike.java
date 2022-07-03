@@ -23,7 +23,7 @@ public interface MapLike<K, V> extends MapBase<K, V> {
         return new MapViews.Keys<>(this);
     }
 
-    default @NotNull View<V> valuesView() {
+    default @NotNull CollectionView<V> valuesView() {
         return new MapViews.Values<>(this);
     }
 

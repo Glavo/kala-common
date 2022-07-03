@@ -22,7 +22,7 @@ public interface CollectionLike<E> extends Traversable<E>, AnyCollectionLike<E> 
         return "CollectionLike";
     }
 
-    @NotNull View<E> view();
+    @NotNull CollectionView<E> view();
 
     default @NotNull CollectionLike<E> filter(@NotNull Predicate<? super E> predicate) {
         throw new UnsupportedOperationException();

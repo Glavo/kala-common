@@ -6,7 +6,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public interface SeqViewTestTemplate extends SeqLikeTestTemplate, ViewTestTemplate {
+public interface SeqViewTestTemplate extends SeqLikeTestTemplate, CollectionViewTestTemplate {
     @Override
     <E> SeqView<E> of(E... elements);
 

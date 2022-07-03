@@ -19,8 +19,8 @@ import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public final class Views {
-    private Views() {
+public final class CollectionViews {
+    private CollectionViews() {
     }
 
     public static class Empty<E> extends AbstractView<E> {
@@ -66,28 +66,28 @@ public final class Views {
         //endregion
 
         @Override
-        public @NotNull View<E> filter(@NotNull Predicate<? super E> predicate) {
+        public @NotNull CollectionView<E> filter(@NotNull Predicate<? super E> predicate) {
             return this;
         }
 
         @Override
-        public @NotNull View<E> filterNot(@NotNull Predicate<? super E> predicate) {
+        public @NotNull CollectionView<E> filterNot(@NotNull Predicate<? super E> predicate) {
             return this;
         }
 
         @Override
-        public @NotNull View<@NotNull E> filterNotNull() {
+        public @NotNull CollectionView<@NotNull E> filterNotNull() {
             return this;
         }
 
         @Override
-        public @NotNull <U> View<U> map(@NotNull Function<? super E, ? extends U> mapper) {
-            return ((View<U>) this);
+        public @NotNull <U> CollectionView<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+            return ((CollectionView<U>) this);
         }
 
         @Override
-        public @NotNull <U> View<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
-            return ((View<U>) this);
+        public @NotNull <U> CollectionView<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
+            return ((CollectionView<U>) this);
         }
 
         @Override
@@ -525,11 +525,11 @@ public final class Views {
 
     public static final class Mapped<@Covariant E, T> extends AbstractView<E> {
 
-        private final @NotNull View<T> source;
+        private final @NotNull CollectionView<T> source;
 
         private final @NotNull Function<? super T, ? extends E> mapper;
 
-        public Mapped(@NotNull View<T> source, @NotNull Function<? super T, ? extends E> mapper) {
+        public Mapped(@NotNull CollectionView<T> source, @NotNull Function<? super T, ? extends E> mapper) {
             this.source = source;
             this.mapper = mapper;
         }
@@ -579,10 +579,10 @@ public final class Views {
     }
 
     public static class MapNotNull<E, T> extends AbstractView<E> {
-        private final @NotNull View<T> source;
+        private final @NotNull CollectionView<T> source;
         private final @NotNull Function<? super T, ? extends E> mapper;
 
-        public MapNotNull(@NotNull View<T> source, @NotNull Function<? super T, ? extends E> mapper) {
+        public MapNotNull(@NotNull CollectionView<T> source, @NotNull Function<? super T, ? extends E> mapper) {
             this.source = source;
             this.mapper = mapper;
         }
@@ -594,10 +594,10 @@ public final class Views {
     }
 
     public static class MapMulti<E, T> extends AbstractView<E> {
-        private final @NotNull View<T> source;
+        private final @NotNull CollectionView<T> source;
         private final @NotNull BiConsumer<? super T, ? super Consumer<? super E>> mapper;
 
-        public MapMulti(@NotNull View<T> source, @NotNull BiConsumer<? super T, ? super Consumer<? super E>> mapper) {
+        public MapMulti(@NotNull CollectionView<T> source, @NotNull BiConsumer<? super T, ? super Consumer<? super E>> mapper) {
             this.source = source;
             this.mapper = mapper;
         }
@@ -609,10 +609,10 @@ public final class Views {
     }
 
     public static final class Filter<@Covariant E> extends AbstractView<E> {
-        private final @NotNull View<E> source;
+        private final @NotNull CollectionView<E> source;
         private final @NotNull Predicate<? super E> predicate;
 
-        public Filter(@NotNull View<E> source, @NotNull Predicate<? super E> predicate) {
+        public Filter(@NotNull CollectionView<E> source, @NotNull Predicate<? super E> predicate) {
             this.source = source;
             this.predicate = predicate;
         }
@@ -634,11 +634,11 @@ public final class Views {
     }
 
     public static final class FilterNot<@Covariant E> extends AbstractView<E> {
-        private final @NotNull View<E> source;
+        private final @NotNull CollectionView<E> source;
 
         private final @NotNull Predicate<? super E> predicate;
 
-        public FilterNot(@NotNull View<E> source, @NotNull Predicate<? super E> predicate) {
+        public FilterNot(@NotNull CollectionView<E> source, @NotNull Predicate<? super E> predicate) {
             this.source = source;
             this.predicate = predicate;
         }
@@ -660,9 +660,9 @@ public final class Views {
     }
 
     public static final class FilterNotNull<@Covariant E> extends AbstractView<E> {
-        private final @NotNull View<E> source;
+        private final @NotNull CollectionView<E> source;
 
-        public FilterNotNull(@NotNull View<E> source) {
+        public FilterNotNull(@NotNull CollectionView<E> source) {
             this.source = source;
         }
 
@@ -673,11 +673,11 @@ public final class Views {
     }
 
     public static final class FlatMapped<@Covariant E, T> extends AbstractView<E> {
-        private final @NotNull View<? extends T> source;
+        private final @NotNull CollectionView<? extends T> source;
         private final @NotNull Function<? super T, ? extends Iterable<? extends E>> mapper;
 
         public FlatMapped(
-                @NotNull View<? extends T> source,
+                @NotNull CollectionView<? extends T> source,
                 @NotNull Function<? super T, ? extends Iterable<? extends E>> mapper) {
             this.source = source;
             this.mapper = mapper;
@@ -690,10 +690,10 @@ public final class Views {
     }
 
     public static final class Zip<E, U> extends AbstractView<Tuple2<E, U>> {
-        private final @NotNull View<? extends E> source;
+        private final @NotNull CollectionView<? extends E> source;
         private final @NotNull Iterable<? extends U> other;
 
-        public Zip(@NotNull View<? extends E> source, @NotNull Iterable<? extends U> other) {
+        public Zip(@NotNull CollectionView<? extends E> source, @NotNull Iterable<? extends U> other) {
             this.source = source;
             this.other = other;
         }

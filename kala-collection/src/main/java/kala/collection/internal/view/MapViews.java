@@ -40,8 +40,8 @@ public final class MapViews {
         }
 
         @Override
-        public final @NotNull <U> View<U> map(@NotNull BiFunction<? super K, ? super V, ? extends U> mapper) {
-            return View.empty();
+        public final @NotNull <U> CollectionView<U> map(@NotNull BiFunction<? super K, ? super V, ? extends U> mapper) {
+            return CollectionView.empty();
         }
 
         @Override

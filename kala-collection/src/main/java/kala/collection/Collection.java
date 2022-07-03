@@ -4,7 +4,7 @@ import kala.annotations.Covariant;
 import kala.collection.immutable.*;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.factory.CollectionFactory;
-import kala.collection.internal.view.Views;
+import kala.collection.internal.view.CollectionViews;
 import kala.function.CheckedFunction;
 import kala.function.CheckedPredicate;
 import kala.tuple.Tuple2;
@@ -46,8 +46,8 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
     }
 
     @Override
-    default @NotNull View<E> view() {
-        return knownSize() == 0 ? View.empty() : new Views.Of<>(this);
+    default @NotNull CollectionView<E> view() {
+        return knownSize() == 0 ? CollectionView.empty() : new CollectionViews.Of<>(this);
     }
 
     default java.util.@NotNull @UnmodifiableView Collection<E> asJava() {

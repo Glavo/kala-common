@@ -2,7 +2,7 @@ package kala.collection;
 
 import kala.annotations.Covariant;
 
-public abstract class AbstractView<@Covariant E> implements View<E> {
+public abstract class AbstractView<@Covariant E> implements CollectionView<E> {
     @Override
     public int hashCode() {
         return System.identityHashCode(this);

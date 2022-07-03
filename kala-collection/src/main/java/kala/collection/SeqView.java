@@ -23,7 +23,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 @SuppressWarnings("unchecked")
-public interface SeqView<@Covariant E> extends View<E>, SeqLike<E>, AnySeqView<E> {
+public interface SeqView<@Covariant E> extends CollectionView<E>, SeqLike<E>, AnySeqView<E> {
 
     //region Narrow method
 
