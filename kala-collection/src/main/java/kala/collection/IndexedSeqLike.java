@@ -1,6 +1,7 @@
 package kala.collection;
 
 import kala.Conditions;
+import kala.collection.base.AbstractIterator;
 import kala.collection.base.Growable;
 import kala.collection.base.Iterators;
 import kala.collection.factory.MapFactory;
@@ -11,43 +12,18 @@ import kala.function.IndexedBiFunction;
 import kala.function.IndexedConsumer;
 import kala.function.IndexedFunction;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Array;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.*;
 
-public interface IndexedSeqLike<E> extends SeqLike<E> {
+public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
 
     @Override
     default @NotNull Iterator<E> iterator() {
-        final int size = size();
-
-        if (size == 0) {
-            return Iterators.empty();
-        }
-
-        return new Iterator<E>() {
-            private int idx = 0;
-
-            @Override
-            public boolean hasNext() {
-                return idx < size;
-            }
-
-            @Override
-            public E next() {
-                if (idx >= size) {
-                    throw new NoSuchElementException();
-                }
-                return get(idx++);
-            }
-        };
+        return iterator(0);
     }
 
     @Override
@@ -55,12 +31,14 @@ public interface IndexedSeqLike<E> extends SeqLike<E> {
         final int size = size();
         Conditions.checkPositionIndex(beginIndex, size);
 
-        if (beginIndex == size) {
-            return Iterators.empty();
-        }
+        if (beginIndex == size) return Iterators.empty();
 
-        return new Iterator<E>() {
-            private int idx = beginIndex;
+        final class Itr extends AbstractIterator<E> {
+            private int idx;
+
+            Itr(int beginIndex) {
+                this.idx = beginIndex;
+            }
 
             @Override
             public boolean hasNext() {
@@ -74,7 +52,9 @@ public interface IndexedSeqLike<E> extends SeqLike<E> {
                 }
                 return get(idx++);
             }
-        };
+        }
+
+        return new Itr(beginIndex);
     }
 
     //region Size Info
@@ -112,7 +92,9 @@ public interface IndexedSeqLike<E> extends SeqLike<E> {
 
     @Override
     default @NotNull Iterator<E> reverseIterator() {
-        return new Iterator<E>() {
+        if (isEmpty()) return Iterators.empty();
+
+        return new AbstractIterator<E>() {
             private int idx = size() - 1;
 
             @Override
@@ -122,9 +104,8 @@ public interface IndexedSeqLike<E> extends SeqLike<E> {
 
             @Override
             public E next() {
-                if (idx < 0) {
-                    throw new NoSuchElementException();
-                }
+                if (idx < 0) throw new NoSuchElementException();
+
                 return get(idx--);
             }
         };
@@ -133,7 +114,6 @@ public interface IndexedSeqLike<E> extends SeqLike<E> {
     //endregion
 
     //region Element Retrieval Operations
-
 
     @Override
     default @NotNull Option<E> findFirst(@NotNull Predicate<? super E> predicate) {

@@ -77,6 +77,10 @@ public interface ${Type}Seq extends PrimitiveSeq<${WrapperType}>, ${Type}Collect
 
     //endregion
 
+    static int hashCode(@NotNull ${Type}Seq seq) {
+        return seq.iterator().hash() + SEQ_HASH_MAGIC;
+    }
+
     @Override
     default @NotNull String className() {
         return "${Type}Seq";

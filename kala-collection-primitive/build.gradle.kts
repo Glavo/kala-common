@@ -17,6 +17,7 @@ tasks.getByName<GenerateTask>("generateSources") {
             generate("${model["Type"]}Seq", model, "PrimitiveSeq")
             generate("${model["Type"]}SeqView", model, "PrimitiveSeqView")
             generate("${model["Type"]}SeqLike", model, "PrimitiveSeqLike")
+            generate("Indexed${model["Type"]}SeqLike", model, "IndexedPrimitiveSeqLike")
         }
     }
 
