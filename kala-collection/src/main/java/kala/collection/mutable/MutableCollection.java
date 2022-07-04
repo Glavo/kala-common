@@ -6,8 +6,10 @@ import kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.stream.Collector;
+import java.util.stream.Stream;
 
 public interface MutableCollection<E> extends Collection<E>, MutableAnyCollection<E> {
 
@@ -59,13 +61,19 @@ public interface MutableCollection<E> extends Collection<E>, MutableAnyCollectio
         return MutableSeq.from(values);
     }
 
+    static <E> @NotNull MutableCollection<E> from(@NotNull Iterator<? extends E> it) {
+        return MutableSeq.from(it);
+    }
+
+    static <E> @NotNull MutableCollection<E> from(@NotNull Stream<? extends E> stream) {
+        return MutableSeq.from(stream);
+    }
+
     static <E, C extends MutableCollection<E>> @NotNull MutableCollectionEditor<E, C> edit(@NotNull C collection) {
         return new MutableCollectionEditor<>(collection);
     }
 
     //endregion
-
-    //region Collection Operations
 
     @Override
     default @NotNull String className() {
@@ -81,6 +89,4 @@ public interface MutableCollection<E> extends Collection<E>, MutableAnyCollectio
     default @NotNull java.util.Collection<E> asJava() {
         return new AsJavaConvert.MutableCollectionAsJava<>(this);
     }
-
-    //endregion
 }

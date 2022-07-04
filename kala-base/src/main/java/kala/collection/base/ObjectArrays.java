@@ -122,8 +122,6 @@ public final class ObjectArrays {
 
     //endregion
 
-    //region Collection Operations
-
     public static @NotNull String className(Object @NotNull [] array) {
         return "java.lang.Object[]";
     }
@@ -151,8 +149,6 @@ public final class ObjectArrays {
     public static @NotNull Stream<Object> parallelStream(Object @NotNull [] array) {
         return Arrays.stream(array).parallel();
     }
-
-    //endregion
 
     //region Size Info
 

@@ -1,7 +1,7 @@
 package kala.collection.immutable.primitive;
 
 import kala.collection.base.primitive.*;
-import kala.collection.factory.CollectionFactory;
+import kala.collection.factory.primitive.${Type}CollectionFactory;
 import kala.collection.immutable.ImmutableSeq;
 import kala.collection.primitive.*;
 import kala.function.*;
@@ -14,7 +14,7 @@ public interface Immutable${Type}Seq extends ImmutablePrimitiveSeq<${WrapperType
     
     //region Static Factories
 
-    static <E> @NotNull CollectionFactory<E, ?, ImmutableSeq<E>> factory() {
+    static <E> @NotNull ${Type}CollectionFactory<?, Immutable${Type}Seq> factory() {
         throw new UnsupportedOperationException(); // TODO
     }
 
@@ -90,6 +90,11 @@ public interface Immutable${Type}Seq extends ImmutablePrimitiveSeq<${WrapperType
     @NotNull
     default String className() {
         return "Immutable${Type}Seq";
+    }
+
+    @Override
+    default @NotNull ${Type}CollectionFactory<?, ? extends Immutable${Type}Seq> iterableFactory() {
+        return Immutable${Type}Seq.factory();
     }
 
     @Override

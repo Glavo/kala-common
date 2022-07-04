@@ -18,8 +18,6 @@ public interface MapView<K, V> extends MapLike<K, V> {
         return (MapView<K, V>) MapViews.Empty.INSTANCE;
     }
 
-    //region Collection Operations
-
     @Override
     default @NotNull String className() {
         return "MapView";
@@ -29,8 +27,6 @@ public interface MapView<K, V> extends MapLike<K, V> {
     default @NotNull MapView<K, V> view() {
         return this;
     }
-
-    //endregion
 
     default <U> @NotNull CollectionView<U> map(@NotNull BiFunction<? super K, ? super V, ? extends U> mapper) {
         Objects.requireNonNull(mapper);

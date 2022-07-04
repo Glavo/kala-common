@@ -20,8 +20,6 @@ import java.util.stream.StreamSupport;
 
 public interface ${Type}Traversable extends PrimitiveTraversable<${WrapperType}> {
 
-    //region Collection Operations
-
     @Override
     @NotNull ${Type}Iterator iterator();
 <#if IsSpecialized>
@@ -48,8 +46,6 @@ public interface ${Type}Traversable extends PrimitiveTraversable<${WrapperType}>
         return StreamSupport.${PrimitiveType}Stream(spliterator(), true);
     }
 </#if>
-
-    //endregion
 
     default ${PrimitiveType} elementAt(int index) {
         if (index < 0) {

@@ -140,8 +140,6 @@ public final class GenericArrays {
 
     //endregion
 
-    //region Collection Operations
-
     public static @NotNull String className(Object @NotNull [] array) {
         return array.getClass().getComponentType().getName() + "[]";
     }
@@ -195,8 +193,6 @@ public final class GenericArrays {
     public static <E> @NotNull Stream<E> parallelStream(E @NotNull [] array) {
         return Arrays.stream(array).parallel();
     }
-
-    //endregion
 
     //region Size Info
 

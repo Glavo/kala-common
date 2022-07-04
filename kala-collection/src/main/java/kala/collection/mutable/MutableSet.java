@@ -81,8 +81,6 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
 
     //endregion
 
-    //region Collection Operations
-
     @Override
     default @NotNull String className() {
         return "MutableSet";
@@ -97,8 +95,6 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
     default java.util.@NotNull Set<E> asJava() {
         return new AsJavaConvert.MutableSetAsJava<>(this);
     }
-
-    //endregion
 
     @Contract(mutates = "this")
     boolean add(@Flow(targetIsContainer = true) E value);

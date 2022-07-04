@@ -406,8 +406,6 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
 
     //endregion
 
-    //region Collection Operations
-
     @Override
     public @NotNull String className() {
         return "MutableTreeMap";
@@ -438,8 +436,6 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
     public @NotNull Map<K, V> asJava() {
         return new AsJava<>(this);
     }
-
-    //endregion
 
     @Override
     public V get(K key) {

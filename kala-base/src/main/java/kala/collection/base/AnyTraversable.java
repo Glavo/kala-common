@@ -21,8 +21,6 @@ public interface AnyTraversable<T> {
         return -1;
     }
 
-    //region Collection Operations
-
     @NotNull Iterator<T> iterator();
 
     default Spliterator<T> spliterator() {
@@ -47,8 +45,6 @@ public interface AnyTraversable<T> {
     default @NotNull BaseStream<T, ?> parallelStream() {
         return StreamSupport.stream(spliterator(), true);
     }
-
-    //endregion
 
     //region Size Info
 

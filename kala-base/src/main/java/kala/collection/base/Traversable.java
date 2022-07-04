@@ -34,8 +34,6 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         return (Traversable<T>) traversable;
     }
 
-    //region Collection Operations
-
     @NotNull Iterator<T> iterator();
 
     @Override
@@ -63,8 +61,6 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
     default @NotNull Stream<T> parallelStream() {
         return StreamSupport.stream(spliterator(), true);
     }
-
-    //endregion
 
     default T elementAt(int index) {
         final Iterator<T> it = this.iterator();

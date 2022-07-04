@@ -219,8 +219,6 @@ public final class MutableSmartArrayList<E> extends AbstractMutableIndexedList<E
 
     //endregion
 
-    //region Collection Operations
-
     @Override
     public @NotNull String className() {
         return "MutableSmartArrayList";
@@ -252,8 +250,6 @@ public final class MutableSmartArrayList<E> extends AbstractMutableIndexedList<E
         }
 
     }
-
-    //endregion
 
     @Override
     public boolean isEmpty() {

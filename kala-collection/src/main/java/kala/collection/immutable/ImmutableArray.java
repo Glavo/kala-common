@@ -207,8 +207,6 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E> implements I
         return elements;
     }
 
-    //region Collection Operations
-
     @Override
     public @NotNull String className() {
         return "ImmutableArray";
@@ -223,8 +221,6 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E> implements I
     public @NotNull Spliterator<E> spliterator() {
         return Spliterators.spliterator(elements, Spliterator.IMMUTABLE);
     }
-
-    //endregion
 
     //region Addition Operations
 

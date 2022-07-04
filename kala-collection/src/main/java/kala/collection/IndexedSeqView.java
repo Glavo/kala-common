@@ -12,8 +12,6 @@ import java.util.RandomAccess;
 import java.util.function.Function;
 
 public interface IndexedSeqView<@Covariant E> extends IndexedSeqLike<E>, SeqView<E> {
-    //region Collection Operations
-
     @Override
     default @NotNull String className() {
         return "IndexedSeqView";
@@ -23,8 +21,6 @@ public interface IndexedSeqView<@Covariant E> extends IndexedSeqLike<E>, SeqView
     default @NotNull SeqView<E> view() {
         return this;
     }
-
-    //endregion
 
     @Override
     default @NotNull SeqView<E> concat(@NotNull SeqLike<? extends E> other) {

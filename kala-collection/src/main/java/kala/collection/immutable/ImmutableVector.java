@@ -231,8 +231,6 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableInd
 
     abstract int vectorSlicePrefixLength(int idx);
 
-    //region Collection Operations
-
     @Override
     public final @NotNull String className() {
         return "ImmutableVector";
@@ -242,8 +240,6 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableInd
     public final <U> @NotNull CollectionFactory<U, ?, ImmutableVector<U>> iterableFactory() {
         return factory();
     }
-
-    //endregion
 
     @Override
     public final boolean isEmpty() {

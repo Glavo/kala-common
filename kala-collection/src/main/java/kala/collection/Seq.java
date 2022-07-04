@@ -50,20 +50,20 @@ public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E>, AnySeq<E> 
         return ImmutableSeq.of(value1);
     }
 
-    static <E> @NotNull Seq<E> of(E value1, E values2) {
-        return ImmutableSeq.of(value1, values2);
+    static <E> @NotNull Seq<E> of(E value1, E value2) {
+        return ImmutableSeq.of(value1, value2);
     }
 
-    static <E> @NotNull Seq<E> of(E value1, E values2, E value3) {
-        return ImmutableSeq.of(value1, values2, value3);
+    static <E> @NotNull Seq<E> of(E value1, E value2, E value3) {
+        return ImmutableSeq.of(value1, value2, value3);
     }
 
-    static <E> @NotNull Seq<E> of(E value1, E values2, E value3, E value4) {
-        return ImmutableSeq.of(value1, values2, value3, value4);
+    static <E> @NotNull Seq<E> of(E value1, E value2, E value3, E value4) {
+        return ImmutableSeq.of(value1, value2, value3, value4);
     }
 
-    static <E> @NotNull Seq<E> of(E value1, E values2, E value3, E value4, E value5) {
-        return ImmutableSeq.of(value1, values2, value3, value4, value5);
+    static <E> @NotNull Seq<E> of(E value1, E value2, E value3, E value4, E value5) {
+        return ImmutableSeq.of(value1, value2, value3, value4, value5);
     }
 
     @SafeVarargs
@@ -123,8 +123,6 @@ public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E>, AnySeq<E> 
         return seq1.sameElements(seq2);
     }
 
-    //region Collection Operations
-
     @Override
     default @NotNull String className() {
         return "Seq";
@@ -146,8 +144,6 @@ public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E>, AnySeq<E> 
                 ? new AsJavaConvert.IndexedSeqAsJava<>(this)
                 : new AsJavaConvert.SeqAsJava<>(this);
     }
-
-    //endregion
 
     @Override
     @Contract(pure = true)

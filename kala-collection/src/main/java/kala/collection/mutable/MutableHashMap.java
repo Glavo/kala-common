@@ -402,8 +402,6 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
 
     //endregion
 
-    //region Collection Operations
-
     @Override
     public @NotNull String className() {
         return "MutableHashMap";
@@ -446,8 +444,6 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
     public @NotNull MutableHashMap<K, V> clone() {
         return new MutableHashMap<>(this);
     }
-
-    //endregion
 
     //region Map Operations
 

@@ -51,8 +51,6 @@ public interface Set<E> extends Collection<E>, SetLike<E>, AnySet<E> {
         return (Predicate<E> & Serializable) this::contains;
     }
 
-    //region Collection Operations
-
     @Override
     default @NotNull String className() {
         return "Set";
@@ -72,8 +70,6 @@ public interface Set<E> extends Collection<E>, SetLike<E>, AnySet<E> {
     default java.util.@NotNull Set<E> asJava() {
         return new AsJavaConvert.SetAsJava<>(this);
     }
-
-    //endregion
 
     @Override
     default @NotNull ImmutableSet<E> filter(@NotNull Predicate<? super E> predicate) {

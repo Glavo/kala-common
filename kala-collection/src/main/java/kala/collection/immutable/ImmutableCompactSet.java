@@ -309,8 +309,6 @@ public final class ImmutableCompactSet<E>
 
     //endregion
 
-    //region Collection Operations
-
     @Override
     public @NotNull String className() {
         return "ImmutableCompactSet";
@@ -330,8 +328,6 @@ public final class ImmutableCompactSet<E>
     public @NotNull Iterator<E> iterator() {
         return (Iterator<E>) GenericArrays.iterator(elements);
     }
-
-    //endregion
 
     @Override
     public int size() {

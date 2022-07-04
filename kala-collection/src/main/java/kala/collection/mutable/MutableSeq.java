@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 public interface MutableSeq<E> extends MutableCollection<E>, Seq<E>, MutableAnySeq<E> {
 
@@ -70,6 +71,10 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E>, MutableAnyS
         return MutableArray.from(it);
     }
 
+    static <E> @NotNull MutableSeq<E> from(@NotNull Stream<? extends E> stream) {
+        return MutableArray.from(stream);
+    }
+
     @Contract("_ -> new")
     static <E> @NotNull MutableSeq<E> wrapJava(java.util.@NotNull List<E> list) {
         Objects.requireNonNull(list);
@@ -83,8 +88,6 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E>, MutableAnyS
     }
 
     //endregion
-
-    //region Collection Operations
 
     @Override
     default @NotNull String className() {
@@ -113,8 +116,6 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E>, MutableAnyS
                 ? new AsJavaConvert.MutableIndexedSeqAsJava<>(this)
                 : new AsJavaConvert.MutableSeqAsJava<>(this);
     }
-
-    //endregion
 
     @Contract(mutates = "this")
     void set(int index, E newValue);

@@ -144,8 +144,6 @@ public final class MutableSinglyLinkedList<E> extends ImmutableLinkedSeq.Builder
 
     //endregion
 
-    //region Collection Operations
-
     @Override
     public @NotNull String className() {
         return "MutableSinglyLinkedList";
@@ -165,8 +163,6 @@ public final class MutableSinglyLinkedList<E> extends ImmutableLinkedSeq.Builder
         }
         return res;
     }
-
-    //endregion
 
     @Override
     public void push(E value) {

@@ -16,53 +16,57 @@ public interface Immutable${Type}Collection extends ImmutablePrimitiveCollection
     //region Static Factories
 
     static @NotNull ${Type}CollectionFactory<?, Immutable${Type}Collection> factory() {
-        throw new UnsupportedOperationException(); // TODO
+        return ${Type}CollectionFactory.narrow(Immutable${Type}Seq.factory());
+    }
+
+    static @NotNull Immutable${Type}Collection empty() {
+        return Immutable${Type}Seq.empty();
     }
 
     static @NotNull Immutable${Type}Collection of() {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Seq.of();
     }
 
     static @NotNull Immutable${Type}Collection of(${PrimitiveType} value1) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Seq.of(value1);
     }
 
     static @NotNull Immutable${Type}Collection of(${PrimitiveType} value1, ${PrimitiveType} value2) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Seq.of(value1, value2);
     }
 
     static @NotNull Immutable${Type}Collection of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Seq.of(value1, value2, value3);
     }
 
     static @NotNull Immutable${Type}Collection of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3, ${PrimitiveType} value4) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Seq.of(value1, value2, value3, value4);
     }
 
     static @NotNull Immutable${Type}Collection of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3, ${PrimitiveType} value4, ${PrimitiveType} value5) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Seq.of(value1, value2, value3, value4, value5);
     }
 
     static @NotNull Immutable${Type}Collection of(${PrimitiveType}... values) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Seq.of(values);
     }
 
     static @NotNull Immutable${Type}Collection from(${PrimitiveType} @NotNull [] values) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Seq.from(values);
     }
 
     static @NotNull Immutable${Type}Collection from(@NotNull ${Type}Traversable values) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Seq.from(values);
     }
 
     static @NotNull Immutable${Type}Collection from(@NotNull ${Type}Iterator it) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Seq.from(it);
     }
 <#if IsSpecialized>
 
     /*
     static @NotNull Immutable${Type}Collection from(@NotNull ${Type}Stream stream) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Seq.from(stream);
     }
      */
 </#if>
@@ -86,6 +90,11 @@ public interface Immutable${Type}Collection extends ImmutablePrimitiveCollection
     @Override
     default @NotNull String className() {
         return "Immutable${Type}Collection";
+    }
+
+    @Override
+    default @NotNull ${Type}CollectionFactory<?, ? extends Immutable${Type}Collection> iterableFactory() {
+        return Immutable${Type}Collection.factory();
     }
 
     @Override

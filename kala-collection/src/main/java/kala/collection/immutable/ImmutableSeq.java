@@ -220,8 +220,6 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
 
     //endregion
 
-    //region Collection Operations
-
     @Override
     default @NotNull String className() {
         return "ImmutableSeq";
@@ -236,8 +234,6 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     default @NotNull @Unmodifiable List<E> asJava() {
         return Seq.super.asJava();
     }
-
-    //endregion
 
     @Contract(pure = true)
     default @NotNull ImmutableSeq<E> slice(int beginIndex, int endIndex) {

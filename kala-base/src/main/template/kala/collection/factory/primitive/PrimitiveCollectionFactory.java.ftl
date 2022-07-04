@@ -9,6 +9,12 @@ import java.util.Objects;
 import java.util.function.Function;
 
 public interface ${Type}CollectionFactory<Builder, @Covariant R> extends PrimitiveCollectionFactory<${WrapperType}, Builder, R> {
+
+    @SuppressWarnings("unchecked")
+    static <Builder, R> ${Type}CollectionFactory<Builder, R> narrow(${Type}CollectionFactory<Builder, ? extends R> factory) {
+        return (${Type}CollectionFactory<Builder, R>) factory;
+    }
+
     void addToBuilder(@NotNull Builder builder, ${PrimitiveType} value);
 
     @Override

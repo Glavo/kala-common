@@ -11,80 +11,81 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.*;
 
-public interface ${Type}Seq extends PrimitiveSeq<${WrapperType}>, ${Type}SeqLike {
+public interface ${Type}Seq extends PrimitiveSeq<${WrapperType}>, ${Type}Collection, ${Type}SeqLike {
     //region Static Factories
 
     static <E> @NotNull ${Type}CollectionFactory<?, ${Type}Seq> factory() {
-        throw new UnsupportedOperationException(); // TODO
+        return ${Type}CollectionFactory.narrow(Immutable${Type}Seq.factory());
     }
 
     static @NotNull ${Type}Seq empty() {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Seq.empty();
     }
 
     static @NotNull ${Type}Seq of() {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Seq.of();
     }
 
     static @NotNull ${Type}Seq of(${PrimitiveType} value1) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Seq.of(value1);
     }
 
-    static @NotNull ${Type}Seq of(${PrimitiveType} value1, ${PrimitiveType} values2) {
-        throw new UnsupportedOperationException(); // TODO
+    static @NotNull ${Type}Seq of(${PrimitiveType} value1, ${PrimitiveType} value2) {
+        return Immutable${Type}Seq.of(value1, value2);
     }
 
-    static @NotNull ${Type}Seq of(${PrimitiveType} value1, ${PrimitiveType} values2, ${PrimitiveType} value3) {
-        throw new UnsupportedOperationException(); // TODO
+    static @NotNull ${Type}Seq of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3) {
+        return Immutable${Type}Seq.of(value1, value2, value3);
     }
 
-    static @NotNull ${Type}Seq of(${PrimitiveType} value1, ${PrimitiveType} values2, ${PrimitiveType} value3, ${PrimitiveType} value4) {
-        throw new UnsupportedOperationException(); // TODO
+    static @NotNull ${Type}Seq of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3, ${PrimitiveType} value4) {
+        return Immutable${Type}Seq.of(value1, value2, value3, value4);
     }
 
-    static @NotNull ${Type}Seq of(${PrimitiveType} value1, ${PrimitiveType} values2, ${PrimitiveType} value3, ${PrimitiveType} value4, ${PrimitiveType} value5) {
-        throw new UnsupportedOperationException(); // TODO
+    static @NotNull ${Type}Seq of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3, ${PrimitiveType} value4, ${PrimitiveType} value5) {
+        return Immutable${Type}Seq.of(value1, value2, value3, value4, value5);
     }
 
     static @NotNull ${Type}Seq of(${PrimitiveType}... values) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Seq.of(values);
     }
 
     static @NotNull ${Type}Seq from(${PrimitiveType} @NotNull [] values) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Seq.from(values);
     }
 
     static @NotNull ${Type}Seq from(@NotNull ${Type}Traversable values) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Seq.from(values);
     }
 
     static @NotNull ${Type}Seq from(@NotNull ${Type}Iterator it) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Seq.from(it);
     }
 
     static @NotNull ${Type}Seq fill(int n, ${PrimitiveType} value) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Seq.fill(n, value);
     }
 
     static @NotNull ${Type}Seq fill(int n, @NotNull ${Type}Supplier supplier) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Seq.fill(n, supplier);
     }
     /*
     static @NotNull ${Type}Seq fill(int n, @NotNull IntTo${Type}Function init) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Seq.fill(n, init);
     }
     */
 
     //endregion
-
-    //region Collection Operations
 
     @Override
     default @NotNull String className() {
         return "${Type}Seq";
     }
 
-    //endregion
+    @Override
+    default @NotNull ${Type}CollectionFactory<?, ? extends ${Type}Seq> iterableFactory() {
+        return ${Type}Seq.factory();
+    }
 
     @Override
     @Contract(pure = true)

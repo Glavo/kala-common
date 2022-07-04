@@ -208,8 +208,6 @@ public final class MutableLinkedHashMap<K, V> extends FromJavaConvert.MutableMap
 
     //endregion
 
-    //region Collection Operations
-
     @Override
     public @NotNull String className() {
         return "MutableLinkedHashMap";
@@ -230,8 +228,6 @@ public final class MutableLinkedHashMap<K, V> extends FromJavaConvert.MutableMap
     public @NotNull MutableLinkedHashMap<K, V> clone() {
         return new MutableLinkedHashMap<>(new java.util.LinkedHashMap<>(this.source));
     }
-
-    //endregion
 
     private static final class Factory<K, V> extends AbstractMutableMapFactory<K, V, MutableLinkedHashMap<K, V>> {
         @Override

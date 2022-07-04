@@ -10,8 +10,6 @@ import java.util.function.*;
 
 public interface ${Type}CollectionView extends ${Type}CollectionLike, PrimitiveCollectionView<${WrapperType}> {
 
-    //region Collection Operations
-
     @Override
     default @NotNull String className() {
         return "${Type}CollectionView";
@@ -21,8 +19,6 @@ public interface ${Type}CollectionView extends ${Type}CollectionLike, PrimitiveC
     default @NotNull ${Type}CollectionView view() {
         return this;
     }
-
-    //endregion
 
     default @NotNull ${Type}CollectionView filter(@NotNull ${Type}Predicate predicate) {
         throw new UnsupportedOperationException(); // TODO

@@ -177,8 +177,6 @@ public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Seria
 
     //endregion
 
-    //region Collection Operations
-
     @Override
     public final @NotNull String className() {
         return "MutableArray";
@@ -194,8 +192,6 @@ public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Seria
     public @NotNull MutableArray<E> clone() {
         return new MutableArray<>(this.elements.clone());
     }
-
-    //endregion
 
     public final Object @NotNull [] getArray() {
         return elements;

@@ -34,8 +34,6 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
 
     //endregion
 
-    //region Collection Operations
-
     @Override
     default @NotNull String className() {
         return "Collection";
@@ -53,8 +51,6 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
     default java.util.@NotNull @UnmodifiableView Collection<E> asJava() {
         return new AsJavaConvert.CollectionAsJava<>(this);
     }
-
-    //endregion
 
     @Override
     @Contract(pure = true)

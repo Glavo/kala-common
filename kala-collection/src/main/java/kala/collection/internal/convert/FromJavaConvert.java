@@ -261,14 +261,10 @@ public final class FromJavaConvert {
             this.source = source;
         }
 
-        //region Collection Operations
-
         @Override
         public @NotNull MapIterator<K, V> iterator() {
             return MapIterator.ofIterator(source.entrySet().iterator());
         }
-
-        //endregion
 
         //region Size Info
 

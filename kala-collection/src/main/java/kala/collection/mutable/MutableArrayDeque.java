@@ -241,8 +241,6 @@ public final class MutableArrayDeque<E> extends AbstractMutableIndexedList<E> im
 
     //endregion
 
-    //region Collection Operations
-
     @Override
     public @NotNull String className() {
         return "MutableArrayDeque";
@@ -261,8 +259,6 @@ public final class MutableArrayDeque<E> extends AbstractMutableIndexedList<E> im
             );
         }
     }
-
-    //endregion
 
     //region Size Info
 

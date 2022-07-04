@@ -247,8 +247,6 @@ public final class MutableArrayList<E> extends AbstractMutableIndexedList<E> imp
 
     //endregion
 
-    //region Collection Operations
-
     @Override
     public @NotNull String className() {
         return "MutableArrayList";
@@ -287,8 +285,6 @@ public final class MutableArrayList<E> extends AbstractMutableIndexedList<E> imp
         final int size = this.size;
         return new MutableArrayList<>(elements.length == 0 ? elements : elements.clone(), size);
     }
-
-    //endregion
 
     //region Size Info
 

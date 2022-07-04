@@ -104,8 +104,6 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
 
     //endregion
 
-    //region Collection Operations
-
     @Override
     default @NotNull
     String className() {
@@ -140,8 +138,6 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
     default @NotNull MutableStack<E> asMutableStack() {
         return this instanceof MutableStack ? (MutableStack<E>) this : new MutableListStackAdapter<>(this);
     }
-
-    //endregion
 
     @Contract(mutates = "this")
     void append(@Flow(targetIsContainer = true) E value);

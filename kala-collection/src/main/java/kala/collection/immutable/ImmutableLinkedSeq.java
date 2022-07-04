@@ -346,8 +346,6 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
 
     //endregion
 
-    //region Collection Operations
-
     @Override
     public @NotNull String className() {
         return "ImmutableLinkedSeq";
@@ -362,8 +360,6 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
     public @NotNull Iterator<E> iterator() {
         return list.iterator();
     }
-
-    //endregion
 
     //region Size Info
 
@@ -1432,8 +1428,6 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
             return node;
         }
 
-        //region Collection Operations
-
         @Override
         public @NotNull String className() {
             return "ImmutableLinkedSeq.Node";
@@ -1484,8 +1478,6 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
             }
             return new SeqViews.WithCachedSize<>(this);
         }
-
-        //endregion
 
         //region Size Info
 

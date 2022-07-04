@@ -44,8 +44,6 @@ public interface SeqView<@Covariant E> extends CollectionView<E>, SeqLike<E>, An
         return new SeqViews.Single<>(value);
     }
 
-    //region Collection Operations
-
     @Override
     default @NotNull String className() {
         return "SeqView";
@@ -55,8 +53,6 @@ public interface SeqView<@Covariant E> extends CollectionView<E>, SeqLike<E>, An
     default @NotNull SeqView<E> view() {
         return this;
     }
-
-    //endregion
 
     @Override
     default @NotNull SeqView<E> slice(int beginIndex, int endIndex) {

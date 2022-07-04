@@ -165,8 +165,6 @@ public final class CollectionViews {
             this.source = source;
         }
 
-        //region Collection Operations
-
         @Override
         public final @NotNull Iterator<E> iterator() {
             return source.iterator();
@@ -186,8 +184,6 @@ public final class CollectionViews {
         public final @NotNull Stream<E> parallelStream() {
             return source.parallelStream();
         }
-
-        //endregion
 
         //region Size Info
 
@@ -534,8 +530,6 @@ public final class CollectionViews {
             this.mapper = mapper;
         }
 
-        //region Collection Operations
-
         @Override
         public @NotNull Iterator<E> iterator() {
             return Iterators.map(source.iterator(), mapper);
@@ -555,8 +549,6 @@ public final class CollectionViews {
         public @NotNull Stream<E> parallelStream() {
             return source.parallelStream().map(mapper);
         }
-
-        //endregion
 
         //region Size Info
 

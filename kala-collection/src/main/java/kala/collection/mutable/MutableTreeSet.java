@@ -265,8 +265,6 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     }
     //endregion
 
-    //region Collection Operations
-
     @Override
     public @NotNull String className() {
         return "MutableTreeSet";
@@ -293,8 +291,6 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     public @NotNull MutableTreeSet<E> clone() {
         return from(comparator, this); // need to optimize
     }
-
-    //endregion
 
     //region Size Info
 

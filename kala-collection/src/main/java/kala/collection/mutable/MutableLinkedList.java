@@ -146,8 +146,6 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
         return x;
     }
 
-    //region Collection Operations
-
     @Override
     public @NotNull String className() {
         return "MutableLinkedList";
@@ -185,8 +183,6 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
         }
         return res;
     }
-
-    //endregion
 
     @Override
     public E get(int index) {

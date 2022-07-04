@@ -90,8 +90,6 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E>, Immuta
 
     //endregion
 
-    //region Collection Operations
-
     @Override
     default @NotNull String className() {
         return "ImmutableCollection";
@@ -102,8 +100,6 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E>, Immuta
     default <U> @NotNull CollectionFactory<U, ?, ? extends ImmutableCollection<U>> iterableFactory() {
         return factory();
     }
-
-    //endregion
 
     @Contract(pure = true)
     default @NotNull ImmutableCollection<E> filter(@NotNull Predicate<? super E> predicate) {

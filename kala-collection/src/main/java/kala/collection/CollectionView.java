@@ -20,8 +20,6 @@ public interface CollectionView<@Covariant E> extends CollectionLike<E>, AnyColl
         return ((CollectionView<E>) CollectionViews.Empty.INSTANCE);
     }
 
-    //region Collection Operations
-
     @Override
     default @NotNull String className() {
         return "CollectionView";
@@ -31,8 +29,6 @@ public interface CollectionView<@Covariant E> extends CollectionLike<E>, AnyColl
     default @NotNull CollectionView<E> view() {
         return this;
     }
-
-    //endregion
 
     default @NotNull CollectionView<E> filter(@NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);

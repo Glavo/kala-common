@@ -24,8 +24,6 @@ import java.util.function.*;
 
 public interface IndexedSeqLike<E> extends SeqLike<E> {
 
-    //region Collection Operations
-
     @Override
     default @NotNull Iterator<E> iterator() {
         final int size = size();
@@ -78,8 +76,6 @@ public interface IndexedSeqLike<E> extends SeqLike<E> {
             }
         };
     }
-
-    //endregion
 
     //region Size Info
 

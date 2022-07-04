@@ -67,8 +67,6 @@ public final class ${Type}Arrays {
 </#if>
     //endregion
 
-    //region Collection Operations
-
     public static @NotNull String className(${PrimitiveType} @NotNull [] array) {
         return "${PrimitiveType}[]";
     }
@@ -125,8 +123,6 @@ public final class ${Type}Arrays {
     }
 
 </#if>
-    //endregion
-
     //region Size Info
 
     public static boolean isEmpty(${PrimitiveType} @NotNull [] array) {

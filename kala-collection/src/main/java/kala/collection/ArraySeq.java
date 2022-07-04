@@ -187,8 +187,6 @@ public class ArraySeq<E> extends AbstractIndexedSeq<E> implements Seq<E>, Serial
 
     //endregion
 
-    //region Collection Operations
-
     @Override
     public @NotNull String className() {
         return "ArraySeq";
@@ -218,8 +216,6 @@ public class ArraySeq<E> extends AbstractIndexedSeq<E> implements Seq<E>, Serial
     public final @NotNull Stream<E> parallelStream() {
         return StreamSupport.stream(spliterator(), true);
     }
-
-    //endregion
 
     //region Size Info
 

@@ -1,6 +1,8 @@
 package kala.collection.primitive;
 
+import kala.collection.base.primitive.${Type}Iterator;
 import kala.collection.base.primitive.${Type}Traversable;
+import kala.collection.factory.primitive.${Type}CollectionFactory;
 import kala.collection.immutable.ImmutableCollection;
 import kala.collection.immutable.primitive.Immutable${Type}Collection;
 import kala.function.*;
@@ -10,15 +12,67 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.*;
 
 public interface ${Type}Collection extends PrimitiveCollection<${WrapperType}>, ${Type}CollectionLike {
+    //region Static Factories
 
-    //region Collection Operations
+    static <E> @NotNull ${Type}CollectionFactory<?, ${Type}Collection> factory() {
+        return ${Type}CollectionFactory.narrow(${Type}Seq.factory());
+    }
+
+    static @NotNull ${Type}Collection empty() {
+        return ${Type}Seq.empty();
+    }
+
+    static @NotNull ${Type}Collection of() {
+        return ${Type}Seq.of();
+    }
+
+    static @NotNull ${Type}Collection of(${PrimitiveType} value1) {
+        return ${Type}Seq.of(value1);
+    }
+
+    static @NotNull ${Type}Collection of(${PrimitiveType} value1, ${PrimitiveType} value2) {
+        return ${Type}Seq.of(value1, value2);
+    }
+
+    static @NotNull ${Type}Collection of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3) {
+        return ${Type}Seq.of(value1, value2, value3);
+    }
+
+    static @NotNull ${Type}Collection of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3, ${PrimitiveType} value4) {
+        return ${Type}Seq.of(value1, value2, value3, value4);
+    }
+
+    static @NotNull ${Type}Collection of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3, ${PrimitiveType} value4, ${PrimitiveType} value5) {
+        return ${Type}Seq.of(value1, value2, value3, value4, value5);
+    }
+
+    static @NotNull ${Type}Collection of(${PrimitiveType}... values) {
+        return ${Type}Seq.of(values);
+    }
+
+    static @NotNull ${Type}Collection from(${PrimitiveType} @NotNull [] values) {
+        return ${Type}Seq.from(values);
+    }
+
+    static @NotNull ${Type}Collection from(@NotNull ${Type}Traversable values) {
+        return ${Type}Seq.from(values);
+    }
+
+    static @NotNull ${Type}Collection from(@NotNull ${Type}Iterator it) {
+        return ${Type}Seq.from(it);
+    }
+
+    //endregion
 
     @Override
     default @NotNull String className() {
         return "${Type}CollectionLike";
     }
 
-    //endregion
+    @Override
+    default @NotNull ${Type}CollectionFactory<?, ? extends ${Type}Collection> iterableFactory() {
+        return ${Type}Collection.factory();
+    }
 
     default @NotNull Immutable${Type}Collection filter(@NotNull ${Type}Predicate predicate) {
         throw new UnsupportedOperationException(); // TODO
