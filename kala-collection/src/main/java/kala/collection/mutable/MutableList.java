@@ -67,27 +67,31 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
     }
 
     @SafeVarargs
+    @Contract("_ -> new")
     static <E> @NotNull MutableList<E> of(E... values) {
         return from(values);
     }
 
+    @Contract("_ -> new")
     static <E> @NotNull MutableList<E> from(E @NotNull [] values) {
         return MutableArrayList.from(values);
     }
 
+    @Contract("_ -> new")
     static <E> @NotNull MutableList<E> from(@NotNull Iterable<? extends E> values) {
         return MutableArrayList.from(values);
     }
 
+    @Contract("_ -> new")
     static <E> @NotNull MutableList<E> from(@NotNull Iterator<? extends E> it) {
         return MutableArrayList.from(it);
     }
 
+    @Contract("_ -> new")
     static <E> @NotNull MutableList<E> from(@NotNull Stream<? extends E> stream) {
         return MutableArrayList.from(stream);
     }
 
-    @Contract("_ -> new")
     static <E> @NotNull MutableList<E> wrapJava(@NotNull List<E> list) {
         Objects.requireNonNull(list);
         if (list instanceof AsJavaConvert.MutableListAsJava<?, ?>) {
@@ -116,14 +120,12 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
     }
 
     @Override
-    default @NotNull
-    MutableListIterator<E> seqIterator() {
+    default @NotNull MutableListIterator<E> seqIterator() {
         return seqIterator(0);
     }
 
     @Override
-    default @NotNull
-    MutableListIterator<E> seqIterator(int index) {
+    default @NotNull MutableListIterator<E> seqIterator(int index) {
         Conditions.checkPositionIndex(index, size());
         return new SeqIterators.DefaultMutableListIterator<>(this, index);
     }
