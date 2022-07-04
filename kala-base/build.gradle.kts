@@ -73,6 +73,7 @@ tasks.getByName<GenerateTask>("generateSources") {
             generate("${type}Hasher", model, "PrimitiveHasher")
             generate("Obj${type}BiFunction", model, "ObjPrimitiveBiFunction")
             generate("${type}ObjBiFunction", model, "PrimitiveObjBiFunction")
+            generate("Indexed${type}UnaryOperator", model, "IndexedPrimitiveUnaryOperator")
 
             if (!model.isSpecialized) {
                 if (model != Primitives.Boolean)

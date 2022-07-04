@@ -30,7 +30,7 @@ tasks.getByName<GenerateTask>("generateSources") {
     withPackage("kala.collection.mutable.primitive") {
         for (model in Primitives.all) {
             generate("Mutable${model["Type"]}Collection", model, "MutablePrimitiveCollection")
-            //generate("Mutable${model["Type"]}Seq", model, "MutablePrimitiveSeq")
+            generate("Mutable${model["Type"]}Seq", model, "MutablePrimitiveSeq")
         }
     }
 }

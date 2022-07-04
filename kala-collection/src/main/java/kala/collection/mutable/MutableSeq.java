@@ -1,13 +1,13 @@
 package kala.collection.mutable;
 
 import kala.Conditions;
+import kala.annotations.DelegateBy;
 import kala.collection.Seq;
 import kala.collection.base.ObjectArrays;
 import kala.collection.internal.SeqIterators;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
 import kala.function.IndexedFunction;
-import kala.comparator.Comparators;
 import kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -172,6 +172,7 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E>, MutableAnyS
         }
     }
 
+    @DelegateBy("shuffle(Random)")
     default void shuffle() {
         shuffle(ThreadLocalRandom.current());
     }

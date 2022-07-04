@@ -202,6 +202,10 @@ public interface ${Type}Traversable extends PrimitiveTraversable<${WrapperType}>
 
     //region Aggregate Operations
 
+    default int count(@NotNull ${Type}Predicate predicate) {
+        return iterator().count(predicate);
+    }
+
     default ${PrimitiveType} max() {
         if (knownSize() == 0) {
             throw new NoSuchElementException();
