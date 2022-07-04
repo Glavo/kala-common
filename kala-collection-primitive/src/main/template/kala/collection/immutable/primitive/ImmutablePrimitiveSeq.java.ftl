@@ -1,90 +1,101 @@
-package kala.collection.primitive;
+package kala.collection.immutable.primitive;
 
-import kala.collection.base.primitive.${Type}Iterator;
-import kala.collection.base.primitive.${Type}Traversable;
-import kala.collection.factory.primitive.${Type}CollectionFactory;
+import kala.collection.base.primitive.*;
+import kala.collection.factory.CollectionFactory;
 import kala.collection.immutable.ImmutableSeq;
-import kala.collection.immutable.primitive.Immutable${Type}Seq;
+import kala.collection.primitive.*;
 import kala.function.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.*;
 
-public interface ${Type}Seq extends PrimitiveSeq<${WrapperType}>, ${Type}SeqLike {
+public interface Immutable${Type}Seq extends ImmutablePrimitiveSeq<${WrapperType}>, ${Type}Seq, Immutable${Type}Collection {
+    
     //region Static Factories
 
-    static <E> @NotNull ${Type}CollectionFactory<?, ${Type}Seq> factory() {
+    static <E> @NotNull CollectionFactory<E, ?, ImmutableSeq<E>> factory() {
         throw new UnsupportedOperationException(); // TODO
     }
 
-    static @NotNull ${Type}Seq empty() {
+    static @NotNull Immutable${Type}Seq empty() {
         throw new UnsupportedOperationException(); // TODO
     }
 
-    static @NotNull ${Type}Seq of() {
+    static @NotNull Immutable${Type}Seq of() {
         throw new UnsupportedOperationException(); // TODO
     }
 
-    static @NotNull ${Type}Seq of(${PrimitiveType} value1) {
+    static @NotNull Immutable${Type}Seq of(${PrimitiveType} value1) {
         throw new UnsupportedOperationException(); // TODO
     }
 
-    static @NotNull ${Type}Seq of(${PrimitiveType} value1, ${PrimitiveType} values2) {
+    static @NotNull Immutable${Type}Seq of(${PrimitiveType} value1, ${PrimitiveType} value2) {
         throw new UnsupportedOperationException(); // TODO
     }
 
-    static @NotNull ${Type}Seq of(${PrimitiveType} value1, ${PrimitiveType} values2, ${PrimitiveType} value3) {
+    static @NotNull Immutable${Type}Seq of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3) {
         throw new UnsupportedOperationException(); // TODO
     }
 
-    static @NotNull ${Type}Seq of(${PrimitiveType} value1, ${PrimitiveType} values2, ${PrimitiveType} value3, ${PrimitiveType} value4) {
+    static @NotNull Immutable${Type}Seq of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3, ${PrimitiveType} value4) {
         throw new UnsupportedOperationException(); // TODO
     }
 
-    static @NotNull ${Type}Seq of(${PrimitiveType} value1, ${PrimitiveType} values2, ${PrimitiveType} value3, ${PrimitiveType} value4, ${PrimitiveType} value5) {
+    static @NotNull Immutable${Type}Seq of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3, ${PrimitiveType} value4, ${PrimitiveType} value5) {
         throw new UnsupportedOperationException(); // TODO
     }
 
-    static @NotNull ${Type}Seq of(${PrimitiveType}... values) {
+    static @NotNull Immutable${Type}Seq of(${PrimitiveType}... values) {
         throw new UnsupportedOperationException(); // TODO
     }
 
-    static @NotNull ${Type}Seq from(${PrimitiveType} @NotNull [] values) {
+    static @NotNull Immutable${Type}Seq from(${PrimitiveType} @NotNull [] values) {
         throw new UnsupportedOperationException(); // TODO
     }
 
-    static @NotNull ${Type}Seq from(@NotNull ${Type}Traversable values) {
+    static @NotNull Immutable${Type}Seq from(@NotNull ${Type}Traversable values) {
         throw new UnsupportedOperationException(); // TODO
     }
 
-    static @NotNull ${Type}Seq from(@NotNull ${Type}Iterator it) {
+    static @NotNull Immutable${Type}Seq from(@NotNull ${Type}Iterator it) {
         throw new UnsupportedOperationException(); // TODO
     }
 
-    static @NotNull ${Type}Seq fill(int n, ${PrimitiveType} value) {
-        throw new UnsupportedOperationException(); // TODO
-    }
-
-    static @NotNull ${Type}Seq fill(int n, @NotNull ${Type}Supplier supplier) {
-        throw new UnsupportedOperationException(); // TODO
-    }
+<#if IsSpecialized>
     /*
-    static @NotNull ${Type}Seq fill(int n, @NotNull IntTo${Type}Function init) {
+    static @NotNull Immutable${Type}Seq from(@NotNull ${Type}Stream stream) {
         throw new UnsupportedOperationException(); // TODO
     }
-    */
+     */
+
+</#if>
+    static @NotNull Immutable${Type}Seq fill(int n, ${PrimitiveType} value) {
+        throw new UnsupportedOperationException(); // TODO
+    }
+
+    static @NotNull Immutable${Type}Seq fill(int n, @NotNull ${Type}Supplier supplier) {
+        throw new UnsupportedOperationException(); // TODO
+    }
+
+    /*
+    static @NotNull Immutable${Type}Seq fill(int n, @NotNull IntTo${Type}Function init) {
+        throw new UnsupportedOperationException(); // TODO
+    }
+     */
 
     //endregion
-
-    //region Collection Operations
 
     @Override
-    default @NotNull String className() {
-        return "${Type}Seq";
+    @NotNull
+    default String className() {
+        return "Immutable${Type}Seq";
     }
 
-    //endregion
+    @Override
+    default @NotNull ${Type}SeqView view() {
+        throw new UnsupportedOperationException(); // TODO
+    }
 
     @Override
     @Contract(pure = true)
