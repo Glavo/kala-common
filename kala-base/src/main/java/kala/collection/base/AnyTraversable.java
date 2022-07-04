@@ -26,7 +26,18 @@ public interface AnyTraversable<T> {
     @NotNull Iterator<T> iterator();
 
     default Spliterator<T> spliterator() {
-        return Spliterators.spliteratorUnknownSize(iterator(), 0);
+        final int ks = this.knownSize();
+        if (ks == 0) {
+            return Spliterators.emptySpliterator();
+        } else if (ks > 0) {
+            return Spliterators.spliterator(iterator(), ks, characteristics());
+        } else {
+            return Spliterators.spliteratorUnknownSize(iterator(), characteristics());
+        }
+    }
+
+    default int characteristics() {
+        return 0;
     }
 
     default @NotNull BaseStream<T, ?> stream() {

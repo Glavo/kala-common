@@ -32,9 +32,9 @@ public interface ${Type}Traversable extends PrimitiveTraversable<${WrapperType}>
         if (ks == 0) {
             return Spliterators.empty${Type}Spliterator();
         } else if (ks > 0) {
-            return Spliterators.spliterator(iterator(), ks, 0);
+            return Spliterators.spliterator(iterator(), ks, characteristics());
         } else {
-            return Spliterators.spliteratorUnknownSize(iterator(), 0);
+            return Spliterators.spliteratorUnknownSize(iterator(), characteristics());
         }
     }
 

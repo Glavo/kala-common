@@ -88,18 +88,6 @@ public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<
         return factory();
     }
 
-    @Override
-    default @NotNull Spliterator<E> spliterator() {
-        final int knownSize = knownSize();
-        if (knownSize == 0) {
-            return Spliterators.emptySpliterator();
-        } else if (knownSize > 0) {
-            return Spliterators.spliterator(iterator(), knownSize, Spliterator.DISTINCT | Spliterator.IMMUTABLE);
-        } else {
-            return Spliterators.spliteratorUnknownSize(iterator(), Spliterator.DISTINCT | Spliterator.IMMUTABLE);
-        }
-    }
-
     default @NotNull ImmutableSet<E> added(E value) {
         if (contains(value)) {
             return this;

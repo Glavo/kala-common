@@ -38,15 +38,9 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
 
     @NotNull Iterator<T> iterator();
 
-    default @NotNull Spliterator<T> spliterator() {
-        final int ks = this.knownSize();
-        if (ks == 0) {
-            return Spliterators.emptySpliterator();
-        } else if (ks > 0) {
-            return Spliterators.spliterator(iterator(), ks, 0);
-        } else {
-            return Spliterators.spliteratorUnknownSize(iterator(), 0);
-        }
+    @Override
+    default Spliterator<T> spliterator() {
+        return AnyTraversable.super.spliterator();
     }
 
     /**

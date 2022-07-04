@@ -2,7 +2,6 @@ package kala.collection;
 
 import kala.collection.base.Iterators;
 import kala.collection.factory.CollectionFactory;
-import kala.collection.immutable.ImmutableCollection;
 import kala.collection.immutable.ImmutableSet;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
@@ -10,8 +9,6 @@ import kala.collection.internal.view.SetViews;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
-import java.util.Spliterator;
-import java.util.Spliterators;
 import java.util.function.Predicate;
 
 public interface Set<E> extends Collection<E>, SetLike<E>, AnySet<E> {
@@ -64,14 +61,6 @@ public interface Set<E> extends Collection<E>, SetLike<E>, AnySet<E> {
     @Override
     default <U> @NotNull CollectionFactory<U, ?, ? extends Set<U>> iterableFactory() {
         return factory();
-    }
-
-    @Override
-    default @NotNull Spliterator<E> spliterator() {
-        int knownSize = this.knownSize();
-        return knownSize >= 0
-                ? Spliterators.spliterator(iterator(), knownSize, Spliterator.DISTINCT)
-                : Spliterators.spliteratorUnknownSize(iterator(), Spliterator.DISTINCT);
     }
 
     @Override

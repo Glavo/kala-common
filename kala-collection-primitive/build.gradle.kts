@@ -19,4 +19,10 @@ tasks.getByName<GenerateTask>("generateSources") {
             generate("${model["Type"]}SeqLike", model, "PrimitiveSeqLike")
         }
     }
+
+    withPackage("kala.collection.immutable.primitive") {
+        for (model in Primitives.all) {
+            generate("Immutable${model["Type"]}Collection", model, "ImmutablePrimitiveCollection")
+        }
+    }
 }

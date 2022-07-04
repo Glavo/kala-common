@@ -1,19 +1,15 @@
 package kala.collection.immutable;
 
+import kala.annotations.Covariant;
 import kala.collection.Collection;
-import kala.function.CheckedFunction;
-import kala.function.CheckedPredicate;
+import kala.collection.factory.CollectionFactory;
 import kala.function.Predicates;
 import kala.tuple.Tuple2;
-import kala.annotations.Covariant;
-import kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
-import java.util.Spliterator;
-import java.util.Spliterators;
 import java.util.function.*;
 import java.util.stream.Stream;
 
@@ -105,18 +101,6 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E>, Immuta
     @Contract(pure = true)
     default <U> @NotNull CollectionFactory<U, ?, ? extends ImmutableCollection<U>> iterableFactory() {
         return factory();
-    }
-
-    @Override
-    default @NotNull Spliterator<E> spliterator() {
-        final int knownSize = knownSize();
-        if (knownSize == 0) {
-            return Spliterators.emptySpliterator();
-        } else if (knownSize > 0) {
-            return Spliterators.spliterator(iterator(), knownSize, Spliterator.IMMUTABLE);
-        } else {
-            return Spliterators.spliteratorUnknownSize(iterator(), Spliterator.IMMUTABLE);
-        }
     }
 
     //endregion
