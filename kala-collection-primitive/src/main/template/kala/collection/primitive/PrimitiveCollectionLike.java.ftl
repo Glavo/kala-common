@@ -3,6 +3,7 @@ package kala.collection.primitive;
 import kala.collection.CollectionLike;
 import kala.function.*;
 import kala.collection.base.primitive.${Type}Traversable;
+import kala.collection.immutable.primitive.Immutable${Type}Seq;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,4 +28,12 @@ public interface ${Type}CollectionLike extends PrimitiveCollectionLike<${Wrapper
 
     @Contract(pure = true)
     @NotNull ${Type}CollectionLike flatMap(@NotNull ${Type}Function<? extends ${Type}Traversable> mapper);
+
+    default @NotNull ${Type}Seq toSeq() {
+        return toImmutableSeq();
+    }
+
+    default @NotNull Immutable${Type}Seq toImmutableSeq() {
+        return Immutable${Type}Seq.from(this);
+    }
 }

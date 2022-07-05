@@ -20,6 +20,8 @@ tasks.getByName<GenerateTask>("generateSources") {
             generate("${model["Type"]}SeqLike", model, "PrimitiveSeqLike")
             generate("Indexed${model["Type"]}SeqLike", model, "IndexedPrimitiveSeqLike")
             generate("Abstract${model["Type"]}Seq", model, "AbstractPrimitiveSeq")
+
+            generate("${model["Type"]}SeqIterator", model, "PrimitiveSeqIterator")
         }
     }
 
@@ -41,6 +43,9 @@ tasks.getByName<GenerateTask>("generateSources") {
             generate("AbstractMutable${model["Type"]}Collection", model, "AbstractMutablePrimitiveCollection")
             generate("AbstractMutable${model["Type"]}Seq", model, "AbstractMutablePrimitiveSeq")
             generate("AbstractMutable${model["Type"]}List", model, "AbstractMutablePrimitiveList")
+
+            generate("Mutable${model["Type"]}SeqIterator", model, "MutablePrimitiveSeqIterator")
+            generate("Mutable${model["Type"]}ListIterator", model, "MutablePrimitiveListIterator")
         }
     }
 }

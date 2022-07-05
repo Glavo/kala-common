@@ -75,23 +75,23 @@ public interface ${Type}Collection extends PrimitiveCollection<${WrapperType}>, 
     }
 
     default @NotNull Immutable${Type}Collection filter(@NotNull ${Type}Predicate predicate) {
-        throw new UnsupportedOperationException(); // TODO
+        return view().filter(predicate).toImmutableSeq();
     }
 
     default @NotNull Immutable${Type}Collection filterNot(@NotNull ${Type}Predicate predicate) {
-        throw new UnsupportedOperationException(); // TODO
+        return view().filterNot(predicate).toImmutableSeq();
     }
 
     default @NotNull Immutable${Type}Collection map(@NotNull ${Type}UnaryOperator mapper) {
-        throw new UnsupportedOperationException(); // TODO
+        return view().map(mapper).toImmutableSeq();
     }
 
     default <U> @NotNull ImmutableCollection<U> mapToObj(@NotNull ${Type}Function<? extends U> mapper) {
-        throw new UnsupportedOperationException(); // TODO
+        return view().<U>mapToObj(mapper).toImmutableSeq();
     }
 
     @Contract(pure = true)
     default @NotNull Immutable${Type}Collection flatMap(@NotNull ${Type}Function<? extends ${Type}Traversable> mapper) {
-        throw new UnsupportedOperationException(); // TODO
+        return view().flatMap(mapper).toImmutableSeq();
     }
 }

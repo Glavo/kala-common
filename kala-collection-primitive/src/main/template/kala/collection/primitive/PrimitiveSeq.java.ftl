@@ -106,133 +106,133 @@ public interface ${Type}Seq extends PrimitiveSeq<${WrapperType}>, ${Type}Collect
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq slice(int beginIndex, int endIndex) {
-        throw new UnsupportedOperationException(); // TODO
+        return view().slice(beginIndex, endIndex).toImmutableSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq drop(int n) {
-        throw new UnsupportedOperationException(); // TODO
+        return view().drop(n).toImmutableSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq dropLast(int n) {
-        throw new UnsupportedOperationException(); // TODO
+        return view().dropLast(n).toImmutableSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq dropWhile(@NotNull ${Type}Predicate predicate) {
-        throw new UnsupportedOperationException(); // TODO
+        return view().dropWhile(predicate).toImmutableSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq take(int n) {
-        throw new UnsupportedOperationException(); // TODO
+        return view().take(n).toImmutableSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq takeLast(int n) {
-        throw new UnsupportedOperationException(); // TODO
+        return view().takeLast(n).toImmutableSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq takeWhile(@NotNull ${Type}Predicate predicate) {
-        throw new UnsupportedOperationException(); // TODO
+        return view().takeWhile(predicate).toImmutableSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq updated(int index, ${PrimitiveType} newValue) {
-        throw new UnsupportedOperationException(); // TODO
+        return view().updated(index, newValue).toImmutableSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq concat(@NotNull ${Type}SeqLike other) {
-        throw new UnsupportedOperationException(); // TODO
+        return view().concat(other).toImmutableSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq prepended(${PrimitiveType} value) {
-        throw new UnsupportedOperationException(); // TODO
+        return view().prepended(value).toImmutableSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq prependedAll(${PrimitiveType} @NotNull [] values) {
-        throw new UnsupportedOperationException(); // TODO
+        return view().prependedAll(values).toImmutableSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq prependedAll(@NotNull ${Type}Traversable values) {
-        throw new UnsupportedOperationException(); // TODO
+        return view().prependedAll(values).toImmutableSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq appended(${PrimitiveType} value) {
-        throw new UnsupportedOperationException(); // TODO
+        return view().appended(value).toImmutableSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq appendedAll(@NotNull ${Type}Traversable values) {
-        throw new UnsupportedOperationException(); // TODO
+        return view().appendedAll(values).toImmutableSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq appendedAll(${PrimitiveType} @NotNull [] values) {
-        throw new UnsupportedOperationException(); // TODO
+        return view().appendedAll(values).toImmutableSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq sorted() {
-        throw new UnsupportedOperationException(); // TODO
+        return view().sorted().toImmutableSeq();
     }
 
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq reversed() {
-        throw new UnsupportedOperationException(); // TODO
+        return view().reversed().toImmutableSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq filter(@NotNull ${Type}Predicate predicate) {
-        throw new UnsupportedOperationException(); // TODO
+        return view().filter(predicate).toImmutableSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq filterNot(@NotNull ${Type}Predicate predicate) {
-        throw new UnsupportedOperationException(); // TODO
+        return view().filterNot(predicate).toImmutableSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq map(@NotNull ${Type}UnaryOperator mapper) {
-        throw new UnsupportedOperationException(); // TODO
+        return view().map(mapper).toImmutableSeq();
     }
 
     @Override
     @Contract(pure = true)
     default <U> @NotNull ImmutableSeq<U> mapToObj(@NotNull ${Type}Function<? extends U> mapper) {
-        throw new UnsupportedOperationException(); // TODO
+        return view().<U>mapToObj(mapper).toImmutableSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq flatMap(@NotNull ${Type}Function<? extends ${Type}Traversable> mapper) {
-        throw new UnsupportedOperationException(); // TODO
+        return view().flatMap(mapper).toImmutableSeq();
     }
 }
