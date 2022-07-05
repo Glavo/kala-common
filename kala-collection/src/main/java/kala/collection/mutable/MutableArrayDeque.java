@@ -1,10 +1,10 @@
 package kala.collection.mutable;
 
 import kala.Conditions;
+import kala.collection.IndexedSeq;
 import kala.collection.base.Iterators;
 import kala.collection.base.ObjectArrays;
 import kala.collection.factory.CollectionFactory;
-import kala.control.Option;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public final class MutableArrayDeque<E> extends AbstractMutableIndexedList<E> implements MutableDeque<E>, Serializable {
+public final class MutableArrayDeque<E> extends AbstractMutableList<E> implements MutableDeque<E>, IndexedSeq<E>, Serializable {
     private static final long serialVersionUID = -4166302067142375121L;
 
     private static final Factory<?> FACTORY = new Factory<>();

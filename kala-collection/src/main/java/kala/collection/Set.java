@@ -35,11 +35,11 @@ public interface Set<E> extends Collection<E>, SetLike<E>, AnySet<E> {
         return h;
     }
 
-    static boolean equals(@NotNull Set<?> set1, @NotNull Set<?> set2) {
+    static boolean equals(@NotNull Set<?> set1, @NotNull AnySet<?> set2) {
         if (!set1.canEqual(set2) || !set2.canEqual(set1)) {
             return false;
         }
-        return set1.size() == set2.size() && set1.containsAll(set2);
+        return set1.size() == set2.size() && set1.containsAll(set2.asGeneric());
     }
 
     @Override

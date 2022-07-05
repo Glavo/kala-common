@@ -8,6 +8,6 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Set<?> && Set.equals(this, ((Set<?>) obj));
+        return obj instanceof AnySet<?> && Set.equals(this, ((AnySet<?>) obj));
     }
 }

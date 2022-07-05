@@ -10,6 +10,8 @@ import java.util.stream.StreamSupport;
 
 public interface AnyTraversable<T> {
 
+    @NotNull Traversable<T> asGeneric();
+
     static int knownSize(@NotNull Iterable<?> c) {
         Objects.requireNonNull(c);
         if (c instanceof Collection<?>) {

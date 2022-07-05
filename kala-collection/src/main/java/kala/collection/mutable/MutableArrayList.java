@@ -2,6 +2,7 @@ package kala.collection.mutable;
 
 import kala.Conditions;
 import kala.collection.Collection;
+import kala.collection.IndexedSeq;
 import kala.collection.SeqLike;
 import kala.collection.base.AnyTraversable;
 import kala.collection.base.GenericArrays;
@@ -22,7 +23,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public final class MutableArrayList<E> extends AbstractMutableIndexedList<E> implements Serializable {
+public final class MutableArrayList<E> extends AbstractMutableList<E> implements IndexedSeq<E>, Serializable {
     private static final long serialVersionUID = 2545219250020890853L;
 
     private static final MutableArrayList.Factory<?> FACTORY = new Factory<>();

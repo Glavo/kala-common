@@ -13,11 +13,13 @@ tasks.getByName<GenerateTask>("generateSources") {
             generate("${model["Type"]}Collection", model, "PrimitiveCollection")
             generate("${model["Type"]}CollectionView", model, "PrimitiveCollectionView")
             generate("${model["Type"]}CollectionLike", model, "PrimitiveCollectionLike")
+            generate("Abstract${model["Type"]}Collection", model, "AbstractPrimitiveCollection")
 
             generate("${model["Type"]}Seq", model, "PrimitiveSeq")
             generate("${model["Type"]}SeqView", model, "PrimitiveSeqView")
             generate("${model["Type"]}SeqLike", model, "PrimitiveSeqLike")
             generate("Indexed${model["Type"]}SeqLike", model, "IndexedPrimitiveSeqLike")
+            generate("Abstract${model["Type"]}Seq", model, "AbstractPrimitiveSeq")
         }
     }
 

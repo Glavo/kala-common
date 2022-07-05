@@ -24,7 +24,7 @@ final class ImmutableSeqs {
     private ImmutableSeqs() {
     }
 
-    static abstract class SeqN<E> extends AbstractImmutableIndexedSeq<E> {
+    static abstract class SeqN<E> extends AbstractImmutableSeq<E> implements IndexedSeq<E> {
     }
 
     static final class Seq0<E> extends SeqN<E> implements Serializable {

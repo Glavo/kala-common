@@ -1,10 +1,10 @@
 package kala.collection.mutable;
 
 import kala.Conditions;
-import kala.collection.internal.view.IndexedSeqViews;
+import kala.collection.internal.view.SeqViews;
 import org.jetbrains.annotations.NotNull;
 
-public final class MutableArraySliceView<E> extends IndexedSeqViews.OfArraySlice<E> {
+public final class MutableArraySliceView<E> extends SeqViews.OfArraySlice<E> {
     MutableArraySliceView(Object[] array, int beginIndex, int endIndex) {
         super(array, beginIndex, endIndex);
     }

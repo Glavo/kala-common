@@ -112,15 +112,11 @@ public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E>, AnySeq<E> 
         return Iterators.hash(seq.iterator()) + SEQ_HASH_MAGIC;
     }
 
-    static boolean equals(@NotNull Seq<?> seq1, @NotNull Seq<?> seq2) {
-        if (seq1 == seq2) {
-            return true;
-        }
-        if (!seq1.canEqual(seq2) || !seq2.canEqual(seq1)) {
-            return false;
-        }
+    static boolean equals(@NotNull Seq<?> seq1, @NotNull AnySeq<?> seq2) {
+        if (seq1 == seq2) return true;
+        if (!seq1.canEqual(seq2) || !seq2.canEqual(seq1)) return false;
 
-        return seq1.sameElements(seq2);
+        return seq1.sameElements(seq2.asGeneric());
     }
 
     @Override

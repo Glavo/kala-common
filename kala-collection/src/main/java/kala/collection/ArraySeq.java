@@ -5,7 +5,7 @@ import kala.collection.base.ObjectArrays;
 import kala.collection.base.Traversable;
 import kala.Conditions;
 import kala.collection.immutable.ImmutableArray;
-import kala.collection.internal.view.IndexedSeqViews;
+import kala.collection.internal.view.SeqViews;
 import kala.collection.mutable.MutableArrayList;
 import kala.collection.factory.CollectionFactory;
 import kala.control.Option;
@@ -26,7 +26,7 @@ import java.util.stream.StreamSupport;
 
 @SuppressWarnings("unchecked")
 @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "elements")
-public class ArraySeq<E> extends AbstractIndexedSeq<E> implements Seq<E>, Serializable {
+public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>, Serializable {
     private static final long serialVersionUID = 4981379062449237945L;
 
     public static final ArraySeq<?> EMPTY = new ArraySeq<>(GenericArrays.EMPTY_OBJECT_ARRAY);
@@ -435,7 +435,7 @@ public class ArraySeq<E> extends AbstractIndexedSeq<E> implements Seq<E>, Serial
             case 1:
                 return SeqView.of((E) elements[beginIndex]);
         }
-        return new IndexedSeqViews.OfArraySlice<>(elements, beginIndex, endIndex);
+        return new SeqViews.OfArraySlice<>(elements, beginIndex, endIndex);
     }
 
     //region Aggregate Operations

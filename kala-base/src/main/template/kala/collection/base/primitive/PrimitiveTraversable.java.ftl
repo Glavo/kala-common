@@ -147,6 +147,14 @@ public interface ${Type}Traversable extends PrimitiveTraversable<${WrapperType}>
 </#if>
     }
 
+    default boolean sameElements(@NotNull ${Type}Traversable other) {
+        return iterator().sameElements(other.iterator());
+    }
+
+    default boolean sameElements(@NotNull Iterable<?> other) {
+        return iterator().sameElements(other.iterator());
+    }
+
     /**
       * Tests whether any element of this {@code ${Type}Traversable} match the {@code predicate}.
       *

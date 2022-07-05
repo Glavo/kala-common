@@ -1,18 +1,12 @@
-package kala.collection;
+package kala.collection.primitive;
 
-import kala.annotations.Covariant;
-import kala.collection.base.Iterators;
+import kala.collection.AnyCollection;
+import kala.collection.Collection;
 
-public abstract class AbstractCollection<@Covariant E> implements Collection<E> {
-
-    @Override
-    public boolean isNotEmpty() {
-        return Collection.super.isNotEmpty();
-    }
-
+public abstract class Abstract${Type}Collection implements ${Type}Collection {
     @Override
     public int hashCode() {
-        return Iterators.hash(iterator());
+        return iterator().hash();
     }
 
     @Override

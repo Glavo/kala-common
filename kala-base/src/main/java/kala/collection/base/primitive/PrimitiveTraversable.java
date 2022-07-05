@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 public interface PrimitiveTraversable<T> extends AnyTraversable<T> {
 
-    default @NotNull Traversable<T> asTraversable() {
+    default @NotNull Traversable<T> asGeneric() {
         return new AsGenericTraversable<>(this);
     }
 

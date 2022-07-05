@@ -34,6 +34,10 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         return (Traversable<T>) traversable;
     }
 
+    default @NotNull Traversable<T> asGeneric() {
+        return this;
+    }
+
     @NotNull Iterator<T> iterator();
 
     @Override

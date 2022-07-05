@@ -8,6 +8,7 @@
 
 package kala.collection.immutable;
 
+import kala.collection.IndexedSeq;
 import kala.collection.SeqLike;
 import kala.collection.base.AnyTraversable;
 import kala.collection.base.Traversable;
@@ -26,7 +27,7 @@ import java.util.function.*;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableIndexedSeq<E> implements Serializable {
+public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq<E> implements IndexedSeq<E>, Serializable {
 
     final Object[] prefix1;
 

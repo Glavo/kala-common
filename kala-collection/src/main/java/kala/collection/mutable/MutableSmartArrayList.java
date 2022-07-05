@@ -1,9 +1,9 @@
 package kala.collection.mutable;
 
 import kala.Conditions;
+import kala.collection.IndexedSeq;
 import kala.collection.base.GenericArrays;
 import kala.collection.base.Iterators;
-import kala.control.Option;
 import kala.function.IndexedFunction;
 import kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.Contract;
@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public final class MutableSmartArrayList<E> extends AbstractMutableIndexedList<E> implements Serializable {
+public final class MutableSmartArrayList<E> extends AbstractMutableList<E> implements IndexedSeq<E>, Serializable {
     private static final long serialVersionUID = 85150510977824651L;
 
     private static final int DEFAULT_CAPACITY = 16;

@@ -1,5 +1,6 @@
 package kala.collection.primitive;
 
+import kala.collection.AnySeq;
 import kala.collection.base.primitive.${Type}Iterator;
 import kala.collection.base.primitive.${Type}Traversable;
 import kala.collection.factory.primitive.${Type}CollectionFactory;
@@ -79,6 +80,17 @@ public interface ${Type}Seq extends PrimitiveSeq<${WrapperType}>, ${Type}Collect
 
     static int hashCode(@NotNull ${Type}Seq seq) {
         return seq.iterator().hash() + SEQ_HASH_MAGIC;
+    }
+
+    static boolean equals(@NotNull ${Type}Seq seq1, @NotNull AnySeq<?> seq2) {
+        if (seq1 == seq2) return true;
+        if (!seq1.canEqual(seq2) || !seq2.canEqual(seq1)) return false;
+
+        if (seq2 instanceof ${Type}Seq) {
+            return seq1.sameElements(((${Type}Seq)seq2));
+        } else {
+            return seq1.sameElements(seq2.asGeneric());
+        }
     }
 
     @Override
