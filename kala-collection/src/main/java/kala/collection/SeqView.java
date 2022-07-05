@@ -28,14 +28,12 @@ public interface SeqView<@Covariant E> extends CollectionView<E>, SeqLike<E>, An
     //region Narrow method
 
     @Contract(value = "_ -> param1", pure = true)
-    @SuppressWarnings("unchecked")
     static <E> SeqView<E> narrow(SeqView<? extends E> view) {
         return (SeqView<E>) view;
     }
 
     //endregion
 
-    @SuppressWarnings("unchecked")
     static <E> @NotNull SeqView<E> empty() {
         return (SeqView<E>) SeqViews.Empty.INSTANCE;
     }
