@@ -1,9 +1,8 @@
 package kala.collection.primitive;
 
 import kala.annotations.ReplaceWith;
-import kala.collection.SeqIterator;
 import kala.collection.base.primitive.${Type}Iterator;
-import kala.collection.mutable.MutableListIterator;
+import kala.collection.primitive.internal.${Type}SeqIterators;
 <#if !IsSpecialized>
 import kala.function.${Type}Consumer;
 </#if>
@@ -14,6 +13,11 @@ import java.util.function.${Type}Consumer;
 </#if>
 
 public interface ${Type}SeqIterator extends PrimitiveSeqIterator<${WrapperType}, ${Type}Consumer>, ${Type}Iterator {
+
+    static @NotNull ${Type}SeqIterator empty() {
+        return ${Type}SeqIterators.EMPTY;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -67,7 +71,7 @@ public interface ${Type}SeqIterator extends PrimitiveSeqIterator<${WrapperType},
         throw new UnsupportedOperationException();
     }
 
-    @Deprecated
+    // @Deprecated
     default void remove() throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }

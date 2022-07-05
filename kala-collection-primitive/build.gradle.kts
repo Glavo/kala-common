@@ -22,6 +22,13 @@ tasks.getByName<GenerateTask>("generateSources") {
             generate("Abstract${model["Type"]}Seq", model, "AbstractPrimitiveSeq")
 
             generate("${model["Type"]}SeqIterator", model, "PrimitiveSeqIterator")
+            generate("Abstract${model["Type"]}SeqIterator", model, "AbstractPrimitiveSeqIterator")
+        }
+    }
+
+    withPackage("kala.collection.primitive.internal") {
+        for (model in Primitives.all) {
+            generate("${model["Type"]}SeqIterators", model, "PrimitiveSeqIterators")
         }
     }
 

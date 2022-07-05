@@ -1,33 +1,34 @@
-package kala.collection.internal;
+package kala.collection.primitive.internal;
 
-import kala.collection.AbstractSeqIterator;
-import kala.collection.SeqIterator;
-import kala.collection.SeqLike;
-import kala.collection.base.AbstractIterator;
-import kala.collection.mutable.MutableList;
-import kala.collection.mutable.MutableListIterator;
-import kala.collection.mutable.MutableSeq;
+import kala.collection.base.primitive.Abstract${Type}Iterator;
 import kala.collection.mutable.MutableSeqIterator;
+import kala.collection.mutable.primitive.Mutable${Type}List;
+import kala.collection.mutable.primitive.Mutable${Type}ListIterator;
+import kala.collection.mutable.primitive.Mutable${Type}Seq;
+import kala.collection.mutable.primitive.Mutable${Type}SeqIterator;
+import kala.collection.primitive.Abstract${Type}SeqIterator;
+import kala.collection.primitive.${Type}SeqIterator;
+import kala.collection.primitive.${Type}SeqLike;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ConcurrentModificationException;
 import java.util.NoSuchElementException;
 
-public final class SeqIterators {
-    private SeqIterators() {
+public final class ${Type}SeqIterators {
+    private ${Type}SeqIterators() {
     }
 
-    public static final SeqIterator<?> EMPTY = new EmptySeqIterator<>();
-    public static final MutableSeqIterator<?> EMPTY_MUTABLE = new EmptyMutableSeqIterator<>();
+    public static final ${Type}SeqIterator EMPTY = new Empty${Type}SeqIterator();
+    public static final Mutable${Type}SeqIterator EMPTY_MUTABLE = new EmptyMutable${Type}SeqIterator();
 
-    private static class EmptySeqIterator<E> extends AbstractIterator<E> implements SeqIterator<E> {
+    private static class Empty${Type}SeqIterator extends Abstract${Type}Iterator implements ${Type}SeqIterator {
         @Override
         public boolean hasNext() {
             return false;
         }
 
         @Override
-        public E next() {
+        public ${PrimitiveType} next${Type}() {
             throw new NoSuchElementException();
         }
 
@@ -35,7 +36,7 @@ public final class SeqIterators {
             return false;
         }
 
-        public E previous() {
+        public ${PrimitiveType} previous${Type}() {
             throw new NoSuchElementException();
         }
 
@@ -48,19 +49,19 @@ public final class SeqIterators {
         }
     }
 
-    private static class EmptyMutableSeqIterator<E> extends EmptySeqIterator<E> implements MutableSeqIterator<E> {
+    private static class EmptyMutable${Type}SeqIterator extends Empty${Type}SeqIterator implements Mutable${Type}SeqIterator {
         @Override
-        public void set(E e) {
+        public void set(${PrimitiveType} e) {
             throw new IllegalStateException();
         }
     }
 
-    public static class DefaultSeqIterator<E, S extends SeqLike<E>> extends AbstractSeqIterator<E> {
+    public static class Default${Type}SeqIterator<S extends ${Type}SeqLike> extends Abstract${Type}SeqIterator {
         protected final @NotNull S seq;
 
         protected int lastRet = -1;
 
-        public DefaultSeqIterator(@NotNull S seq, int index) {
+        public Default${Type}SeqIterator(@NotNull S seq, int index) {
             super(index);
             this.seq = seq;
         }
@@ -71,10 +72,10 @@ public final class SeqIterators {
         }
 
         @Override
-        public E next() {
+        public ${PrimitiveType} next${Type}() {
             try {
                 int i = cursor;
-                E next = seq.get(i);
+                ${PrimitiveType} next = seq.get(i);
                 lastRet = i;
                 cursor = i + 1;
                 return next;
@@ -84,10 +85,10 @@ public final class SeqIterators {
         }
 
         @Override
-        public E previous() {
+        public ${PrimitiveType} previous${Type}() {
             try {
                 int i = cursor - 1;
-                E previous = seq.get(i);
+                ${PrimitiveType} previous = seq.get(i);
                 lastRet = cursor = i;
                 return previous;
             } catch (IndexOutOfBoundsException e) {
@@ -96,15 +97,14 @@ public final class SeqIterators {
         }
     }
 
-    public static class DefaultMutableSeqIterator<E, S extends MutableSeq<E>> extends DefaultSeqIterator<E, S>
-            implements MutableSeqIterator<E> {
-        public DefaultMutableSeqIterator(@NotNull S seq, int index) {
+    public static class DefaultMutable${Type}SeqIterator<S extends Mutable${Type}Seq> extends Default${Type}SeqIterator<S>
+            implements Mutable${Type}SeqIterator {
+        public DefaultMutable${Type}SeqIterator(@NotNull S seq, int index) {
             super(seq, index);
         }
 
-
         @Override
-        public void set(E e) {
+        public void set(${PrimitiveType} e) {
             if (lastRet < 0) {
                 throw new IllegalStateException();
             }
@@ -117,14 +117,14 @@ public final class SeqIterators {
         }
     }
 
-    public static class DefaultMutableListIterator<E, S extends MutableList<E>> extends DefaultMutableSeqIterator<E, S>
-            implements MutableListIterator<E> {
+    public static class DefaultMutableListIterator<S extends Mutable${Type}List> extends DefaultMutable${Type}SeqIterator<S>
+            implements Mutable${Type}ListIterator {
         public DefaultMutableListIterator(@NotNull S seq, int index) {
             super(seq, index);
         }
 
         @Override
-        public void add(E e) {
+        public void add(${PrimitiveType} e) {
             try {
                 int i = cursor;
                 seq.insert(i, e);
@@ -153,10 +153,10 @@ public final class SeqIterators {
         }
     }
 
-    public static final class FrozenSeqIterator<E> implements SeqIterator<E> {
-        private final @NotNull SeqIterator<E> source;
+    public static final class Frozen${Type}SeqIterator implements ${Type}SeqIterator {
+        private final @NotNull ${Type}SeqIterator source;
 
-        public FrozenSeqIterator(@NotNull SeqIterator<E> source) {
+        public Frozen${Type}SeqIterator(@NotNull ${Type}SeqIterator source) {
             this.source = source;
         }
 
@@ -166,8 +166,8 @@ public final class SeqIterators {
         }
 
         @Override
-        public E next() {
-            return source.next();
+        public ${PrimitiveType} next${Type}() {
+            return source.next${Type}();
         }
 
         @Override
@@ -176,8 +176,8 @@ public final class SeqIterators {
         }
 
         @Override
-        public E previous() {
-            return source.previous();
+        public ${PrimitiveType} previous${Type}() {
+            return source.previous${Type}();
         }
 
         @Override
@@ -192,7 +192,7 @@ public final class SeqIterators {
 
         @Override
         public String toString() {
-            return "FrozenSeqIterator[" + source + ']';
+            return "Frozen${Type}SeqIterator[" + source + ']';
         }
     }
 }
