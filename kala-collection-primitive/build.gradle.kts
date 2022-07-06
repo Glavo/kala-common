@@ -20,11 +20,14 @@ tasks.getByName<GenerateTask>("generateSources") {
             generate("${model["Type"]}SeqView", model, "PrimitiveSeqView")
             generate("${model["Type"]}SeqLike", model, "PrimitiveSeqLike")
             generate("Indexed${model["Type"]}SeqLike", model, "IndexedPrimitiveSeqLike")
+            generate("Indexed${model["Type"]}Seq", model, "IndexedPrimitiveSeq")
             generate("Abstract${model["Type"]}Seq", model, "AbstractPrimitiveSeq")
             generate("Abstract${model["Type"]}SeqView", model, "AbstractPrimitiveSeqView")
 
             generate("${model["Type"]}SeqIterator", model, "PrimitiveSeqIterator")
             generate("Abstract${model["Type"]}SeqIterator", model, "AbstractPrimitiveSeqIterator")
+
+            generate("${model["Type"]}ArraySeq", model, "PrimitiveArraySeq")
         }
     }
 

@@ -3,6 +3,7 @@ package kala.collection.base.primitive;
 import kala.Conditions;
 import kala.annotations.StaticClass;
 import kala.control.primitive.${Type}Option;
+import kala.function.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,14 +13,10 @@ import java.io.Serializable;
 import java.io.UncheckedIOException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.*;
 import java.util.function.IntFunction;
 <#if IsSpecialized>
-import java.util.function.${Type}Predicate;
-import java.util.function.${Type}Function;
 import java.util.stream.${Type}Stream;
-<#else>
-import kala.function.${Type}Predicate;
-import kala.function.${Type}Function;
 </#if>
 
 @StaticClass
@@ -443,6 +440,176 @@ public final class ${Type}Arrays {
         }
 
         return -1;
+    }
+
+    //endregion
+
+    //region Aggregate Operations
+
+    @Contract(pure = true)
+    public static ${PrimitiveType} max(${PrimitiveType} @NotNull [] array) {
+        final int length = array.length; // implicit null check of array
+        if (length == 0) {
+            throw new NoSuchElementException();
+        }
+
+<#if Type == "Boolean">
+        for (boolean e : array) {
+            if (e) return true;
+        }
+
+        return false;
+<#else>
+        ${PrimitiveType} e = array[0];
+        for (int i = 1; i < length; i++) {
+            ${PrimitiveType} v = array[i];
+            if (${WrapperType}.compare(e, v) < 0) {
+                e = v;
+            }
+        }
+        return e;
+</#if>
+    }
+
+    @Contract(pure = true)
+    public static @Nullable ${WrapperType} maxOrNull(${PrimitiveType} @NotNull [] array) {
+        return array.length != 0 ? max(array) : null;
+    }
+
+    @Contract(pure = true)
+    public static @NotNull ${Type}Option maxOption(${PrimitiveType} @NotNull [] array) {
+        return array.length != 0 ? ${Type}Option.some(max(array)) : ${Type}Option.none();
+    }
+
+    @Contract(pure = true)
+    public static ${PrimitiveType} min(${PrimitiveType} @NotNull [] array) {
+        final int length = array.length; // implicit null check of array
+        if (length == 0) {
+            throw new NoSuchElementException();
+        }
+
+<#if Type == "Boolean">
+        for (boolean e : array) {
+            if (!e) return false;
+        }
+
+        return true;
+<#else>
+    ${PrimitiveType} e = array[0];
+        for (int i = 1; i < length; i++) {
+            ${PrimitiveType} v = array[i];
+            if (${WrapperType}.compare(e, v) > 0) {
+                e = v;
+            }
+        }
+        return e;
+</#if>
+    }
+
+    @Contract(pure = true)
+    public static @Nullable ${WrapperType} minOrNull(${PrimitiveType} @NotNull [] array) {
+        return array.length != 0 ? min(array) : null;
+    }
+
+    @Contract(pure = true)
+    public static @NotNull ${Type}Option minOption(${PrimitiveType} @NotNull [] array) {
+        return array.length != 0 ? ${Type}Option.some(min(array)) : ${Type}Option.none();
+    }
+    
+    @Contract(pure = true)
+    public static ${PrimitiveType} fold(${PrimitiveType} @NotNull [] array, ${PrimitiveType} zero, @NotNull ${Type}BinaryOperator op) {
+        return foldLeft(array, zero, op);
+    }
+
+    @Contract(pure = true)
+    public static ${PrimitiveType} foldLeft(${PrimitiveType} @NotNull [] array, ${PrimitiveType} zero, @NotNull ${Type}BinaryOperator op) {
+        for (${PrimitiveType} e : array) {
+            zero = op.applyAs${Type}(zero, e);
+        }
+        return zero;
+    }
+
+    @Contract(pure = true)
+    public static <U> U foldLeftToObj(${PrimitiveType} @NotNull [] array, U zero, @NotNull Obj${Type}BiFunction<U, U> op) {
+        for (${PrimitiveType} e : array) {
+            zero = op.apply(zero, e);
+        }
+        return zero;
+    }
+
+    @Contract(pure = true)
+    public static ${PrimitiveType} foldRight(${PrimitiveType} @NotNull [] array, ${PrimitiveType} zero, @NotNull ${Type}BinaryOperator op) {
+        for (int i = array.length - 1; i >= 0; i--) {
+            zero = op.applyAs${Type}(array[i], zero);
+        }
+        return zero;
+    }
+
+    public static <U> U foldRightToObj(${PrimitiveType} @NotNull [] array, U zero, @NotNull ${Type}ObjBiFunction<U, U> op) {
+        for (int i = array.length - 1; i >= 0; i--) {
+            zero = op.apply(array[i], zero);
+        }
+        return zero;
+    }
+
+    @Contract(pure = true)
+    public static ${PrimitiveType} reduce(${PrimitiveType} @NotNull [] array, @NotNull ${Type}BinaryOperator op) {
+        return reduceLeft(array, op);
+    }
+
+    @Contract(pure = true)
+    public static @NotNull ${Type}Option reduceOption(${PrimitiveType} @NotNull [] array, @NotNull ${Type}BinaryOperator op) {
+        return reduceLeftOption(array, op);
+    }
+
+    @Contract(pure = true)
+    public static ${PrimitiveType} reduceLeft(${PrimitiveType} @NotNull [] array, @NotNull ${Type}BinaryOperator op) {
+        final int length = array.length;
+
+        if (length == 0) {
+            throw new NoSuchElementException();
+        }
+
+        ${PrimitiveType} e = array[0];
+        for (int i = 1; i < length; i++) {
+            e = op.applyAs${Type}(e, array[i]);
+        }
+        return e;
+    }
+
+    @Contract(pure = true)
+    public static @Nullable ${WrapperType} reduceLeftOrNull(${PrimitiveType} @NotNull [] array, @NotNull ${Type}BinaryOperator op) {
+        return array.length != 0 ? reduceLeft(array, op) : null;
+    }
+
+    @Contract(pure = true)
+    public static @NotNull ${Type}Option reduceLeftOption(${PrimitiveType} @NotNull [] array, @NotNull ${Type}BinaryOperator op) {
+        return array.length != 0 ? ${Type}Option.some(reduceLeft(array, op)) : ${Type}Option.none();
+    }
+
+    @Contract(pure = true)
+    public static ${PrimitiveType} reduceRight(${PrimitiveType} @NotNull [] array, @NotNull ${Type}BinaryOperator op) {
+        final int length = array.length;
+
+        if (length == 0) {
+            throw new NoSuchElementException();
+        }
+
+        ${PrimitiveType} e = array[length - 1];
+        for (int i = length - 2; i >= 0; i--) {
+            e = op.applyAs${Type}(array[i], e);
+        }
+        return e;
+    }
+
+    @Contract(pure = true)
+    public static @Nullable ${WrapperType} reduceRightOrNull(${PrimitiveType} @NotNull [] array, @NotNull ${Type}BinaryOperator op) {
+        return array.length != 0 ? reduceRight(array, op) : null;
+    }
+
+    @Contract(pure = true)
+    public static @NotNull ${Type}Option reduceRightOption(${PrimitiveType} @NotNull [] array, @NotNull ${Type}BinaryOperator op) {
+        return array.length != 0 ? ${Type}Option.some(reduceRight(array, op)) : ${Type}Option.none();
     }
 
     //endregion

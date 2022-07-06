@@ -1,5 +1,6 @@
 package kala.collection.primitive;
 
+import kala.Conditions;
 import kala.collection.base.primitive.Abstract${Type}Iterator;
 import kala.collection.base.primitive.${Type}Iterator;
 import kala.control.primitive.${Type}Option;
@@ -102,6 +103,30 @@ public interface Indexed${Type}SeqLike extends ${Type}SeqLike, RandomAccess {
     }
 
     //endregion
+
+    default int binarySearch(${PrimitiveType} value) {
+        return binarySearch(value, 0, size());
+    }
+
+    default int binarySearch(${PrimitiveType} value, int beginIndex, int endIndex) {
+        Conditions.checkPositionIndices(beginIndex, endIndex, size());
+        int low = beginIndex;
+        int high = endIndex - 1;
+
+        while (low <= high) {
+            final int mid = (low + high) >>> 1;
+            final ${PrimitiveType} midVal = get(mid);
+            final int cmp = ${WrapperType}.compare(midVal, value);
+            if (cmp < 0) {
+                low = mid + 1;
+            } else if (cmp > 0) {
+                high = mid - 1;
+            } else {
+                return mid;
+            }
+        }
+        return -(low + 1);
+    }
 
     //region Element Retrieval Operations
 

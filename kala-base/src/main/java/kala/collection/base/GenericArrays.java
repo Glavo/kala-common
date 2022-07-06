@@ -929,18 +929,13 @@ public final class GenericArrays {
     }
 
     @Contract(pure = true)
+    public static <E> @Nullable E reduceLeftOrNull(E @NotNull [] array, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
+        return array.length != 0 ? reduceLeft(array, op) : null;
+    }
+
+    @Contract(pure = true)
     public static <E> @NotNull Option<E> reduceLeftOption(E @NotNull [] array, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-        final int length = array.length;
-
-        if (length == 0) {
-            return Option.none();
-        }
-
-        E e = array[0];
-        for (int i = 1; i < length; i++) {
-            e = op.apply(e, array[i]);
-        }
-        return Option.some(e);
+        return array.length != 0 ? Option.some(reduceLeft(array, op)) : Option.none();
     }
 
     @Contract(pure = true)
@@ -959,18 +954,13 @@ public final class GenericArrays {
     }
 
     @Contract(pure = true)
+    public static <E> @Nullable E reduceRightOrNull(E @NotNull [] array, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
+        return array.length != 0 ? reduceRight(array, op) : null;
+    }
+
+    @Contract(pure = true)
     public static <E> @NotNull Option<E> reduceRightOption(E @NotNull [] array, @NotNull BiFunction<? super E, ? super E, ? extends E> op) {
-        final int length = array.length;
-
-        if (length == 0) {
-            return Option.none();
-        }
-
-        E e = array[length - 1];
-        for (int i = length - 2; i >= 0; i--) {
-            e = op.apply(array[i], e);
-        }
-        return Option.some(e);
+        return array.length != 0 ? Option.some(reduceRight(array, op)) : Option.none();
     }
 
     //endregion

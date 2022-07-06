@@ -169,7 +169,7 @@ public interface Mutable${Type}Seq extends MutablePrimitiveSeq<${WrapperType}>, 
                 swap(i - 1, random.nextInt(i));
             }
         } else {
-            final ${PrimitiveType}[]arr = this.toArray();
+            final ${PrimitiveType}[] arr = this.toArray();
             ${Type}Arrays.shuffle(arr, random);
             this.replaceAllIndexed((i, v) -> arr[i]);
         }

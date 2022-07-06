@@ -248,6 +248,62 @@ public interface ${Type}Traversable extends PrimitiveTraversable<${WrapperType}>
         return knownSize() == 0 ? ${Type}Option.none() : iterator().minOption();
     }
 
+    default ${PrimitiveType} fold(${PrimitiveType} zero, @NotNull ${Type}BinaryOperator op) {
+        return foldLeft(zero, op);
+    }
+
+    default ${PrimitiveType} foldLeft(${PrimitiveType} zero, @NotNull ${Type}BinaryOperator op) {
+        return iterator().foldLeft(zero, op);
+    }
+
+    default <U> U foldLeftToObj(U zero, @NotNull Obj${Type}BiFunction<U, U> op) {
+        return iterator().foldLeftToObj(zero, op);
+    }
+
+    default ${PrimitiveType} foldRight(${PrimitiveType} zero, @NotNull ${Type}BinaryOperator op) {
+        return iterator().foldRight(zero, op);
+    }
+
+    default <U> U foldRightToObj(U zero, @NotNull ${Type}ObjBiFunction<U, U> op) {
+        return iterator().foldRightToObj(zero, op);
+    }
+
+    default ${PrimitiveType} reduce(@NotNull ${Type}BinaryOperator op) {
+        return reduceLeft(op);
+    }
+
+    default @Nullable ${WrapperType} reduceOrNull(@NotNull ${Type}BinaryOperator op) {
+        return reduceLeftOrNull(op);
+    }
+
+    default @NotNull ${Type}Option reduceOption(@NotNull ${Type}BinaryOperator op) {
+        return reduceLeftOption(op);
+    }
+
+    default ${PrimitiveType} reduceLeft(@NotNull ${Type}BinaryOperator op) {
+        return iterator().reduceLeft(op);
+    }
+
+    default @Nullable ${WrapperType} reduceLeftOrNull(@NotNull ${Type}BinaryOperator op) {
+        return isNotEmpty() ? reduceLeft(op) : null;
+    }
+
+    default @NotNull ${Type}Option reduceLeftOption(@NotNull ${Type}BinaryOperator op) {
+        return isNotEmpty() ? ${Type}Option.some(reduceLeft(op)) : ${Type}Option.none();
+    }
+
+    default ${PrimitiveType} reduceRight(@NotNull ${Type}BinaryOperator op) {
+        return iterator().reduceRight(op);
+    }
+
+    default @Nullable ${WrapperType} reduceRightOrNull(@NotNull ${Type}BinaryOperator op) {
+        return isNotEmpty() ? reduceRight(op) : null;
+    }
+
+    default @NotNull ${Type}Option reduceRightOption(@NotNull ${Type}BinaryOperator op) {
+        return isNotEmpty() ? ${Type}Option.some(reduceRight(op)) : ${Type}Option.none();
+    }
+
     //endregion
 
     //region Copy Operations
