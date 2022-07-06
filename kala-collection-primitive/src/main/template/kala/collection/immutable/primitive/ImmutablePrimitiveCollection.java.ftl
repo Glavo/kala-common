@@ -99,27 +99,27 @@ public interface Immutable${Type}Collection extends ImmutablePrimitiveCollection
 
     @Override
     default @NotNull Immutable${Type}Collection filter(@NotNull ${Type}Predicate predicate) {
-        throw new UnsupportedOperationException(); // TODO
+        return AbstractImmutable${Type}Collection.filter(this, predicate, iterableFactory());
     }
 
     @Override
     default @NotNull Immutable${Type}Collection filterNot(@NotNull ${Type}Predicate predicate) {
-        throw new UnsupportedOperationException(); // TODO
+        return AbstractImmutable${Type}Collection.filterNot(this, predicate, iterableFactory());
     }
 
     @Override
     default @NotNull Immutable${Type}Collection map(@NotNull ${Type}UnaryOperator mapper) {
-        throw new UnsupportedOperationException(); // TODO
+        return AbstractImmutable${Type}Collection.map(this, mapper, iterableFactory());
     }
 
     @Override
     default <U> @NotNull ImmutableCollection<U> mapToObj(@NotNull ${Type}Function<? extends U> mapper) {
-        throw new UnsupportedOperationException(); // TODO
+        return ${Type}Collection.super.mapToObj(mapper);
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Collection flatMap(@NotNull ${Type}Function<? extends ${Type}Traversable> mapper) {
-        throw new UnsupportedOperationException(); // TODO
+        return AbstractImmutable${Type}Collection.flatMap(this, mapper, iterableFactory());
     }
 }

@@ -697,7 +697,6 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         forEach(action);
     }
 
-    @UnstableName
     default void forEachBreakable(@NotNull Predicate<? super T> action) {
         Objects.requireNonNull(action);
         for (T t : this) {
@@ -707,13 +706,11 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         }
     }
 
-    @UnstableName
     default <Ex extends Throwable> void forEachBreakableChecked(
             @NotNull CheckedPredicate<? super T, ? extends Ex> action) throws Ex {
         forEachBreakable(action);
     }
 
-    @UnstableName
     default void forEachBreakableUnchecked(@NotNull CheckedPredicate<? super T, ?> action) {
         forEachBreakable(action);
     }

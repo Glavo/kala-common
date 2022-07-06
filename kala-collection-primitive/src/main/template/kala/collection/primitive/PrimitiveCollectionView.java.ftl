@@ -43,7 +43,7 @@ public interface ${Type}CollectionView extends ${Type}CollectionLike, PrimitiveC
 
     default <U> @NotNull CollectionView<U> mapToObj(@NotNull ${Type}Function<? extends U> mapper) {
         Objects.requireNonNull(mapper);
-        return new ${Type}CollectionViews.MapToObj(this, mapper);
+        return new ${Type}CollectionViews.MapToObj<>(this, mapper);
     }
 
     @Contract(pure = true)

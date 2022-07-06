@@ -98,141 +98,136 @@ public interface Immutable${Type}Seq extends ImmutablePrimitiveSeq<${WrapperType
     }
 
     @Override
-    default @NotNull ${Type}SeqView view() {
-        throw new UnsupportedOperationException(); // TODO
-    }
-
-    @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq slice(int beginIndex, int endIndex) {
-        throw new UnsupportedOperationException(); // TODO
+        return AbstractImmutable${Type}Seq.slice(this, beginIndex, endIndex, iterableFactory());
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq drop(int n) {
-        throw new UnsupportedOperationException(); // TODO
+        return AbstractImmutable${Type}Seq.drop(this, n, iterableFactory());
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq dropLast(int n) {
-        throw new UnsupportedOperationException(); // TODO
+        return AbstractImmutable${Type}Seq.dropLast(this, n, iterableFactory());
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq dropWhile(@NotNull ${Type}Predicate predicate) {
-        throw new UnsupportedOperationException(); // TODO
+        return AbstractImmutable${Type}Seq.dropWhile(this, predicate, iterableFactory());
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq take(int n) {
-        throw new UnsupportedOperationException(); // TODO
+        return AbstractImmutable${Type}Seq.take(this, n, iterableFactory());
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq takeLast(int n) {
-        throw new UnsupportedOperationException(); // TODO
+        return AbstractImmutable${Type}Seq.takeLast(this, n, iterableFactory());
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq takeWhile(@NotNull ${Type}Predicate predicate) {
-        throw new UnsupportedOperationException(); // TODO
+        return AbstractImmutable${Type}Seq.takeWhile(this, predicate, iterableFactory());
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq updated(int index, ${PrimitiveType} newValue) {
-        throw new UnsupportedOperationException(); // TODO
+        return AbstractImmutable${Type}Seq.updated(this, index, newValue, iterableFactory());
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq concat(@NotNull ${Type}SeqLike other) {
-        throw new UnsupportedOperationException(); // TODO
+        return AbstractImmutable${Type}Seq.concat(this, other, iterableFactory());
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq prepended(${PrimitiveType} value) {
-        throw new UnsupportedOperationException(); // TODO
+        return AbstractImmutable${Type}Seq.prepended(this, value, iterableFactory());
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq prependedAll(${PrimitiveType} @NotNull [] values) {
-        throw new UnsupportedOperationException(); // TODO
+        return AbstractImmutable${Type}Seq.prependedAll(this, values, iterableFactory());
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq prependedAll(@NotNull ${Type}Traversable values) {
-        throw new UnsupportedOperationException(); // TODO
+        return AbstractImmutable${Type}Seq.prependedAll(this, values, iterableFactory());
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq appended(${PrimitiveType} value) {
-        throw new UnsupportedOperationException(); // TODO
+        return AbstractImmutable${Type}Seq.appended(this, value, iterableFactory());
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq appendedAll(@NotNull ${Type}Traversable values) {
-        throw new UnsupportedOperationException(); // TODO
+        return AbstractImmutable${Type}Seq.appendedAll(this, values, iterableFactory());
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq appendedAll(${PrimitiveType} @NotNull [] values) {
-        throw new UnsupportedOperationException(); // TODO
+        return AbstractImmutable${Type}Seq.appendedAll(this, values, iterableFactory());
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq sorted() {
-        throw new UnsupportedOperationException(); // TODO
+        return AbstractImmutable${Type}Seq.sorted(this, iterableFactory());
     }
 
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq reversed() {
-        throw new UnsupportedOperationException(); // TODO
+        return AbstractImmutable${Type}Seq.reversed(this, iterableFactory());
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq filter(@NotNull ${Type}Predicate predicate) {
-        throw new UnsupportedOperationException(); // TODO
+        return AbstractImmutable${Type}Collection.filter(this, predicate, iterableFactory());
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq filterNot(@NotNull ${Type}Predicate predicate) {
-        throw new UnsupportedOperationException(); // TODO
+        return AbstractImmutable${Type}Collection.filterNot(this, predicate, iterableFactory());
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq map(@NotNull ${Type}UnaryOperator mapper) {
-        throw new UnsupportedOperationException(); // TODO
+        return AbstractImmutable${Type}Collection.map(this, mapper, iterableFactory());
     }
 
     @Override
     @Contract(pure = true)
     default <U> @NotNull ImmutableSeq<U> mapToObj(@NotNull ${Type}Function<? extends U> mapper) {
-        throw new UnsupportedOperationException(); // TODO
+        return ${Type}Seq.super.mapToObj(mapper);
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq flatMap(@NotNull ${Type}Function<? extends ${Type}Traversable> mapper) {
-        throw new UnsupportedOperationException(); // TODO
+        return AbstractImmutable${Type}Collection.flatMap(this, mapper, iterableFactory());
     }
 
     @Override

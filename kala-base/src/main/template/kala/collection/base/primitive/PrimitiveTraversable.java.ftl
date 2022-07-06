@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Contract;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 <#if IsSpecialized>
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -412,6 +413,16 @@ public interface ${Type}Traversable extends PrimitiveTraversable<${WrapperType}>
 
     default void forEachUnchecked(@NotNull Checked${Type}Consumer<?> action) {
         forEach(action);
+    }
+
+    default void forEachBreakable(@NotNull ${Type}Predicate action) {
+        Objects.requireNonNull(action);
+        ${Type}Iterator it = this.iterator();
+        while (it.hasNext()) {
+            if (!action.test(it.next${Type}())) {
+                break;
+            }
+        }
     }
 
     //endregion

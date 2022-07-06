@@ -92,8 +92,8 @@ public interface Mutable${Type}Seq extends MutablePrimitiveSeq<${WrapperType}>, 
     void set(int index, ${PrimitiveType} newValue);
 
     default void swap(int index1, int index2) {
-        final ${PrimitiveType} old1 =this.get(index1);
-        final ${PrimitiveType} old2 =this.get(index2);
+        final ${PrimitiveType} old1 = this.get(index1);
+        final ${PrimitiveType} old2 = this.get(index2);
 
         this.set(index1, old2);
         this.set(index2, old1);
