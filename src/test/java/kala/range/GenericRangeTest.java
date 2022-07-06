@@ -8,11 +8,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class RangeTest {
+public class GenericRangeTest {
 
     @Test
     void allTest() {
-        Range<Integer> all = Range.all();
+        GenericRange<Integer> all = GenericRange.all();
 
         assertTrue(all.contains(0));
         assertTrue(all.contains(1));
@@ -25,10 +25,10 @@ public class RangeTest {
     @Test
     void isTest() {
         List.of(
-                Range.is(10),
-                Range.is(10, Integer::compare),
-                Range.is(10, Comparators.naturalOrder()),
-                Range.is(10, Comparators.reverseOrder())
+                GenericRange.is(10),
+                GenericRange.is(10, Integer::compare),
+                GenericRange.is(10, Comparators.naturalOrder()),
+                GenericRange.is(10, Comparators.reverseOrder())
         ).forEach(value -> {
             assertTrue(value.contains(10));
             assertFalse(value.contains(0));
@@ -39,6 +39,6 @@ public class RangeTest {
             assertIterableEquals(List.of(10), tmp);
         });
 
-        assertThrows(IllegalArgumentException.class, () -> Range.is(new Object(), null));
+        assertThrows(IllegalArgumentException.class, () -> GenericRange.is(new Object(), null));
     }
 }

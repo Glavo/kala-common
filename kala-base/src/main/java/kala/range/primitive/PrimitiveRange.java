@@ -1,8 +1,8 @@
 package kala.range.primitive;
 
-import kala.range.AnyRange;
+import kala.range.Range;
 
-public abstract class PrimitiveRange<T> extends AnyRange<T> {
+public abstract class PrimitiveRange<T> extends Range<T> {
     PrimitiveRange() {
     }
 }
