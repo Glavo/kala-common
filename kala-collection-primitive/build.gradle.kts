@@ -67,6 +67,8 @@ tasks.getByName<GenerateTask>("generateSources") {
 
             generate("Mutable${model["Type"]}SeqIterator", model, "MutablePrimitiveSeqIterator")
             generate("Mutable${model["Type"]}ListIterator", model, "MutablePrimitiveListIterator")
+
+            generate("Mutable${model["Type"]}Array", model, "MutablePrimitiveArray")
         }
     }
 }

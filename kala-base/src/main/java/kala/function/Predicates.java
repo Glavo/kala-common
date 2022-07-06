@@ -46,7 +46,7 @@ public final class Predicates {
 
     public static <T> @NotNull Predicate<T> instanceOf(@NotNull Class<? extends T> type) {
         Objects.requireNonNull(type);
-        return new InstanceOf<>(type);
+        return type == Object.class ? isNotNull() : new InstanceOf<>(type);
     }
 
     public static <T> @NotNull Predicate<T> and(@NotNull Predicate<? super T> predicate1, @NotNull Predicate<? super T> predicate2) {

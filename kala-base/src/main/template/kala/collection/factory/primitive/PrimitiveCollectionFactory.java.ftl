@@ -3,10 +3,11 @@ package kala.collection.factory.primitive;
 import kala.annotations.Covariant;
 import kala.collection.base.primitive.${Type}Iterator;
 import kala.collection.base.primitive.${Type}Traversable;
+import kala.function.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
-import java.util.function.Function;
+import java.util.function.*;
 
 public interface ${Type}CollectionFactory<Builder, @Covariant R> extends PrimitiveCollectionFactory<${WrapperType}, Builder, R> {
 
@@ -51,6 +52,20 @@ public interface ${Type}CollectionFactory<Builder, @Covariant R> extends Primiti
         }
         return build(builder);
     }
+
+    default R fill(int n, ${Type}Supplier supplier) {
+        if (n <= 0) {
+            return empty();
+        }
+
+        Builder builder = newBuilder();
+        sizeHint(builder, n);
+        for (int i = 0; i < n; i++) {
+            addToBuilder(builder, supplier.getAs${Type}());
+        }
+        return build(builder);
+    }
+
 
     @Override
     default R fill(int n, ${WrapperType} value) {

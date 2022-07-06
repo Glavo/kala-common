@@ -696,7 +696,7 @@ public final class CollectionViews {
         }
     }
 
-    static final class MappedSpliterator<E, T> implements Spliterator<E> {
+    private static final class MappedSpliterator<E, T> implements Spliterator<E> {
         private final @NotNull Spliterator<? extends T> source;
         private final @NotNull Function<? super T, ? extends E> mapper;
 
