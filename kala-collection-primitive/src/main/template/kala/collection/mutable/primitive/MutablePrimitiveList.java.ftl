@@ -20,66 +20,66 @@ public interface Mutable${Type}List extends MutablePrimitiveList<${WrapperType}>
     //region Static Factories
 
     static @NotNull ${Type}CollectionFactory<?, Mutable${Type}List> factory() {
-        throw new UnsupportedOperationException(); // TODO
+        return ${Type}CollectionFactory.narrow(Mutable${Type}ArrayList.factory());
     }
 
     @Contract("-> new")
     static @NotNull Mutable${Type}List create() {
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}ArrayList.create();
     }
 
     @Contract("-> new")
     static @NotNull Mutable${Type}List of() {
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}ArrayList.of();
     }
 
     @Contract("_ -> new")
     static @NotNull Mutable${Type}List of(${PrimitiveType} value1) {
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}ArrayList.of(value1);
     }
 
     @Contract("_, _ -> new")
     static @NotNull Mutable${Type}List of(${PrimitiveType} value1, ${PrimitiveType} value2) {
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}ArrayList.of(value1, value2);
     }
 
     @Contract("_, _, _ -> new")
     static @NotNull Mutable${Type}List of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3) {
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}ArrayList.of(value1, value2, value3);
     }
 
     @Contract("_, _, _, _ -> new")
     static @NotNull Mutable${Type}List of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3, ${PrimitiveType} value4) {
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}ArrayList.of(value1, value2, value3, value4);
     }
 
     @Contract("_, _, _, _, _ -> new")
     static @NotNull Mutable${Type}List of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3, ${PrimitiveType} value4, ${PrimitiveType} value5) {
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}ArrayList.of(value1, value2, value3, value4, value5);
     }
 
     @Contract("_ -> new")
     static @NotNull Mutable${Type}List of(${PrimitiveType}... values) {
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}ArrayList.of(values);
     }
 
     @Contract("_ -> new")
     static @NotNull Mutable${Type}List from(${PrimitiveType} @NotNull [] values) {
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}ArrayList.from(values);
     }
 
     static @NotNull Mutable${Type}List from(@NotNull ${Type}Traversable values) {
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}ArrayList.from(values);
     }
 
     static @NotNull Mutable${Type}List from(@NotNull ${Type}Iterator it) {
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}ArrayList.from(it);
     }
 <#if IsSpecialized>
 
     /*
     static @NotNull Mutable${Type}List from(@NotNull ${Type}Stream stream) {
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}ArrayList.from(stream);
     }
      */
 </#if>

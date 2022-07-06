@@ -221,24 +221,34 @@ public final class ${Type}Arrays {
 
     public static void sort(${PrimitiveType} @NotNull [] array) {
 <#if Type == "Boolean">
+        if (array.length != 0)
+            sort(array, 0, array.length);
+<#else>
+        Arrays.sort(array);
+</#if>
+    }
+
+    public static void sort(${PrimitiveType} @NotNull [] array, int beginIndex, int endIndex) {
+<#if Type == "Boolean">
+        Conditions.checkPositionIndices(beginIndex, endIndex, array.length);
         int trueCount = 0;
         int falseCount;
-        for (boolean b : array) {
-            if (b) trueCount++;
+        for (int i = beginIndex; i < endIndex; i++) {
+            if (array[i]) trueCount++;
         }
-        falseCount = array.length - trueCount;
+        falseCount = endIndex - beginIndex - trueCount;
 
         if (trueCount == 0 || falseCount == 0) return;
 
-        for (int i = 0; i < falseCount; i++) {
+        for (int i = beginIndex; i < falseCount; i++) {
             array[i] = false;
         }
 
-        for (int i = falseCount; i < array.length; i++) {
+        for (int i = beginIndex + falseCount; i < endIndex; i++) {
             array[i] = true;
         }
 <#else>
-        Arrays.sort(array);
+        Arrays.sort(array, beginIndex, endIndex);
 </#if>
     }
 

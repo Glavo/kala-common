@@ -64,11 +64,13 @@ tasks.getByName<GenerateTask>("generateSources") {
             generate("AbstractMutable${model["Type"]}Collection", model, "AbstractMutablePrimitiveCollection")
             generate("AbstractMutable${model["Type"]}Seq", model, "AbstractMutablePrimitiveSeq")
             generate("AbstractMutable${model["Type"]}List", model, "AbstractMutablePrimitiveList")
+            generate("AbstractMutable${model["Type"]}ListFactory", model, "AbstractMutablePrimitiveListFactory")
 
             generate("Mutable${model["Type"]}SeqIterator", model, "MutablePrimitiveSeqIterator")
             generate("Mutable${model["Type"]}ListIterator", model, "MutablePrimitiveListIterator")
 
             generate("Mutable${model["Type"]}Array", model, "MutablePrimitiveArray")
+            generate("Mutable${model["Type"]}ArrayList", model, "MutablePrimitiveArrayList")
         }
     }
 }
