@@ -26,21 +26,13 @@ import static kala.Conditions.checkPositionIndices;
 public final class ImmutableArray<@Covariant E> extends ArraySeq<E> implements ImmutableSeq<E>, Serializable {
     private static final long serialVersionUID = 1845940935381169058L;
 
-    public static final ImmutableArray<?> EMPTY = new ImmutableArray<>();
+    public static final ImmutableArray<?> EMPTY = new ImmutableArray<>(GenericArrays.EMPTY_OBJECT_ARRAY);
 
     private static final ImmutableArray.Factory<?> FACTORY = new Factory<>();
-
-    //region Constructors
-
-    private ImmutableArray() {
-        this(GenericArrays.EMPTY_OBJECT_ARRAY);
-    }
 
     private ImmutableArray(Object[] array) {
         super(array);
     }
-
-    //endregion
 
     //region Narrow method
 

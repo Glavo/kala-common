@@ -51,6 +51,8 @@ tasks.getByName<GenerateTask>("generateSources") {
 
             generate("Immutable${model["Type"]}Seq", model, "ImmutablePrimitiveSeq")
             generate("AbstractImmutable${model["Type"]}Seq", model, "AbstractImmutablePrimitiveSeq")
+
+            generate("Immutable${model["Type"]}Array", model, "ImmutablePrimitiveArray")
         }
     }
 

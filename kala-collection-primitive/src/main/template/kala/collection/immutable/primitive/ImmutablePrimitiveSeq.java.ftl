@@ -15,51 +15,51 @@ public interface Immutable${Type}Seq extends ImmutablePrimitiveSeq<${WrapperType
     //region Static Factories
 
     static <E> @NotNull ${Type}CollectionFactory<?, Immutable${Type}Seq> factory() {
-        throw new UnsupportedOperationException(); // TODO
+        return ${Type}CollectionFactory.narrow(Immutable${Type}Array.factory());
     }
 
     static @NotNull Immutable${Type}Seq empty() {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Array.empty();
     }
 
     static @NotNull Immutable${Type}Seq of() {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Array.of();
     }
 
     static @NotNull Immutable${Type}Seq of(${PrimitiveType} value1) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Array.of(value1);
     }
 
     static @NotNull Immutable${Type}Seq of(${PrimitiveType} value1, ${PrimitiveType} value2) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Array.of(value1, value2);
     }
 
     static @NotNull Immutable${Type}Seq of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Array.of(value1, value2, value3);
     }
 
     static @NotNull Immutable${Type}Seq of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3, ${PrimitiveType} value4) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Array.of(value1, value2, value3, value4);
     }
 
     static @NotNull Immutable${Type}Seq of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3, ${PrimitiveType} value4, ${PrimitiveType} value5) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Array.of(value1, value2, value3, value4, value5);
     }
 
     static @NotNull Immutable${Type}Seq of(${PrimitiveType}... values) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Array.of(values);
     }
 
     static @NotNull Immutable${Type}Seq from(${PrimitiveType} @NotNull [] values) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Array.from(values);
     }
 
     static @NotNull Immutable${Type}Seq from(@NotNull ${Type}Traversable values) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Array.from(values);
     }
 
     static @NotNull Immutable${Type}Seq from(@NotNull ${Type}Iterator it) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Array.from(it);
     }
 
 <#if IsSpecialized>
@@ -71,16 +71,16 @@ public interface Immutable${Type}Seq extends ImmutablePrimitiveSeq<${WrapperType
 
 </#if>
     static @NotNull Immutable${Type}Seq fill(int n, ${PrimitiveType} value) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Array.fill(n, value);
     }
 
     static @NotNull Immutable${Type}Seq fill(int n, @NotNull ${Type}Supplier supplier) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Array.fill(n, supplier);
     }
 
     /*
     static @NotNull Immutable${Type}Seq fill(int n, @NotNull IntTo${Type}Function init) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Array.fill(n, init);
     }
      */
 
@@ -233,5 +233,10 @@ public interface Immutable${Type}Seq extends ImmutablePrimitiveSeq<${WrapperType
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq flatMap(@NotNull ${Type}Function<? extends ${Type}Traversable> mapper) {
         throw new UnsupportedOperationException(); // TODO
+    }
+
+    @Override
+    default @NotNull Immutable${Type}Seq toImmutableSeq() {
+        return this;
     }
 }
