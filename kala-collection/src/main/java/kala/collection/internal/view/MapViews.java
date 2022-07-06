@@ -264,7 +264,7 @@ public final class MapViews {
         }
     }
 
-    public static class Mapped<E, K, V> extends AbstractView<E> {
+    public static class Mapped<E, K, V> extends AbstractCollectionView<E> {
         protected final @NotNull MapLike<K, V> source;
         protected final @NotNull BiFunction<? super K, ? super V, ? extends E> mapper;
 
@@ -331,7 +331,7 @@ public final class MapViews {
         }
     }
 
-    public static class Values<V> extends AbstractView<V> {
+    public static class Values<V> extends AbstractCollectionView<V> {
         protected final @NotNull MapLike<?, ? extends V> source;
 
         public Values(@NotNull MapLike<?, ? extends V> source) {

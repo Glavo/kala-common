@@ -2,6 +2,7 @@ package kala.collection.base.primitive;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 <#if IsSpecialized>
 import java.util.function.*;
@@ -27,6 +28,74 @@ final class ${Type}Iterators {
             return "${Type}Iterator[]";
         }
     };
+
+    static final class Concat extends Abstract${Type}Iterator {
+        private ${Type}Iterator it1;
+        private ${Type}Iterator it2;
+
+        Concat(${Type}Iterator it1, ${Type}Iterator it2) {
+            this.it1 = it1;
+            this.it2 = it2;
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (it1 != null) {
+                if (it1.hasNext()) {
+                    return true;
+                } else {
+                    it1 = null;
+                }
+            }
+            if (it2 != null) {
+                if (it2.hasNext()) {
+                    return true;
+                } else {
+                    it2 = null;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public ${PrimitiveType} next${Type}() {
+            if (!hasNext())
+                throw new NoSuchElementException();
+
+            if (it1 != null)
+                return it1.next${Type}();
+
+            if (it2 != null)
+                return it2.next${Type}();
+
+            throw new AssertionError(); // never
+        }
+    }
+
+    static final class ConcatAll extends Abstract${Type}Iterator {
+        private final @NotNull Iterator<? extends ${Type}Iterator> iterators;
+
+        private ${Type}Iterator current = null;
+
+        ConcatAll(@NotNull Iterator<? extends ${Type}Iterator> iterators) {
+            this.iterators = iterators;
+        }
+
+        @Override
+        public boolean hasNext() {
+            while ((current == null || !current.hasNext()) && iterators.hasNext()) {
+                current = iterators.next();
+            }
+            return current != null && current.hasNext();
+        }
+
+        @Override
+        public ${PrimitiveType} next${Type}() {
+            if (!hasNext()) throw new NoSuchElementException(this + ".next()");
+
+            return current.next${Type}();
+        }
+    }
 
     static final class Take extends Abstract${Type}Iterator {
         private final ${Type}Iterator source;

@@ -2,6 +2,7 @@ package kala.collection.primitive;
 
 import kala.collection.CollectionView;
 import kala.collection.base.primitive.${Type}Traversable;
+import kala.collection.primitive.internal.view.${Type}CollectionViews;
 import kala.function.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -9,6 +10,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.*;
 
 public interface ${Type}CollectionView extends ${Type}CollectionLike, PrimitiveCollectionView<${WrapperType}> {
+
+    static @NotNull ${Type}CollectionView empty() {
+        return ${Type}CollectionViews.EMPTY;
+    }
 
     @Override
     default @NotNull String className() {

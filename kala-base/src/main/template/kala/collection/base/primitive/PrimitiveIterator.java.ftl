@@ -1,6 +1,7 @@
 package kala.collection.base.primitive;
 
 import kala.annotations.ReplaceWith;
+import kala.collection.base.GenericArrays;
 import kala.collection.base.Growable;
 import kala.collection.base.Iterators;
 import kala.control.primitive.${Type}Option;
@@ -111,6 +112,41 @@ public interface ${Type}Iterator extends PrimitiveIterator<${WrapperType}, ${Typ
         };
     }
 </#if>
+
+    static @NotNull ${Type}Iterator concat(@NotNull ${Type}Iterator it1, @NotNull ${Type}Iterator it2) {
+        if (!it1.hasNext()) { //implicit null check of it1
+            return Objects.requireNonNull(it2);
+        }
+        if (!it2.hasNext()) {//implicit null check of it1
+            return it1;
+        }
+        return new ${Type}Iterators.Concat(it1, it2);
+    }
+
+    static @NotNull ${Type}Iterator concat(@NotNull ${Type}Iterator... its) {
+        switch (its.length) { // implicit null check of its
+            case 0:
+                return ${Type}Iterator.empty();
+            case 1:
+                return Objects.requireNonNull(its[0]);
+            case 2:
+                return concat(its[0], its[1]);
+            default:
+                return new ${Type}Iterators.ConcatAll(GenericArrays.iterator(its));
+        }
+
+    }
+
+    static @NotNull ${Type}Iterator concat(@NotNull Iterable<? extends ${Type}Iterator> its) {
+        return concat(its.iterator()); // implicit null check of its
+    }
+
+    static @NotNull ${Type}Iterator concat(@NotNull Iterator<? extends ${Type}Iterator> its) {
+        if (!its.hasNext()) { // implicit null check of its
+            return ${Type}Iterator.empty();
+        }
+        return new ${Type}Iterators.ConcatAll(its);
+    }
 
     /**
      * Returns the next {@code ${PrimitiveType}} element in the iteration.

@@ -23,7 +23,7 @@ public final class CollectionViews {
     private CollectionViews() {
     }
 
-    public static class Empty<E> extends AbstractView<E> {
+    public static class Empty<E> extends AbstractCollectionView<E> {
         public static final Empty<?> INSTANCE = new Empty<>();
 
         @Override
@@ -106,7 +106,7 @@ public final class CollectionViews {
         }
     }
 
-    public static class Single<E> extends AbstractView<E> {
+    public static class Single<E> extends AbstractCollectionView<E> {
         protected final E value;
 
         public Single(E value) {
@@ -158,7 +158,7 @@ public final class CollectionViews {
         }
     }
 
-    public static class Of<@Covariant E, C extends CollectionLike<E>> extends AbstractView<E> {
+    public static class Of<@Covariant E, C extends CollectionLike<E>> extends AbstractCollectionView<E> {
         protected final @NotNull C source;
 
         public Of(@NotNull C source) {
@@ -519,7 +519,7 @@ public final class CollectionViews {
 
     }
 
-    public static final class Mapped<@Covariant E, T> extends AbstractView<E> {
+    public static final class Mapped<@Covariant E, T> extends AbstractCollectionView<E> {
 
         private final @NotNull CollectionView<T> source;
 
@@ -570,7 +570,7 @@ public final class CollectionViews {
         //endregion
     }
 
-    public static class MapNotNull<E, T> extends AbstractView<E> {
+    public static class MapNotNull<E, T> extends AbstractCollectionView<E> {
         private final @NotNull CollectionView<T> source;
         private final @NotNull Function<? super T, ? extends E> mapper;
 
@@ -585,7 +585,7 @@ public final class CollectionViews {
         }
     }
 
-    public static class MapMulti<E, T> extends AbstractView<E> {
+    public static class MapMulti<E, T> extends AbstractCollectionView<E> {
         private final @NotNull CollectionView<T> source;
         private final @NotNull BiConsumer<? super T, ? super Consumer<? super E>> mapper;
 
@@ -600,7 +600,7 @@ public final class CollectionViews {
         }
     }
 
-    public static final class Filter<@Covariant E> extends AbstractView<E> {
+    public static final class Filter<@Covariant E> extends AbstractCollectionView<E> {
         private final @NotNull CollectionView<E> source;
         private final @NotNull Predicate<? super E> predicate;
 
@@ -625,7 +625,7 @@ public final class CollectionViews {
         }
     }
 
-    public static final class FilterNot<@Covariant E> extends AbstractView<E> {
+    public static final class FilterNot<@Covariant E> extends AbstractCollectionView<E> {
         private final @NotNull CollectionView<E> source;
 
         private final @NotNull Predicate<? super E> predicate;
@@ -651,7 +651,7 @@ public final class CollectionViews {
         }
     }
 
-    public static final class FilterNotNull<@Covariant E> extends AbstractView<E> {
+    public static final class FilterNotNull<@Covariant E> extends AbstractCollectionView<E> {
         private final @NotNull CollectionView<E> source;
 
         public FilterNotNull(@NotNull CollectionView<E> source) {
@@ -664,7 +664,7 @@ public final class CollectionViews {
         }
     }
 
-    public static final class FlatMapped<@Covariant E, T> extends AbstractView<E> {
+    public static final class FlatMapped<@Covariant E, T> extends AbstractCollectionView<E> {
         private final @NotNull CollectionView<? extends T> source;
         private final @NotNull Function<? super T, ? extends Iterable<? extends E>> mapper;
 
@@ -681,7 +681,7 @@ public final class CollectionViews {
         }
     }
 
-    public static final class Zip<E, U> extends AbstractView<Tuple2<E, U>> {
+    public static final class Zip<E, U> extends AbstractCollectionView<Tuple2<E, U>> {
         private final @NotNull CollectionView<? extends E> source;
         private final @NotNull Iterable<? extends U> other;
 

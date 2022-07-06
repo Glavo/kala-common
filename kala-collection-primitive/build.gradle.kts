@@ -14,12 +14,14 @@ tasks.getByName<GenerateTask>("generateSources") {
             generate("${model["Type"]}CollectionView", model, "PrimitiveCollectionView")
             generate("${model["Type"]}CollectionLike", model, "PrimitiveCollectionLike")
             generate("Abstract${model["Type"]}Collection", model, "AbstractPrimitiveCollection")
+            generate("Abstract${model["Type"]}CollectionView", model, "AbstractPrimitiveCollectionView")
 
             generate("${model["Type"]}Seq", model, "PrimitiveSeq")
             generate("${model["Type"]}SeqView", model, "PrimitiveSeqView")
             generate("${model["Type"]}SeqLike", model, "PrimitiveSeqLike")
             generate("Indexed${model["Type"]}SeqLike", model, "IndexedPrimitiveSeqLike")
             generate("Abstract${model["Type"]}Seq", model, "AbstractPrimitiveSeq")
+            generate("Abstract${model["Type"]}SeqView", model, "AbstractPrimitiveSeqView")
 
             generate("${model["Type"]}SeqIterator", model, "PrimitiveSeqIterator")
             generate("Abstract${model["Type"]}SeqIterator", model, "AbstractPrimitiveSeqIterator")
@@ -29,6 +31,12 @@ tasks.getByName<GenerateTask>("generateSources") {
     withPackage("kala.collection.primitive.internal") {
         for (model in Primitives.all) {
             generate("${model["Type"]}SeqIterators", model, "PrimitiveSeqIterators")
+        }
+    }
+
+    withPackage("kala.collection.primitive.internal.view") {
+        for (model in Primitives.all) {
+            generate("${model["Type"]}CollectionViews", model, "PrimitiveCollectionViews")
         }
     }
 

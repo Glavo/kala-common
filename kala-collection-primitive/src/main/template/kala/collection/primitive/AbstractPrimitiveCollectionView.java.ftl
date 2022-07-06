@@ -1,8 +1,6 @@
-package kala.collection;
+package kala.collection.primitive;
 
-import kala.annotations.Covariant;
-
-public abstract class AbstractView<@Covariant E> implements CollectionView<E> {
+public abstract class Abstract${Type}CollectionView implements ${Type}CollectionView {
     @Override
     public int hashCode() {
         return System.identityHashCode(this);
