@@ -57,7 +57,6 @@ public interface CollectionTestTemplate extends CollectionLikeTestTemplate {
         for (Integer[] data : data1()) {
             assertIterableEquals(Arrays.asList(data), factory.from(data));
             assertIterableEquals(Arrays.asList(data), factory.from(ImmutableArray.from(Arrays.asList(data))));
-            assertIterableEquals(Arrays.asList(data), factory.from(ImmutableLinkedSeq.nodeFrom(Arrays.asList(data))));
             assertIterableEquals(Arrays.asList(data), factory.from(Arrays.asList(data)));
             assertIterableEquals(Arrays.asList(data), factory.from(Arrays.asList(data).iterator()));
         }

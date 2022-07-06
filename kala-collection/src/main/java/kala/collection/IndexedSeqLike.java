@@ -684,19 +684,6 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     }
 
     @Override
-    default @NotNull ImmutableLinkedSeq<E> toImmutableLinkedSeq() {
-        final int size = size();
-
-        ImmutableLinkedSeq.Node<E> node = ImmutableLinkedSeq.nilNode();
-
-        for (int i = size - 1; i >= 0; i--) {
-            node = node.cons(this.get(i));
-        }
-
-        return ImmutableLinkedSeq.Unsafe.build(node, size);
-    }
-
-    @Override
     default @NotNull <K, V> ImmutableMap<K, V> toImmutableMap() {
         final int size = this.size();
         if (size == 0) {

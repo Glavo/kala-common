@@ -48,8 +48,7 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractSeq<E> 
 
     static <E, T extends ImmutableSeq<? extends E>, Builder> T slice(
             @NotNull ImmutableSeq<? extends E> seq,
-            int beginIndex,
-            int endIndex,
+            int beginIndex, int endIndex,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
         final int size = seq.size();
@@ -67,8 +66,8 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractSeq<E> 
                 factory.addToBuilder(builder, seq.get(i));
             }
         } else {
-            Iterator<? extends E> it = Iterators.take(Iterators.drop(seq.iterator(), beginIndex), ns);
-            while (it.hasNext()) {
+            Iterator<? extends E> it = seq.iterator(beginIndex);
+            for (int i = 0; i < ns; i++) {
                 factory.addToBuilder(builder, it.next());
             }
         }

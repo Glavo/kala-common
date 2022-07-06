@@ -368,7 +368,6 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
             assertIterableEquals(Arrays.asList(data), this.<Integer>of().prependedAll(data));
             assertIterableEquals(Arrays.asList(data), this.<Integer>of().prependedAll(Arrays.asList(data)));
             assertIterableEquals(Arrays.asList(data), this.<Integer>of().prependedAll(ImmutableArray.from(data)));
-            assertIterableEquals(Arrays.asList(data), this.<Integer>of().prependedAll(ImmutableLinkedSeq.nodeFrom(data)));
         }
 
         for (int i = 0; i < data1().length - 1; i++) {
@@ -380,14 +379,12 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
             assertIterableEquals(tmp, this.<Integer>of().prependedAll(data));
             assertIterableEquals(tmp, this.<Integer>of().prependedAll(Arrays.asList(data)));
             assertIterableEquals(tmp, this.<Integer>of().prependedAll(ImmutableArray.from(data)));
-            assertIterableEquals(tmp, this.<Integer>of().prependedAll(ImmutableLinkedSeq.nodeFrom(data)));
 
             tmp.addAll(0, Arrays.asList(data2));
 
             assertIterableEquals(tmp, from(data).prependedAll(data2));
             assertIterableEquals(tmp, from(data).prependedAll(Arrays.asList(data2)));
             assertIterableEquals(tmp, from(data).prependedAll(ImmutableArray.from(data2)));
-            assertIterableEquals(tmp, from(data).prependedAll(ImmutableLinkedSeq.nodeFrom(data2)));
         }
     }
 
@@ -416,7 +413,6 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
             assertIterableEquals(Arrays.asList(data), this.<Integer>of().appendedAll(data));
             assertIterableEquals(Arrays.asList(data), this.<Integer>of().appendedAll(Arrays.asList(data)));
             assertIterableEquals(Arrays.asList(data), this.<Integer>of().appendedAll(ImmutableArray.from(data)));
-            assertIterableEquals(Arrays.asList(data), this.<Integer>of().appendedAll(ImmutableLinkedSeq.nodeFrom(data)));
         }
 
         for (int i = 0; i < data1().length - 1; i++) {
@@ -428,14 +424,12 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
             assertIterableEquals(tmp, this.<Integer>of().appendedAll(data));
             assertIterableEquals(tmp, this.<Integer>of().appendedAll(Arrays.asList(data)));
             assertIterableEquals(tmp, this.<Integer>of().appendedAll(ImmutableArray.from(data)));
-            assertIterableEquals(tmp, this.<Integer>of().appendedAll(ImmutableLinkedSeq.nodeFrom(data)));
 
             tmp.addAll(Arrays.asList(data2));
 
             assertIterableEquals(tmp, from(data).appendedAll(data2));
             assertIterableEquals(tmp, from(data).appendedAll(Arrays.asList(data2)));
             assertIterableEquals(tmp, from(data).appendedAll(ImmutableArray.from(data2)));
-            assertIterableEquals(tmp, from(data).appendedAll(ImmutableLinkedSeq.nodeFrom(data2)));
         }
     }
 
@@ -620,35 +614,28 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
     default void concatTest() {
         var empty = of();
         assertTrue(empty.concat(List.of()).isEmpty());
-        assertTrue(empty.concat(ImmutableLinkedSeq.emptyNode()).isEmpty());
         assertTrue(empty.concat(ImmutableArray.empty()).isEmpty());
         assertTrue(empty.concat(ImmutableVector.empty()).isEmpty());
 
         assertIterableEquals(List.of("str1"), empty.concat(List.of("str1")));
-        assertIterableEquals(List.of("str1"), empty.concat(ImmutableLinkedSeq.nodeOf("str1")));
         assertIterableEquals(List.of("str1"), empty.concat(ImmutableArray.of("str1")));
         assertIterableEquals(List.of("str1"), empty.concat(ImmutableVector.of("str1")));
-        assertIterableEquals(List.of("str1", "str2", "str3"), empty.concat(ImmutableLinkedSeq.nodeOf("str1", "str2", "str3")));
         assertIterableEquals(List.of("str1", "str2", "str3"), empty.concat(ImmutableArray.of("str1", "str2", "str3")));
         assertIterableEquals(List.of("str1", "str2", "str3"), empty.concat(ImmutableVector.of("str1", "str2", "str3")));
 
 
         assertIterableEquals(List.of("str1"), of("str1").concat(List.of()));
-        assertIterableEquals(List.of("str1"), of("str1").concat(ImmutableLinkedSeq.emptyNode()));
         assertIterableEquals(List.of("str1"), of("str1").concat(ImmutableArray.empty()));
         assertIterableEquals(List.of("str1"), of("str1").concat(ImmutableVector.empty()));
-        assertIterableEquals(List.of("str1", "str2", "str3"), of("str1").concat(ImmutableLinkedSeq.nodeOf("str2", "str3")));
         assertIterableEquals(List.of("str1", "str2", "str3"), of("str1").concat(List.of("str2", "str3")));
         assertIterableEquals(List.of("str1", "str2", "str3"), of("str1").concat(ImmutableArray.of("str2", "str3")));
         assertIterableEquals(List.of("str1", "str2", "str3"), of("str1").concat(ImmutableVector.of("str2", "str3")));
 
         assertIterableEquals(List.of("str1", "str2"), of("str1", "str2").concat(List.of()));
-        assertIterableEquals(List.of("str1", "str2"), of("str1", "str2").concat(ImmutableLinkedSeq.emptyNode()));
         assertIterableEquals(List.of("str1", "str2"), of("str1", "str2").concat(ImmutableArray.empty()));
         assertIterableEquals(List.of("str1", "str2"), of("str1", "str2").concat(ImmutableVector.empty()));
 
         assertIterableEquals(List.of("str1", "str2", "str3", "str4"), of("str1", "str2").concat(List.of("str3", "str4")));
-        assertIterableEquals(List.of("str1", "str2", "str3", "str4"), of("str1", "str2").concat(ImmutableLinkedSeq.nodeOf("str3", "str4")));
         assertIterableEquals(List.of("str1", "str2", "str3", "str4"), of("str1", "str2").concat(ImmutableArray.of("str3", "str4")));
         assertIterableEquals(List.of("str1", "str2", "str3", "str4"), of("str1", "str2").concat(ImmutableVector.of("str3", "str4")));
 

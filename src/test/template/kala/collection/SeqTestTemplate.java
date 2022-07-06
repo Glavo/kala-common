@@ -124,7 +124,6 @@ public interface SeqTestTemplate extends CollectionTestTemplate, SeqLikeTestTemp
     default void equalsTest() {
         Assertions.assertEquals(ImmutableArray.empty(), factory().empty());
         assertEquals(ImmutableVector.empty(), factory().empty());
-        Assertions.assertEquals(ImmutableLinkedSeq.emptyNode(), factory().empty());
         assertEquals(MutableArray.empty(), factory().empty());
 
         Seq<?> foo = factory().from(List.of("foo"));
