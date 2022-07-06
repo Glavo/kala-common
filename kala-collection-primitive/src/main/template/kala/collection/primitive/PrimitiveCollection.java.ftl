@@ -3,6 +3,7 @@ package kala.collection.primitive;
 import kala.collection.base.primitive.${Type}Iterator;
 import kala.collection.base.primitive.${Type}Traversable;
 import kala.collection.factory.primitive.${Type}CollectionFactory;
+import kala.collection.primitive.internal.view.${Type}CollectionViews;
 import kala.collection.immutable.ImmutableCollection;
 import kala.collection.immutable.primitive.Immutable${Type}Collection;
 import kala.function.*;
@@ -67,6 +68,11 @@ public interface ${Type}Collection extends PrimitiveCollection<${WrapperType}>, 
     @Override
     default @NotNull String className() {
         return "${Type}CollectionLike";
+    }
+
+    @Override
+    default @NotNull ${Type}CollectionView view() {
+        return isEmpty() ? ${Type}CollectionView.empty() : new ${Type}CollectionViews.Of(this);
     }
 
     @Override

@@ -45,7 +45,7 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
 
     @Override
     default @NotNull CollectionView<E> view() {
-        return knownSize() == 0 ? CollectionView.empty() : new CollectionViews.Of<>(this);
+        return isEmpty() ? CollectionView.empty() : new CollectionViews.Of<>(this);
     }
 
     default java.util.@NotNull @UnmodifiableView Collection<E> asJava() {

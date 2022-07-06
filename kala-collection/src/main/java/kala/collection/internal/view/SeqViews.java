@@ -1142,7 +1142,6 @@ public final class SeqViews {
 
     public static class Mapped<E, T> extends AbstractSeqView<E> {
         private final @NotNull SeqView<T> source;
-
         private final @NotNull Function<? super T, ? extends E> mapper;
 
         public Mapped(@NotNull SeqView<T> source, @NotNull Function<? super T, ? extends E> mapper) {

@@ -1,7 +1,7 @@
 package kala.collection.primitive.internal.view;
 
 import kala.Conditions;
-import kala.collection.SeqView;
+import kala.collection.*;
 import kala.collection.base.primitive.*;
 import kala.collection.primitive.*;
 import kala.function.*;
@@ -9,6 +9,7 @@ import kala.internal.Internal${Type}ArrayBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 <#if IsSpecialized>
 import java.util.function.*;
@@ -1047,6 +1048,41 @@ public final class ${Type}SeqViews {
         @Override
         public final ${PrimitiveType} get(int index) {
             return mapper.applyAs${Type}(source.get(index));
+        }
+    }
+
+    public static class MapToObj<E> extends AbstractSeqView<E> {
+        private final @NotNull ${Type}SeqView source;
+        private final @NotNull ${Type}Function<? extends E> mapper;
+
+        public MapToObj(@NotNull ${Type}SeqView source, @NotNull ${Type}Function<? extends E> mapper) {
+            this.source = source;
+            this.mapper = mapper;
+        }
+
+        @Override
+        public final @NotNull Iterator<E> iterator() {
+            return source.iterator().mapToObj(mapper);
+        }
+
+        @Override
+        public final int size() {
+            return source.size();
+        }
+
+        @Override
+        public final int knownSize() {
+            return source.knownSize();
+        }
+
+        @Override
+        public boolean isDefinedAt(int index) {
+            return source.isDefinedAt(index);
+        }
+
+        @Override
+        public final E get(int index) {
+            return mapper.apply(source.get(index));
         }
     }
 

@@ -1,6 +1,6 @@
 package kala.collection.primitive.internal.view;
 
-import kala.collection.CollectionView;
+import kala.collection.*;
 import kala.collection.base.primitive.*;
 import kala.collection.primitive.*;
 import kala.control.primitive.${Type}Option;
@@ -9,6 +9,7 @@ import kala.function.*;
 </#if>
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Iterator;
 import java.util.Objects;
 <#if IsSpecialized>
 import java.util.Spliterator;
@@ -334,6 +335,40 @@ public final class ${Type}CollectionViews {
             return source.parallelStream().map(mapper);
         }
 </#if>
+
+        //region Size Info
+
+        @Override
+        public boolean isEmpty() {
+            return source.isEmpty();
+        }
+
+        @Override
+        public int size() {
+            return source.size();
+        }
+
+        @Override
+        public int knownSize() {
+            return source.knownSize();
+        }
+
+        //endregion
+    }
+
+    public static final class MapToObj<T> extends AbstractCollectionView<T> {
+        private final @NotNull ${Type}CollectionView source;
+        private final @NotNull ${Type}Function<? extends T> mapper;
+
+        public MapToObj(@NotNull ${Type}CollectionView source, @NotNull ${Type}Function<? extends T> mapper) {
+            this.source = source;
+            this.mapper = mapper;
+        }
+
+        @Override
+        public @NotNull Iterator<T> iterator() {
+            return source.iterator().mapToObj(mapper);
+        }
 
         //region Size Info
 

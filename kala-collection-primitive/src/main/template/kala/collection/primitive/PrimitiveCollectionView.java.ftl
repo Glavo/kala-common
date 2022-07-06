@@ -7,6 +7,7 @@ import kala.function.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.function.*;
 
 public interface ${Type}CollectionView extends ${Type}CollectionLike, PrimitiveCollectionView<${WrapperType}> {
@@ -26,27 +27,28 @@ public interface ${Type}CollectionView extends ${Type}CollectionLike, PrimitiveC
     }
 
     default @NotNull ${Type}CollectionView filter(@NotNull ${Type}Predicate predicate) {
-        throw new UnsupportedOperationException(); // TODO
+        Objects.requireNonNull(predicate);
+        return new ${Type}CollectionViews.Filter(this, predicate);
     }
 
-    @NotNull
-    default ${Type}CollectionView filterNot(@NotNull ${Type}Predicate predicate) {
-        throw new UnsupportedOperationException(); // TODO
+    default @NotNull ${Type}CollectionView filterNot(@NotNull ${Type}Predicate predicate) {
+        Objects.requireNonNull(predicate);
+        return new ${Type}CollectionViews.FilterNot(this, predicate);
     }
 
-    @NotNull
-    default ${Type}CollectionView map(@NotNull ${Type}UnaryOperator mapper) {
-        throw new UnsupportedOperationException(); // TODO
+    default @NotNull ${Type}CollectionView map(@NotNull ${Type}UnaryOperator mapper) {
+        Objects.requireNonNull(mapper);
+        return new ${Type}CollectionViews.Mapped(this, mapper);
     }
 
     default <U> @NotNull CollectionView<U> mapToObj(@NotNull ${Type}Function<? extends U> mapper) {
-        throw new UnsupportedOperationException(); // TODO
+        Objects.requireNonNull(mapper);
+        return new ${Type}CollectionViews.MapToObj(this, mapper);
     }
 
     @Contract(pure = true)
-    @NotNull
-    default ${Type}CollectionView flatMap(@NotNull ${Type}Function<? extends ${Type}Traversable> mapper) {
-        throw new UnsupportedOperationException(); // TODO
+    default @NotNull ${Type}CollectionView flatMap(@NotNull ${Type}Function<? extends ${Type}Traversable> mapper) {
+        Objects.requireNonNull(mapper);
+        return new ${Type}CollectionViews.FlatMapped(this, mapper);
     }
-
 }

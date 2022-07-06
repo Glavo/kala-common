@@ -4,6 +4,7 @@ import kala.collection.AnySeq;
 import kala.collection.base.primitive.${Type}Iterator;
 import kala.collection.base.primitive.${Type}Traversable;
 import kala.collection.factory.primitive.${Type}CollectionFactory;
+import kala.collection.primitive.internal.view.${Type}SeqViews;
 import kala.collection.immutable.ImmutableSeq;
 import kala.collection.immutable.primitive.Immutable${Type}Seq;
 import kala.function.*;
@@ -96,6 +97,11 @@ public interface ${Type}Seq extends PrimitiveSeq<${WrapperType}>, ${Type}Collect
     @Override
     default @NotNull String className() {
         return "${Type}Seq";
+    }
+
+    @Override
+    default @NotNull ${Type}SeqView view() {
+        return isEmpty() ? ${Type}SeqView.empty() : new ${Type}SeqViews.Of(this);
     }
 
     @Override
