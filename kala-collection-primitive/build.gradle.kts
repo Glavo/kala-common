@@ -37,6 +37,7 @@ tasks.getByName<GenerateTask>("generateSources") {
     withPackage("kala.collection.primitive.internal.view") {
         for (model in Primitives.all) {
             generate("${model["Type"]}CollectionViews", model, "PrimitiveCollectionViews")
+            generate("${model["Type"]}SeqViews", model, "PrimitiveSeqViews")
         }
     }
 

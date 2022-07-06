@@ -222,6 +222,29 @@ public final class ${Type}Arrays {
         }
     }
 
+    public static void sort(${PrimitiveType} @NotNull [] array) {
+<#if Type == "Boolean">
+        int trueCount = 0;
+        int falseCount;
+        for (boolean b : array) {
+            if (b) trueCount++;
+        }
+        falseCount = array.length - trueCount;
+
+        if (trueCount == 0 || falseCount == 0) return;
+
+        for (int i = 0; i < falseCount; i++) {
+            array[i] = false;
+        }
+
+        for (int i = falseCount; i < array.length; i++) {
+            array[i] = true;
+        }
+<#else>
+        Arrays.sort(array);
+</#if>
+    }
+
     //region Element Retrieval Operations
 
     public static @NotNull ${Type}Option find(${PrimitiveType} @NotNull [] array, @NotNull ${Type}Predicate predicate) {

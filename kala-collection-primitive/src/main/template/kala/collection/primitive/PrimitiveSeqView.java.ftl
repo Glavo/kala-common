@@ -2,6 +2,7 @@ package kala.collection.primitive;
 
 import kala.collection.SeqView;
 import kala.collection.base.primitive.${Type}Traversable;
+import kala.collection.primitive.internal.view.${Type}SeqViews;
 import kala.function.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -9,6 +10,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.*;
 
 public interface ${Type}SeqView extends ${Type}SeqLike, ${Type}CollectionView, PrimitiveSeqView<${WrapperType}> {
+
+    static @NotNull ${Type}SeqView empty() {
+        return ${Type}SeqViews.EMPTY;
+    }
 
     @Override
     default @NotNull String className() {
@@ -21,72 +26,116 @@ public interface ${Type}SeqView extends ${Type}SeqLike, ${Type}CollectionView, P
     }
 
     @Contract(pure = true)
-    @NotNull ${Type}SeqView slice(int beginIndex, int endIndex);
+    default @NotNull ${Type}SeqView slice(int beginIndex, int endIndex) {
+        throw new UnsupportedOperationException(); // TODO
+    }
 
     @Contract(pure = true)
-    @NotNull ${Type}SeqView drop(int n);
+    default @NotNull ${Type}SeqView drop(int n) {
+        throw new UnsupportedOperationException(); // TODO
+    }
 
     @Contract(pure = true)
-    @NotNull ${Type}SeqView dropLast(int n);
+    default @NotNull ${Type}SeqView dropLast(int n) {
+        throw new UnsupportedOperationException(); // TODO
+    }
 
     @Contract(pure = true)
-    @NotNull ${Type}SeqView dropWhile(@NotNull ${Type}Predicate predicate);
+    default @NotNull ${Type}SeqView dropWhile(@NotNull ${Type}Predicate predicate) {
+        throw new UnsupportedOperationException(); // TODO
+    }
 
     @Contract(pure = true)
-    @NotNull ${Type}SeqView take(int n);
+    default @NotNull ${Type}SeqView take(int n) {
+        throw new UnsupportedOperationException(); // TODO
+    }
 
-    @NotNull ${Type}SeqView takeLast(int n);
-
-    @Contract(pure = true)
-    @NotNull ${Type}SeqView takeWhile(@NotNull ${Type}Predicate predicate);
-
-    @Contract(pure = true)
-    @NotNull ${Type}SeqView updated(int index, ${PrimitiveType} newValue);
+    default @NotNull ${Type}SeqView takeLast(int n) {
+        throw new UnsupportedOperationException(); // TODO
+    }
 
     @Contract(pure = true)
-    @NotNull ${Type}SeqView concat(@NotNull ${Type}SeqLike other);
+    default @NotNull ${Type}SeqView takeWhile(@NotNull ${Type}Predicate predicate) {
+        throw new UnsupportedOperationException(); // TODO
+    }
 
     @Contract(pure = true)
-    @NotNull ${Type}SeqView prepended(${PrimitiveType} value);
+    default @NotNull ${Type}SeqView updated(int index, ${PrimitiveType} newValue) {
+        throw new UnsupportedOperationException(); // TODO
+    }
 
     @Contract(pure = true)
-    @NotNull ${Type}SeqView prependedAll(${PrimitiveType} @NotNull [] values);
+    default @NotNull ${Type}SeqView concat(@NotNull ${Type}SeqLike other) {
+        throw new UnsupportedOperationException(); // TODO
+    }
 
     @Contract(pure = true)
-    @NotNull ${Type}SeqView prependedAll(@NotNull ${Type}Traversable values);
+    default @NotNull ${Type}SeqView prepended(${PrimitiveType} value) {
+        throw new UnsupportedOperationException(); // TODO
+    }
 
     @Contract(pure = true)
-    @NotNull ${Type}SeqView appended(${PrimitiveType} value);
+    default @NotNull ${Type}SeqView prependedAll(${PrimitiveType} @NotNull [] values) {
+        throw new UnsupportedOperationException(); // TODO
+    }
 
     @Contract(pure = true)
-    @NotNull ${Type}SeqView appendedAll(@NotNull ${Type}Traversable values);
+    default @NotNull ${Type}SeqView prependedAll(@NotNull ${Type}Traversable values) {
+        throw new UnsupportedOperationException(); // TODO
+    }
 
     @Contract(pure = true)
-    @NotNull ${Type}SeqView appendedAll(${PrimitiveType} @NotNull [] values);
+    default @NotNull ${Type}SeqView appended(${PrimitiveType} value) {
+        throw new UnsupportedOperationException(); // TODO
+    }
 
     @Contract(pure = true)
-    @NotNull ${Type}SeqView sorted();
+    default @NotNull ${Type}SeqView appendedAll(@NotNull ${Type}Traversable values) {
+        throw new UnsupportedOperationException(); // TODO
+    }
 
     @Contract(pure = true)
-    @NotNull ${Type}SeqView reversed();
+    default @NotNull ${Type}SeqView appendedAll(${PrimitiveType} @NotNull [] values) {
+        throw new UnsupportedOperationException(); // TODO
+    }
+
+    @Contract(pure = true)
+    default @NotNull ${Type}SeqView sorted() {
+        throw new UnsupportedOperationException(); // TODO
+    }
+
+    @Contract(pure = true)
+    default @NotNull ${Type}SeqView reversed() {
+        throw new UnsupportedOperationException(); // TODO
+    }
 
     @Override
     @Contract(pure = true)
-    @NotNull ${Type}SeqView filter(@NotNull ${Type}Predicate predicate);
+    default  @NotNull ${Type}SeqView filter(@NotNull ${Type}Predicate predicate) {
+        throw new UnsupportedOperationException(); // TODO
+    }
 
     @Override
     @Contract(pure = true)
-    @NotNull ${Type}SeqView filterNot(@NotNull ${Type}Predicate predicate);
+    default @NotNull ${Type}SeqView filterNot(@NotNull ${Type}Predicate predicate) {
+        throw new UnsupportedOperationException(); // TODO
+    }
 
     @Override
     @Contract(pure = true)
-    @NotNull ${Type}SeqView map(@NotNull ${Type}UnaryOperator mapper);
+    default @NotNull ${Type}SeqView map(@NotNull ${Type}UnaryOperator mapper) {
+        throw new UnsupportedOperationException(); // TODO
+    }
+
+    @Override
+    default @Contract(pure = true)
+    <U> @NotNull SeqView<U> mapToObj(@NotNull ${Type}Function<? extends U> mapper) {
+        throw new UnsupportedOperationException(); // TODO
+    }
 
     @Override
     @Contract(pure = true)
-    <U> @NotNull SeqView<U> mapToObj(@NotNull ${Type}Function<? extends U> mapper);
-
-    @Override
-    @Contract(pure = true)
-    @NotNull ${Type}SeqView flatMap(@NotNull ${Type}Function<? extends ${Type}Traversable> mapper);
+    default @NotNull ${Type}SeqView flatMap(@NotNull ${Type}Function<? extends ${Type}Traversable> mapper) {
+        throw new UnsupportedOperationException(); // TODO
+    }
 }

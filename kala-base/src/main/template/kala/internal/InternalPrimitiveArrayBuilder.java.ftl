@@ -37,6 +37,10 @@ public final class Internal${Type}ArrayBuilder {
         return elements[idx];
     }
 
+    public void set(int idx, ${PrimitiveType} newValue) {
+        elements[idx] = newValue;
+    }
+
     public void append(${PrimitiveType} value) {
         if (size == elements.length) {
             grow();
