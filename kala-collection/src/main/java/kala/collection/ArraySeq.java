@@ -5,11 +5,17 @@ import kala.collection.base.ObjectArrays;
 import kala.collection.base.Traversable;
 import kala.Conditions;
 import kala.collection.immutable.ImmutableArray;
+import kala.collection.immutable.ImmutableSeq;
+import kala.collection.internal.CollectionHelper;
 import kala.collection.internal.view.SeqViews;
 import kala.collection.mutable.MutableArrayList;
 import kala.collection.factory.CollectionFactory;
 import kala.control.Option;
+import kala.function.CheckedPredicate;
+import kala.function.IndexedBiConsumer;
 import kala.function.IndexedConsumer;
+import kala.function.IndexedFunction;
+import kala.tuple.Tuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +29,8 @@ import java.util.function.*;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+
+import static kala.Conditions.checkPositionIndices;
 
 @SuppressWarnings("unchecked")
 @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "elements")
@@ -189,7 +197,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public @NotNull String className() {
-        return "ArraySeq";
+        return "ArraySeq" ;
     }
 
     @Override
@@ -248,6 +256,534 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     }
 
     //endregion
+
+    //region Addition Operations
+
+    @Override
+    public @NotNull ImmutableSeq<E> prepended(E value) {
+        Object[] newValues = new Object[elements.length + 1];
+        newValues[0] = value;
+        System.arraycopy(elements, 0, newValues, 1, elements.length);
+
+        return ImmutableArray.Unsafe.wrap(newValues);
+    }
+
+    @Override
+    public @NotNull ImmutableSeq<E> prependedAll(E @NotNull [] values) {
+        if (values.length == 0) { // implicit null check of prefix
+            return ImmutableArray.empty();
+        }
+
+        Object[] newValues = Arrays.copyOf(values, values.length + elements.length, Object[].class);
+        System.arraycopy(elements, 0, newValues, values.length, elements.length);
+
+        return ImmutableArray.Unsafe.wrap(newValues);
+    }
+
+    @Override
+    public @NotNull ImmutableSeq<E> prependedAll(@NotNull Iterable<? extends E> values) {
+        Objects.requireNonNull(values);
+
+        Object[] data = values instanceof ImmutableArray<?> ?
+                ((ImmutableArray<?>) values).elements : CollectionHelper.asArray(values);
+        Object[] newValues = new Object[data.length + elements.length];
+
+        System.arraycopy(data, 0, newValues, 0, data.length);
+        System.arraycopy(elements, 0, newValues, data.length, elements.length);
+
+        return ImmutableArray.Unsafe.wrap(newValues);
+    }
+
+    @Override
+    public @NotNull ImmutableSeq<E> appended(E value) {
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+
+        Object[] newValues = Arrays.copyOf(elements, size + 1);
+        newValues[size] = value;
+
+        return ImmutableArray.Unsafe.wrap(newValues);
+    }
+
+    @Override
+    public @NotNull ImmutableSeq<E> appendedAll(E @NotNull [] values) {
+        if (values.length == 0) { // implicit null check of values
+            return ImmutableArray.empty();
+        }
+
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+
+        Object[] newValues = Arrays.copyOf(elements, values.length + size);
+        System.arraycopy(values, 0, newValues, size, values.length);
+
+        return ImmutableArray.Unsafe.wrap(newValues);
+    }
+
+    @Override
+    public @NotNull ImmutableSeq<E> appendedAll(@NotNull Iterable<? extends E> values) {
+        Objects.requireNonNull(values);
+
+        Object[] data = values instanceof ImmutableArray<?>
+                ? ((ImmutableArray<?>) values).elements
+                : CollectionHelper.asArray(values);
+        Object[] newValues = Arrays.copyOf(elements, elements.length + data.length);
+        System.arraycopy(data, 0, newValues, elements.length, data.length);
+
+        return ImmutableArray.Unsafe.wrap(newValues);
+    }
+
+    //endregion
+
+    @Override
+    public @NotNull ImmutableSeq<E> slice(int beginIndex, int endIndex) {
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+        checkPositionIndices(beginIndex, endIndex, size);
+
+        final int ns = endIndex - beginIndex;
+        if (ns == 0) {
+            return ImmutableArray.empty();
+        }
+        if (ns == size) {
+            return this.toImmutableArray();
+        }
+
+        return ImmutableArray.Unsafe.wrap(Arrays.copyOfRange(elements, beginIndex, endIndex));
+    }
+
+    @Override
+    public @NotNull ImmutableSeq<E> drop(int n) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
+            return this.toImmutableArray();
+        }
+
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+
+        if (n >= size) {
+            return ImmutableArray.empty();
+        }
+
+        return ImmutableArray.Unsafe.wrap(Arrays.copyOfRange(elements, n, size));
+    }
+
+    @Override
+    public @NotNull ImmutableSeq<E> dropLast(int n) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
+            return this.toImmutableArray();
+        }
+        return take(Integer.max(0, size() - n)); // TODO
+    }
+
+    @Override
+    public @NotNull ImmutableSeq<E> dropWhile(@NotNull Predicate<? super E> predicate) {
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+
+        int count = 0;
+        while (count < size && predicate.test((E) elements[count])) {
+            ++count;
+        }
+
+        return drop(count);
+    }
+
+    @Override
+    public @NotNull ImmutableSeq<E> take(int n) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+
+        final int size = elements.length;
+        if (n == 0) {
+            return ImmutableSeq.empty();
+        }
+        if (n >= size) {
+            return this.toImmutableArray();
+        }
+
+        return ImmutableArray.Unsafe.wrap(Arrays.copyOf(elements, n));
+    }
+
+    @Override
+    public @NotNull ImmutableSeq<E> takeLast(int n) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
+            return ImmutableArray.empty();
+        }
+        return drop(Integer.max(0, size() - n)); // TODO
+    }
+
+    @Override
+    public @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+
+        if (size == 0) {
+            return ImmutableArray.empty();
+        }
+
+        int count = 0;
+        while (count < size && predicate.test((E) elements[count])) { // implicit null check of predicate
+            ++count;
+        }
+
+        return take(count);
+    }
+
+    @Override
+    public @NotNull ImmutableSeq<E> updated(int index, E newValue) {
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+
+        Conditions.checkElementIndex(index, size);
+
+        Object[] newValues = elements.clone();
+        newValues[index] = newValue;
+        return ImmutableArray.Unsafe.wrap(newValues);
+    }
+
+    @Override
+    public @NotNull ImmutableSeq<E> concat(@NotNull SeqLike<? extends E> other) {
+        return appendedAll(other);
+    }
+
+    @Override
+    public @NotNull ImmutableSeq<E> concat(@NotNull List<? extends E> other) {
+        return appendedAll(other);
+    }
+
+
+    @Override
+    public @NotNull ImmutableSeq<E> filter(@NotNull Predicate<? super E> predicate) {
+        Objects.requireNonNull(predicate);
+
+        final int size = elements.length;
+
+        if (size == 0) {
+            return ImmutableArray.empty();
+        }
+
+        Object[] tmp = new Object[size];
+        int c = 0;
+
+        for (Object value : elements) {
+            E v = (E) value;
+            if (predicate.test(v)) {
+                tmp[c++] = v;
+            }
+        }
+
+        if (c == 0) {
+            return ImmutableArray.empty();
+        }
+        if (c == size) {
+            return this.toImmutableArray();
+        }
+
+        return ImmutableArray.Unsafe.wrap(Arrays.copyOf(tmp, c));
+    }
+
+    @Override
+    public @NotNull <Ex extends Throwable> ImmutableSeq<E> filterChecked(
+            @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) {
+        return filter(predicate);
+    }
+
+    @Override
+    public @NotNull ImmutableSeq<E> filterUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
+        return filter(predicate);
+    }
+
+    @Override
+    public @NotNull ImmutableSeq<E> filterNot(@NotNull Predicate<? super E> predicate) {
+        Objects.requireNonNull(predicate);
+
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+
+        if (size == 0) {
+            return ImmutableArray.empty();
+        }
+
+        Object[] tmp = new Object[size];
+        int c = 0;
+
+        for (Object value : elements) {
+            E v = (E) value;
+            if (!predicate.test(v)) {
+                tmp[c++] = v;
+            }
+        }
+
+        if (c == 0) {
+            return ImmutableArray.empty();
+        }
+        if (c == size) {
+            return this.toImmutableArray();
+        }
+
+        return ImmutableArray.Unsafe.wrap(Arrays.copyOf(tmp, c));
+    }
+
+    @Override
+    public @NotNull ImmutableSeq<@NotNull E> filterNotNull() {
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+
+        if (size == 0) {
+            return ImmutableArray.empty();
+        }
+
+        Object[] tmp = new Object[size];
+        int c = 0;
+
+        for (Object value : elements) {
+            E v = (E) value;
+            if (v != null) {
+                tmp[c++] = v;
+            }
+        }
+
+        if (c == 0) {
+            return ImmutableArray.empty();
+        }
+        if (c == size) {
+            return this.toImmutableArray();
+        }
+
+        return ImmutableArray.Unsafe.wrap(Arrays.copyOf(tmp, c));
+    }
+
+    @Override
+    public @NotNull <U> ImmutableSeq<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+
+        if (size == 0) {
+            return ImmutableArray.empty();
+        }
+
+        Object[] tmp = new Object[size];
+        int c = 0;
+
+        for (Object value : elements) {
+            E v = (E) value;
+            if (clazz.isInstance(v)) {
+                tmp[c++] = v;
+            }
+        }
+
+        if (c == 0) {
+            return ImmutableArray.empty();
+        }
+        if (c == size) {
+            return (ImmutableSeq<U>) this.toImmutableArray();
+        }
+
+        return ImmutableArray.Unsafe.wrap(Arrays.copyOf(tmp, c));
+    }
+
+    @Override
+    public <U> @NotNull ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+
+        if (size == 0) {
+            return ImmutableArray.empty();
+        }
+
+        Object[] newValues = new Object[size];
+
+        for (int i = 0; i < size; i++) {
+            newValues[i] = mapper.apply((E) elements[i]);
+        }
+
+        return ImmutableArray.Unsafe.wrap(newValues);
+    }
+
+    @Override
+    public <U> @NotNull ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+
+        if (size == 0) {
+            return ImmutableArray.empty();
+        }
+
+        Object[] newValues = new Object[size];
+        for (int i = 0; i < size; i++) {
+            newValues[i] = mapper.apply(i, (E) elements[i]);
+        }
+        return ImmutableArray.Unsafe.wrap(newValues);
+    }
+
+    @Override
+    public <U> @NotNull ImmutableSeq<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+
+        if (size == 0) {
+            return ImmutableArray.empty();
+        }
+
+        Object[] tmp = new Object[size];
+        int c = 0;
+
+        for (Object value : elements) {
+            final U u = mapper.apply((E) value);
+            if (u != null) {
+                tmp[c++] = u;
+            }
+        }
+
+        if (c == 0) {
+            return ImmutableArray.empty();
+        }
+        if (c == size) {
+            return ImmutableArray.Unsafe.wrap(tmp);
+        }
+
+        return ImmutableArray.Unsafe.wrap(Arrays.copyOf(tmp, c));
+    }
+
+    @Override
+    public @NotNull <U> ImmutableSeq<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+
+        if (size == 0) {
+            return ImmutableArray.empty();
+        }
+
+        Object[] tmp = new Object[size];
+        int c = 0;
+
+        for (int i = 0; i < size; i++) {
+            final U u = mapper.apply(i, (E) elements[i]);
+            if (u != null) {
+                tmp[c++] = u;
+            }
+        }
+
+        if (c == 0) {
+            return ImmutableArray.empty();
+        }
+        if (c == size) {
+            return ImmutableArray.Unsafe.wrap(tmp);
+        }
+
+        return ImmutableArray.Unsafe.wrap(Arrays.copyOf(tmp, c));
+    }
+
+    @Override
+    public <U> @NotNull ImmutableSeq<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+        final MutableArrayList<U> builder = new MutableArrayList<>();
+        Consumer<U> consumer = builder::append;
+
+        for (Object element : elements) {
+            mapper.accept((E) element, consumer);
+        }
+
+        return builder.toImmutableArray();
+    }
+
+    @Override
+    public <U> @NotNull ImmutableSeq<U> mapIndexedMulti(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
+        final MutableArrayList<U> builder = new MutableArrayList<>();
+        Consumer<U> consumer = builder::append;
+
+        for (int i = 0; i < elements.length; i++) {
+            mapper.accept(i, (E) elements[i], consumer);
+        }
+
+        return builder.toImmutableArray();
+    }
+
+    @Override
+    public <U> @NotNull ImmutableSeq<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+        if (size == 0) {
+            return ImmutableArray.empty();
+        }
+
+        MutableArrayList<U> builder = new MutableArrayList<>();
+        for (Object value : elements) {
+            builder.appendAll(mapper.apply((E) value));
+        }
+        return builder.toImmutableArray();
+    }
+
+    @Override
+    public @NotNull ImmutableSeq<E> sorted() {
+        final Object[] elements = this.elements;
+        if (elements.length == 0 || elements.length == 1) {
+            return this.toImmutableArray();
+        }
+
+        Object[] newValues = elements.clone();
+        Arrays.sort(newValues);
+        return ImmutableArray.Unsafe.wrap(newValues);
+    }
+
+    @Override
+    public @NotNull ImmutableSeq<E> sorted(Comparator<? super E> comparator) {
+        final Object[] elements = this.elements;
+        if (elements.length == 0 || elements.length == 1) {
+            return this.toImmutableArray();
+        }
+
+        Object[] newValues = elements.clone();
+        Arrays.sort(newValues, (Comparator<Object>) comparator);
+        return ImmutableArray.Unsafe.wrap(newValues);
+    }
+
+    @Override
+    public @NotNull ImmutableSeq<E> reversed() {
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+        if (size == 0) {
+            return ImmutableArray.empty();
+        }
+        Object[] res = new Object[size];
+        for (int i = 0; i < size; i++) {
+            res[i] = elements[size - i - 1];
+        }
+        return ImmutableArray.Unsafe.wrap(res);
+    }
+
+    @Override
+    public @NotNull <U> ImmutableSeq<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
+        Iterator<? extends U> it = other.iterator(); // implicit null check of other
+        if (!it.hasNext()) {
+            return ImmutableArray.empty();
+        }
+
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+        Object[] tmp = new Object[size];
+
+        int i = 0;
+        while (it.hasNext() && i < size) {
+            tmp[i] = new Tuple2<>(elements[i], it.next());
+            ++i;
+        }
+
+        if (i < size) {
+            tmp = Arrays.copyOf(tmp, i);
+        }
+        return ImmutableArray.Unsafe.wrap(tmp);
+    }
 
     //region Search Operations
 
