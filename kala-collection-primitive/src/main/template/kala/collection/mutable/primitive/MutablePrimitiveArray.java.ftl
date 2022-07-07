@@ -4,7 +4,6 @@ import kala.collection.base.primitive.*;
 import kala.collection.factory.primitive.${Type}CollectionFactory;
 import kala.collection.primitive.${Type}ArraySeq;
 import kala.function.*;
-import kala.internal.Internal${Type}ArrayBuilder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -167,7 +166,7 @@ public final class Mutable${Type}Array extends ${Type}ArraySeq implements Mutabl
         ${Type}Arrays.sort(elements);
     }
 
-    private static final class Factory implements ${Type}CollectionFactory<Internal${Type}ArrayBuilder, Mutable${Type}Array> {
+    private static final class Factory implements ${Type}CollectionFactory<Mutable${Type}ArrayList, Mutable${Type}Array> {
         Factory() {
         }
 
@@ -197,28 +196,29 @@ public final class Mutable${Type}Array extends ${Type}ArraySeq implements Mutabl
         }
 
         @Override
-        public Internal${Type}ArrayBuilder newBuilder() {
-            return new Internal${Type}ArrayBuilder();
+        public Mutable${Type}ArrayList newBuilder() {
+            return new Mutable${Type}ArrayList();
         }
 
         @Override
-        public void addToBuilder(@NotNull Internal${Type}ArrayBuilder buffer, ${PrimitiveType} value) {
-            buffer.append(value);
+        public void addToBuilder(@NotNull Mutable${Type}ArrayList builder, ${PrimitiveType} value) {
+            builder.append(value);
         }
 
         @Override
-        public void sizeHint(@NotNull Internal${Type}ArrayBuilder  buffer, int size) {
-            // TODO: buffer.sizeHint(size);
+        public void sizeHint(@NotNull Mutable${Type}ArrayList builder, int size) {
+            builder.sizeHint(size);
         }
 
         @Override
-        public Internal${Type}ArrayBuilder mergeBuilder(@NotNull Internal${Type}ArrayBuilder builder1, @NotNull Internal${Type}ArrayBuilder builder2) {
-            throw new UnsupportedOperationException(); // TODO
+        public Mutable${Type}ArrayList mergeBuilder(@NotNull Mutable${Type}ArrayList builder1, @NotNull Mutable${Type}ArrayList builder2) {
+            builder1.appendAll(builder2);
+            return builder1;
         }
 
         @Override
-        public Mutable${Type}Array build(@NotNull Internal${Type}ArrayBuilder buffer) {
-            return new Mutable${Type}Array(buffer.toArray());
+        public Mutable${Type}Array build(@NotNull Mutable${Type}ArrayList builder) {
+            return new Mutable${Type}Array(builder.toArray());
         }
     }
 }

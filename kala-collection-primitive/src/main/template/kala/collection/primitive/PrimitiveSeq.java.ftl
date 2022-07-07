@@ -1,6 +1,7 @@
 package kala.collection.primitive;
 
 import kala.collection.AnySeq;
+import kala.collection.SeqIterator;
 import kala.collection.base.primitive.${Type}Iterator;
 import kala.collection.base.primitive.${Type}Traversable;
 import kala.collection.factory.primitive.${Type}CollectionFactory;

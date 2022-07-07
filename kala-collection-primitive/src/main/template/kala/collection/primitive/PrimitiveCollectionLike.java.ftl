@@ -3,7 +3,7 @@ package kala.collection.primitive;
 import kala.collection.CollectionLike;
 import kala.function.*;
 import kala.collection.base.primitive.${Type}Traversable;
-import kala.collection.immutable.primitive.Immutable${Type}Seq;
+import kala.collection.immutable.primitive.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,5 +35,9 @@ public interface ${Type}CollectionLike extends PrimitiveCollectionLike<${Wrapper
 
     default @NotNull Immutable${Type}Seq toImmutableSeq() {
         return Immutable${Type}Seq.from(this);
+    }
+
+    default @NotNull Immutable${Type}Array toImmutableArray() {
+        return Immutable${Type}Array.from(this);
     }
 }

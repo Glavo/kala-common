@@ -241,7 +241,7 @@ public final class Mutable${Type}ArrayList extends AbstractMutable${Type}List im
         return ${Type}Arrays.iterator(elements, beginIndex, size);
     }
 
-    // TODO: @Override
+    @Override
     public @NotNull Mutable${Type}ListIterator seqIterator(int index) {
         Conditions.checkPositionIndex(index, size);
         return new SeqItr(this, index);
@@ -588,7 +588,7 @@ public final class Mutable${Type}ArrayList extends AbstractMutable${Type}List im
         return Arrays.copyOf(elements, size);
     }
 
-    // TODO: @Override
+    @Override
     public @NotNull Immutable${Type}Array toImmutableArray() {
         return size == 0 ? Immutable${Type}Array.empty() : Immutable${Type}Array.Unsafe.wrap(Arrays.copyOf(elements, size));
     }

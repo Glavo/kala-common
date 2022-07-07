@@ -3,8 +3,9 @@ package kala.collection.primitive;
 import kala.Conditions;
 import kala.collection.base.primitive.*;
 import kala.collection.factory.primitive.${Type}CollectionFactory;
+import kala.collection.mutable.primitive.Mutable${Type}ArrayList;
+import kala.collection.immutable.primitive.Immutable${Type}Array;
 import kala.function.*;
-import kala.internal.Internal${Type}ArrayBuilder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
@@ -89,11 +90,9 @@ public class ${Type}ArraySeq extends Abstract${Type}Seq implements Indexed${Type
     }
 
     public static @NotNull ${Type}ArraySeq from(@NotNull ${Type}Traversable values) {
-        /* TODO
-        if (values instanceof ImmutableArray<?>) {
+        if (values instanceof Immutable${Type}Array) {
             return (${Type}ArraySeq) values;
         }
-         */
 
         if (values.isEmpty()) { // implicit null check of values
             return empty();
@@ -456,7 +455,7 @@ public class ${Type}ArraySeq extends Abstract${Type}Seq implements Indexed${Type
 
     //endregion
 
-    private static final class Factory implements ${Type}CollectionFactory<Internal${Type}ArrayBuilder, ${Type}ArraySeq> {
+    private static final class Factory implements ${Type}CollectionFactory<Mutable${Type}ArrayList, ${Type}ArraySeq> {
 
         @Override
         public ${Type}ArraySeq empty() {
@@ -483,12 +482,12 @@ public class ${Type}ArraySeq extends Abstract${Type}Seq implements Indexed${Type
             return ${Type}ArraySeq.fill(n, value);
         }
 
-        /*
         @Override
         public ${Type}ArraySeq fill(int n, @NotNull ${Type}Supplier supplier) {
             return ${Type}ArraySeq.fill(n, supplier);
         }
 
+        /*
         @Override
         public ${Type}ArraySeq fill(int n, @NotNull IntTo${Type}Function init) {
             return ${Type}ArraySeq.fill(n, init);
@@ -496,28 +495,28 @@ public class ${Type}ArraySeq extends Abstract${Type}Seq implements Indexed${Type
          */
 
         @Override
-        public Internal${Type}ArrayBuilder newBuilder() {
-            return new Internal${Type}ArrayBuilder();
+        public Mutable${Type}ArrayList newBuilder() {
+            return new Mutable${Type}ArrayList();
         }
 
         @Override
-        public void addToBuilder(@NotNull Internal${Type}ArrayBuilder buffer, ${PrimitiveType} value) {
+        public void addToBuilder(@NotNull Mutable${Type}ArrayList buffer, ${PrimitiveType} value) {
             buffer.append(value);
         }
 
         @Override
-        public Internal${Type}ArrayBuilder mergeBuilder(@NotNull Internal${Type}ArrayBuilder builder1, @NotNull Internal${Type}ArrayBuilder builder2) {
+        public Mutable${Type}ArrayList mergeBuilder(@NotNull Mutable${Type}ArrayList builder1, @NotNull Mutable${Type}ArrayList builder2) {
             throw new UnsupportedOperationException(); // TODO
         }
 
         @Override
-        public void sizeHint(@NotNull Internal${Type}ArrayBuilder buffer, int size) {
-            // TODO: buffer.sizeHint(size);
+        public void sizeHint(@NotNull Mutable${Type}ArrayList builder, int size) {
+            builder.sizeHint(size);
         }
 
         @Override
-        public ${Type}ArraySeq build(@NotNull Internal${Type}ArrayBuilder buffer) {
-            return new ${Type}ArraySeq(buffer.toArray());
+        public ${Type}ArraySeq build(@NotNull Mutable${Type}ArrayList builder) {
+            return new ${Type}ArraySeq(builder.toArray());
         }
     }
 }

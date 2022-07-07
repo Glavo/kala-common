@@ -117,9 +117,9 @@ public final class ${Type}SeqIterators {
         }
     }
 
-    public static class DefaultMutableListIterator<S extends Mutable${Type}List> extends DefaultMutable${Type}SeqIterator<S>
+    public static class DefaultMutable${Type}ListIterator<S extends Mutable${Type}List> extends DefaultMutable${Type}SeqIterator<S>
             implements Mutable${Type}ListIterator {
-        public DefaultMutableListIterator(@NotNull S seq, int index) {
+        public DefaultMutable${Type}ListIterator(@NotNull S seq, int index) {
             super(seq, index);
         }
 

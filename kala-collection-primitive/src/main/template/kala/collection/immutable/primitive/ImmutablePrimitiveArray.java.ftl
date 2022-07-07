@@ -3,9 +3,9 @@ package kala.collection.immutable.primitive;
 import kala.annotations.StaticClass;
 import kala.collection.base.primitive.*;
 import kala.collection.factory.primitive.${Type}CollectionFactory;
+import kala.collection.mutable.primitive.Mutable${Type}ArrayList;
 import kala.collection.primitive.${Type}ArraySeq;
 import kala.function.*;
-import kala.internal.Internal${Type}ArrayBuilder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -81,11 +81,9 @@ public final class Immutable${Type}Array extends ${Type}ArraySeq implements Immu
     }
 
     public static @NotNull Immutable${Type}Array from(@NotNull ${Type}Traversable values) {
-        /* TODO
-        if (values instanceof ImmutableArray<?>) {
+        if (values instanceof Immutable${Type}Array) {
             return (Immutable${Type}Array) values;
         }
-         */
 
         if (values.isEmpty()) { // implicit null check of values
             return empty();
@@ -157,7 +155,7 @@ public final class Immutable${Type}Array extends ${Type}ArraySeq implements Immu
     }
 </#if>
 
-    private static final class Factory implements ${Type}CollectionFactory<Internal${Type}ArrayBuilder, Immutable${Type}Array> {
+    private static final class Factory implements ${Type}CollectionFactory<Mutable${Type}ArrayList, Immutable${Type}Array> {
 
         @Override
         public Immutable${Type}Array empty() {
@@ -184,12 +182,12 @@ public final class Immutable${Type}Array extends ${Type}ArraySeq implements Immu
             return Immutable${Type}Array.fill(n, value);
         }
 
-        /*
         @Override
         public Immutable${Type}Array fill(int n, @NotNull ${Type}Supplier supplier) {
             return Immutable${Type}Array.fill(n, supplier);
         }
 
+        /*
         @Override
         public Immutable${Type}Array fill(int n, @NotNull IntTo${Type}Function init) {
             return Immutable${Type}Array.fill(n, init);
@@ -197,27 +195,28 @@ public final class Immutable${Type}Array extends ${Type}ArraySeq implements Immu
          */
 
         @Override
-        public Internal${Type}ArrayBuilder newBuilder() {
-            return new Internal${Type}ArrayBuilder();
+        public Mutable${Type}ArrayList newBuilder() {
+            return new Mutable${Type}ArrayList();
         }
 
         @Override
-        public void addToBuilder(@NotNull Internal${Type}ArrayBuilder buffer, ${PrimitiveType} value) {
+        public void addToBuilder(@NotNull Mutable${Type}ArrayList buffer, ${PrimitiveType} value) {
             buffer.append(value);
         }
 
         @Override
-        public Internal${Type}ArrayBuilder mergeBuilder(@NotNull Internal${Type}ArrayBuilder builder1, @NotNull Internal${Type}ArrayBuilder builder2) {
-            throw new UnsupportedOperationException(); // TODO
+        public Mutable${Type}ArrayList mergeBuilder(@NotNull Mutable${Type}ArrayList builder1, @NotNull Mutable${Type}ArrayList builder2) {
+            builder1.appendAll(builder2);
+            return builder1;
         }
 
         @Override
-        public void sizeHint(@NotNull Internal${Type}ArrayBuilder buffer, int size) {
-            // TODO: buffer.sizeHint(size);
+        public void sizeHint(@NotNull Mutable${Type}ArrayList builder, int size) {
+            builder.sizeHint(size);
         }
 
         @Override
-        public Immutable${Type}Array build(@NotNull Internal${Type}ArrayBuilder buffer) {
+        public Immutable${Type}Array build(@NotNull Mutable${Type}ArrayList buffer) {
             return new Immutable${Type}Array(buffer.toArray());
         }
     }

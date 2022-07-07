@@ -5,6 +5,7 @@ import kala.annotations.ReplaceWith;
 import kala.collection.base.primitive.*;
 import kala.collection.factory.primitive.${Type}CollectionFactory;
 import kala.collection.primitive.*;
+import kala.collection.primitive.internal.${Type}SeqIterators;
 import kala.control.primitive.${Type}Option;
 import kala.function.*;
 import org.intellij.lang.annotations.Flow;
@@ -96,6 +97,17 @@ public interface Mutable${Type}List extends MutablePrimitiveList<${WrapperType}>
         return Mutable${Type}List.factory();
     }
 
+    @Override
+    default @NotNull Mutable${Type}ListIterator seqIterator() {
+        return seqIterator(0);
+    }
+
+    @Override
+    default @NotNull Mutable${Type}ListIterator seqIterator(int index) {
+        Conditions.checkPositionIndex(index, size());
+        return new ${Type}SeqIterators.DefaultMutable${Type}ListIterator<>(this, index);
+    }
+
     @Contract(mutates = "this")
     void append(@Flow(targetIsContainer = true) ${PrimitiveType} value);
 
@@ -107,7 +119,7 @@ public interface Mutable${Type}List extends MutablePrimitiveList<${WrapperType}>
         } else if (length == 1) {
             this.append(values[0]);
         } else {
-            throw new UnsupportedOperationException(); // TODO this.appendAll(ArraySeq.wrap(values));
+            this.appendAll(${Type}ArraySeq.wrap(values));
         }
     }
 
@@ -149,7 +161,7 @@ public interface Mutable${Type}List extends MutablePrimitiveList<${WrapperType}>
 
     @Contract(mutates = "this")
     default void prependAll(@Flow(sourceIsContainer = true, targetIsContainer = true) ${PrimitiveType} @NotNull [] values) {
-        throw new UnsupportedOperationException(); // TODO: this.prependAll(ArraySeq.wrap(values));
+        this.prependAll(${Type}ArraySeq.wrap(values));
     }
 
     @Contract(mutates = "this")
@@ -187,7 +199,7 @@ public interface Mutable${Type}List extends MutablePrimitiveList<${WrapperType}>
     default void insertAll(
             int index,
             @Flow(sourceIsContainer = true, targetIsContainer = true) ${PrimitiveType} @NotNull [] values) {
-        throw new UnsupportedOperationException(); // TODO: insertAll(index, ArraySeq.wrap(values));
+        insertAll(index, ${Type}ArraySeq.wrap(values));
     }
 
     @Contract(mutates = "this")
@@ -271,12 +283,30 @@ public interface Mutable${Type}List extends MutablePrimitiveList<${WrapperType}>
 
     @Contract(mutates = "this")
     default boolean removeAll(@NotNull ${Type}Predicate predicate) {
-        throw new UnsupportedOperationException(); // TODO
+        Mutable${Type}ListIterator it = this.seqIterator();
+        boolean changed = false;
+        while (it.hasNext()) {
+            ${PrimitiveType} value = it.next${Type}();
+            if (predicate.test(value)) {
+                it.remove();
+                changed = true;
+            }
+        }
+        return changed;
     }
 
     @Contract(mutates = "this")
     default boolean retainAll(@NotNull ${Type}Predicate predicate) {
-        throw new UnsupportedOperationException(); // TODO
+        Mutable${Type}ListIterator it = this.seqIterator();
+        boolean changed = false;
+        while (it.hasNext()) {
+        ${PrimitiveType} value = it.next${Type}();
+            if (!predicate.test(value)) {
+                it.remove();
+                changed = true;
+            }
+        }
+        return changed;
     }
 
     @Contract(mutates = "this")
@@ -286,12 +316,42 @@ public interface Mutable${Type}List extends MutablePrimitiveList<${WrapperType}>
 
     @Contract(mutates = "this")
     default void dropInPlace(int n) {
-        throw new UnsupportedOperationException(); // TODO
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
+            return;
+        }
+        Mutable${Type}ListIterator it = this.seqIterator();
+        for (int i = 0; i < n; i++) {
+            if (!it.hasNext()) {
+                break;
+            }
+            it.next${Type}();
+            it.remove();
+        }
     }
 
     @Contract(mutates = "this")
     default void takeInPlace(int n) {
-        throw new UnsupportedOperationException(); // TODO
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+
+        if (n == 0) {
+            clear();
+            return;
+        }
+
+        final int knownSize = this.knownSize();
+        if (knownSize >= 0 && n >= knownSize) {
+            return;
+        }
+        Mutable${Type}ListIterator it = this.seqIterator(n);
+        while (it.hasNext()) {
+            it.next${Type}();
+            it.remove();
+        }
     }
 
     @Contract(mutates = "this")

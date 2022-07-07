@@ -65,7 +65,7 @@ public interface Immutable${Type}Seq extends ImmutablePrimitiveSeq<${WrapperType
 <#if IsSpecialized>
     /*
     static @NotNull Immutable${Type}Seq from(@NotNull ${Type}Stream stream) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Array.from(stream);
     }
      */
 
@@ -87,8 +87,7 @@ public interface Immutable${Type}Seq extends ImmutablePrimitiveSeq<${WrapperType
     //endregion
 
     @Override
-    @NotNull
-    default String className() {
+    default @NotNull String className() {
         return "Immutable${Type}Seq";
     }
 

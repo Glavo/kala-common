@@ -72,16 +72,16 @@ public interface Immutable${Type}Collection extends ImmutablePrimitiveCollection
 </#if>
 
     static @NotNull Immutable${Type}Collection fill(int n, ${PrimitiveType} value) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Seq.fill(n, value);
     }
 
     static @NotNull Immutable${Type}Collection fill(int n, @NotNull ${Type}Supplier supplier) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Seq.fill(n, supplier);
     }
 
     /*
     static @NotNull Immutable${Type}Collection fill(int n, @NotNull IntTo${Type}Function init) {
-        throw new UnsupportedOperationException(); // TODO
+        return Immutable${Type}Seq.fill(n, init);
     }
     */
 

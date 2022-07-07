@@ -1,10 +1,12 @@
 package kala.collection.mutable.primitive;
 
+import kala.Conditions;
 import kala.annotations.DelegateBy;
 import kala.collection.base.primitive.*;
 import kala.collection.factory.primitive.${Type}CollectionFactory;
 import kala.collection.internal.convert.FromJavaConvert;
 import kala.collection.primitive.${Type}Seq;
+import kala.collection.primitive.internal.${Type}SeqIterators;
 import kala.comparator.primitive.${Type}Comparator;
 import kala.function.*;
 import org.jetbrains.annotations.Contract;
@@ -86,6 +88,17 @@ public interface Mutable${Type}Seq extends MutablePrimitiveSeq<${WrapperType}>, 
     @Override
     default @NotNull ${Type}CollectionFactory<?, ? extends Mutable${Type}Seq> iterableFactory() {
         return Mutable${Type}Seq.factory();
+    }
+
+    @Override
+    default @NotNull Mutable${Type}SeqIterator seqIterator() {
+        return seqIterator(0);
+    }
+
+    @Override
+    default @NotNull Mutable${Type}SeqIterator seqIterator(int index) {
+        Conditions.checkPositionIndex(index, size());
+        return new ${Type}SeqIterators.DefaultMutable${Type}SeqIterator<>(this, index);
     }
 
     @Contract(mutates = "this")

@@ -1,13 +1,15 @@
 package kala.collection.primitive;
 
+import kala.Conditions;
 import kala.annotations.DelegateBy;
 import kala.collection.SeqLike;
 import kala.collection.base.primitive.${Type}Arrays;
 import kala.collection.base.primitive.${Type}Iterator;
 import kala.collection.base.primitive.${Type}Traversable;
+import kala.collection.primitive.internal.${Type}SeqIterators;
+import kala.collection.mutable.primitive.Mutable${Type}ArrayList;
 import kala.control.primitive.${Type}Option;
 import kala.function.*;
-import kala.internal.Internal${Type}ArrayBuilder;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -50,6 +52,14 @@ public interface ${Type}SeqLike extends PrimitiveSeqLike<${WrapperType}>, ${Type
         return it;
     }
 
+    default @NotNull ${Type}SeqIterator seqIterator() {
+        return seqIterator(0);
+    }
+
+    default @NotNull ${Type}SeqIterator seqIterator(int index) {
+        Conditions.checkPositionIndex(index, size());
+        return new ${Type}SeqIterators.Default${Type}SeqIterator<>(this, index);
+    }
 
     //region Positional Access Operations
 
@@ -91,11 +101,11 @@ public interface ${Type}SeqLike extends PrimitiveSeqLike<${WrapperType}>, ${Type
         if (!it.hasNext()) {
             return it;
         }
-        Internal${Type}ArrayBuilder builder = new Internal${Type}ArrayBuilder();
+        Mutable${Type}ArrayList builder = new Mutable${Type}ArrayList();
         while (it.hasNext()) {
             builder.append(it.next${Type}());
         }
-        return ${Type}Arrays.reverseIterator(builder.toArray());
+        return builder.reverseIterator();
     }
 
     //endregion

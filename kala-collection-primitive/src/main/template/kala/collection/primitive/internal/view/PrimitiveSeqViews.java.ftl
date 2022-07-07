@@ -4,8 +4,8 @@ import kala.Conditions;
 import kala.collection.*;
 import kala.collection.base.primitive.*;
 import kala.collection.primitive.*;
+import kala.collection.mutable.primitive.*;
 import kala.function.*;
-import kala.internal.Internal${Type}ArrayBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
@@ -720,13 +720,13 @@ public final class ${Type}SeqViews {
                 ${Type}Iterator it = source.iterator();
                 int len = -1;
                 int pos = 0;
-                Internal${Type}ArrayBuilder buf = null;
+                Mutable${Type}ArrayList buf = null;
 
                 private void init() {
                     if (buf != null) {
                         return;
                     }
-                    buf = new Internal${Type}ArrayBuilder();
+                    buf = new Mutable${Type}ArrayList();
                     len = 0;
                     while (it.hasNext()) {
                         ${PrimitiveType} next = it.next${Type}();
