@@ -131,16 +131,31 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E>, MutableAnyS
     @Contract(mutates = "this")
     default void replaceAll(@NotNull Function<? super E, ? extends E> operator) {
         int size = size();
-        for (int i = 0; i < size; i++) {
-            this.set(i, operator.apply(this.get(i)));
+        if (supportsFastRandomAccess()) {
+            for (int i = 0; i < size; i++) {
+                this.set(i, operator.apply(this.get(i)));
+            }
+        } else {
+            MutableSeqIterator<E> it = seqIterator();
+            while (it.hasNext()) {
+                it.set(operator.apply(it.next()));
+            }
         }
     }
 
     @Contract(mutates = "this")
     default void replaceAllIndexed(@NotNull IndexedFunction<? super E, ? extends E> operator) {
         int size = size();
-        for (int i = 0; i < size; i++) {
-            this.set(i, operator.apply(i, this.get(i)));
+        if (supportsFastRandomAccess()) {
+            for (int i = 0; i < size; i++) {
+                this.set(i, operator.apply(i, this.get(i)));
+            }
+        } else {
+            int idx = 0;
+            MutableSeqIterator<E> it = seqIterator();
+            while (it.hasNext()) {
+                it.set(operator.apply(idx++, it.next()));
+            }
         }
     }
 
@@ -153,19 +168,27 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E>, MutableAnyS
     @SuppressWarnings("unchecked")
     default void sort(Comparator<? super E> comparator) {
         Object[] values = toArray();
+        if (values.length <= 1) return;
+
         Arrays.sort(values, (Comparator<? super Object>) comparator);
 
-        for (int i = 0; i < values.length; i++) {
-            this.set(i, (E) values[i]);
+        if (supportsFastRandomAccess()) {
+            for (int i = 0; i < values.length; i++) {
+                this.set(i, (E) values[i]);
+            }
+        } else {
+            MutableSeqIterator<E> it = seqIterator();
+            for (Object value : values) {
+                it.next();
+                it.set((E) value);
+            }
         }
     }
 
     @Contract(mutates = "this")
     default void reverse() {
         final int size = this.size();
-        if (size == 0) {
-            return;
-        }
+        if (size <= 1) return;
 
         for (int i = 0; i < size / 2; i++) {
             swap(i, size - i - 1);

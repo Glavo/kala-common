@@ -350,7 +350,6 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
         if (n == 0) return ImmutableLinkedSeq.empty();
         if (n >= size) return this;
 
-
         return drop(size - n);
     }
 
@@ -424,6 +423,68 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
         @Override
         public MutableSinglyLinkedList<E> mergeBuilder(@NotNull MutableSinglyLinkedList<E> builder1, @NotNull MutableSinglyLinkedList<E> builder2) {
             return (MutableSinglyLinkedList<E>) Builder.merge(builder1, builder2);
+        }
+    }
+
+    private static final class Node<@Covariant E> {
+        E head;
+        Node<E> tail;
+
+        Node() {
+        }
+
+        Node(E head) {
+            this.head = head;
+        }
+
+        Node(E head, @NotNull Node<E> tail) {
+            this.head = head;
+            this.tail = tail;
+        }
+
+        public E head() {
+            if (this == NIL_NODE) {
+                throw new NoSuchElementException("ImmutableList.Nil.head()");
+            } else {
+                return head;
+            }
+        }
+
+        public @NotNull Node<E> tail() {
+            if (this == NIL_NODE) {
+                throw new NoSuchElementException("ImmutableList.Nil.tail()");
+            } else {
+                return tail;
+            }
+        }
+
+        @Contract("_ -> new")
+        public @NotNull Node<E> cons(E element) {
+            return new Node<>(element, this);
+        }
+    }
+
+    private static final class NodeItr<@Covariant E> extends AbstractIterator<E> {
+        private @NotNull Node<? extends E> node;
+
+        NodeItr(@NotNull Node<? extends E> node) {
+            this.node = node;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return node != NIL_NODE;
+        }
+
+        @Override
+        public E next() {
+            if (node == NIL_NODE) {
+                throw new NoSuchElementException("ImmutableListIterator.next()");
+            }
+
+            E v = node.head();
+            node = node.tail();
+            return v;
         }
     }
 
@@ -631,9 +692,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
 
         @Override
         public final E removeAt(int index) {
-            if (index < 0 || index >= len) {
-                throw new IndexOutOfBoundsException("Index out of range: " + index);
-            }
+            Conditions.checkElementIndex(index, len);
 
             if (index == 0) {
                 E v = first.head;
@@ -657,22 +716,6 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
             E v = i.tail().head();
             i.tail = i.tail().tail();
             --len;
-            return v;
-        }
-
-        public final E removeFirst() {
-            if (isEmpty()) {
-                throw new NoSuchElementException("Seq is empty");
-            }
-
-            E v = first.head;
-            if (len == 1) {
-                first = last = null;
-                aliased = false;
-            } else {
-                first = first.tail;
-            }
-            len--;
             return v;
         }
 
@@ -805,69 +848,6 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
             this.first = newBuilder.first;
             this.last = newBuilder.last;
             this.aliased = false;
-        }
-
-    }
-
-    private static final class NodeItr<@Covariant E> extends AbstractIterator<E> {
-        private @NotNull Node<? extends E> node;
-
-        NodeItr(@NotNull Node<? extends E> node) {
-            this.node = node;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return node != NIL_NODE;
-        }
-
-        @Override
-        public E next() {
-            if (node == NIL_NODE) {
-                throw new NoSuchElementException("ImmutableListIterator.next()");
-            }
-
-            E v = node.head();
-            node = node.tail();
-            return v;
-        }
-    }
-
-    private static final class Node<@Covariant E> {
-        E head;
-        Node<E> tail;
-
-        Node() {
-        }
-
-        Node(E head) {
-            this.head = head;
-        }
-
-        Node(E head, @NotNull Node<E> tail) {
-            this.head = head;
-            this.tail = tail;
-        }
-
-        public E head() {
-            if (this == NIL_NODE) {
-                throw new NoSuchElementException("ImmutableList.Nil.head()");
-            } else {
-                return head;
-            }
-        }
-
-        public @NotNull Node<E> tail() {
-            if (this == NIL_NODE) {
-                throw new NoSuchElementException("ImmutableList.Nil.tail()");
-            } else {
-                return tail;
-            }
-        }
-
-        @Contract("_ -> new")
-        public @NotNull Node<E> cons(E element) {
-            return new Node<>(element, this);
         }
     }
 }

@@ -15,63 +15,63 @@ public interface Mutable${Type}Collection extends MutablePrimitiveCollection<${W
     //region Static Factories
 
     static @NotNull ${Type}CollectionFactory<?, Mutable${Type}Collection> factory() {
-        throw new UnsupportedOperationException(); // TODO
+        return ${Type}CollectionFactory.narrow(Mutable${Type}Seq.factory());
     }
 
     static @NotNull Mutable${Type}Collection of() {
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}Seq.of();
     }
 
     @Contract("_ -> new")
     static @NotNull Mutable${Type}Collection of(${PrimitiveType} value1) {
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}Seq.of(value1);
     }
 
     @Contract("_, _ -> new")
     static @NotNull Mutable${Type}Collection of(${PrimitiveType} value1, ${PrimitiveType} value2) {
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}Seq.of(value1, value2);
     }
 
     @Contract("_, _, _ -> new")
     static @NotNull Mutable${Type}Collection of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3) {
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}Seq.of(value1, value2, value3);
     }
 
     @Contract("_, _, _, _ -> new")
     static @NotNull Mutable${Type}Collection of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3, ${PrimitiveType} value4) {
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}Seq.of(value1, value2, value3, value4);
     }
 
     @Contract("_, _, _, _, _ -> new")
     static @NotNull Mutable${Type}Collection of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3, ${PrimitiveType} value4, ${PrimitiveType} value5) {
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}Seq.of(value1, value2, value3, value4, value5);
     }
 
     @Contract("_ -> new")
     static @NotNull Mutable${Type}Collection of(${PrimitiveType}... values) {
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}Seq.of(values);
     }
 
     @Contract("_ -> new")
     static @NotNull Mutable${Type}Collection from(${PrimitiveType} @NotNull [] values) {
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}Seq.from(values);
     }
 
     @Contract("_ -> new")
     static @NotNull Mutable${Type}Collection from(@NotNull ${Type}Traversable values) {
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}Seq.from(values);
     }
 
     @Contract("_ -> new")
     static @NotNull Mutable${Type}Collection from(@NotNull ${Type}Iterator it) {
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}Seq.from(it);
     }
 <#if IsSpecialized>
 
     /*
     @Contract("_ -> new")
     static @NotNull Mutable${Type}Collection from(@NotNull ${Type}Stream stream) {
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}Seq.from(stream);
     }
      */
 </#if>

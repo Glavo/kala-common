@@ -227,7 +227,7 @@ public class ${Type}ArraySeq extends Abstract${Type}Seq implements Indexed${Type
         }
 
         for (${PrimitiveType} e : elements) {
-            if (value == e) { // TODO: equals
+            if (${PrimitiveEquals("value", "e")}) {
                 return true;
             }
         }

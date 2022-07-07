@@ -3,6 +3,7 @@ package kala.collection.primitive;
 import kala.Conditions;
 import kala.collection.SeqView;
 import kala.collection.base.primitive.${Type}Traversable;
+import kala.collection.immutable.primitive.Immutable${Type}Seq;
 import kala.collection.primitive.internal.view.${Type}SeqViews;
 import kala.function.*;
 import org.jetbrains.annotations.Contract;
@@ -161,12 +162,14 @@ public interface ${Type}SeqView extends ${Type}SeqLike, ${Type}CollectionView, P
 
     @Contract(pure = true)
     default @NotNull ${Type}SeqView prependedAll(${PrimitiveType} @NotNull [] values) {
-        throw new UnsupportedOperationException(); // TODO
+        Objects.requireNonNull(values);
+        return new ${Type}SeqViews.Concat(${Type}ArraySeq.wrap(values), this);
     }
 
     @Contract(pure = true)
     default @NotNull ${Type}SeqView prependedAll(@NotNull ${Type}Traversable values) {
-        throw new UnsupportedOperationException(); // TODO
+        Objects.requireNonNull(values);
+        return new ${Type}SeqViews.Concat(values instanceof ${Type}SeqLike ? (${Type}SeqLike) values : Immutable${Type}Seq.from(values), this);
     }
 
     @Contract(pure = true)
@@ -175,13 +178,16 @@ public interface ${Type}SeqView extends ${Type}SeqLike, ${Type}CollectionView, P
     }
 
     @Contract(pure = true)
-    default @NotNull ${Type}SeqView appendedAll(@NotNull ${Type}Traversable values) {
-        throw new UnsupportedOperationException(); // TODO
+    default @NotNull ${Type}SeqView appendedAll(${PrimitiveType} @NotNull [] values) {
+        Objects.requireNonNull(values);
+        return new ${Type}SeqViews.Concat(this, ${Type}ArraySeq.wrap(values));
     }
 
     @Contract(pure = true)
-    default @NotNull ${Type}SeqView appendedAll(${PrimitiveType} @NotNull [] values) {
-        throw new UnsupportedOperationException(); // TODO
+    default @NotNull ${Type}SeqView appendedAll(@NotNull ${Type}Traversable values) {
+        Objects.requireNonNull(values);
+        return new ${Type}SeqViews.Concat(this, values instanceof ${Type}SeqLike ? (${Type}SeqLike) values : Immutable${Type}Seq.from(values));
+
     }
 
     @Contract(pure = true)
