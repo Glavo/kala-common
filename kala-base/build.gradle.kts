@@ -88,6 +88,24 @@ tasks.getByName<GenerateTask>("generateSources") {
         }
     }
 
+    withPackage("kala.tuple.primitive") {
+        for (m1 in Primitives.all) {
+            for (m2 in Primitives.all) {
+                if (m1 == m2 && m1 == Primitives.Boolean) continue
+
+                val model = mutableMapOf<String, Any?>()
+                model += m1.withNumber(1)
+                model += m2.withNumber(2)
+
+                val className = ((if (m1 == m2) m1.type else m1.type + m2.type) + "Tuple2")
+
+                model += "ClassName" to className
+
+                generate(className, model, "PrimitiveTuple2")
+            }
+        }
+    }
+
     withPackage("kala.internal") {
         for (model in Primitives.all) {
             generate("Internal${model["Type"]}ArrayBuilder", model, "InternalPrimitiveArrayBuilder")

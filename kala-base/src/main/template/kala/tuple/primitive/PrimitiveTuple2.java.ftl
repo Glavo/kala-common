@@ -8,19 +8,19 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-public final class IntTuple2 implements PrimitiveTuple, Map.Entry<Integer, Integer> {
-    private static final long serialVersionUID = 2586221246308875196L;
+public final class ${ClassName} implements PrimitiveTuple, Map.Entry<${WrapperType1}, ${WrapperType2}> {
+    private static final long serialVersionUID = 0L;
 
-    public final int _1;
-    public final int _2;
+    public final ${PrimitiveType1} _1;
+    public final ${PrimitiveType2} _2;
 
-    private IntTuple2(int i1, int i2) {
-        _1 = i1;
-        _2 = i2;
+    private ${ClassName}(${PrimitiveType1} v1, ${PrimitiveType2} v2) {
+        _1 = v1;
+        _2 = v2;
     }
 
-    public static @NotNull IntTuple2 of(int i1, int i2) {
-        return new IntTuple2(i1, i2);
+    public static @NotNull ${ClassName} of(${PrimitiveType1} i1, ${PrimitiveType2} i2) {
+        return new ${ClassName}(i1, i2);
     }
 
     @Override
@@ -33,38 +33,39 @@ public final class IntTuple2 implements PrimitiveTuple, Map.Entry<Integer, Integ
     public <U> U elementAt(int index) {
         switch (index) {
             case 0:
-                return (U) Integer.valueOf(_1);
+                return (U) (Object) _1;
             case 1:
-                return (U) Integer.valueOf(_2);
+                return (U) (Object) _2;
             default:
                 throw new IndexOutOfBoundsException();
         }
     }
 
-    public int component1() {
+    public ${PrimitiveType1} component1() {
         return _1;
     }
 
-    public int component2() {
+    public ${PrimitiveType2} component2() {
         return _2;
     }
 
-    public @NotNull Tuple2<@NotNull Integer, @NotNull Integer> toTuple2() {
+    public @NotNull Tuple2<${"@NotNull"} ${WrapperType1}, @NotNull ${WrapperType2}> toTuple2() {
         return Tuple.of(_1, _2);
     }
 
     @Override
-    public Integer getKey() {
+    public ${WrapperType1} getKey() {
         return _1;
     }
 
     @Override
-    public Integer getValue() {
+    public ${WrapperType2} getValue() {
         return _2;
     }
 
     @Override
-    public Integer setValue(Integer value) {
+    @Deprecated
+    public ${WrapperType2} setValue(${WrapperType2} value) {
         throw new UnsupportedOperationException();
     }
 
@@ -72,9 +73,9 @@ public final class IntTuple2 implements PrimitiveTuple, Map.Entry<Integer, Integ
     public boolean equals(Object o) {
         if (this == o) return true;
 
-        if (o instanceof IntTuple2) {
-            IntTuple2 other = (IntTuple2) o;
-            return _1 == other._1 && _2 == other._2;
+        if (o instanceof ${ClassName}) {
+            ${ClassName} other = (${ClassName}) o;
+            return Conditions.equals(_1, other._1) && Conditions.equals(_2, other._2);
         }
 
         if (o instanceof Map.Entry) {
@@ -94,11 +95,11 @@ public final class IntTuple2 implements PrimitiveTuple, Map.Entry<Integer, Integ
 
     @Override
     public int hashCode() {
-        return Integer.hashCode(_1) ^ Integer.hashCode(_2);
+        return ${WrapperType1}.hashCode(_1) ^ ${WrapperType2}.hashCode(_2);
     }
 
     @Override
     public String toString() {
-        return "IntTuple2(" + _1 + ", " + _2 + ")" ;
+        return "${ClassName}(" + _1 + ", " + _2 + ")" ;
     }
 }

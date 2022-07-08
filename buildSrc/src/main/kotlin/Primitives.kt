@@ -14,6 +14,8 @@ enum class Primitives(internal val properties: MutableMap<String, Any?> = mutabl
     val isFloating: kotlin.Boolean
         get() = properties["IsFloating"] as kotlin.Boolean
 
+    fun withNumber(number: kotlin.Int): Map<String, Any?> = properties.mapKeys { "${it.key}$number" }
+
     companion object {
         val all = values()
         val allWithoutBoolean = all.filterNot { it == Boolean }
