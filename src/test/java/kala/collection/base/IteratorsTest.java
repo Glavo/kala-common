@@ -1,7 +1,6 @@
 package kala.collection.base;
 
 import kala.tuple.Tuple2;
-import kala.tuple.primitive.IntObjTuple2;
 import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
@@ -487,20 +486,5 @@ public class IteratorsTest {
             assertIteratorElements(t.component1());
             assertIteratorElements(t.component2(), "A", "B", "foo", "C");
         }
-    }
-
-    @Test
-    public void withIndexTest() {
-        assertIteratorElements(Iterators.withIndex(Iterators.empty()));
-        assertIteratorElements(Iterators.withIndex(Iterators.of("str0")), IntObjTuple2.of(0, "str0"));
-        assertIteratorElements(Iterators.withIndex(Iterators.of("str0", "str1")),
-                IntObjTuple2.of(0, "str0"),
-                IntObjTuple2.of(1, "str1")
-        );
-        assertIteratorElements(Iterators.withIndex(Iterators.of("str0", "str1", "str2")),
-                IntObjTuple2.of(0, "str0"),
-                IntObjTuple2.of(1, "str1"),
-                IntObjTuple2.of(2, "str2")
-        );
     }
 }

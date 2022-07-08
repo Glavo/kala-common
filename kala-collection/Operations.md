@@ -157,7 +157,6 @@
     * `sorted(Comparator<E>)`
     * `shuffled()`
     * `shuffled(Random)`
-    * `withIndex()`
     * `zip(Iterable<U>)`
     * `zipView(SeqLike<U>)`
     * `span(Predicate<E>)`

@@ -1,10 +1,12 @@
 package kala.collection.internal.view;
 
+import kala.Conditions;
 import kala.collection.*;
+import kala.collection.base.AbstractIterator;
 import kala.collection.base.GenericArrays;
 import kala.collection.base.Iterators;
-import kala.collection.base.ObjectArrays;
 import kala.collection.mutable.MutableArrayList;
+import kala.comparator.Comparators;
 import kala.control.Option;
 import kala.function.IndexedBiConsumer;
 import kala.function.IndexedConsumer;
@@ -12,17 +14,18 @@ import kala.function.IndexedFunction;
 import kala.function.Predicates;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
-import kala.tuple.primitive.IntObjTuple2;
-import kala.tuple.primitive.PrimitiveTuple;
-import kala.Conditions;
-import kala.comparator.Comparators;
-import kala.collection.base.AbstractIterator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
-import java.util.*;
-import java.util.function.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -1299,187 +1302,6 @@ public final class SeqViews {
         public final @NotNull Iterator<E> iterator() {
             return Iterators.mapIndexedMulti(source.iterator(), mapper);
         }
-    }
-
-    static abstract class WithIndexBase<E> extends AbstractSeqView<IntObjTuple2<E>> {
-        protected final SeqLike<E> source;
-
-        public WithIndexBase(SeqLike<E> source) {
-            this.source = source;
-        }
-
-        //region Size Info
-
-        @Override
-        public final boolean isEmpty() {
-            return source.isEmpty();
-        }
-
-        @Override
-        public final int size() {
-            return source.size();
-        }
-
-        @Override
-        public final int knownSize() {
-            return source.knownSize();
-        }
-
-        //endregion
-
-        @Override
-        public final boolean isDefinedAt(int index) {
-            return source.isDefinedAt(index);
-        }
-    }
-
-    public static class WithIndex<E> extends WithIndexBase<E> {
-        public WithIndex(SeqLike<E> source) {
-            super(source);
-        }
-
-        @Override
-        public @NotNull Iterator<IntObjTuple2<E>> iterator() {
-            return Iterators.withIndex(source.iterator());
-        }
-
-
-        //region Positional Access Operations
-
-        @Override
-        public final IntObjTuple2<E> get(int index) {
-            E e = source.get(index);
-            return IntObjTuple2.of(index, e);
-        }
-
-        @Override
-        public @Nullable IntObjTuple2<E> getOrNull(int index) {
-            Option<E> opt = source.getOption(index);
-            return opt.isEmpty() ? null : IntObjTuple2.of(index, opt.get());
-        }
-
-        @Override
-        public @NotNull Option<IntObjTuple2<E>> getOption(int index) {
-            Option<E> opt = source.getOption(index);
-            return opt.isEmpty() ? Option.none() : Option.some(IntObjTuple2.of(index, opt.get()));
-        }
-
-        //endregion
-
-        //region Reversal Operations
-
-        @Override
-        public @NotNull SeqView<IntObjTuple2<E>> reversed() {
-            return new WithIndexReversed<>(source);
-        }
-
-        @Override
-        public @NotNull Iterator<IntObjTuple2<E>> reverseIterator() {
-            return reversed().iterator();
-        }
-
-        //endregion
-    }
-
-    public static class WithIndexReversed<E> extends WithIndexBase<E> {
-        public WithIndexReversed(SeqLike<E> source) {
-            super(source);
-        }
-
-        @Override
-        public @NotNull Iterator<IntObjTuple2<E>> iterator() {
-            final int sks = source.knownSize();
-            if (sks == 0) {
-                return Iterators.empty();
-            } else if (sks > 0) {
-                Iterator<E> it = source.reverseIterator();
-                return new AbstractIterator<IntObjTuple2<E>>() {
-                    private int idx = sks - 1;
-
-                    @Override
-                    public boolean hasNext() {
-                        return it.hasNext();
-                    }
-
-                    @Override
-                    public IntObjTuple2<E> next() {
-                        final E e = it.next();
-                        return PrimitiveTuple.of(idx--, e);
-                    }
-                };
-
-            } else {
-                Iterator<E> it = source.iterator();
-                if (!it.hasNext()) {
-                    return Iterators.empty();
-                }
-                Object[] arr = ObjectArrays.from(it);
-
-                return new AbstractIterator<IntObjTuple2<E>>() {
-                    private int index = arr.length - 1;
-
-                    @Override
-                    public final boolean hasNext() {
-                        return index >= 0;
-                    }
-
-                    @Override
-                    public final IntObjTuple2<E> next() {
-                        final int oldIndex = this.index;
-                        if (oldIndex < 0) {
-                            throw new NoSuchElementException();
-                        }
-                        IntObjTuple2<E> res = IntObjTuple2.of(oldIndex, (E) arr[oldIndex]);
-                        this.index = oldIndex - 1;
-                        return res;
-                    }
-                };
-            }
-        }
-
-        //region Positional Access Operations
-
-        @Override
-        public final IntObjTuple2<E> get(int index) {
-            final int size = source.size();
-            Conditions.checkElementIndex(index, size);
-            final int ridx = size - index - 1;
-            return IntObjTuple2.of(ridx, source.get(ridx));
-        }
-
-        @Override
-        public @Nullable IntObjTuple2<E> getOrNull(int index) {
-            final int size = source.size();
-            final int ridx = size - index - 1;
-            return index >= 0 && index < size
-                    ? null
-                    : IntObjTuple2.of(ridx, source.get(ridx));
-        }
-
-        @Override
-        public @NotNull Option<IntObjTuple2<E>> getOption(int index) {
-            final int size = source.size();
-            final int ridx = size - index - 1;
-            return index >= 0 && index < size
-                    ? Option.none()
-                    : Option.some(IntObjTuple2.of(ridx, source.get(ridx)));
-        }
-
-        //endregion
-
-        //region Reversal Operations
-
-        @Override
-        public @NotNull SeqView<IntObjTuple2<E>> reversed() {
-            return new WithIndex<>(source);
-        }
-
-        @Override
-        public @NotNull Iterator<IntObjTuple2<E>> reverseIterator() {
-            return Iterators.withIndex(source.iterator());
-        }
-
-        //endregion
     }
 
     public static final class Sorted<E> extends AbstractSeqView<E> {

@@ -6,7 +6,6 @@ import kala.function.IndexedFunction;
 import kala.function.Predicates;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
-import kala.tuple.primitive.IntObjTuple2;
 import kala.Conditions;
 import kala.collection.internal.view.SeqViews;
 import kala.annotations.Covariant;
@@ -283,11 +282,6 @@ public interface SeqView<@Covariant E> extends CollectionView<E>, SeqLike<E>, An
     default <U> @NotNull SeqView<U> mapIndexedMulti(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
         Objects.requireNonNull(mapper);
         return new SeqViews.MapIndexedMulti<>(this, mapper);
-    }
-
-    @Override
-    default @NotNull SeqView<IntObjTuple2<E>> withIndex() {
-        return new SeqViews.WithIndex<>(this);
     }
 
     @Override

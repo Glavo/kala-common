@@ -8,7 +8,6 @@ import kala.tuple.Tuple2;
 import kala.annotations.StaticClass;
 import kala.control.Option;
 import kala.collection.factory.CollectionFactory;
-import kala.tuple.primitive.IntObjTuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -831,13 +830,6 @@ public final class Iterators {
         }
 
         return new ConcatAll<>(Iterators.map(Iterators.map(it, mapper), Iterable::iterator));
-    }
-
-    public static <E> @NotNull Iterator<IntObjTuple2<E>> withIndex(@NotNull Iterator<? extends E> it) {
-        if (!it.hasNext()) { // implicit null check of it
-            return Iterators.empty();
-        }
-        return new WithIndex<>(it);
     }
 
     public static <E, U> @NotNull Iterator<@NotNull Tuple2<E, U>> zip(@NotNull Iterator<? extends E> it1, Iterator<? extends U> it2) {
@@ -2101,26 +2093,6 @@ public final class Iterators {
                 return Tuple.of(it1.next(), it2.next());
             }
             throw new NoSuchElementException();
-        }
-    }
-
-    private static final class WithIndex<E> extends AbstractIterator<@NotNull IntObjTuple2<E>> {
-        private final @NotNull Iterator<? extends E> it;
-        private int idx;
-
-        WithIndex(@NotNull Iterator<? extends E> it) {
-            this.it = it;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return it.hasNext();
-        }
-
-        @Override
-        public @NotNull IntObjTuple2<E> next() {
-            final E nextValue = it.next();
-            return IntObjTuple2.of(idx++, nextValue);
         }
     }
 }

@@ -2,28 +2,25 @@ package kala.collection;
 
 import kala.Conditions;
 import kala.annotations.DelegateBy;
-import kala.annotations.ReplaceWith;
 import kala.collection.base.GenericArrays;
 import kala.collection.base.Growable;
 import kala.collection.base.Iterators;
-import kala.collection.immutable.AbstractImmutableCollection;
-import kala.collection.immutable.AbstractImmutableSeq;
-import kala.collection.immutable.ImmutableSeq;
 import kala.collection.internal.SeqIterators;
+import kala.collection.internal.view.SeqViews;
 import kala.collection.mutable.MutableArrayList;
-import kala.comparator.Comparators;
 import kala.control.Option;
 import kala.function.*;
 import kala.tuple.Tuple2;
-import kala.tuple.primitive.IntObjTuple2;
-import kala.collection.internal.view.SeqViews;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.function.*;
 
 public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E> {
@@ -462,10 +459,6 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E> {
             destination.plusAssign(mapper.apply(idx++, e));
         }
         return destination;
-    }
-
-    default @NotNull SeqView<IntObjTuple2<E>> withIndex() {
-        return view().withIndex();
     }
 
     default <U> @NotNull SeqView<@NotNull Tuple2<E, U>> zipView(@NotNull SeqLike<? extends U> other) {
