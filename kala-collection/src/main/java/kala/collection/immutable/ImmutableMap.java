@@ -1,7 +1,7 @@
 package kala.collection.immutable;
 
 import kala.collection.Map;
-import kala.collection.base.MapBase;
+import kala.collection.MapLike;
 import kala.collection.factory.MapFactory;
 import kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
@@ -128,7 +128,7 @@ public interface ImmutableMap<K, V> extends Map<K, V> {
         return ImmutableHashMap.from(values);
     }
 
-    static <K, V> @NotNull ImmutableMap<K, V> from(@NotNull MapBase<? extends K, ? extends V> values) {
+    static <K, V> @NotNull ImmutableMap<K, V> from(@NotNull MapLike<? extends K, ? extends V> values) {
         return ImmutableHashMap.from(values);
     }
 

@@ -1,6 +1,6 @@
 package kala.collection.mutable;
 
-import kala.collection.base.MapBase;
+import kala.collection.MapLike;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
 import kala.tuple.Tuple2;
@@ -131,7 +131,7 @@ public interface MutableMap<K, V> extends Map<K, V>, MutableMapLike<K, V> {
         return MutableHashMap.from(values);
     }
 
-    static <K, V> @NotNull MutableMap<K, V> from(@NotNull MapBase<? extends K, ? extends V> values) {
+    static <K, V> @NotNull MutableMap<K, V> from(@NotNull MapLike<? extends K, ? extends V> values) {
         return MutableHashMap.from(values);
     }
 

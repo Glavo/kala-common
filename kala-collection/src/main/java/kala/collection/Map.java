@@ -1,8 +1,6 @@
 package kala.collection;
 
 import kala.Equatable;
-import kala.collection.base.MapBase;
-import kala.collection.base.MapIterator;
 import kala.collection.factory.MapFactory;
 import kala.collection.immutable.ImmutableMap;
 import kala.collection.internal.convert.AsJavaConvert;
@@ -162,7 +160,7 @@ public interface Map<K, V> extends MapLike<K, V>, Equatable {
         return ImmutableMap.from(values);
     }
 
-    static <K, V> @NotNull Map<K, V> from(@NotNull MapBase<? extends K, ? extends V> values) {
+    static <K, V> @NotNull Map<K, V> from(@NotNull MapLike<? extends K, ? extends V> values) {
         return ImmutableMap.from(values);
     }
 

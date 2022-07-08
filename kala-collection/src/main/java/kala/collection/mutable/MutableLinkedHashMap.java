@@ -1,6 +1,6 @@
 package kala.collection.mutable;
 
-import kala.collection.base.MapBase;
+import kala.collection.MapLike;
 import kala.collection.factory.MapFactory;
 import kala.collection.internal.convert.FromJavaConvert;
 import kala.tuple.Tuple2;
@@ -184,7 +184,7 @@ public final class MutableLinkedHashMap<K, V> extends FromJavaConvert.MutableMap
         return m;
     }
 
-    public static <K, V> @NotNull MutableLinkedHashMap<K, V> from(@NotNull MapBase<? extends K, ? extends V> values) {
+    public static <K, V> @NotNull MutableLinkedHashMap<K, V> from(@NotNull MapLike<? extends K, ? extends V> values) {
         MutableLinkedHashMap<K, V> m = new MutableLinkedHashMap<>();
         m.putAll(values);
         return m;

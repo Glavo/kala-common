@@ -1,5 +1,7 @@
-package kala.collection.base;
+package kala.collection;
 
+import kala.collection.base.Iterators;
+import kala.collection.internal.MapIterators;
 import kala.function.CheckedBiConsumer;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;

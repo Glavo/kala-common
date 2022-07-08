@@ -1,12 +1,14 @@
 package kala.collection.mutable;
 
+import kala.collection.AbstractMapIterator;
+import kala.collection.MapLike;
+import kala.collection.MapIterator;
 import kala.collection.base.*;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.control.Option;
 import kala.internal.ComparableUtils;
 import kala.tuple.Tuple2;
 import kala.collection.factory.MapFactory;
-import kala.comparator.Comparators;
 import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -347,7 +349,7 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
         return m;
     }
 
-    public static <K extends Comparable<? super K>, V> @NotNull MutableTreeMap<K, V> from(@NotNull MapBase<? extends K, ? extends V> values) {
+    public static <K extends Comparable<? super K>, V> @NotNull MutableTreeMap<K, V> from(@NotNull MapLike<? extends K, ? extends V> values) {
         MutableTreeMap<K, V> m = new MutableTreeMap<>();
         m.putAll(values);
         return m;

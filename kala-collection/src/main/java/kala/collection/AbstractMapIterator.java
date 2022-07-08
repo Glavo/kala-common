@@ -1,5 +1,6 @@
-package kala.collection.base;
+package kala.collection;
 
+import kala.collection.base.AbstractIterator;
 import kala.tuple.Tuple2;
 
 public abstract class AbstractMapIterator<K, V> extends AbstractIterator<Tuple2<K, V>> implements MapIterator<K, V> {

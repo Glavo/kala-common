@@ -1,7 +1,6 @@
 package kala.collection.mutable;
 
 import kala.collection.MapLike;
-import kala.collection.base.MapBase;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.control.Option;
 import kala.tuple.Tuple2;
@@ -62,7 +61,7 @@ public interface MutableMapLike<K, V> extends MapLike<K, V> {
         m.forEach(this::set);
     }
 
-    default void putAll(@NotNull MapBase<? extends K, ? extends V> m) {
+    default void putAll(@NotNull MapLike<? extends K, ? extends V> m) {
         if (m == this) {
             return;
         }

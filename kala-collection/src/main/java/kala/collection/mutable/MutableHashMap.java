@@ -1,9 +1,9 @@
 package kala.collection.mutable;
 
+import kala.collection.MapLike;
 import kala.collection.base.AbstractIterator;
-import kala.collection.base.AbstractMapIterator;
-import kala.collection.base.MapBase;
-import kala.collection.base.MapIterator;
+import kala.collection.AbstractMapIterator;
+import kala.collection.MapIterator;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.hash.*;
 import kala.control.Option;
@@ -240,7 +240,7 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
         return m;
     }
 
-    public static <K, V> @NotNull MutableHashMap<K, V> from(@NotNull MapBase<? extends K, ? extends V> values) {
+    public static <K, V> @NotNull MutableHashMap<K, V> from(@NotNull MapLike<? extends K, ? extends V> values) {
         MutableHashMap<K, V> m = new MutableHashMap<>();
         m.putAll(values);
         return m;
@@ -539,7 +539,7 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
     }
 
     @Override
-    public void putAll(@NotNull MapBase<? extends K, ? extends V> m) {
+    public void putAll(@NotNull MapLike<? extends K, ? extends V> m) {
         Objects.requireNonNull(m);
 
         if (m == this) {

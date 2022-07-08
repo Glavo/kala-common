@@ -2,8 +2,8 @@ package kala.collection.immutable;
 
 import kala.collection.mutable.MutableHashMap;
 import kala.control.Option;
-import kala.collection.base.MapBase;
-import kala.collection.base.MapIterator;
+import kala.collection.MapLike;
+import kala.collection.MapIterator;
 import kala.collection.factory.MapFactory;
 import kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
@@ -211,7 +211,7 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V> imp
         return new ImmutableHashMap<>(impl);
     }
 
-    public static <K, V> @NotNull ImmutableHashMap<K, V> from(@NotNull MapBase<? extends K, ? extends V> values) {
+    public static <K, V> @NotNull ImmutableHashMap<K, V> from(@NotNull MapLike<? extends K, ? extends V> values) {
         if (values.isEmpty()) {
             return empty();
         }

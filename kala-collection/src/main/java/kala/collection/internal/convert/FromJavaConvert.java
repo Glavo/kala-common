@@ -5,7 +5,7 @@ import kala.control.Option;
 import kala.internal.InternalIdentifyObject;
 import kala.tuple.Tuple2;
 import kala.annotations.StaticClass;
-import kala.collection.base.MapIterator;
+import kala.collection.MapIterator;
 import kala.collection.Seq;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

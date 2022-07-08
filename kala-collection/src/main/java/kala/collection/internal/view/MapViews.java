@@ -2,7 +2,7 @@ package kala.collection.internal.view;
 
 import kala.collection.*;
 import kala.collection.base.Iterators;
-import kala.collection.base.MapIterator;
+import kala.collection.MapIterator;
 import kala.control.Option;
 import kala.function.CheckedBiConsumer;
 import kala.tuple.Tuple2;

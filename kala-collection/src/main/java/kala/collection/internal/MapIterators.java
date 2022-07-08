@@ -1,5 +1,8 @@
-package kala.collection.base;
+package kala.collection.internal;
 
+import kala.collection.AbstractMapIterator;
+import kala.collection.MapIterator;
+import kala.collection.base.AbstractIterator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -7,11 +10,11 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.function.BiFunction;
 
-final class MapIterators {
+public final class MapIterators {
     private MapIterators() {
     }
 
-    static final MapIterator<?, ?> EMPTY = new MapIterator<Object, Object>() {
+    public static final MapIterator<?, ?> EMPTY = new MapIterator<Object, Object>() {
         @Override
         public Object nextKey() {
             throw new NoSuchElementException();
@@ -28,13 +31,13 @@ final class MapIterators {
         }
     };
 
-    static final class OfIterator<K, V> extends AbstractMapIterator<K, V> {
+    public static final class OfIterator<K, V> extends AbstractMapIterator<K, V> {
 
         private final Iterator<? extends Map.Entry<? extends K, ? extends V>> source;
 
         private V value;
 
-        OfIterator(Iterator<? extends Map.Entry<? extends K, ? extends V>> source) {
+        public OfIterator(Iterator<? extends Map.Entry<? extends K, ? extends V>> source) {
             this.source = source;
         }
 
@@ -56,11 +59,11 @@ final class MapIterators {
         }
     }
 
-    static final class Mapped<E, K, V> extends AbstractIterator<E> {
+    public static final class Mapped<E, K, V> extends AbstractIterator<E> {
         private final @NotNull MapIterator<? extends K, ? extends V> source;
         private final @NotNull BiFunction<? super K, ? super V, ? extends E> mapper;
 
-        Mapped(@NotNull MapIterator<? extends K, ? extends V> source, @NotNull BiFunction<? super K, ? super V, ? extends E> mapper) {
+        public Mapped(@NotNull MapIterator<? extends K, ? extends V> source, @NotNull BiFunction<? super K, ? super V, ? extends E> mapper) {
             this.source = source;
             this.mapper = mapper;
         }
@@ -76,10 +79,10 @@ final class MapIterators {
         }
     }
 
-    static final class KeysIterator<K> extends AbstractIterator<K> {
+    public static final class KeysIterator<K> extends AbstractIterator<K> {
         private final MapIterator<? extends K, ?> source;
 
-        KeysIterator(MapIterator<? extends K, ?> source) {
+        public KeysIterator(MapIterator<? extends K, ?> source) {
             this.source = source;
         }
 
@@ -94,10 +97,10 @@ final class MapIterators {
         }
     }
 
-    static final class ValuesIterator<V> extends AbstractIterator<V> {
+    public static final class ValuesIterator<V> extends AbstractIterator<V> {
         private final MapIterator<?, ? extends V> source;
 
-        ValuesIterator(MapIterator<?, ? extends V> source) {
+        public ValuesIterator(MapIterator<?, ? extends V> source) {
             this.source = source;
         }
 
@@ -113,13 +116,13 @@ final class MapIterators {
         }
     }
 
-    static final class MapValues<K, V, OldV> extends AbstractMapIterator<K, V> {
+    public static final class MapValues<K, V, OldV> extends AbstractMapIterator<K, V> {
         private final @NotNull MapIterator<? extends K, ? extends OldV> source;
         private final @NotNull BiFunction<? super K, ? super OldV, ? extends V> mapper;
 
         private K k;
 
-        MapValues(@NotNull MapIterator<? extends K, ? extends OldV> source, @NotNull BiFunction<? super K, ? super OldV, ? extends V> mapper) {
+        public MapValues(@NotNull MapIterator<? extends K, ? extends OldV> source, @NotNull BiFunction<? super K, ? super OldV, ? extends V> mapper) {
             this.source = source;
             this.mapper = mapper;
         }

@@ -1,7 +1,7 @@
 package kala.collection.factory;
 
 import kala.collection.base.AnyTraversable;
-import kala.collection.base.MapBase;
+import kala.collection.base.Sized;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -24,10 +24,6 @@ public interface MapFactory<K, V, Builder, R> extends Factory<Builder, R> {
     void addToBuilder(Builder builder, K key, V value);
 
     default void addAllToBuilder(Builder builder, java.util.@NotNull Map<? extends K, ? extends V> values) {
-        values.forEach((k, v) -> addToBuilder(builder, k, v));
-    }
-
-    default void addAllToBuilder(Builder builder, @NotNull MapBase<? extends K, ? extends V> values) {
         values.forEach((k, v) -> addToBuilder(builder, k, v));
     }
 
@@ -68,7 +64,7 @@ public interface MapFactory<K, V, Builder, R> extends Factory<Builder, R> {
         sizeHint(builder, it.size());
     }
 
-    default void sizeHint(@NotNull Builder builder, MapBase<?, ?> it) {
+    default void sizeHint(@NotNull Builder builder, Sized it) {
         int ks = it.knownSize();
         if (ks >= 0) {
             sizeHint(builder, ks);
