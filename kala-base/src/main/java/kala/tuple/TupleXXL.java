@@ -78,11 +78,22 @@ final class TupleXXL extends HList<Object, HList<?, ?>> {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof TupleXXL)) {
-            return false;
+
+        if (o instanceof TupleXXL) {
+            TupleXXL other = (TupleXXL) o;
+            return Arrays.equals(this.values, other.values);
         }
-        TupleXXL other = (TupleXXL) o;
-        return Arrays.equals(values, other.values);
+
+        if (o instanceof AnyTuple) {
+            AnyTuple other = (AnyTuple) o;
+            if (this.arity() != other.arity()) return false;
+            for (int i = 0; i < values.length; i++) {
+                if (!Objects.equals(values[i], other.elementAt(i))) return false;
+            }
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -91,7 +102,7 @@ final class TupleXXL extends HList<Object, HList<?, ?>> {
         for (Object value : values) {
             hash = hash * 31 + Objects.hashCode(value);
         }
-        return hash + Tuple.HASH_MAGIC;
+        return hash + HASH_MAGIC;
     }
 
     @Override

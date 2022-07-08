@@ -160,14 +160,26 @@ public final class Tuple2<@Covariant T1, @Covariant T2> extends HList<T1, Tuple1
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
+        if (this == o) return true;
+
+        if (o instanceof Tuple2) {
+            Tuple2<?, ?> other = (Tuple2<?, ?>) o;
+            return Objects.equals(this._1, other._1) && Objects.equals(this._2, other._2);
         }
-        if (!(o instanceof java.util.Map.Entry)) {
-            return false;
+
+        if (o instanceof Map.Entry) {
+            Map.Entry<?, ?> other = (Map.Entry<?, ?>) o;
+            return Objects.equals(this._1, other.getKey()) && Objects.equals(this._2, other.getValue());
         }
-        Map.Entry<?, ?> entry = (Map.Entry<?, ?>) o;
-        return Objects.equals(_1, entry.getKey()) && Objects.equals(_2, entry.getValue());
+
+        if (o instanceof AnyTuple) {
+            AnyTuple other = (AnyTuple) o;
+            return other.arity() == 2
+                    && Objects.equals(this._1, other.elementAt(0))
+                    && Objects.equals(this._2, other.elementAt(1));
+        }
+
+        return false;
     }
 
     /**
@@ -183,6 +195,6 @@ public final class Tuple2<@Covariant T1, @Covariant T2> extends HList<T1, Tuple1
      */
     @Override
     public String toString() {
-        return "(" + _1 + ", " + _2 + ")";
+        return "(" + _1 + ", " + _2 + ")" ;
     }
 }

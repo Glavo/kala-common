@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.stream.BaseStream;
 import java.util.stream.StreamSupport;
 
-public interface AnyTraversable<T> {
+public interface AnyTraversable<T> extends Sized {
 
     @NotNull Traversable<T> asGeneric();
 
@@ -50,6 +50,7 @@ public interface AnyTraversable<T> {
 
     //region Size Info
 
+    @Override
     default boolean isEmpty() {
         final int knownSize = knownSize();
         if (knownSize < 0) {
@@ -59,6 +60,7 @@ public interface AnyTraversable<T> {
         }
     }
 
+    @Override
     default boolean isNotEmpty() {
         return !isEmpty();
     }
@@ -68,10 +70,12 @@ public interface AnyTraversable<T> {
      *
      * @return the number of elements in this {@code AnyTraversable}
      */
+    @Override
     default int size() {
         return Iterators.size(iterator());
     }
 
+    @Override
     @Range(from = -1, to = Integer.MAX_VALUE)
     default int knownSize() {
         return -1;

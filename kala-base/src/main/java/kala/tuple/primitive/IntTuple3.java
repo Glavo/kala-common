@@ -1,12 +1,15 @@
 package kala.tuple.primitive;
 
+import kala.Conditions;
+import kala.tuple.AnyTuple;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple3;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
+
 public final class IntTuple3 implements PrimitiveTuple {
     private static final long serialVersionUID = 6568634810148911056L;
-    private static final int HASH_MAGIC = -1472170394;
 
     public final int _1;
     public final int _2;
@@ -27,6 +30,21 @@ public final class IntTuple3 implements PrimitiveTuple {
         return 3;
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public <U> U elementAt(int index) {
+        switch (index) {
+            case 0:
+                return (U) Integer.valueOf(_1);
+            case 1:
+                return (U) Integer.valueOf(_2);
+            case 2:
+                return (U) Integer.valueOf(_3);
+            default:
+                throw new IndexOutOfBoundsException();
+        }
+    }
+
     public int component1() {
         return _1;
     }
@@ -45,14 +63,22 @@ public final class IntTuple3 implements PrimitiveTuple {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
+        if (this == o) return true;
+
+        if (o instanceof IntTuple3) {
+            IntTuple3 other = (IntTuple3) o;
+            return _1 == other._1 && _2 == other._2 && this._3 == other._3;
         }
-        if (!(o instanceof IntTuple3)) {
-            return false;
+
+        if (o instanceof AnyTuple) {
+            AnyTuple other = (AnyTuple) o;
+            return other.arity() == 3
+                    && Conditions.equals(_1, other.elementAt(0))
+                    && Conditions.equals(_2, other.elementAt(1))
+                    && Conditions.equals(_3, other.elementAt(2));
         }
-        IntTuple3 other = (IntTuple3) o;
-        return _1 == other._1 && _2 == other._2 && _3 == other._3;
+
+        return false;
     }
 
     @Override
@@ -66,6 +92,6 @@ public final class IntTuple3 implements PrimitiveTuple {
 
     @Override
     public String toString() {
-        return "IntTuple3(" + _1 + ", " + _2 + ", " + _3 + ")";
+        return "IntTuple3(" + _1 + ", " + _2 + ", " + _3 + ")" ;
     }
 }

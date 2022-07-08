@@ -124,14 +124,19 @@ public final class Tuple1<@Covariant T1> extends HList<T1, Unit> implements Mapp
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
+        if (this == o) return true;
+
+        if (o instanceof Tuple1) {
+            Tuple1<?> other = (Tuple1<?>) o;
+            return Objects.equals(this._1, other._1);
         }
-        if (!(o instanceof Tuple1<?>)) {
-            return false;
+
+        if (o instanceof AnyTuple) {
+            AnyTuple other = (AnyTuple) o;
+            return other.arity() == 1 && Objects.equals(this._1, other.elementAt(0));
         }
-        Tuple1<?> t = (Tuple1<?>) o;
-        return Objects.equals(_1, t._1);
+
+        return false;
     }
 
     /**
@@ -147,6 +152,6 @@ public final class Tuple1<@Covariant T1> extends HList<T1, Unit> implements Mapp
      */
     @Override
     public String toString() {
-        return "(" + _1 + ")";
+        return "(" + _1 + ")" ;
     }
 }

@@ -150,14 +150,24 @@ public final class Tuple3<@Covariant T1, @Covariant T2, @Covariant T3> extends H
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
+        if (this == o) return true;
+
+        if (o instanceof Tuple3) {
+            Tuple3<?, ?, ?> other = (Tuple3<?, ?, ?>) o;
+            return Objects.equals(this._1, other._1)
+                    && Objects.equals(this._2, other._2)
+                    && Objects.equals(this._3, other._3);
         }
-        if (!(o instanceof Tuple3<?, ?, ?>)) {
-            return false;
+
+        if (o instanceof AnyTuple) {
+            AnyTuple other = (AnyTuple) o;
+            return other.arity() == 3
+                    && Objects.equals(this._1, other.elementAt(0))
+                    && Objects.equals(this._2, other.elementAt(1))
+                    && Objects.equals(this._3, other.elementAt(2));
         }
-        Tuple3<?, ?, ?> t = (Tuple3<?, ?, ?>) o;
-        return Objects.equals(_1, t._1) && Objects.equals(_2, t._2) && Objects.equals(_3, t._3);
+
+        return false;
     }
 
     /**

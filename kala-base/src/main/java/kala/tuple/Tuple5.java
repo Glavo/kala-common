@@ -192,14 +192,28 @@ public final class Tuple5<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
+        if (this == o) return true;
+
+        if (o instanceof Tuple5) {
+            Tuple5<?, ?, ?, ?, ?> other = (Tuple5<?, ?, ?, ?, ?>) o;
+            return Objects.equals(this._1, other._1)
+                    && Objects.equals(this._2, other._2)
+                    && Objects.equals(this._3, other._3)
+                    && Objects.equals(this._4, other._4)
+                    && Objects.equals(this._5, other._5);
         }
-        if (!(o instanceof Tuple5<?, ?, ?, ?, ?>)) {
-            return false;
+
+        if (o instanceof AnyTuple) {
+            AnyTuple other = (AnyTuple) o;
+            return other.arity() == 5
+                    && Objects.equals(this._1, other.elementAt(0))
+                    && Objects.equals(this._2, other.elementAt(1))
+                    && Objects.equals(this._3, other.elementAt(2))
+                    && Objects.equals(this._4, other.elementAt(3))
+                    && Objects.equals(this._5, other.elementAt(4));
         }
-        Tuple5<?, ?, ?, ?, ?> t = (Tuple5<?, ?, ?, ?, ?>) o;
-        return Objects.equals(_1, t._1) && Objects.equals(_2, t._2) && Objects.equals(_3, t._3) && Objects.equals(_4, t._4) && Objects.equals(_5, t._5);
+
+        return false;
     }
 
     /**
@@ -221,6 +235,6 @@ public final class Tuple5<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      */
     @Override
     public String toString() {
-        return "(" + _1 + ", " + _2 + ", " + _3 + ", " + _4 + ", " + _5 + ")";
+        return "(" + _1 + ", " + _2 + ", " + _3 + ", " + _4 + ", " + _5 + ")" ;
     }
 }

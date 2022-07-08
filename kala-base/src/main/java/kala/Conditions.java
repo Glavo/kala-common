@@ -90,6 +90,111 @@ public final class Conditions {
         throw new AssertionError("checkPositionIndicesFailed");
     }
 
+    //region Equals
+
+    public static boolean equals(boolean v1, boolean v2) {
+        return v1 == v2;
+    }
+
+    public static boolean equals(char v1, char v2) {
+        return v1 == v2;
+    }
+
+    public static boolean equals(byte v1, byte v2) {
+        return v1 == v2;
+    }
+
+    public static boolean equals(short v1, short v2) {
+        return v1 == v2;
+    }
+
+    public static boolean equals(int v1, int v2) {
+        return v1 == v2;
+    }
+
+    public static boolean equals(long v1, long v2) {
+        return v1 == v2;
+    }
+
+    public static boolean equals(float v1, float v2) {
+        return Float.floatToIntBits(v1) == Float.floatToIntBits(v2);
+    }
+
+    public static boolean equals(double v1, double v2) {
+        return Double.doubleToLongBits(v1) == Double.doubleToLongBits(v2);
+    }
+
+    public static boolean equals(Object v1, boolean v2) {
+        return v1 instanceof Boolean && (Boolean) v1 == v2;
+    }
+
+    public static boolean equals(Object v1, char v2) {
+        return v1 instanceof Character && (Character) v1 == v2;
+    }
+
+    public static boolean equals(Object v1, byte v2) {
+        return v1 instanceof Byte && (Byte) v1 == v2;
+    }
+
+    public static boolean equals(Object v1, short v2) {
+        return v1 instanceof Short && (Short) v1 == v2;
+    }
+
+    public static boolean equals(Object v1, int v2) {
+        return v1 instanceof Integer && (Integer) v1 == v2;
+    }
+
+    public static boolean equals(Object v1, long v2) {
+        return v1 instanceof Long && (Long) v1 == v2;
+    }
+
+    public static boolean equals(Object v1, float v2) {
+        return v1 instanceof Float && Float.floatToIntBits((Float) v1) == Float.floatToIntBits(v2);
+    }
+
+    public static boolean equals(Object v1, double v2) {
+        return v1 instanceof Double && Double.doubleToLongBits((Double) v1) == Double.doubleToLongBits(v2);
+    }
+
+    public static boolean equals(boolean v1, Object v2) {
+        return v2 instanceof Boolean && (Boolean) v2 == v1;
+    }
+
+    public static boolean equals(char v1, Object v2) {
+        return v2 instanceof Character && (Character) v2 == v1;
+    }
+
+    public static boolean equals(byte v1, Object v2) {
+        return v2 instanceof Byte && (Byte) v2 == v1;
+    }
+
+    public static boolean equals(short v1, Object v2) {
+        return v2 instanceof Short && (Short) v2 == v1;
+    }
+
+    public static boolean equals(int v1, Object v2) {
+        return v2 instanceof Integer && (Integer) v2 == v1;
+    }
+
+    public static boolean equals(long v1, Object v2) {
+        return v2 instanceof Long && (Long) v2 == v1;
+    }
+
+    public static boolean equals(float v1, Object v2) {
+        return v2 instanceof Float && Float.floatToIntBits((Float) v2) == Float.floatToIntBits(v1);
+    }
+
+    public static boolean equals(double v1, Object v2) {
+        return v2 instanceof Double && Double.doubleToLongBits((Double) v2) == Double.doubleToLongBits(v1);
+    }
+
+    public static boolean equals(Object v1, Object v2) {
+        //noinspection EqualsReplaceableByObjectsCall
+        return v1 == v2 || v1 != null && v1.equals(v2);
+    }
+
+    //endregion
+
     //region Assertions
 
     private static final boolean isAssertionEnabled;

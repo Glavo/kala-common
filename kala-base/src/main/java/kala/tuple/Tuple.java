@@ -17,8 +17,6 @@ import org.jetbrains.annotations.NotNull;
  * @see HList
  */
 public abstract class Tuple implements AnyTuple, Serializable {
-    static final int HASH_MAGIC = 427632945;
-
     Tuple() {
     }
 

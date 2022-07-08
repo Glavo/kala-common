@@ -1,12 +1,15 @@
 package kala.tuple.primitive;
 
+import kala.Conditions;
+import kala.tuple.AnyTuple;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
 
-public final class IntTuple2 implements PrimitiveTuple {
+import java.util.Map;
+
+public final class IntTuple2 implements PrimitiveTuple, Map.Entry<Integer, Integer> {
     private static final long serialVersionUID = 2586221246308875196L;
-    private static final int HASH_MAGIC = -1464965121;
 
     public final int _1;
     public final int _2;
@@ -25,6 +28,19 @@ public final class IntTuple2 implements PrimitiveTuple {
         return 2;
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public <U> U elementAt(int index) {
+        switch (index) {
+            case 0:
+                return (U) Integer.valueOf(_1);
+            case 1:
+                return (U) Integer.valueOf(_2);
+            default:
+                throw new IndexOutOfBoundsException();
+        }
+    }
+
     public int component1() {
         return _1;
     }
@@ -38,24 +54,51 @@ public final class IntTuple2 implements PrimitiveTuple {
     }
 
     @Override
+    public Integer getKey() {
+        return _1;
+    }
+
+    @Override
+    public Integer getValue() {
+        return _2;
+    }
+
+    @Override
+    public Integer setValue(Integer value) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
+        if (this == o) return true;
+
+        if (o instanceof IntTuple2) {
+            IntTuple2 other = (IntTuple2) o;
+            return _1 == other._1 && _2 == other._2;
         }
-        if (!(o instanceof IntTuple2)) {
-            return false;
+
+        if (o instanceof Map.Entry) {
+            Map.Entry<?, ?> other = (Map.Entry<?, ?>) o;
+            return Conditions.equals(_1, other.getKey()) && Conditions.equals(_2, other.getValue());
         }
-        IntTuple2 that = (IntTuple2) o;
-        return _1 == that._1 && _2 == that._2;
+
+        if (o instanceof AnyTuple) {
+            AnyTuple other = (AnyTuple) o;
+            return other.arity() == 2
+                    && Conditions.equals(_1, other.elementAt(0))
+                    && Conditions.equals(_2, other.elementAt(1));
+        }
+
+        return false;
     }
 
     @Override
     public int hashCode() {
-        return 31 * _1 + _2 + HASH_MAGIC;
+        return Integer.hashCode(_1) ^ Integer.hashCode(_2);
     }
 
     @Override
     public String toString() {
-        return "IntTuple2(" + _1 + ", " + _2 + ")";
+        return "IntTuple2(" + _1 + ", " + _2 + ")" ;
     }
 }
