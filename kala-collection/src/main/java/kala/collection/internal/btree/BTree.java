@@ -5,7 +5,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
-
 public class BTree<K> {
     static final int M = 8;
     static final int T = M / 2;

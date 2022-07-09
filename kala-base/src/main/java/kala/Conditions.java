@@ -7,7 +7,6 @@ import org.jetbrains.annotations.Range;
 
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 @StaticClass
