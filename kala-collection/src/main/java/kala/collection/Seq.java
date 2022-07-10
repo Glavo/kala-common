@@ -1,21 +1,20 @@
 package kala.collection;
 
-import kala.collection.base.Iterators;
-import kala.collection.immutable.ImmutableSeq;
-import kala.collection.internal.convert.FromJavaConvert;
-import kala.collection.internal.convert.AsJavaConvert;
 import kala.annotations.Covariant;
+import kala.collection.base.Iterators;
 import kala.collection.factory.CollectionFactory;
+import kala.collection.immutable.ImmutableSeq;
+import kala.collection.internal.convert.AsJavaConvert;
+import kala.collection.internal.convert.FromJavaConvert;
 import kala.collection.internal.view.SeqViews;
 import kala.comparator.Comparators;
-import kala.concurrent.ConcurrentScope;
 import kala.function.*;
-import kala.io.StdOut;
-import org.jetbrains.annotations.*;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.function.*;
 
 @SuppressWarnings("unchecked")
