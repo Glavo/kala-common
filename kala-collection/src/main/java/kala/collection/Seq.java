@@ -1,7 +1,6 @@
 package kala.collection;
 
 import kala.collection.base.Iterators;
-import kala.collection.immutable.ImmutableCollection;
 import kala.collection.immutable.ImmutableSeq;
 import kala.collection.internal.convert.FromJavaConvert;
 import kala.collection.internal.convert.AsJavaConvert;
