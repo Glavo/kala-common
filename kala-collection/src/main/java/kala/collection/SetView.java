@@ -30,5 +30,4 @@ public interface SetView<@Covariant E> extends CollectionView<E>, SetLike<E>, An
         Objects.requireNonNull(predicate);
         return new SetViews.Filter<>(this, predicate.negate());
     }
-
 }
