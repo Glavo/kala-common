@@ -1,12 +1,12 @@
 package kala.benchmark;
 
-import kala.collection.internal.btree.BTree;
+import kala.collection.internal.tree.BTree8;
 import org.openjdk.jol.info.*;
 
 import java.util.Arrays;
 import java.util.TreeSet;
 
-public class BTreeMemoryTest extends BTree<Integer> {
+public class BTreeMemoryTest extends BTree8<Integer> {
 
 
     private static void test(int n) {
@@ -29,7 +29,7 @@ public class BTreeMemoryTest extends BTree<Integer> {
         long bTreeSize = GraphLayout.parseInstance(bTree).totalSize() - baseSize;
 
         System.out.printf("java.util.TreeSet:                       %s bytes%n", rbtSize);
-        System.out.printf("kala.collection.internal.btree.BTree:    %s bytes%n", bTreeSize);
+        System.out.printf("kala.collection.internal.tree.BTree8:    %s bytes%n", bTreeSize);
 
     }
 

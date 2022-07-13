@@ -1,4 +1,4 @@
-package kala.collection.mutable;
+package kala.collection.internal.tree;
 
 import kala.function.IndexedConsumer;
 import kala.internal.ComparableUtils;
@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-public final class NewMutableTreeSet<E> {
+public final class TwoThreeTree<E> {
     private int compare(E e0, E e1) {
         return ComparableUtils.compare(e0, e1);
     }

@@ -1,11 +1,11 @@
-package kala.collection.internal.btree;
+package kala.collection.internal.tree;
 
 import kala.internal.ComparableUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
-public class BTree<K> {
+public class BTree8<K> {
     static final int M = 8;
     static final int T = M / 2;
     static final int MAX_KEY_NUMBER = M - 1;
