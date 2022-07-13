@@ -1,18 +1,25 @@
 package kala.collection.mutable;
 
+import kala.function.IndexedConsumer;
 import kala.internal.ComparableUtils;
+import kala.value.primitive.IntRef;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
-public class NewMutableTreeSet<E> {
-    protected int compare(E e0, E e1) {
+public final class NewMutableTreeSet<E> {
+    private int compare(E e0, E e1) {
         return ComparableUtils.compare(e0, e1);
     }
 
     private Node<E> root;
     private int len = 0;
+
+    public int size() {
+        return len;
+    }
 
     private @Nullable Node<E> search(E value) {
         Node<E> node = root;
@@ -47,15 +54,18 @@ public class NewMutableTreeSet<E> {
     }
 
     public boolean contains(Object value) {
+        if (value == null) return false;
         @SuppressWarnings("unchecked")
         E e = (E) value;
         return search(e) != null;
     }
 
-    public boolean add(E value) {
+    public boolean add(@NotNull E value) {
+        Objects.requireNonNull(value);
+
         if (root == null) {
             root = new Node<>(value);
-            len++;
+            len = 1;
             return true;
         }
 
@@ -88,21 +98,21 @@ public class NewMutableTreeSet<E> {
             c = compare(value, node.value2);
             if (c == 0) return false;
 
-            if (c > 0) {
+            if (c < 0) {
                 if (node.isLeaf()) {
-                    tag = 2;
+                    tag = 1;
                     break;
                 } else {
-                    node = node.right;
+                    node = node.middle;
                     continue;
                 }
             }
 
             if (node.isLeaf()) {
-                tag = 1;
+                tag = 2;
                 break;
             } else {
-                node = node.middle;
+                node = node.right;
                 continue;
             }
         }
@@ -114,7 +124,6 @@ public class NewMutableTreeSet<E> {
             } else {
                 node.value2 = value;
             }
-            node.setAsThreeNode();
         } else {
             final E v0, v1, v2;
 
@@ -135,7 +144,6 @@ public class NewMutableTreeSet<E> {
             Node<E> newNode = new Node<>(v2);
             E pv = v1;
 
-            node.setAsTwoNode();
             node.value1 = v0;
             node.value2 = null;
 
@@ -153,7 +161,12 @@ public class NewMutableTreeSet<E> {
                 }
 
                 if (node.parent.isTwoNode()) {
-                    node.parent.value2 = pv;
+                    if (compare(pv, node.parent.value1) < 0) {
+                        node.parent.value2 = node.parent.value1;
+                        node.parent.value1 = pv;
+                    } else {
+                        node.parent.value2 = pv;
+                    }
 
                     if (node.parent.left == node) {
                         node.parent.middle = newNode;
@@ -161,7 +174,6 @@ public class NewMutableTreeSet<E> {
                         node.parent.middle = node;
                         node.parent.right = newNode;
                     }
-                    node.parent.setAsThreeNode();
                     newNode.parent = node.parent;
                     break;
                 } else {
@@ -180,7 +192,6 @@ public class NewMutableTreeSet<E> {
                             nn = new Node<>(pv);
                         }
                         node.parent.value2 = null;
-                        node.parent.setAsTwoNode();
                     }
 
                     if (node.parent.left == node) {
@@ -225,6 +236,13 @@ public class NewMutableTreeSet<E> {
         return true;
     }
 
+    public Object[] toArray() {
+        Object[] res = new Object[len];
+        IntRef i = new IntRef();
+        forEach(v -> res[i.value++] = v);
+        return res;
+    }
+
     public void forEach(@NotNull Consumer<? super E> action) {
         forEach(root, action);
     }
@@ -247,6 +265,38 @@ public class NewMutableTreeSet<E> {
         forEach(node.right, action);
     }
 
+    public void forEachIndexed(@NotNull IndexedConsumer<? super E> action) {
+        forEachIndexed(root, action, 0);
+    }
+
+    private static <E> int forEachIndexed(Node<E> node, IndexedConsumer<? super E> action, int currentIndex) {
+        if (node == null) return 0;
+
+        if (node.isLeaf()) {
+            if (node.isTwoNode()) {
+                action.accept(currentIndex, node.value1);
+                return 1;
+            } else {
+                action.accept(currentIndex, node.value1);
+                action.accept(currentIndex + 1, node.value2);
+                return 2;
+            }
+        }
+
+        int n = 0;
+
+        n += forEachIndexed(node.left, action, currentIndex + n);
+        action.accept(currentIndex + n++, node.value1);
+        if (node.isThreeNode()) {
+            n += forEachIndexed(node.middle, action, currentIndex + n);
+            action.accept(currentIndex + n++, node.value2);
+        }
+        n += forEachIndexed(node.right, action, currentIndex);
+
+        return n;
+    }
+
+
     public void print() {
         System.out.println("root=" + root);
         forEach(System.out::println);
@@ -258,14 +308,12 @@ public class NewMutableTreeSet<E> {
         Node<E> left, middle, right;
 
         Node<E> parent;
-        private boolean isThreeNode;
 
         Node() {
         }
 
         Node(E value1) {
             this.value1 = value1;
-            this.setAsTwoNode();
         }
 
         boolean isLeaf() {
@@ -273,19 +321,11 @@ public class NewMutableTreeSet<E> {
         }
 
         boolean isTwoNode() {
-            return !isThreeNode;
+            return value2 == null;
         }
 
         boolean isThreeNode() {
-            return isThreeNode;
-        }
-
-        void setAsTwoNode() {
-            isThreeNode = false;
-        }
-
-        void setAsThreeNode() {
-            isThreeNode = true;
+            return value2 != null;
         }
 
         @Override
