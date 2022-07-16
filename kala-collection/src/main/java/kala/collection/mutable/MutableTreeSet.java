@@ -1,5 +1,6 @@
 package kala.collection.mutable;
 
+import kala.annotations.ReplaceWith;
 import kala.collection.Collection;
 import kala.collection.SortedSet;
 import kala.collection.base.Iterators;
@@ -29,9 +30,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
 
     private static final long serialVersionUID = 6211626172352429615L;
 
-    private static final MutableTreeSet.Factory<? extends Comparable<?>> DEFAULT_FACTORY =
-            new Factory<>(null);
-
+    private static final MutableTreeSet.Factory<? extends Comparable<?>> DEFAULT_FACTORY = new Factory<>(null);
 
     //region Constructors
 
@@ -53,6 +52,16 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
 
     public static <E> @NotNull CollectionFactory<E, ?, MutableTreeSet<E>> factory(Comparator<? super E> comparator) {
         return comparator == null ? (Factory<E>) DEFAULT_FACTORY : new Factory<>(comparator);
+    }
+
+    @Contract(value = " -> new", pure = true)
+    public static <E extends Comparable<? super E>> @NotNull MutableTreeSet<E> create() {
+        return new MutableTreeSet<>();
+    }
+
+    @Contract(value = "_ -> new", pure = true)
+    public static <E> @NotNull MutableTreeSet<E> create(Comparator<? super E> comparator) {
+        return new MutableTreeSet<>(comparator);
     }
 
     @Contract(value = " -> new", pure = true)

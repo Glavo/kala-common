@@ -18,7 +18,6 @@ enum class Primitives(internal val properties: MutableMap<String, Any?> = mutabl
 
     companion object {
         val all = values()
-        val allWithoutBoolean = all.filterNot { it == Boolean }
 
         init {
             for (primitive in all) {
@@ -85,6 +84,16 @@ enum class Primitives(internal val properties: MutableMap<String, Any?> = mutabl
                         properties["ToBits"] = if (type == "Float") "Float.floatToIntBits" else "Double.doubleToLongBits"
                         properties["ToRawBits"] = if (type == "Float") "Float.floatToRawIntBits" else "Double.doubleToRawLongBits"
                     }
+                }
+            }
+        }
+
+        val allWithoutBoolean = all.filterNot { it == Boolean }
+
+        val specializedPairs = all.filter { it.isSpecialized }.let { specialized ->
+            specialized.flatMap { it1 ->
+                specialized.map { it2 ->
+                    it1.withNumber(1) + it2.withNumber(2)
                 }
             }
         }

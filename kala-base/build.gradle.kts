@@ -89,6 +89,12 @@ tasks.getByName<GenerateTask>("generateSources") {
     }
 
     withPackage("kala.tuple.primitive") {
+        for (model in Primitives.specializedPairs) {
+            val className = ((if (model["Type1"] == model["Type2"]) model["Type1"].toString() else "${model["Type1"]}${model["Type2"]}") + "Tuple2")
+
+            generate(className, model + ("ClassName" to className), "PrimitiveTuple2")
+        }
+
         for (m1 in Primitives.all) {
             for (m2 in Primitives.all) {
                 if (m1 == m2 && m1 == Primitives.Boolean) continue
@@ -97,11 +103,7 @@ tasks.getByName<GenerateTask>("generateSources") {
                 model += m1.withNumber(1)
                 model += m2.withNumber(2)
 
-                val className = ((if (m1 == m2) m1.type else m1.type + m2.type) + "Tuple2")
 
-                model += "ClassName" to className
-
-                generate(className, model, "PrimitiveTuple2")
             }
         }
     }
