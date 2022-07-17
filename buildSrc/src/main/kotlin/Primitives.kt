@@ -97,5 +97,13 @@ enum class Primitives(internal val properties: MutableMap<String, Any?> = mutabl
                 }
             }
         }
+
+        val specializedAndBooleanPairs = all.filter { it.isSpecialized || it.type == "Boolean" }.let { specialized ->
+            specialized.flatMap { it1 ->
+                specialized.map { it2 ->
+                    it1.withNumber(1) + it2.withNumber(2)
+                }
+            }
+        }
     }
 }

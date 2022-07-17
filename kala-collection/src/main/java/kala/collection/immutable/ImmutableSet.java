@@ -27,7 +27,6 @@ public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<
         return ImmutableHashSet.factory();
     }
 
-
     static <E> @NotNull ImmutableSet<E> empty() {
         return ImmutableHashSet.empty();
     }

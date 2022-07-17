@@ -2,6 +2,7 @@ package kala.collection;
 
 import kala.collection.base.Iterators;
 import kala.collection.factory.CollectionFactory;
+import kala.collection.immutable.ImmutableHashSet;
 import kala.collection.immutable.ImmutableSet;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
@@ -9,7 +10,9 @@ import kala.collection.internal.view.SetViews;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 public interface Set<E> extends Collection<E>, SetLike<E>, AnySet<E> {
 
@@ -22,6 +25,55 @@ public interface Set<E> extends Collection<E>, SetLike<E>, AnySet<E> {
     static <E> @NotNull Set<E> wrapJava(java.util.@NotNull Set<E> source) {
         return new FromJavaConvert.SetFromJava<>(source);
     }
+
+    static <E> @NotNull Set<E> empty() {
+        return ImmutableSet.empty();
+    }
+
+    static <E> @NotNull Set<E> of() {
+        return ImmutableSet.of();
+    }
+
+    static <E> @NotNull Set<E> of(E value1) {
+        return ImmutableSet.of(value1);
+    }
+
+    static <E> @NotNull Set<E> of(E value1, E value2) {
+        return ImmutableSet.of(value1, value2);
+    }
+
+    static <E> @NotNull Set<E> of(E value1, E value2, E value3) {
+        return ImmutableSet.of(value1, value2, value3);
+    }
+
+    static <E> @NotNull Set<E> of(E value1, E value2, E value3, E value4) {
+        return ImmutableSet.of(value1, value2, value3, value4);
+    }
+
+    static <E> @NotNull Set<E> of(E value1, E value2, E value3, E value4, E value5) {
+        return ImmutableSet.of(value1, value2, value3, value4, value5);
+    }
+
+    static <E> @NotNull Set<E> of(E... values) {
+        return ImmutableSet.of(values);
+    }
+
+    static <E> @NotNull Set<E> from(E @NotNull [] values) {
+        return ImmutableSet.from(values);
+    }
+
+    static <E> @NotNull Set<E> from(@NotNull Iterable<? extends E> values) {
+        return ImmutableSet.from(values);
+    }
+
+    static <E> @NotNull Set<E> from(@NotNull Iterator<? extends E> it) {
+        return ImmutableSet.from(it);
+    }
+
+    static <E> @NotNull Set<E> from(@NotNull Stream<? extends E> stream) {
+        return ImmutableSet.from(stream);
+    }
+
 
     //endregion
 
@@ -47,10 +99,6 @@ public interface Set<E> extends Collection<E>, SetLike<E>, AnySet<E> {
         return Iterators.contains(iterator(), value);
     }
 
-    default Predicate<E> asPredicate() {
-        return (Predicate<E> & Serializable) this::contains;
-    }
-
     @Override
     default @NotNull String className() {
         return "Set";
@@ -73,11 +121,11 @@ public interface Set<E> extends Collection<E>, SetLike<E>, AnySet<E> {
 
     @Override
     default @NotNull ImmutableSet<E> filter(@NotNull Predicate<? super E> predicate) {
-        return ImmutableSet.from(view().filter(predicate)); // TODO
+        return ImmutableSet.from(view().filter(predicate));
     }
 
     @Override
     default @NotNull ImmutableSet<E> filterNot(@NotNull Predicate<? super E> predicate) {
-        return ImmutableSet.from(view().filterNot(predicate)); // TODO
+        return ImmutableSet.from(view().filterNot(predicate));
     }
 }
