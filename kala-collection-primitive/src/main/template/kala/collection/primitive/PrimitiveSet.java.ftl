@@ -8,7 +8,6 @@ import kala.collection.primitive.internal.view.${Type}SetViews;
 import kala.function.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.Serializable;
 import java.util.function.*;
 
 public interface ${Type}Set extends PrimitiveSet<${WrapperType}>, ${Type}Collection, ${Type}SetLike  {
@@ -92,9 +91,23 @@ public interface ${Type}Set extends PrimitiveSet<${WrapperType}>, ${Type}Collect
         }
     }
 
+<#if Type == "Boolean">
+    boolean containsTrue();
+
+    boolean containsFalse();
+
+    default boolean isFull() {
+        return containsTrue() && containsFalse();
+    }
+
+</#if>
     @Override
     default boolean contains(${PrimitiveType} value) {
+<#if Type == "Boolean">
+        return value ? containsTrue() : containsFalse();
+<#else>
         return iterator().contains(value);
+</#if>
     }
 
     @Override
@@ -112,6 +125,43 @@ public interface ${Type}Set extends PrimitiveSet<${WrapperType}>, ${Type}Collect
         return new ${Type}SetViews.Of<>(this);
     }
 
+<#if Type == "Boolean">
+    @Override
+    default @NotNull BooleanIterator iterator() {
+        if (containsFalse()) {
+            return containsTrue() ? BooleanIterator.of(false, true) : BooleanIterator.of(false);
+        }
+        if (containsTrue()) {
+            return BooleanIterator.of(true);
+        }
+
+        return BooleanIterator.empty();
+    }
+
+    //region Size Info
+
+    @Override
+    default boolean isEmpty() {
+        return !containsFalse() && !containsTrue();
+    }
+
+    @Override
+    default int size() {
+        if (containsFalse()) {
+            return containsTrue() ? 2 : 1;
+        }
+
+        return containsTrue() ? 1 : 0;
+    }
+
+    @Override
+    default int knownSize() {
+        return size();
+    }
+
+    //endregion
+
+</#if>
     @Override
     default @NotNull Immutable${Type}Set filter(@NotNull ${Type}Predicate predicate) {
         return Immutable${Type}Set.from(view().filter(predicate));

@@ -14,52 +14,100 @@ public interface Immutable${Type}Set extends ImmutablePrimitiveSet<${WrapperType
 
     //region Static Factories
 
-    static ${Type}CollectionFactory<?, ? extends Immutable${Type}Set> factory() {
+    static ${Type}CollectionFactory<?, Immutable${Type}Set> factory() {
+<#if Type == "Boolean">
+        return ${Type}CollectionFactory.narrow(DefaultImmutable${Type}Set.factory());
+<#else>
         throw new UnsupportedOperationException(); // TODO
+</#if>
     }
 
     static @NotNull Immutable${Type}Set empty() {
+<#if Type == "Boolean">
+        return DefaultImmutable${Type}Set.empty();
+<#else>
         throw new UnsupportedOperationException(); // TODO
+</#if>
     }
 
     static @NotNull Immutable${Type}Set of() {
+<#if Type == "Boolean">
+        return DefaultImmutable${Type}Set.of();
+<#else>
         throw new UnsupportedOperationException(); // TODO
+</#if>
     }
 
     static @NotNull Immutable${Type}Set of(${PrimitiveType} value1) {
+<#if Type == "Boolean">
+        return DefaultImmutable${Type}Set.of(value1);
+<#else>
         throw new UnsupportedOperationException(); // TODO
+</#if>
     }
 
     static @NotNull Immutable${Type}Set of(${PrimitiveType} value1, ${PrimitiveType} value2) {
+<#if Type == "Boolean">
+        return DefaultImmutable${Type}Set.of(value1, value2);
+<#else>
         throw new UnsupportedOperationException(); // TODO
+</#if>
     }
 
     static @NotNull Immutable${Type}Set of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3) {
+<#if Type == "Boolean">
+        return DefaultImmutable${Type}Set.of(value1, value2, value3);
+<#else>
         throw new UnsupportedOperationException(); // TODO
+</#if>
     }
 
     static @NotNull Immutable${Type}Set of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3, ${PrimitiveType} value4) {
+<#if Type == "Boolean">
+        return DefaultImmutable${Type}Set.of(value1, value2, value3, value4);
+<#else>
         throw new UnsupportedOperationException(); // TODO
+</#if>
     }
 
     static @NotNull Immutable${Type}Set of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3, ${PrimitiveType} value4, ${PrimitiveType} value5) {
+<#if Type == "Boolean">
+        return DefaultImmutable${Type}Set.of(value1, value2, value3, value4, value5);
+<#else>
         throw new UnsupportedOperationException(); // TODO
+</#if>
     }
 
     static @NotNull Immutable${Type}Set of(${PrimitiveType}... values) {
+<#if Type == "Boolean">
+        return DefaultImmutable${Type}Set.of(values);
+<#else>
         throw new UnsupportedOperationException(); // TODO
+</#if>
     }
 
     static @NotNull Immutable${Type}Set from(${PrimitiveType} @NotNull [] values) {
+<#if Type == "Boolean">
+        return DefaultImmutable${Type}Set.from(values);
+<#else>
         throw new UnsupportedOperationException(); // TODO
+</#if>
     }
 
     static @NotNull Immutable${Type}Set from(@NotNull ${Type}Traversable values) {
+<#if Type == "Boolean">
+        return DefaultImmutable${Type}Set.from(values);
+<#else>
         throw new UnsupportedOperationException(); // TODO
+</#if>
     }
 
     static @NotNull Immutable${Type}Set from(@NotNull ${Type}Iterator it) {
+<#if Type == "Boolean">
+        return DefaultImmutable${Type}Set.from(it);
+<#else>
         throw new UnsupportedOperationException(); // TODO
+</#if>
     }
 
     //endregion

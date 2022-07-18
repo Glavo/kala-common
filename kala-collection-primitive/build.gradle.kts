@@ -68,30 +68,24 @@ tasks.getByName<GenerateTask>("generateSources") {
 
     withPackage("kala.collection.mutable.primitive") {
         for (model in Primitives.all) {
-            val m = if (model == Primitives.Boolean) {
-                model + ("DefaultMutableSet" to "DefaultMutableBooleanSet")
-            } else {
-                model
-            }
+            generate("Mutable${model["Type"]}Collection", model, "MutablePrimitiveCollection")
+            generate("AbstractMutable${model["Type"]}Collection", model, "AbstractMutablePrimitiveCollection")
 
-            generate("Mutable${model["Type"]}Collection", m, "MutablePrimitiveCollection")
-            generate("AbstractMutable${model["Type"]}Collection", m, "AbstractMutablePrimitiveCollection")
+            generate("Mutable${model["Type"]}Seq", model, "MutablePrimitiveSeq")
+            generate("Mutable${model["Type"]}List", model, "MutablePrimitiveList")
+            generate("AbstractMutable${model["Type"]}Seq", model, "AbstractMutablePrimitiveSeq")
+            generate("AbstractMutable${model["Type"]}List", model, "AbstractMutablePrimitiveList")
+            generate("AbstractMutable${model["Type"]}ListFactory", model, "AbstractMutablePrimitiveListFactory")
 
-            generate("Mutable${model["Type"]}Seq", m, "MutablePrimitiveSeq")
-            generate("Mutable${model["Type"]}List", m, "MutablePrimitiveList")
-            generate("AbstractMutable${model["Type"]}Seq", m, "AbstractMutablePrimitiveSeq")
-            generate("AbstractMutable${model["Type"]}List", m, "AbstractMutablePrimitiveList")
-            generate("AbstractMutable${model["Type"]}ListFactory", m, "AbstractMutablePrimitiveListFactory")
+            generate("Mutable${model["Type"]}SeqIterator", model, "MutablePrimitiveSeqIterator")
+            generate("Mutable${model["Type"]}ListIterator", model, "MutablePrimitiveListIterator")
 
-            generate("Mutable${model["Type"]}SeqIterator", m, "MutablePrimitiveSeqIterator")
-            generate("Mutable${model["Type"]}ListIterator", m, "MutablePrimitiveListIterator")
+            generate("Mutable${model["Type"]}Array", model, "MutablePrimitiveArray")
+            generate("Mutable${model["Type"]}ArrayList", model, "MutablePrimitiveArrayList")
 
-            generate("Mutable${model["Type"]}Array", m, "MutablePrimitiveArray")
-            generate("Mutable${model["Type"]}ArrayList", m, "MutablePrimitiveArrayList")
-
-            generate("Mutable${model["Type"]}Set", m, "MutablePrimitiveSet")
-            generate("AbstractMutable${model["Type"]}Set", m, "AbstractMutablePrimitiveSet")
-            generate("AbstractMutable${model["Type"]}SetFactory", m, "AbstractMutablePrimitiveSetFactory")
+            generate("Mutable${model["Type"]}Set", model, "MutablePrimitiveSet")
+            generate("AbstractMutable${model["Type"]}Set", model, "AbstractMutablePrimitiveSet")
+            generate("AbstractMutable${model["Type"]}SetFactory", model, "AbstractMutablePrimitiveSetFactory")
         }
     }
 }

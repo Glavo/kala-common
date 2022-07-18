@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 
+@SuppressWarnings("PointlessBooleanExpression")
 final class DefaultMutableBooleanSet extends AbstractMutableBooleanSet implements Serializable {
     private static final long serialVersionUID = 0L;
 
@@ -97,65 +98,35 @@ final class DefaultMutableBooleanSet extends AbstractMutableBooleanSet implement
 
     //endregion
 
-    private boolean hasFalse = false;
-    private boolean hasTrue = false;
+    private boolean containsFalse = false;
+    private boolean containsTrue = false;
 
     @Override
-    public @NotNull BooleanIterator iterator() {
-        if (hasFalse) {
-            return hasTrue ? BooleanIterator.of(false, true) : BooleanIterator.of(false);
-        }
-        if (hasTrue) {
-            return BooleanIterator.of(true);
-        }
-
-        return BooleanIterator.empty();
-    }
-
-    //region Size Info
-
-    @Override
-    public boolean isEmpty() {
-        return !hasFalse && !hasTrue;
+    public boolean containsFalse() {
+        return containsFalse;
     }
 
     @Override
-    public int size() {
-        if (hasFalse) {
-            return hasTrue ? 2 : 1;
-        }
-
-        return hasTrue ? 1 : 0;
-    }
-
-    @Override
-    public int knownSize() {
-        return size();
-    }
-
-    //endregion
-
-    @Override
-    public boolean contains(boolean value) {
-        return value ? hasTrue : hasFalse;
+    public boolean containsTrue() {
+        return containsTrue;
     }
 
     @Override
     public boolean add(boolean value) {
-        if (value) {
-            if (hasTrue) return false;
-            hasTrue = true;
+        if (value == false) {
+            if (containsFalse) return false;
+            containsFalse = true;
         } else {
-            if (hasFalse) return false;
-            hasFalse = true;
+            if (containsTrue) return false;
+            containsTrue = true;
         }
         return true;
     }
 
     @Override
     public boolean addAll(@NotNull BooleanTraversable values) {
-        boolean ht = this.hasTrue;
-        boolean hf = this.hasFalse;
+        boolean ht = this.containsTrue;
+        boolean hf = this.containsFalse;
 
         if (ht && hf)
             return false;
@@ -173,12 +144,12 @@ final class DefaultMutableBooleanSet extends AbstractMutableBooleanSet implement
         }
 
         boolean res = false;
-        if (ht != this.hasTrue) {
-            this.hasTrue = ht;
+        if (ht != this.containsTrue) {
+            this.containsTrue = ht;
             res = true;
         }
-        if (hf != this.hasFalse) {
-            this.hasFalse = hf;
+        if (hf != this.containsFalse) {
+            this.containsFalse = hf;
             res = true;
         }
         return res;
@@ -186,20 +157,20 @@ final class DefaultMutableBooleanSet extends AbstractMutableBooleanSet implement
 
     @Override
     public boolean remove(boolean value) {
-        if (value) {
-            if (!hasTrue) return false;
-            hasTrue = false;
+        if (value == false) {
+            if (!containsFalse) return false;
+            containsFalse = false;
         } else {
-            if (!hasFalse) return false;
-            hasFalse = false;
+            if (!containsTrue) return false;
+            containsTrue = false;
         }
         return true;
     }
 
     @Override
     public boolean removeAll(@NotNull BooleanTraversable values) {
-        boolean ht = this.hasTrue;
-        boolean hf = this.hasFalse;
+        boolean ht = this.containsTrue;
+        boolean hf = this.containsFalse;
 
         if (!ht && !hf)
             return false;
@@ -217,12 +188,12 @@ final class DefaultMutableBooleanSet extends AbstractMutableBooleanSet implement
         }
 
         boolean res = false;
-        if (ht != this.hasTrue) {
-            this.hasTrue = ht;
+        if (ht != this.containsTrue) {
+            this.containsTrue = ht;
             res = true;
         }
-        if (hf != this.hasFalse) {
-            this.hasFalse = hf;
+        if (hf != this.containsFalse) {
+            this.containsFalse = hf;
             res = true;
         }
         return res;
@@ -230,15 +201,15 @@ final class DefaultMutableBooleanSet extends AbstractMutableBooleanSet implement
 
     @Override
     public void clear() {
-        hasFalse = false;
-        hasTrue = false;
+        containsFalse = false;
+        containsTrue = false;
     }
 
     @Override
     public void forEach(@NotNull BooleanConsumer action) {
-        if (hasFalse)
+        if (containsFalse)
             action.accept(false);
-        if (hasTrue)
+        if (containsTrue)
             action.accept(true);
     }
 
