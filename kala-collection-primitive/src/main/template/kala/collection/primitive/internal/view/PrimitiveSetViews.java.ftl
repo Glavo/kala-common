@@ -18,6 +18,15 @@ public final class ${Type}SetViews {
     }
 
     public static class Empty extends ${Type}CollectionViews.Empty implements ${Type}SetView {
+        @Override
+        public @NotNull ${Type}SetView filter(@NotNull ${Type}Predicate predicate) {
+            return this;
+        }
+
+        @Override
+        public @NotNull ${Type}SetView filterNot(@NotNull ${Type}Predicate predicate) {
+            return this;
+        }
     }
 
     public static final class Filter extends Abstract${Type}SetView {

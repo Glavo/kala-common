@@ -3,6 +3,7 @@ package kala.collection.mutable.primitive;
 import kala.annotations.*;
 import kala.collection.primitive.*;
 import kala.collection.base.primitive.*;
+import kala.collection.factory.primitive.*;
 import kala.function.*;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
@@ -11,67 +12,63 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 import java.util.function.*;
 
-public interface Mutable${Type}Set extends MutableCollection<E>, Set<E>, Growable<E>, MutableAnySet<E> {
+public interface Mutable${Type}Set extends MutablePrimitiveSet<${WrapperType}>, ${Type}Set, Mutable${Type}Collection, ${Type}Growable {
 
     //region Static Factories
 
     @Contract(pure = true)
-    static <E> @NotNull CollectionFactory<E, ?, Mutable${Type}Set> factory() {
+    static @NotNull ${Type}CollectionFactory<?, Mutable${Type}Set> factory() {
         throw new UnsupportedOperationException(); // TODO
     }
 
     @Contract(value = "-> new")
-    static <E> @NotNull Mutable${Type}Set create() {
+    static @NotNull Mutable${Type}Set create() {
         throw new UnsupportedOperationException(); // TODO
     }
 
     @Contract(value = "-> new")
-    static <E> @NotNull Mutable${Type}Set of() {
+    static @NotNull Mutable${Type}Set of() {
         throw new UnsupportedOperationException(); // TODO
     }
 
     @Contract(value = "_ -> new")
-    static <E> @NotNull Mutable${Type}Set of(E value1) {
+    static @NotNull Mutable${Type}Set of(${PrimitiveType} value1) {
         throw new UnsupportedOperationException(); // TODO
     }
 
     @Contract(value = "_, _ -> new")
-    static <E> @NotNull Mutable${Type}Set of(E value1, E value2) {
+    static @NotNull Mutable${Type}Set of(${PrimitiveType} value1, ${PrimitiveType} value2) {
         throw new UnsupportedOperationException(); // TODO
     }
 
     @Contract(value = "_, _, _ -> new")
-    static <E> @NotNull Mutable${Type}Set of(E value1, E value2, E value3) {
+    static @NotNull Mutable${Type}Set of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3) {
         throw new UnsupportedOperationException(); // TODO
     }
 
     @Contract(value = "_, _, _, _ -> new")
-    static <E> @NotNull Mutable${Type}Set of(E value1, E value2, E value3, E value4) {
+    static @NotNull Mutable${Type}Set of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3, ${PrimitiveType} value4) {
         throw new UnsupportedOperationException(); // TODO
     }
 
     @Contract(value = "_, _, _, _, _ -> new")
-    static <E> @NotNull Mutable${Type}Set of(E value1, E value2, E value3, E value4, E value5) {
+    static @NotNull Mutable${Type}Set of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3, ${PrimitiveType} value4, ${PrimitiveType} value5) {
         throw new UnsupportedOperationException(); // TODO
     }
 
     @SafeVarargs
     @Contract(value = "_ -> new")
-    static <E> @NotNull Mutable${Type}Set of(E... values) {
+    static @NotNull Mutable${Type}Set of(${PrimitiveType}... values) {
         throw new UnsupportedOperationException(); // TODO
     }
 
     @Contract(value = "_ -> new")
-    static <E> @NotNull Mutable${Type}Set from(E @NotNull [] values) {
+    static @NotNull Mutable${Type}Set from(${PrimitiveType} @NotNull [] values) {
         throw new UnsupportedOperationException(); // TODO
     }
 
     @Contract(value = "_ -> new")
-    static <E> @NotNull Mutable${Type}Set from(@NotNull Iterable<? extends E> values) {
-        throw new UnsupportedOperationException(); // TODO
-    }
-
-    static <E, C extends Mutable${Type}Set> MutableSetEditor<E, C> edit(@NotNull C set) {
+    static @NotNull Mutable${Type}Set from(@NotNull ${Type}Traversable values) {
         throw new UnsupportedOperationException(); // TODO
     }
 
@@ -83,7 +80,7 @@ public interface Mutable${Type}Set extends MutableCollection<E>, Set<E>, Growabl
     }
 
     @Override
-    default @NotNull CollectionFactory<U, ?, ? extends Mutable${Type}Set> iterableFactory() {
+    default @NotNull ${Type}CollectionFactory<?, ? extends Mutable${Type}Set> iterableFactory() {
         return factory();
     }
 
@@ -105,10 +102,10 @@ public interface Mutable${Type}Set extends MutableCollection<E>, Set<E>, Growabl
         }
 
         boolean m = false;
-        for (${PrimitiveType} value : values) {
-            if (this.add(value)) {
+        ${Type}Iterator it = values.iterator();
+        while (it.hasNext()) {
+            if (this.add(it.next${Type}()))
                 m = true;
-            }
         }
         return m;
     }
@@ -127,7 +124,7 @@ public interface Mutable${Type}Set extends MutableCollection<E>, Set<E>, Growabl
 
     @Override
     @ReplaceWith("addAll(Iterable)")
-    default void plusAssign(@NotNull ${Type}Iterable values) {
+    default void plusAssign(@NotNull ${Type}Traversable values) {
         addAll(values);
     }
 
@@ -147,10 +144,10 @@ public interface Mutable${Type}Set extends MutableCollection<E>, Set<E>, Growabl
     default boolean removeAll(@NotNull ${Type}Traversable values) {
         Objects.requireNonNull(values);
         boolean m = false;
-        for (${PrimitiveType} value : values) {
-            if (remove(value)) {
+        ${Type}Iterator it = values.iterator();
+        while (it.hasNext()) {
+            if (this.remove(it.next${Type}()))
                 m = true;
-            }
         }
         return m;
     }
@@ -189,6 +186,9 @@ public interface Mutable${Type}Set extends MutableCollection<E>, Set<E>, Growabl
             return false;
         }
 
+        throw new UnsupportedOperationException(); // TODO
+
+        /*
         final ${PrimitiveType}[] arr = toArray();
         final int oldSize = arr.length;
 
@@ -198,6 +198,7 @@ public interface Mutable${Type}Set extends MutableCollection<E>, Set<E>, Growabl
             }
         }
         return size() != oldSize;
+         */
     }
 
     @Contract(mutates = "this")

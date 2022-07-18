@@ -28,6 +28,12 @@ tasks.getByName<GenerateTask>("generateSources") {
             generate("Abstract${model["Type"]}SeqIterator", model, "AbstractPrimitiveSeqIterator")
 
             generate("${model["Type"]}ArraySeq", model, "PrimitiveArraySeq")
+
+            generate("${model["Type"]}Set", model, "PrimitiveSet")
+            generate("${model["Type"]}SetView", model, "PrimitiveSetView")
+            generate("${model["Type"]}SetLike", model, "PrimitiveSetLike")
+            generate("Abstract${model["Type"]}Set", model, "AbstractPrimitiveSet")
+            generate("Abstract${model["Type"]}SetView", model, "AbstractPrimitiveSetView")
         }
     }
 
@@ -41,6 +47,7 @@ tasks.getByName<GenerateTask>("generateSources") {
         for (model in Primitives.all) {
             generate("${model["Type"]}CollectionViews", model, "PrimitiveCollectionViews")
             generate("${model["Type"]}SeqViews", model, "PrimitiveSeqViews")
+            generate("${model["Type"]}SetViews", model, "PrimitiveSetViews")
         }
     }
 
@@ -53,15 +60,19 @@ tasks.getByName<GenerateTask>("generateSources") {
             generate("AbstractImmutable${model["Type"]}Seq", model, "AbstractImmutablePrimitiveSeq")
 
             generate("Immutable${model["Type"]}Array", model, "ImmutablePrimitiveArray")
+
+            generate("Immutable${model["Type"]}Set", model, "ImmutablePrimitiveSet")
+            generate("AbstractImmutable${model["Type"]}Set", model, "AbstractImmutablePrimitiveSet")
         }
     }
 
     withPackage("kala.collection.mutable.primitive") {
         for (model in Primitives.all) {
             generate("Mutable${model["Type"]}Collection", model, "MutablePrimitiveCollection")
+            generate("AbstractMutable${model["Type"]}Collection", model, "AbstractMutablePrimitiveCollection")
+
             generate("Mutable${model["Type"]}Seq", model, "MutablePrimitiveSeq")
             generate("Mutable${model["Type"]}List", model, "MutablePrimitiveList")
-            generate("AbstractMutable${model["Type"]}Collection", model, "AbstractMutablePrimitiveCollection")
             generate("AbstractMutable${model["Type"]}Seq", model, "AbstractMutablePrimitiveSeq")
             generate("AbstractMutable${model["Type"]}List", model, "AbstractMutablePrimitiveList")
             generate("AbstractMutable${model["Type"]}ListFactory", model, "AbstractMutablePrimitiveListFactory")
@@ -71,6 +82,9 @@ tasks.getByName<GenerateTask>("generateSources") {
 
             generate("Mutable${model["Type"]}Array", model, "MutablePrimitiveArray")
             generate("Mutable${model["Type"]}ArrayList", model, "MutablePrimitiveArrayList")
+
+            generate("Mutable${model["Type"]}Set", model, "MutablePrimitiveSet")
+            generate("AbstractMutable${model["Type"]}Set", model, "AbstractMutablePrimitiveSet")
         }
     }
 }

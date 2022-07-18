@@ -1,63 +1,65 @@
-package kala.collection;
+package kala.collection.primitive;
 
+import kala.collection.AnySet;
+import kala.collection.base.primitive.*;
 import kala.collection.factory.primitive.${Type}CollectionFactory;
 import kala.collection.immutable.primitive.*;
 import kala.collection.primitive.internal.view.${Type}SetViews;
+import kala.function.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.function.*;
 
-public interface ${Type}Set extends Collection<E>, SetLike<E>, Any${Type}Set {
+public interface ${Type}Set extends PrimitiveSet<${WrapperType}>, ${Type}Collection, ${Type}SetLike  {
 
     //region Static Factories
 
     static ${Type}CollectionFactory<?, ${Type}Set> factory() {
-        return CollectionFactory.narrow(Immutable${Type}Set.factory());
+        return ${Type}CollectionFactory.narrow(Immutable${Type}Set.factory());
     }
 
-    static <E> @NotNull ${Type}Set empty() {
+    static @NotNull ${Type}Set empty() {
         return Immutable${Type}Set.empty();
     }
 
-    static <E> @NotNull ${Type}Set of() {
+    static @NotNull ${Type}Set of() {
         return Immutable${Type}Set.of();
     }
 
-    static <E> @NotNull ${Type}Set of(E value1) {
+    static @NotNull ${Type}Set of(${PrimitiveType} value1) {
         return Immutable${Type}Set.of(value1);
     }
 
-    static <E> @NotNull ${Type}Set of(E value1, E value2) {
+    static @NotNull ${Type}Set of(${PrimitiveType} value1, ${PrimitiveType} value2) {
         return Immutable${Type}Set.of(value1, value2);
     }
 
-    static <E> @NotNull ${Type}Set of(E value1, E value2, E value3) {
+    static @NotNull ${Type}Set of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3) {
         return Immutable${Type}Set.of(value1, value2, value3);
     }
 
-    static <E> @NotNull ${Type}Set of(E value1, E value2, E value3, E value4) {
+    static @NotNull ${Type}Set of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3, ${PrimitiveType} value4) {
         return Immutable${Type}Set.of(value1, value2, value3, value4);
     }
 
-    static <E> @NotNull ${Type}Set of(E value1, E value2, E value3, E value4, E value5) {
+    static @NotNull ${Type}Set of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3, ${PrimitiveType} value4, ${PrimitiveType} value5) {
         return Immutable${Type}Set.of(value1, value2, value3, value4, value5);
     }
 
-    static <E> @NotNull ${Type}Set of(E... values) {
+    static @NotNull ${Type}Set of(${PrimitiveType}... values) {
         return Immutable${Type}Set.of(values);
     }
 
-    static <E> @NotNull ${Type}Set from(E @NotNull [] values) {
+    static @NotNull ${Type}Set from(${PrimitiveType} @NotNull [] values) {
         return Immutable${Type}Set.from(values);
     }
 
-    static <E> @NotNull ${Type}Set from(@NotNull Iterable<? extends E> values) {
+    static @NotNull ${Type}Set from(@NotNull ${Type}Traversable values) {
         return Immutable${Type}Set.from(values);
     }
 
-    static <E> @NotNull ${Type}Set from(@NotNull Iterator<? extends E> it) {
+    static @NotNull ${Type}Set from(@NotNull ${Type}Iterator it) {
         return Immutable${Type}Set.from(it);
     }
 
@@ -65,29 +67,33 @@ public interface ${Type}Set extends Collection<E>, SetLike<E>, Any${Type}Set {
 
     static int hashCode(@NotNull ${Type}Set set) {
         int h = SET_HASH_MAGIC;
-        for (Object e : set) {
-            if (e != null) {
-                h += e.hashCode();
-            }
+        ${Type}Iterator it = set.iterator();
+        while (it.hasNext()) {
+            h += ${WrapperType}.hashCode(it.next${Type}());
         }
         return h;
     }
 
     static boolean equals(@NotNull ${Type}Set set1, @NotNull AnySet<?> set2) {
         if (set1 == set2) return true;
-        if (!set1.canEqual(seq2) || !set2.canEqual(seq1)) return false;
+        if (!set1.canEqual(set2) || !set2.canEqual(set1)) return false;
 
         if (set1.size() != set2.size()) return false;
 
         if (set2 instanceof ${Type}Set) {
-            return set1.containsAll(set2);
+            return set1.containsAll((${Type}Set) set2);
         } else {
-            return set1.containsAll(set2.asGeneric());
+            // TODO: return set1.containsAll(set2.asGeneric());
+            for (Object v : set2.asGeneric()) {
+                if (!(v instanceof ${WrapperType}) || !set1.contains((${WrapperType}) v))
+                    return false;
+            }
+            return true;
         }
     }
 
     @Override
-    default boolean contains(Object value) {
+    default boolean contains(${PrimitiveType} value) {
         return iterator().contains(value);
     }
 
@@ -103,7 +109,7 @@ public interface ${Type}Set extends Collection<E>, SetLike<E>, Any${Type}Set {
 
     @Override
     default @NotNull ${Type}SetView view() {
-        return new ${Type}SetViews.Of(this);
+        return new ${Type}SetViews.Of<>(this);
     }
 
     @Override

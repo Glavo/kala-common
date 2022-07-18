@@ -1,7 +1,6 @@
 package kala.collection.primitive;
 
-import kala.annotations.Covariant;
-import kala.collection.primitive.internal.view.SetViews;
+import kala.collection.primitive.internal.view.${Type}SetViews;
 import kala.function.*;
 import org.jetbrains.annotations.NotNull;
 

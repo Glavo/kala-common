@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractImmutable${Type}Set extends Abstract${Type}Set implements Immutable${Type}Set {
     static <T, Builder> T added(
-            @NotNull ImmutableSet<? extends E> set,
+            @NotNull Immutable${Type}Set set,
             ${PrimitiveType} value,
             @NotNull ${Type}CollectionFactory<Builder, ? extends T> factory
     ) {
@@ -19,7 +19,7 @@ public abstract class AbstractImmutable${Type}Set extends Abstract${Type}Set imp
     }
 
     static <T, Builder> T addedAll(
-            @NotNull ImmutableSet<? extends E> set,
+            @NotNull Immutable${Type}Set set,
             @NotNull ${Type}Traversable values,
             @NotNull ${Type}CollectionFactory<Builder, ? extends T> factory
     ) {
