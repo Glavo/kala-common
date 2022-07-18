@@ -96,6 +96,15 @@ final class DefaultMutableBooleanSet extends AbstractMutableBooleanSet implement
         return res;
     }
 
+    @Contract(value = "_ -> new")
+    static @NotNull MutableBooleanSet from(@NotNull BooleanIterator it) {
+        DefaultMutableBooleanSet res = new DefaultMutableBooleanSet();
+        while (it.hasNext()) {
+            res.add(it.nextBoolean());
+        }
+        return res;
+    }
+
     //endregion
 
     private boolean containsFalse = false;
