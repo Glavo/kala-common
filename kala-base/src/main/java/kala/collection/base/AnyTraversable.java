@@ -12,13 +12,13 @@ public interface AnyTraversable<T> extends Sized {
 
     @NotNull Traversable<T> asGeneric();
 
-    static int knownSize(@NotNull Iterable<?> c) {
+    static int knownSize(@NotNull Object c) {
         Objects.requireNonNull(c);
+        if (c instanceof Sized) {
+            return ((AnyTraversable<?>) c).knownSize();
+        }
         if (c instanceof Collection<?>) {
             return ((Collection<?>) c).size();
-        }
-        if (c instanceof AnyTraversable) {
-            return ((AnyTraversable<?>) c).knownSize();
         }
         return -1;
     }

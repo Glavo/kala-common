@@ -18,58 +18,101 @@ public interface Mutable${Type}Set extends MutablePrimitiveSet<${WrapperType}>, 
 
     @Contract(pure = true)
     static @NotNull ${Type}CollectionFactory<?, Mutable${Type}Set> factory() {
+<#if Type == "Boolean">
+        return ${Type}CollectionFactory.narrow(DefaultMutable${Type}Set.factory());
+<#else>
         throw new UnsupportedOperationException(); // TODO
+</#if>
     }
 
     @Contract(value = "-> new")
     static @NotNull Mutable${Type}Set create() {
+<#if Type == "Boolean">
+        return DefaultMutable${Type}Set.create();
+<#else>
         throw new UnsupportedOperationException(); // TODO
+</#if>
     }
 
     @Contract(value = "-> new")
     static @NotNull Mutable${Type}Set of() {
+<#if Type == "Boolean">
+        return DefaultMutable${Type}Set.of();
+<#else>
         throw new UnsupportedOperationException(); // TODO
+</#if>
     }
 
     @Contract(value = "_ -> new")
     static @NotNull Mutable${Type}Set of(${PrimitiveType} value1) {
+<#if Type == "Boolean">
+        return DefaultMutable${Type}Set.of(value1);
+<#else>
         throw new UnsupportedOperationException(); // TODO
+</#if>
     }
 
     @Contract(value = "_, _ -> new")
     static @NotNull Mutable${Type}Set of(${PrimitiveType} value1, ${PrimitiveType} value2) {
+<#if Type == "Boolean">
+        return DefaultMutable${Type}Set.of(value1, value2);
+<#else>
         throw new UnsupportedOperationException(); // TODO
+</#if>
     }
 
     @Contract(value = "_, _, _ -> new")
     static @NotNull Mutable${Type}Set of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3) {
+<#if Type == "Boolean">
+        return DefaultMutable${Type}Set.of(value1, value2, value3);
+<#else>
         throw new UnsupportedOperationException(); // TODO
+</#if>
     }
 
     @Contract(value = "_, _, _, _ -> new")
     static @NotNull Mutable${Type}Set of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3, ${PrimitiveType} value4) {
+<#if Type == "Boolean">
+        return DefaultMutable${Type}Set.of(value1, value2, value3, value4);
+<#else>
         throw new UnsupportedOperationException(); // TODO
+</#if>
     }
 
     @Contract(value = "_, _, _, _, _ -> new")
     static @NotNull Mutable${Type}Set of(${PrimitiveType} value1, ${PrimitiveType} value2, ${PrimitiveType} value3, ${PrimitiveType} value4, ${PrimitiveType} value5) {
+<#if Type == "Boolean">
+        return DefaultMutable${Type}Set.of(value1, value2, value3, value4, value5);
+<#else>
         throw new UnsupportedOperationException(); // TODO
+</#if>
     }
 
-    @SafeVarargs
     @Contract(value = "_ -> new")
     static @NotNull Mutable${Type}Set of(${PrimitiveType}... values) {
+<#if Type == "Boolean">
+        return DefaultMutable${Type}Set.of(values);
+<#else>
         throw new UnsupportedOperationException(); // TODO
+</#if>
     }
 
     @Contract(value = "_ -> new")
     static @NotNull Mutable${Type}Set from(${PrimitiveType} @NotNull [] values) {
+<#if Type == "Boolean">
+        return DefaultMutable${Type}Set.from(values);
+<#else>
         throw new UnsupportedOperationException(); // TODO
+</#if>
     }
 
     @Contract(value = "_ -> new")
     static @NotNull Mutable${Type}Set from(@NotNull ${Type}Traversable values) {
+<#if Type == "Boolean">
+        return DefaultMutable${Type}Set.from(values);
+<#else>
         throw new UnsupportedOperationException(); // TODO
+</#if>
     }
 
     //endregion

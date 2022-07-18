@@ -14,64 +14,64 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public final class ImmutableCompactSet<E>
+public final class ImmutableSortedArraySet<E>
         extends AbstractImmutableSortedSet<E> implements Serializable {
 
     private static final long serialVersionUID = 418132517516968465L;
 
-    private static final ImmutableCompactSet.Factory<? extends Comparable<?>> DEFAULT_FACTORY =
-            new ImmutableCompactSet.Factory<>(Comparator.naturalOrder());
+    private static final ImmutableSortedArraySet.Factory<? extends Comparable<?>> DEFAULT_FACTORY =
+            new ImmutableSortedArraySet.Factory<>(Comparator.naturalOrder());
 
     final @Nullable Comparator<? super E> comparator;
     final Object[] elements;
 
-    ImmutableCompactSet(Object[] elements) {
+    ImmutableSortedArraySet(Object[] elements) {
         this(null, elements);
     }
 
-    ImmutableCompactSet(@Nullable Comparator<? super E> comparator, Object[] elements) {
+    ImmutableSortedArraySet(@Nullable Comparator<? super E> comparator, Object[] elements) {
         this.comparator = comparator;
         this.elements = elements;
     }
 
     //region Static Factories
 
-    public static <E extends Comparable<? super E>> @NotNull CollectionFactory<E, ?, ImmutableCompactSet<E>> factory() {
-        return (ImmutableCompactSet.Factory<E>) DEFAULT_FACTORY;
+    public static <E extends Comparable<? super E>> @NotNull CollectionFactory<E, ?, ImmutableSortedArraySet<E>> factory() {
+        return (ImmutableSortedArraySet.Factory<E>) DEFAULT_FACTORY;
     }
 
-    public static <E> @NotNull CollectionFactory<E, ?, ImmutableCompactSet<E>> factory(Comparator<? super E> comparator) {
+    public static <E> @NotNull CollectionFactory<E, ?, ImmutableSortedArraySet<E>> factory(Comparator<? super E> comparator) {
         return comparator == null ? (Factory<E>) DEFAULT_FACTORY : new Factory<>(comparator);
     }
 
     @Contract
-    public static <E extends Comparable<? super E>> @NotNull ImmutableCompactSet<@NotNull E> empty() {
-        return ((ImmutableCompactSet<E>) DEFAULT_FACTORY.empty());
+    public static <E extends Comparable<? super E>> @NotNull ImmutableSortedArraySet<@NotNull E> empty() {
+        return ((ImmutableSortedArraySet<E>) DEFAULT_FACTORY.empty());
     }
 
-    public static <E extends Comparable<? super E>> @NotNull ImmutableCompactSet<@NotNull E> of() {
+    public static <E extends Comparable<? super E>> @NotNull ImmutableSortedArraySet<@NotNull E> of() {
         return empty();
     }
 
-    public static <E extends Comparable<? super E>> @NotNull ImmutableCompactSet<@NotNull E> of(@NotNull E value1) {
+    public static <E extends Comparable<? super E>> @NotNull ImmutableSortedArraySet<@NotNull E> of(@NotNull E value1) {
         Objects.requireNonNull(value1);
-        return new ImmutableCompactSet<>(new Object[]{value1});
+        return new ImmutableSortedArraySet<>(new Object[]{value1});
     }
 
-    public static <E extends Comparable<? super E>> @NotNull ImmutableCompactSet<@NotNull E> of(
+    public static <E extends Comparable<? super E>> @NotNull ImmutableSortedArraySet<@NotNull E> of(
             @NotNull E value1, @NotNull E value2
     ) {
         int c = value1.compareTo(Objects.requireNonNull(value2));
         if (c < 0) {
-            return new ImmutableCompactSet<>(new Object[]{value1, value2});
+            return new ImmutableSortedArraySet<>(new Object[]{value1, value2});
         }
         if (c > 0) {
-            return new ImmutableCompactSet<>(new Object[]{value2, value1});
+            return new ImmutableSortedArraySet<>(new Object[]{value2, value1});
         }
-        return new ImmutableCompactSet<>(new Object[]{value1});
+        return new ImmutableSortedArraySet<>(new Object[]{value1});
     }
 
-    public static <E extends Comparable<? super E>> @NotNull ImmutableCompactSet<@NotNull E> of(
+    public static <E extends Comparable<? super E>> @NotNull ImmutableSortedArraySet<@NotNull E> of(
             @NotNull E value1, @NotNull E value2, @NotNull E value3
     ) {
         MutableTreeSet<E> s = new MutableTreeSet<>();
@@ -79,10 +79,10 @@ public final class ImmutableCompactSet<E>
         s.add(value2);
         s.add(value3);
 
-        return s.isEmpty() ? empty() : new ImmutableCompactSet<>(s.toArray());
+        return s.isEmpty() ? empty() : new ImmutableSortedArraySet<>(s.toArray());
     }
 
-    public static <E extends Comparable<? super E>> @NotNull ImmutableCompactSet<@NotNull E> of(
+    public static <E extends Comparable<? super E>> @NotNull ImmutableSortedArraySet<@NotNull E> of(
             @NotNull E value1, @NotNull E value2, @NotNull E value3, @NotNull E value4
     ) {
         MutableTreeSet<E> s = new MutableTreeSet<>();
@@ -90,10 +90,10 @@ public final class ImmutableCompactSet<E>
         s.add(value2);
         s.add(value3);
         s.add(value4);
-        return s.isEmpty() ? empty() : new ImmutableCompactSet<>(s.toArray());
+        return s.isEmpty() ? empty() : new ImmutableSortedArraySet<>(s.toArray());
     }
 
-    public static <E extends Comparable<? super E>> @NotNull ImmutableCompactSet<@NotNull E> of(
+    public static <E extends Comparable<? super E>> @NotNull ImmutableSortedArraySet<@NotNull E> of(
             @NotNull E value1, @NotNull E value2, @NotNull E value3, @NotNull E value4, @NotNull E value5
     ) {
         MutableTreeSet<E> s = new MutableTreeSet<>();
@@ -102,22 +102,22 @@ public final class ImmutableCompactSet<E>
         s.add(value3);
         s.add(value4);
         s.add(value5);
-        return s.isEmpty() ? empty() : new ImmutableCompactSet<>(s.toArray());
+        return s.isEmpty() ? empty() : new ImmutableSortedArraySet<>(s.toArray());
     }
 
-    public static <E extends Comparable<? super E>> @NotNull ImmutableCompactSet<E> of(E... values) {
+    public static <E extends Comparable<? super E>> @NotNull ImmutableSortedArraySet<E> of(E... values) {
         return from(values);
     }
 
-    public static <E> @NotNull ImmutableCompactSet<E> empty(Comparator<? super E> comparator) {
-        return comparator == null ? (ImmutableCompactSet<E>) empty() : new ImmutableCompactSet<>(comparator, GenericArrays.EMPTY_OBJECT_ARRAY);
+    public static <E> @NotNull ImmutableSortedArraySet<E> empty(Comparator<? super E> comparator) {
+        return comparator == null ? (ImmutableSortedArraySet<E>) empty() : new ImmutableSortedArraySet<>(comparator, GenericArrays.EMPTY_OBJECT_ARRAY);
     }
 
-    public static <E> @NotNull ImmutableCompactSet<E> of(Comparator<? super E> comparator) {
+    public static <E> @NotNull ImmutableSortedArraySet<E> of(Comparator<? super E> comparator) {
         return empty(comparator);
     }
 
-    public static <E> @NotNull ImmutableCompactSet<E> of(
+    public static <E> @NotNull ImmutableSortedArraySet<E> of(
             Comparator<? super E> comparator,
             E value1
     ) {
@@ -134,10 +134,10 @@ public final class ImmutableCompactSet<E>
             //noinspection ResultOfMethodCallIgnored,EqualsWithItself
             comparator.compare(value1, value1); // check value
         }
-        return new ImmutableCompactSet<>(comparator, new Object[]{value1});
+        return new ImmutableSortedArraySet<>(comparator, new Object[]{value1});
     }
 
-    public static <E> @NotNull ImmutableCompactSet<E> of(
+    public static <E> @NotNull ImmutableSortedArraySet<E> of(
             Comparator<? super E> comparator,
             E value1, E value2
     ) {
@@ -149,25 +149,25 @@ public final class ImmutableCompactSet<E>
         }
 
         if (c < 0) {
-            return new ImmutableCompactSet<>(comparator, new Object[]{value1, value2});
+            return new ImmutableSortedArraySet<>(comparator, new Object[]{value1, value2});
         }
         if (c > 0) {
-            return new ImmutableCompactSet<>(comparator, new Object[]{value2, value1});
+            return new ImmutableSortedArraySet<>(comparator, new Object[]{value2, value1});
         }
-        return new ImmutableCompactSet<>(comparator, new Object[]{value1});
+        return new ImmutableSortedArraySet<>(comparator, new Object[]{value1});
     }
 
-    public static <E> @NotNull ImmutableCompactSet<E> of(
+    public static <E> @NotNull ImmutableSortedArraySet<E> of(
             Comparator<? super E> comparator,
             E value1, E value2, E value3) {
         MutableTreeSet<E> s = new MutableTreeSet<>(comparator);
         s.add(value1);
         s.add(value2);
         s.add(value3);
-        return s.isEmpty() ? empty(comparator) : new ImmutableCompactSet<>(comparator, s.toArray());
+        return s.isEmpty() ? empty(comparator) : new ImmutableSortedArraySet<>(comparator, s.toArray());
     }
 
-    public static <E> @NotNull ImmutableCompactSet<E> of(
+    public static <E> @NotNull ImmutableSortedArraySet<E> of(
             Comparator<? super E> comparator,
             E value1, E value2, E value3, E value4
     ) {
@@ -176,10 +176,10 @@ public final class ImmutableCompactSet<E>
         s.add(value2);
         s.add(value3);
         s.add(value4);
-        return s.isEmpty() ? empty(comparator) : new ImmutableCompactSet<>(comparator, s.toArray());
+        return s.isEmpty() ? empty(comparator) : new ImmutableSortedArraySet<>(comparator, s.toArray());
     }
 
-    public static <E> @NotNull ImmutableCompactSet<E> of(
+    public static <E> @NotNull ImmutableSortedArraySet<E> of(
             Comparator<? super E> comparator,
             E value1, E value2, E value3, E value4, E value5
     ) {
@@ -190,33 +190,33 @@ public final class ImmutableCompactSet<E>
         s.add(value4);
         s.add(value5);
 
-        return s.isEmpty() ? empty(comparator) : new ImmutableCompactSet<>(comparator, s.toArray());
+        return s.isEmpty() ? empty(comparator) : new ImmutableSortedArraySet<>(comparator, s.toArray());
     }
 
-    public static <E> @NotNull ImmutableCompactSet<E> of(Comparator<? super E> comparator, E... values) {
+    public static <E> @NotNull ImmutableSortedArraySet<E> of(Comparator<? super E> comparator, E... values) {
         return from(comparator, values);
     }
 
-    public static <E> @NotNull ImmutableCompactSet<E> from(kala.collection.@NotNull SortedSet<? extends E> values) {
+    public static <E> @NotNull ImmutableSortedArraySet<E> from(kala.collection.@NotNull SortedSet<? extends E> values) {
         final Comparator<E> comparator = (Comparator<E>) values.comparator();
-        return values.isEmpty() ? empty(comparator) : new ImmutableCompactSet<>(comparator, values.toArray());
+        return values.isEmpty() ? empty(comparator) : new ImmutableSortedArraySet<>(comparator, values.toArray());
     }
 
-    public static <E> @NotNull ImmutableCompactSet<E> from(java.util.@NotNull SortedSet<? extends E> values) {
+    public static <E> @NotNull ImmutableSortedArraySet<E> from(java.util.@NotNull SortedSet<? extends E> values) {
         final Comparator<E> comparator = (Comparator<E>) values.comparator();
-        return values.isEmpty() ? empty(comparator) : new ImmutableCompactSet<>(comparator, values.toArray());
+        return values.isEmpty() ? empty(comparator) : new ImmutableSortedArraySet<>(comparator, values.toArray());
     }
 
-    public static <E extends Comparable<? super E>> @NotNull ImmutableCompactSet<E> from(E @NotNull [] values) {
+    public static <E extends Comparable<? super E>> @NotNull ImmutableSortedArraySet<E> from(E @NotNull [] values) {
         if (values.length == 0) { // implicit null check of values
             return empty();
         }
         MutableTreeSet<E> s = new MutableTreeSet<>();
         s.addAll(values);
-        return new ImmutableCompactSet<>(s.toArray());
+        return new ImmutableSortedArraySet<>(s.toArray());
     }
 
-    public static <E extends Comparable<? super E>> @NotNull ImmutableCompactSet<E> from(
+    public static <E extends Comparable<? super E>> @NotNull ImmutableSortedArraySet<E> from(
             @NotNull Iterable<? extends E> values
     ) {
         Objects.requireNonNull(values);
@@ -224,12 +224,12 @@ public final class ImmutableCompactSet<E>
         if (values instanceof kala.collection.SortedSet<?>) {
             kala.collection.SortedSet<E> vs = (kala.collection.SortedSet<E>) values;
             final Comparator<E> comparator = (Comparator<E>) vs.comparator();
-            return vs.isEmpty() ? empty(comparator) : new ImmutableCompactSet<>(comparator, vs.toArray());
+            return vs.isEmpty() ? empty(comparator) : new ImmutableSortedArraySet<>(comparator, vs.toArray());
         } else if (values instanceof java.util.SortedSet<?>) {
             java.util.SortedSet<E> vs = (java.util.SortedSet<E>) values;
             final Comparator<E> comparator = (Comparator<E>) vs.comparator();
 
-            return vs.isEmpty() ? empty(comparator) : new ImmutableCompactSet<>(comparator, vs.toArray());
+            return vs.isEmpty() ? empty(comparator) : new ImmutableSortedArraySet<>(comparator, vs.toArray());
         }
 
         Iterator<? extends E> it = values.iterator();
@@ -241,10 +241,10 @@ public final class ImmutableCompactSet<E>
         while (it.hasNext()) {
             s.add(it.next());
         }
-        return new ImmutableCompactSet<>(s.toArray());
+        return new ImmutableSortedArraySet<>(s.toArray());
     }
 
-    public static <E extends Comparable<? super E>> @NotNull ImmutableCompactSet<E> from(
+    public static <E extends Comparable<? super E>> @NotNull ImmutableSortedArraySet<E> from(
             @NotNull Iterator<? extends E> it
     ) {
         if (!it.hasNext()) { // implicit null check of it
@@ -255,27 +255,27 @@ public final class ImmutableCompactSet<E>
         while (it.hasNext()) {
             s.add(it.next());
         }
-        return new ImmutableCompactSet<>(s.toArray());
+        return new ImmutableSortedArraySet<>(s.toArray());
     }
 
-    public static <E extends Comparable<? super E>> @NotNull ImmutableCompactSet<E> from(
+    public static <E extends Comparable<? super E>> @NotNull ImmutableSortedArraySet<E> from(
             @NotNull Stream<? extends E> stream
     ) {
         return stream.collect(factory());
     }
 
     @Contract(value = "_, _ -> new", pure = true)
-    public static <E> @NotNull ImmutableCompactSet<E> from(Comparator<? super E> comparator, E @NotNull [] values) {
+    public static <E> @NotNull ImmutableSortedArraySet<E> from(Comparator<? super E> comparator, E @NotNull [] values) {
         if (values.length == 0) {
             return empty(comparator);
         }
         MutableTreeSet<E> s = new MutableTreeSet<>(comparator);
         s.addAll(values);
-        return new ImmutableCompactSet<>(comparator, s.toArray());
+        return new ImmutableSortedArraySet<>(comparator, s.toArray());
     }
 
     @Contract(value = "_, _ -> new", pure = true)
-    public static <E> @NotNull ImmutableCompactSet<E> from(Comparator<? super E> comparator, @NotNull Iterable<? extends E> values) {
+    public static <E> @NotNull ImmutableSortedArraySet<E> from(Comparator<? super E> comparator, @NotNull Iterable<? extends E> values) {
         Iterator<? extends E> it = values.iterator();
         if (!it.hasNext()) {
             return empty(comparator);
@@ -285,11 +285,11 @@ public final class ImmutableCompactSet<E>
         while (it.hasNext()) {
             s.add(it.next());
         }
-        return new ImmutableCompactSet<>(comparator, s.toArray());
+        return new ImmutableSortedArraySet<>(comparator, s.toArray());
     }
 
     @Contract(value = "_, _ -> new", pure = true)
-    public static <E> @NotNull ImmutableCompactSet<E> from(Comparator<? super E> comparator, @NotNull Iterator<? extends E> it) {
+    public static <E> @NotNull ImmutableSortedArraySet<E> from(Comparator<? super E> comparator, @NotNull Iterator<? extends E> it) {
         if (!it.hasNext()) { // implicit null check of it
             return empty(comparator);
         }
@@ -298,11 +298,11 @@ public final class ImmutableCompactSet<E>
         while (it.hasNext()) {
             s.add(it.next());
         }
-        return new ImmutableCompactSet<>(comparator, s.toArray());
+        return new ImmutableSortedArraySet<>(comparator, s.toArray());
     }
 
     @Contract(value = "_, _ -> new", pure = true)
-    public static <E> @NotNull ImmutableCompactSet<E> from(Comparator<? super E> comparator, @NotNull Stream<? extends E> stream) {
+    public static <E> @NotNull ImmutableSortedArraySet<E> from(Comparator<? super E> comparator, @NotNull Stream<? extends E> stream) {
         return stream.collect(factory(comparator));
     }
 
@@ -311,16 +311,16 @@ public final class ImmutableCompactSet<E>
 
     @Override
     public @NotNull String className() {
-        return "ImmutableCompactSet";
+        return "ImmutableSortedArraySet";
     }
 
     @Override
-    public <U> @NotNull CollectionFactory<U, ?, ImmutableCompactSet<U>> iterableFactory() {
-        return ((ImmutableCompactSet.Factory<U>) DEFAULT_FACTORY);
+    public <U> @NotNull CollectionFactory<U, ?, ImmutableSortedArraySet<U>> iterableFactory() {
+        return ((ImmutableSortedArraySet.Factory<U>) DEFAULT_FACTORY);
     }
 
     @Override
-    public <U> @NotNull CollectionFactory<U, ?, ImmutableCompactSet<U>> iterableFactory(Comparator<? super U> comparator) {
+    public <U> @NotNull CollectionFactory<U, ?, ImmutableSortedArraySet<U>> iterableFactory(Comparator<? super U> comparator) {
         return factory(comparator);
     }
 
@@ -340,7 +340,7 @@ public final class ImmutableCompactSet<E>
     }
 
     @Override
-    public @NotNull ImmutableCompactSet<E> added(E value) {
+    public @NotNull ImmutableSortedArraySet<E> added(E value) {
         final Object[] elements = this.elements;
         final int size = elements.length;
         Comparator<? super E> comparator = this.comparator;
@@ -354,7 +354,7 @@ public final class ImmutableCompactSet<E>
                 //noinspection ResultOfMethodCallIgnored,EqualsWithItself
                 comparator.compare(value, value); // check value
             }
-            return new ImmutableCompactSet<>(comparator, new Object[]{value});
+            return new ImmutableSortedArraySet<>(comparator, new Object[]{value});
         }
 
         int idx = Arrays.binarySearch(elements, value, ((Comparator<Object>) comparator));
@@ -368,21 +368,21 @@ public final class ImmutableCompactSet<E>
         if (idx == 0) {
             System.arraycopy(elements, 0, newElements, 1, size);
             newElements[0] = value;
-            return new ImmutableCompactSet<>(comparator, newElements);
+            return new ImmutableSortedArraySet<>(comparator, newElements);
         } else if (idx == size) {
             System.arraycopy(elements, 0, newElements, 0, size);
             newElements[size] = value;
-            return new ImmutableCompactSet<>(comparator, newElements);
+            return new ImmutableSortedArraySet<>(comparator, newElements);
         } else {
             System.arraycopy(elements, 0, newElements, 0, idx);
             System.arraycopy(elements, idx, newElements, idx + 1, size - idx);
             newElements[idx] = value;
-            return new ImmutableCompactSet<>(comparator, newElements);
+            return new ImmutableSortedArraySet<>(comparator, newElements);
         }
     }
 
     @Override
-    public @NotNull ImmutableCompactSet<E> addedAll(@NotNull Iterable<? extends E> values) {
+    public @NotNull ImmutableSortedArraySet<E> addedAll(@NotNull Iterable<? extends E> values) {
         final Iterator<? extends E> it = values.iterator();
         if (!it.hasNext()) {
             return this;
@@ -402,11 +402,11 @@ public final class ImmutableCompactSet<E>
             return this;
         }
 
-        return new ImmutableCompactSet<>(comparator, builder.toArray());
+        return new ImmutableSortedArraySet<>(comparator, builder.toArray());
     }
 
     @Override
-    public @NotNull ImmutableCompactSet<E> addedAll(E @NotNull [] values) {
+    public @NotNull ImmutableSortedArraySet<E> addedAll(E @NotNull [] values) {
         final int arrayLength = values.length;
         if (arrayLength == 0) {
             return this;
@@ -424,7 +424,7 @@ public final class ImmutableCompactSet<E>
         MutableTreeSet<Object> builder = new MutableTreeSet<>(((Comparator<Object>) comparator));
         builder.addAll(elements);
         builder.addAll(values);
-        return new ImmutableCompactSet<>(comparator, builder.toArray());
+        return new ImmutableSortedArraySet<>(comparator, builder.toArray());
     }
 
     @Override
@@ -462,14 +462,14 @@ public final class ImmutableCompactSet<E>
         }
     }
 
-    private static final class Factory<E> implements CollectionFactory<E, MutableTreeSet<E>, ImmutableCompactSet<E>> {
+    private static final class Factory<E> implements CollectionFactory<E, MutableTreeSet<E>, ImmutableSortedArraySet<E>> {
         final Comparator<? super E> comparator;
 
-        final ImmutableCompactSet<E> empty;
+        final ImmutableSortedArraySet<E> empty;
 
         Factory(Comparator<? super E> comparator) {
             this.comparator = comparator;
-            this.empty = new ImmutableCompactSet<>(comparator, GenericArrays.EMPTY_OBJECT_ARRAY);
+            this.empty = new ImmutableSortedArraySet<>(comparator, GenericArrays.EMPTY_OBJECT_ARRAY);
         }
 
         @Override
@@ -478,12 +478,12 @@ public final class ImmutableCompactSet<E>
         }
 
         @Override
-        public ImmutableCompactSet<E> build(@NotNull MutableTreeSet<E> builder) {
-            return builder.isEmpty() ? empty : new ImmutableCompactSet<>(comparator, builder.toArray());
+        public ImmutableSortedArraySet<E> build(@NotNull MutableTreeSet<E> builder) {
+            return builder.isEmpty() ? empty : new ImmutableSortedArraySet<>(comparator, builder.toArray());
         }
 
         @Override
-        public ImmutableCompactSet<E> empty() {
+        public ImmutableSortedArraySet<E> empty() {
             return empty;
         }
 

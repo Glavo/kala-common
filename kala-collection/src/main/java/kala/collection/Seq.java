@@ -2,6 +2,7 @@ package kala.collection;
 
 import kala.annotations.Covariant;
 import kala.collection.base.Iterators;
+import kala.collection.base.OrderedTraversable;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.immutable.ImmutableSeq;
 import kala.collection.internal.convert.AsJavaConvert;
@@ -18,7 +19,7 @@ import java.util.*;
 import java.util.function.*;
 
 @SuppressWarnings("unchecked")
-public interface Seq<@Covariant E> extends Collection<E>, SeqLike<E>, AnySeq<E> {
+public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>, SeqLike<E>, AnySeq<E> {
 
     //region Narrow method
 

@@ -1062,7 +1062,7 @@ final class ImmutableSeqs {
     }
 
     @SuppressWarnings("unchecked")
-    static abstract class CopiesSeqBase<E> implements IndexedSeqLike<E>,  Serializable {
+    static abstract class CopiesSeqBase<E> implements IndexedSeqLike<E>, Serializable {
         protected final @Range(from = 1, to = Integer.MAX_VALUE) int size;
         protected final E value;
 
