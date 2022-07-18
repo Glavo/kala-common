@@ -16,6 +16,22 @@ public abstract class AbstractDefaultByteSet extends AbstractByteSet implements 
     protected int size = 0;
     protected long bits0, bits1, bits2, bits3;
 
+    public long bits0() {
+        return bits0;
+    }
+
+    public long bits1() {
+        return bits1;
+    }
+
+    public long bits2() {
+        return bits2;
+    }
+
+    public long bits3() {
+        return bits3;
+    }
+
     @Override
     public @NotNull ByteIterator iterator() {
         if (size == 0)
