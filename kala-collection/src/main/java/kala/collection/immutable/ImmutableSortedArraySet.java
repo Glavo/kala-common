@@ -78,8 +78,7 @@ public final class ImmutableSortedArraySet<E>
         s.add(value1);
         s.add(value2);
         s.add(value3);
-
-        return s.isEmpty() ? empty() : new ImmutableSortedArraySet<>(s.toArray());
+        return new ImmutableSortedArraySet<>(s.toArray());
     }
 
     public static <E extends Comparable<? super E>> @NotNull ImmutableSortedArraySet<@NotNull E> of(
@@ -90,7 +89,7 @@ public final class ImmutableSortedArraySet<E>
         s.add(value2);
         s.add(value3);
         s.add(value4);
-        return s.isEmpty() ? empty() : new ImmutableSortedArraySet<>(s.toArray());
+        return new ImmutableSortedArraySet<>(s.toArray());
     }
 
     public static <E extends Comparable<? super E>> @NotNull ImmutableSortedArraySet<@NotNull E> of(
@@ -102,7 +101,7 @@ public final class ImmutableSortedArraySet<E>
         s.add(value3);
         s.add(value4);
         s.add(value5);
-        return s.isEmpty() ? empty() : new ImmutableSortedArraySet<>(s.toArray());
+        return new ImmutableSortedArraySet<>(s.toArray());
     }
 
     public static <E extends Comparable<? super E>> @NotNull ImmutableSortedArraySet<E> of(E... values) {
