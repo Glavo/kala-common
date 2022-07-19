@@ -19,29 +19,29 @@ public final class MutableArraySet<E> extends AbstractMutableSet<E> implements O
 
     @Contract(pure = true)
     @SuppressWarnings({"unchecked", "rawtypes"})
-    static <E> @NotNull CollectionFactory<E, ?, MutableArraySet<E>> factory() {
+    public static <E> @NotNull CollectionFactory<E, ?, MutableArraySet<E>> factory() {
         return (Factory) FACTORY;
     }
 
     @Contract(value = "-> new")
-    static <E> @NotNull MutableArraySet<E> create() {
+    public static <E> @NotNull MutableArraySet<E> create() {
         return new MutableArraySet<>();
     }
 
     @Contract(value = "-> new")
-    static <E> @NotNull MutableArraySet<E> of() {
+    public static <E> @NotNull MutableArraySet<E> of() {
         return new MutableArraySet<>();
     }
 
     @Contract(value = "_ -> new")
-    static <E> @NotNull MutableArraySet<E> of(E value1) {
+    public static <E> @NotNull MutableArraySet<E> of(E value1) {
         MutableArraySet<E> res = new MutableArraySet<>();
         res.add(value1);
         return res;
     }
 
     @Contract(value = "_, _ -> new")
-    static <E> @NotNull MutableArraySet<E> of(E value1, E value2) {
+    public static <E> @NotNull MutableArraySet<E> of(E value1, E value2) {
         MutableArraySet<E> res = new MutableArraySet<>();
         res.add(value1);
         res.add(value2);
@@ -49,7 +49,7 @@ public final class MutableArraySet<E> extends AbstractMutableSet<E> implements O
     }
 
     @Contract(value = "_, _, _ -> new")
-    static <E> @NotNull MutableArraySet<E> of(E value1, E value2, E value3) {
+    public static <E> @NotNull MutableArraySet<E> of(E value1, E value2, E value3) {
         MutableArraySet<E> res = new MutableArraySet<>();
         res.add(value1);
         res.add(value2);
@@ -58,7 +58,7 @@ public final class MutableArraySet<E> extends AbstractMutableSet<E> implements O
     }
 
     @Contract(value = "_, _, _, _ -> new")
-    static <E> @NotNull MutableArraySet<E> of(E value1, E value2, E value3, E value4) {
+    public static <E> @NotNull MutableArraySet<E> of(E value1, E value2, E value3, E value4) {
         MutableArraySet<E> res = new MutableArraySet<>();
         res.add(value1);
         res.add(value2);
@@ -68,7 +68,7 @@ public final class MutableArraySet<E> extends AbstractMutableSet<E> implements O
     }
 
     @Contract(value = "_, _, _, _, _ -> new")
-    static <E> @NotNull MutableArraySet<E> of(E value1, E value2, E value3, E value4, E value5) {
+    public static <E> @NotNull MutableArraySet<E> of(E value1, E value2, E value3, E value4, E value5) {
         MutableArraySet<E> res = new MutableArraySet<>();
         res.add(value1);
         res.add(value2);
@@ -80,19 +80,19 @@ public final class MutableArraySet<E> extends AbstractMutableSet<E> implements O
 
     @SafeVarargs
     @Contract(value = "_ -> new")
-    static <E> @NotNull MutableArraySet<E> of(E... values) {
+    public static <E> @NotNull MutableArraySet<E> of(E... values) {
         return from(values);
     }
 
     @Contract(value = "_ -> new")
-    static <E> @NotNull MutableArraySet<E> from(E @NotNull [] values) {
+    public static <E> @NotNull MutableArraySet<E> from(E @NotNull [] values) {
         MutableArraySet<E> res = new MutableArraySet<>();
         res.addAll(values);
         return res;
     }
 
     @Contract(value = "_ -> new")
-    static <E> @NotNull MutableArraySet<E> from(@NotNull Iterable<? extends E> values) {
+    public static <E> @NotNull MutableArraySet<E> from(@NotNull Iterable<? extends E> values) {
         MutableArraySet<E> res = new MutableArraySet<>();
         res.addAll(values);
         return res;
@@ -103,6 +103,11 @@ public final class MutableArraySet<E> extends AbstractMutableSet<E> implements O
     @Override
     public @NotNull String className() {
         return "MutableArraySet" ;
+    }
+
+    @Override
+    public <U> @NotNull CollectionFactory<U, ?, MutableArraySet<U>> iterableFactory() {
+        return factory();
     }
 
     @Override
@@ -156,6 +161,12 @@ public final class MutableArraySet<E> extends AbstractMutableSet<E> implements O
     }
 
     //endregion
+
+
+    @Override
+    public Object @NotNull [] toArray() {
+        return values.toArray();
+    }
 
     private static final class Factory<E> extends AbstractMutableSetFactory<E, MutableArraySet<E>> {
         @Override

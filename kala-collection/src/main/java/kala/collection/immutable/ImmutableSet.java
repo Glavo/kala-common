@@ -5,6 +5,7 @@ import kala.collection.SortedSet;
 import kala.annotations.Covariant;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.Set;
+import kala.collection.factory.Factory;
 import kala.function.Predicates;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -79,7 +80,7 @@ public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<
 
     @Override
     default @NotNull String className() {
-        return "ImmutableSet";
+        return "ImmutableSet" ;
     }
 
     @Override
@@ -88,34 +89,66 @@ public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<
     }
 
     default @NotNull ImmutableSet<E> added(E value) {
-        if (contains(value)) {
+        if (contains(value))
             return this;
-        }
-        if (this instanceof SortedSet<?>) {
-            @SuppressWarnings("unchecked")
-            CollectionFactory<E, ?, ? extends ImmutableSet<E>> factory =
-                    (CollectionFactory<E, ?, ? extends ImmutableSet<E>>)
-                            ((SortedSet<?>) this).iterableFactory(((SortedSet<?>) this).comparator());
 
-            return AbstractImmutableSet.added(this, value, factory);
+        CollectionFactory<E, ?, ? extends ImmutableSet<E>> factory;
+        if (this instanceof SortedSet<?>) {
+            factory = (CollectionFactory<E, ?, ? extends ImmutableSet<E>>)
+                    ((SortedSet<?>) this).iterableFactory(((SortedSet<?>) this).comparator());
+        } else {
+            factory = iterableFactory();
         }
-        return AbstractImmutableSet.added(this, value, iterableFactory());
+        return AbstractImmutableSet.added(this, value, factory);
     }
 
     default @NotNull ImmutableSet<E> addedAll(@NotNull Iterable<? extends E> values) {
+        CollectionFactory<E, ?, ? extends ImmutableSet<E>> factory;
         if (this instanceof SortedSet<?>) {
-            @SuppressWarnings("unchecked")
-            CollectionFactory<E, ?, ? extends ImmutableSet<E>> factory =
-                    (CollectionFactory<E, ?, ? extends ImmutableSet<E>>)
-                            ((SortedSet<?>) this).iterableFactory(((SortedSet<?>) this).comparator());
-
-            return AbstractImmutableSet.addedAll(this, values, factory);
+            factory = (CollectionFactory<E, ?, ? extends ImmutableSet<E>>)
+                    ((SortedSet<?>) this).iterableFactory(((SortedSet<?>) this).comparator());
+        } else {
+            factory = iterableFactory();
         }
-        return AbstractImmutableSet.addedAll(this, values, iterableFactory());
+        return AbstractImmutableSet.addedAll(this, values, factory);
     }
 
     default @NotNull ImmutableSet<E> addedAll(E @NotNull [] values) {
         return addedAll(ArraySeq.wrap(values));
+    }
+
+    default @NotNull ImmutableSet<E> removed(E value) {
+        if (!contains(value))
+            return this;
+
+        CollectionFactory<E, ?, ? extends ImmutableSet<E>> factory;
+
+        if (this instanceof SortedSet<?>) {
+            factory = (CollectionFactory<E, ?, ? extends ImmutableSet<E>>)
+                    ((SortedSet<?>) this).iterableFactory(((SortedSet<?>) this).comparator());
+        } else {
+            factory = iterableFactory();
+        }
+
+        if (sizeIs(1))
+            return factory.empty();
+
+        return AbstractImmutableSet.removed(this, value, factory);
+    }
+
+    default @NotNull ImmutableSet<E> removedAll(@NotNull Iterable<? extends E> values) {
+        CollectionFactory<E, ?, ? extends ImmutableSet<E>> factory;
+        if (this instanceof SortedSet<?>) {
+            factory = (CollectionFactory<E, ?, ? extends ImmutableSet<E>>)
+                    ((SortedSet<?>) this).iterableFactory(((SortedSet<?>) this).comparator());
+        } else {
+            factory = iterableFactory();
+        }
+        return AbstractImmutableSet.removedAll(this, values, factory);
+    }
+
+    default @NotNull ImmutableSet<E> removedAll(E @NotNull [] values) {
+        return removedAll(ArraySeq.wrap(values));
     }
 
     @Override
