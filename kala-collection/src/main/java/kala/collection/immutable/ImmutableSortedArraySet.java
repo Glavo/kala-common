@@ -341,9 +341,7 @@ public final class ImmutableSortedArraySet<E>
 
     @Override
     public @NotNull ImmutableSortedArraySet<E> added(E value) {
-        final Object[] elements = this.elements;
         final int size = elements.length;
-        Comparator<? super E> comparator = this.comparator;
 
         if (size == 0) {
             if (comparator == null) {
@@ -456,7 +454,6 @@ public final class ImmutableSortedArraySet<E>
 
     @Override
     public void forEach(@NotNull Consumer<? super E> action) {
-        final Object[] elements = this.elements;
         for (Object e : elements) {
             action.accept((E) e);
         }

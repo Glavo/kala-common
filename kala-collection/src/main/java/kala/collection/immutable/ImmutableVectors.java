@@ -1706,8 +1706,7 @@ final class ImmutableVectors {
 
     }
 
-    static final class VectorBuilder<E>
-    {
+    static final class VectorBuilder<E> {
         private Object[][][][][][] a6;
         private Object[][][][][] a5;
         private Object[][][][] a4;

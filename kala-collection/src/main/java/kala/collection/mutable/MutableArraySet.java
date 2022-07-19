@@ -6,14 +6,15 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
-import java.util.Iterator;
 
-public final class MutableArraySet<E> extends AbstractMutableSet<E> implements OrderedTraversable<E>, Serializable {
+public final class MutableArraySet<E> extends AbstractMutableListSet<E, MutableArrayList<E>> implements OrderedTraversable<E>, Serializable {
     private static final long serialVersionUID = 0L;
 
     private static final Factory<?> FACTORY = new Factory<>();
 
-    private final MutableArrayList<E> values = new MutableArrayList<>();
+    public MutableArraySet() {
+        super(new MutableArrayList<>());
+    }
 
     //region Static Factories
 
@@ -108,64 +109,6 @@ public final class MutableArraySet<E> extends AbstractMutableSet<E> implements O
     @Override
     public <U> @NotNull CollectionFactory<U, ?, MutableArraySet<U>> iterableFactory() {
         return factory();
-    }
-
-    @Override
-    public @NotNull Iterator<E> iterator() {
-        return values.iterator();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return values.isEmpty();
-    }
-
-    @Override
-    public int size() {
-        return values.size();
-    }
-
-    @Override
-    public int knownSize() {
-        return values.size();
-    }
-
-    //region Modification Operations
-
-    @Override
-    public boolean add(E value) {
-        if (values.contains(value))
-            return false;
-
-        values.append(value);
-        return true;
-    }
-
-    @Override
-    public boolean remove(Object value) {
-        return values.remove(value);
-    }
-
-    @Override
-    public void clear() {
-        values.clear();
-    }
-
-    //endregion
-
-    //region Element Conditions
-
-    @Override
-    public boolean contains(Object value) {
-        return values.contains(value);
-    }
-
-    //endregion
-
-
-    @Override
-    public Object @NotNull [] toArray() {
-        return values.toArray();
     }
 
     private static final class Factory<E> extends AbstractMutableSetFactory<E, MutableArraySet<E>> {
