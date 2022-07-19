@@ -111,7 +111,7 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
     @Override
     default @NotNull
     String className() {
-        return "MutableList";
+        return "MutableList" ;
     }
 
     @Override
@@ -274,6 +274,15 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
     @Contract(mutates = "this")
     @Flow(sourceIsContainer = true)
     E removeAt(int index);
+
+    default boolean remove(Object value) {
+        int idx = indexOf(value);
+        if (idx < 0)
+            return false;
+
+        removeAt(idx);
+        return true;
+    }
 
     default void removeInRange(int beginIndex, int endIndex) {
         int size = this.size();

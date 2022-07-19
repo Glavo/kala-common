@@ -17,7 +17,6 @@ import java.util.stream.Stream;
 
 @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
 public final class MutableSinglyLinkedList<E> extends ImmutableLinkedSeq.Builder<E> implements MutableStack<E>, Serializable {
-
     private static final long serialVersionUID = 4403781063629141093L;
 
     private static final MutableSinglyLinkedList.Factory<?> FACTORY = new MutableSinglyLinkedList.Factory<>();

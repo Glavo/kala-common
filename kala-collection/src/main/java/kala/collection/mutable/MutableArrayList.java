@@ -423,13 +423,13 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
     //region Search Operations
 
     @Override
-    public int binarySearch(E value, int beginIndex, int endIndex) {
+    public int binarySearch(int beginIndex, int endIndex, E value) {
         Conditions.checkPositionIndices(beginIndex, endIndex, size);
         return Arrays.binarySearch(elements, beginIndex, endIndex, value);
     }
 
     @Override
-    public int binarySearch(E value, Comparator<? super E> comparator, int beginIndex, int endIndex) {
+    public int binarySearch(int beginIndex, int endIndex, E value, Comparator<? super E> comparator) {
         Conditions.checkPositionIndices(beginIndex, endIndex, size);
         return Arrays.binarySearch((E[]) elements, beginIndex, endIndex, value, comparator);
     }

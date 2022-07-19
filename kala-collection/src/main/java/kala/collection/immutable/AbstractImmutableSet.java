@@ -3,8 +3,10 @@ package kala.collection.immutable;
 import kala.collection.AbstractSet;
 import kala.annotations.Covariant;
 import kala.collection.factory.CollectionFactory;
+import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
 
+@Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
 public abstract class AbstractImmutableSet<@Covariant E> extends AbstractSet<E> implements ImmutableSet<E> {
     static <E, T, Builder> T added(
             @NotNull ImmutableSet<? extends E> set,

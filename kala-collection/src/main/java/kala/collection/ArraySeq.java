@@ -788,13 +788,13 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     //region Search Operations
 
     @Override
-    public final int binarySearch(E value, int beginIndex, int endIndex) {
+    public final int binarySearch(int beginIndex, int endIndex, E value) {
         Conditions.checkPositionIndices(beginIndex, endIndex, elements.length);
         return Arrays.binarySearch(elements, beginIndex, endIndex, value);
     }
 
     @Override
-    public int binarySearch(E value, Comparator<? super E> comparator, int beginIndex, int endIndex) {
+    public int binarySearch(int beginIndex, int endIndex, E value, Comparator<? super E> comparator) {
         Conditions.checkPositionIndices(beginIndex, endIndex, elements.length);
         return Arrays.binarySearch((E[]) elements, beginIndex, endIndex, value, comparator);
     }

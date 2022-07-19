@@ -5,7 +5,6 @@ import kala.collection.base.AbstractIterator;
 import kala.collection.base.Growable;
 import kala.collection.base.Iterators;
 import kala.collection.factory.MapFactory;
-import kala.collection.immutable.ImmutableLinkedSeq;
 import kala.collection.immutable.ImmutableMap;
 import kala.control.Option;
 import kala.function.IndexedBiFunction;
@@ -358,15 +357,15 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     }
 
     default int binarySearch(E value) {
-        return binarySearch(value, 0, size());
+        return binarySearch(0, size(), value);
     }
 
     default int binarySearch(E value, Comparator<? super E> comparator) {
-        return binarySearch(value, comparator, 0, size());
+        return binarySearch(0, size(), value, comparator);
     }
 
     @SuppressWarnings("unchecked")
-    default int binarySearch(E value, int beginIndex, int endIndex) {
+    default int binarySearch(int beginIndex, int endIndex, E value) {
         Conditions.checkPositionIndices(beginIndex, endIndex, size());
         int low = beginIndex;
         int high = endIndex - 1;
@@ -386,9 +385,9 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
         return -(low + 1);
     }
 
-    default int binarySearch(E value, Comparator<? super E> comparator, int beginIndex, int endIndex) {
+    default int binarySearch(int beginIndex, int endIndex, E value, Comparator<? super E> comparator) {
         if (comparator == null) {
-            return binarySearch(value, beginIndex, endIndex);
+            return binarySearch(beginIndex, endIndex, value);
         }
 
         Conditions.checkPositionIndices(beginIndex, endIndex, size());

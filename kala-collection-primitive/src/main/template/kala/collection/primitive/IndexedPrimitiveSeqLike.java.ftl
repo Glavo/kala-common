@@ -105,10 +105,10 @@ public interface Indexed${Type}SeqLike extends ${Type}SeqLike, RandomAccess {
     //endregion
 
     default int binarySearch(${PrimitiveType} value) {
-        return binarySearch(value, 0, size());
+        return binarySearch(0, size(), value);
     }
 
-    default int binarySearch(${PrimitiveType} value, int beginIndex, int endIndex) {
+    default int binarySearch(int beginIndex, int endIndex, ${PrimitiveType} value) {
         Conditions.checkPositionIndices(beginIndex, endIndex, size());
         int low = beginIndex;
         int high = endIndex - 1;

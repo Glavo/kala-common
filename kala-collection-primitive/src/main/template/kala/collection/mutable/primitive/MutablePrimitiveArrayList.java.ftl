@@ -395,7 +395,7 @@ public final class Mutable${Type}ArrayList extends AbstractMutable${Type}List im
     //region Search Operations
 
     @Override
-    public int binarySearch(${PrimitiveType} value, int beginIndex, int endIndex) {
+    public int binarySearch(int beginIndex, int endIndex, ${PrimitiveType} value) {
         Conditions.checkPositionIndices(beginIndex, endIndex, size);
         return Arrays.binarySearch(elements, beginIndex, endIndex, value);
     }
