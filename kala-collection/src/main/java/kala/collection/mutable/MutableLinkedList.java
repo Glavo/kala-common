@@ -148,7 +148,7 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
 
     @Override
     public @NotNull String className() {
-        return "MutableLinkedList";
+        return "MutableLinkedList" ;
     }
 
     @Override
@@ -307,6 +307,31 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
     }
 
     @Override
+    public boolean remove(Object value) {
+        Node<E> node = first;
+
+        if (value == null) {
+            while (node != null) {
+                if (null == node.value) {
+                    removeAt(node);
+                    return true;
+                }
+                node = node.next;
+            }
+        } else {
+            while (node != null) {
+                if (value.equals(node.value)) {
+                    removeAt(node);
+                    return true;
+                }
+                node = node.next;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
     public void clear() {
         this.len = 0;
         this.first = null;
@@ -331,24 +356,12 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
     }
 
     @Override
-    public @NotNull Option<E> firstOption() {
-        final Node<E> first = this.first;
-        return first != null ? Option.some(first.value) : Option.none();
-    }
-
-    @Override
     public E last() {
         final Node<E> last = this.last;
         if (last == null) {
             throw new NoSuchElementException();
         }
         return last.value;
-    }
-
-    @Override
-    public @NotNull Option<E> lastOption() {
-        final Node<E> last = this.last;
-        return last != null ? Option.some(last.value) : Option.none();
     }
 
     @Override
@@ -421,7 +434,6 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
 
     @Override
     public @NotNull Iterator<E> reverseIterator() {
-        final Node<E> last = this.last;
         return last == null ? Iterators.empty() : new ReverseItr<>(last);
     }
 
@@ -475,7 +487,6 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
         Itr(Node<E> node) {
             this.node = node;
         }
-
 
         @Override
         public boolean hasNext() {
@@ -554,7 +565,6 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
             return lastReturned.value;
         }
 
-
         @Override
         public void add(E e) {
             lastReturned = null;
@@ -565,7 +575,6 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
             }
             cursor++;
         }
-
 
         @Override
         public void remove() {

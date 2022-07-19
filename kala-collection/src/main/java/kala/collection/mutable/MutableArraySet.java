@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 
 public final class MutableArraySet<E> extends AbstractMutableListSet<E, MutableArrayList<E>> implements OrderedTraversable<E>, Serializable {
-    private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 3355455494869072611L;
 
     private static final Factory<?> FACTORY = new Factory<>();
 

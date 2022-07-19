@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public final class ImmutableArraySet<E> extends AbstractImmutableSet<E> implements Serializable {
-    private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = -7762205380003045169L;
 
     private static final Factory<?> FACTORY = new Factory<>();
 

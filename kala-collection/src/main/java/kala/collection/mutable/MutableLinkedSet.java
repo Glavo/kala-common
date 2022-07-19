@@ -7,8 +7,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 
-public final class MutableLinkedSet<E> extends AbstractMutableListSet<E, MutableLinkedList<E>> implements OrderedTraversable<E>, Serializable {
-    private static final long serialVersionUID = 0L;
+public final class MutableLinkedSet<E> extends AbstractMutableListSet<E, MutableLinkedList<E>>
+        implements OrderedTraversable<E>, Serializable {
+    private static final long serialVersionUID = 6438198495902720936L;
 
     private static final Factory<?> FACTORY = new Factory<>();
 
