@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class ImmutableArraySet<E> extends AbstractImmutableSet<E> implements Serializable {
+public final class ImmutableArraySet<E> extends AbstractImmutableSet<E> implements Serializable {
     private static final long serialVersionUID = 0L;
 
     private static final Factory<?> FACTORY = new Factory<>();
@@ -108,7 +108,7 @@ public class ImmutableArraySet<E> extends AbstractImmutableSet<E> implements Ser
     }
 
     public static <E> @NotNull ImmutableArraySet<E> from(@NotNull Stream<? extends E> stream) {
-        return stream.collect(factory());
+        return stream.collect(ImmutableArraySet.<E>factory());
     }
 
     //endregion
