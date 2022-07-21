@@ -1,12 +1,12 @@
 package kala.collection.mutable;
 
-import kala.annotations.ReplaceWith;
 import kala.collection.Collection;
 import kala.collection.SortedSet;
 import kala.collection.base.Iterators;
 import kala.collection.Set;
 import kala.collection.base.AbstractIterator;
 import kala.collection.factory.CollectionFactory;
+import kala.collection.internal.tree.RedBlackTree;
 import kala.internal.ComparableUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +21,6 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
-import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")

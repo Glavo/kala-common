@@ -110,8 +110,9 @@ public class AVLTree<K, N extends AVLTree.Node<K, N>> {
     }
 
     public static class Node<K, N extends Node<K, N>> {
-        int height;
-        N left, right, parent;
         K key;
+        int height;
+
+        N left, right, parent;
     }
 }

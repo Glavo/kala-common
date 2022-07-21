@@ -5,6 +5,7 @@ import kala.collection.MapLike;
 import kala.collection.MapIterator;
 import kala.collection.base.*;
 import kala.collection.internal.convert.AsJavaConvert;
+import kala.collection.internal.tree.RedBlackTree;
 import kala.control.Option;
 import kala.internal.ComparableUtils;
 import kala.tuple.Tuple2;
