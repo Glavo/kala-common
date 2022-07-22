@@ -370,11 +370,6 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     }
 
     @Override
-    public Comparator<? super E> comparator() {
-        return this.comparator;
-    }
-
-    @Override
     public E first() {
         final Node<E> node = firstNode();
         if (node == null) {

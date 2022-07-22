@@ -329,7 +329,7 @@ public abstract class RedBlackTree<A, N extends RedBlackTree.Node<A, N>> impleme
     }
 
     protected final void forEachKey0(@NotNull Consumer<? super A> consumer) {
-        N node = this.root;
+        N node = this.firstNode();
         while (node != null) {
             consumer.accept(node.key);
 
@@ -367,6 +367,10 @@ public abstract class RedBlackTree<A, N extends RedBlackTree.Node<A, N>> impleme
     public final void clear() {
         root = null;
         size = 0;
+    }
+
+    public final Comparator<? super A> comparator() {
+        return this.comparator;
     }
 
     protected static class Node<A, N extends Node<A, N>> {

@@ -8,6 +8,7 @@ import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.tree.RedBlackTree;
 import kala.control.Option;
 import kala.internal.ComparableUtils;
+import kala.internal.InternalIdentifyObject;
 import kala.tuple.Tuple2;
 import kala.collection.factory.MapFactory;
 import org.jetbrains.annotations.Debug;
@@ -29,6 +30,8 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
     private static final long serialVersionUID = 5474475537398882423L;
 
     private static final Factory<?, ?> DEFAULT_FACTORY = new Factory<>(null);
+
+    private static final Object NONE_HOLE = new InternalIdentifyObject();
 
     public MutableTreeMap() {
         this(null);
@@ -502,8 +505,7 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
         return node.value;
     }
 
-    @Override
-    public void set(K key, V value) {
+    private Object put0(K key, V value) {
         final Comparator<? super K> comparator = this.comparator;
 
         Node<K, V> node = root;
@@ -511,59 +513,7 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
         if (node == null) {
             root = new Node<>(key, value, null);
             size = 1;
-            return;
-        }
-
-        int c;
-        Node<K, V> parent;
-
-        if (comparator == null) {
-            do {
-                parent = node;
-                c = ComparableUtils.compare(key, node.key);
-                if (c < 0) {
-                    node = node.left;
-                } else if (c > 0) {
-                    node = node.right;
-                } else {
-                    node.value = value;
-                    return;
-                }
-            } while (node != null);
-        } else {
-            do {
-                parent = node;
-                c = comparator.compare(key, node.key);
-                if (c < 0) {
-                    node = node.left;
-                } else if (c > 0) {
-                    node = node.right;
-                } else {
-                    node.value = value;
-                    return;
-                }
-            } while (node != null);
-        }
-        Node<K, V> n = new Node<>(key, value, parent);
-        if (c < 0) {
-            parent.left = n;
-        } else {
-            parent.right = n;
-        }
-        ++size;
-        fixAfterInsert(n);
-    }
-
-    @Override
-    public @NotNull Option<V> put(K key, V value) {
-        final Comparator<? super K> comparator = this.comparator;
-
-        Node<K, V> node = root;
-
-        if (node == null) {
-            root = new Node<>(key, value, null);
-            size = 1;
-            return Option.none();
+            return NONE_HOLE;
         }
 
         int c;
@@ -580,7 +530,7 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
                 } else {
                     V oldValue = node.value;
                     node.value = value;
-                    return Option.some(oldValue);
+                    return oldValue;
                 }
 
             } while (node != null);
@@ -595,7 +545,7 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
                 } else {
                     V oldValue = node.value;
                     node.value = value;
-                    return Option.some(oldValue);
+                    return oldValue;
                 }
 
             } while (node != null);
@@ -609,7 +559,18 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
         }
         size++;
         fixAfterInsert(n);
-        return Option.none();
+        return NONE_HOLE;
+    }
+
+    @Override
+    public void set(K key, V value) {
+        put0(key, value);
+    }
+
+    @Override
+    public @NotNull Option<V> put(K key, V value) {
+        Object res = put0(key, value);
+        return res != NONE_HOLE ? Option.some((V) res) : Option.none();
     }
 
     @Override
@@ -672,11 +633,6 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
     }
 
     //region SortedMap
-
-    @Override
-    public Comparator<? super K> comparator() {
-        return this.comparator;
-    }
 
     @Override
     public K firstKey() {
