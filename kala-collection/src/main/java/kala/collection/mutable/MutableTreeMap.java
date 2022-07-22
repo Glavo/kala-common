@@ -607,7 +607,7 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
         } else {
             parent.right = n;
         }
-        ++size;
+        size++;
         fixAfterInsert(n);
         return Option.none();
     }
@@ -699,6 +699,11 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
     //endregion
 
     @Override
+    public String toString() {
+        return className() + '{' + joinToString() + '}';
+    }
+
+    @Override
     public void forEach(@NotNull BiConsumer<? super K, ? super V> consumer) {
         Node<K, V> node = this.root;
         while (node != null) {
@@ -763,7 +768,7 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
         }
     }
 
-    static final class Node<K, V> extends RedBlackTree.TreeNode<K, Node<K, V>> implements java.util.Map.Entry<K, V> {
+    static final class Node<K, V> extends RedBlackTree.Node<K, Node<K, V>> implements java.util.Map.Entry<K, V> {
         V value;
 
         public Node(K key, V value, Node<K, V> parent) {
@@ -787,6 +792,12 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
             V oldValue = this.value;
             this.value = value;
             return oldValue;
+        }
+
+        @Override
+        public void copyValuesFrom(Node<K, V> other) {
+            this.key = other.key;
+            this.value = other.value;
         }
     }
 

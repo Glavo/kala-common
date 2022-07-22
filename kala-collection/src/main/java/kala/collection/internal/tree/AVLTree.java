@@ -9,7 +9,11 @@ public class AVLTree<K, N extends AVLTree.Node<K, N>> {
     protected int size;
     protected N root;
 
-    protected Comparator<? super K> comparator;
+    protected final Comparator<? super K> comparator;
+
+    protected AVLTree(Comparator<? super K> comparator) {
+        this.comparator = comparator;
+    }
 
     protected int leftHeight(N node) {
         return node.left != null ? node.left.height : 0;
@@ -81,7 +85,6 @@ public class AVLTree<K, N extends AVLTree.Node<K, N>> {
         }
     }
 
-
     protected N findNode(K key) {
         N node = this.root;
         if (comparator == null) {
@@ -107,6 +110,10 @@ public class AVLTree<K, N extends AVLTree.Node<K, N>> {
         }
 
         return null;
+    }
+
+    protected void linkNode(N node, N parent) {
+
     }
 
     public static class Node<K, N extends Node<K, N>> {

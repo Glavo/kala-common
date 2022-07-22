@@ -1,6 +1,5 @@
 package kala.collection.internal.tree;
 
-import kala.comparator.Comparators;
 import kala.internal.ComparableUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -9,7 +8,7 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.function.Consumer;
 
-public abstract class RedBlackTree<A, N extends RedBlackTree.TreeNode<A, N>> implements Serializable {
+public abstract class RedBlackTree<A, N extends RedBlackTree.Node<A, N>> implements Serializable {
     private static final long serialVersionUID = 3036340578028981301L;
 
     protected static final boolean RED = true;
@@ -20,14 +19,13 @@ public abstract class RedBlackTree<A, N extends RedBlackTree.TreeNode<A, N>> imp
     protected transient N root;
     protected transient int size;
 
-    protected RedBlackTree(Comparator<? super A> comparator) {
-        this.comparator = comparator == null ? Comparators.naturalOrder() : comparator;
+    protected RedBlackTree(@Nullable Comparator<? super A> comparator) {
+        this.comparator = comparator;
     }
 
     @SuppressWarnings("unchecked")
     protected final @Nullable N getNode(Object key) {
         try {
-            final Comparator<? super A> comparator = this.comparator;
             N n = this.root;
 
             if (comparator == null) {
@@ -80,50 +78,50 @@ public abstract class RedBlackTree<A, N extends RedBlackTree.TreeNode<A, N>> imp
         return node;
     }
 
-    protected static boolean colorOf(TreeNode<?, ?> p) {
+    protected static boolean colorOf(Node<?, ?> p) {
         return p == null ? RedBlackTree.BLACK : p.color;
     }
 
-    protected static <T extends TreeNode<?, T>> T parentOrNull(T p) {
+    protected static <N extends Node<?, N>> N parentOrNull(N p) {
         return p == null ? null : p.parent;
     }
 
-    protected static void setColor(TreeNode<?, ?> p, boolean c) {
+    protected static void setColor(Node<?, ?> p, boolean c) {
         if (p != null) {
             p.color = c;
         }
     }
 
-    protected static <T extends TreeNode<?, T>> T leftOrNull(@Nullable T p) {
+    protected static <N extends Node<?, N>> N leftOrNull(@Nullable N p) {
         return p == null ? null : p.left;
     }
 
-    protected static <T extends TreeNode<?, T>> T rightOrNull(@Nullable T p) {
+    protected static <N extends Node<?, N>> N rightOrNull(@Nullable N p) {
         return p == null ? null : p.right;
     }
 
-    protected static <T extends TreeNode<?, T>> T minNode(@NotNull T node) {
-        T left;
+    protected static <N extends Node<?, N>> N minNode(@NotNull N node) {
+        N left;
         while ((left = node.left) != null) {
             node = left;
         }
         return node;
     }
 
-    protected static <T extends TreeNode<?, T>> T maxNode(@NotNull T node) {
-        T right;
+    protected static <N extends Node<?, N>> N maxNode(@NotNull N node) {
+        N right;
         while ((right = node.right) != null) {
             node = right;
         }
         return node;
     }
 
-    protected static <T extends TreeNode<?, T>> T successor(@NotNull T node) {
+    protected static <N extends Node<?, N>> N successor(@NotNull N node) {
         if (node.right != null) {
             return minNode(node.right);
         }
-        T n = node.parent;
-        T ch = node;
+        N n = node.parent;
+        N ch = node;
         while (n != null && ch == n.right) {
             ch = n;
             n = n.parent;
@@ -131,12 +129,12 @@ public abstract class RedBlackTree<A, N extends RedBlackTree.TreeNode<A, N>> imp
         return n;
     }
 
-    protected static <T extends TreeNode<?, T>> T predecessor(@NotNull T node) {
+    protected static <N extends Node<?, N>> N predecessor(@NotNull N node) {
         if (node.left != null) {
             return maxNode(node.left);
         }
-        T p = node.parent;
-        T ch = node;
+        N p = node.parent;
+        N ch = node;
         while (p != null && ch == p.left) {
             ch = p;
             p = p.parent;
@@ -291,7 +289,7 @@ public abstract class RedBlackTree<A, N extends RedBlackTree.TreeNode<A, N>> imp
     protected final void remove0(N node) {
         if (node.left != null && node.right != null) {
             N s = successor(node);
-            node.key = s.key;
+            node.copyValuesFrom(s);
             node = s;
         }
 
@@ -327,6 +325,7 @@ public abstract class RedBlackTree<A, N extends RedBlackTree.TreeNode<A, N>> imp
                 node.parent = null;
             }
         }
+        size--;
     }
 
     protected final void forEachKey0(@NotNull Consumer<? super A> consumer) {
@@ -353,22 +352,38 @@ public abstract class RedBlackTree<A, N extends RedBlackTree.TreeNode<A, N>> imp
         }
     }
 
+    public final boolean isEmpty() {
+        return size == 0;
+    }
+
+    public final int size() {
+        return size;
+    }
+
+    public int knownSize() {
+        return size;
+    }
+
     public final void clear() {
         root = null;
         size = 0;
     }
 
-    protected static class TreeNode<A, T extends TreeNode<A, T>> {
-        public A key;
+    protected static class Node<A, N extends Node<A, N>> {
         public boolean color = BLACK;
+        public A key;
 
-        public T left;
-        public T right;
-        public T parent;
+        public N left;
+        public N right;
+        public N parent;
 
-        public TreeNode(A key, T parent) {
+        public Node(A key, N parent) {
             this.key = key;
             this.parent = parent;
+        }
+
+        public void copyValuesFrom(N other) {
+            this.key = other.key;
         }
     }
 }

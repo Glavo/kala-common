@@ -300,20 +300,6 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
         return from(comparator, this); // need to optimize
     }
 
-    //region Size Info
-
-    @Override
-    public int size() {
-        return size;
-    }
-
-    @Override
-    public int knownSize() {
-        return size;
-    }
-
-    //endregion
-
     @Override
     public boolean add(E value) {
         final Comparator<? super E> comparator = this.comparator;
@@ -363,7 +349,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
         } else {
             parent.right = n;
         }
-        ++size;
+        size++;
         fixAfterInsert(n);
         return true;
     }
@@ -374,44 +360,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
         if (node == null) {
             return false;
         }
-        if (node.left != null && node.right != null) {
-            Node<E> s = successor(node);
-            node.setValue(s.getValue());
-            node = s;
-        }
-
-        Node<E> replacement = node.left != null ? node.left : node.right;
-
-        if (replacement != null) {
-            replacement.parent = node.parent;
-            if (node.parent == null) {
-                root = replacement;
-            } else if (node == node.parent.left) {
-                node.parent.left = replacement;
-            } else {
-                node.parent.right = replacement;
-            }
-            node.left = node.right = node.parent = null;
-
-            if (node.color == RedBlackTree.BLACK) {
-                fixAfterDelete(replacement);
-            }
-        } else if (node.parent == null) {
-            root = null;
-        } else {
-            if (node.color == RedBlackTree.BLACK) {
-                fixAfterDelete(node);
-            }
-
-            if (node.parent != null) {
-                if (node == node.parent.left) {
-                    node.parent.left = null;
-                } else if (node == node.parent.right) {
-                    node.parent.right = null;
-                }
-                node.parent = null;
-            }
-        }
+        remove0(node);
         return true;
     }
 
@@ -534,7 +483,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
 
     //endregion
 
-    static final class Node<E> extends RedBlackTree.TreeNode<E, Node<E>> {
+    static final class Node<E> extends RedBlackTree.Node<E, Node<E>> {
         Node(E value, Node<E> parent) {
             super(value, parent);
         }
