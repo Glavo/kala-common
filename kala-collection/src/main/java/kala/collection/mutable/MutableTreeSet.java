@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node<E>>
-        implements MutableSet<E>, SortedSet<E>, Cloneable, Serializable {
+        implements MutableSortedSet<E>, Cloneable, Serializable {
 
     private static final long serialVersionUID = 6211626172352429615L;
 

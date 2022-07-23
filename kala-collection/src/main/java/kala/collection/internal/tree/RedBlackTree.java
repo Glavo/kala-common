@@ -25,6 +25,9 @@ public abstract class RedBlackTree<A, N extends RedBlackTree.Node<A, N>> impleme
 
     @SuppressWarnings("unchecked")
     protected final @Nullable N getNode(Object key) {
+        if (key == null)
+            return null;
+
         try {
             N n = this.root;
 

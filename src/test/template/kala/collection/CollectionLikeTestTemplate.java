@@ -117,8 +117,7 @@ public interface CollectionLikeTestTemplate {
         assertFalse(empty.contains(null));
         assertFalse(empty.contains(0));
 
-        CollectionLike<?> c = from(Arrays.asList(null, 0, 1, 2));
-        assertTrue(c.contains(null));
+        CollectionLike<?> c = from(Arrays.asList(0, 1, 2));
         assertTrue(c.contains(0));
         assertTrue(c.contains(1));
         assertTrue(c.contains(2));

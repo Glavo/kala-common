@@ -124,7 +124,6 @@ public abstract class HashBase<K, N extends HashNode<K, N>> implements Serializa
 
     //endregion
 
-
     public Hasher<? super K> getHasher() {
         return hasher;
     }
