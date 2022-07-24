@@ -347,7 +347,7 @@ public final class AsJavaConvert {
         }
     }
 
-    public static class MutableSortedSetAsJava<E, C extends kala.collection.mutable.MutableSet<E> & kala.collection.SortedSet<E>>
+    public static class MutableSortedSetAsJava<E, C extends kala.collection.mutable.MutableSortedSet<E>>
             extends SortedSetAsJava<E, C> implements java.util.SortedSet<E> {
         public MutableSortedSetAsJava(@NotNull C collection) {
             super(collection);
