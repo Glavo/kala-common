@@ -1,21 +1,16 @@
 package kala.value;
 
-import kala.annotations.ReplaceWith;
-
 import java.io.Serializable;
-import java.util.Objects;
 
-@Deprecated
-@ReplaceWith("Var")
-public final class Ref<T> extends AbstractMutableValue<T> implements Serializable {
+public final class TransientVar<T> implements MutableValue<T>, Serializable {
     private static final long serialVersionUID = 0L;
 
-    public T value;
+    public transient T value;
 
-    public Ref() {
+    public TransientVar() {
     }
 
-    public Ref(T value) {
+    public TransientVar(T value) {
         this.value = value;
     }
 
@@ -31,6 +26,6 @@ public final class Ref<T> extends AbstractMutableValue<T> implements Serializabl
 
     @Override
     public String toString() {
-        return "Ref[" + value + "]";
+        return "TransientVar[" + value + "]";
     }
 }

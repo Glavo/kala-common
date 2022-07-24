@@ -1,7 +1,9 @@
 package kala;
 
 public interface Equatable {
-    boolean canEqual(Object other);
+    default boolean canEqual(Object other) {
+        return true;
+    }
 
     boolean equals(Object other);
 }

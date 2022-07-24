@@ -1,6 +1,7 @@
 package kala.collection;
 
 import kala.annotations.Covariant;
+import kala.annotations.DelegateBy;
 import kala.collection.base.OrderedTraversable;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.comparator.Comparators;
@@ -37,5 +38,17 @@ public interface SortedSet<@Covariant E> extends Set<E>, OrderedTraversable<E> {
             res = iterator.next();
         }
         return res;
+    }
+
+    @Override
+    @DelegateBy("last()")
+    default E max() {
+        return last();
+    }
+
+    @Override
+    @DelegateBy("first()")
+    default E min() {
+        return first();
     }
 }

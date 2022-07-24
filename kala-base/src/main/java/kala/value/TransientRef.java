@@ -1,8 +1,11 @@
 package kala.value;
 
-import java.io.Serializable;
-import java.util.Objects;
+import kala.annotations.ReplaceWith;
 
+import java.io.Serializable;
+
+@Deprecated
+@ReplaceWith("TransientVar")
 public final class TransientRef<T> implements MutableValue<T>, Serializable {
     private static final long serialVersionUID = 0L;
 
@@ -25,23 +28,6 @@ public final class TransientRef<T> implements MutableValue<T>, Serializable {
     @Override
     public void set(T value) {
         this.value = value;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof TransientRef<?>)) {
-            return false;
-        }
-        TransientRef<?> other = (TransientRef<?>) o;
-        return Objects.equals(value, other.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(value) + HASH_MAGIC;
     }
 
     @Override

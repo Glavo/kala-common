@@ -20,7 +20,7 @@ public final class ImmutableSortedArraySet<E>
     private static final long serialVersionUID = 418132517516968465L;
 
     private static final ImmutableSortedArraySet.Factory<? extends Comparable<?>> DEFAULT_FACTORY =
-            new ImmutableSortedArraySet.Factory<>(Comparator.naturalOrder());
+            new ImmutableSortedArraySet.Factory<>(null);
 
     final @Nullable Comparator<? super E> comparator;
     final Object[] elements;
@@ -426,7 +426,6 @@ public final class ImmutableSortedArraySet<E>
 
     @Override
     public E first() {
-        final Object[] elements = this.elements;
         if (elements.length == 0) {
             throw new NoSuchElementException();
         }
@@ -435,7 +434,6 @@ public final class ImmutableSortedArraySet<E>
 
     @Override
     public E last() {
-        final Object[] elements = this.elements;
         final int size = elements.length;
         if (size == 0) {
             throw new NoSuchElementException();

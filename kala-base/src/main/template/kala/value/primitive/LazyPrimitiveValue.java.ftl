@@ -11,8 +11,8 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.*;
 
-public class Lazy${Type}Value implements ${Type}Traversable, ${Type}Value, ${Type}Supplier, Memoized, Serializable {
-    private static final long serialVersionUID = ${SerialVersionUID};
+public class Lazy${Type}Value extends Abstract${Type}Value implements ${Type}Traversable, ${Type}Value, ${Type}Supplier, Memoized, Serializable {
+    private static final long serialVersionUID = 0L;
 
     private transient volatile ${Type}Supplier supplier;
     private transient ${PrimitiveType} value;
@@ -56,7 +56,7 @@ public class Lazy${Type}Value implements ${Type}Traversable, ${Type}Value, ${Typ
         return supplier == null;
     }
 
-    public Lazy${Type}Value map(@NotNull ${Type}UnaryOperator mapper) {
+    public @NotNull Lazy${Type}Value map(@NotNull ${Type}UnaryOperator mapper) {
         Objects.requireNonNull(mapper);
         return Lazy${Type}Value.of(() -> mapper.applyAs${Type}(get()));
     }

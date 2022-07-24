@@ -28,8 +28,10 @@ public interface SortedSetTestTemplate extends SetTestTemplate {
     <E> CollectionFactory<E, ?, ? extends SortedSet<? extends E>> factory(Comparator<? super E> comparator);
 
     <E> SortedSet<E> of(Comparator<? super E> comparator, E... elements);
-
+0
     <E> SortedSet<E> from(Comparator<? super E> comparator, E[] elements);
 
     <E> SortedSet<E> from(Comparator<? super E> comparator, Iterable<? extends E> elements);
+
+
 }

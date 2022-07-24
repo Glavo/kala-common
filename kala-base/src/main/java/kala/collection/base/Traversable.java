@@ -1,6 +1,7 @@
 package kala.collection.base;
 
 import kala.annotations.Covariant;
+import kala.annotations.DelegateBy;
 import kala.annotations.UnstableName;
 import kala.comparator.Comparators;
 import kala.concurrent.Granularity;
@@ -607,21 +608,14 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
     }
 
     @Override
+    @DelegateBy("toArray(IntFunction<U[]>)")
     default Object @NotNull [] toArray() {
-        return toArray(Object.class);
+        return toArray(ObjectArrays.generator());
     }
 
+    @DelegateBy("toArray(IntFunction<U[]>)")
     default <U /*super E*/> U @NotNull [] toArray(@NotNull Class<U> type) {
-        int s = knownSize();
-        if (s == 0) {
-            return (U[]) Array.newInstance(type, 0);
-        } else if (s > 0) {
-            U[] arr = (U[]) Array.newInstance(type, s);
-            this.copyToArray(arr);
-            return arr;
-        } else {
-            return Iterators.toArray((Iterator<U>) iterator(), type);
-        }
+        return toArray(GenericArrays.generator(type));
     }
 
     default <U /*super E*/> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
@@ -647,10 +641,7 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         if (arrayLength > size) {
             res = array;
         } else {
-            Class<? extends Object[]> cls = array.getClass();
-            res = (U[]) (cls == Object[].class
-                    ? new Object[size]
-                    : Array.newInstance(cls.getComponentType(), size));
+            res = (U[]) GenericArrays.create(array.getClass().getComponentType(), size);
         }
 
         Iterator<T> it = iterator();
@@ -689,10 +680,12 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         }
     }
 
+    @DelegateBy("forEach(ConsumerT>)")
     default <Ex extends Throwable> void forEachChecked(@NotNull CheckedConsumer<? super T, ? extends Ex> action) throws Ex {
         forEach(action);
     }
 
+    @DelegateBy("forEach(ConsumerT>)")
     default void forEachUnchecked(@NotNull CheckedConsumer<? super T, ?> action) {
         forEach(action);
     }
@@ -706,11 +699,13 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         }
     }
 
+    @DelegateBy("forEachBreakable(Predicate<T>)")
     default <Ex extends Throwable> void forEachBreakableChecked(
             @NotNull CheckedPredicate<? super T, ? extends Ex> action) throws Ex {
         forEachBreakable(action);
     }
 
+    @DelegateBy("forEachBreakable(Predicate<T>)")
     default void forEachBreakableUnchecked(@NotNull CheckedPredicate<? super T, ?> action) {
         forEachBreakable(action);
     }

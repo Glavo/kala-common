@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.Iterator;
+import java.util.function.IntFunction;
 
 abstract class AbstractMutableListSet<E, L extends MutableList<E>> extends AbstractMutableSet<E>
         implements OrderedTraversable<E>, Serializable {
@@ -69,7 +70,7 @@ abstract class AbstractMutableListSet<E, L extends MutableList<E>> extends Abstr
     //endregion
 
     @Override
-    public Object @NotNull [] toArray() {
-        return values.toArray();
+    public <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
+        return values.toArray(generator);
     }
 }

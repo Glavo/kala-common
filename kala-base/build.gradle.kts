@@ -45,20 +45,21 @@ tasks.getByName<GenerateTask>("generateSources") {
     }
 
     withPackage("kala.value.primitive") {
-        val refHashMagicRandom = Random(-1044014905)
-        val lazyValueSerialVersionRandom = Random(-1948426996)
         for (model in Primitives.all) {
             val type = model.type
 
             generate("${type}Value", model, "PrimitiveValue")
             generate("Mutable${type}Value", model, "MutablePrimitiveValue")
+            generate("Abstract${type}Value", model, "AbstractPrimitiveValue")
+            generate("Default${type}Value", model, "DefaultPrimitiveValue")
+            generate("Delegate${type}Value", model, "DelegatePrimitiveValue")
+            generate("AbstractMutable${type}Value", model, "AbstractMutablePrimitiveValue")
+            generate("DelegateMutable${type}Value", model, "DelegateMutablePrimitiveValue")
 
-            generate("${type}Ref", model + ("HashMagic" to refHashMagicRandom.nextInt().toString()), "PrimitiveRef")
-            generate(
-                "Lazy${type}Value",
-                model + ("SerialVersionUID" to "${lazyValueSerialVersionRandom.nextLong()}L"),
-                "LazyPrimitiveValue"
-            )
+            generate("${type}Ref", model, "PrimitiveRef")
+            generate("${type}Var", model, "PrimitiveVar")
+            generate("${type}VolatileVar", model, "PrimitiveVolatileVar")
+            generate("Lazy${type}Value", model, "LazyPrimitiveValue")
             generate("LateInit${type}Value", model, "LateInitPrimitiveValue")
             generate("MutableLateInit${type}Value", model, "MutableLateInitPrimitiveValue")
         }

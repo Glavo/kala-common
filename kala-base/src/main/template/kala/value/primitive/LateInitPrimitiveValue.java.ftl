@@ -1,6 +1,6 @@
 package kala.value.primitive;
 
-public final class LateInit${Type}Value implements ${Type}Value {
+public final class LateInit${Type}Value extends Abstract${Type}Value implements ${Type}Value {
     private volatile boolean initialized = false;
     private ${PrimitiveType} value;
 

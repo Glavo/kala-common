@@ -1,20 +1,16 @@
 package kala.value.primitive;
 
-import kala.annotations.ReplaceWith;
-
 import java.io.Serializable;
 
-@Deprecated
-@ReplaceWith("${Type}Var")
-public final class ${Type}Ref extends Abstract${Type}Value implements Mutable${Type}Value, Serializable {
+public final class ${Type}VolatileVar extends Abstract${Type}Value implements Mutable${Type}Value, Serializable {
     private static final long serialVersionUID = 0L;
 
-    public ${PrimitiveType} value;
+    public volatile ${PrimitiveType} value;
 
-    public ${Type}Ref() {
+    public ${Type}VolatileVar() {
     }
 
-    public ${Type}Ref(${PrimitiveType} value) {
+    public ${Type}VolatileVar(${PrimitiveType} value) {
         this.value = value;
     }
 
@@ -40,6 +36,6 @@ public final class ${Type}Ref extends Abstract${Type}Value implements Mutable${T
 </#if>
     @Override
     public String toString() {
-        return "${Type}Ref[" + value + "]";
+        return "${Type}VolatileVar[" + value + "]";
     }
 }

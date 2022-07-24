@@ -1,21 +1,16 @@
 package kala.value;
 
-import kala.annotations.ReplaceWith;
-
 import java.io.Serializable;
-import java.util.Objects;
 
-@Deprecated
-@ReplaceWith("Var")
-public final class Ref<T> extends AbstractMutableValue<T> implements Serializable {
+public final class Var<T> extends AbstractMutableValue<T> implements Cloneable, Serializable {
     private static final long serialVersionUID = 0L;
 
     public T value;
 
-    public Ref() {
+    public Var() {
     }
 
-    public Ref(T value) {
+    public Var(T value) {
         this.value = value;
     }
 
@@ -30,7 +25,13 @@ public final class Ref<T> extends AbstractMutableValue<T> implements Serializabl
     }
 
     @Override
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
+    public Var<T> clone() {
+        return new Var<>(value);
+    }
+
+    @Override
     public String toString() {
-        return "Ref[" + value + "]";
+        return "Var[" + value + "]";
     }
 }

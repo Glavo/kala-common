@@ -34,7 +34,7 @@ public final class GenericArrays {
     @Contract(pure = true)
     public static @NotNull <E> IntFunction<E[]> generator(@NotNull Class<E> type) {
         Objects.requireNonNull(type);
-        return length -> create(type, length);
+        return type == Object.class ? (IntFunction) ObjectArrays.generator() : length -> create(type, length);
     }
 
     @Contract(pure = true)
