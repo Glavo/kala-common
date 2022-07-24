@@ -2,6 +2,7 @@ package kala.collection;
 
 import kala.annotations.Covariant;
 import kala.collection.base.OrderedTraversable;
+import kala.collection.internal.convert.AsJavaConvert;
 import kala.comparator.Comparators;
 import kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.Contract;
@@ -13,6 +14,11 @@ import java.util.Iterator;
 public interface SortedSet<@Covariant E> extends Set<E>, OrderedTraversable<E> {
 
     <U> @NotNull CollectionFactory<U, ?, ? extends SortedSet<U>> iterableFactory(Comparator<? super U> comparator);
+
+    @Override
+    default @NotNull java.util.SortedSet<E> asJava() {
+        return new AsJavaConvert.SortedSetAsJava<>(this);
+    }
 
     default Comparator<? super E> comparator() {
         return Comparators.naturalOrder();

@@ -1,5 +1,6 @@
 package kala.collection.mutable;
 
+import kala.collection.AnySet;
 import kala.collection.Collection;
 import kala.collection.SortedSet;
 import kala.collection.base.Iterators;
@@ -436,14 +437,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!(obj instanceof Set<?>)
-                || !(((Collection<?>) obj).canEqual(this))) {
-            return false;
-        }
-        return sameElements(((Collection<?>) obj));
+        return obj instanceof AnySet && Set.equals(this, (AnySet<?>) obj);
     }
 
     @Override
