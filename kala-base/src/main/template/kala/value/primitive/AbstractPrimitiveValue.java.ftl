@@ -8,7 +8,7 @@ import java.util.Objects;
 public abstract class Abstract${Type}Value implements ${Type}Value {
     @Override
     public int hashCode() {
-        return ${WrapperType}.hashCode(get()) + HASH_MAGIC;
+        return ${WrapperType}.hashCode(get());
     }
 
     @Override

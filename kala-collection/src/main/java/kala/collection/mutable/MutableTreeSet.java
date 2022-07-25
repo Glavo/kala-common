@@ -389,34 +389,6 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     }
 
     @Override
-    public Object @NotNull [] toArray() {
-        final int size = this.size;
-        final Object[] res = new Object[size];
-        if (size == 0) {
-            return res;
-        }
-        final Iterator<E> it = this.iterator();
-        for (int i = 0; i < size; i++) {
-            res[i] = it.next();
-        }
-        return res;
-    }
-
-    @Override
-    public <U> U @NotNull [] toArray(@NotNull Class<U> type) {
-        final int size = this.size;
-        final U[] res = (U[]) Array.newInstance(type, size);
-        if (size == 0) {
-            return res;
-        }
-        final Iterator<E> it = this.iterator();
-        for (int i = 0; i < size; i++) {
-            res[i] = (U) it.next();
-        }
-        return res;
-    }
-
-    @Override
     public <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
         final int size = this.size;
         final U[] res = generator.apply(size);
@@ -432,7 +404,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
 
     @Override
     public int hashCode() {
-        return Iterators.hash(iterator()) + Collection.SET_HASH_MAGIC;
+        return Set.hashCode(this);
     }
 
     @Override

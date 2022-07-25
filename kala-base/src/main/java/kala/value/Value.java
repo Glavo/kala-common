@@ -24,6 +24,10 @@ public interface Value<T> extends AnyValue<T>, Traversable<T>, Mappable<T>, Supp
         return new DelegateValue<>(getter);
     }
 
+    static <T> @NotNull LazyValue<T> lazy(@NotNull Supplier<? extends T> getter) {
+        return LazyValue.of(getter);
+    }
+
     T get();
 
     @Override

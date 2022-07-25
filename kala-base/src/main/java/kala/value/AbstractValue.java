@@ -5,7 +5,7 @@ import java.util.Objects;
 public abstract class AbstractValue<T> implements Value<T> {
     @Override
     public int hashCode() {
-        return Objects.hashCode(get()) + HASH_MAGIC;
+        return Objects.hashCode(get());
     }
 
     @Override

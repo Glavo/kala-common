@@ -1,8 +1,14 @@
 package kala.collection;
 
 import kala.collection.factory.CollectionFactory;
+import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public interface SortedSetTestTemplate extends SetTestTemplate {
     @Override
@@ -28,10 +34,24 @@ public interface SortedSetTestTemplate extends SetTestTemplate {
     <E> CollectionFactory<E, ?, ? extends SortedSet<? extends E>> factory(Comparator<? super E> comparator);
 
     <E> SortedSet<E> of(Comparator<? super E> comparator, E... elements);
-0
+
     <E> SortedSet<E> from(Comparator<? super E> comparator, E[] elements);
 
     <E> SortedSet<E> from(Comparator<? super E> comparator, Iterable<? extends E> elements);
 
+    @Test
+    default void ofTest() {
+        assertIterableEquals(List.of(), of());
 
+        ArrayList<Integer> values = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            values.add(i);
+        }
+        assertIterableEquals(values, from(values));
+
+
+        ArrayList<Integer> shuffleValues = new ArrayList<>(values);
+        Collections.shuffle(shuffleValues);
+        assertIterableEquals(values, from(shuffleValues));
+    }
 }

@@ -9,7 +9,7 @@ import kala.collection.factory.CollectionFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
+import java.io.*;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -143,6 +143,19 @@ public interface SeqTestTemplate extends CollectionTestTemplate, SeqLikeTestTemp
 
     @Test
     default void serializationTest() throws IOException, ClassNotFoundException {
+        try {
+            for (Integer[] data : data1()) {
+                Collection<?> c = factory().from(data);
+                ByteArrayOutputStream out = new ByteArrayOutputStream(4 * 128);
+                new ObjectOutputStream(out).writeObject(c);
+                byte[] buffer = out.toByteArray();
+                ByteArrayInputStream in = new ByteArrayInputStream(buffer);
+                Object obj = new ObjectInputStream(in).readObject();
+                assertIterableEquals(c, (Iterable<?>) obj);
+            }
+        } catch (NotSerializableException ignored) {
+        }
+
         assertEquals(of(), SerializationUtils.writeAndRead(of()));
         assertEquals(of(0), SerializationUtils.writeAndRead(of(0)));
         assertEquals(of(0, 1, 2), SerializationUtils.writeAndRead(of(0, 1, 2)));

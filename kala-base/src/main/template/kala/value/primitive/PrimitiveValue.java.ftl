@@ -17,8 +17,13 @@ public interface ${Type}Value extends PrimitiveValue<${WrapperType}>, ${Type}Tra
         return new Default${Type}Value(value);
     }
 
-    static @NotNull ${Type}Value by(${Type}Supplier getter) {
+    static @NotNull ${Type}Value by(@NotNull ${Type}Supplier getter) {
+        Objects.requireNonNull(getter);
         return new Delegate${Type}Value(getter);
+    }
+
+    static @NotNull Lazy${Type}Value lazy(@NotNull ${Type}Supplier getter) {
+        return Lazy${Type}Value.of(getter);
     }
 
     ${PrimitiveType} get();
