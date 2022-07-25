@@ -16,7 +16,8 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
-public final class MutableSinglyLinkedList<E> extends ImmutableLinkedSeq.Builder<E> implements MutableStack<E>, Serializable {
+public final class MutableSinglyLinkedList<E> extends ImmutableLinkedSeq.Builder<E>
+        implements MutableStack<E>, FreezableMutableSeq<E>, Serializable {
     private static final long serialVersionUID = 4403781063629141093L;
 
     private static final MutableSinglyLinkedList.Factory<?> FACTORY = new MutableSinglyLinkedList.Factory<>();
@@ -176,6 +177,11 @@ public final class MutableSinglyLinkedList<E> extends ImmutableLinkedSeq.Builder
     @Override
     public E peek() {
         return first();
+    }
+
+    @Override
+    public @NotNull ImmutableLinkedSeq<E> freeze() {
+        return toImmutableLinkedSeq();
     }
 
     @SuppressWarnings("unchecked")
