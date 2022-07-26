@@ -2,8 +2,8 @@ package kala.collection.mutable;
 
 import kala.collection.MapLike;
 import kala.collection.base.AbstractIterator;
-import kala.collection.AbstractMapIterator;
-import kala.collection.MapIterator;
+import kala.collection.base.AbstractMapIterator;
+import kala.collection.base.MapIterator;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.hash.*;
 import kala.control.Option;

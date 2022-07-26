@@ -1,6 +1,7 @@
 package kala.collection;
 
 import kala.Equatable;
+import kala.collection.base.MapIterator;
 import kala.collection.factory.MapFactory;
 import kala.collection.immutable.ImmutableMap;
 import kala.collection.internal.convert.AsJavaConvert;

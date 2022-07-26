@@ -1,8 +1,8 @@
 package kala.collection.mutable;
 
-import kala.collection.AbstractMapIterator;
+import kala.collection.base.AbstractMapIterator;
 import kala.collection.MapLike;
-import kala.collection.MapIterator;
+import kala.collection.base.MapIterator;
 import kala.collection.base.*;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.tree.RedBlackTree;

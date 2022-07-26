@@ -1,7 +1,7 @@
-package kala.collection.internal;
+package kala.collection.base;
 
-import kala.collection.AbstractMapIterator;
-import kala.collection.MapIterator;
+import kala.collection.base.AbstractMapIterator;
+import kala.collection.base.MapIterator;
 import kala.collection.base.AbstractIterator;
 import org.jetbrains.annotations.NotNull;
 

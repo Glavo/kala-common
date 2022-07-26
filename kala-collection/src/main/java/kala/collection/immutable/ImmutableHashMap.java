@@ -3,7 +3,7 @@ package kala.collection.immutable;
 import kala.collection.mutable.MutableHashMap;
 import kala.control.Option;
 import kala.collection.MapLike;
-import kala.collection.MapIterator;
+import kala.collection.base.MapIterator;
 import kala.collection.factory.MapFactory;
 import kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;

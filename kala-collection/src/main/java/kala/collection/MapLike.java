@@ -1,10 +1,12 @@
 package kala.collection;
 
 import kala.collection.base.Growable;
+import kala.collection.base.MapIterator;
 import kala.collection.immutable.*;
 import kala.collection.internal.view.MapViews;
 import kala.control.Option;
 import kala.function.CheckedBiConsumer;
+import kala.internal.MapBase;
 import kala.tuple.Tuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +17,7 @@ import java.io.UncheckedIOException;
 import java.util.Objects;
 import java.util.function.*;
 
-public interface MapLike<K, V> {
+public interface MapLike<K, V> extends MapBase<K, V> {
 
     default @NotNull String className() {
         return "MapLike";

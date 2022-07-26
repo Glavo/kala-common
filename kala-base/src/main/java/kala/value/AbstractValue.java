@@ -13,7 +13,7 @@ public abstract class AbstractValue<T> implements Value<T> {
         if (!(obj instanceof AnyValue<?>))
             return false;
         AnyValue<?> other = (AnyValue<?>) obj;
-        if (!this.canEqual(other) || !other.equals(this))
+        if (!this.canEqual(other) || !other.canEqual(this))
             return false;
 
         return Objects.equals(this.get(), other.getValue());
