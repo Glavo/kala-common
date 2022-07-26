@@ -48,6 +48,10 @@ public interface MapLike<K, V> extends MapBase<K, V> {
         }
     }
 
+    default boolean isNotEmpty() {
+        return !isEmpty();
+    }
+
     default int size() {
         int ks = knownSize();
         if (ks >= 0) {

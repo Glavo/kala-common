@@ -2,19 +2,23 @@ package kala.pprint;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.RecordComponent;
 
-@SuppressWarnings("Since15")
-abstract
-class RecordAccessor {
+abstract class RecordAccessor {
     static final RecordAccessor accessor;
 
     static {
         RecordAccessor a = null;
 
         try {
-            Class.forName("java.lang.Record");
-            a = new RecordAccessor.Default();
+            Class<?> cls = Class.forName("java.lang.Record");
+            Class<?> rcCls = Class.forName("java.lang.reflect.RecordComponent");
+
+            a = new RecordAccessor.Default(
+                    cls,
+                    Class.class.getMethod("getRecordComponents"),
+                    rcCls.getMethod("getName"),
+                    rcCls.getMethod("getAccessor")
+            );
         } catch (Throwable ignored) {
         }
 
@@ -28,20 +32,40 @@ class RecordAccessor {
     abstract ComponentAccessor[] getComponentAccessors(Object obj);
 
     private static final class Default extends RecordAccessor {
+        private final Class<?> recordCls;
+        private final Method classGetRecordComponentsMethod;
+        private final Method recordComponentGetNameMethod;
+        private final Method recordComponentGetAccessorMethod;
+
+        private Default(Class<?> recordCls, Method classGetRecordComponentsMethod, Method recordComponentGetNameMethod, Method recordComponentGetAccessorMethod) {
+            this.recordCls = recordCls;
+            this.classGetRecordComponentsMethod = classGetRecordComponentsMethod;
+            this.recordComponentGetNameMethod = recordComponentGetNameMethod;
+            this.recordComponentGetAccessorMethod = recordComponentGetAccessorMethod;
+        }
+
         @Override
         boolean isRecord(Object obj) {
-            return obj instanceof Record;
+            return recordCls.isInstance(obj);
         }
 
         @Override
         ComponentAccessor[] getComponentAccessors(Object obj) {
-            RecordComponent[] components = obj.getClass().getRecordComponents();
-
-            ComponentAccessor[] res = new ComponentAccessor[components.length];
-            for (int i = 0; i < components.length; i++) {
-                res[i] = new ComponentAccessor(components[i].getName(), components[i].getAccessor());
+            try {
+                Object[] components = (Object[]) classGetRecordComponentsMethod.invoke(obj.getClass());
+                ComponentAccessor[] res = new ComponentAccessor[components.length];
+                for (int i = 0; i < components.length; i++) {
+                    Object c = components[i];
+                    res[i] = new ComponentAccessor(
+                            (String) recordComponentGetNameMethod.invoke(c),
+                            (Method) recordComponentGetAccessorMethod.invoke(c)
+                    );
+                }
+                return res;
+            } catch (Throwable e) {
+                throw new AssertionError(e);
             }
-            return res;
+
         }
     }
 
