@@ -43,6 +43,13 @@ tasks.getByName<GenerateTask>("generateSources") {
         }
     }
 
+    withPackage("kala.collection.primitive.internal.tree") {
+        for (model in Primitives.all) {
+            if (model != Primitives.Boolean && model != Primitives.Byte)
+                generate("${model["Type"]}RedBlackTree", model, "PrimitiveRedBlackTree")
+        }
+    }
+
     withPackage("kala.collection.primitive.internal.view") {
         for (model in Primitives.all) {
             generate("${model["Type"]}CollectionViews", model, "PrimitiveCollectionViews")
@@ -86,6 +93,8 @@ tasks.getByName<GenerateTask>("generateSources") {
             generate("Mutable${model["Type"]}Set", model, "MutablePrimitiveSet")
             generate("AbstractMutable${model["Type"]}Set", model, "AbstractMutablePrimitiveSet")
             generate("AbstractMutable${model["Type"]}SetFactory", model, "AbstractMutablePrimitiveSetFactory")
+            if (model != Primitives.Boolean && model != Primitives.Byte)
+                generate("Mutable${model["Type"]}TreeSet", model, "MutablePrimitiveTreeSet")
         }
     }
 }

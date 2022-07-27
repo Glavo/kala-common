@@ -21,7 +21,7 @@ public interface Mutable${Type}Set extends MutablePrimitiveSet<${WrapperType}>, 
 <#if Type == "Boolean" || Type == "Byte">
         return ${Type}CollectionFactory.narrow(DefaultMutable${Type}Set.factory());
 <#else>
-        throw new UnsupportedOperationException(); // TODO
+        return ${Type}CollectionFactory.narrow(Mutable${Type}TreeSet.factory());
 </#if>
     }
 
@@ -30,7 +30,7 @@ public interface Mutable${Type}Set extends MutablePrimitiveSet<${WrapperType}>, 
 <#if Type == "Boolean" || Type == "Byte">
         return DefaultMutable${Type}Set.create();
 <#else>
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}TreeSet.create();
 </#if>
     }
 
@@ -39,7 +39,7 @@ public interface Mutable${Type}Set extends MutablePrimitiveSet<${WrapperType}>, 
 <#if Type == "Boolean" || Type == "Byte">
         return DefaultMutable${Type}Set.of();
 <#else>
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}TreeSet.of();
 </#if>
     }
 
@@ -48,7 +48,7 @@ public interface Mutable${Type}Set extends MutablePrimitiveSet<${WrapperType}>, 
 <#if Type == "Boolean" || Type == "Byte">
         return DefaultMutable${Type}Set.of(value1);
 <#else>
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}TreeSet.of(value1);
 </#if>
     }
 
@@ -57,7 +57,7 @@ public interface Mutable${Type}Set extends MutablePrimitiveSet<${WrapperType}>, 
 <#if Type == "Boolean" || Type == "Byte">
         return DefaultMutable${Type}Set.of(value1, value2);
 <#else>
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}TreeSet.of(value1, value2);
 </#if>
     }
 
@@ -66,7 +66,7 @@ public interface Mutable${Type}Set extends MutablePrimitiveSet<${WrapperType}>, 
 <#if Type == "Boolean" || Type == "Byte">
         return DefaultMutable${Type}Set.of(value1, value2, value3);
 <#else>
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}TreeSet.of(value1, value2, value3);
 </#if>
     }
 
@@ -75,7 +75,7 @@ public interface Mutable${Type}Set extends MutablePrimitiveSet<${WrapperType}>, 
 <#if Type == "Boolean" || Type == "Byte">
         return DefaultMutable${Type}Set.of(value1, value2, value3, value4);
 <#else>
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}TreeSet.of(value1, value2, value3, value4);
 </#if>
     }
 
@@ -84,7 +84,7 @@ public interface Mutable${Type}Set extends MutablePrimitiveSet<${WrapperType}>, 
 <#if Type == "Boolean" || Type == "Byte">
         return DefaultMutable${Type}Set.of(value1, value2, value3, value4, value5);
 <#else>
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}TreeSet.of(value1, value2, value3, value4, value5);
 </#if>
     }
 
@@ -93,7 +93,7 @@ public interface Mutable${Type}Set extends MutablePrimitiveSet<${WrapperType}>, 
 <#if Type == "Boolean" || Type == "Byte">
         return DefaultMutable${Type}Set.of(values);
 <#else>
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}TreeSet.of(values);
 </#if>
     }
 
@@ -102,7 +102,7 @@ public interface Mutable${Type}Set extends MutablePrimitiveSet<${WrapperType}>, 
 <#if Type == "Boolean" || Type == "Byte">
         return DefaultMutable${Type}Set.from(values);
 <#else>
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}TreeSet.from(values);
 </#if>
     }
 
@@ -111,7 +111,7 @@ public interface Mutable${Type}Set extends MutablePrimitiveSet<${WrapperType}>, 
 <#if Type == "Boolean" || Type == "Byte">
         return DefaultMutable${Type}Set.from(values);
 <#else>
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}TreeSet.from(values);
 </#if>
     }
 
@@ -120,7 +120,7 @@ public interface Mutable${Type}Set extends MutablePrimitiveSet<${WrapperType}>, 
 <#if Type == "Boolean" || Type == "Byte">
         return DefaultMutable${Type}Set.from(it);
 <#else>
-        throw new UnsupportedOperationException(); // TODO
+        return Mutable${Type}TreeSet.from(it);
 </#if>
     }
 
@@ -230,27 +230,19 @@ public interface Mutable${Type}Set extends MutablePrimitiveSet<${WrapperType}>, 
     default boolean retainAll(@NotNull ${Type}Traversable values) {
         Objects.requireNonNull(values);
 
-        if (isEmpty()) {
+        if (this.isEmpty() || values.isEmpty())
             return false;
-        }
 
-        if (values.isEmpty()) {
-            return false;
-        }
-
-        throw new UnsupportedOperationException(); // TODO
-
-        /*
         final ${PrimitiveType}[] arr = toArray();
         final int oldSize = arr.length;
 
-        for (${PrimitiveType} value : values) {
-            if (!t.contains(value)) {
-                this.remove(value);
-            }
+        ${Type}Iterator it = this.iterator();
+        while (it.hasNext()) {
+            ${PrimitiveType} v = it.next${Type}();
+            if (!values.contains(v))
+                this.remove(v);
         }
         return size() != oldSize;
-         */
     }
 
     @Contract(mutates = "this")
