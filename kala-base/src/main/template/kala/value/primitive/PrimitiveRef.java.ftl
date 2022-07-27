@@ -29,10 +29,12 @@ public final class ${Type}Ref extends Abstract${Type}Value implements Mutable${T
     }
 
 <#if IsIntegral>
+    @Override
     public void increment() {
         value++;
     }
 
+    @Override
     public void decrement() {
         value--;
     }

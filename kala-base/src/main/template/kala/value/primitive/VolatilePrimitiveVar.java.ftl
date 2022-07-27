@@ -2,15 +2,15 @@ package kala.value.primitive;
 
 import java.io.Serializable;
 
-public final class ${Type}VolatileVar extends Abstract${Type}Value implements Mutable${Type}Value, Serializable {
+public final class Volatile${Type}Var extends Abstract${Type}Value implements Mutable${Type}Value, Serializable {
     private static final long serialVersionUID = 0L;
 
     public volatile ${PrimitiveType} value;
 
-    public ${Type}VolatileVar() {
+    public Volatile${Type}Var() {
     }
 
-    public ${Type}VolatileVar(${PrimitiveType} value) {
+    public Volatile${Type}Var(${PrimitiveType} value) {
         this.value = value;
     }
 
@@ -36,6 +36,6 @@ public final class ${Type}VolatileVar extends Abstract${Type}Value implements Mu
 </#if>
     @Override
     public String toString() {
-        return "${Type}VolatileVar[" + value + "]";
+        return "Volatile${Type}Var[" + value + "]";
     }
 }

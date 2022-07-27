@@ -58,10 +58,13 @@ tasks.getByName<GenerateTask>("generateSources") {
 
             generate("${type}Ref", model, "PrimitiveRef")
             generate("${type}Var", model, "PrimitiveVar")
-            generate("${type}VolatileVar", model, "PrimitiveVolatileVar")
+            generate("Volatile${type}Var", model, "VolatilePrimitiveVar")
             generate("Lazy${type}Value", model, "LazyPrimitiveValue")
             generate("LateInit${type}Value", model, "LateInitPrimitiveValue")
             generate("MutableLateInit${type}Value", model, "MutableLateInitPrimitiveValue")
+
+            if (model == Primitives.Int || model == Primitives.Long)
+                generate("Atomic${type}Var", model, "AtomicPrimitiveVar")
         }
     }
 

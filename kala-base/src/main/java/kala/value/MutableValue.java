@@ -5,8 +5,7 @@ import kala.annotations.UnstableName;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 public interface MutableValue<T> extends MutableAnyValue<T>, Value<T>, Consumer<T> {
 
@@ -14,8 +13,32 @@ public interface MutableValue<T> extends MutableAnyValue<T>, Value<T>, Consumer<
         return new Var<>();
     }
 
-    static <T> @NotNull MutableValue<T> create(T initValue) {
-        return new Var<>(initValue);
+    static <T> @NotNull MutableValue<T> create(T initialValue) {
+        return new Var<>(initialValue);
+    }
+
+    static <T> @NotNull MutableValue<T> createTransient() {
+        return new TransientVar<>();
+    }
+
+    static <T> @NotNull MutableValue<T> createTransient(T initialValue) {
+        return new TransientVar<>(initialValue);
+    }
+
+    static <T> @NotNull MutableValue<T> createVolatile() {
+        return new VolatileVar<>();
+    }
+
+    static <T> @NotNull MutableValue<T> createVolatile(T initialValue) {
+        return new VolatileVar<>(initialValue);
+    }
+
+    static <T> @NotNull MutableValue<T> createAtomic() {
+        return new AtomicVar<>();
+    }
+
+    static <T> @NotNull MutableValue<T> createAtomic(T initialValue) {
+        return new AtomicVar<>(initialValue);
     }
 
     @UnstableName
@@ -54,5 +77,54 @@ public interface MutableValue<T> extends MutableAnyValue<T>, Value<T>, Consumer<
     @ReplaceWith("withSetter(Consumer<T>)")
     default @NotNull MutableValue<T> asMutable(@NotNull Consumer<? super T> setter) {
         return withSetter(setter);
+    }
+
+    // ...
+
+    default T getAndSet(T newValue) {
+        T oldValue = get();
+        set(newValue);
+        return oldValue;
+    }
+
+    default boolean compareAndSet(T expectedValue, T newValue) {
+        if (Objects.equals(get(), expectedValue)) {
+            set(newValue);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    default void update(@NotNull UnaryOperator<T> updateFunction) {
+        set(updateFunction.apply(get()));
+    }
+
+    default T getAndUpdate(@NotNull UnaryOperator<T> updateFunction) {
+        T v = get();
+        set(updateFunction.apply(v));
+        return v;
+    }
+
+    default T updateAndGet(@NotNull UnaryOperator<T> updateFunction) {
+        T v = updateFunction.apply(get());
+        set(v);
+        return v;
+    }
+
+    default void accumulate(T t, @NotNull BinaryOperator<T> accumulatorFunction) {
+        set(accumulatorFunction.apply(get(), t));
+    }
+
+    default T getAndAccumulate(T t, @NotNull BinaryOperator<T> accumulatorFunction) {
+        T v = get();
+        set(accumulatorFunction.apply(v, t));
+        return v;
+    }
+
+    default T accumulateAndGet(T t, @NotNull BinaryOperator<T> accumulatorFunction) {
+        T v = accumulatorFunction.apply(get(), t);
+        set(v);
+        return v;
     }
 }
