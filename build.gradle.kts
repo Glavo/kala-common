@@ -13,7 +13,7 @@ loadMavenPublishProperties()
 
 allprojects {
     group = "org.glavo.kala"
-    version = "0.45.0" + "-SNAPSHOT"
+    version = "0.45.0"// + "-SNAPSHOT"
 
     description = "Basic components of Kala"
 
@@ -181,7 +181,7 @@ fun loadMavenPublishProperties() {
     }
 }
 
-// gradle publishToSonatype closeAndReleaseSonatypeStagingRepository
+// ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository
 nexusPublishing {
     repositories {
         sonatype {
