@@ -18,7 +18,7 @@ public interface Immutable${Type}Set extends ImmutablePrimitiveSet<${WrapperType
 <#if Type == "Boolean" || Type == "Byte">
         return ${Type}CollectionFactory.narrow(DefaultImmutable${Type}Set.factory());
 <#else>
-        throw new UnsupportedOperationException(); // TODO
+        return ${Type}CollectionFactory.narrow(ImmutableSorted${Type}ArraySet.factory());
 </#if>
     }
 
@@ -26,7 +26,7 @@ public interface Immutable${Type}Set extends ImmutablePrimitiveSet<${WrapperType
 <#if Type == "Boolean" || Type == "Byte">
         return DefaultImmutable${Type}Set.empty();
 <#else>
-        throw new UnsupportedOperationException(); // TODO
+        return ImmutableSorted${Type}ArraySet.empty();
 </#if>
     }
 
@@ -34,7 +34,7 @@ public interface Immutable${Type}Set extends ImmutablePrimitiveSet<${WrapperType
 <#if Type == "Boolean" || Type == "Byte">
         return DefaultImmutable${Type}Set.of();
 <#else>
-        throw new UnsupportedOperationException(); // TODO
+        return ImmutableSorted${Type}ArraySet.of();
 </#if>
     }
 
@@ -42,7 +42,7 @@ public interface Immutable${Type}Set extends ImmutablePrimitiveSet<${WrapperType
 <#if Type == "Boolean" || Type == "Byte">
         return DefaultImmutable${Type}Set.of(value1);
 <#else>
-        throw new UnsupportedOperationException(); // TODO
+        return ImmutableSorted${Type}ArraySet.of(value1);
 </#if>
     }
 
@@ -50,7 +50,7 @@ public interface Immutable${Type}Set extends ImmutablePrimitiveSet<${WrapperType
 <#if Type == "Boolean" || Type == "Byte">
         return DefaultImmutable${Type}Set.of(value1, value2);
 <#else>
-        throw new UnsupportedOperationException(); // TODO
+        return ImmutableSorted${Type}ArraySet.of(value1, value2);
 </#if>
     }
 
@@ -58,7 +58,7 @@ public interface Immutable${Type}Set extends ImmutablePrimitiveSet<${WrapperType
 <#if Type == "Boolean" || Type == "Byte">
         return DefaultImmutable${Type}Set.of(value1, value2, value3);
 <#else>
-        throw new UnsupportedOperationException(); // TODO
+        return ImmutableSorted${Type}ArraySet.of(value1, value2, value3);
 </#if>
     }
 
@@ -66,7 +66,7 @@ public interface Immutable${Type}Set extends ImmutablePrimitiveSet<${WrapperType
 <#if Type == "Boolean" || Type == "Byte">
         return DefaultImmutable${Type}Set.of(value1, value2, value3, value4);
 <#else>
-        throw new UnsupportedOperationException(); // TODO
+        return ImmutableSorted${Type}ArraySet.of(value1, value2, value3, value4);
 </#if>
     }
 
@@ -74,7 +74,7 @@ public interface Immutable${Type}Set extends ImmutablePrimitiveSet<${WrapperType
 <#if Type == "Boolean" || Type == "Byte">
         return DefaultImmutable${Type}Set.of(value1, value2, value3, value4, value5);
 <#else>
-        throw new UnsupportedOperationException(); // TODO
+        return ImmutableSorted${Type}ArraySet.of(value1, value2, value3, value4, value5);
 </#if>
     }
 
@@ -82,7 +82,7 @@ public interface Immutable${Type}Set extends ImmutablePrimitiveSet<${WrapperType
 <#if Type == "Boolean" || Type == "Byte">
         return DefaultImmutable${Type}Set.of(values);
 <#else>
-        throw new UnsupportedOperationException(); // TODO
+        return ImmutableSorted${Type}ArraySet.of(values);
 </#if>
     }
 
@@ -90,7 +90,7 @@ public interface Immutable${Type}Set extends ImmutablePrimitiveSet<${WrapperType
 <#if Type == "Boolean" || Type == "Byte">
         return DefaultImmutable${Type}Set.from(values);
 <#else>
-        throw new UnsupportedOperationException(); // TODO
+        return ImmutableSorted${Type}ArraySet.from(values);
 </#if>
     }
 
@@ -98,7 +98,7 @@ public interface Immutable${Type}Set extends ImmutablePrimitiveSet<${WrapperType
 <#if Type == "Boolean" || Type == "Byte">
         return DefaultImmutable${Type}Set.from(values);
 <#else>
-        throw new UnsupportedOperationException(); // TODO
+        return ImmutableSorted${Type}ArraySet.from(values);
 </#if>
     }
 
@@ -106,7 +106,7 @@ public interface Immutable${Type}Set extends ImmutablePrimitiveSet<${WrapperType
 <#if Type == "Boolean" || Type == "Byte">
         return DefaultImmutable${Type}Set.from(it);
 <#else>
-        throw new UnsupportedOperationException(); // TODO
+        return ImmutableSorted${Type}ArraySet.from(it);
 </#if>
     }
 

@@ -70,6 +70,8 @@ tasks.getByName<GenerateTask>("generateSources") {
 
             generate("Immutable${model["Type"]}Set", model, "ImmutablePrimitiveSet")
             generate("AbstractImmutable${model["Type"]}Set", model, "AbstractImmutablePrimitiveSet")
+            if (model != Primitives.Boolean && model != Primitives.Byte)
+                generate("ImmutableSorted${model["Type"]}ArraySet", model, "ImmutableSortedPrimitiveArraySet")
         }
     }
 
