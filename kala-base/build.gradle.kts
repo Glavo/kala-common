@@ -56,7 +56,6 @@ tasks.getByName<GenerateTask>("generateSources") {
             generate("AbstractMutable${type}Value", model, "AbstractMutablePrimitiveValue")
             generate("DelegateMutable${type}Value", model, "DelegateMutablePrimitiveValue")
 
-            generate("${type}Ref", model, "PrimitiveRef")
             generate("${type}Var", model, "PrimitiveVar")
             generate("Volatile${type}Var", model, "VolatilePrimitiveVar")
             generate("Lazy${type}Value", model, "LazyPrimitiveValue")

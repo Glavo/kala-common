@@ -1,5 +1,6 @@
 package kala.value.primitive;
 
+import kala.annotations.DelegateBy;
 import kala.annotations.ReplaceWith;
 import kala.annotations.UnstableName;
 import kala.function.*;
@@ -90,8 +91,9 @@ public interface Mutable${Type}Value extends MutablePrimitiveValue<${WrapperType
         }
     }
 
+    @DelegateBy("getAndUpdate(${Type}UnaryOperator)")
     default void update(@NotNull ${Type}UnaryOperator updateFunction) {
-        set(updateFunction.applyAs${Type}(get()));
+        getAndUpdate(updateFunction);
     }
 
     default ${PrimitiveType} getAndUpdate(@NotNull ${Type}UnaryOperator updateFunction) {
@@ -106,8 +108,9 @@ public interface Mutable${Type}Value extends MutablePrimitiveValue<${WrapperType
         return v;
     }
 
+    @DelegateBy("getAndAccumulate(${PrimitiveType}, ${Type}BinaryOperator)")
     default void accumulate(${PrimitiveType} t, @NotNull ${Type}BinaryOperator accumulatorFunction) {
-        set(accumulatorFunction.applyAs${Type}(get(), t));
+        getAndAccumulate(t, accumulatorFunction);
     }
 
     default ${PrimitiveType} getAndAccumulate(${PrimitiveType} t, @NotNull ${Type}BinaryOperator accumulatorFunction) {
@@ -141,50 +144,46 @@ public interface Mutable${Type}Value extends MutablePrimitiveValue<${WrapperType
 
     default ${PrimitiveType} getAndIncrement() {
         ${PrimitiveType} v = get();
-        set(v + 1);
+        increment();
         return v;
     }
 
     default ${PrimitiveType} getAndDecrement() {
         ${PrimitiveType} v = get();
-        set(v - 1);
+        decrement();
         return v;
     }
 
     default ${PrimitiveType} getAndAdd(${PrimitiveType} delta) {
         ${PrimitiveType} v = get();
-        set(get() + delta);
+        add(delta);
         return v;
     }
 
     default ${PrimitiveType} getAndSub(${PrimitiveType} delta) {
         ${PrimitiveType} v = get();
-        set(get() - delta);
+        sub(delta);
         return v;
     }
 
     default ${PrimitiveType} incrementAndGet() {
-        ${PrimitiveType} v = get() + 1;
-        set(v);
-        return v;
+        increment();
+        return get();
     }
 
     default ${PrimitiveType} decrementAndGet() {
-        ${PrimitiveType} v = get() - 1;
-        set(v);
-        return v;
+        decrement();
+        return get();
     }
 
     default ${PrimitiveType} addAndGet(${PrimitiveType} delta) {
-        ${PrimitiveType} v = get() + delta;
-        set(v);
-        return v;
+        add(delta);
+        return get();
     }
 
     default ${PrimitiveType} subAndGet(${PrimitiveType} delta) {
-        ${PrimitiveType} v = get() - delta;
-        set(v);
-        return v;
+        sub(delta);
+        return get();
     }
 <#elseif Type == "Byte" || Type == "Short">
 
@@ -206,50 +205,46 @@ public interface Mutable${Type}Value extends MutablePrimitiveValue<${WrapperType
 
     default ${PrimitiveType} getAndIncrement() {
         ${PrimitiveType} v = get();
-        set((${PrimitiveType}) (v + 1));
+        increment();
         return v;
     }
 
     default ${PrimitiveType} getAndDecrement() {
         ${PrimitiveType} v = get();
-        set((${PrimitiveType}) (v - 1));
+        decrement();
         return v;
     }
 
     default ${PrimitiveType} getAndAdd(int delta) {
         ${PrimitiveType} v = get();
-        set((${PrimitiveType}) (get() + delta));
+        add(delta);
         return v;
     }
 
     default ${PrimitiveType} getAndSub(int delta) {
         ${PrimitiveType} v = get();
-        set((${PrimitiveType}) (get() - delta));
+        sub(delta);
         return v;
     }
 
     default ${PrimitiveType} incrementAndGet() {
-        ${PrimitiveType} v = (${PrimitiveType}) (get() + 1);
-        set(v);
-        return v;
+        increment();
+        return get();
     }
 
     default ${PrimitiveType} decrementAndGet() {
-        ${PrimitiveType} v = (${PrimitiveType}) (get() - 1);
-        set(v);
-        return v;
+        decrement();
+        return get();
     }
 
     default ${PrimitiveType} addAndGet(int delta) {
-        ${PrimitiveType} v = (${PrimitiveType}) (get() + delta);
-        set(v);
-        return v;
+        add(delta);
+        return get();
     }
 
     default ${PrimitiveType} subAndGet(int delta) {
-        ${PrimitiveType} v = (${PrimitiveType}) (get() - delta);
-        set(v);
-        return v;
+        sub(delta);
+        return get();
     }
 </#if>
 }

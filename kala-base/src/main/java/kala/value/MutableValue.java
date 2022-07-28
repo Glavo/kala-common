@@ -1,5 +1,6 @@
 package kala.value;
 
+import kala.annotations.DelegateBy;
 import kala.annotations.ReplaceWith;
 import kala.annotations.UnstableName;
 import org.jetbrains.annotations.NotNull;
@@ -96,8 +97,9 @@ public interface MutableValue<T> extends MutableAnyValue<T>, Value<T>, Consumer<
         }
     }
 
+    @DelegateBy("getAndUpdate(UnaryOperator<T>)")
     default void update(@NotNull UnaryOperator<T> updateFunction) {
-        set(updateFunction.apply(get()));
+        getAndUpdate(updateFunction);
     }
 
     default T getAndUpdate(@NotNull UnaryOperator<T> updateFunction) {
@@ -112,8 +114,9 @@ public interface MutableValue<T> extends MutableAnyValue<T>, Value<T>, Consumer<
         return v;
     }
 
+    @DelegateBy("getAndAccumulate(BinaryOperator<T>)")
     default void accumulate(T t, @NotNull BinaryOperator<T> accumulatorFunction) {
-        set(accumulatorFunction.apply(get(), t));
+        getAndAccumulate(t, accumulatorFunction);
     }
 
     default T getAndAccumulate(T t, @NotNull BinaryOperator<T> accumulatorFunction) {

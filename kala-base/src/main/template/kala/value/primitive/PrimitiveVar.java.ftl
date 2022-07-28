@@ -24,16 +24,6 @@ public final class ${Type}Var extends Abstract${Type}Value implements Mutable${T
         this.value = value;
     }
 
-<#if IsIntegral>
-    public void increment() {
-        value++;
-    }
-
-    public void decrement() {
-        value--;
-    }
-
-</#if>
     @Override
     public String toString() {
         return "${Type}Var[" + value + "]";
