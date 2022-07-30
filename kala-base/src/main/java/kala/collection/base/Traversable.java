@@ -12,7 +12,7 @@ import kala.collection.factory.CollectionFactory;
 import kala.function.CheckedBiFunction;
 import kala.function.CheckedConsumer;
 import kala.function.CheckedPredicate;
-import kala.value.primitive.IntRef;
+import kala.value.primitive.IntVar;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +20,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.*;
@@ -748,7 +747,7 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
             return ((ForkJoinPool) executor).submit(() -> parallelStream().forEach(action), null);
         } else {
             LateInitCountDownLatch latch = new LateInitCountDownLatch();
-            IntRef count = new IntRef();
+            IntVar count = new IntVar();
             forEach(value -> {
                 count.increment();
                 executor.execute(() -> {

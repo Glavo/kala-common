@@ -2,7 +2,7 @@ package kala.collection.internal.tree;
 
 import kala.function.IndexedConsumer;
 import kala.internal.ComparableUtils;
-import kala.value.primitive.IntRef;
+import kala.value.primitive.IntVar;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -238,7 +238,7 @@ public final class TwoThreeTree<E> {
 
     public Object[] toArray() {
         Object[] res = new Object[len];
-        IntRef i = new IntRef();
+        IntVar i = new IntVar();
         forEach(v -> res[i.value++] = v);
         return res;
     }
