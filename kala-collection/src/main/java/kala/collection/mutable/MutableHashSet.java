@@ -48,6 +48,9 @@ public final class MutableHashSet<E> extends HashBase<E, MutableHashSet.Node<E>>
         super(hasher, initialCapacity, loadFactor);
     }
 
+    private MutableHashSet(HashBase<E, Node<E>> old) {
+        super(old);
+    }
 
     //endregion
 
@@ -277,6 +280,11 @@ public final class MutableHashSet<E> extends HashBase<E, MutableHashSet.Node<E>>
     @Override
     public @NotNull Iterator<E> iterator() {
         return new Itr();
+    }
+
+    @Override
+    public @NotNull MutableHashSet<E> clone() {
+        return new MutableHashSet<>(this);
     }
 
     //endregion

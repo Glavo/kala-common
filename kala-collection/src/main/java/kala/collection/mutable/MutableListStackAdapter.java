@@ -21,6 +21,11 @@ final class MutableListStackAdapter<E> implements MutableStack<E>, Serializable 
     }
 
     @Override
+    public @NotNull MutableStack<E> clone() {
+        return new MutableListStackAdapter<>(seq.clone());
+    }
+
+    @Override
     public int knownSize() {
         return seq.knownSize();
     }

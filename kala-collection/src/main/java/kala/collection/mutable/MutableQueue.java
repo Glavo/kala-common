@@ -19,6 +19,12 @@ public interface MutableQueue<E> extends MutableCollection<E> {
         Objects.requireNonNull(queue);
 
         return new MutableQueue<E>() {
+
+            @Override
+            public @NotNull MutableCollection<E> clone() {
+                return MutableCollection.from(queue);
+            }
+
             @Override
             public @NotNull Iterator<E> iterator() {
                 return queue.iterator();

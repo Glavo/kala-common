@@ -96,6 +96,11 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
         return new AsJavaConvert.MutableSetAsJava<>(this);
     }
 
+    @Override
+    default @NotNull MutableSet<E> clone() {
+        return this.<E>iterableFactory().from(this);
+    }
+
     @Contract(mutates = "this")
     boolean add(@Flow(targetIsContainer = true) E value);
 

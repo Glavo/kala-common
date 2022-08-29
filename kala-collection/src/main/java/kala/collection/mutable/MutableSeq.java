@@ -117,6 +117,11 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E>, MutableAnyS
                 : new AsJavaConvert.MutableSeqAsJava<>(this);
     }
 
+    @Override
+    default @NotNull MutableSeq<E> clone() {
+        return this.<E>iterableFactory().from(this);
+    }
+
     @Contract(mutates = "this")
     void set(int index, E newValue);
 
@@ -160,6 +165,7 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E>, MutableAnyS
     }
 
     @Contract(mutates = "this")
+    @DelegateBy("sort(Comparator<E>)")
     default void sort() {
         sort(null);
     }

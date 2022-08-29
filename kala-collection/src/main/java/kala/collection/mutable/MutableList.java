@@ -12,7 +12,6 @@ import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
 import kala.collection.factory.CollectionFactory;
 import kala.control.Option;
-import kala.range.primitive.IntRange;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -139,6 +138,11 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
 
     default @NotNull MutableStack<E> asMutableStack() {
         return this instanceof MutableStack ? (MutableStack<E>) this : new MutableListStackAdapter<>(this);
+    }
+
+    @Override
+    default @NotNull MutableList<E> clone() {
+        return this.<E>iterableFactory().from(this);
     }
 
     @Contract(mutates = "this")
@@ -314,12 +318,12 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
 
     @Contract(mutates = "this")
     default @Nullable E removeFirstOrNull() {
-        return isEmpty() ? null : removeAt(0);
+        return isEmpty() ? null : removeFirst();
     }
 
     @Contract(mutates = "this")
     default @NotNull Option<E> removeFirstOption() {
-        return isEmpty() ? Option.none() : Option.some(removeAt(0));
+        return isEmpty() ? Option.none() : Option.some(removeFirst());
     }
 
     @Contract(mutates = "this")
@@ -333,14 +337,12 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
 
     @Contract(mutates = "this")
     default @Nullable E removeLastOrNull() {
-        final int size = this.size();
-        return size == 0 ? null : removeAt(size - 1);
+        return isEmpty() ? null : removeLast();
     }
 
     @Contract(mutates = "this")
     default @NotNull Option<E> removeLastOption() {
-        final int size = this.size();
-        return size == 0 ? Option.none() : Option.some(removeAt(size - 1));
+        return isEmpty() ? Option.none() : Option.some(removeLast());
     }
 
     @Contract(mutates = "this")

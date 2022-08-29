@@ -93,7 +93,7 @@ public interface MutableMapLike<K, V> extends MapLike<K, V> {
     void replaceAll(@NotNull BiFunction<? super K, ? super V, ? extends V> function);
 
     default @NotNull MutableSet<Tuple2<K, V>> asMutableSet() {
-        return new MutableSet<Tuple2<K, V>>() {
+        return new AbstractMutableSet<Tuple2<K,V>>() {
             @Override
             public final boolean add(@NotNull Tuple2<K, V> value) {
 

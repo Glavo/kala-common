@@ -154,6 +154,11 @@ public final class FromJavaConvert {
         }
 
         @Override
+        public @NotNull MutableSeq<E> clone() {
+            return MutableSeq.super.clone();
+        }
+
+        @Override
         public void set(int index, E newValue) {
             source.set(index, newValue);
         }
@@ -175,6 +180,11 @@ public final class FromJavaConvert {
             extends MutableSeqFromJava<E> implements MutableList<E> {
         public MutableListFromJava(@NotNull List<E> list) {
             super(list);
+        }
+
+        @Override
+        public @NotNull MutableList<E> clone() {
+            return MutableList.super.clone();
         }
 
         @Override
@@ -234,6 +244,11 @@ public final class FromJavaConvert {
 
         public MutableSetFromJava(@NotNull Set<E> source) {
             super(source);
+        }
+
+        @Override
+        public @NotNull MutableSet<E> clone() {
+            return MutableSet.super.clone();
         }
 
         @Override

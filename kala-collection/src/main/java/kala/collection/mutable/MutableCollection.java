@@ -89,4 +89,9 @@ public interface MutableCollection<E> extends Collection<E>, MutableAnyCollectio
     default @NotNull java.util.Collection<E> asJava() {
         return new AsJavaConvert.MutableCollectionAsJava<>(this);
     }
+
+    @SuppressWarnings({"MethodDoesntCallSuperMethod"})
+    default @NotNull MutableCollection<E> clone() {
+        return this.<E>iterableFactory().from(this);
+    }
 }

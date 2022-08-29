@@ -5,6 +5,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractMutableList<E> extends AbstractMutableSeq<E> implements MutableList<E> {
+
+    @Override
+    public @NotNull MutableList<E> clone() {
+        return MutableList.super.clone();
+    }
+
     @Override
     public E removeFirst() {
         return MutableList.super.removeFirst();
