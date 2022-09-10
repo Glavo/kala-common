@@ -13,7 +13,7 @@ loadMavenPublishProperties()
 
 allprojects {
     group = "org.glavo.kala"
-    version = "0.47.0"// + "-SNAPSHOT"
+    version = "0.48.0" + "-SNAPSHOT"
 
     description = "Basic components of Kala"
 
