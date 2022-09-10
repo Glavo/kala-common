@@ -1,5 +1,8 @@
 package kala.internal;
 
+import kala.annotations.StaticClass;
+
+@StaticClass
 public final class BooleanUtils {
     private BooleanUtils() {
     }

@@ -1,9 +1,11 @@
 package kala.internal;
 
+import kala.annotations.StaticClass;
 import kala.comparator.Comparators;
 
 import java.util.Comparator;
 
+@StaticClass
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class ComparableUtils {
     private ComparableUtils() {
