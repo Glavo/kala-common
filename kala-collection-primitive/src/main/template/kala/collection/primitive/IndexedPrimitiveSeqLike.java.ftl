@@ -86,7 +86,7 @@ public interface Indexed${Type}SeqLike extends ${Type}SeqLike, RandomAccess {
         if (isEmpty()) return ${Type}Iterator.empty();
 
         return new Abstract${Type}Iterator() {
-            private int idx = size() - 1;
+            private int idx = Indexed${Type}SeqLike.this.size() - 1;
 
             @Override
             public boolean hasNext() {
