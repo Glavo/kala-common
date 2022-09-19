@@ -277,6 +277,34 @@ public final class Iterators {
         return true;
     }
 
+    public static <E, T> boolean anyMatchWith(@NotNull Iterator<? extends E> it, @NotNull Iterator<? extends T> other, @NotNull BiPredicate<? super E, ? super T> predicate) {
+        while (it.hasNext() && other.hasNext()) {
+            if (predicate.test(it.next(), other.next())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static <E, T> boolean allMatchWith(@NotNull Iterator<? extends E> it, @NotNull Iterator<? extends T> other, @NotNull BiPredicate<? super E, ? super T> predicate) {
+        while (it.hasNext() && other.hasNext()) {
+            if (!predicate.test(it.next(), other.next())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static <E, T> boolean noneMatchWith(@NotNull Iterator<? extends E> it, @NotNull Iterator<? extends T> other, @NotNull BiPredicate<? super E, ? super T> predicate) {
+        while (it.hasNext() && other.hasNext()) {
+            if (predicate.test(it.next(), other.next())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
     public static <E> E first(@NotNull Iterator<? extends E> it) {
         return it.next();
     }

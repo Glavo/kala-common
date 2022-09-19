@@ -165,6 +165,27 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         return Iterators.noneMatch(iterator(), predicate);
     }
 
+    /**
+     * Equivalent to {@code this.zip(other).anyMatchWith((t, u) -> predicate.test(t, u))}
+     */
+    default <U> boolean anyMatchWith(@NotNull Iterable<? extends U> other, @NotNull BiPredicate<? super T, ? super U> predicate) {
+        return Iterators.anyMatchWith(iterator(), other.iterator(), predicate);
+    }
+
+    /**
+     * Equivalent to {@code this.zip(other).allMatchWith((t, u) -> predicate.test(t, u))}
+     */
+    default <U> boolean allMatchWith(@NotNull Iterable<? extends U> other, @NotNull BiPredicate<? super T, ? super U> predicate) {
+        return Iterators.allMatchWith(iterator(), other.iterator(), predicate);
+    }
+
+    /**
+     * Equivalent to {@code this.zip(other).noneMatchWith((t, u) -> predicate.test(t, u))}
+     */
+    default <U> boolean noneMatchWith(@NotNull Iterable<? extends U> other, @NotNull BiPredicate<? super T, ? super U> predicate) {
+        return Iterators.noneMatchWith(iterator(), other.iterator(), predicate);
+    }
+
     //endregion
 
     @Contract(value = "_, _ -> param1", mutates = "param1")
