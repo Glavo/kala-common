@@ -1,6 +1,7 @@
 package kala.jackson;
 
 import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.core.util.VersionUtil;
 import com.fasterxml.jackson.databind.Module;
 
 public class KalaBaseModule extends Module {
@@ -11,7 +12,7 @@ public class KalaBaseModule extends Module {
 
     @Override
     public Version version() {
-        return Version.unknownVersion();
+        return VersionUtil.parseVersion(Metadata.KALA_VERSION, "org.glavo.kala", "kala-base");
     }
 
     @Override
