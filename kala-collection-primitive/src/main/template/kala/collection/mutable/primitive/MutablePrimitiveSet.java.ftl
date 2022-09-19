@@ -183,6 +183,9 @@ public interface Mutable${Type}Set extends MutablePrimitiveSet<${WrapperType}>, 
     @Contract(mutates = "this")
     void clear();
 
+    default void trimToSize() {
+    }
+
     @Contract(mutates = "this")
     boolean remove(${PrimitiveType} value);
 

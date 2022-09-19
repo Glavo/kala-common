@@ -148,6 +148,9 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
     @Contract(mutates = "this")
     void clear();
 
+    default void trimToSize() {
+    }
+
     @Contract(mutates = "this")
     boolean remove(Object value);
 
