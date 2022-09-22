@@ -13,7 +13,7 @@ loadMavenPublishProperties()
 
 allprojects {
     group = "org.glavo.kala"
-    version = "0.50.0"// + "-SNAPSHOT"
+    version = "0.51.0" + "-SNAPSHOT"
 
     description = "Basic components of Kala"
 
@@ -39,6 +39,31 @@ allprojects {
         }
 
         testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
+    }
+
+    if (project.file("src/main/java17").exists()) {
+        val java17SourceSet = sourceSets.create("java17") {
+            java.srcDir("src/main/java17")
+        }
+
+        tasks.named<JavaCompile>("compileJava17Java") {
+            sourceCompatibility = "17"
+            targetCompatibility = "17"
+        }
+
+        dependencies {
+            "java17Implementation"(sourceSets.main.get().output.classesDirs)
+        }
+
+        tasks.jar {
+            into("META-INF/versions/17") {
+                from(java17SourceSet.output)
+            }
+
+            manifest.attributes(
+                "Multi-Release" to "true"
+            )
+        }
     }
 
     tasks.compileJava {
