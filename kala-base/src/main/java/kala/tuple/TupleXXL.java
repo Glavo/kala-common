@@ -1,6 +1,5 @@
 package kala.tuple;
 
-import kala.collection.base.ObjectArrays;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -13,7 +12,7 @@ import java.util.function.IntFunction;
  * @author Glavo
  */
 @SuppressWarnings("unchecked")
-final class TupleXXL extends HList<Object, HList<?, ?>> {
+final class TupleXXL implements HList<Object, HList<?, ?>> {
     private static final long serialVersionUID = -1035728226134523579L;
 
     private final Object @NotNull [] values;

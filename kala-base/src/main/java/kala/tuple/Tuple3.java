@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
  * @param <T3> type of the 3rd element
  * @author Glavo
  */
-public final class Tuple3<@Covariant T1, @Covariant T2, @Covariant T3> extends HList<T1, Tuple2<T2, T3>> implements Serializable {
+public final class Tuple3<@Covariant T1, @Covariant T2, @Covariant T3> implements HList<T1, Tuple2<T2, T3>>, Serializable {
     private static final long serialVersionUID = 972431264501348711L;
 
     /**
@@ -133,7 +133,7 @@ public final class Tuple3<@Covariant T1, @Covariant T2, @Covariant T3> extends H
      */
     @Override
     public @NotNull Tuple2<T2, T3> tail() {
-        return of(_2, _3);
+        return Tuple.of(_2, _3);
     }
 
     /**

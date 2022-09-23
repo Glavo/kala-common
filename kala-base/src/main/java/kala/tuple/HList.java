@@ -16,27 +16,24 @@ import org.jetbrains.annotations.NotNull;
  * @param <T>
  * @author Glavo
  */
-public abstract class HList<@Covariant H, @Covariant T extends Tuple> extends NonEmptyTuple {
-    HList() {
-    }
-
+public interface HList<@Covariant H, @Covariant T extends Tuple> extends NonEmptyTuple {
     /**
      * Returns the head of this heterogeneous list.
      *
      * @return the head of this heterogeneous list
      */
-    public abstract H head();
+    H head();
 
     /**
      * Returns the tail of this heterogeneous list.
      *
      * @return the tail of this heterogeneous list
      */
-    public abstract @NotNull T tail();
+    @NotNull T tail();
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public abstract <HH> @NotNull HList<HH, ? extends HList<H, T>> cons(HH head);
+    <HH> @NotNull HList<HH, ? extends HList<H, T>> cons(HH head);
 }

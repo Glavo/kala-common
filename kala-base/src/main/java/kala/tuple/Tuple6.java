@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Glavo
  */
 public final class Tuple6<@Covariant T1, @Covariant T2, @Covariant T3, @Covariant T4, @Covariant T5, @Covariant T6>
-        extends HList<T1, Tuple5<T2, T3, T4, T5, T6>> implements Serializable {
+        implements HList<T1, Tuple5<T2, T3, T4, T5, T6>>, Serializable {
     private static final long serialVersionUID = 3503303487328993024L;
 
     /**
@@ -194,7 +194,7 @@ public final class Tuple6<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      */
     @Override
     public @NotNull Tuple5<T2, T3, T4, T5, T6> tail() {
-        return of(_2, _3, _4, _5, _6);
+        return Tuple.of(_2, _3, _4, _5, _6);
     }
 
     /**

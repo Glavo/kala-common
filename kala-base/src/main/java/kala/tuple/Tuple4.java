@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
  * @param <T4> type of the 4th element
  * @author Glavo
  */
-public final class Tuple4<@Covariant T1, @Covariant T2, @Covariant T3, @Covariant T4> extends HList<T1, Tuple3<T2, T3, T4>> implements Serializable {
+public final class Tuple4<@Covariant T1, @Covariant T2, @Covariant T3, @Covariant T4> implements HList<T1, Tuple3<T2, T3, T4>>, Serializable {
     private static final long serialVersionUID = 2111962546132489176L;
 
     /**
@@ -210,6 +210,6 @@ public final class Tuple4<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      */
     @Override
     public String toString() {
-        return "(" + _1 + ", " + _2 + ", " + _3 + ", " + _4 + ")";
+        return "(" + _1 + ", " + _2 + ", " + _3 + ", " + _4 + ")" ;
     }
 }

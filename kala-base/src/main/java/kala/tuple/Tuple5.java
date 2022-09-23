@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Glavo
  */
 public final class Tuple5<@Covariant T1, @Covariant T2, @Covariant T3, @Covariant T4, @Covariant T5>
-        extends HList<T1, Tuple4<T2, T3, T4, T5>> implements Serializable {
+        implements HList<T1, Tuple4<T2, T3, T4, T5>>, Serializable {
     private static final long serialVersionUID = -3012974614168016497L;
 
     /**

@@ -16,17 +16,14 @@ import org.jetbrains.annotations.NotNull;
  * @author Glavo
  * @see HList
  */
-public abstract class Tuple implements AnyTuple, Serializable {
-    Tuple() {
-    }
-
+public /* sealed */ interface Tuple extends AnyTuple, Serializable {
     /**
      * Returns the number of elements of this {@code Tuple}.
      *
      * @return the number of elements of this {@code Tuple}
      */
     @Contract(pure = true)
-    public abstract int arity();
+    int arity();
 
     /**
      * Returns the element at the specified position in this {@code Tuple}.
@@ -37,7 +34,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      */
     @Contract(pure = true)
     @Flow(sourceIsContainer = true)
-    public abstract <U> U elementAt(int index);
+    <U> U elementAt(int index);
 
     /**
      * Return a new tuple by prepending the head to `this` tuple.
@@ -45,7 +42,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @return a new tuple by prepending the head to `this` tuple
      */
     @Contract(pure = true)
-    public abstract <H> @NotNull HList<H, ? extends Tuple> cons(H head);
+    <H> @NotNull HList<H, ? extends Tuple> cons(H head);
 
     /**
      * Returns an array containing all the elements in this tuple.
@@ -53,11 +50,11 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @return an array containing all the elements in this tuple
      */
     @Contract(value = "-> new", pure = true)
-    public Object @NotNull [] toArray() {
+    default Object @NotNull [] toArray() {
         return toArray(Object[]::new);
     }
 
-    public <U> U @NotNull [] toArray(@NotNull Class<U> type) {
+    default <U> U @NotNull [] toArray(@NotNull Class<U> type) {
         return toArray(GenericArrays.generator(type));
     }
 
@@ -70,13 +67,13 @@ public abstract class Tuple implements AnyTuple, Serializable {
      *                             array because the runtime type does not match
      */
     @Contract(pure = true)
-    public abstract <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator);
+    <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator);
 
-    public static @NotNull Unit empty() {
+    static @NotNull Unit empty() {
         return Unit.INSTANCE;
     }
 
-    public static @NotNull Unit of() {
+    static @NotNull Unit of() {
         return Unit.INSTANCE;
     }
 
@@ -88,7 +85,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @return a tuple of 1 element
      */
     @Contract("_ -> new")
-    public static <T1> @NotNull Tuple1<T1> of(T1 t1) {
+    static <T1> @NotNull Tuple1<T1> of(T1 t1) {
         return new Tuple1<>(t1);
     }
 
@@ -102,7 +99,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @return a tuple of 2 elements
      */
     @Contract("_, _ -> new")
-    public static <T1, T2> @NotNull Tuple2<T1, T2> of(T1 t1, T2 t2) {
+    static <T1, T2> @NotNull Tuple2<T1, T2> of(T1 t1, T2 t2) {
         return new Tuple2<>(t1, t2);
     }
 
@@ -118,7 +115,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @return a tuple of 3 elements
      */
     @Contract("_, _, _ -> new")
-    public static <T1, T2, T3> @NotNull Tuple3<T1, T2, T3> of(T1 t1, T2 t2, T3 t3) {
+    static <T1, T2, T3> @NotNull Tuple3<T1, T2, T3> of(T1 t1, T2 t2, T3 t3) {
         return new Tuple3<>(t1, t2, t3);
     }
 
@@ -136,7 +133,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @return a tuple of 4 elements
      */
     @Contract("_, _, _, _ -> new")
-    public static <T1, T2, T3, T4> @NotNull Tuple4<T1, T2, T3, T4> of(T1 t1, T2 t2, T3 t3, T4 t4) {
+    static <T1, T2, T3, T4> @NotNull Tuple4<T1, T2, T3, T4> of(T1 t1, T2 t2, T3 t3, T4 t4) {
         return new Tuple4<>(t1, t2, t3, t4);
     }
 
@@ -156,7 +153,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @return a tuple of 5 elements
      */
     @Contract("_, _, _, _, _ -> new")
-    public static <T1, T2, T3, T4, T5> @NotNull Tuple5<T1, T2, T3, T4, T5> of(
+    static <T1, T2, T3, T4, T5> @NotNull Tuple5<T1, T2, T3, T4, T5> of(
             T1 t1, T2 t2, T3 t3, T4 t4, T5 t5) {
         return new Tuple5<>(t1, t2, t3, t4, t5);
     }
@@ -179,7 +176,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @return a tuple of 6 elements
      */
     @Contract("_, _, _, _, _, _ -> new")
-    public static <T1, T2, T3, T4, T5, T6> @NotNull Tuple6<T1, T2, T3, T4, T5, T6> of(
+    static <T1, T2, T3, T4, T5, T6> @NotNull Tuple6<T1, T2, T3, T4, T5, T6> of(
             T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6) {
         return new Tuple6<>(t1, t2, t3, t4, t5, t6);
     }
@@ -204,7 +201,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @return a tuple of 7 elements
      */
     @Contract("_, _, _, _, _, _, _ -> new")
-    public static <T1, T2, T3, T4, T5, T6, T7> @NotNull Tuple7<T1, T2, T3, T4, T5, T6, T7> of(
+    static <T1, T2, T3, T4, T5, T6, T7> @NotNull Tuple7<T1, T2, T3, T4, T5, T6, T7> of(
             T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7) {
         return new Tuple7<>(t1, t2, t3, t4, t5, t6, t7);
     }
@@ -231,7 +228,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @return a tuple of 8 elements
      */
     @Contract("_, _, _, _, _, _, _, _ -> new")
-    public static <T1, T2, T3, T4, T5, T6, T7, T8> @NotNull Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> of(
+    static <T1, T2, T3, T4, T5, T6, T7, T8> @NotNull Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> of(
             T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8) {
         return new Tuple8<>(t1, t2, t3, t4, t5, t6, t7, t8);
     }
@@ -260,7 +257,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @return a tuple of 9 elements
      */
     @Contract("_, _, _, _, _, _, _, _, _ -> new")
-    public static <T1, T2, T3, T4, T5, T6, T7, T8, T9>
+    static <T1, T2, T3, T4, T5, T6, T7, T8, T9>
     @NotNull Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9> of(
             T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9) {
         return new Tuple9<>(t1, t2, t3, t4, t5, t6, t7, t8, t9);
@@ -268,7 +265,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
 
     @SuppressWarnings("unchecked")
     @Contract("_ -> new")
-    public static <T extends Tuple> @NotNull T of(Object... values) {
+    static <T extends Tuple> @NotNull T of(Object... values) {
         switch (values.length) {
             case 0:
                 return (T) Unit.INSTANCE;
@@ -313,7 +310,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @param tuple a {@code Tuple}
      * @return the 1st element of the {@code tuple}
      */
-    public static <T> T component1(@NotNull HList<T, ?> tuple) {
+    static <T> T component1(@NotNull HList<T, ?> tuple) {
         return tuple.elementAt(0);
     }
 
@@ -324,7 +321,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @param tuple a {@code Tuple}
      * @return the 2nd element of the {@code tuple}
      */
-    public static <T> T component2(@NotNull HList<?, ? extends HList<T, ?>> tuple) {
+    static <T> T component2(@NotNull HList<?, ? extends HList<T, ?>> tuple) {
         return tuple.elementAt(1);
     }
 
@@ -335,7 +332,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @param tuple a {@code Tuple}
      * @return the 3rd element of the {@code tuple}
      */
-    public static <T> T component3(
+    static <T> T component3(
             @NotNull HList<?, ? extends HList<?, ? extends HList<T, ?>>> tuple) {
         return tuple.elementAt(2);
     }
@@ -347,7 +344,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @param tuple a {@code Tuple}
      * @return the 4th element of the {@code tuple}
      */
-    public static <T> T component4(
+    static <T> T component4(
             @NotNull
                     HList<?, ? extends HList<?, ? extends HList<?, ? extends HList<T, ?>>>> tuple) {
         return tuple.elementAt(3);
@@ -360,7 +357,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @param tuple a {@code Tuple}
      * @return the 5th element of the {@code tuple}
      */
-    public static <T> T component5(
+    static <T> T component5(
             @NotNull
                     HList<
                             ?,
@@ -388,7 +385,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @param tuple a {@code Tuple}
      * @return the 6th element of the {@code tuple}
      */
-    public static <T> T component6(
+    static <T> T component6(
             @NotNull
                     HList<
                             ?,
@@ -419,7 +416,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @param tuple a {@code Tuple}
      * @return the 7th element of the {@code tuple}
      */
-    public static <T> T component7(
+    static <T> T component7(
             @NotNull
                     HList<
                             ?,
@@ -453,7 +450,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @param tuple a {@code Tuple}
      * @return the 8th element of the {@code tuple}
      */
-    public static <T> T component8(
+    static <T> T component8(
             @NotNull
                     HList<
                             ?,
@@ -490,7 +487,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @param tuple a {@code Tuple}
      * @return the 9th element of the {@code tuple}
      */
-    public static <T> T component9(
+    static <T> T component9(
             @NotNull
                     HList<
                             ?,
@@ -530,7 +527,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @param tuple a {@code Tuple}
      * @return the 10th element of the {@code tuple}
      */
-    public static <T> T component10(
+    static <T> T component10(
             @NotNull
                     HList<
                             ?,
@@ -573,7 +570,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @param tuple a {@code Tuple}
      * @return the 11th element of the {@code tuple}
      */
-    public static <T> T component11(
+    static <T> T component11(
             @NotNull
                     HList<
                             ?,
@@ -619,7 +616,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @param tuple a {@code Tuple}
      * @return the 12th element of the {@code tuple}
      */
-    public static <T> T component12(
+    static <T> T component12(
             @NotNull
                     HList<
                             ?,
@@ -668,7 +665,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @param tuple a {@code Tuple}
      * @return the 13th element of the {@code tuple}
      */
-    public static <T> T component13(
+    static <T> T component13(
             @NotNull
                     HList<
                             ?,
@@ -720,7 +717,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @param tuple a {@code Tuple}
      * @return the 14th element of the {@code tuple}
      */
-    public static <T> T component14(
+    static <T> T component14(
             @NotNull
                     HList<
                             ?,
@@ -775,7 +772,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @param tuple a {@code Tuple}
      * @return the 15th element of the {@code tuple}
      */
-    public static <T> T component15(
+    static <T> T component15(
             @NotNull
                     HList<
                             ?,
@@ -833,7 +830,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @param tuple a {@code Tuple}
      * @return the 16th element of the {@code tuple}
      */
-    public static <T> T component16(
+    static <T> T component16(
             @NotNull
                     HList<
                             ?,
@@ -894,7 +891,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @param tuple a {@code Tuple}
      * @return the 17th element of the {@code tuple}
      */
-    public static <T> T component17(
+    static <T> T component17(
             @NotNull
                     HList<
                             ?,
@@ -958,7 +955,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
      * @param tuple a {@code Tuple}
      * @return the 18th element of the {@code tuple}
      */
-    public static <T> T component18(
+    static <T> T component18(
             @NotNull
                     HList<
                             ?,
@@ -1018,15 +1015,15 @@ public abstract class Tuple implements AnyTuple, Serializable {
         return tuple.elementAt(17);
     }
 
-    public static @NotNull Comparator<Unit> comparator() {
+    static @NotNull Comparator<Unit> comparator() {
         return (Comparator<Unit> & Serializable) (u1, u2) -> 0;
     }
 
-    public static <T1> @NotNull Comparator<Tuple1<T1>> comparator(@NotNull Comparator<? super T1> c1) {
+    static <T1> @NotNull Comparator<Tuple1<T1>> comparator(@NotNull Comparator<? super T1> c1) {
         return (Comparator<Tuple1<T1>> & Serializable) (t1, t2) -> c1.compare(t1.component1(), t2.component1());
     }
 
-    public static <T1, T2> @NotNull Comparator<Tuple2<T1, T2>> comparator(
+    static <T1, T2> @NotNull Comparator<Tuple2<T1, T2>> comparator(
             @NotNull Comparator<? super T1> c1,
             @NotNull Comparator<? super T2> c2
     ) {
@@ -1039,7 +1036,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
         };
     }
 
-    public static <T1, T2, T3> @NotNull Comparator<Tuple3<T1, T2, T3>> comparator(
+    static <T1, T2, T3> @NotNull Comparator<Tuple3<T1, T2, T3>> comparator(
             @NotNull Comparator<? super T1> c1,
             @NotNull Comparator<? super T2> c2,
             @NotNull Comparator<? super T3> c3
@@ -1057,7 +1054,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
         };
     }
 
-    public static <T1, T2, T3, T4> @NotNull Comparator<Tuple4<T1, T2, T3, T4>> comparator(
+    static <T1, T2, T3, T4> @NotNull Comparator<Tuple4<T1, T2, T3, T4>> comparator(
             @NotNull Comparator<? super T1> c1,
             @NotNull Comparator<? super T2> c2,
             @NotNull Comparator<? super T3> c3,
@@ -1080,7 +1077,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
         };
     }
 
-    public static <T1, T2, T3, T4, T5> @NotNull Comparator<Tuple5<T1, T2, T3, T4, T5>> comparator(
+    static <T1, T2, T3, T4, T5> @NotNull Comparator<Tuple5<T1, T2, T3, T4, T5>> comparator(
             @NotNull Comparator<? super T1> c1,
             @NotNull Comparator<? super T2> c2,
             @NotNull Comparator<? super T3> c3,
@@ -1108,7 +1105,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
         };
     }
 
-    public static <T1, T2, T3, T4, T5, T6> @NotNull Comparator<Tuple6<T1, T2, T3, T4, T5, T6>> comparator(
+    static <T1, T2, T3, T4, T5, T6> @NotNull Comparator<Tuple6<T1, T2, T3, T4, T5, T6>> comparator(
             @NotNull Comparator<? super T1> c1,
             @NotNull Comparator<? super T2> c2,
             @NotNull Comparator<? super T3> c3,
@@ -1141,7 +1138,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
         };
     }
 
-    public static <T1, T2, T3, T4, T5, T6, T7> @NotNull Comparator<Tuple7<T1, T2, T3, T4, T5, T6, T7>> comparator(
+    static <T1, T2, T3, T4, T5, T6, T7> @NotNull Comparator<Tuple7<T1, T2, T3, T4, T5, T6, T7>> comparator(
             @NotNull Comparator<? super T1> c1,
             @NotNull Comparator<? super T2> c2,
             @NotNull Comparator<? super T3> c3,
@@ -1179,7 +1176,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
         };
     }
 
-    public static <T1, T2, T3, T4, T5, T6, T7, T8> @NotNull Comparator<Tuple8<T1, T2, T3, T4, T5, T6, T7, T8>> comparator(
+    static <T1, T2, T3, T4, T5, T6, T7, T8> @NotNull Comparator<Tuple8<T1, T2, T3, T4, T5, T6, T7, T8>> comparator(
             @NotNull Comparator<? super T1> c1,
             @NotNull Comparator<? super T2> c2,
             @NotNull Comparator<? super T3> c3,
@@ -1222,7 +1219,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
         };
     }
 
-    public static <T1, T2, T3, T4, T5, T6, T7, T8, T9> @NotNull Comparator<Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9>> comparator(
+    static <T1, T2, T3, T4, T5, T6, T7, T8, T9> @NotNull Comparator<Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9>> comparator(
             @NotNull Comparator<? super T1> c1,
             @NotNull Comparator<? super T2> c2,
             @NotNull Comparator<? super T3> c3,
@@ -1271,7 +1268,7 @@ public abstract class Tuple implements AnyTuple, Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends Tuple> @NotNull Comparator<T> comparator(@NotNull Comparator<?>... comparators) {
+    static <T extends Tuple> @NotNull Comparator<T> comparator(@NotNull Comparator<?>... comparators) {
         final int n = comparators.length;
         switch (n) {
             case 0:
@@ -1295,45 +1292,44 @@ public abstract class Tuple implements AnyTuple, Serializable {
             case 9:
                 return (Comparator<T>) comparator(comparators[0], comparators[1], comparators[2], comparators[3], comparators[4], comparators[5], comparators[6], comparators[7], comparators[8]);
             default:
-                return (Comparator<T>) new ComparatorN(comparators.clone());
-        }
-    }
+                final class ComparatorN implements Comparator<Tuple>, Serializable {
+                    private static final long serialVersionUID = 6666584328927326964L;
+                    private final @NotNull Comparator<?>[] comparators;
 
-    private static final class ComparatorN implements Comparator<Tuple>, Serializable {
-        private static final long serialVersionUID = 6666584328927326964L;
-        private final @NotNull Comparator<?>[] comparators;
+                    private ComparatorN(@NotNull Comparator<?>[] comparators) {
+                        this.comparators = comparators;
+                    }
 
-        private ComparatorN(@NotNull Comparator<?>[] comparators) {
-            this.comparators = comparators;
-        }
+                    @Override
+                    public int compare(Tuple o1, Tuple o2) {
+                        final Comparator<?>[] comparators = this.comparators;
+                        final int n = comparators.length;
+                        if (o1.arity() != n || o2.arity() != n) {
+                            throw new ClassCastException();
+                        }
+                        for (int i = 0; i < n; i++) {
+                            @SuppressWarnings("unchecked") final Comparator<Object> c = (Comparator<Object>) comparators[i];
+                            final int res = c.compare(o1.elementAt(i), o2.elementAt(i));
+                            if (res != 0) {
+                                return res;
+                            }
+                        }
+                        return 0;
+                    }
 
-        @Override
-        public int compare(Tuple o1, Tuple o2) {
-            final Comparator<?>[] comparators = this.comparators;
-            final int n = comparators.length;
-            if (o1.arity() != n || o2.arity() != n) {
-                throw new ClassCastException();
-            }
-            for (int i = 0; i < n; i++) {
-                @SuppressWarnings("unchecked") final Comparator<Object> c = (Comparator<Object>) comparators[i];
-                final int res = c.compare(o1.elementAt(i), o2.elementAt(i));
-                if (res != 0) {
-                    return res;
+                    @Override
+                    public boolean equals(Object obj) {
+                        if (this == obj) {
+                            return true;
+                        }
+                        if (!(obj instanceof ComparatorN)) {
+                            return false;
+                        }
+                        ComparatorN cn = (ComparatorN) obj;
+                        return Arrays.equals(this.comparators, cn.comparators);
+                    }
                 }
-            }
-            return 0;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (!(obj instanceof ComparatorN)) {
-                return false;
-            }
-            ComparatorN cn = (ComparatorN) obj;
-            return Arrays.equals(this.comparators, cn.comparators);
+                return (Comparator<T>) new ComparatorN(comparators.clone());
         }
     }
 }

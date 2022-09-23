@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Glavo
  */
-public final class Unit extends EmptyTuple {
+public final class Unit implements EmptyTuple {
     private static final long serialVersionUID = -3636451611428514248L;
 
     public static final Unit INSTANCE = new Unit();
@@ -17,6 +17,22 @@ public final class Unit extends EmptyTuple {
     }
 
     private Unit() {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        return Tuple.HASH_MAGIC;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "()";
     }
 
     private Object readResolve() {

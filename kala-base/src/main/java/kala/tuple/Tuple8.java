@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Glavo
  */
 public final class Tuple8<@Covariant T1, @Covariant T2, @Covariant T3, @Covariant T4, @Covariant T5, @Covariant T6, @Covariant T7, @Covariant T8>
-        extends HList<T1, Tuple7<T2, T3, T4, T5, T6, T7, T8>> implements Serializable {
+        implements HList<T1, Tuple7<T2, T3, T4, T5, T6, T7, T8>>, Serializable {
     private static final long serialVersionUID = -1787310025057386303L;
 
     /**
@@ -233,7 +233,7 @@ public final class Tuple8<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      */
     @Override
     public @NotNull Tuple7<T2, T3, T4, T5, T6, T7, T8> tail() {
-        return of(_2, _3, _4, _5, _6, _7, _8);
+        return Tuple.of(_2, _3, _4, _5, _6, _7, _8);
     }
 
     /**

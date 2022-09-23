@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
  * @param <T1> type of the 1st element
  * @author Glavo
  */
-public final class Tuple1<@Covariant T1> extends HList<T1, Unit> implements Mappable<T1>, Serializable {
+public final class Tuple1<@Covariant T1> implements HList<T1, Unit>, Mappable<T1>, Serializable {
     private static final long serialVersionUID = -2553287320045901284L;
 
     /**
@@ -102,7 +102,7 @@ public final class Tuple1<@Covariant T1> extends HList<T1, Unit> implements Mapp
      */
     @Override
     public @NotNull Unit tail() {
-        return of();
+        return Unit.INSTANCE;
     }
 
     /**
