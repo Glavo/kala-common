@@ -17,6 +17,8 @@ public class KalaBaseModule extends Module {
 
     @Override
     public void setupModule(SetupContext context) {
-        // TODO
+        context.addDeserializers(new KalaBaseDeserializers());
+        context.addSerializers(new KalaBaseSerializers());
+        context.addTypeModifier(new KalaBaseTypeModifier());
     }
 }
