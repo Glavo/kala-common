@@ -8,7 +8,7 @@ public final class BooleanUtils {
     }
 
     public static final int BITS_PRE_VALUE = Integer.SIZE;
-    public static final int FULL_BITS = -1;
+    public static final int FULL_BITS = 0xffffffff;
 
     public static boolean get(int bits, int position) {
         return ((bits >> position) & 1) != 0;
