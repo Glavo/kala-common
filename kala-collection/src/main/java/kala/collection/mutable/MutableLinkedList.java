@@ -9,6 +9,7 @@ import kala.collection.base.AbstractIterator;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.ObjectStreamException;
@@ -16,6 +17,9 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
@@ -125,6 +129,52 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
     @Contract("_ -> new")
     public static <E> @NotNull MutableLinkedList<E> from(@NotNull Stream<? extends E> stream) {
         return stream.collect(factory());
+    }
+
+    public static <E> @NotNull MutableLinkedList<E> fill(int n, E value) {
+        MutableLinkedList<E> res = new MutableLinkedList<>();
+        while (n-- > 0) {
+            res.append(value);
+        }
+        return res;
+    }
+
+    public static <E> @NotNull MutableLinkedList<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+        MutableLinkedList<E> res = new MutableLinkedList<>();
+        while (n-- > 0) {
+            res.append(supplier.get());
+        }
+        return res;
+    }
+
+    public static <E> @NotNull MutableLinkedList<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+        MutableLinkedList<E> res = new MutableLinkedList<>();
+        for (int i = 0; i < n; i++) {
+            res.append(init.apply(i));
+        }
+        return res;
+    }
+
+    public static <E> @NotNull MutableLinkedList<E> generateUntil(@NotNull Supplier<? extends E> supplier, @NotNull Predicate<? super E> predicate) {
+        MutableLinkedList<E> res = new MutableLinkedList<>();
+        while (true) {
+            E value = supplier.get();
+            if (predicate.test(value))
+                break;
+            res.append(value);
+        }
+        return res;
+    }
+
+    public static <E> @NotNull MutableLinkedList<E> generateUntilNull(@NotNull Supplier<? extends @Nullable E> supplier) {
+        MutableLinkedList<E> res = new MutableLinkedList<>();
+        while (true) {
+            E value = supplier.get();
+            if (value == null)
+                break;
+            res.append(value);
+        }
+        return res;
     }
 
     //endregion

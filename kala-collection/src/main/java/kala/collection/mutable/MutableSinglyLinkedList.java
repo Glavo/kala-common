@@ -5,6 +5,7 @@ import kala.collection.immutable.ImmutableLinkedSeq;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -12,6 +13,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.function.IntFunction;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -138,6 +140,28 @@ public final class MutableSinglyLinkedList<E> extends ImmutableLinkedSeq.Builder
         MutableSinglyLinkedList<E> res = new MutableSinglyLinkedList<>();
         for (int i = 0; i < n; i++) {
             res.append(init.apply(i));
+        }
+        return res;
+    }
+
+    public static <E> @NotNull MutableSinglyLinkedList<E> generateUntil(@NotNull Supplier<? extends E> supplier, @NotNull Predicate<? super E> predicate) {
+        MutableSinglyLinkedList<E> res = new MutableSinglyLinkedList<>();
+        while (true) {
+            E value = supplier.get();
+            if (predicate.test(value))
+                break;
+            res.append(value);
+        }
+        return res;
+    }
+
+    public static <E> @NotNull MutableSinglyLinkedList<E> generateUntilNull(@NotNull Supplier<? extends @Nullable E> supplier) {
+        MutableSinglyLinkedList<E> res = new MutableSinglyLinkedList<>();
+        while (true) {
+            E value = supplier.get();
+            if (value == null)
+                break;
+            res.append(value);
         }
         return res;
     }

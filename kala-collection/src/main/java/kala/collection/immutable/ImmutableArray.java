@@ -181,6 +181,28 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E> implements I
         return new ImmutableArray<>(ans);
     }
 
+    public static <E> @NotNull ImmutableArray<E> generateUntil(@NotNull Supplier<? extends E> supplier, @NotNull Predicate<? super E> predicate) {
+        MutableArrayList<E> builder = new MutableArrayList<>();
+        while (true) {
+            E value = supplier.get();
+            if (predicate.test(value))
+                break;
+            builder.append(value);
+        }
+        return builder.toImmutableArray();
+    }
+
+    public static <E> @NotNull ImmutableArray<E> generateUntilNull(@NotNull Supplier<? extends @Nullable E> supplier) {
+        MutableArrayList<E> builder = new MutableArrayList<>();
+        while (true) {
+            E value = supplier.get();
+            if (value == null)
+                break;
+            builder.append(value);
+        }
+        return builder.toImmutableArray();
+    }
+
     @StaticClass
     public final static class Unsafe {
         private Unsafe() {

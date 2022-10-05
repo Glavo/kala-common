@@ -8,11 +8,13 @@ import kala.function.IndexedFunction;
 import kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.IntFunction;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -168,6 +170,28 @@ public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Seria
             ans[i] = init.apply(i);
         }
         return new MutableArray<>(ans);
+    }
+
+    public static <E> @NotNull MutableArray<E> generateUntil(@NotNull Supplier<? extends E> supplier, @NotNull Predicate<? super E> predicate) {
+        MutableArrayList<E> builder = new MutableArrayList<>();
+        while (true) {
+            E value = supplier.get();
+            if (predicate.test(value))
+                break;
+            builder.append(value);
+        }
+        return new MutableArray<>(builder.toArray());
+    }
+
+    public static <E> @NotNull MutableArray<E> generateUntilNull(@NotNull Supplier<? extends @Nullable E> supplier) {
+        MutableArrayList<E> builder = new MutableArrayList<>();
+        while (true) {
+            E value = supplier.get();
+            if (value == null)
+                break;
+            builder.append(value);
+        }
+        return new MutableArray<>(builder.toArray());
     }
 
     public static <E> @NotNull MutableArray<E> wrap(E @NotNull [] array) {

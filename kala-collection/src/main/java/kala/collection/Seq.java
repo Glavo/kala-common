@@ -94,6 +94,13 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
         return ImmutableSeq.fill(n, init);
     }
 
+    static <E> @NotNull Seq<E> generateUntil(@NotNull Supplier<? extends E> supplier, @NotNull Predicate<? super E> predicate) {
+        return ImmutableSeq.generateUntil(supplier, predicate);
+    }
+
+    static <E> @NotNull Seq<E> generateUntilNull(@NotNull Supplier<? extends @Nullable E> supplier) {
+        return ImmutableSeq.generateUntilNull(supplier);
+    }
 
     static <E> @NotNull Seq<E> wrapJava(java.util.@NotNull List<? extends E> source) {
         Objects.requireNonNull(source);

@@ -12,6 +12,7 @@ import kala.collection.internal.CollectionHelper;
 import kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -19,6 +20,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.IntFunction;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -194,6 +196,28 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
             arr[i] = init.apply(i);
         }
         return new MutableArrayList<>(arr, n);
+    }
+
+    public static <E> @NotNull MutableArrayList<E> generateUntil(@NotNull Supplier<? extends E> supplier, @NotNull Predicate<? super E> predicate) {
+        MutableArrayList<E> res = new MutableArrayList<>();
+        while (true) {
+            E value = supplier.get();
+            if (predicate.test(value))
+                break;
+            res.append(value);
+        }
+        return res;
+    }
+
+    public static <E> @NotNull MutableArrayList<E> generateUntilNull(@NotNull Supplier<? extends @Nullable E> supplier) {
+        MutableArrayList<E> res = new MutableArrayList<>();
+        while (true) {
+            E value = supplier.get();
+            if (value == null)
+                break;
+            res.append(value);
+        }
+        return res;
     }
 
     //endregion

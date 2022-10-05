@@ -218,6 +218,14 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
         return ImmutableVector.fill(n, init);
     }
 
+    static <E> @NotNull ImmutableSeq<E> generateUntil(@NotNull Supplier<? extends E> supplier, @NotNull Predicate<? super E> predicate) {
+        return ImmutableArray.generateUntil(supplier, predicate);
+    }
+
+    static <E> @NotNull ImmutableSeq<E> generateUntilNull(@NotNull Supplier<? extends @Nullable E> supplier) {
+        return ImmutableArray.generateUntilNull(supplier);
+    }
+
     //endregion
 
     @Override

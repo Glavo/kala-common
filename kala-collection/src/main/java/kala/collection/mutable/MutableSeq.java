@@ -4,6 +4,8 @@ import kala.Conditions;
 import kala.annotations.DelegateBy;
 import kala.collection.Seq;
 import kala.collection.base.ObjectArrays;
+import kala.collection.immutable.ImmutableArray;
+import kala.collection.immutable.ImmutableSeq;
 import kala.collection.internal.SeqIterators;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
@@ -11,10 +13,14 @@ import kala.function.IndexedFunction;
 import kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public interface MutableSeq<E> extends MutableCollection<E>, Seq<E>, MutableAnySeq<E> {
@@ -73,6 +79,26 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E>, MutableAnyS
 
     static <E> @NotNull MutableSeq<E> from(@NotNull Stream<? extends E> stream) {
         return MutableArray.from(stream);
+    }
+
+    static <E> @NotNull MutableSeq<E> fill(int n, E value) {
+        return MutableArray.fill(n, value);
+    }
+
+    static <E> @NotNull MutableSeq<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+        return MutableArray.fill(n, supplier);
+    }
+
+    static <E> @NotNull MutableSeq<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+        return MutableArray.fill(n, init);
+    }
+
+    static <E> @NotNull MutableSeq<E> generateUntil(@NotNull Supplier<? extends E> supplier, @NotNull Predicate<? super E> predicate) {
+        return MutableArray.generateUntil(supplier, predicate);
+    }
+
+    static <E> @NotNull MutableSeq<E> generateUntilNull(@NotNull Supplier<? extends @Nullable E> supplier) {
+        return MutableArray.generateUntilNull(supplier);
     }
 
     @Contract("_ -> new")

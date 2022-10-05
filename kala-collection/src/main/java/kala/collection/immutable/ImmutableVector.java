@@ -12,6 +12,7 @@ import kala.collection.IndexedSeq;
 import kala.collection.SeqLike;
 import kala.collection.base.AnyTraversable;
 import kala.collection.base.Traversable;
+import kala.collection.mutable.MutableArrayList;
 import kala.comparator.Comparators;
 import kala.function.*;
 import kala.annotations.Covariant;
@@ -220,6 +221,28 @@ public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq
         ImmutableVectors.VectorBuilder<E> builder = new ImmutableVectors.VectorBuilder<>();
         for (int i = 0; i < n; i++) {
             builder.add(init.apply(i));
+        }
+        return builder.build();
+    }
+
+    public static <E> @NotNull ImmutableVector<E> generateUntil(@NotNull Supplier<? extends E> supplier, @NotNull Predicate<? super E> predicate) {
+        ImmutableVectors.VectorBuilder<E> builder = new ImmutableVectors.VectorBuilder<>();
+        while (true) {
+            E value = supplier.get();
+            if (predicate.test(value))
+                break;
+            builder.add(value);
+        }
+        return builder.build();
+    }
+
+    public static <E> @NotNull ImmutableVector<E> generateUntilNull(@NotNull Supplier<? extends @Nullable E> supplier) {
+        ImmutableVectors.VectorBuilder<E> builder = new ImmutableVectors.VectorBuilder<>();
+        while (true) {
+            E value = supplier.get();
+            if (value == null)
+                break;
+            builder.add(value);
         }
         return builder.build();
     }

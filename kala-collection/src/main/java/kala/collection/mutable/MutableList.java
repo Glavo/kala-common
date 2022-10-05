@@ -18,7 +18,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.IntFunction;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
@@ -89,6 +91,26 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
     @Contract("_ -> new")
     static <E> @NotNull MutableList<E> from(@NotNull Stream<? extends E> stream) {
         return MutableArrayList.from(stream);
+    }
+
+    static <E> @NotNull MutableList<E> fill(int n, E value) {
+        return MutableArrayList.fill(n, value);
+    }
+
+    static <E> @NotNull MutableList<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
+        return MutableArrayList.fill(n, supplier);
+    }
+
+    static <E> @NotNull MutableList<E> fill(int n, @NotNull IntFunction<? extends E> init) {
+        return MutableArrayList.fill(n, init);
+    }
+
+    static <E> @NotNull MutableList<E> generateUntil(@NotNull Supplier<? extends E> supplier, @NotNull Predicate<? super E> predicate) {
+        return MutableArrayList.generateUntil(supplier, predicate);
+    }
+
+    static <E> @NotNull MutableList<E> generateUntilNull(@NotNull Supplier<? extends @Nullable E> supplier) {
+        return MutableArrayList.generateUntilNull(supplier);
     }
 
     static <E> @NotNull MutableList<E> wrapJava(@NotNull List<E> list) {
