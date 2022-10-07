@@ -301,6 +301,7 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
     @Flow(sourceIsContainer = true)
     E removeAt(int index);
 
+    @Contract(mutates = "this")
     default boolean remove(Object value) {
         int idx = indexOf(value);
         if (idx < 0)
@@ -310,6 +311,7 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
         return true;
     }
 
+    @Contract(mutates = "this")
     default void removeInRange(int beginIndex, int endIndex) {
         int size = this.size();
         Conditions.checkPositionIndices(beginIndex, endIndex, size);
