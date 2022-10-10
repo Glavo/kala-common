@@ -1,6 +1,7 @@
 package kala.collection.mutable;
 
 import kala.Conditions;
+import kala.annotations.DelegateBy;
 import kala.annotations.ReplaceWith;
 import kala.collection.ArraySeq;
 import kala.collection.Seq;
@@ -341,11 +342,13 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
     }
 
     @Contract(mutates = "this")
+    @DelegateBy("removeFirst()")
     default @Nullable E removeFirstOrNull() {
         return isEmpty() ? null : removeFirst();
     }
 
     @Contract(mutates = "this")
+    @DelegateBy("removeFirst()")
     default @NotNull Option<E> removeFirstOption() {
         return isEmpty() ? Option.none() : Option.some(removeFirst());
     }
@@ -360,11 +363,13 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
     }
 
     @Contract(mutates = "this")
+    @DelegateBy("removeLast()")
     default @Nullable E removeLastOrNull() {
         return isEmpty() ? null : removeLast();
     }
 
     @Contract(mutates = "this")
+    @DelegateBy("removeLast()")
     default @NotNull Option<E> removeLastOption() {
         return isEmpty() ? Option.none() : Option.some(removeLast());
     }
