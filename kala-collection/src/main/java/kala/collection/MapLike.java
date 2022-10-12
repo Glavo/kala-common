@@ -168,7 +168,6 @@ public interface MapLike<K, V> extends MapBase<K, V> {
         return destination;
     }
 
-
     default @NotNull MapView.WithDefault<K, V> withDefault(@NotNull Function<? super K, ? extends V> defaultFunction) {
         Objects.requireNonNull(defaultFunction);
         return new MapViews.WithDefaultImpl<>(this, defaultFunction);
