@@ -700,12 +700,12 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         }
     }
 
-    @DelegateBy("forEach(ConsumerT>)")
+    @DelegateBy("forEach(Consumer<T>)")
     default <Ex extends Throwable> void forEachChecked(@NotNull CheckedConsumer<? super T, ? extends Ex> action) throws Ex {
         forEach(action);
     }
 
-    @DelegateBy("forEach(ConsumerT>)")
+    @DelegateBy("forEach(Consumer<T>)")
     default void forEachUnchecked(@NotNull CheckedConsumer<? super T, ?> action) {
         forEach(action);
     }
