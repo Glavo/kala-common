@@ -5,10 +5,68 @@ import kala.control.Option;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Iterator;
+import java.util.Objects;
+
 public interface MutableDeque<E> extends MutableQueue<E> {
 
     static <E> @NotNull MutableDeque<E> create() {
         return new MutableArrayDeque<>();
+    }
+
+    static <E> @NotNull MutableDeque<E> wrapJava(java.util.@NotNull Deque<E> deque) {
+        Objects.requireNonNull(deque);
+        return new MutableDeque<E>() {
+            @Override
+            public @NotNull Iterator<E> iterator() {
+                return deque.iterator();
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return deque.isEmpty();
+            }
+
+            @Override
+            public void prepend(E value) {
+                deque.addFirst(value);
+            }
+
+            @Override
+            public void append(E value) {
+                deque.addLast(value);
+            }
+
+            @Override
+            public E removeFirst() {
+                return deque.removeFirst();
+            }
+
+            @Override
+            public E removeLast() {
+                return deque.removeLast();
+            }
+
+            @Override
+            public E first() {
+                return deque.getFirst();
+            }
+
+            @Override
+            public E last() {
+                return deque.getLast();
+            }
+
+            @Override
+            public void enqueue(E value) {
+                deque.add(value);
+            }
+
+            @Override
+            public E dequeue() {
+                return deque.remove();
+            }
+        };
     }
 
     boolean isEmpty();
@@ -78,14 +136,14 @@ public interface MutableDeque<E> extends MutableQueue<E> {
     }
 
     @Override
-    @DelegateBy("removeLastOrNull()")
+    @DelegateBy("dequeue()")
     default @Nullable E dequeueOrNull() {
-        return removeLastOrNull();
+        return isNotEmpty() ? dequeue() : null;
     }
 
     @Override
-    @DelegateBy("removeLastOption()")
+    @DelegateBy("dequeue()")
     default @NotNull Option<E> dequeueOption() {
-        return removeLastOption();
+        return isNotEmpty() ? Option.some(dequeue()) : Option.none();
     }
 }
