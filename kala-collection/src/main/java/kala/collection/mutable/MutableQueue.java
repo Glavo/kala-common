@@ -47,6 +47,11 @@ public interface MutableQueue<E> extends MutableCollection<E> {
         };
     }
 
+    @Override
+    default @NotNull String className() {
+        return "MutableQueue";
+    }
+
     boolean isEmpty();
 
     void enqueue(E value);

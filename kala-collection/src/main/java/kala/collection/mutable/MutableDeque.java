@@ -16,7 +16,7 @@ public interface MutableDeque<E> extends MutableQueue<E> {
 
     static <E> @NotNull MutableDeque<E> wrapJava(java.util.@NotNull Deque<E> deque) {
         Objects.requireNonNull(deque);
-        return new MutableDeque<E>() {
+        return new AbstractMutableDeque<E>() {
             @Override
             public @NotNull Iterator<E> iterator() {
                 return deque.iterator();
@@ -67,6 +67,11 @@ public interface MutableDeque<E> extends MutableQueue<E> {
                 return deque.remove();
             }
         };
+    }
+
+    @Override
+    default @NotNull String className() {
+        return "MutableDeque";
     }
 
     boolean isEmpty();
