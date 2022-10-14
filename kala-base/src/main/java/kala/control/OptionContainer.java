@@ -170,6 +170,20 @@ public interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>,
         return mapper.apply(get());
     }
 
+    default void ifDefined(@NotNull Consumer<? super T> action) {
+        if (isDefined()) {
+            action.accept(get());
+        }
+    }
+
+    default void ifDefinedOrElse(@NotNull Consumer<? super T> action, Runnable emptyAction) {
+        if (isDefined()) {
+            action.accept(get());
+        } else {
+            emptyAction.run();
+        }
+    }
+
     /**
      * Returns {@code Option.some(get())} if it is not empty, otherwise return the {@code Option.none()}.
      *
