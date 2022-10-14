@@ -134,6 +134,42 @@ public interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>,
         return get();
     }
 
+    default <U> U get(@NotNull Function<? super T, ? extends U> mapper) {
+        return mapper.apply(get());
+    }
+
+    default <U> @Nullable U getOrNull(@NotNull Function<? super T, ? extends U> mapper) {
+        return isDefined() ? mapper.apply(get()) : null;
+    }
+
+    default <U> @NotNull Option<U> getOption(@NotNull Function<? super T, ? extends U> mapper) {
+        return isDefined() ? Option.some(mapper.apply(get())) : Option.none();
+    }
+
+    default <U> U getOrDefault(@NotNull Function<? super T, ? extends U> mapper, U defaultValue) {
+        return isDefined() ? mapper.apply(get()) : defaultValue;
+    }
+
+    default <U> U getOrElse(@NotNull Function<? super T, ? extends U> mapper, @NotNull Supplier<? extends U> supplier) {
+        return isDefined() ? mapper.apply(get()) : supplier.get();
+    }
+
+    default <U, Ex extends Throwable> U getOrThrowException(@NotNull Function<? super T, ? extends U> mapper, @NotNull Ex exception) throws Ex {
+        if (isEmpty()) {
+            Objects.requireNonNull(exception);
+            throw exception;
+        }
+        return mapper.apply(get());
+    }
+
+    default <U, Ex extends Throwable> U getOrThrow(@NotNull Function<? super T, ? extends U> mapper, @NotNull Supplier<? extends Ex> supplier) throws Ex {
+        if (isEmpty()) {
+            Objects.requireNonNull(supplier);
+            throw supplier.get();
+        }
+        return mapper.apply(get());
+    }
+
     /**
      * Returns {@code Option.some(get())} if it is not empty, otherwise return the {@code Option.none()}.
      *
