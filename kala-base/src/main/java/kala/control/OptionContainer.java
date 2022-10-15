@@ -319,8 +319,7 @@ public interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>,
      * {@inheritDoc}
      */
     @Override
-    @NotNull
-    default Option<T> find(@NotNull Predicate<? super T> predicate) {
+    default @NotNull Option<T> find(@NotNull Predicate<? super T> predicate) {
         return isDefined() && predicate.test(get()) // implicit null check of predicate
                 ? Option.some(get())
                 : Option.none();
