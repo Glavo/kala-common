@@ -1,3 +1,4 @@
+import org.glavo.mic.tasks.CompileModuleInfo
 import java.util.Properties
 
 plugins {
@@ -130,6 +131,10 @@ allprojects {
                 }
             }
         }
+    }
+
+    configure<CompileModuleInfo> {
+        moduleVersion = project.version.toString()
     }
 
     if (rootProject.ext.has("signing.key")) {
