@@ -1,6 +1,7 @@
 package kala.collection.mutable;
 
 import kala.collection.MapLike;
+import kala.collection.base.MapIterator;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.control.Option;
 import kala.tuple.Tuple2;
@@ -30,20 +31,25 @@ public interface MutableMapLike<K, V> extends MapLike<K, V> {
         }
     }
 
+    @Contract(mutates = "this")
     @NotNull Option<V> put(K key, V value);
 
+    @Contract(mutates = "this")
     default @NotNull Option<V> put(@NotNull Tuple2<? extends K, ? extends V> kv) {
         return put(kv.getKey(), kv.getValue());
     }
 
+    @Contract(mutates = "this")
     default void set(K key, V value) {
         put(key, value);
     }
 
+    @Contract(mutates = "this")
     default void set(@NotNull Tuple2<? extends K, ? extends V> kv) {
         set(kv.getKey(), kv.getValue());
     }
 
+    @Contract(mutates = "this")
     default @NotNull Option<V> putIfAbsent(K key, V value) {
         Option<V> v = getOption(key);
         if (v.isEmpty()) {
@@ -52,6 +58,7 @@ public interface MutableMapLike<K, V> extends MapLike<K, V> {
         return v;
     }
 
+    @Contract(mutates = "this")
     @SuppressWarnings("unchecked")
     default void putAll(java.util.@NotNull Map<? extends K, ? extends V> m) {
         if (m instanceof AsJavaConvert.MapAsJava<?, ?, ?>) {
@@ -61,6 +68,7 @@ public interface MutableMapLike<K, V> extends MapLike<K, V> {
         m.forEach(this::set);
     }
 
+    @Contract(mutates = "this")
     default void putAll(@NotNull MapLike<? extends K, ? extends V> m) {
         if (m == this) {
             return;
@@ -68,7 +76,37 @@ public interface MutableMapLike<K, V> extends MapLike<K, V> {
         m.forEach(this::set);
     }
 
+    @Contract(mutates = "this")
     @NotNull Option<V> remove(K key);
+
+    @Contract(mutates = "this")
+    default boolean removeAll(@NotNull Iterable<? extends K> keys) {
+        boolean changed = false;
+        for (K key : keys) {
+            if (remove(key).isDefined()) {
+                changed = true;
+            }
+        }
+        return changed;
+    }
+
+    @Contract(mutates = "this")
+    default boolean removeAll(@NotNull MapLike<K, V> values) {
+        boolean changed = false;
+
+        MapIterator<K, V> it = values.iterator();
+        while (it.hasNext()) {
+            K k = it.nextKey();
+            V v = it.getValue();
+
+            if (getOption(k).contains(v)) {
+                remove(k);
+                changed = true;
+            }
+        }
+
+        return changed;
+    }
 
     @Contract(mutates = "this")
     void clear();
@@ -93,7 +131,7 @@ public interface MutableMapLike<K, V> extends MapLike<K, V> {
     void replaceAll(@NotNull BiFunction<? super K, ? super V, ? extends V> function);
 
     default @NotNull MutableSet<Tuple2<K, V>> asMutableSet() {
-        return new AbstractMutableSet<Tuple2<K,V>>() {
+        return new AbstractMutableSet<Tuple2<K, V>>() {
             @Override
             public final boolean add(@NotNull Tuple2<K, V> value) {
 
