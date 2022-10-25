@@ -8,6 +8,7 @@ import kala.tuple.Tuple2;
 import kala.annotations.Covariant;
 import kala.comparator.Comparators;
 import kala.collection.factory.CollectionFactory;
+import kala.tuple.Tuple3;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -395,6 +396,11 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     @Override
     default <U> @NotNull ImmutableSeq<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
         return AbstractImmutableCollection.zip(this, other, this.<Tuple2<E, U>>iterableFactory());
+    }
+
+    @Override
+    default <U, V> @NotNull ImmutableSeq<@NotNull Tuple3<E, U, V>> zip3(@NotNull Iterable<? extends U> other1, @NotNull Iterable<? extends V> other2) {
+        return AbstractImmutableCollection.zip3(this, other1, other2, this.<Tuple3<E, U, V>>iterableFactory());
     }
 
     @Override

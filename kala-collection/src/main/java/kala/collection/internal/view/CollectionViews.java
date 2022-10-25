@@ -8,6 +8,7 @@ import kala.control.Option;
 import kala.tuple.Tuple2;
 import kala.annotations.Covariant;
 import kala.collection.factory.CollectionFactory;
+import kala.tuple.Tuple3;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -693,6 +694,23 @@ public final class CollectionViews {
         @Override
         public @NotNull Iterator<Tuple2<E, U>> iterator() {
             return Iterators.zip(source.iterator(), other.iterator());
+        }
+    }
+
+    public static final class Zip3<E, U, V> extends AbstractCollectionView<Tuple3<E, U, V>> {
+        private final @NotNull CollectionView<? extends E> source;
+        private final @NotNull Iterable<? extends U> other1;
+        private final @NotNull Iterable<? extends V> other2;
+
+        public Zip3(@NotNull CollectionView<? extends E> source, @NotNull Iterable<? extends U> other1, @NotNull Iterable<? extends V> other2) {
+            this.source = source;
+            this.other1 = other1;
+            this.other2 = other2;
+        }
+
+        @Override
+        public @NotNull Iterator<Tuple3<E, U, V>> iterator() {
+            return Iterators.zip3(source.iterator(), other1.iterator(), other2.iterator());
         }
     }
 

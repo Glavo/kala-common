@@ -8,6 +8,7 @@ import kala.tuple.Tuple2;
 import kala.annotations.StaticClass;
 import kala.control.Option;
 import kala.collection.factory.CollectionFactory;
+import kala.tuple.Tuple3;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -865,6 +866,13 @@ public final class Iterators {
             return Iterators.empty();
         }
         return new Zip<>(it1, it2);
+    }
+
+    public static <E, U, V> @NotNull Iterator<@NotNull Tuple3<E, U, V>> zip3(@NotNull Iterator<? extends E> it1, Iterator<? extends U> it2, Iterator<? extends V> it3) {
+        if (!it1.hasNext() || !it2.hasNext() ||!it3.hasNext()) { // implicit null check of it1 and it2
+            return Iterators.empty();
+        }
+        return new Zip3<>(it1, it2, it3);
     }
 
     public static <E> @NotNull Tuple2<Iterator<E>, Iterator<E>> span(
@@ -2121,6 +2129,31 @@ public final class Iterators {
                 return Tuple.of(it1.next(), it2.next());
             }
             throw new NoSuchElementException();
+        }
+    }
+
+    private static final class Zip3<E, U, V> extends AbstractIterator<@NotNull Tuple3<E, U, V>> {
+        private final Iterator<? extends E> it1;
+        private final Iterator<? extends U> it2;
+        private final Iterator<? extends V> it3;
+
+        Zip3(Iterator<? extends E> it1, Iterator<? extends U> it2, Iterator<? extends V> it3) {
+            this.it1 = it1;
+            this.it2 = it2;
+            this.it3 = it3;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return it1.hasNext() && it2.hasNext() && it3.hasNext();
+        }
+
+        @Override
+        public @NotNull Tuple3<E, U, V> next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            return Tuple.of(it1.next(), it2.next(), it3.next());
         }
     }
 }

@@ -8,6 +8,7 @@ import kala.collection.internal.view.CollectionViews;
 import kala.function.CheckedFunction;
 import kala.function.CheckedPredicate;
 import kala.tuple.Tuple2;
+import kala.tuple.Tuple3;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -158,4 +159,8 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
         return view().<U>zip(other).toImmutableSeq();
     }
 
+    @Contract(pure = true)
+    default <U, V> @NotNull ImmutableCollection<@NotNull Tuple3<E, U, V>> zip3(@NotNull Iterable<? extends U> other1, @NotNull Iterable<? extends V> other2) {
+        return view().<U, V>zip3(other1, other2).toImmutableSeq();
+    }
 }

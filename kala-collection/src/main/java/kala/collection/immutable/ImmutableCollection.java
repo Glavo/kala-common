@@ -5,6 +5,7 @@ import kala.collection.Collection;
 import kala.collection.factory.CollectionFactory;
 import kala.function.Predicates;
 import kala.tuple.Tuple2;
+import kala.tuple.Tuple3;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -125,6 +126,7 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E>, Immuta
     default <U> @NotNull ImmutableCollection<U> map(@NotNull Function<? super E, ? extends U> mapper) {
         return AbstractImmutableCollection.map(this, mapper, this.<U>iterableFactory());
     }
+
     @Contract(pure = true)
     default <U> @NotNull ImmutableCollection<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
         return AbstractImmutableCollection.mapNotNull(this, mapper, this.<U>iterableFactory());
@@ -140,7 +142,13 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E>, Immuta
         return AbstractImmutableCollection.flatMap(this, mapper, iterableFactory());
     }
 
+    @Override
     default <U> @NotNull ImmutableCollection<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
         return AbstractImmutableCollection.zip(this, other, this.<Tuple2<E, U>>iterableFactory());
+    }
+
+    @Override
+    default <U, V> @NotNull ImmutableCollection<@NotNull Tuple3<E, U, V>> zip3(@NotNull Iterable<? extends U> other1, @NotNull Iterable<? extends V> other2) {
+        return AbstractImmutableCollection.zip3(this, other1, other2, this.<Tuple3<E, U, V>>iterableFactory());
     }
 }
