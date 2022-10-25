@@ -174,7 +174,7 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
 
     @Contract(mutates = "this")
     @SuppressWarnings("unchecked")
-    default boolean removeAll(@NotNull Predicate<? super E> predicate) {
+    default boolean removeIf(@NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
 
         final Object[] arr = toArray();
@@ -187,6 +187,12 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
         }
 
         return size() != oldSize;
+    }
+
+    @Deprecated
+    @ReplaceWith("removeIf(Predicate<E>)")
+    default boolean removeAll(@NotNull Predicate<? super E> predicate) {
+        return removeIf(predicate);
     }
 
     @Contract(mutates = "this")
@@ -220,7 +226,7 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
 
     @Contract(mutates = "this")
     @SuppressWarnings("unchecked")
-    default boolean retainAll(@NotNull Predicate<? super E> predicate) {
+    default boolean retainIf(@NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
 
         final Object[] arr = toArray();
@@ -235,13 +241,21 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
         return size() != oldSize;
     }
 
-    @Contract(mutates = "this")
-    default void filterInPlace(@NotNull Predicate<? super E> predicate) {
-        retainAll(predicate);
+    @Deprecated
+    @ReplaceWith("retainIf(Predicate<E>)")
+    default boolean retainAll(@NotNull Predicate<? super E> predicate) {
+        return retainIf(predicate);
     }
 
-    @Contract(mutates = "this")
+    @Deprecated
+    @ReplaceWith("retainIf(Predicate<E>)")
+    default void filterInPlace(@NotNull Predicate<? super E> predicate) {
+        retainIf(predicate);
+    }
+
+    @Deprecated
+    @ReplaceWith("retainIf(removeIf<E>)")
     default void filterNotInPlace(@NotNull Predicate<? super E> predicate) {
-        removeAll(predicate);
+        removeIf(predicate);
     }
 }

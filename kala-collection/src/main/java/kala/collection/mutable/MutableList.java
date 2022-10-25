@@ -375,7 +375,7 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
     }
 
     @Contract(mutates = "this")
-    default boolean removeAll(@NotNull Predicate<? super E> predicate) {
+    default boolean removeIf(@NotNull Predicate<? super E> predicate) {
         MutableListIterator<E> it = this.seqIterator();
         boolean changed = false;
         while (it.hasNext()) {
@@ -388,8 +388,14 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
         return changed;
     }
 
+    @Deprecated
+    @ReplaceWith("removeIf(Predicate<E>)")
+    default boolean removeAll(@NotNull Predicate<? super E> predicate) {
+        return removeIf(predicate);
+    }
+
     @Contract(mutates = "this")
-    default boolean retainAll(@NotNull Predicate<? super E> predicate) {
+    default boolean retainIf(@NotNull Predicate<? super E> predicate) {
         MutableListIterator<E> it = this.seqIterator();
         boolean changed = false;
         while (it.hasNext()) {
@@ -400,6 +406,12 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
             }
         }
         return changed;
+    }
+
+    @Deprecated
+    @ReplaceWith("retainIf(Predicate<E>)")
+    default boolean retainAll(@NotNull Predicate<? super E> predicate) {
+        return retainIf(predicate);
     }
 
     @Contract(mutates = "this")
@@ -447,13 +459,15 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
         }
     }
 
-    @Contract(mutates = "this")
+    @Deprecated
+    @ReplaceWith("retainIf(Predicate<E>)")
     default void filterInPlace(@NotNull Predicate<? super E> predicate) {
-        retainAll(predicate);
+        retainIf(predicate);
     }
 
-    @Contract(mutates = "this")
+    @Deprecated
+    @ReplaceWith("removeIf(removeIf<E>)")
     default void filterNotInPlace(@NotNull Predicate<? super E> predicate) {
-        removeAll(predicate);
+        removeIf(predicate);
     }
 }

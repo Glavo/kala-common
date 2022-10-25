@@ -85,14 +85,14 @@ public class MutableListEditor<E, C extends MutableList<E>> extends MutableSeqEd
     }
 
     @Contract("_ -> this")
-    public MutableListEditor<E, C> retainAll(@NotNull Predicate<? super E> predicate) {
-        source.retainAll(predicate);
+    public MutableListEditor<E, C> removeIf(@NotNull Predicate<? super E> predicate) {
+        source.removeIf(predicate);
         return this;
     }
 
     @Contract("_ -> this")
-    public MutableListEditor<E, C> removeAll(@NotNull Predicate<? super E> predicate) {
-        source.removeAll(predicate);
+    public MutableListEditor<E, C> retainIf(@NotNull Predicate<? super E> predicate) {
+        source.retainIf(predicate);
         return this;
     }
 

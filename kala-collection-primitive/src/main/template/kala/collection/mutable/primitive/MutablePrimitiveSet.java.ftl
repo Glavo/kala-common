@@ -209,7 +209,7 @@ public interface Mutable${Type}Set extends MutablePrimitiveSet<${WrapperType}>, 
 
     @Contract(mutates = "this")
     @SuppressWarnings("unchecked")
-    default boolean removeAll(@NotNull ${Type}Predicate predicate) {
+    default boolean removeIf(@NotNull ${Type}Predicate predicate) {
         Objects.requireNonNull(predicate);
 
         final ${PrimitiveType}[] arr = toArray();
@@ -222,6 +222,12 @@ public interface Mutable${Type}Set extends MutablePrimitiveSet<${WrapperType}>, 
         }
 
         return size() != oldSize;
+    }
+
+    @Deprecated
+    @ReplaceWith("removeIf(${Type}Predicate)")
+    default boolean removeAll(@NotNull ${Type}Predicate predicate) {
+        return removeIf(predicate);
     }
 
     @Contract(mutates = "this")
@@ -249,7 +255,7 @@ public interface Mutable${Type}Set extends MutablePrimitiveSet<${WrapperType}>, 
     }
 
     @Contract(mutates = "this")
-    default boolean retainAll(@NotNull ${Type}Predicate predicate) {
+    default boolean retainIf(@NotNull ${Type}Predicate predicate) {
         Objects.requireNonNull(predicate);
 
         final ${PrimitiveType}[] arr = toArray();
@@ -262,6 +268,12 @@ public interface Mutable${Type}Set extends MutablePrimitiveSet<${WrapperType}>, 
         }
 
         return size() != oldSize;
+    }
+
+    @Deprecated
+    @ReplaceWith("retainIf(${Type}Predicate)")
+    default boolean retainAll(@NotNull ${Type}Predicate predicate) {
+        return retainIf(predicate);
     }
 
     @Contract(mutates = "this")

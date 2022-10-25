@@ -282,7 +282,7 @@ public interface Mutable${Type}List extends MutablePrimitiveList<${WrapperType}>
     }
 
     @Contract(mutates = "this")
-    default boolean removeAll(@NotNull ${Type}Predicate predicate) {
+    default boolean removeIf(@NotNull ${Type}Predicate predicate) {
         Mutable${Type}ListIterator it = this.seqIterator();
         boolean changed = false;
         while (it.hasNext()) {
@@ -295,8 +295,14 @@ public interface Mutable${Type}List extends MutablePrimitiveList<${WrapperType}>
         return changed;
     }
 
+    @Deprecated
+    @ReplaceWith("removeIf(${Type}Predicate)")
+    default boolean removeAll(@NotNull ${Type}Predicate predicate) {
+        return removeIf(predicate);
+    }
+
     @Contract(mutates = "this")
-    default boolean retainAll(@NotNull ${Type}Predicate predicate) {
+    default boolean retainIf(@NotNull ${Type}Predicate predicate) {
         Mutable${Type}ListIterator it = this.seqIterator();
         boolean changed = false;
         while (it.hasNext()) {
@@ -307,6 +313,13 @@ public interface Mutable${Type}List extends MutablePrimitiveList<${WrapperType}>
             }
         }
         return changed;
+    }
+
+    @Contract(mutates = "this")
+    @Deprecated
+    @ReplaceWith("retainIf<${Type}Predicate>")
+    default boolean retainAll(@NotNull ${Type}Predicate predicate) {
+        return retainIf(predicate);
     }
 
     @Contract(mutates = "this")
