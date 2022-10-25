@@ -83,6 +83,10 @@ allprojects {
         archiveClassifier.set("javadoc")
     }
 
+    tasks.withType<CompileModuleInfo> {
+        moduleVersion = project.version.toString()
+    }
+
     tasks.withType<Javadoc>().configureEach {
         (options as StandardJavadocDocletOptions).also {
             it.encoding("UTF-8")
@@ -131,10 +135,6 @@ allprojects {
                 }
             }
         }
-    }
-
-    configure<CompileModuleInfo> {
-        moduleVersion = project.version.toString()
     }
 
     if (rootProject.ext.has("signing.key")) {
