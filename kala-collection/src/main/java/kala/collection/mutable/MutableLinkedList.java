@@ -2,7 +2,6 @@ package kala.collection.mutable;
 
 import kala.Conditions;
 import kala.collection.base.Iterators;
-import kala.control.Option;
 import kala.function.IndexedFunction;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.base.AbstractIterator;
@@ -12,19 +11,18 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.function.Function;
-import java.util.function.IntFunction;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.util.Objects;
+import java.util.function.*;
 import java.util.stream.Stream;
 
 @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
 public final class MutableLinkedList<E> extends AbstractMutableList<E> implements MutableStack<E>, MutableDeque<E>, Serializable {
     private static final long serialVersionUID = 8463536184690478447L;
+
+    private static final boolean enableAssertions = Boolean.getBoolean("kala.collection.mutable.MutableLinkedList.enableAssertions");
 
     private static final Factory<?> FACTORY = new Factory<>();
 
@@ -179,26 +177,9 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
 
     //endregion
 
-    Node<E> getNode(int index) {
-        final int len = this.len;
-        Node<E> x;
-        if (index < (len >> 1)) {
-            x = first;
-            for (int i = 0; i < index; i++) {
-                x = x.next;
-            }
-        } else {
-            x = last;
-            for (int i = len - 1; i > index; i--) {
-                x = x.prev;
-            }
-        }
-        return x;
-    }
-
     @Override
     public @NotNull String className() {
-        return "MutableLinkedList" ;
+        return "MutableLinkedList";
     }
 
     @Override
@@ -208,8 +189,12 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
 
     @Override
     public @NotNull Iterator<E> iterator() {
-        final Node<E> first = this.first;
         return first == null ? Iterators.empty() : new Itr<>(first);
+    }
+
+    public @NotNull Iterator<E> iterator(@NotNull Node<E> node) {
+        assertInList(node);
+        return new Itr<>(node);
     }
 
     @Override
@@ -234,88 +219,37 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
         return res;
     }
 
-    @Override
-    public E get(int index) {
-        if (index < 0 || index >= len) {
-            throw new IndexOutOfBoundsException();
+    private void assertInList(Node<E> node) {
+        if (enableAssertions && getIndex(node) < 0) {
+            throw new AssertionError(node + " not in the linked list");
         }
-        return getNode(index).value;
     }
 
-    @Override
-    public void prepend(E value) {
-        final Node<E> first = this.first;
-        final Node<E> newNode = new Node<>(null, first, value);
-        this.first = newNode;
-        if (first == null) {
-            last = newNode;
+    private void assertNotInList(Node<E> node) {
+        if (enableAssertions && getIndex(node) >= 0) {
+            throw new AssertionError(node + " is already in the linked list");
+        }
+    }
+
+    Node<E> internalGetNode(int index) {
+        Node<E> x;
+        if (index < (len >> 1)) {
+            x = first;
+            for (int i = 0; i < index; i++) {
+                x = x.next;
+            }
         } else {
-            first.prev = newNode;
+            x = last;
+            for (int i = len - 1; i > index; i--) {
+                x = x.prev;
+            }
         }
-        len++;
+        return x;
     }
 
-    @Override
-    public void append(E value) {
-        final Node<E> last = this.last;
-        final Node<E> newNode = new Node<>(last, null, value);
-        this.last = newNode;
-        if (last == null) {
-            first = newNode;
-        } else {
-            last.next = newNode;
-        }
-        len++;
-    }
-
-    public E removeFirst() {
-        final Node<E> first = this.first;
-        if (first == null) {
-            throw new NoSuchElementException();
-        }
-
-        final Node<E> next = first.next;
-        this.first = next;
-        if (next == null) {
-            this.last = null;
-        } else {
-            next.prev = null;
-        }
-        --len;
-        return first.value;
-    }
-
-    public E removeLast() {
-        final Node<E> last = this.last;
-        if (last == null) {
-            throw new NoSuchElementException();
-        }
-
-        final Node<E> prev = last.prev;
-        this.last = prev;
-        if (prev == null) {
-            this.first = null;
-        } else {
-            prev.next = null;
-        }
-        --len;
-        return last.value;
-    }
-
-    @Override
-    public void insert(int index, E value) {
-        Conditions.checkPositionIndex(index, len);
-
-        if (index == len) {
-            append(value);
-        } else {
-            insertBefore(getNode(index), value);
-        }
-    }
-
-    void insertBefore(Node<E> node, E value) {
+    void internalInsertBefore(@NotNull Node<E> node, E value) {
         final Node<E> prev = node.prev;
-        final Node<E> newNode = new Node<>(prev, node, value);
+        final Node<E> newNode = newNode(prev, node, value);
         node.prev = newNode;
         if (prev == null) {
             first = newNode;
@@ -325,17 +259,7 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
         len++;
     }
 
-    @Override
-    public E removeAt(int index) {
-        Conditions.checkElementIndex(index, len);
-
-        final Node<E> node = getNode(index);
-        final E value = node.value;
-        removeAt(node);
-        return value;
-    }
-
-    void removeAt(@NotNull Node<E> node) {
+    void internalUnlink(@NotNull Node<E> node) {
         final Node<E> prev = node.prev;
         final Node<E> next = node.next;
 
@@ -352,8 +276,218 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
             next.prev = prev;
             node.next = null;
         }
-        node.value = null;
         len--;
+    }
+
+    public Node<E> getNode(int index) {
+        Conditions.checkElementIndex(index, len);
+        return internalGetNode(index);
+    }
+
+    public int getIndex(Node<E> node) {
+        Node<E> n = first;
+        for (int i = 0; i < len; i++) {
+            if (node == n)
+                return i;
+
+            n = n.next;
+        }
+        return -1;
+    }
+
+    @Override
+    public E get(int index) {
+        if (index < 0 || index >= len) {
+            throw new IndexOutOfBoundsException();
+        }
+        return internalGetNode(index).value;
+    }
+
+    @Override
+    public void prepend(E value) {
+        final Node<E> oldFirst = this.first;
+        final Node<E> newNode = newNode(null, oldFirst, value);
+        this.first = newNode;
+        if (oldFirst == null) {
+            this.last = newNode;
+        } else {
+            oldFirst.prev = newNode;
+        }
+        len++;
+    }
+
+    public void prepend(@NotNull Node<E> node) {
+        assertNotInList(node);
+
+        final Node<E> oldFirst = this.first;
+        node.prev = null;
+        node.next = oldFirst;
+        this.first = node;
+        if (oldFirst == null) {
+            this.last = node;
+        } else {
+            oldFirst.prev = node;
+        }
+        len++;
+    }
+
+    public void prepend(@NotNull Node<E> node, E value) {
+        node.setValue(value);
+        prepend(node);
+    }
+
+    @Override
+    public void append(E value) {
+        final Node<E> oldLast = this.last;
+        final Node<E> newNode = newNode(oldLast, null, value);
+        this.last = newNode;
+        if (oldLast == null) {
+            first = newNode;
+        } else {
+            oldLast.next = newNode;
+        }
+        len++;
+    }
+
+    public void append(@NotNull Node<E> node) {
+        assertNotInList(node);
+
+        final Node<E> oldLast = this.last;
+        node.prev = oldLast;
+        node.next = null;
+        this.last = node;
+        if (oldLast == null) {
+            this.first = node;
+        } else {
+            oldLast.next = node;
+        }
+        len++;
+    }
+
+    public void append(@NotNull Node<E> node, E value) {
+        node.setValue(value);
+        append(node);
+    }
+
+    public E removeFirst() {
+        final Node<E> oldFirst = this.first;
+        if (oldFirst == null) {
+            throw new NoSuchElementException();
+        }
+
+        final Node<E> next = oldFirst.next;
+        this.first = next;
+        if (next == null) {
+            this.last = null;
+        } else {
+            next.prev = null;
+        }
+        len--;
+        return oldFirst.value;
+    }
+
+    public E removeLast() {
+        final Node<E> oldLast = this.last;
+        if (oldLast == null) {
+            throw new NoSuchElementException();
+        }
+
+        final Node<E> prev = oldLast.prev;
+        this.last = prev;
+        if (prev == null) {
+            this.first = null;
+        } else {
+            prev.next = null;
+        }
+        len--;
+        return oldLast.value;
+    }
+
+    @Override
+    public void insert(int index, E value) {
+        Conditions.checkPositionIndex(index, len);
+
+        if (index == len) {
+            append(value);
+        } else {
+            internalInsertBefore(internalGetNode(index), value);
+        }
+    }
+
+    public void insertBefore(@NotNull Node<E> node, E value) {
+        assertInList(node);
+        internalInsertBefore(node, value);
+    }
+
+    public void insertBefore(@NotNull Node<E> node, @NotNull Node<E> newNode) {
+        assertInList(node);
+        assertNotInList(newNode);
+
+        final Node<E> prev = node.prev;
+        newNode.prev = prev;
+        newNode.next = node;
+        node.prev = newNode;
+        if (prev == null) {
+            first = newNode;
+        } else {
+            prev.next = newNode;
+        }
+        len++;
+    }
+
+    public void insertBefore(@NotNull Node<E> node, @NotNull Node<E> newNode, E newValue) {
+        newNode.setValue(newValue);
+        insertBefore(node, newNode);
+    }
+
+    public void insertAfter(@NotNull Node<E> node, E value) {
+        assertInList(node);
+
+        final Node<E> next = node.next;
+        final Node<E> newNode = newNode(node, next, value);
+        node.next = newNode;
+        if (next == null) {
+            last = newNode;
+        } else {
+            next.prev = newNode;
+        }
+        len++;
+    }
+
+    public void insertAfter(@NotNull Node<E> node, @NotNull Node<E> newNode) {
+        assertInList(node);
+        assertNotInList(newNode);
+
+        final Node<E> next = node.next;
+        newNode.prev = node;
+        newNode.next = next;
+        node.next = newNode;
+        if (next == null) {
+            last = newNode;
+        } else {
+            next.prev = newNode;
+        }
+        len++;
+    }
+
+    public void insertAfter(@NotNull Node<E> node, @NotNull Node<E> newNode, E newValue) {
+        newNode.setValue(newValue);
+        insertAfter(node, newNode);
+    }
+
+    @Override
+    public E removeAt(int index) {
+        Conditions.checkElementIndex(index, len);
+
+        final Node<E> node = internalGetNode(index);
+        final E value = node.value;
+        internalUnlink(node);
+        return value;
+    }
+
+    public void unlink(@NotNull Node<E> node) {
+        assertInList(node);
+        internalUnlink(node);
     }
 
     @Override
@@ -363,7 +497,7 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
         if (value == null) {
             while (node != null) {
                 if (null == node.value) {
-                    removeAt(node);
+                    internalUnlink(node);
                     return true;
                 }
                 node = node.next;
@@ -371,7 +505,7 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
         } else {
             while (node != null) {
                 if (value.equals(node.value)) {
-                    removeAt(node);
+                    internalUnlink(node);
                     return true;
                 }
                 node = node.next;
@@ -390,10 +524,8 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
 
     @Override
     public void set(int index, E newValue) {
-        if (index < 0 || index >= len) {
-            throw new IndexOutOfBoundsException();
-        }
-        getNode(index).value = newValue;
+        Conditions.checkElementIndex(index, len);
+        internalGetNode(index).value = newValue;
     }
 
     @Override
@@ -405,6 +537,10 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
         return first.value;
     }
 
+    public Node<E> firstNode() {
+        return first;
+    }
+
     @Override
     public E last() {
         final Node<E> last = this.last;
@@ -412,6 +548,10 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
             throw new NoSuchElementException();
         }
         return last.value;
+    }
+
+    public Node<E> lastNode() {
+        return last;
     }
 
     @Override
@@ -487,6 +627,34 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
         return last == null ? Iterators.empty() : new ReverseItr<>(last);
     }
 
+    public @NotNull Iterator<E> reverseIterator(@NotNull Node<E> node) {
+        assertInList(node);
+        return new ReverseItr<>(node);
+    }
+
+    @Override
+    public void forEach(@NotNull Consumer<? super E> action) {
+        Objects.requireNonNull(action);
+        Node<E> node = this.first;
+        while (node != null) {
+            action.accept(node.value);
+            node = node.next;
+        }
+    }
+
+    public void forEachNode(@NotNull Consumer<? super Node<E>> action) {
+        Objects.requireNonNull(action);
+        Node<E> node = this.first;
+        while (node != null) {
+            action.accept(node);
+            node = node.next;
+        }
+    }
+
+    Node<E> newNode(Node<E> prev, Node<E> next, E value) {
+        return new Node<>(prev, next, value);
+    }
+
     private void writeObject(java.io.ObjectOutputStream out) throws IOException {
         out.writeInt(len);
         Node<E> node = this.first;
@@ -505,11 +673,11 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
             return;
         }
 
-        final Node<E> first = new Node<>(null, null, (E) in.readObject());
+        final Node<E> first = newNode(null, null, (E) in.readObject());
         Node<E> last = first;
 
         for (int i = 1; i < size; i++) {
-            Node<E> node = new Node<>(null, null, (E) in.readObject());
+            Node<E> node = newNode(null, null, (E) in.readObject());
             last.next = node;
             last = node;
         }
@@ -519,7 +687,7 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
         this.last = last;
     }
 
-    private static final class Node<E> {
+    public static final class Node<E> {
         E value;
         Node<E> next;
         Node<E> prev;
@@ -528,6 +696,22 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
             this.next = next;
             this.prev = prev;
             this.value = value;
+        }
+
+        public E getValue() {
+            return value;
+        }
+
+        public void setValue(E value) {
+            this.value = value;
+        }
+
+        public Node<E> getNext() {
+            return next;
+        }
+
+        public Node<E> getPrev() {
+            return prev;
         }
     }
 
@@ -545,7 +729,6 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
 
         @Override
         public E next() {
-            final Node<E> node = this.node;
             if (node == null) {
                 throw new NoSuchElementException();
             }
@@ -585,7 +768,7 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
 
         SeqItr(int index) {
             super(index);
-            next = (index == len) ? null : getNode(index);
+            next = (index == len) ? null : internalGetNode(index);
         }
 
         @Override
@@ -621,7 +804,7 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
             if (next == null) {
                 append(e);
             } else {
-                insertBefore(next, e);
+                internalInsertBefore(next, e);
             }
             cursor++;
         }
@@ -632,7 +815,7 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
                 throw new IllegalStateException();
             }
             Node<E> lastReturnedNext = this.lastReturned;
-            removeAt(lastReturned);
+            internalUnlink(lastReturned);
             if (next == lastReturned) {
                 next = lastReturnedNext;
             } else {
