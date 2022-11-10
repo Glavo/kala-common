@@ -2,6 +2,7 @@ package kala.collection.mutable;
 
 import kala.Conditions;
 import kala.collection.base.Iterators;
+import kala.function.IndexedConsumer;
 import kala.function.IndexedFunction;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.base.AbstractIterator;
@@ -647,6 +648,16 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
         Node<E> node = this.first;
         while (node != null) {
             action.accept(node);
+            node = node.next;
+        }
+    }
+
+    public void forEachNodeIndexed(@NotNull IndexedConsumer<? super Node<E>> action) {
+        Objects.requireNonNull(action);
+        int idx = 0;
+        Node<E> node = this.first;
+        while (node != null) {
+            action.accept(idx++, node);
             node = node.next;
         }
     }
