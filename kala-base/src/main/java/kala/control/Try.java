@@ -161,7 +161,13 @@ public final class Try<@Covariant T> extends AnyTry<T> implements Traversable<T>
         }
     }
 
+    @Deprecated
+    @ReplaceWith("runCatching(CheckedRunnable<?>)")
     public static @NotNull Try<Void> run(@NotNull CheckedRunnable<?> runnable) {
+        return runCatching(runnable);
+    }
+
+    public static @NotNull Try<Void> runCatching(@NotNull CheckedRunnable<?> runnable) {
         Objects.requireNonNull(runnable);
         try {
             runnable.runChecked();

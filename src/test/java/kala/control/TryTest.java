@@ -25,7 +25,7 @@ public class TryTest {
     public void ofTest() {
         assertEquals(Try.success("foo"), Try.of(() -> "foo"));
         assertEquals(Try.success("foo"), Try.ofCallable(() -> "foo"));
-        assertEquals(Try.success(null), Try.run(() -> {
+        assertEquals(Try.success(null), Try.runCatching(() -> {
         }));
         assertEquals(Try.success(null), Try.runRunnable(() -> {
         }));
@@ -33,7 +33,7 @@ public class TryTest {
         MyException ex = new MyException();
         assertEquals(Try.failure(ex), Try.of(() -> Try.throwException(ex)));
         assertEquals(Try.failure(ex), Try.ofCallable(() -> Try.throwException(ex)));
-        assertEquals(Try.failure(ex), Try.run(() -> Try.throwException(ex)));
+        assertEquals(Try.failure(ex), Try.runCatching(() -> Try.throwException(ex)));
         assertEquals(Try.failure(ex), Try.runRunnable(() -> Try.throwException(ex)));
 
         assertTrue(Try.success("foo").isSuccess());
