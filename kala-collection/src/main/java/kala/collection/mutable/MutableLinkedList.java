@@ -250,7 +250,7 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
 
     void internalInsertBefore(@NotNull Node<E> node, E value) {
         final Node<E> prev = node.prev;
-        final Node<E> newNode = newNode(prev, node, value);
+        final Node<E> newNode = new Node<>(prev, node, value);
         node.prev = newNode;
         if (prev == null) {
             first = newNode;
@@ -307,7 +307,7 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
     @Override
     public void prepend(E value) {
         final Node<E> oldFirst = this.first;
-        final Node<E> newNode = newNode(null, oldFirst, value);
+        final Node<E> newNode = new Node<>(null, oldFirst, value);
         this.first = newNode;
         if (oldFirst == null) {
             this.last = newNode;
@@ -340,7 +340,7 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
     @Override
     public void append(E value) {
         final Node<E> oldLast = this.last;
-        final Node<E> newNode = newNode(oldLast, null, value);
+        final Node<E> newNode = new Node<>(oldLast, null, value);
         this.last = newNode;
         if (oldLast == null) {
             first = newNode;
@@ -445,7 +445,7 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
         assertInList(node);
 
         final Node<E> next = node.next;
-        final Node<E> newNode = newNode(node, next, value);
+        final Node<E> newNode = new Node<>(node, next, value);
         node.next = newNode;
         if (next == null) {
             last = newNode;
@@ -662,10 +662,6 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
         }
     }
 
-    Node<E> newNode(Node<E> prev, Node<E> next, E value) {
-        return new Node<>(prev, next, value);
-    }
-
     private void writeObject(java.io.ObjectOutputStream out) throws IOException {
         out.writeInt(len);
         Node<E> node = this.first;
@@ -684,11 +680,11 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
             return;
         }
 
-        final Node<E> first = newNode(null, null, (E) in.readObject());
+        final Node<E> first = new Node<>(null, null, (E) in.readObject());
         Node<E> last = first;
 
         for (int i = 1; i < size; i++) {
-            Node<E> node = newNode(null, null, (E) in.readObject());
+            Node<E> node = new Node<>(null, null, (E) in.readObject());
             last.next = node;
             last = node;
         }
