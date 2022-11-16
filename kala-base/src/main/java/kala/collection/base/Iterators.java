@@ -1253,6 +1253,30 @@ public final class Iterators {
         }
     }
 
+    public static <T, U> void forEachWith(
+            @NotNull Iterator<? extends T> it1,
+            @NotNull Iterator<? extends U> it2,
+            @NotNull BiConsumer<? super T, ? super U> action) {
+        Objects.requireNonNull(action);
+        while (it1.hasNext() && it2.hasNext()) {
+            action.accept(it1.next(), it2.next());
+        }
+    }
+
+    public static <T, U, Ex extends Throwable> void forEachWithChecked(
+            @NotNull Iterator<? extends T> it1,
+            @NotNull Iterator<? extends U> it2,
+            @NotNull CheckedBiConsumer<? super T, ? super U, ? extends Ex> action) throws Ex {
+        forEachWith(it1, it2, action);
+    }
+
+    public static <T, U> void forEachWithUnchecked(
+            @NotNull Iterator<? extends T> it1,
+            @NotNull Iterator<? extends U> it2,
+            @NotNull CheckedBiConsumer<? super T, ? super U, ?> action) {
+        forEachWith(it1, it2, action);
+    }
+
     private static final Iterator<?> EMPTY = new AbstractIterator<Object>() {
         @Override
         public boolean hasNext() {

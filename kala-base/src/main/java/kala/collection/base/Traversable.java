@@ -9,6 +9,7 @@ import kala.concurrent.ConcurrentScope;
 import kala.concurrent.LateInitCountDownLatch;
 import kala.control.Option;
 import kala.collection.factory.CollectionFactory;
+import kala.function.CheckedBiConsumer;
 import kala.function.CheckedBiFunction;
 import kala.function.CheckedConsumer;
 import kala.function.CheckedPredicate;
@@ -783,6 +784,20 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
             latch.init(count.value);
             return latch.awaitFuture();
         }
+    }
+
+    default <U> void forEachWith(@NotNull Iterable<? extends U> other, @NotNull BiConsumer<? super T, ? super U> action) {
+        Iterators.forEachWith(this.iterator(), other.iterator(), action);
+    }
+
+    default <U, Ex extends Throwable> void forEachWithChecked(@NotNull Iterable<? extends U> other,
+                                                              @NotNull CheckedBiConsumer<? super T, ? super U, ? extends Ex> action) throws Ex {
+        forEachWith(other, action);
+    }
+
+    default <U> void forEachWithUnchecked(@NotNull Iterable<? extends U> other,
+                                                              @NotNull CheckedBiConsumer<? super T, ? super U, ?> action) {
+        forEachWith(other, action);
     }
 
     //endregion
