@@ -19,9 +19,6 @@ public class KalaBaseTypeModifier extends TypeModifier {
                 || type.isTypeOrSubTypeOf(cls = AnyValue.class))
             return ReferenceType.upgradeFrom(type, type.findSuperType(cls).containedTypeOrUnknown(0));
 
-        if (type.isTypeOrSubTypeOf(Result.class) || type.isTypeOrSubTypeOf(Either.class))
-            return ReferenceType.upgradeFrom(type, type);
-
         if (type.isTypeOrSubTypeOf(AnyTraversable.class))
             return CollectionType.upgradeFrom(type, type.findSuperType(AnyTraversable.class).containedTypeOrUnknown(0));
 

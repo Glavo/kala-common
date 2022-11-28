@@ -33,7 +33,6 @@ public class TypeLiteral<T> implements Serializable {
     }
 
     private @NotNull Type capture() {
-        Class<?> cls = this.getClass();
         Type genericSuperclass = this.getClass().getGenericSuperclass();
         if (genericSuperclass instanceof ParameterizedType) {
             ParameterizedType superType = (ParameterizedType) genericSuperclass;

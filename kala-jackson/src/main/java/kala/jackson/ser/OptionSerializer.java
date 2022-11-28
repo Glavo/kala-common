@@ -36,6 +36,7 @@ public class OptionSerializer extends ReferenceTypeSerializer<Option<?>> {
                 suppressableValue, suppressNulls);
     }
 
+
     @Override
     protected boolean _isValuePresent(Option<?> value) {
         return value.isDefined();
@@ -48,6 +49,6 @@ public class OptionSerializer extends ReferenceTypeSerializer<Option<?>> {
 
     @Override
     protected Object _getReferencedIfPresent(Option<?> value) {
-        return value.isDefined() ? value.get() : null;
+        return value.getOrNull();
     }
 }
