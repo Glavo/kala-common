@@ -6,8 +6,10 @@ import com.fasterxml.jackson.databind.ser.Serializers;
 import com.fasterxml.jackson.databind.type.ReferenceType;
 import kala.control.Either;
 import kala.control.Option;
+import kala.control.Result;
 import kala.jackson.ser.EitherSerializer;
 import kala.jackson.ser.OptionSerializer;
+import kala.jackson.ser.ResultSerializer;
 import kala.jackson.ser.TupleSerializer;
 import kala.tuple.AnyTuple;
 
@@ -36,6 +38,9 @@ public class KalaBaseSerializers extends Serializers.Base {
 
         if (Either.class.isAssignableFrom(rawClass))
             return new EitherSerializer(type);
+
+        if (Result.class.isAssignableFrom(rawClass))
+            return new ResultSerializer(type);
 
         return super.findSerializer(config, type, beanDesc);
     }

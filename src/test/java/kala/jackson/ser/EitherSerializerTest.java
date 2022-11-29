@@ -16,7 +16,6 @@ public class EitherSerializerTest {
                 .addModule(new KalaBaseModule())
                 .build();
 
-
         ObjectNode left = ((ObjectNode) mapper.readTree(mapper.writeValueAsString(Either.left(10))));
         assertEquals(1, left.size());
         assertEquals(10, left.get("left").asInt());
