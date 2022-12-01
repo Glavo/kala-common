@@ -39,8 +39,8 @@ public class KalaBaseSerializers extends Serializers.Base {
         if (Either.class.isAssignableFrom(rawClass))
             return new EitherSerializer(type);
 
-        if (Result.class.isAssignableFrom(rawClass))
-            return new ResultSerializer(type);
+//        if (Result.class.isAssignableFrom(rawClass))
+//            return new ResultSerializer(type);
 
         return super.findSerializer(config, type, beanDesc);
     }
