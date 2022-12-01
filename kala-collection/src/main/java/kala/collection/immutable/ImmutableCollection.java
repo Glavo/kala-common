@@ -159,4 +159,9 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E>, Immuta
     default <U, V> @NotNull ImmutableCollection<@NotNull Tuple3<E, U, V>> zip3(@NotNull Iterable<? extends U> other1, @NotNull Iterable<? extends V> other2) {
         return AbstractImmutableCollection.zip3(this, other1, other2, this.<Tuple3<E, U, V>>iterableFactory());
     }
+
+    @Override
+    default @NotNull ImmutableCollection<E> distinct() {
+        return AbstractImmutableCollection.distinct(this, this.<E>iterableFactory());
+    }
 }

@@ -391,4 +391,9 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
     default <U> @NotNull ImmutableSeq<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
         return view().flatMap(mapper).toImmutableSeq();
     }
+
+    @Contract(pure = true)
+    default @NotNull ImmutableSeq<E> distinct() {
+        return view().distinct().toImmutableSeq();
+    }
 }

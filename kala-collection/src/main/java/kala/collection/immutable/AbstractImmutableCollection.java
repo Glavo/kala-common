@@ -11,6 +11,7 @@ import kala.tuple.Tuple3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.*;
@@ -167,6 +168,22 @@ public abstract class AbstractImmutableCollection<@Covariant E>
 
         while (it1.hasNext() && it2.hasNext() && it3.hasNext()) {
             factory.addToBuilder(builder, Tuple.of(it1.next(), it2.next(), it3.next()));
+        }
+        return factory.build(builder);
+    }
+
+    static <E, T, Builder> T distinct(
+            @NotNull ImmutableCollection<? extends E> collection,
+            @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
+    ) {
+        if (AnyTraversable.knownSize(collection) == 0) {
+            return factory.empty();
+        }
+        Builder builder = factory.newBuilder();
+        HashSet<E> set = new HashSet<>();
+        for (E e : collection) {
+            if (set.add(e))
+                factory.addToBuilder(builder, e);
         }
         return factory.build(builder);
     }

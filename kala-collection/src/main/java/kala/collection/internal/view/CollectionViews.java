@@ -5,7 +5,6 @@ import kala.collection.Map;
 import kala.collection.base.Iterators;
 import kala.collection.immutable.*;
 import kala.control.Option;
-import kala.tuple.Tuple2;
 import kala.annotations.Covariant;
 import kala.collection.factory.CollectionFactory;
 import kala.tuple.Tuple3;
@@ -518,6 +517,34 @@ public final class CollectionViews {
 
         //endregion
 
+    }
+
+    public static class OfJava<@Covariant E, C extends java.util.Collection<E>> extends AbstractCollectionView<E> {
+        protected final @NotNull C source;
+
+        public OfJava(@NotNull C source) {
+            this.source = source;
+        }
+
+        @Override
+        public @NotNull Iterator<E> iterator() {
+            return source.iterator();
+        }
+
+        @Override
+        public Spliterator<E> spliterator() {
+            return source.spliterator();
+        }
+
+        @Override
+        public @NotNull Stream<E> stream() {
+            return source.stream();
+        }
+
+        @Override
+        public @NotNull Stream<E> parallelStream() {
+            return source.parallelStream();
+        }
     }
 
     public static final class Mapped<@Covariant E, T> extends AbstractCollectionView<E> {

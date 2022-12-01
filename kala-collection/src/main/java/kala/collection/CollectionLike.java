@@ -45,6 +45,8 @@ public interface CollectionLike<E> extends Traversable<E>, AnyCollectionLike<E> 
 
     <U, V> @NotNull CollectionLike<@NotNull Tuple3<E, U, V>> zip3(@NotNull Iterable<? extends U> other1, @NotNull Iterable<? extends V> other2);
 
+    @NotNull CollectionLike<E> distinct();
+
     //region Copy Operations
 
     @Contract(mutates = "param1")

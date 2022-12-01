@@ -1,5 +1,6 @@
 package kala.collection;
 
+import kala.collection.immutable.ImmutableArray;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.function.IndexedBiConsumer;
 import kala.function.IndexedFunction;
@@ -15,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -292,5 +294,14 @@ public interface SeqView<@Covariant E> extends CollectionView<E>, SeqLike<E>, An
 
     default @NotNull Tuple2<? extends SeqView<E>, ? extends SeqView<E>> span(@NotNull Predicate<? super E> predicate) {
         return Tuple.of(takeWhile(predicate), dropWhile(predicate));
+    }
+
+    @Override
+    default @NotNull SeqView<E> distinct() {
+        LinkedHashSet<E> set = new LinkedHashSet<>();
+        for (E e : this) {
+            set.add(e);
+        }
+        return ImmutableArray.Unsafe.<E>wrap(set.toArray()).view();
     }
 }

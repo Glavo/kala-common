@@ -2,6 +2,7 @@ package kala.collection;
 
 import kala.annotations.DelegateBy;
 import kala.collection.immutable.ImmutableCollection;
+import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.view.CollectionViews;
 import kala.function.Predicates;
 import kala.tuple.Tuple;
@@ -11,6 +12,8 @@ import kala.tuple.Tuple3;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.function.*;
 
@@ -20,6 +23,11 @@ public interface CollectionView<@Covariant E> extends CollectionLike<E>, AnyColl
     @SuppressWarnings("unchecked")
     static <E> @NotNull CollectionView<E> empty() {
         return ((CollectionView<E>) CollectionViews.Empty.INSTANCE);
+    }
+
+    static <E> @NotNull CollectionView<E> ofJava(@NotNull java.util.Collection<E> collection) {
+        Objects.requireNonNull(collection);
+        return collection.isEmpty() ? empty() : new CollectionViews.OfJava<>(collection);
     }
 
     @Override
@@ -85,9 +93,17 @@ public interface CollectionView<@Covariant E> extends CollectionLike<E>, AnyColl
         return new CollectionViews.Zip<>(this, other, mapper);
     }
 
-    default <U, V> @NotNull CollectionLike<@NotNull Tuple3<E, U, V>> zip3(@NotNull Iterable<? extends U> other1, @NotNull Iterable<? extends V> other2) {
+    default <U, V> @NotNull CollectionView<@NotNull Tuple3<E, U, V>> zip3(@NotNull Iterable<? extends U> other1, @NotNull Iterable<? extends V> other2) {
         Objects.requireNonNull(other1);
         Objects.requireNonNull(other2);
         return new CollectionViews.Zip3<>(this, other1, other2);
+    }
+
+    default @NotNull CollectionView<E> distinct() {
+        LinkedHashSet<E> set = new LinkedHashSet<>();
+        for (E e : this) {
+            set.add(e);
+        }
+        return ofJava(set);
     }
 }

@@ -168,4 +168,9 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
     default <U, V> @NotNull ImmutableCollection<@NotNull Tuple3<E, U, V>> zip3(@NotNull Iterable<? extends U> other1, @NotNull Iterable<? extends V> other2) {
         return view().<U, V>zip3(other1, other2).toImmutableSeq();
     }
+
+    @Contract(pure = true)
+    default @NotNull ImmutableCollection<E> distinct() {
+        return view().distinct().toImmutableSeq();
+    }
 }
