@@ -3,6 +3,10 @@ package kala.collection.base;
 import kala.annotations.Covariant;
 import kala.annotations.DelegateBy;
 import kala.annotations.UnstableName;
+import kala.collection.base.primitive.ByteGrowable;
+import kala.collection.base.primitive.DoubleGrowable;
+import kala.collection.base.primitive.IntGrowable;
+import kala.collection.base.primitive.LongGrowable;
 import kala.comparator.Comparators;
 import kala.concurrent.Granularity;
 import kala.concurrent.ConcurrentScope;
@@ -223,6 +227,31 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
     default <U, G extends Growable<? super U>> @NotNull G mapTo(@NotNull G destination, @NotNull Function<? super T, ? extends U> mapper) {
         for (T e : this) {
             destination.plusAssign(mapper.apply(e));
+        }
+        return destination;
+    }
+
+    @Contract(value = "_, _ -> param1", mutates = "param1")
+    default <U, G extends IntGrowable> @NotNull G mapToIntTo(@NotNull G destination, @NotNull ToIntFunction<? super T> mapper) {
+        for (T e : this) {
+            destination.plusAssign(mapper.applyAsInt(e));
+        }
+        return destination;
+    }
+
+
+    @Contract(value = "_, _ -> param1", mutates = "param1")
+    default <U, G extends LongGrowable> @NotNull G mapToLongTo(@NotNull G destination, @NotNull ToLongFunction<? super T> mapper) {
+        for (T e : this) {
+            destination.plusAssign(mapper.applyAsLong(e));
+        }
+        return destination;
+    }
+
+    @Contract(value = "_, _ -> param1", mutates = "param1")
+    default <U, G extends DoubleGrowable> @NotNull G mapToDoubleTo(@NotNull G destination, @NotNull ToDoubleFunction<? super T> mapper) {
+        for (T e : this) {
+            destination.plusAssign(mapper.applyAsDouble(e));
         }
         return destination;
     }
