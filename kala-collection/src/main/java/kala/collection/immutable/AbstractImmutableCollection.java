@@ -13,10 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.Objects;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
 
 public abstract class AbstractImmutableCollection<@Covariant E>
         extends AbstractCollection<E> implements ImmutableCollection<E> {
@@ -130,12 +127,14 @@ public abstract class AbstractImmutableCollection<@Covariant E>
         return factory.build(builder);
     }
 
-    static <E, U, T, Builder> T zip(
+    static <E, U, R, T, Builder> T zip(
             @NotNull ImmutableCollection<? extends E> collection,
             @NotNull Iterable<? extends U> other,
-            @NotNull CollectionFactory<? super Tuple2<E, U>, Builder, ? extends T> factory
+            @NotNull BiFunction<? super E, ? super U, ? extends R> mapper,
+            @NotNull CollectionFactory<? super R, Builder, ? extends T> factory
     ) {
         Objects.requireNonNull(other);
+        Objects.requireNonNull(mapper);
         if (AnyTraversable.knownSize(collection) == 0 || AnyTraversable.knownSize(other) == 0) {
             return factory.empty();
         }
@@ -144,7 +143,7 @@ public abstract class AbstractImmutableCollection<@Covariant E>
         Iterator<? extends E> it1 = collection.iterator();
         Iterator<? extends U> it2 = other.iterator();
         while (it1.hasNext() && it2.hasNext()) {
-            factory.addToBuilder(builder, Tuple.of(it1.next(), it2.next()));
+            factory.addToBuilder(builder, mapper.apply(it1.next(), it2.next()));
         }
         return factory.build(builder);
     }

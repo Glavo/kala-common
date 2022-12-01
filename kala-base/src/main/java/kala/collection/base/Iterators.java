@@ -861,11 +861,19 @@ public final class Iterators {
         return new ConcatAll<>(Iterators.map(Iterators.map(it, mapper), Iterable::iterator));
     }
 
-    public static <E, U> @NotNull Iterator<@NotNull Tuple2<E, U>> zip(@NotNull Iterator<? extends E> it1, Iterator<? extends U> it2) {
+    public static <E, U> @NotNull Iterator<@NotNull Tuple2<E, U>> zip(@NotNull Iterator<? extends E> it1, @NotNull Iterator<? extends U> it2) {
         if (!it1.hasNext() || !it2.hasNext()) { // implicit null check of it1 and it2
             return Iterators.empty();
         }
-        return new Zip<>(it1, it2);
+        return new Zip<>(it1, it2, Tuple::of);
+    }
+
+    public static <E, U, R> @NotNull Iterator<R> zip(@NotNull Iterator<? extends E> it1, @NotNull Iterator<? extends U> it2, @NotNull BiFunction<? super E, ? super U, ? extends R> mapper) {
+        Objects.requireNonNull(mapper);
+        if (!it1.hasNext() || !it2.hasNext()) { // implicit null check of it1 and it2
+            return Iterators.empty();
+        }
+        return new Zip<>(it1, it2, mapper);
     }
 
     public static <E, U, V> @NotNull Iterator<@NotNull Tuple3<E, U, V>> zip3(@NotNull Iterator<? extends E> it1, Iterator<? extends U> it2, Iterator<? extends V> it3) {
@@ -2127,13 +2135,15 @@ public final class Iterators {
         }
     }
 
-    private static final class Zip<E, U> extends AbstractIterator<@NotNull Tuple2<E, U>> {
+    private static final class Zip<E, U, R> extends AbstractIterator<R> {
         private Iterator<? extends E> it1;
         private Iterator<? extends U> it2;
+        private BiFunction<? super E, ? super U, ? extends R> mapper;
 
-        Zip(Iterator<? extends E> it1, Iterator<? extends U> it2) {
+        Zip(Iterator<? extends E> it1, Iterator<? extends U> it2, BiFunction<? super E, ? super U, ? extends R> mapper) {
             this.it1 = it1;
             this.it2 = it2;
+            this.mapper = mapper;
         }
 
         @Override
@@ -2143,16 +2153,18 @@ public final class Iterators {
             } else {
                 it1 = null;
                 it2 = null;
+                mapper = null;
                 return false;
             }
         }
 
         @Override
-        public @NotNull Tuple2<E, U> next() {
+        public R next() {
             if (hasNext()) {
-                return Tuple.of(it1.next(), it2.next());
+                return mapper.apply(it1.next(), it2.next());
+            } else {
+                throw new NoSuchElementException();
             }
-            throw new NoSuchElementException();
         }
     }
 

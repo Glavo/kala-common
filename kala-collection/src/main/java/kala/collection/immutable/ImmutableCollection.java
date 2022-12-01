@@ -1,9 +1,11 @@
 package kala.collection.immutable;
 
 import kala.annotations.Covariant;
+import kala.annotations.DelegateBy;
 import kala.collection.Collection;
 import kala.collection.factory.CollectionFactory;
 import kala.function.Predicates;
+import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import kala.tuple.Tuple3;
 import org.jetbrains.annotations.Contract;
@@ -143,8 +145,14 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E>, Immuta
     }
 
     @Override
+    @DelegateBy("zip(Iterable<U>, BiFunction<E, U, R>)")
     default <U> @NotNull ImmutableCollection<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
-        return AbstractImmutableCollection.zip(this, other, this.<Tuple2<E, U>>iterableFactory());
+        return zip(other, Tuple::of);
+    }
+
+    @Contract(pure = true)
+    default <U, R> @NotNull ImmutableCollection<R> zip(@NotNull Iterable<? extends U> other, @NotNull BiFunction<? super E, ? super U, ? extends R> mapper) {
+        return AbstractImmutableCollection.zip(this, other, mapper, this.<R>iterableFactory());
     }
 
     @Override

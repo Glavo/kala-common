@@ -1,9 +1,11 @@
 package kala.collection.immutable;
 
+import kala.annotations.DelegateBy;
 import kala.collection.Seq;
 import kala.collection.SeqLike;
 import kala.collection.base.Traversable;
 import kala.function.*;
+import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import kala.annotations.Covariant;
 import kala.comparator.Comparators;
@@ -394,8 +396,14 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     }
 
     @Override
+    @DelegateBy("zip(Iterable<U>, BiFunction<E, U, R>)")
     default <U> @NotNull ImmutableSeq<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
-        return AbstractImmutableCollection.zip(this, other, this.<Tuple2<E, U>>iterableFactory());
+        return zip(other, Tuple::of);
+    }
+
+    @Contract(pure = true)
+    default <U, R> @NotNull ImmutableSeq<R> zip(@NotNull Iterable<? extends U> other, @NotNull BiFunction<? super E, ? super U, ? extends R> mapper) {
+        return AbstractImmutableCollection.zip(this, other, mapper, this.<R>iterableFactory());
     }
 
     @Override

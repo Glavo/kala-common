@@ -1,12 +1,14 @@
 package kala.collection;
 
 import kala.annotations.Covariant;
+import kala.annotations.DelegateBy;
 import kala.collection.immutable.*;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.internal.view.CollectionViews;
 import kala.function.CheckedFunction;
 import kala.function.CheckedPredicate;
+import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import kala.tuple.Tuple3;
 import org.jetbrains.annotations.Contract;
@@ -14,10 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
 
 public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollection<E> {
     //region Static Factories
@@ -155,8 +154,14 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
     }
 
     @Contract(pure = true)
+    @DelegateBy("zip(Iterable<U>, BiFunction<E, U, R>)")
     default <U> @NotNull ImmutableCollection<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
-        return view().<U>zip(other).toImmutableSeq();
+        return zip(other, Tuple::of);
+    }
+
+    @Contract(pure = true)
+    default <U, R> @NotNull ImmutableCollection<R> zip(@NotNull Iterable<? extends U> other, @NotNull BiFunction<? super E, ? super U, ? extends R> mapper) {
+        return view().<U, R>zip(other, mapper).toImmutableSeq();
     }
 
     @Contract(pure = true)

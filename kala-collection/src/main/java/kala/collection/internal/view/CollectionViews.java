@@ -682,18 +682,20 @@ public final class CollectionViews {
         }
     }
 
-    public static final class Zip<E, U> extends AbstractCollectionView<Tuple2<E, U>> {
+    public static final class Zip<E, U, R> extends AbstractCollectionView<R> {
         private final @NotNull CollectionView<? extends E> source;
         private final @NotNull Iterable<? extends U> other;
+        private final @NotNull BiFunction<? super E, ? super U, ? extends R> mapper;
 
-        public Zip(@NotNull CollectionView<? extends E> source, @NotNull Iterable<? extends U> other) {
+        public Zip(@NotNull CollectionView<? extends E> source, @NotNull Iterable<? extends U> other, @NotNull BiFunction<? super E, ? super U, ? extends R> mapper) {
             this.source = source;
             this.other = other;
+            this.mapper = mapper;
         }
 
         @Override
-        public @NotNull Iterator<Tuple2<E, U>> iterator() {
-            return Iterators.zip(source.iterator(), other.iterator());
+        public Iterator<R> iterator() {
+            return Iterators.zip(source.iterator(), other.iterator(), mapper);
         }
     }
 

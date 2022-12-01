@@ -12,10 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
 
 public interface CollectionLike<E> extends Traversable<E>, AnyCollectionLike<E> {
     @Override
@@ -40,10 +37,11 @@ public interface CollectionLike<E> extends Traversable<E>, AnyCollectionLike<E> 
 
     <U> @NotNull CollectionLike<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper);
 
-    @Contract(pure = true)
     <U> @NotNull CollectionLike<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper);
 
     <U> @NotNull CollectionLike<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other);
+
+    <U, R> @NotNull CollectionLike<R> zip(@NotNull Iterable<? extends U> other, @NotNull BiFunction<? super E, ? super U, ? extends R> mapper);
 
     <U, V> @NotNull CollectionLike<@NotNull Tuple3<E, U, V>> zip3(@NotNull Iterable<? extends U> other1, @NotNull Iterable<? extends V> other2);
 

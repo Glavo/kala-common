@@ -763,7 +763,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     }
 
     @Override
-    public @NotNull <U> ImmutableSeq<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
+    public <U, R> @NotNull ImmutableSeq<R> zip(@NotNull Iterable<? extends U> other, @NotNull BiFunction<? super E, ? super U, ? extends R> mapper) {
         Iterator<? extends U> it = other.iterator(); // implicit null check of other
         if (!it.hasNext()) {
             return ImmutableArray.empty();
@@ -775,7 +775,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
         int i = 0;
         while (it.hasNext() && i < size) {
-            tmp[i] = new Tuple2<>(elements[i], it.next());
+            tmp[i] = mapper.apply((E) elements[i], it.next());
             ++i;
         }
 

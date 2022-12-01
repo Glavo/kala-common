@@ -1,17 +1,18 @@
 package kala.collection;
 
+import kala.annotations.DelegateBy;
+import kala.collection.immutable.ImmutableCollection;
 import kala.collection.internal.view.CollectionViews;
 import kala.function.Predicates;
+import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import kala.annotations.Covariant;
 import kala.tuple.Tuple3;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
 
 @SuppressWarnings("unchecked")
 public interface CollectionView<@Covariant E> extends CollectionLike<E>, AnyCollectionView<E> {
@@ -72,9 +73,16 @@ public interface CollectionView<@Covariant E> extends CollectionLike<E>, AnyColl
         return new CollectionViews.FlatMapped<>(this, mapper);
     }
 
+    @DelegateBy("zip(Iterable<U>, BiFunction<E, U, R>)")
     default <U> @NotNull CollectionView<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
+        return zip(other, Tuple::of);
+    }
+
+    @Contract(pure = true)
+    default <U, R> @NotNull CollectionView<R> zip(@NotNull Iterable<? extends U> other, @NotNull BiFunction<? super E, ? super U, ? extends R> mapper) {
         Objects.requireNonNull(other);
-        return new CollectionViews.Zip<>(this, other);
+        Objects.requireNonNull(mapper);
+        return new CollectionViews.Zip<>(this, other, mapper);
     }
 
     default <U, V> @NotNull CollectionLike<@NotNull Tuple3<E, U, V>> zip3(@NotNull Iterable<? extends U> other1, @NotNull Iterable<? extends V> other2) {
