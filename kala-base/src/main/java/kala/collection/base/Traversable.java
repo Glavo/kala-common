@@ -2,8 +2,6 @@ package kala.collection.base;
 
 import kala.annotations.Covariant;
 import kala.annotations.DelegateBy;
-import kala.annotations.UnstableName;
-import kala.collection.base.primitive.ByteGrowable;
 import kala.collection.base.primitive.DoubleGrowable;
 import kala.collection.base.primitive.IntGrowable;
 import kala.collection.base.primitive.LongGrowable;

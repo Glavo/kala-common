@@ -21,6 +21,7 @@ module kala.base {
     exports kala.reflect;
     exports kala.range;
     exports kala.range.primitive;
+    exports kala.text;
 
     exports kala.internal to kala.collection, kala.collection.primitive, kala.jackson;
 }
