@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.Writer;
+import java.util.Locale;
 import java.util.Objects;
 
 public class StringAppender extends Writer implements Serializable {
@@ -20,7 +21,7 @@ public class StringAppender extends Writer implements Serializable {
         this.builder = new StringBuilder(capacity);
     }
 
-    public StringAppender(StringBuilder builder) {
+    public StringAppender(@NotNull StringBuilder builder) {
         this.builder = Objects.requireNonNull(builder);
     }
 
@@ -59,52 +60,6 @@ public class StringAppender extends Writer implements Serializable {
     }
 
     //endregion
-
-    public StringAppender append(String str) {
-        builder.append(str);
-        return this;
-    }
-
-    public StringAppender append(StringBuffer buffer) {
-        builder.append(buffer);
-        return this;
-    }
-
-    @Override
-    public StringAppender append(CharSequence s) {
-        if (s instanceof StringView)
-            ((StringView) s).appendTo(builder);
-        else
-            builder.append(s);
-        return this;
-    }
-
-    public StringAppender append(StringView view) {
-        if (view == null)
-            appendNull();
-        else
-            view.appendTo(builder);
-
-        return this;
-    }
-
-    public StringAppender append(StringView view, int beginIndex, int endIndex) {
-        if (view == null)
-            appendNull();
-        else
-            view.appendTo(builder, beginIndex, endIndex);
-
-        return this;
-    }
-
-    @Override
-    public StringAppender append(CharSequence s, int beginIndex, int endIndex) {
-        if (s instanceof StringView)
-            ((StringView) s).appendTo(builder, beginIndex, endIndex);
-        else
-            builder.append(s);
-        return this;
-    }
 
     public StringAppender append(char[] str) {
         builder.append(str);
@@ -186,7 +141,7 @@ public class StringAppender extends Writer implements Serializable {
 
     public StringAppender appendArray(Object[] array) {
         if (array == null) {
-            builder.append("null");
+            appendNull();
             return this;
         }
 
@@ -209,7 +164,7 @@ public class StringAppender extends Writer implements Serializable {
 
     public StringAppender appendArray(char[] array) {
         if (array == null) {
-            builder.append("null");
+            appendNull();
             return this;
         }
 
@@ -232,7 +187,7 @@ public class StringAppender extends Writer implements Serializable {
 
     public StringAppender appendArray(boolean[] array) {
         if (array == null) {
-            builder.append("null");
+            appendNull();
             return this;
         }
 
@@ -255,7 +210,7 @@ public class StringAppender extends Writer implements Serializable {
 
     public StringAppender appendArray(byte[] array) {
         if (array == null) {
-            builder.append("null");
+            appendNull();
             return this;
         }
 
@@ -278,7 +233,7 @@ public class StringAppender extends Writer implements Serializable {
 
     public StringAppender appendArray(short[] array) {
         if (array == null) {
-            builder.append("null");
+            appendNull();
             return this;
         }
 
@@ -301,7 +256,7 @@ public class StringAppender extends Writer implements Serializable {
 
     public StringAppender appendArray(int[] array) {
         if (array == null) {
-            builder.append("null");
+            appendNull();
             return this;
         }
 
@@ -324,7 +279,7 @@ public class StringAppender extends Writer implements Serializable {
 
     public StringAppender appendArray(long[] array) {
         if (array == null) {
-            builder.append("null");
+            appendNull();
             return this;
         }
 
@@ -347,7 +302,7 @@ public class StringAppender extends Writer implements Serializable {
 
     public StringAppender appendArray(float[] array) {
         if (array == null) {
-            builder.append("null");
+            appendNull();
             return this;
         }
 
@@ -370,7 +325,7 @@ public class StringAppender extends Writer implements Serializable {
 
     public StringAppender appendArray(double[] array) {
         if (array == null) {
-            builder.append("null");
+            appendNull();
             return this;
         }
 
@@ -394,6 +349,76 @@ public class StringAppender extends Writer implements Serializable {
     public StringAppender appendCodePoint(int codePoint) {
         builder.appendCodePoint(codePoint);
         return this;
+    }
+
+    public StringAppender append(String str) {
+        builder.append(str);
+        return this;
+    }
+
+    public StringAppender append(StringBuffer buffer) {
+        builder.append(buffer);
+        return this;
+    }
+
+    public StringAppender append(StringView view) {
+        if (view == null)
+            appendNull();
+        else
+            view.appendTo(builder);
+
+        return this;
+    }
+
+    public StringAppender append(StringView view, int beginIndex, int endIndex) {
+        if (view == null)
+            appendNull();
+        else
+            view.appendTo(builder, beginIndex, endIndex);
+
+        return this;
+    }
+
+    @Override
+    public StringAppender append(CharSequence s) {
+        if (s instanceof StringView)
+            ((StringView) s).appendTo(builder);
+        else
+            builder.append(s);
+        return this;
+    }
+
+    @Override
+    public StringAppender append(CharSequence s, int beginIndex, int endIndex) {
+        if (s instanceof StringView)
+            ((StringView) s).appendTo(builder, beginIndex, endIndex);
+        else
+            builder.append(s);
+        return this;
+    }
+
+    public StringAppender appendLowerCase(CharSequence str) {
+        if (str == null) {
+            appendNull();
+            return this;
+        }
+
+        builder.append(str.toString().toLowerCase(Locale.ROOT));
+        return this;
+    }
+
+    public StringAppender appendUpperCase(CharSequence str) {
+        if (str == null) {
+            appendNull();
+            return this;
+        }
+
+        builder.append(str.toString().toUpperCase(Locale.ROOT));
+        return this;
+    }
+
+    private void beforeAppend(int n) {
+        builder.ensureCapacity(builder.length() + n);
     }
 
     @Override
