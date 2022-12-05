@@ -11,6 +11,8 @@ import java.nio.CharBuffer;
 import java.nio.charset.*;
 
 public final class StringView implements CharSequence, Serializable {
+    private static final long serialVersionUID = 0L;
+
     private static final StringView EMPTY = new StringView("", 0, 0);
 
     private final String value;
@@ -153,9 +155,14 @@ public final class StringView implements CharSequence, Serializable {
         return true;
     }
 
-    public StringBuilder appendTo(StringBuilder builder)  {
-        builder.append(this.value, this.offset, this.offset + this.length);
-        return builder;
+    public void appendTo(StringBuilder builder)  {
+        appendTo(builder, 0, this.length);
+    }
+
+    public void appendTo(StringBuilder builder, int beginIndex, int endIndex)  {
+        Conditions.checkPositionIndices(beginIndex, endIndex, this.length);
+        if (beginIndex != endIndex)
+            builder.append(this.value, this.offset + beginIndex, this.offset + endIndex);
     }
 
     @Override
