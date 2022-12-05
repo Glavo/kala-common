@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.Writer;
+import java.util.Formatter;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -19,6 +20,14 @@ public class StringAppender extends Writer implements Serializable {
 
     public StringAppender(int capacity) {
         this.builder = new StringBuilder(capacity);
+    }
+
+    public StringAppender(@NotNull String value) {
+        this.builder = new StringBuilder(value);
+    }
+
+    public StringAppender(@NotNull CharSequence value) {
+        this.builder = new StringBuilder(value);
     }
 
     public StringAppender(@NotNull StringBuilder builder) {
@@ -60,6 +69,10 @@ public class StringAppender extends Writer implements Serializable {
     }
 
     //endregion
+
+    public void appendTo(Appendable appendable) throws IOException {
+        appendable.append(builder);
+    }
 
     public StringAppender append(char[] str) {
         builder.append(str);
@@ -394,6 +407,11 @@ public class StringAppender extends Writer implements Serializable {
             ((StringView) s).appendTo(builder, beginIndex, endIndex);
         else
             builder.append(s);
+        return this;
+    }
+
+    public StringAppender appendFormatted(String format, Object... args) {
+        new Formatter(this).format(format, args);
         return this;
     }
 

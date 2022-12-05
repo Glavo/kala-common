@@ -9,15 +9,19 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.*;
+import java.util.Objects;
+import java.util.stream.IntStream;
 
-public final class StringView implements CharSequence, Serializable {
+public final class StringView implements Comparable<StringView>, CharSequence, Serializable {
     private static final long serialVersionUID = 0L;
+    private static final int ZERO_HASH_REPLACE = 914090028;
 
     private static final StringView EMPTY = new StringView("", 0, 0);
 
     private final String value;
     private final int offset;
     private final int length;
+    private int hash;
 
     private StringView(String value, int offset, int length) {
         this.value = value;
@@ -66,7 +70,11 @@ public final class StringView implements CharSequence, Serializable {
     }
 
     public byte[] getBytes() {
-        return getBytes(StandardCharsets.UTF_8);
+        return getBytes(StandardCharsets.UTF_8, 0, length);
+    }
+
+    public byte[] getBytes(int beginIndex, int endIndex) {
+        return getBytes(StandardCharsets.UTF_8, beginIndex, endIndex);
     }
 
     public byte[] getBytes(Charset charset) {
@@ -77,6 +85,8 @@ public final class StringView implements CharSequence, Serializable {
         Conditions.checkPositionIndices(beginIndex, endIndex, length);
         if (beginIndex == endIndex)
             return ByteArrays.EMPTY;
+        if (this.value.length() == endIndex - beginIndex)
+            return this.value.getBytes(charset);
 
         ByteBuffer result;
         try {
@@ -155,6 +165,24 @@ public final class StringView implements CharSequence, Serializable {
         return true;
     }
 
+    public boolean contentEqualsIgnoreCase(StringView other) {
+        return this == other || this.length == other.length && this.value.regionMatches(true, this.offset, other.value, other.offset, this.length);
+    }
+
+    public boolean contentEqualsIgnoreCase(String other) {
+        return this.length == other.length() && this.value.regionMatches(true, this.offset, other, 0, this.length);
+    }
+
+    public boolean contentEqualsIgnoreCase(CharSequence other) {
+        if (this.length != other.length())
+            return false;
+
+        if (other instanceof StringView)
+            return contentEqualsIgnoreCase(((StringView) other));
+
+        return contentEqualsIgnoreCase(other.toString());
+    }
+
     public void appendTo(StringBuilder builder)  {
         appendTo(builder, 0, this.length);
     }
@@ -163,6 +191,19 @@ public final class StringView implements CharSequence, Serializable {
         Conditions.checkPositionIndices(beginIndex, endIndex, this.length);
         if (beginIndex != endIndex)
             builder.append(this.value, this.offset + beginIndex, this.offset + endIndex);
+    }
+
+    @Override
+    public int hashCode() {
+        int h = hash;
+        if (h != 0)
+            return h;
+
+        for (int i = offset, end = offset + length; i < end; i++) {
+            h = 31 * h + value.charAt(i);
+        }
+
+        return hash = (h == 0 ? ZERO_HASH_REPLACE : h);
     }
 
     @Override
@@ -177,5 +218,17 @@ public final class StringView implements CharSequence, Serializable {
     @Override
     public String toString() {
         return value.substring(offset, offset + length);
+    }
+
+    @Override
+    public int compareTo(@NotNull StringView other) {
+        int lim = Math.min(this.length, other.length);
+        for (int i = 0; i < lim; i++) {
+            char c1 = this.charAt(i);
+            char c2 = other.charAt(i);
+            if (c1 != c2)
+                return c1 - c2;
+        }
+        return this.length - other.length;
     }
 }
