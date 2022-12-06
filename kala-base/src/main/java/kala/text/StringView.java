@@ -141,6 +141,70 @@ public final class StringView implements Comparable<StringView>, CharSequence, S
         return StringView.of(builder.toString());
     }
 
+    public boolean startsWith(@NotNull String prefix) {
+        return startsWith(prefix, 0);
+    }
+
+    public boolean startsWith(@NotNull String prefix, int toIndex) {
+        if (toIndex < 0 || toIndex > this.length - prefix.length())
+            return false;
+        return value.regionMatches(offset + toIndex, prefix, 0, prefix.length());
+    }
+
+    public boolean startsWith(@NotNull StringView prefix) {
+        return startsWith(prefix, 0);
+    }
+
+    public boolean startsWith(@NotNull StringView prefix, int toIndex) {
+        if (toIndex < 0 || toIndex > this.length - prefix.length())
+            return false;
+        return value.regionMatches(offset + toIndex, prefix.value, prefix.offset, prefix.length);
+    }
+
+    public boolean endsWith(@NotNull String suffix) {
+        return startsWith(suffix, this.length - suffix.length());
+    }
+
+    public boolean endsWith(@NotNull StringView suffix) {
+        return startsWith(suffix, this.length - suffix.length());
+    }
+
+    public int indexOf(int ch) {
+        return indexOf(ch, 0);
+    }
+
+    public int indexOf(int ch, int fromIndex) {
+        if (fromIndex >= length)
+            return -1;
+        if (fromIndex < 0)
+            fromIndex = 0;
+
+        int idx = value.indexOf(ch, fromIndex + offset);
+        return idx >= offset && idx < offset + length ? idx - offset : -1;
+    }
+
+    public StringView replace(char oldChar, char newChar) {
+        if (oldChar == newChar)
+            return this;
+
+        int idx = indexOf(oldChar);
+        if (idx < 0)
+            return this;
+
+        StringBuilder res = new StringBuilder(this.length);
+
+        idx += offset;
+        res.append(this.value, offset, idx);
+        res.append(newChar);
+
+        while (++idx < this.offset + this.length) {
+            char ch = this.value.charAt(idx);
+            res.append(ch == oldChar ? newChar : ch);
+        }
+
+        return StringView.of(res.toString());
+    }
+
     public boolean contentEquals(StringView other) {
         return this == other || this.length == other.length && this.value.regionMatches(this.offset, other.value, other.offset, this.length);
     }
