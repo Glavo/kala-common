@@ -8,7 +8,6 @@ import kala.control.Either;
 import java.io.IOException;
 
 public class EitherSerializer extends SerializerBase<Either<?, ?>> {
-
     public EitherSerializer(JavaType type) {
         super(type);
     }

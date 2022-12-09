@@ -24,8 +24,9 @@ public class KalaBaseSerializers extends Serializers.Base {
         Class<?> rawClass = type.getRawClass();
         boolean staticTyping = contentTypeSerializer == null && config.isEnabled(MapperFeature.USE_STATIC_TYPING);
 
-        if (Option.class.isAssignableFrom(rawClass))
-            return new OptionSerializer(type, staticTyping, contentTypeSerializer, contentValueSerializer);
+//        if (Option.class.isAssignableFrom(rawClass))
+//            return new OptionSerializer(type, staticTyping, contentTypeSerializer, contentValueSerializer);
+
         return null;
     }
 
@@ -33,8 +34,8 @@ public class KalaBaseSerializers extends Serializers.Base {
     public JsonSerializer<?> findSerializer(SerializationConfig config, JavaType type, BeanDescription beanDesc) {
         Class<?> rawClass = type.getRawClass();
 
-        if (AnyTuple.class.isAssignableFrom(rawClass) && rawClass.getName().startsWith("kala.tuple."))
-            return new TupleSerializer();
+//        if (AnyTuple.class.isAssignableFrom(rawClass) && rawClass.getName().startsWith("kala.tuple."))
+//            return new TupleSerializer();
 
         if (Either.class.isAssignableFrom(rawClass))
             return new EitherSerializer(type);
