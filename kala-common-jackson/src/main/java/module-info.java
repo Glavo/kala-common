@@ -1,4 +1,4 @@
-module kala.jackson {
+module kala.common.jackson {
     requires static com.fasterxml.jackson.databind;
 
     requires static kala.base;

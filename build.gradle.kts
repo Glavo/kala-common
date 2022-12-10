@@ -155,7 +155,7 @@ dependencies {
     api(project(":kala-collection-primitive"))
 
     testImplementation("com.fasterxml.jackson.core:jackson-databind:2.14.0")
-    testImplementation(project(":kala-jackson"))
+    testImplementation(project(":kala-common-jackson"))
 }
 
 sourceSets {
