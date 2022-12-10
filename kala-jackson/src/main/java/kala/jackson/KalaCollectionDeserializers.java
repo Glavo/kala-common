@@ -16,11 +16,7 @@ public class KalaCollectionDeserializers extends Deserializers.Base {
             BeanDescription beanDesc,
             TypeDeserializer elementTypeDeserializer,
             JsonDeserializer<?> elementDeserializer) throws JsonMappingException {
-        if (!SeqLike.class.isAssignableFrom(type.getRawClass()))
-            return null;
-
-        JsonDeserializer<Object> deser = (JsonDeserializer<Object>) elementDeserializer;
-
+        return null;
     }
 
     private static final class Instantiator extends StdValueInstantiator {
