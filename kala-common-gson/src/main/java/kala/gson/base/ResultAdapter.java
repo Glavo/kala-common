@@ -35,11 +35,6 @@ public final class ResultAdapter<T, E> extends TypeAdapter<Result<T, E>> {
     private final TypeAdapter<T> valueAdapter;
     private final TypeAdapter<E> errAdapter;
 
-    public ResultAdapter(Gson gson) {
-        this.valueAdapter = (TypeAdapter<T>) gson.getAdapter(Object.class);
-        this.errAdapter = (TypeAdapter<E>) gson.getAdapter(Object.class);
-    }
-
     public ResultAdapter(Gson gson, TypeToken<Result<T, E>> type) {
         if (!Result.class.isAssignableFrom(type.getRawType()))
             throw new IllegalArgumentException();
@@ -107,7 +102,6 @@ public final class ResultAdapter<T, E> extends TypeAdapter<Result<T, E>> {
                 throw new JsonSyntaxException("Unknown key '" + name + "'");
         }
         in.endObject();
-
         return result;
     }
 }
