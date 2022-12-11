@@ -39,7 +39,7 @@ allprojects {
             testImplementation(it)
         }
 
-        testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
+        testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
     }
 
     if (project.file("src/main/java17").exists()) {
@@ -156,6 +156,7 @@ dependencies {
 
     testImplementation("com.fasterxml.jackson.core:jackson-databind:2.14.0")
     testImplementation(project(":kala-common-jackson"))
+    testImplementation(project(":kala-common-gson"))
 }
 
 sourceSets {
