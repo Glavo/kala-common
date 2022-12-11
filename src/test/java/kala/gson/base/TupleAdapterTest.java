@@ -14,7 +14,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class TupleAdapterTest {
-    private final Gson gson = new GsonBuilder().registerTypeAdapterFactory(TupleAdapter.factory()).create();
+    private final Gson gson = new GsonBuilder()
+            .registerTypeAdapterFactory(TupleAdapter.factory())
+            .registerTypeAdapterFactory(PrimitiveTupleAdapter.factory())
+            .create();
 
     @Test
     public void serializeTest() {
