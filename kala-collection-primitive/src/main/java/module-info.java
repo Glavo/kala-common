@@ -1,4 +1,5 @@
 module kala.collection.primitive {
+    requires static org.jetbrains.annotations;
     requires transitive kala.collection;
 
     exports kala.collection.primitive;

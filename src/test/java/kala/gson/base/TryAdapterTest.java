@@ -3,17 +3,13 @@ package kala.gson.base;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
-import com.google.gson.reflect.TypeToken;
-import kala.control.AnyOption;
-import kala.control.Option;
 import kala.control.Try;
-import kala.control.primitive.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TryAdapterTest {
     private final Gson gson = new GsonBuilder()
@@ -21,7 +17,7 @@ public class TryAdapterTest {
             .registerTypeAdapterFactory(PrimitiveOptionAdapter.factory())
             .create();
 
-    @Test
+    // @Test
     public void serializeTest() {
         JsonElement tree;
 
