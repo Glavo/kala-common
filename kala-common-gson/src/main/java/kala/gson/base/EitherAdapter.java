@@ -52,11 +52,6 @@ public class EitherAdapter<A, B> extends TypeAdapter<Either<A, B>> {
         }
     }
 
-    public EitherAdapter(Gson gson, TypeToken<A> leftType, TypeToken<B> rightType) {
-        this.leftAdapter = gson.getAdapter(leftType);
-        this.rightAdapter = gson.getAdapter(rightType);
-    }
-
     public EitherAdapter(TypeAdapter<A> leftAdapter, TypeAdapter<B> rightAdapter) {
         this.leftAdapter = Objects.requireNonNull(leftAdapter);
         this.rightAdapter = Objects.requireNonNull(rightAdapter);

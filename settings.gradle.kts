@@ -5,6 +5,6 @@ include(
     "kala-collection",
     "kala-collection-primitive",
     "kala-common-gson",
-    "kala-common-jackson",
+    //"kala-common-jackson",
     "benchmark"
 )

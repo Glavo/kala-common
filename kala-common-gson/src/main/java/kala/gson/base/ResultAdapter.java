@@ -52,11 +52,6 @@ public final class ResultAdapter<T, E> extends TypeAdapter<Result<T, E>> {
         }
     }
 
-    public ResultAdapter(Gson gson, TypeToken<T> valueType, TypeToken<E> errType) {
-        this.valueAdapter = gson.getAdapter(valueType);
-        this.errAdapter = gson.getAdapter(errType);
-    }
-
     public ResultAdapter(TypeAdapter<T> valueAdapter, TypeAdapter<E> errAdapter) {
         this.valueAdapter = Objects.requireNonNull(valueAdapter);
         this.errAdapter = Objects.requireNonNull(errAdapter);
