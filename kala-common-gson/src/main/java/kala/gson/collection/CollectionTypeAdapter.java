@@ -21,14 +21,14 @@ import java.lang.reflect.Type;
 import java.util.Objects;
 
 @SuppressWarnings("unchecked")
-public class CollectionAdapter<E, C extends CollectionLike<E>> extends TypeAdapter<C> {
+public class CollectionTypeAdapter<E, C extends CollectionLike<E>> extends TypeAdapter<C> {
 
     private static final TypeAdapterFactory FACTORY = new TypeAdapterFactory() {
         @Override
         @SuppressWarnings("rawtypes")
         public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
             if (CollectionLike.class.isAssignableFrom(type.getRawType())) {
-                return new CollectionAdapter(gson, type);
+                return new CollectionTypeAdapter(gson, type);
             }
             return null;
         }
@@ -41,7 +41,7 @@ public class CollectionAdapter<E, C extends CollectionLike<E>> extends TypeAdapt
     private final TypeAdapter<E> elementAdapter;
     private final CollectionFactory<E, ?, C> factory;
 
-    public CollectionAdapter(Gson gson, TypeToken<C> type) {
+    public CollectionTypeAdapter(Gson gson, TypeToken<C> type) {
         Class<? super C> rawType = type.getRawType();
         if (!CollectionLike.class.isAssignableFrom(rawType))
             throw new IllegalArgumentException(type.toString());
@@ -167,7 +167,7 @@ public class CollectionAdapter<E, C extends CollectionLike<E>> extends TypeAdapt
         this.factory = (CollectionFactory<E, ?, C>) factory;
     }
 
-    public CollectionAdapter(TypeAdapter<E> elementAdapter, CollectionFactory<E, ?, C> factory) {
+    public CollectionTypeAdapter(TypeAdapter<E> elementAdapter, CollectionFactory<E, ?, C> factory) {
         this.elementAdapter = Objects.requireNonNull(elementAdapter);
         this.factory = factory;
     }

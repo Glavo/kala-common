@@ -16,13 +16,13 @@ import java.lang.reflect.Type;
 import java.util.Objects;
 
 @SuppressWarnings("unchecked")
-public class EitherAdapter<A, B> extends TypeAdapter<Either<A, B>> {
+public class EitherTypeAdapter<A, B> extends TypeAdapter<Either<A, B>> {
     private static final TypeAdapterFactory FACTORY = new TypeAdapterFactory() {
         @Override
         @SuppressWarnings("unchecked")
         public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
             if (Either.class.isAssignableFrom(type.getRawType())) {
-                return new EitherAdapter(gson, type);
+                return new EitherTypeAdapter(gson, type);
             }
             return null;
         }
@@ -35,7 +35,7 @@ public class EitherAdapter<A, B> extends TypeAdapter<Either<A, B>> {
     private final TypeAdapter<A> leftAdapter;
     private final TypeAdapter<B> rightAdapter;
 
-    public EitherAdapter(Gson gson, TypeToken<Either<A, B>> type) {
+    public EitherTypeAdapter(Gson gson, TypeToken<Either<A, B>> type) {
         if (!Either.class.isAssignableFrom(type.getRawType()))
             throw new IllegalArgumentException();
 
@@ -52,7 +52,7 @@ public class EitherAdapter<A, B> extends TypeAdapter<Either<A, B>> {
         }
     }
 
-    public EitherAdapter(TypeAdapter<A> leftAdapter, TypeAdapter<B> rightAdapter) {
+    public EitherTypeAdapter(TypeAdapter<A> leftAdapter, TypeAdapter<B> rightAdapter) {
         this.leftAdapter = Objects.requireNonNull(leftAdapter);
         this.rightAdapter = Objects.requireNonNull(rightAdapter);
     }

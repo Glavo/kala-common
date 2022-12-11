@@ -16,13 +16,13 @@ import java.lang.reflect.Type;
 import java.util.Objects;
 
 @SuppressWarnings({"unchecked"})
-public final class ResultAdapter<T, E> extends TypeAdapter<Result<T, E>> {
+public final class ResultTypeAdapter<T, E> extends TypeAdapter<Result<T, E>> {
     private static final TypeAdapterFactory FACTORY = new TypeAdapterFactory() {
         @Override
         @SuppressWarnings("unchecked")
         public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
             if (Result.class.isAssignableFrom(type.getRawType())) {
-                return new ResultAdapter(gson, type);
+                return new ResultTypeAdapter(gson, type);
             }
             return null;
         }
@@ -35,7 +35,7 @@ public final class ResultAdapter<T, E> extends TypeAdapter<Result<T, E>> {
     private final TypeAdapter<T> valueAdapter;
     private final TypeAdapter<E> errAdapter;
 
-    public ResultAdapter(Gson gson, TypeToken<Result<T, E>> type) {
+    public ResultTypeAdapter(Gson gson, TypeToken<Result<T, E>> type) {
         if (!Result.class.isAssignableFrom(type.getRawType()))
             throw new IllegalArgumentException();
 
@@ -52,7 +52,7 @@ public final class ResultAdapter<T, E> extends TypeAdapter<Result<T, E>> {
         }
     }
 
-    public ResultAdapter(TypeAdapter<T> valueAdapter, TypeAdapter<E> errAdapter) {
+    public ResultTypeAdapter(TypeAdapter<T> valueAdapter, TypeAdapter<E> errAdapter) {
         this.valueAdapter = Objects.requireNonNull(valueAdapter);
         this.errAdapter = Objects.requireNonNull(errAdapter);
     }

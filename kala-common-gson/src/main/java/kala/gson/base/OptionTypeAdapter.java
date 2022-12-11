@@ -15,14 +15,14 @@ import java.lang.reflect.Type;
 import java.util.Objects;
 
 @SuppressWarnings("unchecked")
-public final class OptionAdapter<T> extends TypeAdapter<Option<T>> {
+public final class OptionTypeAdapter<T> extends TypeAdapter<Option<T>> {
 
     private static final TypeAdapterFactory FACTORY = new TypeAdapterFactory() {
         @Override
         @SuppressWarnings("unchecked")
         public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
             if (Option.class.isAssignableFrom(type.getRawType())) {
-                return new OptionAdapter(gson, type);
+                return new OptionTypeAdapter(gson, type);
             }
             return null;
         }
@@ -34,7 +34,7 @@ public final class OptionAdapter<T> extends TypeAdapter<Option<T>> {
 
     private final TypeAdapter<T> valueAdapter;
 
-    public OptionAdapter(Gson gson, TypeToken<Option<T>> type) {
+    public OptionTypeAdapter(Gson gson, TypeToken<Option<T>> type) {
         if (!Option.class.isAssignableFrom(type.getRawType()))
             throw new IllegalArgumentException();
 
@@ -47,7 +47,7 @@ public final class OptionAdapter<T> extends TypeAdapter<Option<T>> {
         }
     }
 
-    public OptionAdapter(TypeAdapter<T> valueAdapter) {
+    public OptionTypeAdapter(TypeAdapter<T> valueAdapter) {
         this.valueAdapter = Objects.requireNonNull(valueAdapter);
     }
 

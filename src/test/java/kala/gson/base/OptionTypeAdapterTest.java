@@ -13,10 +13,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class OptionAdapterTest {
+public class OptionTypeAdapterTest {
     private final Gson gson = new GsonBuilder()
-            .registerTypeAdapterFactory(OptionAdapter.factory())
-            .registerTypeAdapterFactory(PrimitiveOptionAdapter.factory())
+            .registerTypeAdapterFactory(OptionTypeAdapter.factory())
+            .registerTypeAdapterFactory(PrimitiveOptionTypeAdapter.factory())
             .create();
 
     @Test

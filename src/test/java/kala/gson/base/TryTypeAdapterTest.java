@@ -11,10 +11,10 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TryAdapterTest {
+public class TryTypeAdapterTest {
     private final Gson gson = new GsonBuilder()
-            .registerTypeAdapterFactory(TryAdapter.factory())
-            .registerTypeAdapterFactory(PrimitiveOptionAdapter.factory())
+            .registerTypeAdapterFactory(TryTypeAdapter.factory())
+            .registerTypeAdapterFactory(PrimitiveOptionTypeAdapter.factory())
             .create();
 
     // @Test

@@ -8,10 +8,6 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import kala.tuple.*;
-import kala.tuple.primitive.BooleanTuple2;
-import kala.tuple.primitive.IntObjTuple2;
-import kala.tuple.primitive.IntTuple3;
-import kala.tuple.primitive.PrimitiveTuple;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
@@ -20,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 @SuppressWarnings("unchecked")
-public final class TupleAdapter {
+public final class TupleTypeAdapter {
 
     private static final TypeAdapterFactory FACTORY = new TypeAdapterFactory() {
         @Override

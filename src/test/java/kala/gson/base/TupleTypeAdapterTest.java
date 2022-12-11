@@ -13,10 +13,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class TupleAdapterTest {
+public final class TupleTypeAdapterTest {
     private final Gson gson = new GsonBuilder()
-            .registerTypeAdapterFactory(TupleAdapter.factory())
-            .registerTypeAdapterFactory(PrimitiveTupleAdapter.factory())
+            .registerTypeAdapterFactory(TupleTypeAdapter.factory())
+            .registerTypeAdapterFactory(PrimitiveTupleTypeAdapter.factory())
             .create();
 
     @Test

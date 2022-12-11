@@ -8,7 +8,6 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
-import kala.control.Option;
 import kala.control.Try;
 
 import java.io.IOException;
@@ -21,13 +20,13 @@ import java.util.Objects;
  * It is difficult to convert the exception to json. Do we want to provide it?
  */
 @SuppressWarnings({"unchecked", "rawtypes"})
-final class TryAdapter<T> extends TypeAdapter<Try<T>> {
+final class TryTypeAdapter<T> extends TypeAdapter<Try<T>> {
 
     private static final TypeAdapterFactory FACTORY = new TypeAdapterFactory() {
         @Override
         public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
             if (Try.class.isAssignableFrom(type.getRawType())) {
-                return new TryAdapter(gson, type);
+                return new TryTypeAdapter(gson, type);
             }
             return null;
         }
@@ -40,7 +39,7 @@ final class TryAdapter<T> extends TypeAdapter<Try<T>> {
     private final TypeAdapter<T> valueAdapter;
     private final TypeAdapter<Throwable> exceptionAdapter;
 
-    public TryAdapter(Gson gson, TypeToken<Try<T>> type) {
+    public TryTypeAdapter(Gson gson, TypeToken<Try<T>> type) {
         if (!Try.class.isAssignableFrom(type.getRawType()))
             throw new IllegalArgumentException();
 
@@ -54,7 +53,7 @@ final class TryAdapter<T> extends TypeAdapter<Try<T>> {
         this.exceptionAdapter = gson.getAdapter(Throwable.class);
     }
 
-    public TryAdapter(TypeAdapter<T> valueAdapter, TypeAdapter<Throwable> exceptionAdapter) {
+    public TryTypeAdapter(TypeAdapter<T> valueAdapter, TypeAdapter<Throwable> exceptionAdapter) {
         this.valueAdapter = Objects.requireNonNull(valueAdapter);
         this.exceptionAdapter = Objects.requireNonNull(exceptionAdapter);
     }

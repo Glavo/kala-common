@@ -4,14 +4,18 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import kala.collection.Seq;
-import kala.gson.collection.CollectionAdapter;
+import kala.collection.Set;
+import kala.collection.SortedSet;
+import kala.collection.mutable.MutableList;
+import kala.collection.mutable.MutableSeq;
+import kala.gson.collection.CollectionTypeAdapter;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class CollectionAdapterTest {
+public class CollectionTypeAdapterTest {
     private final Gson gson = new GsonBuilder()
-            .registerTypeAdapterFactory(CollectionAdapter.factory())
+            .registerTypeAdapterFactory(CollectionTypeAdapter.factory())
             .create();
 
     @Test
@@ -26,5 +30,10 @@ public class CollectionAdapterTest {
         TypeToken<?> type = TypeToken.getParameterized(Seq.class, Integer.class);
         assertEquals(Seq.empty(), gson.fromJson("[]", type));
         assertEquals(Seq.of(0), gson.fromJson("[0]", type));
+
+        assertInstanceOf(MutableSeq.class, gson.fromJson("[]", MutableSeq.class));
+        assertInstanceOf(MutableList.class, gson.fromJson("[]", MutableList.class));
+        assertInstanceOf(Set.class, gson.fromJson("[]", Set.class));
+        assertInstanceOf(SortedSet.class, gson.fromJson("[]", SortedSet.class));
     }
 }

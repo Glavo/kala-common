@@ -11,8 +11,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ResultAdapterTest {
-    private final Gson gson = new GsonBuilder().registerTypeAdapterFactory(ResultAdapter.factory()).create();
+public class ResultTypeAdapterTest {
+    private final Gson gson = new GsonBuilder().registerTypeAdapterFactory(ResultTypeAdapter.factory()).create();
 
     @Test
     public void serializeTest() {

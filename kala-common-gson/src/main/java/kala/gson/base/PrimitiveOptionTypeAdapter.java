@@ -11,7 +11,7 @@ import kala.control.primitive.*;
 
 import java.io.IOException;
 
-public final class PrimitiveOptionAdapter {
+public final class PrimitiveOptionTypeAdapter {
     private static final TypeAdapterFactory FACTORY = new TypeAdapterFactory() {
         @Override
         @SuppressWarnings("unchecked")
@@ -44,7 +44,7 @@ public final class PrimitiveOptionAdapter {
         return FACTORY;
     }
 
-    private PrimitiveOptionAdapter() {
+    private PrimitiveOptionTypeAdapter() {
     }
 
     public static final class ForBoolean extends TypeAdapter<BooleanOption> {
