@@ -257,6 +257,10 @@ public final class StringView implements Comparable<StringView>, CharSequence, S
             builder.append(this.value, this.offset + beginIndex, this.offset + endIndex);
     }
 
+    public boolean toBoolean() {
+        return contentEqualsIgnoreCase("true");
+    }
+
     public byte toByte() throws NumberFormatException {
         return Byte.parseByte(toString(), 10);
     }
