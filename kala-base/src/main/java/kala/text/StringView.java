@@ -342,10 +342,7 @@ public final class StringView implements Comparable<StringView>, CharSequence, S
     }
 
     public int toInt(int radix) throws NumberFormatException {
-        if (this.length == value.length())
-            return Integer.parseInt(value, radix);
-        else
-            return Integer.parseInt(value, offset, offset + length, radix);
+        return Integer.parseInt(toString(), radix);
     }
 
     public @Nullable Integer toIntOrNull() {
@@ -385,10 +382,7 @@ public final class StringView implements Comparable<StringView>, CharSequence, S
     }
 
     public long toLong(int radix) throws NumberFormatException {
-        if (this.length == value.length())
-            return Long.parseLong(value, radix);
-        else
-            return Long.parseLong(value, offset, offset + length, radix);
+        return Long.parseLong(toString(), radix);
     }
 
     public @Nullable Long toLongOrNull() {
