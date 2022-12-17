@@ -3,14 +3,14 @@ package kala.text;
 import kala.Conditions;
 import kala.collection.base.primitive.ByteArrays;
 import kala.collection.base.primitive.CharArrays;
+import kala.control.primitive.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.*;
-import java.util.Objects;
-import java.util.stream.IntStream;
 
 public final class StringView implements Comparable<StringView>, CharSequence, Serializable {
     private static final long serialVersionUID = 0L;
@@ -255,6 +255,212 @@ public final class StringView implements Comparable<StringView>, CharSequence, S
         Conditions.checkPositionIndices(beginIndex, endIndex, this.length);
         if (beginIndex != endIndex)
             builder.append(this.value, this.offset + beginIndex, this.offset + endIndex);
+    }
+
+    public byte toByte() throws NumberFormatException {
+        return Byte.parseByte(toString(), 10);
+    }
+
+    public byte toByte(int radix) throws NumberFormatException {
+        return Byte.parseByte(toString(), radix);
+    }
+
+    public @Nullable Byte toByteOrNull() {
+        try {
+            return Byte.parseByte(toString(), 10);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    public @Nullable Byte toByteOrNull(int radix) {
+        try {
+            return Byte.parseByte(toString(), radix);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    public @NotNull ByteOption toByteOption() {
+        try {
+            return ByteOption.some(Byte.parseByte(toString(), 10));
+        } catch (NumberFormatException e) {
+            return ByteOption.none();
+        }
+    }
+
+    public @NotNull ByteOption toByteOption(int radix) {
+        try {
+            return ByteOption.some(Byte.parseByte(toString(), radix));
+        } catch (NumberFormatException e) {
+            return ByteOption.none();
+        }
+    }
+
+    public short toShort() throws NumberFormatException {
+        return Short.parseShort(toString(), 10);
+    }
+
+    public short toShort(int radix) throws NumberFormatException {
+        return Short.parseShort(toString(), radix);
+    }
+
+    public @Nullable Short toShortOrNull() {
+        try {
+            return Short.parseShort(toString(), 10);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    public @Nullable Short toShortOrNull(int radix) {
+        try {
+            return Short.parseShort(toString(), radix);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    public @NotNull ShortOption toShortOption() {
+        try {
+            return ShortOption.some(Short.parseShort(toString(), 10));
+        } catch (NumberFormatException e) {
+            return ShortOption.none();
+        }
+    }
+
+    public @NotNull ShortOption toShortOption(int radix) {
+        try {
+            return ShortOption.some(Short.parseShort(toString(), radix));
+        } catch (NumberFormatException e) {
+            return ShortOption.none();
+        }
+    }
+
+    public int toInt() throws NumberFormatException {
+        return toInt(10);
+    }
+
+    public int toInt(int radix) throws NumberFormatException {
+        if (this.length == value.length())
+            return Integer.parseInt(value, radix);
+        else
+            return Integer.parseInt(value, offset, offset + length, radix);
+    }
+
+    public @Nullable Integer toIntOrNull() {
+        try {
+            return toInt(10);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    public @Nullable Integer toIntOrNull(int radix) {
+        try {
+            return toInt(radix);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    public @NotNull IntOption toIntOption() {
+        try {
+            return IntOption.some(toInt(10));
+        } catch (NumberFormatException e) {
+            return IntOption.none();
+        }
+    }
+
+    public @NotNull IntOption toIntOption(int radix) {
+        try {
+            return IntOption.some(toInt(radix));
+        } catch (NumberFormatException e) {
+            return IntOption.none();
+        }
+    }
+
+    public long toLong() throws NumberFormatException {
+        return toLong(10);
+    }
+
+    public long toLong(int radix) throws NumberFormatException {
+        if (this.length == value.length())
+            return Long.parseLong(value, radix);
+        else
+            return Long.parseLong(value, offset, offset + length, radix);
+    }
+
+    public @Nullable Long toLongOrNull() {
+        try {
+            return toLong(10);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    public @Nullable Long toLongOrNull(int radix) {
+        try {
+            return toLong(radix);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    public @NotNull LongOption toLongOption() {
+        try {
+            return LongOption.some(toLong(10));
+        } catch (NumberFormatException e) {
+            return LongOption.none();
+        }
+    }
+
+    public @NotNull LongOption toLongOption(int radix) {
+        try {
+            return LongOption.some(toLong(radix));
+        } catch (NumberFormatException e) {
+            return LongOption.none();
+        }
+    }
+
+    public float toFloat() throws NumberFormatException {
+        return Float.parseFloat(toString());
+    }
+
+    public @Nullable Float toFloatOrNull() {
+        try {
+            return Float.parseFloat(toString());
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    public @NotNull FloatOption toFloatOption() {
+        try {
+            return FloatOption.some(Float.parseFloat(toString()));
+        } catch (NumberFormatException e) {
+            return FloatOption.none();
+        }
+    }
+
+    public double toDouble() throws NumberFormatException {
+        return Double.parseDouble(toString());
+    }
+
+    public @Nullable Double toDoubleOrNull() {
+        try {
+            return Double.parseDouble(toString());
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    public @NotNull DoubleOption toDoubleOption() {
+        try {
+            return DoubleOption.some(Double.parseDouble(toString()));
+        } catch (NumberFormatException e) {
+            return DoubleOption.none();
+        }
     }
 
     @Override
