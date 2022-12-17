@@ -112,6 +112,10 @@ public final class StringView implements Comparable<StringView>, CharSequence, S
         return this.substring(start, end);
     }
 
+    public @NotNull StringView substring(int beginIndex) {
+        return substring(beginIndex, length);
+    }
+
     public @NotNull StringView substring(int beginIndex, int endIndex) {
         Conditions.checkPositionIndices(beginIndex, endIndex, length);
         return beginIndex != endIndex ? new StringView(value, offset + beginIndex, endIndex - beginIndex) : EMPTY;
