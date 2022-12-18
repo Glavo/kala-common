@@ -14,7 +14,7 @@ loadMavenPublishProperties()
 
 allprojects {
     group = "org.glavo.kala"
-    version = "0.60.1"// + "-SNAPSHOT"
+    version = "0.61.0" + "-SNAPSHOT"
 
     description = "Basic components of Kala"
 
@@ -34,7 +34,7 @@ allprojects {
     }
 
     dependencies {
-        "org.jetbrains:annotations:23.0.0".also {
+        "org.jetbrains:annotations:23.1.0".also {
             compileOnly(it)
             testImplementation(it)
         }
