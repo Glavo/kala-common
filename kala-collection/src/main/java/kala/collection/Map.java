@@ -3,6 +3,7 @@ package kala.collection;
 import kala.Equatable;
 import kala.collection.base.MapIterator;
 import kala.collection.factory.MapFactory;
+import kala.collection.immutable.ImmutableHashMap;
 import kala.collection.immutable.ImmutableMap;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
@@ -11,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collector;
 
@@ -200,5 +202,14 @@ public interface Map<K, V> extends MapLike<K, V>, Equatable {
     @Override
     default boolean canEqual(Object other) {
         return other instanceof Map<?, ?>;
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    default <R> @NotNull ImmutableMap<R, V> mapKeys(@NotNull BiFunction<? super K, ? super V, ? extends R> mapper) {
+        MapFactory factory = ImmutableHashMap.factory();
+
+        Object builder = factory.newBuilder();
+        this.forEach((k, v) -> factory.addToBuilder(builder, mapper.apply(k, v), v));
+        return (ImmutableMap<R, V>) factory.build(builder);
     }
 }
