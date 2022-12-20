@@ -17,6 +17,11 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
 
     @Override
     public String toString() {
-        return className() + '{' + joinToString() + '}';
+        StringBuilder builder = new StringBuilder();
+        builder.append(className());
+        builder.append('{');
+        joinTo(builder);
+        builder.append('}');
+        return builder.toString();
     }
 }
