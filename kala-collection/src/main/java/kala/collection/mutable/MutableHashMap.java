@@ -640,7 +640,7 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
 
     @Override
     public boolean equals(Object obj) {
-        return this == obj || (obj instanceof kala.collection.Map<?, ?> && kala.collection.Map.equals(this, ((kala.collection.Map<?, ?>) obj)));
+        return this == obj || (obj instanceof kala.collection.Map<?, ?> && kala.collection.Map.equals(((kala.collection.Map<?, ?>) obj), this));
     }
 
     @Override
