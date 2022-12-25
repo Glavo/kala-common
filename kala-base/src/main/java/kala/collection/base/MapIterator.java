@@ -125,8 +125,7 @@ public interface MapIterator<K, V> extends Iterator<Tuple2<K, V>> {
     default int hash() {
         int hash = 0;
         while (hasNext()) {
-            hash *= 31;
-            hash += Objects.hashCode(nextKey()) * 31 + Objects.hashCode(getValue());
+            hash += Objects.hashCode(nextKey()) ^ Objects.hashCode(getValue());
         }
         return hash;
     }
