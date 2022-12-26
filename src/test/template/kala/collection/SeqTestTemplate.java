@@ -2,11 +2,9 @@ package kala.collection;
 
 import kala.SerializationUtils;
 import kala.collection.immutable.ImmutableArray;
-import kala.collection.immutable.ImmutableLinkedSeq;
 import kala.collection.immutable.ImmutableVector;
 import kala.collection.mutable.MutableArray;
 import kala.collection.factory.CollectionFactory;
-import kala.value.primitive.IntValue;
 import kala.value.primitive.IntVar;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -18,6 +16,7 @@ import java.lang.invoke.MethodType;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -125,6 +124,37 @@ public interface SeqTestTemplate extends CollectionTestTemplate, SeqLikeTestTemp
     }
 
     @Test
+    default void fillTest() {
+        final Class<?> klass = collectionType();
+        if (klass != null) {
+            try {
+                final MethodHandles.Lookup lookup = MethodHandles.publicLookup();
+
+                final MethodHandle fillValue = lookup.findStatic(klass, "fill", MethodType.methodType(klass, int.class, Object.class));
+                final MethodHandle fillSupplier = lookup.findStatic(klass, "fill", MethodType.methodType(klass, int.class, Supplier.class));
+                final MethodHandle fillIntFunction = lookup.findStatic(klass, "fill", MethodType.methodType(klass, int.class, IntFunction.class));
+
+                assertIterableEquals(List.of(), (Seq<String>) fillValue.invoke(0, "value"));
+                assertIterableEquals(List.of("value", "value", "value"), (Seq<String>) fillValue.invoke(3, "value"));
+
+
+                List<Integer> expected = List.of(0, 1, 2, 3, 4, 5);
+
+                IntVar intVar = new IntVar();
+                Supplier<Integer> supplier = () -> intVar.value++;
+                IntFunction<Integer> function = i -> i;
+
+                assertIterableEquals(List.of(), (Seq<Integer>) fillSupplier.invoke(0, supplier));
+                assertIterableEquals(List.of(), (Seq<Integer>) fillIntFunction.invoke(0, function));
+                assertIterableEquals(expected, (Seq<Integer>) fillSupplier.invoke(6, supplier));
+                assertIterableEquals(expected, (Seq<Integer>) fillIntFunction.invoke(6, function));
+            } catch (Throwable e) {
+                fail(e);
+            }
+        }
+    }
+
+    @Test
     default void generateUntilTest() {
         final Class<?> klass = collectionType();
         if (klass != null) {
@@ -134,12 +164,12 @@ public interface SeqTestTemplate extends CollectionTestTemplate, SeqLikeTestTemp
                 final MethodHandle generateUntil = lookup.findStatic(klass, "generateUntil", MethodType.methodType(klass, Supplier.class, Predicate.class));
                 final MethodHandle generateUntilNull = lookup.findStatic(klass, "generateUntilNull", MethodType.methodType(klass, Supplier.class));
 
-                List<Integer> expected = List.of(0, 1, 2, 3);
+                List<Integer> expected = List.of(0, 1, 2, 3, 4, 5);
 
                 {
                     IntVar var = new IntVar();
                     Supplier<Integer> supplier = () -> var.value++;
-                    Predicate<Integer> predicate = it -> it > 3;
+                    Predicate<Integer> predicate = it -> it > 5;
 
                     assertIterableEquals(expected, (Seq<Integer>) generateUntil.invoke(supplier, predicate));
                 }
@@ -147,7 +177,7 @@ public interface SeqTestTemplate extends CollectionTestTemplate, SeqLikeTestTemp
                     IntVar var = new IntVar();
                     Supplier<Integer> supplier = () -> {
                         int res = var.value++;
-                        return res <= 3 ? res : null;
+                        return res <= 5 ? res : null;
                     };
 
                     assertIterableEquals(expected, (Seq<Integer>) generateUntilNull.invoke(supplier));
