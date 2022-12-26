@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 public final class MutableArrayDeque<E> extends AbstractMutableList<E> implements MutableDeque<E>, IndexedSeq<E>, Serializable {
     private static final long serialVersionUID = -4166302067142375121L;
 
-    private static final Factory<?> FACTORY = new Factory<>();
+    private static final MutableListFactory<Object, MutableArrayDeque<Object>> FACTORY = MutableArrayDeque::new;
 
     static final int DEFAULT_CAPACITY = 16;
 
@@ -110,7 +110,7 @@ public final class MutableArrayDeque<E> extends AbstractMutableList<E> implement
     //region Static Factories
 
     public static <E> @NotNull CollectionFactory<E, ?, MutableArrayDeque<E>> factory() {
-        return (Factory<E>) FACTORY;
+        return MutableListFactory.cast(FACTORY);
     }
 
     public static <E> MutableArrayDeque<E> create() {
@@ -632,11 +632,4 @@ public final class MutableArrayDeque<E> extends AbstractMutableList<E> implement
     }
 
     //endregion
-
-    private static final class Factory<E> extends AbstractMutableListFactory<E, MutableArrayDeque<E>> {
-        @Override
-        public MutableArrayDeque<E> newBuilder() {
-            return new MutableArrayDeque<>();
-        }
-    }
 }

@@ -687,7 +687,7 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
 
     //endregion
 
-    private static final class Factory<E> extends AbstractMutableListFactory<E, MutableArrayList<E>> {
+    private static final class Factory<E> implements MutableListFactory<E, MutableArrayList<E>> {
         @Override
         public MutableArrayList<E> newBuilder() {
             return new MutableArrayList<>();

@@ -22,13 +22,12 @@ public final class MutableSinglyLinkedList<E> extends ImmutableLinkedSeq.Builder
         implements MutableStack<E>, FreezableMutableSeq<E>, Serializable {
     private static final long serialVersionUID = 4403781063629141093L;
 
-    private static final MutableSinglyLinkedList.Factory<?> FACTORY = new MutableSinglyLinkedList.Factory<>();
+    private static final MutableListFactory<Object, MutableSinglyLinkedList<Object>> FACTORY = MutableSinglyLinkedList::new;
 
     //region Static Factories
 
-    @SuppressWarnings("unchecked")
     public static <E> @NotNull CollectionFactory<E, ?, MutableSinglyLinkedList<E>> factory() {
-        return (Factory<E>) FACTORY;
+        return MutableListFactory.cast(FACTORY);
     }
 
     @Contract(" -> new")
@@ -221,43 +220,6 @@ public final class MutableSinglyLinkedList<E> extends ImmutableLinkedSeq.Builder
         out.writeInt(size());
         for (E e : this) {
             out.writeObject(e);
-        }
-    }
-
-    private static final class Factory<E> extends AbstractMutableListFactory<E, MutableSinglyLinkedList<E>> {
-        @Override
-        public MutableSinglyLinkedList<E> newBuilder() {
-            return new MutableSinglyLinkedList<>();
-        }
-
-        @Override
-        public MutableSinglyLinkedList<E> from(E @NotNull [] values) {
-            return MutableSinglyLinkedList.from(values);
-        }
-
-        @Override
-        public MutableSinglyLinkedList<E> from(@NotNull Iterable<? extends E> values) {
-            return MutableSinglyLinkedList.from(values);
-        }
-
-        @Override
-        public MutableSinglyLinkedList<E> from(@NotNull Iterator<? extends E> it) {
-            return MutableSinglyLinkedList.from(it);
-        }
-
-        @Override
-        public MutableSinglyLinkedList<E> fill(int n, E value) {
-            return MutableSinglyLinkedList.fill(n, value);
-        }
-
-        @Override
-        public MutableSinglyLinkedList<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
-            return MutableSinglyLinkedList.fill(n, supplier);
-        }
-
-        @Override
-        public MutableSinglyLinkedList<E> fill(int n, @NotNull IntFunction<? extends E> init) {
-            return MutableSinglyLinkedList.fill(n, init);
         }
     }
 }

@@ -25,7 +25,7 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
 
     private static final boolean enableAssertions = Boolean.getBoolean("kala.collection.mutable.MutableLinkedList.enableAssertions");
 
-    private static final Factory<?> FACTORY = new Factory<>();
+    private static final MutableListFactory<Object, MutableLinkedList<Object>> FACTORY = MutableLinkedList::new;
 
     private int len = 0;
     private Node<E> first = null;
@@ -36,9 +36,8 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
 
     //region Static Factories
 
-    @SuppressWarnings("unchecked")
     public static <E> @NotNull CollectionFactory<E, ?, MutableLinkedList<E>> factory() {
-        return (MutableLinkedList.Factory<E>) FACTORY;
+        return MutableListFactory.cast(FACTORY);
     }
 
     @Contract("-> new")
@@ -835,13 +834,6 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
                 throw new IllegalStateException();
             }
             lastReturned.value = e;
-        }
-    }
-
-    private static final class Factory<E> extends AbstractMutableListFactory<E, MutableLinkedList<E>> {
-        @Override
-        public MutableLinkedList<E> newBuilder() {
-            return new MutableLinkedList<>();
         }
     }
 }

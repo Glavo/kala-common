@@ -23,7 +23,7 @@ public final class MutableSmartArrayList<E> extends AbstractMutableList<E> imple
 
     private static final int DEFAULT_CAPACITY = 16;
 
-    private static final Factory<?> FACTORY = new Factory<>();
+    private static final MutableListFactory<Object, MutableSmartArrayList<Object>> FACTORY = MutableSmartArrayList::new;
 
     private Object elem;
 
@@ -40,7 +40,7 @@ public final class MutableSmartArrayList<E> extends AbstractMutableList<E> imple
     //region Static Factories
 
     public static <E> @NotNull CollectionFactory<E, ?, MutableSmartArrayList<E>> factory() {
-        return (Factory<E>) FACTORY;
+        return MutableListFactory.cast(FACTORY);
     }
 
     @Contract("-> new")
@@ -514,13 +514,6 @@ public final class MutableSmartArrayList<E> extends AbstractMutableList<E> imple
                 //noinspection SuspiciousSystemArraycopy
                 System.arraycopy(elem, 0, arr, 0, size);
                 return arr;
-        }
-    }
-
-    private static final class Factory<E> extends AbstractMutableListFactory<E, MutableSmartArrayList<E>> {
-        @Override
-        public MutableSmartArrayList<E> newBuilder() {
-            return new MutableSmartArrayList<>();
         }
     }
 }
