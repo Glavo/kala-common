@@ -10,11 +10,8 @@ import java.util.*;
 public final class SimpleImmutableSeqTest implements ImmutableSeqTestTemplate {
 
     @Override
-    public void ofTest() {
-    }
-
-    @Override
-    public void fromTest() {
+    public Class<?> collectionType() {
+        return null;
     }
 
     @Override

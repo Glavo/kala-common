@@ -193,6 +193,29 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         return new ArraySeq<>(ans);
     }
 
+    public static <E> @NotNull ArraySeq<E> generateUntil(@NotNull Supplier<? extends E> supplier, @NotNull Predicate<? super E> predicate) {
+        MutableArrayList<E> builder = new MutableArrayList<>();
+        while (true) {
+            E value = supplier.get();
+            if (predicate.test(value))
+                break;
+            builder.append(value);
+        }
+        return new ArraySeq<>(builder.toArray());
+    }
+
+    public static <E> @NotNull ArraySeq<E> generateUntilNull(@NotNull Supplier<? extends @Nullable E> supplier) {
+        MutableArrayList<E> builder = new MutableArrayList<>();
+        while (true) {
+            E value = supplier.get();
+            if (value == null)
+                break;
+            builder.append(value);
+        }
+        return new ArraySeq<>(builder.toArray());
+    }
+
+
     //endregion
 
     @Override

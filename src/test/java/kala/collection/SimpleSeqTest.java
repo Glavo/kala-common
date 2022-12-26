@@ -37,11 +37,8 @@ public final class SimpleSeqTest implements SeqTestTemplate {
     }
 
     @Override
-    public void ofTest() {
-    }
-
-    @Override
-    public void fromTest() {
+    public Class<?> collectionType() {
+        return null;
     }
 
     @Override

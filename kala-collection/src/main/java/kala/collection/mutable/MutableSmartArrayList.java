@@ -8,12 +8,14 @@ import kala.function.IndexedFunction;
 import kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.IntFunction;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -186,6 +188,28 @@ public final class MutableSmartArrayList<E> extends AbstractMutableList<E> imple
             arr[i] = init.apply(i);
         }
         return new MutableSmartArrayList<>(n, arr);
+    }
+
+    public static <E> @NotNull MutableSmartArrayList<E> generateUntil(@NotNull Supplier<? extends E> supplier, @NotNull Predicate<? super E> predicate) {
+        MutableSmartArrayList<E> res = new MutableSmartArrayList<>();
+        while (true) {
+            E value = supplier.get();
+            if (predicate.test(value))
+                break;
+            res.append(value);
+        }
+        return res;
+    }
+
+    public static <E> @NotNull MutableSmartArrayList<E> generateUntilNull(@NotNull Supplier<? extends @Nullable E> supplier) {
+        MutableSmartArrayList<E> res = new MutableSmartArrayList<>();
+        while (true) {
+            E value = supplier.get();
+            if (value == null)
+                break;
+            res.append(value);
+        }
+        return res;
     }
 
     //endregion

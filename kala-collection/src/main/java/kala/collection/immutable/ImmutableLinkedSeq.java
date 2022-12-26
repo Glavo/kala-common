@@ -4,6 +4,7 @@ import kala.annotations.Covariant;
 import kala.collection.base.AbstractIterator;
 import kala.collection.base.Iterators;
 import kala.collection.mutable.AbstractMutableList;
+import kala.collection.mutable.MutableArrayList;
 import kala.collection.mutable.MutableSinglyLinkedList;
 import kala.function.*;
 import kala.Conditions;
@@ -168,6 +169,29 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
         t.tail = nilNode();
         return new ImmutableLinkedSeq<>(res, n);
     }
+
+    public static <E> @NotNull ImmutableLinkedSeq<E> generateUntil(@NotNull Supplier<? extends E> supplier, @NotNull Predicate<? super E> predicate) {
+        MutableSinglyLinkedList<E> builder = new MutableSinglyLinkedList<>();
+        while (true) {
+            E value = supplier.get();
+            if (predicate.test(value))
+                break;
+            builder.append(value);
+        }
+        return builder.toImmutableLinkedSeq();
+    }
+
+    public static <E> @NotNull ImmutableLinkedSeq<E> generateUntilNull(@NotNull Supplier<? extends @Nullable E> supplier) {
+        MutableSinglyLinkedList<E> builder = new MutableSinglyLinkedList<>();
+        while (true) {
+            E value = supplier.get();
+            if (value == null)
+                break;
+            builder.append(value);
+        }
+        return builder.toImmutableLinkedSeq();
+    }
+
 
     //endregion
 

@@ -6,6 +6,8 @@ import kala.collection.immutable.ImmutableLinkedSeq;
 import kala.collection.immutable.ImmutableVector;
 import kala.collection.mutable.MutableArray;
 import kala.collection.factory.CollectionFactory;
+import kala.value.primitive.IntValue;
+import kala.value.primitive.IntVar;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -16,6 +18,8 @@ import java.lang.invoke.MethodType;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -112,6 +116,41 @@ public interface SeqTestTemplate extends CollectionTestTemplate, SeqLikeTestTemp
                     assertIterableEquals(dataList, (Seq<Integer>) fromIterable.invoke(dataList));
                     assertIterableEquals(dataList, (Seq<Integer>) fromIterator.invoke(dataList.iterator()));
                     assertIterableEquals(dataList, (Seq<Integer>) fromStream.invoke(dataList.stream()));
+                }
+
+            } catch (Throwable e) {
+                fail(e);
+            }
+        }
+    }
+
+    @Test
+    default void generateUntilTest() {
+        final Class<?> klass = collectionType();
+        if (klass != null) {
+            try {
+                final MethodHandles.Lookup lookup = MethodHandles.publicLookup();
+
+                final MethodHandle generateUntil = lookup.findStatic(klass, "generateUntil", MethodType.methodType(klass, Supplier.class, Predicate.class));
+                final MethodHandle generateUntilNull = lookup.findStatic(klass, "generateUntilNull", MethodType.methodType(klass, Supplier.class));
+
+                List<Integer> expected = List.of(0, 1, 2, 3);
+
+                {
+                    IntVar var = new IntVar();
+                    Supplier<Integer> supplier = () -> var.value++;
+                    Predicate<Integer> predicate = it -> it > 3;
+
+                    assertIterableEquals(expected, (Seq<Integer>) generateUntil.invoke(supplier, predicate));
+                }
+                {
+                    IntVar var = new IntVar();
+                    Supplier<Integer> supplier = () -> {
+                        int res = var.value++;
+                        return res <= 3 ? res : null;
+                    };
+
+                    assertIterableEquals(expected, (Seq<Integer>) generateUntilNull.invoke(supplier));
                 }
 
             } catch (Throwable e) {
