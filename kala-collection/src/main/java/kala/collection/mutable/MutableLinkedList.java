@@ -212,10 +212,8 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     public @NotNull MutableLinkedList<E> clone() {
         MutableLinkedList<E> res = new MutableLinkedList<>();
-        if (len != 0) {
-            for (E e : this) {
-                res.append(e);
-            }
+        for (E e : this) {
+            res.append(e);
         }
         return res;
     }
