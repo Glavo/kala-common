@@ -151,16 +151,24 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
     @Test
     default void firstTest() {
         assertThrows(NoSuchElementException.class, () -> of().first());
+        assertNull(of().firstOrNull());
+        assertEquals(Option.none(), of().firstOption());
         for (Integer[] data : data1()) {
             assertSame(data[0], from(data).first());
+            assertSame(data[0], from(data).firstOrNull());
+            assertEquals(Option.some(data[0]), from(data).firstOption());
         }
     }
 
     @Test
     default void lastTest() {
         assertThrows(NoSuchElementException.class, () -> of().last());
+        assertNull(of().lastOrNull());
+        assertEquals(Option.none(), of().lastOption());
         for (Integer[] data : data1()) {
             assertSame(data[data.length - 1], from(data).last());
+            assertSame(data[data.length - 1], from(data).lastOrNull());
+            assertEquals(Option.some(data[data.length - 1]), from(data).lastOption());
         }
     }
 

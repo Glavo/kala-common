@@ -836,16 +836,6 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     }
 
     @Override
-    public @Nullable E firstOrNull() {
-        return elements.length != 0 ? (E) elements[0] : null;
-    }
-
-    @Override
-    public @NotNull Option<E> firstOption() {
-        return elements.length != 0 ? Option.some((E) elements[0]) : Option.none();
-    }
-
-    @Override
     public final E last() {
         final Object[] elements = this.elements;
         final int size = elements.length;
@@ -853,21 +843,6 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
             throw new NoSuchElementException();
         }
         return (E) elements[size - 1];
-    }
-
-    @Override
-    public @Nullable E lastOrNull() {
-        if (elements.length == 0) {
-            throw new NoSuchElementException();
-        }
-
-        return (E) elements[elements.length - 1];
-    }
-
-    @Override
-    public @NotNull Option<E> lastOption() {
-        return elements.length != 0 ? Option.some((E) elements[elements.length - 1]) : Option.none();
-
     }
 
     //endregion
