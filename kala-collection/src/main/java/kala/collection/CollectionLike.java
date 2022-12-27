@@ -107,7 +107,7 @@ public interface CollectionLike<E> extends Traversable<E>, AnyCollectionLike<E> 
         return ImmutableVector.from(this);
     }
 
-    default <K, V> @NotNull ImmutableMap<K, V> toImmutableMap() {
+    default <K, V> @NotNull ImmutableMap<K, V> toImmutableMap(CollectionLike<E /* ? extends java.util.Map.Entry<? extends K, ? extends V> */> this) {
         final int ks = knownSize();
         if (ks == 0) {
             return ImmutableMap.empty();
