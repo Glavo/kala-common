@@ -996,23 +996,6 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     }
 
     @Override
-    public final @NotNull Option<E> maxOption() {
-        final Object[] elements = this.elements;
-        if (elements.length == 0) {
-            return Option.none();
-        }
-        return Option.some((E) ObjectArrays.max(elements));
-    }
-
-    @Override
-    public final @NotNull Option<E> maxOption(@NotNull Comparator<? super E> comparator) {
-        if (elements.length == 0) {
-            return Option.none();
-        }
-        return Option.some(max(comparator));
-    }
-
-    @Override
     public final E min() {
         return (E) ObjectArrays.min(elements);
     }
@@ -1020,23 +1003,6 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     @Override
     public final E min(@NotNull Comparator<? super E> comparator) {
         return (E) GenericArrays.min(elements, (Comparator<Object>) comparator);
-    }
-
-    @Override
-    public final @NotNull Option<E> minOption() {
-        final Object[] elements = this.elements;
-        if (elements.length == 0) {
-            return Option.none();
-        }
-        return Option.some((E) ObjectArrays.min(elements));
-    }
-
-    @Override
-    public final @NotNull Option<E> minOption(@NotNull Comparator<? super E> comparator) {
-        if (elements.length == 0) {
-            return Option.none();
-        }
-        return Option.some(min(comparator));
     }
 
     @Override

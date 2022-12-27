@@ -273,6 +273,7 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         return Iterators.count(iterator(), predicate);
     }
 
+    @DelegateBy("max(Comparator<T>)")
     default T max() {
         return max(Comparators.naturalOrder());
     }
@@ -283,22 +284,27 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         return Iterators.max(iterator(), comparator);
     }
 
+    @DelegateBy("max()")
     default @Nullable T maxOrNull() {
         return isNotEmpty() ? max() : null;
     }
 
+    @DelegateBy("max(Comparator<T>)")
     default @Nullable T maxOrNull(@NotNull Comparator<? super T> comparator) {
         return isNotEmpty() ? max(comparator) : null;
     }
 
+    @DelegateBy("max()")
     default @NotNull Option<T> maxOption() {
         return isNotEmpty() ? Option.some(max()) : Option.none();
     }
 
+    @DelegateBy("max(Comparator<T>)")
     default @NotNull Option<T> maxOption(Comparator<? super T> comparator) {
         return isNotEmpty() ? Option.some(max(comparator)) : Option.none();
     }
 
+    @DelegateBy("min(Comparator<T>)")
     default T min() {
         return min(Comparators.naturalOrder());
     }
@@ -309,18 +315,22 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         return Iterators.min(iterator(), comparator);
     }
 
+    @DelegateBy("min()")
     default @Nullable T minOrNull() {
         return isNotEmpty() ? min() : null;
     }
 
+    @DelegateBy("min(Comparator<T>)")
     default @Nullable T minOrNull(@NotNull Comparator<? super T> comparator) {
         return isNotEmpty() ? min(comparator) : null;
     }
 
+    @DelegateBy("min()")
     default @NotNull Option<T> minOption() {
         return isNotEmpty() ? Option.some(min()) : Option.none();
     }
 
+    @DelegateBy("min(Comparator<T>)")
     default @NotNull Option<T> minOption(Comparator<? super T> comparator) {
         return isNotEmpty() ? Option.some(min(comparator)) : Option.none();
     }

@@ -773,6 +773,9 @@ public final class GenericArrays {
     @Contract(pure = true)
     public static <E> E max(E @NotNull [] array, @NotNull Comparator<? super E> comparator) {
         final int length = array.length;
+        if (length == 0) {
+            throw new NoSuchElementException();
+        }
         E e = array[0];
         for (int i = 1; i < length; i++) {
             E v = array[i];
@@ -828,6 +831,9 @@ public final class GenericArrays {
     @Contract(pure = true)
     public static <E> E min(E @NotNull [] array, @NotNull Comparator<? super E> comparator) {
         final int length = array.length;
+        if (length == 0) {
+            throw new NoSuchElementException();
+        }
         E e = array[0];
         for (int i = 1; i < length; i++) {
             E v = array[i];

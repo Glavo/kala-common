@@ -2,15 +2,14 @@ package kala.collection;
 
 import kala.collection.base.GenericArrays;
 import kala.collection.immutable.ImmutableLinkedSeq;
+import kala.comparator.Comparators;
 import kala.concurrent.ConcurrentScope;
+import kala.control.Option;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -220,5 +219,78 @@ public interface CollectionLikeTestTemplate {
                 );
             }
         }
+    }
+
+    @Test
+    default void maxTest() {
+        assertThrows(NoSuchElementException.class, () -> of().max());
+        assertThrows(NoSuchElementException.class, () -> of().max(Comparators.naturalOrder()));
+        assertNull(of().maxOrNull());
+        assertNull(of().maxOrNull(Comparators.naturalOrder()));
+        assertEquals(Option.none(), of().maxOption());
+        assertEquals(Option.none(), of().maxOption(Comparators.naturalOrder()));
+
+        Comparator<Integer> reversedComparator = Comparators.<Integer>naturalOrder().reversed();
+
+        assertEquals(0, of(0).max());
+        assertEquals(0, of(0).maxOrNull());
+        assertEquals(Option.some(0), of(0).maxOption());
+
+        assertEquals(0, of(0).max(reversedComparator));
+        assertEquals(0, of(0).maxOrNull(reversedComparator));
+        assertEquals(Option.some(0), of(0).maxOption(reversedComparator));
+
+        assertEquals(2, of(0, 1, 2).max());
+        assertEquals(2, of(0, 1, 2).maxOrNull());
+        assertEquals(Option.some(2), of(0, 1, 2).maxOption());
+
+        assertEquals(2, of(1, 0, 2, 1).max());
+        assertEquals(2, of(1, 0, 2, 1).maxOrNull());
+        assertEquals(Option.some(2), of(1, 0, 2, 1).maxOption());
+
+        assertEquals(0, of(0, 1, 2).max(reversedComparator));
+        assertEquals(0, of(0, 1, 2).maxOrNull(reversedComparator));
+        assertEquals(Option.some(0), of(0, 1, 2).maxOption(reversedComparator));
+
+        assertEquals(0, of(1, 0, 2, 1).max(reversedComparator));
+        assertEquals(0, of(1, 0, 2, 1).maxOrNull(reversedComparator));
+        assertEquals(Option.some(0), of(1, 0, 2, 1).maxOption(reversedComparator));
+    }
+
+    @Test
+    default void minTest() {
+        assertThrows(NoSuchElementException.class, () -> of().min());
+        assertThrows(NoSuchElementException.class, () -> of().min(Comparators.naturalOrder()));
+        assertNull(of().minOrNull());
+        assertNull(of().minOrNull(Comparators.naturalOrder()));
+        assertEquals(Option.none(), of().minOption());
+        assertEquals(Option.none(), of().minOption(Comparators.naturalOrder()));
+
+        Comparator<Integer> reversedComparator = Comparators.<Integer>naturalOrder().reversed();
+
+        assertEquals(0, of(0).min());
+        assertEquals(0, of(0).minOrNull());
+        assertEquals(Option.some(0), of(0).minOption());
+
+        assertEquals(0, of(0).min(reversedComparator));
+        assertEquals(0, of(0).minOrNull(reversedComparator));
+        assertEquals(Option.some(0), of(0).minOption(reversedComparator));
+
+        assertEquals(0, of(0, 1, 2).min());
+        assertEquals(0, of(0, 1, 2).minOrNull());
+        assertEquals(Option.some(0), of(0, 1, 2).minOption());
+
+        assertEquals(0, of(1, 0, 2, 1).min());
+        assertEquals(0, of(1, 0, 2, 1).minOrNull());
+        assertEquals(Option.some(0), of(1, 0, 2, 1).minOption());
+
+
+        assertEquals(2, of(0, 1, 2).min(reversedComparator));
+        assertEquals(2, of(0, 1, 2).minOrNull(reversedComparator));
+        assertEquals(Option.some(2), of(0, 1, 2).minOption(reversedComparator));
+
+        assertEquals(2, of(1, 0, 2, 1).min(reversedComparator));
+        assertEquals(2, of(1, 0, 2, 1).minOrNull(reversedComparator));
+        assertEquals(Option.some(2), of(1, 0, 2, 1).minOption(reversedComparator));
     }
 }
