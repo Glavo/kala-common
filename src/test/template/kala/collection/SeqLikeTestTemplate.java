@@ -9,6 +9,7 @@ import kala.control.Option;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -730,5 +731,15 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
             assertIterableEquals(res2, from(data).sorted(Comparators.reverseOrder()));
         }
 
+    }
+
+    @Test
+    default void forEachIndexedTest() {
+        ArrayList<Map.Entry<Integer, String>> al = new ArrayList<>();
+        this.<String>of().forEachIndexed((i, v) -> al.add(Map.entry(i, v)));
+        assertIterableEquals(List.of(), al);
+
+        from(List.of("A", "B", "C")).forEachIndexed((i, v) -> al.add(Map.entry(i, v)));
+        assertIterableEquals(List.of(Map.entry(0, "A"), Map.entry(1, "B"), Map.entry(2, "C")), al);
     }
 }
