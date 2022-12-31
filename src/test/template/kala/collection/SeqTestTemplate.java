@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -187,6 +188,15 @@ public interface SeqTestTemplate extends CollectionTestTemplate, SeqLikeTestTemp
                 fail(e);
             }
         }
+    }
+
+    @Test
+    default void collectTest() {
+        assertEquals("", this.<String>of().collect(Collectors.joining()));
+        assertEquals("str0str1str2", this.of("str0", "str1", "str2").collect(Collectors.joining()));
+
+        assertIterableEquals(List.of(), this.<String>of().collect(Seq.factory()));
+        assertIterableEquals(List.of("str0", "str1", "str2"), this.of("str0", "str1", "str2").collect(Seq.factory()));
     }
 
     @Test

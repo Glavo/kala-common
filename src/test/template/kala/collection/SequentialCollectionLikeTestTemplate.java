@@ -15,6 +15,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.LongAdder;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -76,7 +78,6 @@ public interface SequentialCollectionLikeTestTemplate extends CollectionLikeTest
     @Test
     default void filterNotNullTest() {
         assertIterableEquals(List.of(), of().filterNotNull());
-        assertIterableEquals(List.of(), of().filterNotNull());
 
         assertIterableEquals(List.of(), of((String) null).filterNotNull());
         assertIterableEquals(List.of(), of(null, null).filterNotNull());
@@ -90,6 +91,14 @@ public interface SequentialCollectionLikeTestTemplate extends CollectionLikeTest
             assertIterableEquals(Arrays.asList(data), from(data).filterNotNull(),
                     () -> String.format("expected: %s, actual: %s", Arrays.toString(data), from(data).filterNotNull()));
         }
+    }
+
+    @Test
+    default void filterIsInstanceTest() {
+        assertIterableEquals(List.of(), of().filterIsInstance(String.class));
+        assertIterableEquals(List.of(), of(1, 2, 3).filterIsInstance(String.class));
+        assertIterableEquals(List.of("foo"), of(1, 2, "foo", 3).filterIsInstance(String.class));
+        assertIterableEquals(List.of("str0", "str1", "str2"), of("str0", "str1", "str2").filterIsInstance(String.class));
     }
 
     @Test
@@ -133,8 +142,21 @@ public interface SequentialCollectionLikeTestTemplate extends CollectionLikeTest
                     })
             );
         }
+    }
 
+    @Test
+    default void mapMultiTest() {
+        BiConsumer<Object, Consumer<?>> emptyAction = (it, c) -> {
+        };
 
+        assertIterableEquals(List.of(), of().mapMulti(emptyAction));
+        assertIterableEquals(List.of(), of().mapMulti((it, c) -> c.accept("foo")));
+        assertIterableEquals(List.of(), of("str0", "str1", "str2").mapMulti(emptyAction));
+        assertIterableEquals(List.of("str0", "str1", "str2"), of("str0", "str1", "str2").mapMulti((e, c) -> c.accept(e)));
+        assertIterableEquals(List.of("str0", "str0", "str1", "str1", "str2", "str2"), of("str0", "str1", "str2").mapMulti((e, c) -> {
+            c.accept(e);
+            c.accept(e);
+        }));
     }
 
     @Test
@@ -166,6 +188,14 @@ public interface SequentialCollectionLikeTestTemplate extends CollectionLikeTest
 
             assertIterableEquals(Arrays.asList(d12), from(d1).zip(Arrays.asList(d2)));
         }
+    }
+
+    @Test
+    default void joinToTest() {
+        assertEquals("", of().joinToString(", "));
+        assertEquals("", of().joinToString(", ", it -> "str"));
+        assertEquals("1, 2, 3", of(1, 2, 3).joinToString(", "));
+        assertEquals("2, 4, 6", of(1, 2, 3).joinToString(", ", it -> String.valueOf(it * 2)));
     }
 
     @Test

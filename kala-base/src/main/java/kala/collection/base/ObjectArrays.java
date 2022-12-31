@@ -440,13 +440,13 @@ public final class ObjectArrays {
         }
 
         if (value == null) {
-            for (int i = endIndex; i >= 0; i--) {
+            for (int i = Integer.min(endIndex, array.length - 1); i >= 0; i--) {
                 if (array[i] == null) {
                     return i;
                 }
             }
         } else {
-            for (int i = endIndex; i >= 0; i--) {
+            for (int i = Integer.min(endIndex, array.length - 1); i >= 0; i--) {
                 if (value.equals(array[i])) {
                     return i;
                 }

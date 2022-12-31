@@ -194,6 +194,7 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
     @Test
     default void lastIndexOfTest() {
         assertEquals(-1, of().lastIndexOf(0));
+        assertEquals(-1, of().lastIndexOf(0, 0));
         assertEquals(-1, of().lastIndexOf(10));
 
         assertEquals(0, from(List.of("foo")).lastIndexOf("foo"));
