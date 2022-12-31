@@ -105,7 +105,7 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E> {
     @Contract(pure = true)
     @Flow(sourceIsContainer = true, targetIsContainer = true)
     @DelegateBy("get(int)")
-    default @NotNull Option<E>  getOption(int index) {
+    default @NotNull Option<E> getOption(int index) {
         return isDefinedAt(index) ? Option.some(get(index)) : Option.none();
     }
 
@@ -349,6 +349,67 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E> {
             --idx;
         }
         return -1;
+    }
+
+    @Contract(pure = true)
+    @DelegateBy("binarySearch(int, int, E)")
+    default int binarySearch(E value) {
+        return binarySearch(0, size(), value);
+    }
+
+    @Contract(pure = true)
+    @DelegateBy("binarySearch(int, int, E, Comparator<E>)")
+    default int binarySearch(E value, Comparator<? super E> comparator) {
+        return binarySearch(0, size(), value, comparator);
+    }
+
+    @Contract(pure = true)
+    @SuppressWarnings("unchecked")
+    default int binarySearch(int beginIndex, int endIndex, E value) {
+        Conditions.checkPositionIndices(beginIndex, endIndex, size());
+
+        int low = beginIndex;
+        int high = endIndex - 1;
+
+        while (low <= high) {
+            final int mid = (low + high) >>> 1;
+            final E midVal = get(mid);
+            final int cmp = ((Comparable<E>) midVal).compareTo(value);
+            if (cmp < 0) {
+                low = mid + 1;
+            } else if (cmp > 0) {
+                high = mid - 1;
+            } else {
+                return mid;
+            }
+        }
+        return -(low + 1);
+    }
+
+    @Contract(pure = true)
+    default int binarySearch(int beginIndex, int endIndex, E value, Comparator<? super E> comparator) {
+        if (comparator == null) {
+            return binarySearch(beginIndex, endIndex, value);
+        }
+
+        Conditions.checkPositionIndices(beginIndex, endIndex, size());
+
+        int low = beginIndex;
+        int high = endIndex - 1;
+
+        while (low <= high) {
+            final int mid = (low + high) >>> 1;
+            final E midVal = get(mid);
+            final int cmp = comparator.compare(midVal, value);
+            if (cmp < 0) {
+                low = mid + 1;
+            } else if (cmp > 0) {
+                high = mid - 1;
+            } else {
+                return mid;
+            }
+        }
+        return -(low + 1);
     }
 
     //endregion

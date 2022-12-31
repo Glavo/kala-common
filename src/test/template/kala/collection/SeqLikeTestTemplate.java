@@ -207,6 +207,24 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
     }
 
     @Test
+    default void binarySearchTest() {
+        assertEquals(-1, of().binarySearch(0));
+        assertEquals(-1, of().binarySearch(10));
+
+        assertEquals(0, of("str0").binarySearch("str0"));
+        assertEquals(-2, of("str0").binarySearch("str1"));
+        assertEquals(0, of("str0", "str1").binarySearch("str0"));
+        assertEquals(1, of("str0", "str1").binarySearch("str1"));
+        assertEquals(-3, of("str0", "str1").binarySearch("str2"));
+
+        assertEquals(0, of("str0").binarySearch("str0", Comparator.naturalOrder()));
+        assertEquals(-2, of("str0").binarySearch("str1", Comparator.naturalOrder()));
+        assertEquals(0, of("str0", "str1").binarySearch("str0", Comparator.naturalOrder()));
+        assertEquals(1, of("str0", "str1").binarySearch("str1", Comparator.naturalOrder()));
+        assertEquals(-3, of("str0", "str1").binarySearch("str2", Comparator.naturalOrder()));
+    }
+
+    @Test
     default void sliceViewTest() {
         assertIterableEquals(List.of(), of().sliceView(0, 0));
         assertThrows(IndexOutOfBoundsException.class, () -> of().sliceView(-1, 0).toImmutableSeq());

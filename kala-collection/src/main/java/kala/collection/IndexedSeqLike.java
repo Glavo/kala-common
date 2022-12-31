@@ -356,59 +356,6 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
         return -1;
     }
 
-    default int binarySearch(E value) {
-        return binarySearch(0, size(), value);
-    }
-
-    default int binarySearch(E value, Comparator<? super E> comparator) {
-        return binarySearch(0, size(), value, comparator);
-    }
-
-    @SuppressWarnings("unchecked")
-    default int binarySearch(int beginIndex, int endIndex, E value) {
-        Conditions.checkPositionIndices(beginIndex, endIndex, size());
-        int low = beginIndex;
-        int high = endIndex - 1;
-
-        while (low <= high) {
-            final int mid = (low + high) >>> 1;
-            final E midVal = get(mid);
-            final int cmp = ((Comparable<E>) midVal).compareTo(value);
-            if (cmp < 0) {
-                low = mid + 1;
-            } else if (cmp > 0) {
-                high = mid - 1;
-            } else {
-                return mid;
-            }
-        }
-        return -(low + 1);
-    }
-
-    default int binarySearch(int beginIndex, int endIndex, E value, Comparator<? super E> comparator) {
-        if (comparator == null) {
-            return binarySearch(beginIndex, endIndex, value);
-        }
-
-        Conditions.checkPositionIndices(beginIndex, endIndex, size());
-        int low = beginIndex;
-        int high = endIndex - 1;
-
-        while (low <= high) {
-            final int mid = (low + high) >>> 1;
-            final E midVal = get(mid);
-            final int cmp = comparator.compare(midVal, value);
-            if (cmp < 0) {
-                low = mid + 1;
-            } else if (cmp > 0) {
-                high = mid - 1;
-            } else {
-                return mid;
-            }
-        }
-        return -(low + 1);
-    }
-
     //endregion
 
     @Override
