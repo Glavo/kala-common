@@ -1,7 +1,5 @@
 package kala.collection;
 
-import kala.collection.internal.MutableArrayListBasedFactory;
-import kala.collection.mutable.MutableArrayList;
 import kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,7 +43,7 @@ public final class SimpleSeqTest implements SeqTestTemplate {
     public void serializationTest() {
     }
 
-    static final class SimpleSeq<E> extends AbstractSeq<E> {
+    private static final class SimpleSeq<E> extends AbstractSeq<E> {
         private final java.util.List<E> list;
 
         SimpleSeq(List<E> list) {
@@ -58,12 +56,28 @@ public final class SimpleSeqTest implements SeqTestTemplate {
         }
     }
 
-    static final class SimpleListFactory<E> extends MutableArrayListBasedFactory<E, SimpleSeq<E>> {
+    private static final class SimpleListFactory<E> implements CollectionFactory<E, ArrayList<E>, SimpleSeq<E>> {
         static final SimpleListFactory<?> INSTANCE = new SimpleListFactory<>();
 
         @Override
-        public SimpleSeq<E> build(MutableArrayList<E> builder) {
-            return new SimpleSeq<>(new ArrayList<>(builder.asJava()));
+        public ArrayList<E> newBuilder() {
+            return new ArrayList<>();
+        }
+
+        @Override
+        public SimpleSeq<E> build(ArrayList<E> es) {
+            return new SimpleSeq<>(es);
+        }
+
+        @Override
+        public void addToBuilder(@NotNull ArrayList<E> es, E value) {
+            es.add(value);
+        }
+
+        @Override
+        public ArrayList<E> mergeBuilder(@NotNull ArrayList<E> builder1, @NotNull ArrayList<E> builder2) {
+            builder1.addAll(builder2);
+            return builder1;
         }
     }
 }
