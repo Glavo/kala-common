@@ -197,4 +197,8 @@ public final class Tuple2<@Covariant T1, @Covariant T2> implements HList<T1, Tup
     public String toString() {
         return "(" + component1 + ", " + component2 + ")" ;
     }
+
+    private Object writeReplace() {
+        return new SerializedTuple(toArray());
+    }
 }

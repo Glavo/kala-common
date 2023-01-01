@@ -144,4 +144,8 @@ public final class Tuple1<@Covariant T1> implements HList<T1, Unit>, Mappable<T1
     public String toString() {
         return "(" + component1 + ")" ;
     }
+
+    private Object writeReplace() {
+        return new SerializedTuple(toArray());
+    }
 }

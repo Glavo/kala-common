@@ -4,6 +4,7 @@ import kala.annotations.Covariant;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.function.IntFunction;
@@ -26,6 +27,7 @@ public record Tuple8<@Covariant T1, @Covariant T2, @Covariant T3, @Covariant T4,
         T4 component4, T5 component5, T6 component6,
         T7 component7, T8 component8
 ) implements HList<T1, Tuple7<T2, T3, T4, T5, T6, T7, T8>>, Serializable {
+    @Serial
     private static final long serialVersionUID = 0L;
 
     @SuppressWarnings("unchecked")
@@ -163,5 +165,10 @@ public record Tuple8<@Covariant T1, @Covariant T2, @Covariant T3, @Covariant T4,
     @Override
     public String toString() {
         return "(" + component1 + ", " + component2 + ", " + component3 + ", " + component4 + ", " + component5 + ", " + component6 + ", " + component7 + ", " + component8 + ")" ;
+    }
+
+    @Serial
+    private Object writeReplace() {
+        return new SerializedTuple(toArray());
     }
 }

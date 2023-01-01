@@ -237,4 +237,8 @@ public final class Tuple5<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
     public String toString() {
         return "(" + component1 + ", " + component2 + ", " + component3 + ", " + component4 + ", " + component5 + ")" ;
     }
+
+    private Object writeReplace() {
+        return new SerializedTuple(toArray());
+    }
 }

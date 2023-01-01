@@ -2,6 +2,7 @@ package kala.tuple;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.IntFunction;
@@ -12,7 +13,7 @@ import java.util.function.IntFunction;
  * @author Glavo
  */
 @SuppressWarnings("unchecked")
-final class TupleXXL implements HList<Object, HList<?, ?>> {
+final class TupleXXL implements HList<Object, HList<?, ?>>, Serializable {
     private static final long serialVersionUID = 0L;
 
     private final Object @NotNull [] values;
@@ -118,5 +119,9 @@ final class TupleXXL implements HList<Object, HList<?, ?>> {
         builder.append(')');
 
         return builder.toString();
+    }
+
+    private Object writeReplace() {
+        return new SerializedTuple(values);
     }
 }

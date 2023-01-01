@@ -5,6 +5,7 @@ import kala.collection.base.Mappable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.function.Function;
@@ -17,6 +18,7 @@ import java.util.function.IntFunction;
  * @author Glavo
  */
 public record Tuple1<@Covariant T1>(T1 component1) implements HList<T1, Unit>, Mappable<T1>, Serializable {
+    @Serial
     private static final long serialVersionUID = 0L;
 
     @Contract(value = "_ -> param1", pure = true)
@@ -120,5 +122,10 @@ public record Tuple1<@Covariant T1>(T1 component1) implements HList<T1, Unit>, M
     @Override
     public String toString() {
         return "(" + component1 + ")" ;
+    }
+
+    @Serial
+    private Object writeReplace() {
+        return new SerializedTuple(toArray());
     }
 }
