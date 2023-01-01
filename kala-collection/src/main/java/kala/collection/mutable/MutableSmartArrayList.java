@@ -475,7 +475,7 @@ public final class MutableSmartArrayList<E> extends AbstractMutableList<E> imple
                 return;
             default:
                 Object[] arr = (Object[]) elem;
-                for (int i = 0; i < arr.length; i++) {
+                for (int i = 0; i < size; i++) {
                     arr[i] = operator.apply(((E) arr[i]));
                 }
         }
@@ -491,7 +491,7 @@ public final class MutableSmartArrayList<E> extends AbstractMutableList<E> imple
                 return;
             default:
                 Object[] arr = (Object[]) elem;
-                for (int i = 0; i < arr.length; i++) {
+                for (int i = 0; i < size; i++) {
                     arr[i] = operator.apply(i, ((E) arr[i]));
                 }
         }

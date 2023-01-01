@@ -72,4 +72,34 @@ public interface MutableSeqTestTemplate extends MutableCollectionTestTemplate, S
         }
 
     }
+
+    @Test
+    default void replaceAllTest() {
+        MutableSeq<Integer> empty = of();
+        empty.replaceAll(it -> it * 2);
+        assertIterableEquals(List.of(), empty);
+
+        MutableSeq<Integer> list = of(10);
+        list.replaceAll(it -> it * 2);
+        assertIterableEquals(List.of(20), list);
+
+        list = of(0, 1, 2, 3, 4, 5);
+        list.replaceAll(it -> it * 2);
+        assertIterableEquals(List.of(0, 2, 4, 6, 8, 10), list);
+    }
+
+    @Test
+    default void replaceAllIndexedTest() {
+        MutableSeq<Integer> empty = of();
+        empty.replaceAllIndexed(Integer::sum);
+        assertIterableEquals(List.of(), empty);
+
+        MutableSeq<Integer> list = of(10);
+        list.replaceAllIndexed(Integer::sum);
+        assertIterableEquals(List.of(10), list);
+
+        list = of(0, 1, 2, 3, 4, 5);
+        list.replaceAllIndexed(Integer::sum);
+        assertIterableEquals(List.of(0, 2, 4, 6, 8, 10), list);
+    }
 }

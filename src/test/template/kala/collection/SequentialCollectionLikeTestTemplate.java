@@ -201,6 +201,9 @@ public interface SequentialCollectionLikeTestTemplate extends CollectionLikeTest
     @Test
     default void toArrayTest() {
         assertArrayEquals(GenericArrays.EMPTY_OBJECT_ARRAY, of().toArray());
+        assertArrayEquals(GenericArrays.EMPTY_OBJECT_ARRAY, of().toArray(Object.class));
+        assertArrayEquals(GenericArrays.EMPTY_OBJECT_ARRAY, of().toArray(Object[]::new));
+
         for (Integer[] data : data1()) {
             Object[] oa = from(data).toArray();
             assertSame(Object[].class, oa.getClass());
