@@ -54,20 +54,6 @@ public final class MutableSinglyLinkedListTest implements MutableListTestTemplat
     }
 
     @Test
-    void removeTest() {
-        var buffer1 = MutableSinglyLinkedList.of("A", "B", "C");
-
-        assertEquals("A", buffer1.removeAt(0));
-        assertEquals(MutableSinglyLinkedList.of("B", "C"), buffer1);
-
-        assertEquals("C", buffer1.removeAt(1));
-        assertEquals(MutableSinglyLinkedList.of("B"), buffer1);
-
-        assertEquals("B", buffer1.removeAt(0));
-        assertEquals(MutableSinglyLinkedList.of(), buffer1);
-    }
-
-    @Test
     public void sortTest() {
         List<Comparator<Integer>> comparators = Arrays.asList(
                 null,

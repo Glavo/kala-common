@@ -357,7 +357,10 @@ public final class MutableSmartArrayList<E> extends AbstractMutableList<E> imple
         } else {
             Object[] arr = (Object[]) elem;
             res = (E) arr[index];
-            System.arraycopy(arr, index + 1, arr, index, size - index);
+            if (oldSize == 2)
+                this.elem = arr[index == 0 ? 1 : 0];
+            else
+                System.arraycopy(arr, index + 1, arr, index, size - index);
             this.size = oldSize - 1;
         }
         return res;

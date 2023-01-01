@@ -194,6 +194,39 @@ public interface MutableListTestTemplate extends MutableSeqTestTemplate {
     }
 
     @Test
+    default void removeTest() {
+        MutableList<Object> empty = of();
+        assertFalse(empty.remove("value"));
+        assertFalse(empty.remove(null));
+
+        MutableList<String> list = of("str0", "str1", "str2", "str3", "str4");
+
+        list.remove("value");
+        assertIterableEquals(List.of("str0", "str1", "str2", "str3", "str4"), list);
+
+        list.remove("str0");
+        assertIterableEquals(List.of("str1", "str2", "str3", "str4"), list);
+
+        list.remove("str3");
+        assertIterableEquals(List.of("str1", "str2", "str4"), list);
+
+        list.remove("foo");
+        assertIterableEquals(List.of("str1", "str2", "str4"), list);
+
+        list.remove("str4");
+        assertIterableEquals(List.of("str1", "str2"), list);
+
+        list.remove("str1");
+        assertIterableEquals(List.of("str2"), list);
+
+        list.remove("bar");
+        assertIterableEquals(List.of("str2"), list);
+
+        list.remove("str2");
+        assertIterableEquals(List.of(), list);
+    }
+
+    @Test
     default void removeAtTest() {
         MutableList<Object> empty = of();
         assertThrows(IndexOutOfBoundsException.class, () -> empty.removeAt(0));
