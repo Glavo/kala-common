@@ -246,16 +246,6 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
         return new Object[newCapacity];
     }
 
-    private void checkInBound(int index) {
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Index out of range: " + index);
-        }
-    }
-
-    Object @NotNull [] getArray() {
-        return this.elements;
-    }
-
     private void reduceToSize(int newSize) {
         Arrays.fill(elements, newSize, size, null);
         this.size = newSize;

@@ -217,28 +217,24 @@ public final class MutableSmartArrayList<E> extends AbstractMutableList<E> imple
     //region SmartArrayBuffer helpers
 
     private static Object[] growArray(int oldCapacity) {
+        assert oldCapacity > 0;
         assert oldCapacity < Integer.MAX_VALUE;
         return growArray(oldCapacity, oldCapacity + 1);
     }
 
     private static Object[] growArray(int oldCapacity, int minCapacity) {
-        if (oldCapacity == 0) {
-            return new Object[Math.max(DEFAULT_CAPACITY, minCapacity)];
-        }
-
         int newCapacity = Math.max(Math.max(oldCapacity, minCapacity), oldCapacity + (oldCapacity >> 1));
         return new Object[newCapacity];
     }
 
     private static int growSize(int oldCapacity) {
+        assert oldCapacity > 0;
         assert oldCapacity < Integer.MAX_VALUE;
         return growSize(oldCapacity, oldCapacity + 1);
     }
 
     private static int growSize(int oldCapacity, int minCapacity) {
-        return oldCapacity == 0
-                ? Math.max(DEFAULT_CAPACITY, minCapacity)
-                : Math.max(Math.max(oldCapacity, minCapacity), oldCapacity + (oldCapacity >> 1));
+        return Math.max(Math.max(oldCapacity, minCapacity), oldCapacity + (oldCapacity >> 1));
     }
 
     //endregion
@@ -424,33 +420,6 @@ public final class MutableSmartArrayList<E> extends AbstractMutableList<E> imple
             arr[oldSize] = value;
             elem = arr;
             this.size = oldSize + 1;
-        }
-    }
-
-    private void appendThis() {
-        final int oldSize = this.size;
-        switch (oldSize) {
-            case 0:
-                return;
-            case 1: {
-                Object[] arr = new Object[DEFAULT_CAPACITY];
-                arr[0] = arr[1] = elem;
-                this.elem = arr;
-                this.size = 2;
-                return;
-            }
-            default: {
-                Object[] arr = (Object[]) this.elem;
-                final int newSize = oldSize * 2;
-                if (newSize < 0) {
-                    throw new AssertionError();
-                }
-                if (arr.length < newSize) {
-                    arr = Arrays.copyOf(arr, growSize(arr.length, newSize));
-                    this.elem = arr;
-                }
-                System.arraycopy(arr, 0, arr, oldSize, oldSize);
-            }
         }
     }
 

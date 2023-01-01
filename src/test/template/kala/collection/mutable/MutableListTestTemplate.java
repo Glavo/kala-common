@@ -1,11 +1,15 @@
 package kala.collection.mutable;
 
+import kala.collection.Seq;
 import kala.collection.SimpleIterable;
 import kala.collection.base.GenericArrays;
 import kala.collection.factory.CollectionFactory;
 import kala.control.Option;
 import org.junit.jupiter.api.Test;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,6 +27,25 @@ public interface MutableListTestTemplate extends MutableSeqTestTemplate {
 
     @Override
     <E> MutableList<E> from(Iterable<? extends E> elements);
+
+    @Test
+    default void createTest() {
+        final Class<?> klass = collectionType();
+        if (klass == null) {
+            return;
+        }
+
+        try {
+            final MethodHandles.Lookup lookup = MethodHandles.publicLookup();
+            final MethodHandle create = lookup.findStatic(klass, "create", MethodType.methodType(klass));
+
+            MutableList<Object> list = (MutableList<Object>) create.invoke();
+            assertInstanceOf(klass, list);
+            assertIterableEquals(List.of(), list);
+        } catch (Throwable e) {
+            fail(e);
+        }
+    }
 
     @Test
     default void appendTest() {
@@ -254,6 +277,8 @@ public interface MutableListTestTemplate extends MutableSeqTestTemplate {
         assertIterableEquals(List.of("str0", "str3", "str4", "str5", "str6", "str7", "str8", "str9"), list);
         list.removeInRange(0, 5);
         assertIterableEquals(List.of("str7", "str8", "str9"), list);
+        list.removeInRange(1, 2);
+        assertIterableEquals(List.of("str7", "str9"), list);
         list.removeInRange(0, list.size());
         assertIterableEquals(List.of(), list);
     }

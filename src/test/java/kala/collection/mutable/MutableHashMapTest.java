@@ -22,7 +22,7 @@ public class MutableHashMapTest implements MutableMapTestTemplate {
     }
 
     @Test
-    void ofTest() {
+    public void ofTest() {
         assertEquals(0, MutableHashMap.of().size());
         assertFalse(MutableHashMap.of().iterator().hasNext());
 
@@ -66,7 +66,7 @@ public class MutableHashMapTest implements MutableMapTestTemplate {
     }
 
     @Test
-    void ofEntriesTest() {
+    public void ofEntriesTest() {
         assertEquals(0, MutableHashMap.ofEntries().size());
         assertFalse(MutableHashMap.ofEntries().iterator().hasNext());
 
@@ -127,13 +127,13 @@ public class MutableHashMapTest implements MutableMapTestTemplate {
     }
 
     @Test
-    void fromTest() {
+    public void fromTest() {
         assertEquals(MutableHashMap.of("str1", 1, "str2", 2, "str3", 3),
                 MutableHashMap.from(java.util.Map.of("str1", 1, "str2", 2, "str3", 3)));
     }
 
     @Test
-    void cloneTest() {
+    public void cloneTest() {
 
         Integer[][] data1 = data1();
         String[][] data1s = data1s();
@@ -168,7 +168,7 @@ public class MutableHashMapTest implements MutableMapTestTemplate {
     }
 
     @Test
-    void putTest() {
+    public void putTest() {
         // put null
         MutableHashMap<String, Integer> m = new MutableHashMap<>();
         m.put(null, 1234);
@@ -178,7 +178,7 @@ public class MutableHashMapTest implements MutableMapTestTemplate {
     }
 
     @Test
-    void putAllTest() {
+    public void putAllTest() {
 
         Integer[][] data1 = data1();
         String[][] data1s = data1s();
@@ -211,7 +211,7 @@ public class MutableHashMapTest implements MutableMapTestTemplate {
     }
 
     @Test
-    void serializationTest() throws Exception {
+    public void serializationTest() throws Exception {
         {
             final var map1 = new MutableHashMap<>();
             final var map2 = SerializationUtils.writeAndRead(map1);
@@ -246,5 +246,4 @@ public class MutableHashMapTest implements MutableMapTestTemplate {
             map1.forEach((k, v) -> assertEquals(v, map2.get(k)));
         }
     }
-
 }

@@ -131,6 +131,14 @@ public interface CollectionTestTemplate extends CollectionLikeTestTemplate {
     }
 
     @Test
+    default void classNameTest() {
+        Class<?> type = collectionType();
+        if (type != null) {
+            assertEquals(type.getSimpleName(), of().className());
+        }
+    }
+
+    @Test
     default void serializationTest() throws IOException, ClassNotFoundException {
     }
 }

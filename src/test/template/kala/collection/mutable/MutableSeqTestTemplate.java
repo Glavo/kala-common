@@ -27,6 +27,40 @@ public interface MutableSeqTestTemplate extends MutableCollectionTestTemplate, S
     <E> MutableSeq<E> from(Iterable<? extends E> elements);
 
     @Test
+    default void setTest() {
+        assertThrows(IndexOutOfBoundsException.class, () -> of().set(0, "value"));
+        assertThrows(IndexOutOfBoundsException.class, () -> of().set(1, "value"));
+        assertThrows(IndexOutOfBoundsException.class, () -> of().set(-1, "value"));
+
+        {
+            MutableSeq<String> seq = of("value");
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.set(1, "newValue"));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.set(-1, "newValue"));
+
+            seq.set(0, "newValue");
+            assertIterableEquals(List.of("newValue"), seq);
+        }
+
+        {
+            MutableSeq<String> seq = of("str0", "str1", "str2");
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.set(3, "value"));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.set(-1, "value"));
+
+            seq.set(1, "value");
+            assertIterableEquals(List.of("str0", "value", "str2"), seq);
+
+            seq.set(2, "newValue");
+            assertIterableEquals(List.of("str0", "value", "newValue"), seq);
+
+            seq.set(2, "foo");
+            assertIterableEquals(List.of("str0", "value", "foo"), seq);
+
+            seq.set(0, "bar");
+            assertIterableEquals(List.of("bar", "value", "foo"), seq);
+        }
+    }
+
+    @Test
     default void swapTest() {
         assertThrows(IndexOutOfBoundsException.class, () -> of().swap(0, 1));
 

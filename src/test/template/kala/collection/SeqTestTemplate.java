@@ -136,8 +136,11 @@ public interface SeqTestTemplate extends CollectionTestTemplate, SeqLikeTestTemp
                 final MethodHandle fillIntFunction = lookup.findStatic(klass, "fill", MethodType.methodType(klass, int.class, IntFunction.class));
 
                 assertIterableEquals(List.of(), (Seq<String>) fillValue.invoke(0, "value"));
+                assertIterableEquals(List.of("value"), (Seq<String>) fillValue.invoke(1, "value"));
                 assertIterableEquals(List.of("value", "value", "value"), (Seq<String>) fillValue.invoke(3, "value"));
 
+                assertIterableEquals(List.of("value0"), (Seq<String>) fillIntFunction.invoke(1, (IntFunction<String>) i -> "value" + i));
+                assertIterableEquals(List.of("value"), (Seq<String>) fillSupplier.invoke(1, (Supplier<String>) () -> "value"));
 
                 List<Integer> expected = List.of(0, 1, 2, 3, 4, 5);
 
