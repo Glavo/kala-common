@@ -9,16 +9,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.Objects;
 
-public final class IntObjTuple2<T> implements PrimitiveTuple {
+public record IntObjTuple2<T>(int component1, T component2) implements PrimitiveTuple {
     private static final long serialVersionUID = 0L;
-
-    private final int component1;
-    private final T component2;
-
-    private IntObjTuple2(int i, T t) {
-        component1 = i;
-        component2 = t;
-    }
 
     public static <T> @NotNull IntObjTuple2<T> of(int i, T t) {
         return new IntObjTuple2<>(i, t);
@@ -40,14 +32,6 @@ public final class IntObjTuple2<T> implements PrimitiveTuple {
             default:
                 throw new IndexOutOfBoundsException();
         }
-    }
-
-    public int component1() {
-        return component1;
-    }
-
-    public T component2() {
-        return component2;
     }
 
     public @NotNull Tuple2<@NotNull Integer, T> toTuple2() {

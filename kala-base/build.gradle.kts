@@ -105,8 +105,6 @@ tasks.getByName<GenerateTask>("generateSources") {
                 val model = mutableMapOf<String, Any?>()
                 model += m1.withNumber(1)
                 model += m2.withNumber(2)
-
-
             }
         }
     }
@@ -148,6 +146,16 @@ tasks.getByName<GenerateTask>("generateSources") {
 
                 generate("${type}Range", newModel, "IntegralRange")
             }
+        }
+    }
+}
+
+tasks.getByName<GenerateTask>("generateJava17Sources") {
+    withPackage("kala.tuple.primitive") {
+        for (model in Primitives.specializedPairs) {
+            val className = ((if (model["Type1"] == model["Type2"]) model["Type1"].toString() else "${model["Type1"]}${model["Type2"]}") + "Tuple2")
+
+            generate(className, model + ("ClassName" to className), "PrimitiveTuple2")
         }
     }
 }

@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-public final class BooleanTuple2 implements Map.Entry<Boolean, Boolean>, PrimitiveTuple {
+public record BooleanTuple2(boolean component1, boolean component2) implements Map.Entry<Boolean, Boolean>, PrimitiveTuple {
     private static final long serialVersionUID = 0L;
 
     private static final BooleanTuple2 TT = new BooleanTuple2(true, true);
@@ -20,14 +20,6 @@ public final class BooleanTuple2 implements Map.Entry<Boolean, Boolean>, Primiti
     private static final String TF_S = "BooleanTuple2(true, false)" ;
     private static final String FT_S = "BooleanTuple2(false, true)" ;
     private static final String FF_S = "BooleanTuple2(false, false)" ;
-
-    private final boolean component1;
-    private final boolean component2;
-
-    private BooleanTuple2(boolean b1, boolean b2) {
-        component1 = b1;
-        component2 = b2;
-    }
 
     public static @NotNull BooleanTuple2 of(boolean b1, boolean b2) {
         if (b1) {
@@ -53,14 +45,6 @@ public final class BooleanTuple2 implements Map.Entry<Boolean, Boolean>, Primiti
             default:
                 throw new IndexOutOfBoundsException();
         }
-    }
-
-    public boolean component1() {
-        return component1;
-    }
-
-    public boolean component2() {
-        return component2;
     }
 
     public @NotNull Tuple2<@NotNull Boolean, @NotNull Boolean> toTuple2() {

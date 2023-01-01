@@ -1,12 +1,12 @@
 package kala.tuple;
 
-import java.io.Serializable;
-import java.util.Objects;
-import java.util.function.IntFunction;
-
 import kala.annotations.Covariant;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.Serializable;
+import java.util.Objects;
+import java.util.function.IntFunction;
 
 /**
  * A tuple of 4 elements.
@@ -17,43 +17,10 @@ import org.jetbrains.annotations.NotNull;
  * @param <T4> type of the 4th element
  * @author Glavo
  */
-public final class Tuple4<@Covariant T1, @Covariant T2, @Covariant T3, @Covariant T4> implements HList<T1, Tuple3<T2, T3, T4>>, Serializable {
-    private static final long serialVersionUID = 2111962546132489176L;
-
-    /**
-     * The 1st element of this tuple.
-     */
-    private final T1 component1;
-
-    /**
-     * The 2nd element of this tuple.
-     */
-    private final T2 component2;
-
-    /**
-     * The 3rd element of this tuple.
-     */
-    private final T3 component3;
-
-    /**
-     * The 4th element of this tuple.
-     */
-    private final T4 component4;
-
-    /**
-     * Constructs a tuple of 4 elements.
-     *
-     * @param t1 the 1st element
-     * @param t2 the 2nd element
-     * @param t3 the 3rd element
-     * @param t4 the 4th element
-     */
-    public Tuple4(T1 t1, T2 t2, T3 t3, T4 t4) {
-        this.component1 = t1;
-        this.component2 = t2;
-        this.component3 = t3;
-        this.component4 = t4;
-    }
+public record Tuple4<@Covariant T1, @Covariant T2, @Covariant T3, @Covariant T4>(
+        T1 component1, T2 component2, T3 component3,
+        T4 component4) implements HList<T1, Tuple3<T2, T3, T4>>, Serializable {
+    private static final long serialVersionUID = 0L;
 
     @Contract(value = "_ -> param1", pure = true)
     @SuppressWarnings("unchecked")
@@ -76,18 +43,13 @@ public final class Tuple4<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
     @Override
     @SuppressWarnings("unchecked")
     public <U> U elementAt(int index) {
-        switch (index) {
-            case 0:
-                return (U) component1;
-            case 1:
-                return (U) component2;
-            case 2:
-                return (U) component3;
-            case 3:
-                return (U) component4;
-            default:
-                throw new IndexOutOfBoundsException("Index out of range: " + index);
-        }
+        return switch (index) {
+            case 0 -> (U) component1;
+            case 1 -> (U) component2;
+            case 2 -> (U) component3;
+            case 3 -> (U) component4;
+            default -> throw new IndexOutOfBoundsException("Index out of range: " + index);
+        };
     }
 
     /**
@@ -102,42 +64,6 @@ public final class Tuple4<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
         arr[2] = (U) this.component3;
         arr[3] = (U) this.component4;
         return arr;
-    }
-
-    /**
-     * Returns the 1st element of this tuple.
-     *
-     * @return the 1st element of this tuple
-     */
-    public T1 component1() {
-        return component1;
-    }
-
-    /**
-     * Returns the 2nd element of this tuple.
-     *
-     * @return the 2nd element of this tuple
-     */
-    public T2 component2() {
-        return component2;
-    }
-
-    /**
-     * Returns the 3rd element of this tuple.
-     *
-     * @return the 3rd element of this tuple
-     */
-    public T3 component3() {
-        return component3;
-    }
-
-    /**
-     * Returns the 4th element of this tuple.
-     *
-     * @return the 4th element of this tuple
-     */
-    public T4 component4() {
-        return component4;
     }
 
     /**
@@ -210,6 +136,6 @@ public final class Tuple4<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      */
     @Override
     public String toString() {
-        return "(" + component1 + ", " + component2 + ", " + component3 + ", " + component4 + ")" ;
+        return "(" + component1 + ", " + component2 + ", " + component3 + ", " + component4 + ")";
     }
 }

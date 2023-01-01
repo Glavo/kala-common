@@ -22,5 +22,22 @@ class GeneratePlugin : Plugin<Project> {
 
         project.tasks["compileJava"].dependsOn(generateSources)
         project.tasks["sourcesJar"].dependsOn(generateSources)
+
+        if (project.file("src/main/template-java17").exists()) {
+            val srcGen17 = project.buildDir.resolve("src-gen-java17")
+            val generateJava17Sources = project.tasks.create<GenerateTask>("generateJava17Sources") {
+                templateDirectory = project.file("src/main/template-java17").absolutePath
+                generateSourceDirectory = srcGen17.absolutePath
+            }
+
+            project.extensions.getByType(JavaPluginExtension::class.java)
+                .sourceSets
+                .getByName("java17")
+                .java {
+                    srcDir(srcGen17)
+                }
+
+            project.tasks["compileJava17Java"].dependsOn(generateJava17Sources)
+        }
     }
 }

@@ -13,7 +13,7 @@ import java.util.function.IntFunction;
  */
 @SuppressWarnings("unchecked")
 final class TupleXXL implements HList<Object, HList<?, ?>> {
-    private static final long serialVersionUID = -1035728226134523579L;
+    private static final long serialVersionUID = 0L;
 
     private final Object @NotNull [] values;
 
@@ -101,7 +101,7 @@ final class TupleXXL implements HList<Object, HList<?, ?>> {
         for (Object value : values) {
             hash = hash * 31 + Objects.hashCode(value);
         }
-        return hash + HASH_MAGIC;
+        return hash;
     }
 
     @Override

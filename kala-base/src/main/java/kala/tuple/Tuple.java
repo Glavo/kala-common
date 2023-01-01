@@ -1293,7 +1293,7 @@ public /* sealed */ interface Tuple extends AnyTuple, Serializable {
                 return (Comparator<T>) comparator(comparators[0], comparators[1], comparators[2], comparators[3], comparators[4], comparators[5], comparators[6], comparators[7], comparators[8]);
             default:
                 final class ComparatorN implements Comparator<Tuple>, Serializable {
-                    private static final long serialVersionUID = 6666584328927326964L;
+                    private static final long serialVersionUID = 0L;
                     private final @NotNull Comparator<?>[] comparators;
 
                     private ComparatorN(@NotNull Comparator<?>[] comparators) {

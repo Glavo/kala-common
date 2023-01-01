@@ -7,21 +7,12 @@ import kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
-import java.util.Objects;
 
-public final class IntObjTuple2<T> implements PrimitiveTuple {
+public record ${ClassName}(${PrimitiveType1} component1, ${PrimitiveType2} component2) implements PrimitiveTuple, Map.Entry<${WrapperType1}, ${WrapperType2}> {
     private static final long serialVersionUID = 0L;
 
-    private final int component1;
-    private final T component2;
-
-    private IntObjTuple2(int i, T t) {
-        component1 = i;
-        component2 = t;
-    }
-
-    public static <T> @NotNull IntObjTuple2<T> of(int i, T t) {
-        return new IntObjTuple2<>(i, t);
+    public static @NotNull ${ClassName} of(${PrimitiveType1} v1, ${PrimitiveType2} v2) {
+        return new ${ClassName}(v1, v2);
     }
 
     @Override
@@ -34,33 +25,41 @@ public final class IntObjTuple2<T> implements PrimitiveTuple {
     public <U> U elementAt(int index) {
         switch (index) {
             case 0:
-                return (U) Integer.valueOf(component1);
+                return (U) (Object) component1;
             case 1:
-                return (U) component2;
+                return (U) (Object) component2;
             default:
                 throw new IndexOutOfBoundsException();
         }
     }
 
-    public int component1() {
+    public @NotNull Tuple2<${"@NotNull"} ${WrapperType1}, @NotNull ${WrapperType2}> toTuple2() {
+        return Tuple.of(component1, component2);
+    }
+
+    @Override
+    public ${WrapperType1} getKey() {
         return component1;
     }
 
-    public T component2() {
+    @Override
+    public ${WrapperType2} getValue() {
         return component2;
     }
 
-    public @NotNull Tuple2<@NotNull Integer, T> toTuple2() {
-        return Tuple.of(component1, component2);
+    @Override
+    @Deprecated
+    public ${WrapperType2} setValue(${WrapperType2} value) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
 
-        if (o instanceof IntObjTuple2) {
-            IntObjTuple2<?> other = (IntObjTuple2<?>) o;
-            return component1 == other.component1 && Objects.equals(component2, other.component2);
+        if (o instanceof ${ClassName}) {
+            ${ClassName} other = (${ClassName}) o;
+            return Conditions.equals(component1, other.component1) && Conditions.equals(component2, other.component2);
         }
 
         if (o instanceof Map.Entry) {
@@ -80,11 +79,11 @@ public final class IntObjTuple2<T> implements PrimitiveTuple {
 
     @Override
     public int hashCode() {
-        return Integer.hashCode(component1) ^ Objects.hashCode(component2);
+        return ${WrapperType1}.hashCode(component1) ^ ${WrapperType2}.hashCode(component2);
     }
 
     @Override
     public String toString() {
-        return "IntObjTuple2(" + component1 + ", " + component2 + ")";
+        return "${ClassName}(" + component1 + ", " + component2 + ")" ;
     }
 }

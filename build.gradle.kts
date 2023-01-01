@@ -178,7 +178,8 @@ tasks.test {
 
 tasks.shadowJar {
     manifest.attributes(
-        "Automatic-Module-Name" to "kala.common"
+        "Automatic-Module-Name" to "kala.common",
+        "Multi-Release" to "true"
     )
 }
 

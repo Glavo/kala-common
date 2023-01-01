@@ -6,18 +6,8 @@ import kala.tuple.Tuple;
 import kala.tuple.Tuple3;
 import org.jetbrains.annotations.NotNull;
 
-public final class IntTuple3 implements PrimitiveTuple {
+public record IntTuple3(int component1, int component2, int component3) implements PrimitiveTuple {
     private static final long serialVersionUID = 0L;
-
-    private final int component1;
-    private final int component2;
-    private final int component3;
-
-    private IntTuple3(int i1, int i2, int i3) {
-        component1 = i1;
-        component2 = i2;
-        component3 = i3;
-    }
 
     public static @NotNull IntTuple3 of(int i1, int i2, int i3) {
         return new IntTuple3(i1, i2, i3);
@@ -41,18 +31,6 @@ public final class IntTuple3 implements PrimitiveTuple {
             default:
                 throw new IndexOutOfBoundsException();
         }
-    }
-
-    public int component1() {
-        return component1;
-    }
-
-    public int component2() {
-        return component2;
-    }
-
-    public int component3() {
-        return component3;
     }
 
     public @NotNull Tuple3<@NotNull Integer, @NotNull Integer, @NotNull Integer> toTuple3() {

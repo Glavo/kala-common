@@ -1,14 +1,14 @@
 package kala.tuple;
 
-import java.io.Serializable;
-import java.util.Objects;
-import java.util.function.Function;
-import java.util.function.IntFunction;
-
 import kala.annotations.Covariant;
 import kala.collection.base.Mappable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.Serializable;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.IntFunction;
 
 /**
  * A tuple of 1 element.
@@ -16,22 +16,8 @@ import org.jetbrains.annotations.NotNull;
  * @param <T1> type of the 1st element
  * @author Glavo
  */
-public final class Tuple1<@Covariant T1> implements HList<T1, Unit>, Mappable<T1>, Serializable {
+public record Tuple1<@Covariant T1>(T1 component1) implements HList<T1, Unit>, Mappable<T1>, Serializable {
     private static final long serialVersionUID = 0L;
-
-    /**
-     * The 1st element of this tuple.
-     */
-    private final T1 component1;
-
-    /**
-     * Constructs a tuple of 1 element.
-     *
-     * @param t1 the 1st element
-     */
-    public Tuple1(T1 t1) {
-        this.component1 = t1;
-    }
 
     @Contract(value = "_ -> param1", pure = true)
     @SuppressWarnings("unchecked")
@@ -68,15 +54,6 @@ public final class Tuple1<@Covariant T1> implements HList<T1, Unit>, Mappable<T1
         U[] arr = generator.apply(arity());
         arr[0] = (U) this.component1;
         return arr;
-    }
-
-    /**
-     * Returns the 1st element of this tuple.
-     *
-     * @return the 1st element of this tuple
-     */
-    public T1 component1() {
-        return component1;
     }
 
     /**

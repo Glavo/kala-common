@@ -8,7 +8,8 @@ import org.jetbrains.annotations.NotNull;
  * @author Glavo
  */
 public final class Unit implements EmptyTuple {
-    private static final long serialVersionUID = -3636451611428514248L;
+    private static final long serialVersionUID = 0L;
+    public static final int HASH_CODE = 427632945;
 
     public static final Unit INSTANCE = new Unit();
 
@@ -24,7 +25,7 @@ public final class Unit implements EmptyTuple {
      */
     @Override
     public int hashCode() {
-        return Tuple.HASH_MAGIC;
+        return HASH_CODE;
     }
 
     /**

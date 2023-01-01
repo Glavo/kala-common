@@ -1,12 +1,12 @@
 package kala.tuple;
 
-import java.io.Serializable;
-import java.util.Objects;
-import java.util.function.IntFunction;
-
 import kala.annotations.Covariant;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.Serializable;
+import java.util.Objects;
+import java.util.function.IntFunction;
 
 /**
  * A tuple of 8 elements.
@@ -21,72 +21,12 @@ import org.jetbrains.annotations.NotNull;
  * @param <T8> type of the 8th element
  * @author Glavo
  */
-public final class Tuple8<@Covariant T1, @Covariant T2, @Covariant T3, @Covariant T4, @Covariant T5, @Covariant T6, @Covariant T7, @Covariant T8>
-        implements HList<T1, Tuple7<T2, T3, T4, T5, T6, T7, T8>>, Serializable {
+public record Tuple8<@Covariant T1, @Covariant T2, @Covariant T3, @Covariant T4, @Covariant T5, @Covariant T6, @Covariant T7, @Covariant T8>(
+        T1 component1, T2 component2, T3 component3,
+        T4 component4, T5 component5, T6 component6,
+        T7 component7, T8 component8
+) implements HList<T1, Tuple7<T2, T3, T4, T5, T6, T7, T8>>, Serializable {
     private static final long serialVersionUID = 0L;
-
-    /**
-     * The 1st element of this tuple.
-     */
-    private final T1 component1;
-
-    /**
-     * The 2nd element of this tuple.
-     */
-    private final T2 component2;
-
-    /**
-     * The 3rd element of this tuple.
-     */
-    private final T3 component3;
-
-    /**
-     * The 4th element of this tuple.
-     */
-    private final T4 component4;
-
-    /**
-     * The 5th element of this tuple.
-     */
-    private final T5 component5;
-
-    /**
-     * The 6th element of this tuple.
-     */
-    private final T6 component6;
-
-    /**
-     * The 7th element of this tuple.
-     */
-    private final T7 component7;
-
-    /**
-     * The 8th element of this tuple.
-     */
-    private final T8 component8;
-
-    /**
-     * Constructs a tuple of 8 elements.
-     *
-     * @param t1 the 1st element
-     * @param t2 the 2nd element
-     * @param t3 the 3rd element
-     * @param t4 the 4th element
-     * @param t5 the 5th element
-     * @param t6 the 6th element
-     * @param t7 the 7th element
-     * @param t8 the 8th element
-     */
-    public Tuple8(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8) {
-        this.component1 = t1;
-        this.component2 = t2;
-        this.component3 = t3;
-        this.component4 = t4;
-        this.component5 = t5;
-        this.component6 = t6;
-        this.component7 = t7;
-        this.component8 = t8;
-    }
 
     @SuppressWarnings("unchecked")
     public static <T1, T2, T3, T4, T5, T6, T7, T8> Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> narrow(
@@ -108,26 +48,17 @@ public final class Tuple8<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
     @Override
     @SuppressWarnings("unchecked")
     public <U> U elementAt(int index) {
-        switch (index) {
-            case 0:
-                return (U) component1;
-            case 1:
-                return (U) component2;
-            case 2:
-                return (U) component3;
-            case 3:
-                return (U) component4;
-            case 4:
-                return (U) component5;
-            case 5:
-                return (U) component6;
-            case 6:
-                return (U) component7;
-            case 7:
-                return (U) component8;
-            default:
-                throw new IndexOutOfBoundsException("Index out of range: " + index);
-        }
+        return switch (index) {
+            case 0 -> (U) component1;
+            case 1 -> (U) component2;
+            case 2 -> (U) component3;
+            case 3 -> (U) component4;
+            case 4 -> (U) component5;
+            case 5 -> (U) component6;
+            case 6 -> (U) component7;
+            case 7 -> (U) component8;
+            default -> throw new IndexOutOfBoundsException("Index out of range: " + index);
+        };
     }
 
     /**
@@ -148,77 +79,6 @@ public final class Tuple8<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
         return arr;
     }
 
-    /**
-     * Returns the 1st element of this tuple.
-     *
-     * @return the 1st element of this tuple
-     */
-    public T1 component1() {
-        return component1;
-    }
-
-    /**
-     * Returns the 2nd element of this tuple.
-     *
-     * @return the 2nd element of this tuple
-     */
-    public T2 component2() {
-        return component2;
-    }
-
-    /**
-     * Returns the 3rd element of this tuple.
-     *
-     * @return the 3rd element of this tuple
-     */
-    public T3 component3() {
-        return component3;
-    }
-
-    /**
-     * Returns the 4th element of this tuple.
-     *
-     * @return the 4th element of this tuple
-     */
-    public T4 component4() {
-        return component4;
-    }
-
-    /**
-     * Returns the 5th element of this tuple.
-     *
-     * @return the 5th element of this tuple
-     */
-    public T5 component5() {
-        return component5;
-    }
-
-    /**
-     * Returns the 6th element of this tuple.
-     *
-     * @return the 6th element of this tuple
-     */
-    public T6 component6() {
-        return component6;
-    }
-
-    /**
-     * Returns the 7th element of this tuple.
-     *
-     * @return the 7th element of this tuple
-     */
-    public T7 component7() {
-        return component7;
-    }
-
-    /**
-     * Returns the 8th element of this tuple.
-     *
-     * @return the 8th element of this tuple
-     */
-    public T8 component8() {
-        return component8;
-    }
 
     /**
      * {@inheritDoc}
