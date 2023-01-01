@@ -458,16 +458,4 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
             it.remove();
         }
     }
-
-    @Deprecated
-    @ReplaceWith("retainIf(Predicate<E>)")
-    default void filterInPlace(@NotNull Predicate<? super E> predicate) {
-        retainIf(predicate);
-    }
-
-    @Deprecated
-    @ReplaceWith("removeIf(removeIf<E>)")
-    default void filterNotInPlace(@NotNull Predicate<? super E> predicate) {
-        removeIf(predicate);
-    }
 }

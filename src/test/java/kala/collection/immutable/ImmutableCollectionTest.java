@@ -57,6 +57,7 @@ public final class ImmutableCollectionTest implements ImmutableCollectionTestTem
 
     @Test
     public final void ofTest() {
+
         assertIterableEquals(List.of(), ImmutableCollection.of());
         assertIterableEquals(List.of("str1"), ImmutableCollection.of("str1"));
         assertIterableEquals(List.of("str1", "str2"), ImmutableCollection.of("str1", "str2"));

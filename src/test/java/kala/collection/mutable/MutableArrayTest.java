@@ -5,7 +5,7 @@ import kala.collection.factory.CollectionFactory;
 public final class MutableArrayTest implements MutableSeqTestTemplate {
 
     @Override
-    public final <E> CollectionFactory<E, ?, MutableArray<E>> factory() {
+    public <E> CollectionFactory<E, ?, MutableArray<E>> factory() {
         return MutableArray.factory();
     }
 

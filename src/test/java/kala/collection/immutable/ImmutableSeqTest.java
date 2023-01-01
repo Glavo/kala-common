@@ -33,6 +33,10 @@ public final class ImmutableSeqTest implements ImmutableSeqTestTemplate {
         of().view().appended("zero").joinToString("::");
     }
 
+    @Override
+    public void classNameTest() {
+    }
+
     static final class ViewTest implements CollectionViewTestTemplate {
         @Override
         public <E> CollectionView<E> of(E... elements) {

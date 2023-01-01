@@ -1,6 +1,5 @@
 package kala.collection.mutable;
 
-import kala.collection.Seq;
 import kala.collection.SimpleIterable;
 import kala.collection.base.GenericArrays;
 import kala.collection.factory.CollectionFactory;
