@@ -135,7 +135,7 @@ public interface MutableMapLike<K, V> extends MapLike<K, V> {
             @Override
             public final boolean add(@NotNull Tuple2<K, V> value) {
 
-                return !put(value._1, value._2).isEmpty();
+                return !put(value.component1(), value.component2()).isEmpty();
             }
 
             @Override
@@ -146,7 +146,7 @@ public interface MutableMapLike<K, V> extends MapLike<K, V> {
                 }
                 Tuple2<K, V> tuple = (Tuple2<K, V>) value;
                 if (MutableMapLike.this.contains(tuple)) {
-                    MutableMapLike.this.remove(tuple._1);
+                    MutableMapLike.this.remove(tuple.component1());
                     return true;
                 } else {
                     return false;

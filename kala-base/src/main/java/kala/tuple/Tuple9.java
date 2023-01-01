@@ -29,47 +29,47 @@ public final class Tuple9<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
     /**
      * The 1st element of this tuple.
      */
-    public final T1 _1;
+    private final T1 component1;
 
     /**
      * The 2nd element of this tuple.
      */
-    public final T2 _2;
+    private final T2 component2;
 
     /**
      * The 3rd element of this tuple.
      */
-    public final T3 _3;
+    private final T3 component3;
 
     /**
      * The 4th element of this tuple.
      */
-    public final T4 _4;
+    private final T4 component4;
 
     /**
      * The 5th element of this tuple.
      */
-    public final T5 _5;
+    private final T5 component5;
 
     /**
      * The 6th element of this tuple.
      */
-    public final T6 _6;
+    private final T6 component6;
 
     /**
      * The 7th element of this tuple.
      */
-    public final T7 _7;
+    private final T7 component7;
 
     /**
      * The 8th element of this tuple.
      */
-    public final T8 _8;
+    private final T8 component8;
 
     /**
      * The 9th element of this tuple.
      */
-    public final T9 _9;
+    private final T9 component9;
 
     /**
      * Constructs a tuple of 9 elements.
@@ -85,15 +85,15 @@ public final class Tuple9<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      * @param t9 the 9th element
      */
     public Tuple9(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9) {
-        this._1 = t1;
-        this._2 = t2;
-        this._3 = t3;
-        this._4 = t4;
-        this._5 = t5;
-        this._6 = t6;
-        this._7 = t7;
-        this._8 = t8;
-        this._9 = t9;
+        this.component1 = t1;
+        this.component2 = t2;
+        this.component3 = t3;
+        this.component4 = t4;
+        this.component5 = t5;
+        this.component6 = t6;
+        this.component7 = t7;
+        this.component8 = t8;
+        this.component9 = t9;
     }
 
     @SuppressWarnings("unchecked")
@@ -118,23 +118,23 @@ public final class Tuple9<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
     public <U> U elementAt(int index) {
         switch (index) {
             case 0:
-                return (U) _1;
+                return (U) component1;
             case 1:
-                return (U) _2;
+                return (U) component2;
             case 2:
-                return (U) _3;
+                return (U) component3;
             case 3:
-                return (U) _4;
+                return (U) component4;
             case 4:
-                return (U) _5;
+                return (U) component5;
             case 5:
-                return (U) _6;
+                return (U) component6;
             case 6:
-                return (U) _7;
+                return (U) component7;
             case 7:
-                return (U) _8;
+                return (U) component8;
             case 8:
-                return (U) _9;
+                return (U) component9;
             default:
                 throw new IndexOutOfBoundsException("Index out of range: " + index);
         }
@@ -147,15 +147,15 @@ public final class Tuple9<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
     @SuppressWarnings("unchecked")
     public <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
         U[] arr = generator.apply(arity());
-        arr[0] = (U) this._1;
-        arr[1] = (U) this._2;
-        arr[2] = (U) this._3;
-        arr[3] = (U) this._4;
-        arr[4] = (U) this._5;
-        arr[5] = (U) this._6;
-        arr[6] = (U) this._7;
-        arr[7] = (U) this._8;
-        arr[8] = (U) this._9;
+        arr[0] = (U) this.component1;
+        arr[1] = (U) this.component2;
+        arr[2] = (U) this.component3;
+        arr[3] = (U) this.component4;
+        arr[4] = (U) this.component5;
+        arr[5] = (U) this.component6;
+        arr[6] = (U) this.component7;
+        arr[7] = (U) this.component8;
+        arr[8] = (U) this.component9;
         return arr;
     }
 
@@ -165,7 +165,7 @@ public final class Tuple9<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      * @return the 1st element of this tuple
      */
     public T1 component1() {
-        return _1;
+        return component1;
     }
 
     /**
@@ -174,7 +174,7 @@ public final class Tuple9<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      * @return the 2nd element of this tuple
      */
     public T2 component2() {
-        return _2;
+        return component2;
     }
 
     /**
@@ -183,7 +183,7 @@ public final class Tuple9<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      * @return the 3rd element of this tuple
      */
     public T3 component3() {
-        return _3;
+        return component3;
     }
 
     /**
@@ -192,7 +192,7 @@ public final class Tuple9<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      * @return the 4th element of this tuple
      */
     public T4 component4() {
-        return _4;
+        return component4;
     }
 
     /**
@@ -201,7 +201,7 @@ public final class Tuple9<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      * @return the 5th element of this tuple
      */
     public T5 component5() {
-        return _5;
+        return component5;
     }
 
     /**
@@ -210,7 +210,7 @@ public final class Tuple9<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      * @return the 6th element of this tuple
      */
     public T6 component6() {
-        return _6;
+        return component6;
     }
 
     /**
@@ -219,7 +219,7 @@ public final class Tuple9<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      * @return the 7th element of this tuple
      */
     public T7 component7() {
-        return _7;
+        return component7;
     }
 
     /**
@@ -228,7 +228,7 @@ public final class Tuple9<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      * @return the 8th element of this tuple
      */
     public T8 component8() {
-        return _8;
+        return component8;
     }
 
     /**
@@ -237,7 +237,7 @@ public final class Tuple9<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      * @return the 9th element of this tuple
      */
     public T9 component9() {
-        return _9;
+        return component9;
     }
 
     /**
@@ -245,7 +245,7 @@ public final class Tuple9<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      */
     @Override
     public T1 head() {
-        return _1;
+        return component1;
     }
 
     /**
@@ -253,7 +253,7 @@ public final class Tuple9<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      */
     @Override
     public @NotNull Tuple8<T2, T3, T4, T5, T6, T7, T8, T9> tail() {
-        return Tuple.of(_2, _3, _4, _5, _6, _7, _8, _9);
+        return Tuple.of(component2, component3, component4, component5, component6, component7, component8, component9);
     }
 
     /**
@@ -265,15 +265,15 @@ public final class Tuple9<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
     public <H> @NotNull HList<H, Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9>> cons(H head) {
         Object[] arr = new Object[10];
         arr[0] = head;
-        arr[1] = _1;
-        arr[2] = _2;
-        arr[3] = _3;
-        arr[4] = _4;
-        arr[5] = _5;
-        arr[6] = _6;
-        arr[7] = _7;
-        arr[8] = _8;
-        arr[9] = _9;
+        arr[1] = component1;
+        arr[2] = component2;
+        arr[3] = component3;
+        arr[4] = component4;
+        arr[5] = component5;
+        arr[6] = component6;
+        arr[7] = component7;
+        arr[8] = component8;
+        arr[9] = component9;
         return (HList) new TupleXXL(arr);
     }
 
@@ -286,29 +286,29 @@ public final class Tuple9<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
 
         if (o instanceof Tuple9) {
             Tuple9<?, ?, ?, ?, ?, ?, ?, ?, ?> other = (Tuple9<?, ?, ?, ?, ?, ?, ?, ?, ?>) o;
-            return Objects.equals(this._1, other._1)
-                    && Objects.equals(this._2, other._2)
-                    && Objects.equals(this._3, other._3)
-                    && Objects.equals(this._4, other._4)
-                    && Objects.equals(this._5, other._5)
-                    && Objects.equals(this._6, other._6)
-                    && Objects.equals(this._7, other._7)
-                    && Objects.equals(this._8, other._8)
-                    && Objects.equals(this._9, other._9);
+            return Objects.equals(this.component1, other.component1)
+                    && Objects.equals(this.component2, other.component2)
+                    && Objects.equals(this.component3, other.component3)
+                    && Objects.equals(this.component4, other.component4)
+                    && Objects.equals(this.component5, other.component5)
+                    && Objects.equals(this.component6, other.component6)
+                    && Objects.equals(this.component7, other.component7)
+                    && Objects.equals(this.component8, other.component8)
+                    && Objects.equals(this.component9, other.component9);
         }
 
         if (o instanceof AnyTuple) {
             AnyTuple other = (AnyTuple) o;
             return other.arity() == 9
-                    && Objects.equals(this._1, other.elementAt(0))
-                    && Objects.equals(this._2, other.elementAt(1))
-                    && Objects.equals(this._3, other.elementAt(2))
-                    && Objects.equals(this._4, other.elementAt(3))
-                    && Objects.equals(this._5, other.elementAt(4))
-                    && Objects.equals(this._6, other.elementAt(5))
-                    && Objects.equals(this._7, other.elementAt(6))
-                    && Objects.equals(this._8, other.elementAt(7))
-                    && Objects.equals(this._9, other.elementAt(8));
+                    && Objects.equals(this.component1, other.elementAt(0))
+                    && Objects.equals(this.component2, other.elementAt(1))
+                    && Objects.equals(this.component3, other.elementAt(2))
+                    && Objects.equals(this.component4, other.elementAt(3))
+                    && Objects.equals(this.component5, other.elementAt(4))
+                    && Objects.equals(this.component6, other.elementAt(5))
+                    && Objects.equals(this.component7, other.elementAt(6))
+                    && Objects.equals(this.component8, other.elementAt(7))
+                    && Objects.equals(this.component9, other.elementAt(8));
         }
 
         return false;
@@ -320,15 +320,15 @@ public final class Tuple9<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
     @Override
     public int hashCode() {
         int hash = 0;
-        hash = 31 * hash + Objects.hashCode(_1);
-        hash = 31 * hash + Objects.hashCode(_2);
-        hash = 31 * hash + Objects.hashCode(_3);
-        hash = 31 * hash + Objects.hashCode(_4);
-        hash = 31 * hash + Objects.hashCode(_5);
-        hash = 31 * hash + Objects.hashCode(_6);
-        hash = 31 * hash + Objects.hashCode(_7);
-        hash = 31 * hash + Objects.hashCode(_8);
-        hash = 31 * hash + Objects.hashCode(_9);
+        hash = 31 * hash + Objects.hashCode(component1);
+        hash = 31 * hash + Objects.hashCode(component2);
+        hash = 31 * hash + Objects.hashCode(component3);
+        hash = 31 * hash + Objects.hashCode(component4);
+        hash = 31 * hash + Objects.hashCode(component5);
+        hash = 31 * hash + Objects.hashCode(component6);
+        hash = 31 * hash + Objects.hashCode(component7);
+        hash = 31 * hash + Objects.hashCode(component8);
+        hash = 31 * hash + Objects.hashCode(component9);
         return hash + HASH_MAGIC;
     }
 
@@ -337,6 +337,6 @@ public final class Tuple9<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
      */
     @Override
     public String toString() {
-        return "(" + _1 + ", " + _2 + ", " + _3 + ", " + _4 + ", " + _5 + ", " + _6 + ", " + _7 + ", " + _8 + ", " + _9 + ")" ;
+        return "(" + component1 + ", " + component2 + ", " + component3 + ", " + component4 + ", " + component5 + ", " + component6 + ", " + component7 + ", " + component8 + ", " + component9 + ")" ;
     }
 }

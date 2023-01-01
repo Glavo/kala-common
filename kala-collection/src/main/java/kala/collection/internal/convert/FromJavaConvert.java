@@ -428,7 +428,7 @@ public final class FromJavaConvert {
             return new AbstractMutableSet<Tuple2<K, V>>() {
                 @Override
                 public boolean add(@NotNull Tuple2<K, V> value) {
-                    return MutableMapFromJava.this.put(value._1, value._2).isDefined();
+                    return MutableMapFromJava.this.put(value.component1(), value.component2()).isDefined();
                 }
 
                 @Override
@@ -439,7 +439,7 @@ public final class FromJavaConvert {
                     }
                     Tuple2<K, V> tuple = (Tuple2<K, V>) value;
                     if (MutableMapFromJava.this.contains(tuple)) {
-                        source.remove(tuple._1);
+                        source.remove(tuple.component1());
                         return true;
                     } else {
                         return false;

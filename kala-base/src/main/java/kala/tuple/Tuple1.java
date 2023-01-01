@@ -6,7 +6,6 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 
 import kala.annotations.Covariant;
-import kala.annotations.ReplaceWith;
 import kala.collection.base.Mappable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +22,7 @@ public final class Tuple1<@Covariant T1> implements HList<T1, Unit>, Mappable<T1
     /**
      * The 1st element of this tuple.
      */
-    public final T1 _1;
+    private final T1 component1;
 
     /**
      * Constructs a tuple of 1 element.
@@ -31,7 +30,7 @@ public final class Tuple1<@Covariant T1> implements HList<T1, Unit>, Mappable<T1
      * @param t1 the 1st element
      */
     public Tuple1(T1 t1) {
-        this._1 = t1;
+        this.component1 = t1;
     }
 
     @Contract(value = "_ -> param1", pure = true)
@@ -55,7 +54,7 @@ public final class Tuple1<@Covariant T1> implements HList<T1, Unit>, Mappable<T1
     @SuppressWarnings("unchecked")
     public <U> U elementAt(int index) {
         if (index == 0) {
-            return (U) _1;
+            return (U) component1;
         }
         throw new IndexOutOfBoundsException("Index out of range: " + index);
     }
@@ -67,7 +66,7 @@ public final class Tuple1<@Covariant T1> implements HList<T1, Unit>, Mappable<T1
     @SuppressWarnings("unchecked")
     public <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
         U[] arr = generator.apply(arity());
-        arr[0] = (U) this._1;
+        arr[0] = (U) this.component1;
         return arr;
     }
 
@@ -77,7 +76,7 @@ public final class Tuple1<@Covariant T1> implements HList<T1, Unit>, Mappable<T1
      * @return the 1st element of this tuple
      */
     public T1 _1() {
-        return _1;
+        return component1;
     }
 
     /**
@@ -86,7 +85,7 @@ public final class Tuple1<@Covariant T1> implements HList<T1, Unit>, Mappable<T1
      * @return the 1st element of this tuple
      */
     public T1 component1() {
-        return _1;
+        return component1;
     }
 
     /**
@@ -94,7 +93,7 @@ public final class Tuple1<@Covariant T1> implements HList<T1, Unit>, Mappable<T1
      */
     @Override
     public T1 head() {
-        return _1;
+        return component1;
     }
 
     /**
@@ -111,12 +110,12 @@ public final class Tuple1<@Covariant T1> implements HList<T1, Unit>, Mappable<T1
     @Override
     @Contract("_ -> new")
     public <H> @NotNull Tuple2<H, T1> cons(H head) {
-        return new Tuple2<>(head, _1);
+        return new Tuple2<>(head, component1);
     }
 
     @Override
     public <U> @NotNull Tuple1<U> map(@NotNull Function<? super T1, ? extends U> mapper) {
-        return new Tuple1<>(mapper.apply(_1));
+        return new Tuple1<>(mapper.apply(component1));
     }
 
     /**
@@ -128,12 +127,12 @@ public final class Tuple1<@Covariant T1> implements HList<T1, Unit>, Mappable<T1
 
         if (o instanceof Tuple1) {
             Tuple1<?> other = (Tuple1<?>) o;
-            return Objects.equals(this._1, other._1);
+            return Objects.equals(this.component1, other.component1);
         }
 
         if (o instanceof AnyTuple) {
             AnyTuple other = (AnyTuple) o;
-            return other.arity() == 1 && Objects.equals(this._1, other.elementAt(0));
+            return other.arity() == 1 && Objects.equals(this.component1, other.elementAt(0));
         }
 
         return false;
@@ -144,7 +143,7 @@ public final class Tuple1<@Covariant T1> implements HList<T1, Unit>, Mappable<T1
      */
     @Override
     public int hashCode() {
-        return HASH_MAGIC + Objects.hashCode(_1);
+        return HASH_MAGIC + Objects.hashCode(component1);
     }
 
     /**
@@ -152,6 +151,6 @@ public final class Tuple1<@Covariant T1> implements HList<T1, Unit>, Mappable<T1
      */
     @Override
     public String toString() {
-        return "(" + _1 + ")" ;
+        return "(" + component1 + ")" ;
     }
 }

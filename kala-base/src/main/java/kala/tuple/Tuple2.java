@@ -22,12 +22,12 @@ public final class Tuple2<@Covariant T1, @Covariant T2> implements HList<T1, Tup
     /**
      * The 1st element of this tuple.
      */
-    public final T1 _1;
+    private final T1 component1;
 
     /**
      * The 2nd element of this tuple.
      */
-    public final T2 _2;
+    private final T2 component2;
 
     /**
      * Constructs a tuple of 2 elements.
@@ -36,8 +36,8 @@ public final class Tuple2<@Covariant T1, @Covariant T2> implements HList<T1, Tup
      * @param t2 the 2nd element
      */
     public Tuple2(T1 t1, T2 t2) {
-        this._1 = t1;
-        this._2 = t2;
+        this.component1 = t1;
+        this.component2 = t2;
     }
 
     @Contract(value = "_ -> param1", pure = true)
@@ -63,9 +63,9 @@ public final class Tuple2<@Covariant T1, @Covariant T2> implements HList<T1, Tup
     public <U> U elementAt(int index) {
         switch (index) {
             case 0:
-                return (U) _1;
+                return (U) component1;
             case 1:
-                return (U) _2;
+                return (U) component2;
             default:
                 throw new IndexOutOfBoundsException("Index out of range: " + index);
         }
@@ -78,8 +78,8 @@ public final class Tuple2<@Covariant T1, @Covariant T2> implements HList<T1, Tup
     @SuppressWarnings("unchecked")
     public <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
         U[] arr = generator.apply(arity());
-        arr[0] = (U) this._1;
-        arr[1] = (U) this._2;
+        arr[0] = (U) this.component1;
+        arr[1] = (U) this.component2;
         return arr;
     }
 
@@ -89,7 +89,7 @@ public final class Tuple2<@Covariant T1, @Covariant T2> implements HList<T1, Tup
      * @return the 1st element of this tuple
      */
     public T1 component1() {
-        return _1;
+        return component1;
     }
 
     /**
@@ -98,7 +98,7 @@ public final class Tuple2<@Covariant T1, @Covariant T2> implements HList<T1, Tup
      * @return the 2nd element of this tuple
      */
     public T2 component2() {
-        return _2;
+        return component2;
     }
 
     /**
@@ -106,7 +106,7 @@ public final class Tuple2<@Covariant T1, @Covariant T2> implements HList<T1, Tup
      */
     @Override
     public T1 head() {
-        return _1;
+        return component1;
     }
 
     /**
@@ -114,7 +114,7 @@ public final class Tuple2<@Covariant T1, @Covariant T2> implements HList<T1, Tup
      */
     @Override
     public @NotNull Tuple1<T2> tail() {
-        return Tuple.of(_2);
+        return Tuple.of(component2);
     }
 
     /**
@@ -123,7 +123,7 @@ public final class Tuple2<@Covariant T1, @Covariant T2> implements HList<T1, Tup
     @Contract("_ -> new")
     @Override
     public <H> @NotNull Tuple3<H, T1, T2> cons(H head) {
-        return new Tuple3<>(head, _1, _2);
+        return new Tuple3<>(head, component1, component2);
     }
 
     /**
@@ -131,7 +131,7 @@ public final class Tuple2<@Covariant T1, @Covariant T2> implements HList<T1, Tup
      */
     @Override
     public T1 getKey() {
-        return _1;
+        return component1;
     }
 
     /**
@@ -139,7 +139,7 @@ public final class Tuple2<@Covariant T1, @Covariant T2> implements HList<T1, Tup
      */
     @Override
     public T2 getValue() {
-        return _2;
+        return component2;
     }
 
     /**
@@ -164,19 +164,19 @@ public final class Tuple2<@Covariant T1, @Covariant T2> implements HList<T1, Tup
 
         if (o instanceof Tuple2) {
             Tuple2<?, ?> other = (Tuple2<?, ?>) o;
-            return Objects.equals(this._1, other._1) && Objects.equals(this._2, other._2);
+            return Objects.equals(this.component1, other.component1) && Objects.equals(this.component2, other.component2);
         }
 
         if (o instanceof Map.Entry) {
             Map.Entry<?, ?> other = (Map.Entry<?, ?>) o;
-            return Objects.equals(this._1, other.getKey()) && Objects.equals(this._2, other.getValue());
+            return Objects.equals(this.component1, other.getKey()) && Objects.equals(this.component2, other.getValue());
         }
 
         if (o instanceof AnyTuple) {
             AnyTuple other = (AnyTuple) o;
             return other.arity() == 2
-                    && Objects.equals(this._1, other.elementAt(0))
-                    && Objects.equals(this._2, other.elementAt(1));
+                    && Objects.equals(this.component1, other.elementAt(0))
+                    && Objects.equals(this.component2, other.elementAt(1));
         }
 
         return false;
@@ -187,7 +187,7 @@ public final class Tuple2<@Covariant T1, @Covariant T2> implements HList<T1, Tup
      */
     @Override
     public int hashCode() {
-        return Objects.hashCode(_1) ^ Objects.hashCode(_2);
+        return Objects.hashCode(component1) ^ Objects.hashCode(component2);
     }
 
     /**
@@ -195,6 +195,6 @@ public final class Tuple2<@Covariant T1, @Covariant T2> implements HList<T1, Tup
      */
     @Override
     public String toString() {
-        return "(" + _1 + ", " + _2 + ")" ;
+        return "(" + component1 + ", " + component2 + ")" ;
     }
 }

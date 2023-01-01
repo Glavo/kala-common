@@ -53,6 +53,7 @@ allprojects {
         }
 
         dependencies {
+            "java17CompileOnly"("org.jetbrains:annotations:23.1.0")
             "java17Implementation"(sourceSets.main.get().output.classesDirs)
         }
 

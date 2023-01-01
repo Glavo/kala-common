@@ -1028,11 +1028,11 @@ public /* sealed */ interface Tuple extends AnyTuple, Serializable {
             @NotNull Comparator<? super T2> c2
     ) {
         return (Comparator<Tuple2<T1, T2>> & Serializable) (t1, t2) -> {
-            final int compare1 = c1.compare(t1._1, t2._1);
+            final int compare1 = c1.compare(t1.component1(), t2.component1());
             if (compare1 != 0) {
                 return compare1;
             }
-            return c2.compare(t1._2, t2._2);
+            return c2.compare(t1.component2(), t2.component2());
         };
     }
 
@@ -1042,15 +1042,15 @@ public /* sealed */ interface Tuple extends AnyTuple, Serializable {
             @NotNull Comparator<? super T3> c3
     ) {
         return (Comparator<Tuple3<T1, T2, T3>> & Serializable) (t1, t2) -> {
-            final int compare1 = c1.compare(t1._1, t2._1);
+            final int compare1 = c1.compare(t1.component1(), t2.component1());
             if (compare1 != 0) {
                 return compare1;
             }
-            final int compare2 = c2.compare(t1._2, t2._2);
+            final int compare2 = c2.compare(t1.component2(), t2.component2());
             if (compare2 != 0) {
                 return compare2;
             }
-            return c3.compare(t1._3, t2._3);
+            return c3.compare(t1.component3(), t2.component3());
         };
     }
 
@@ -1061,19 +1061,19 @@ public /* sealed */ interface Tuple extends AnyTuple, Serializable {
             @NotNull Comparator<? super T4> c4
     ) {
         return (Comparator<Tuple4<T1, T2, T3, T4>> & Serializable) (t1, t2) -> {
-            final int compare1 = c1.compare(t1._1, t2._1);
+            final int compare1 = c1.compare(t1.component1(), t2.component1());
             if (compare1 != 0) {
                 return compare1;
             }
-            final int compare2 = c2.compare(t1._2, t2._2);
+            final int compare2 = c2.compare(t1.component2(), t2.component2());
             if (compare2 != 0) {
                 return compare2;
             }
-            final int compare3 = c3.compare(t1._3, t2._3);
+            final int compare3 = c3.compare(t1.component3(), t2.component3());
             if (compare3 != 0) {
                 return compare3;
             }
-            return c4.compare(t1._4, t2._4);
+            return c4.compare(t1.component4(), t2.component4());
         };
     }
 
@@ -1085,23 +1085,23 @@ public /* sealed */ interface Tuple extends AnyTuple, Serializable {
             @NotNull Comparator<? super T5> c5
     ) {
         return (Comparator<Tuple5<T1, T2, T3, T4, T5>> & Serializable) (t1, t2) -> {
-            final int compare1 = c1.compare(t1._1, t2._1);
+            final int compare1 = c1.compare(t1.component1(), t2.component1());
             if (compare1 != 0) {
                 return compare1;
             }
-            final int compare2 = c2.compare(t1._2, t2._2);
+            final int compare2 = c2.compare(t1.component2(), t2.component2());
             if (compare2 != 0) {
                 return compare2;
             }
-            final int compare3 = c3.compare(t1._3, t2._3);
+            final int compare3 = c3.compare(t1.component3(), t2.component3());
             if (compare3 != 0) {
                 return compare3;
             }
-            final int compare4 = c4.compare(t1._4, t2._4);
+            final int compare4 = c4.compare(t1.component4(), t2.component4());
             if (compare4 != 0) {
                 return compare4;
             }
-            return c5.compare(t1._5, t2._5);
+            return c5.compare(t1.component5(), t2.component5());
         };
     }
 
@@ -1114,27 +1114,27 @@ public /* sealed */ interface Tuple extends AnyTuple, Serializable {
             @NotNull Comparator<? super T6> c6
     ) {
         return (Comparator<Tuple6<T1, T2, T3, T4, T5, T6>> & Serializable) (t1, t2) -> {
-            final int compare1 = c1.compare(t1._1, t2._1);
+            final int compare1 = c1.compare(t1.component1(), t2.component1());
             if (compare1 != 0) {
                 return compare1;
             }
-            final int compare2 = c2.compare(t1._2, t2._2);
+            final int compare2 = c2.compare(t1.component2(), t2.component2());
             if (compare2 != 0) {
                 return compare2;
             }
-            final int compare3 = c3.compare(t1._3, t2._3);
+            final int compare3 = c3.compare(t1.component3(), t2.component3());
             if (compare3 != 0) {
                 return compare3;
             }
-            final int compare4 = c4.compare(t1._4, t2._4);
+            final int compare4 = c4.compare(t1.component4(), t2.component4());
             if (compare4 != 0) {
                 return compare4;
             }
-            final int compare5 = c5.compare(t1._5, t2._5);
+            final int compare5 = c5.compare(t1.component5(), t2.component5());
             if (compare5 != 0) {
                 return compare5;
             }
-            return c6.compare(t1._6, t2._6);
+            return c6.compare(t1.component6(), t2.component6());
         };
     }
 
@@ -1148,31 +1148,31 @@ public /* sealed */ interface Tuple extends AnyTuple, Serializable {
             @NotNull Comparator<? super T7> c7
     ) {
         return (Comparator<Tuple7<T1, T2, T3, T4, T5, T6, T7>> & Serializable) (t1, t2) -> {
-            final int compare1 = c1.compare(t1._1, t2._1);
+            final int compare1 = c1.compare(t1.component1(), t2.component1());
             if (compare1 != 0) {
                 return compare1;
             }
-            final int compare2 = c2.compare(t1._2, t2._2);
+            final int compare2 = c2.compare(t1.component2(), t2.component2());
             if (compare2 != 0) {
                 return compare2;
             }
-            final int compare3 = c3.compare(t1._3, t2._3);
+            final int compare3 = c3.compare(t1.component3(), t2.component3());
             if (compare3 != 0) {
                 return compare3;
             }
-            final int compare4 = c4.compare(t1._4, t2._4);
+            final int compare4 = c4.compare(t1.component4(), t2.component4());
             if (compare4 != 0) {
                 return compare4;
             }
-            final int compare5 = c5.compare(t1._5, t2._5);
+            final int compare5 = c5.compare(t1.component5(), t2.component5());
             if (compare5 != 0) {
                 return compare5;
             }
-            final int compare6 = c6.compare(t1._6, t2._6);
+            final int compare6 = c6.compare(t1.component6(), t2.component6());
             if (compare6 != 0) {
                 return compare6;
             }
-            return c7.compare(t1._7, t2._7);
+            return c7.compare(t1.component7(), t2.component7());
         };
     }
 
@@ -1187,35 +1187,35 @@ public /* sealed */ interface Tuple extends AnyTuple, Serializable {
             @NotNull Comparator<? super T8> c8
     ) {
         return (Comparator<Tuple8<T1, T2, T3, T4, T5, T6, T7, T8>> & Serializable) (t1, t2) -> {
-            final int compare1 = c1.compare(t1._1, t2._1);
+            final int compare1 = c1.compare(t1.component1(), t2.component1());
             if (compare1 != 0) {
                 return compare1;
             }
-            final int compare2 = c2.compare(t1._2, t2._2);
+            final int compare2 = c2.compare(t1.component2(), t2.component2());
             if (compare2 != 0) {
                 return compare2;
             }
-            final int compare3 = c3.compare(t1._3, t2._3);
+            final int compare3 = c3.compare(t1.component3(), t2.component3());
             if (compare3 != 0) {
                 return compare3;
             }
-            final int compare4 = c4.compare(t1._4, t2._4);
+            final int compare4 = c4.compare(t1.component4(), t2.component4());
             if (compare4 != 0) {
                 return compare4;
             }
-            final int compare5 = c5.compare(t1._5, t2._5);
+            final int compare5 = c5.compare(t1.component5(), t2.component5());
             if (compare5 != 0) {
                 return compare5;
             }
-            final int compare6 = c6.compare(t1._6, t2._6);
+            final int compare6 = c6.compare(t1.component6(), t2.component6());
             if (compare6 != 0) {
                 return compare6;
             }
-            final int compare7 = c7.compare(t1._7, t2._7);
+            final int compare7 = c7.compare(t1.component7(), t2.component7());
             if (compare7 != 0) {
                 return compare7;
             }
-            return c8.compare(t1._8, t2._8);
+            return c8.compare(t1.component8(), t2.component8());
         };
     }
 
@@ -1231,39 +1231,39 @@ public /* sealed */ interface Tuple extends AnyTuple, Serializable {
             @NotNull Comparator<? super T9> c9
     ) {
         return (Comparator<Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9>> & Serializable) (t1, t2) -> {
-            final int compare1 = c1.compare(t1._1, t2._1);
+            final int compare1 = c1.compare(t1.component1(), t2.component1());
             if (compare1 != 0) {
                 return compare1;
             }
-            final int compare2 = c2.compare(t1._2, t2._2);
+            final int compare2 = c2.compare(t1.component2(), t2.component2());
             if (compare2 != 0) {
                 return compare2;
             }
-            final int compare3 = c3.compare(t1._3, t2._3);
+            final int compare3 = c3.compare(t1.component3(), t2.component3());
             if (compare3 != 0) {
                 return compare3;
             }
-            final int compare4 = c4.compare(t1._4, t2._4);
+            final int compare4 = c4.compare(t1.component4(), t2.component4());
             if (compare4 != 0) {
                 return compare4;
             }
-            final int compare5 = c5.compare(t1._5, t2._5);
+            final int compare5 = c5.compare(t1.component5(), t2.component5());
             if (compare5 != 0) {
                 return compare5;
             }
-            final int compare6 = c6.compare(t1._6, t2._6);
+            final int compare6 = c6.compare(t1.component6(), t2.component6());
             if (compare6 != 0) {
                 return compare6;
             }
-            final int compare7 = c7.compare(t1._7, t2._7);
+            final int compare7 = c7.compare(t1.component7(), t2.component7());
             if (compare7 != 0) {
                 return compare7;
             }
-            final int compare8 = c8.compare(t1._8, t2._8);
+            final int compare8 = c8.compare(t1.component8(), t2.component8());
             if (compare8 != 0) {
                 return compare8;
             }
-            return c9.compare(t1._9, t2._9);
+            return c9.compare(t1.component9(), t2.component9());
         };
     }
 

@@ -11,16 +11,16 @@ import java.util.Map;
 public final class ${ClassName} implements PrimitiveTuple, Map.Entry<${WrapperType1}, ${WrapperType2}> {
     private static final long serialVersionUID = 0L;
 
-    public final ${PrimitiveType1} _1;
-    public final ${PrimitiveType2} _2;
+    private final ${PrimitiveType1} component1;
+    private final ${PrimitiveType2} component2;
 
     private ${ClassName}(${PrimitiveType1} v1, ${PrimitiveType2} v2) {
-        _1 = v1;
-        _2 = v2;
+        component1 = v1;
+        component2 = v2;
     }
 
-    public static @NotNull ${ClassName} of(${PrimitiveType1} i1, ${PrimitiveType2} i2) {
-        return new ${ClassName}(i1, i2);
+    public static @NotNull ${ClassName} of(${PrimitiveType1} v1, ${PrimitiveType2} v2) {
+        return new ${ClassName}(v1, v2);
     }
 
     @Override
@@ -33,34 +33,34 @@ public final class ${ClassName} implements PrimitiveTuple, Map.Entry<${WrapperTy
     public <U> U elementAt(int index) {
         switch (index) {
             case 0:
-                return (U) (Object) _1;
+                return (U) (Object) component1;
             case 1:
-                return (U) (Object) _2;
+                return (U) (Object) component2;
             default:
                 throw new IndexOutOfBoundsException();
         }
     }
 
     public ${PrimitiveType1} component1() {
-        return _1;
+        return component1;
     }
 
     public ${PrimitiveType2} component2() {
-        return _2;
+        return component2;
     }
 
     public @NotNull Tuple2<${"@NotNull"} ${WrapperType1}, @NotNull ${WrapperType2}> toTuple2() {
-        return Tuple.of(_1, _2);
+        return Tuple.of(component1, component2);
     }
 
     @Override
     public ${WrapperType1} getKey() {
-        return _1;
+        return component1;
     }
 
     @Override
     public ${WrapperType2} getValue() {
-        return _2;
+        return component2;
     }
 
     @Override
@@ -75,19 +75,19 @@ public final class ${ClassName} implements PrimitiveTuple, Map.Entry<${WrapperTy
 
         if (o instanceof ${ClassName}) {
             ${ClassName} other = (${ClassName}) o;
-            return Conditions.equals(_1, other._1) && Conditions.equals(_2, other._2);
+            return Conditions.equals(component1, other.component1) && Conditions.equals(component2, other.component2);
         }
 
         if (o instanceof Map.Entry) {
             Map.Entry<?, ?> other = (Map.Entry<?, ?>) o;
-            return Conditions.equals(_1, other.getKey()) && Conditions.equals(_2, other.getValue());
+            return Conditions.equals(component1, other.getKey()) && Conditions.equals(component2, other.getValue());
         }
 
         if (o instanceof AnyTuple) {
             AnyTuple other = (AnyTuple) o;
             return other.arity() == 2
-                    && Conditions.equals(_1, other.elementAt(0))
-                    && Conditions.equals(_2, other.elementAt(1));
+                    && Conditions.equals(component1, other.elementAt(0))
+                    && Conditions.equals(component2, other.elementAt(1));
         }
 
         return false;
@@ -95,11 +95,11 @@ public final class ${ClassName} implements PrimitiveTuple, Map.Entry<${WrapperTy
 
     @Override
     public int hashCode() {
-        return ${WrapperType1}.hashCode(_1) ^ ${WrapperType2}.hashCode(_2);
+        return ${WrapperType1}.hashCode(component1) ^ ${WrapperType2}.hashCode(component2);
     }
 
     @Override
     public String toString() {
-        return "${ClassName}(" + _1 + ", " + _2 + ")" ;
+        return "${ClassName}(" + component1 + ", " + component2 + ")" ;
     }
 }
