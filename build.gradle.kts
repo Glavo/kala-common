@@ -14,7 +14,7 @@ loadMavenPublishProperties()
 
 allprojects {
     group = "org.glavo.kala"
-    version = "0.61.0"// + "-SNAPSHOT"
+    version = "0.62.0" + "-SNAPSHOT"
 
     description = "Basic components of Kala"
 
@@ -42,7 +42,9 @@ allprojects {
         testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
     }
 
-    if (project.file("src/main/java17").exists()) {
+    val hasJava17Sources = project.file("src/main/java17").exists()
+
+    if (hasJava17Sources) {
         val java17SourceSet = sourceSets.create("java17") {
             java.srcDir("src/main/java17")
         }
@@ -74,9 +76,16 @@ allprojects {
         options.isWarnings = false
     }
 
-    java {
-        withSourcesJar()
-        // withJavadocJar()
+    val sourcesJar = tasks.create<Jar>("sourcesJar") {
+        group = "build"
+        archiveClassifier.set("sources")
+
+        from(sourceSets.main.get().allSource)
+        if (hasJava17Sources) {
+            into("META-INF/versions/17") {
+                from(sourceSets["java17"].allSource)
+            }
+        }
     }
 
     val javadocJar = tasks.create<Jar>("javadocJar") {
@@ -109,6 +118,7 @@ allprojects {
                 artifactId = this@allprojects.name
                 from(components["java"])
                 artifact(javadocJar)
+                artifact(sourcesJar)
 
                 pom {
                     name.set(project.name)
