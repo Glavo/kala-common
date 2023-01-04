@@ -335,18 +335,24 @@ public final class MutableArrayDeque<E> extends AbstractMutableList<E> implement
 
     @Override
     public void insert(int index, E value) {
+        if (index == 0) {
+            prepend(value);
+            return;
+        }
+
         final int oldSize = size();
+        if (index == oldSize) {
+            append(value);
+            return;
+        }
+
         Conditions.checkPositionIndex(index, oldSize);
 
         if (oldSize == elements.length) {
             grow();
         }
 
-        if (oldSize == 0) {
-            elements[0] = value;
-            begin = 0;
-            end = 1;
-        } else if (begin < end) {
+        if (begin < end) {
             final int targetIndex = begin + index;
             if (end < elements.length) {
                 System.arraycopy(elements, targetIndex, elements, targetIndex + 1, end - targetIndex);
@@ -424,14 +430,17 @@ public final class MutableArrayDeque<E> extends AbstractMutableList<E> implement
         final int oldSize = size();
         Conditions.checkElementIndex(index, oldSize);
 
+        if (index == 0) {
+            return removeFirst();
+        }
+
+        if (index == oldSize - 1) {
+            return removeLast();
+        }
+
         final Object res;
 
-        if (oldSize == 1) {
-            res = elements[begin];
-            elements[begin] = null;
-            begin = -1;
-            end = 0;
-        } else if (begin < end) {
+        if (begin < end) {
             final int targetIndex = begin + index;
             res = elements[targetIndex];
             System.arraycopy(elements, targetIndex + 1, elements, targetIndex, end - targetIndex - 1);
