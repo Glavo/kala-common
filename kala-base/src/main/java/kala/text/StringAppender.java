@@ -374,7 +374,7 @@ public class StringAppender extends Writer implements Serializable {
         return this;
     }
 
-    public StringAppender append(StringView view) {
+    public StringAppender append(StringSlice view) {
         if (view == null)
             appendNull();
         else
@@ -383,7 +383,7 @@ public class StringAppender extends Writer implements Serializable {
         return this;
     }
 
-    public StringAppender append(StringView view, int beginIndex, int endIndex) {
+    public StringAppender append(StringSlice view, int beginIndex, int endIndex) {
         if (view == null)
             appendNull();
         else
@@ -394,8 +394,8 @@ public class StringAppender extends Writer implements Serializable {
 
     @Override
     public StringAppender append(CharSequence s) {
-        if (s instanceof StringView)
-            ((StringView) s).appendTo(builder);
+        if (s instanceof StringSlice)
+            ((StringSlice) s).appendTo(builder);
         else
             builder.append(s);
         return this;
@@ -403,8 +403,8 @@ public class StringAppender extends Writer implements Serializable {
 
     @Override
     public StringAppender append(CharSequence s, int beginIndex, int endIndex) {
-        if (s instanceof StringView)
-            ((StringView) s).appendTo(builder, beginIndex, endIndex);
+        if (s instanceof StringSlice)
+            ((StringSlice) s).appendTo(builder, beginIndex, endIndex);
         else
             builder.append(s);
         return this;

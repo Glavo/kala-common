@@ -12,30 +12,30 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.*;
 
-public final class StringView implements Comparable<StringView>, CharSequence, Serializable {
+public final class StringSlice implements Comparable<StringSlice>, CharSequence, Serializable {
     private static final long serialVersionUID = 0L;
     private static final int ZERO_HASH_REPLACE = 914090028;
 
-    private static final StringView EMPTY = new StringView("", 0, 0);
+    private static final StringSlice EMPTY = new StringSlice("", 0, 0);
 
     private final String value;
     private final int offset;
     private final int length;
     private int hash;
 
-    private StringView(String value, int offset, int length) {
+    private StringSlice(String value, int offset, int length) {
         this.value = value;
         this.offset = offset;
         this.length = length;
     }
 
-    public static StringView of(@NotNull String value) {
-        return value.length() != 0 ? new StringView(value, 0, value.length()) : EMPTY;
+    public static StringSlice of(@NotNull String value) {
+        return value.length() != 0 ? new StringSlice(value, 0, value.length()) : EMPTY;
     }
 
-    public static StringView of(@NotNull String value, int beginIndex, int endIndex) {
+    public static StringSlice of(@NotNull String value, int beginIndex, int endIndex) {
         Conditions.checkPositionIndices(beginIndex, endIndex, value.length());
-        return beginIndex != endIndex ? new StringView(value, beginIndex, endIndex - beginIndex) : EMPTY;
+        return beginIndex != endIndex ? new StringSlice(value, beginIndex, endIndex - beginIndex) : EMPTY;
     }
 
     @SuppressWarnings("Since15")
@@ -90,7 +90,7 @@ public final class StringView implements Comparable<StringView>, CharSequence, S
 
         ByteBuffer result;
         try {
-             result = charset.newEncoder()
+            result = charset.newEncoder()
                     .onMalformedInput(CodingErrorAction.REPLACE)
                     .onUnmappableCharacter(CodingErrorAction.REPLACE)
                     .encode(CharBuffer.wrap(value, beginIndex + offset, endIndex + offset));
@@ -108,32 +108,32 @@ public final class StringView implements Comparable<StringView>, CharSequence, S
     }
 
     @Override
-    public @NotNull StringView subSequence(int start, int end) {
+    public @NotNull StringSlice subSequence(int start, int end) {
         return this.substring(start, end);
     }
 
-    public @NotNull StringView substring(int beginIndex) {
+    public @NotNull StringSlice substring(int beginIndex) {
         return substring(beginIndex, length);
     }
 
-    public @NotNull StringView substring(int beginIndex, int endIndex) {
+    public @NotNull StringSlice substring(int beginIndex, int endIndex) {
         Conditions.checkPositionIndices(beginIndex, endIndex, length);
-        return beginIndex != endIndex ? new StringView(value, offset + beginIndex, endIndex - beginIndex) : EMPTY;
+        return beginIndex != endIndex ? new StringSlice(value, offset + beginIndex, endIndex - beginIndex) : EMPTY;
     }
 
-    public @NotNull StringView concat(@NotNull String other) {
+    public @NotNull StringSlice concat(@NotNull String other) {
         if (other.isEmpty())
             return this;
         if (this.isEmpty())
-            return StringView.of(other);
+            return StringSlice.of(other);
 
         StringBuilder builder = new StringBuilder(this.length + other.length());
         this.appendTo(builder);
         builder.append(other);
-        return StringView.of(builder.toString());
+        return StringSlice.of(builder.toString());
     }
 
-    public @NotNull StringView concat(@NotNull StringView other) {
+    public @NotNull StringSlice concat(@NotNull StringSlice other) {
         if (other.isEmpty())
             return this;
         if (this.isEmpty())
@@ -142,7 +142,7 @@ public final class StringView implements Comparable<StringView>, CharSequence, S
         StringBuilder builder = new StringBuilder(this.length + other.length());
         this.appendTo(builder);
         other.appendTo(builder);
-        return StringView.of(builder.toString());
+        return StringSlice.of(builder.toString());
     }
 
     public boolean startsWith(@NotNull String prefix) {
@@ -155,11 +155,11 @@ public final class StringView implements Comparable<StringView>, CharSequence, S
         return value.regionMatches(offset + toIndex, prefix, 0, prefix.length());
     }
 
-    public boolean startsWith(@NotNull StringView prefix) {
+    public boolean startsWith(@NotNull StringSlice prefix) {
         return startsWith(prefix, 0);
     }
 
-    public boolean startsWith(@NotNull StringView prefix, int toIndex) {
+    public boolean startsWith(@NotNull StringSlice prefix, int toIndex) {
         if (toIndex < 0 || toIndex > this.length - prefix.length())
             return false;
         return value.regionMatches(offset + toIndex, prefix.value, prefix.offset, prefix.length);
@@ -169,8 +169,26 @@ public final class StringView implements Comparable<StringView>, CharSequence, S
         return startsWith(suffix, this.length - suffix.length());
     }
 
-    public boolean endsWith(@NotNull StringView suffix) {
+    public boolean endsWith(@NotNull StringSlice suffix) {
         return startsWith(suffix, this.length - suffix.length());
+    }
+
+    public int indexOf(char ch) {
+        return indexOf(ch, 0, length);
+    }
+
+    public int indexOf(char ch, int beginIndex) {
+        return indexOf(ch, beginIndex, length);
+    }
+
+    public int indexOf(char ch, int beginIndex, int endIndex) {
+        Conditions.checkPositionIndices(beginIndex, endIndex, length);
+
+        for (int i = beginIndex + offset; i < endIndex + offset; i++) {
+            if (value.charAt(i) == ch)
+                return i;
+        }
+        return -1;
     }
 
     public int indexOf(int ch) {
@@ -178,6 +196,9 @@ public final class StringView implements Comparable<StringView>, CharSequence, S
     }
 
     public int indexOf(int ch, int fromIndex) {
+        if (ch <= 0xFFFF)
+            return indexOf((char) ch, 0, length);
+
         if (fromIndex >= length)
             return -1;
         if (fromIndex < 0)
@@ -187,7 +208,7 @@ public final class StringView implements Comparable<StringView>, CharSequence, S
         return idx >= offset && idx < offset + length ? idx - offset : -1;
     }
 
-    public StringView replace(char oldChar, char newChar) {
+    public StringSlice replace(char oldChar, char newChar) {
         if (oldChar == newChar)
             return this;
 
@@ -206,10 +227,10 @@ public final class StringView implements Comparable<StringView>, CharSequence, S
             res.append(ch == oldChar ? newChar : ch);
         }
 
-        return StringView.of(res.toString());
+        return StringSlice.of(res.toString());
     }
 
-    public boolean contentEquals(StringView other) {
+    public boolean contentEquals(StringSlice other) {
         return this == other || this.length == other.length && this.value.regionMatches(this.offset, other.value, other.offset, this.length);
     }
 
@@ -221,8 +242,8 @@ public final class StringView implements Comparable<StringView>, CharSequence, S
         if (this.length != other.length())
             return false;
 
-        if (other instanceof StringView)
-            return contentEquals(((StringView) other));
+        if (other instanceof StringSlice)
+            return contentEquals(((StringSlice) other));
         if (other instanceof String)
             return contentEquals(((String) other));
 
@@ -233,7 +254,7 @@ public final class StringView implements Comparable<StringView>, CharSequence, S
         return true;
     }
 
-    public boolean contentEqualsIgnoreCase(StringView other) {
+    public boolean contentEqualsIgnoreCase(StringSlice other) {
         return this == other || this.length == other.length && this.value.regionMatches(true, this.offset, other.value, other.offset, this.length);
     }
 
@@ -245,17 +266,17 @@ public final class StringView implements Comparable<StringView>, CharSequence, S
         if (this.length != other.length())
             return false;
 
-        if (other instanceof StringView)
-            return contentEqualsIgnoreCase(((StringView) other));
+        if (other instanceof StringSlice)
+            return contentEqualsIgnoreCase(((StringSlice) other));
 
         return contentEqualsIgnoreCase(other.toString());
     }
 
-    public void appendTo(StringBuilder builder)  {
+    public void appendTo(StringBuilder builder) {
         appendTo(builder, 0, this.length);
     }
 
-    public void appendTo(StringBuilder builder, int beginIndex, int endIndex)  {
+    public void appendTo(StringBuilder builder, int beginIndex, int endIndex) {
         Conditions.checkPositionIndices(beginIndex, endIndex, this.length);
         if (beginIndex != endIndex)
             builder.append(this.value, this.offset + beginIndex, this.offset + endIndex);
@@ -482,9 +503,9 @@ public final class StringView implements Comparable<StringView>, CharSequence, S
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (!(obj instanceof StringView))
+        if (!(obj instanceof StringSlice))
             return false;
-        return contentEquals(((StringView) obj));
+        return contentEquals(((StringSlice) obj));
     }
 
     @Override
@@ -493,7 +514,7 @@ public final class StringView implements Comparable<StringView>, CharSequence, S
     }
 
     @Override
-    public int compareTo(@NotNull StringView other) {
+    public int compareTo(@NotNull StringSlice other) {
         int lim = Math.min(this.length, other.length);
         for (int i = 0; i < lim; i++) {
             char c1 = this.charAt(i);
