@@ -1,6 +1,3 @@
-import org.glavo.mic.tasks.CompileModuleInfo
-import java.util.Properties
-
 plugins {
     `java-library`
     `maven-publish`
@@ -8,9 +5,8 @@ plugins {
     id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
     id("org.glavo.compile-module-info-plugin") version "2.0"
     id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("org.glavo.load-maven-publish-properties") version "0.1.0"
 }
-
-loadMavenPublishProperties()
 
 allprojects {
     group = "org.glavo.kala"
@@ -93,7 +89,7 @@ allprojects {
         archiveClassifier.set("javadoc")
     }
 
-    tasks.withType<CompileModuleInfo> {
+    tasks.withType<org.glavo.mic.tasks.CompileModuleInfo> {
         moduleVersion = project.version.toString()
     }
 
@@ -191,39 +187,6 @@ tasks.shadowJar {
         "Automatic-Module-Name" to "kala.common",
         "Multi-Release" to "true"
     )
-}
-
-fun loadMavenPublishProperties() {
-    var secretPropsFile = project.rootProject.file("gradle/maven-central-publish.properties")
-    if (!secretPropsFile.exists()) {
-        secretPropsFile =
-            file(System.getProperty("user.home")).resolve(".gradle").resolve("maven-central-publish.properties")
-    }
-
-    if (secretPropsFile.exists()) {
-        // Read local.properties file first if it exists
-        val p = Properties()
-        secretPropsFile.reader().use {
-            p.load(it)
-        }
-
-        p.forEach { (name, value) ->
-            rootProject.ext[name.toString()] = value
-        }
-    }
-
-    listOf(
-        "sonatypeUsername" to "SONATYPE_USERNAME",
-        "sonatypePassword" to "SONATYPE_PASSWORD",
-        "sonatypeStagingProfileId" to "SONATYPE_STAGING_PROFILE_ID",
-        "signing.keyId" to "SIGNING_KEY_ID",
-        "signing.password" to "SIGNING_PASSWORD",
-        "signing.key" to "SIGNING_KEY"
-    ).forEach { (p, e) ->
-        if (!rootProject.ext.has(p)) {
-            rootProject.ext[p] = System.getenv(e)
-        }
-    }
 }
 
 // ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository
