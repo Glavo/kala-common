@@ -64,6 +64,12 @@ public interface ${Type}Iterator extends PrimitiveIterator<${WrapperType}, ${Typ
     static @NotNull ${Type}Iterator of(${PrimitiveType}... values) {
         return ${Type}Arrays.iterator(values);
     }
+<#if Type == 'Char'>
+
+    static @NotNull CharIterator of(@NotNull String str) {
+        return str.isEmpty() ? ${Type}Iterators.EMPTY : new ${Type}Iterators.OfString(str);
+    }
+</#if>
 
     static @NotNull ${Type}Iterator ofIterator(@NotNull Iterator<? extends @NotNull ${WrapperType}> it) {
         Objects.requireNonNull(it);

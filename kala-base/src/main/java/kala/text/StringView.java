@@ -1,9 +1,9 @@
 package kala.text;
 
 import kala.Conditions;
-import kala.collection.base.primitive.ByteArrays;
-import kala.collection.base.primitive.CharArrays;
+import kala.collection.base.primitive.*;
 import kala.control.primitive.*;
+import kala.function.CharConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,8 +18,9 @@ import java.util.Arrays;
 import java.util.Formatter;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.function.IntConsumer;
 
-public final class StringView implements Comparable<StringView>, CharSequence, Serializable {
+public final class StringView implements Comparable<StringView>, CharSequence, CharTraversable, Serializable {
     private static final long serialVersionUID = 0L;
 
     private static final StringView EMPTY = new StringView("");
@@ -35,12 +36,17 @@ public final class StringView implements Comparable<StringView>, CharSequence, S
         return !value.isEmpty() ? new StringView(value) : EMPTY;
     }
 
+    public static StringView of(@NotNull CharSequence value) {
+        return of(value.toString());
+    }
+
     private StringView updated(String value) {
         //noinspection StringEquality
         return this.value != value ? StringView.of(value) : this;
     }
 
     @SuppressWarnings("Since15")
+    @Override
     public boolean isEmpty() {
         return value.isEmpty();
     }
@@ -140,6 +146,30 @@ public final class StringView implements Comparable<StringView>, CharSequence, S
 
     public @NotNull StringView substring(int beginIndex, int endIndex) {
         return updated(value.substring(beginIndex, endIndex));
+    }
+
+    public @NotNull StringView removePrefix(String prefix) {
+        return startsWith(prefix) ? substring(prefix.length()) : this;
+    }
+
+    public @NotNull StringView removePrefix(StringSlice prefix) {
+        return startsWith(prefix) ? substring(prefix.length()) : this;
+    }
+
+    public @NotNull StringView removePrefix(CharSequence prefix) {
+        return startsWith(prefix) ? substring(prefix.length()) : this;
+    }
+
+    public @NotNull StringView removeSuffix(String suffix) {
+        return endsWith(suffix) ? substring(0, value.length() - suffix.length()) : this;
+    }
+
+    public @NotNull StringView removeSuffix(StringSlice suffix) {
+        return endsWith(suffix) ? substring(0, value.length() - suffix.length()) : this;
+    }
+
+    public @NotNull StringView removeSuffix(CharSequence suffix) {
+        return endsWith(suffix) ? substring(0, value.length() - suffix.length()) : this;
     }
 
     public @NotNull StringView concat(@NotNull CharSequence other) {
@@ -516,6 +546,34 @@ public final class StringView implements Comparable<StringView>, CharSequence, S
             return DoubleOption.none();
         }
     }
+
+    //region CharSequence
+
+    @Override
+    public @NotNull CharIterator iterator() {
+        return CharIterator.of(value);
+    }
+
+    public void forEach(@NotNull CharConsumer action) {
+        for (int i = 0; i < value.length(); i++) {
+            action.accept(value.charAt(i));
+        }
+    }
+
+    public void forEachCodePoint(@NotNull IntConsumer action) {
+        for(int offset = 0; offset < value.length();) {
+            int ch = value.codePointAt(offset);
+            action.accept(ch);
+            offset += Character.charCount(ch);
+        }
+    }
+
+    @Override
+    public char @NotNull [] toArray() {
+        return value.toCharArray();
+    }
+
+    //endregion
 
     @Override
     public int compareTo(@NotNull StringView o) {

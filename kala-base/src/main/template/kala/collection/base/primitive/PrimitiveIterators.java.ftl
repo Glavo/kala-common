@@ -28,6 +28,29 @@ final class ${Type}Iterators {
             return "${Type}Iterator[]";
         }
     };
+<#if Type == 'Char'>
+
+    static final class OfString extends Abstract${Type}Iterator {
+        private final String str;
+        private int idx = 0;
+
+        OfString(String str) {
+            this.str = str;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return idx < str.length();
+        }
+
+        @Override
+        public char nextChar() {
+            if (idx < str.length())
+                return str.charAt(idx);
+            throw new NoSuchElementException();
+        }
+    }
+</#if>
 
     static final class Concat extends Abstract${Type}Iterator {
         private ${Type}Iterator it1;
