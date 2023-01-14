@@ -4,84 +4,74 @@ import kala.Conditions;
 import kala.collection.base.primitive.ByteArrays;
 import kala.collection.base.primitive.CharArrays;
 import kala.control.primitive.*;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
-import java.nio.charset.*;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CodingErrorAction;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Formatter;
+import java.util.Locale;
+import java.util.Objects;
 
-public final class StringSlice implements Comparable<StringSlice>, CharSequence, Serializable {
+public final class StringView implements Comparable<StringView>, CharSequence, Serializable {
     private static final long serialVersionUID = 0L;
-    private static final int ZERO_HASH_REPLACE = 914090028;
 
-    private static final StringSlice EMPTY = new StringSlice("", 0, 0);
+    private static final StringView EMPTY = new StringView("");
 
     private final String value;
-    private final int offset;
-    private final int length;
-    private int hash;
 
-    private StringSlice(String value, int offset, int length) {
+    private StringView(String value) {
         this.value = value;
-        this.offset = offset;
-        this.length = length;
     }
 
-    public static StringSlice of(@NotNull String value) {
-        return value.length() != 0 ? new StringSlice(value, 0, value.length()) : EMPTY;
+    public static StringView of(@NotNull String value) {
+        Objects.requireNonNull(value);
+        return !value.isEmpty() ? new StringView(value) : EMPTY;
     }
 
-    public static StringSlice of(@NotNull String value, int beginIndex, int endIndex) {
-        Conditions.checkPositionIndices(beginIndex, endIndex, value.length());
-        return beginIndex != endIndex ? new StringSlice(value, beginIndex, endIndex - beginIndex) : EMPTY;
+    private StringView updated(String value) {
+        //noinspection StringEquality
+        return this.value != value ? StringView.of(value) : this;
     }
 
     @SuppressWarnings("Since15")
     public boolean isEmpty() {
-        return this.length == 0;
-    }
-
-    @ApiStatus.Internal
-    public String source() {
-        return value;
-    }
-
-    @ApiStatus.Internal
-    public int sourceOffset() {
-        return offset;
+        return value.isEmpty();
     }
 
     @Override
     public int length() {
-        return length;
+        return value.length();
     }
 
     @Override
     public char charAt(int index) {
-        Conditions.checkElementIndex(index, length);
-        return value.charAt(index + offset);
+        return value.charAt(index);
     }
 
     public char[] getChars() {
-        return getChars(0, length);
+        return value.toCharArray();
     }
 
     public char[] getChars(int beginIndex, int endIndex) {
-        Conditions.checkPositionIndices(beginIndex, endIndex, length);
+        Conditions.checkPositionIndices(beginIndex, endIndex, value.length());
         int resLength = endIndex - beginIndex;
         if (resLength == 0)
             return CharArrays.EMPTY;
 
         char[] res = new char[resLength];
-        value.getChars(offset + beginIndex, offset + endIndex, res, 0);
+        value.getChars(beginIndex, endIndex, res, 0);
         return res;
     }
 
     public byte[] getBytes() {
-        return getBytes(StandardCharsets.UTF_8, 0, length);
+        return value.getBytes(StandardCharsets.UTF_8);
     }
 
     public byte[] getBytes(int beginIndex, int endIndex) {
@@ -89,11 +79,11 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     }
 
     public byte[] getBytes(Charset charset) {
-        return getBytes(charset, 0, length);
+        return value.getBytes(charset);
     }
 
     public byte[] getBytes(Charset charset, int beginIndex, int endIndex) {
-        Conditions.checkPositionIndices(beginIndex, endIndex, length);
+        Conditions.checkPositionIndices(beginIndex, endIndex, value.length());
         if (beginIndex == endIndex)
             return ByteArrays.EMPTY;
         if (this.value.length() == endIndex - beginIndex)
@@ -104,7 +94,7 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
             result = charset.newEncoder()
                     .onMalformedInput(CodingErrorAction.REPLACE)
                     .onUnmappableCharacter(CodingErrorAction.REPLACE)
-                    .encode(CharBuffer.wrap(value, beginIndex + offset, endIndex + offset));
+                    .encode(CharBuffer.wrap(value, beginIndex, endIndex));
         } catch (CharacterCodingException e) {
             throw new AssertionError(e);
         }
@@ -118,52 +108,69 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         }
     }
 
+    public StringView formatted(Object... args) {
+        return updated(String.format(value, args));
+    }
+
+    public StringView repeat(int count) {
+        if (count < 0) {
+            throw new IllegalArgumentException("count is negative: " + count);
+        }
+        if (count == 1) {
+            return this;
+        }
+        if (value.isEmpty() || count == 0) {
+            return EMPTY;
+        }
+        StringBuilder res = new StringBuilder();
+        for (int i = 0; i < count; i++) {
+            res.append(value);
+        }
+        return StringView.of(res.toString());
+    }
+
     @Override
-    public @NotNull StringSlice subSequence(int start, int end) {
-        return this.substring(start, end);
+    public @NotNull StringView subSequence(int start, int end) {
+        return updated(value.substring(start, end));
     }
 
-    public @NotNull StringSlice substring(int beginIndex) {
-        return substring(beginIndex, length);
+    public @NotNull StringView substring(int beginIndex) {
+        return updated(value.substring(beginIndex));
     }
 
-    public @NotNull StringSlice substring(int beginIndex, int endIndex) {
-        Conditions.checkPositionIndices(beginIndex, endIndex, length);
-        return beginIndex != endIndex ? new StringSlice(value, offset + beginIndex, endIndex - beginIndex) : EMPTY;
+    public @NotNull StringView substring(int beginIndex, int endIndex) {
+        return updated(value.substring(beginIndex, endIndex));
     }
 
-    public @NotNull StringSlice concat(@NotNull String other) {
+    public @NotNull StringView concat(@NotNull CharSequence other) {
+        return updated(this.value.concat(other.toString()));
+    }
+
+    public @NotNull StringView concat(@NotNull String other) {
+        if (this.isEmpty())
+            return StringView.of(other);
+
+        return updated(this.value.concat(other));
+    }
+
+    public @NotNull StringView concat(@NotNull StringSlice other) {
         if (other.isEmpty())
             return this;
         if (this.isEmpty())
-            return StringSlice.of(other);
+            return StringView.of(other.toString());
 
-        StringBuilder builder = new StringBuilder(this.length + other.length());
-        this.appendTo(builder);
-        builder.append(other);
-        return StringSlice.of(builder.toString());
-    }
-
-    public @NotNull StringSlice concat(@NotNull StringSlice other) {
-        if (other.isEmpty())
-            return this;
-        if (this.isEmpty())
-            return other;
-
-        StringBuilder builder = new StringBuilder(this.length + other.length());
-        this.appendTo(builder);
+        StringBuilder builder = new StringBuilder(this.length() + other.length());
+        builder.append(this.value);
         other.appendTo(builder);
-        return StringSlice.of(builder.toString());
+        return StringView.of(builder.toString());
     }
 
     public boolean startsWith(@NotNull String prefix) {
-        return startsWith(prefix, 0);
+        return value.startsWith(prefix);
     }
 
     public boolean startsWith(@NotNull String prefix, int toIndex) {
-        if (toIndex < 0 || toIndex > this.length - prefix.length())
-            return false;
-        return value.regionMatches(offset + toIndex, prefix, 0, prefix.length());
+        return value.startsWith(prefix, toIndex);
     }
 
     public boolean startsWith(@NotNull StringSlice prefix) {
@@ -171,31 +178,61 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     }
 
     public boolean startsWith(@NotNull StringSlice prefix, int toIndex) {
-        if (toIndex < 0 || toIndex > this.length - prefix.length())
+        if (toIndex < 0 || toIndex > value.length() - prefix.length())
             return false;
-        return value.regionMatches(offset + toIndex, prefix.value, prefix.offset, prefix.length);
+        return value.regionMatches(toIndex, prefix.source(), prefix.sourceOffset(), prefix.length());
+    }
+
+    public boolean startsWith(@NotNull CharSequence prefix) {
+        return prefix instanceof StringSlice ? startsWith((StringSlice) prefix) : value.startsWith(prefix.toString());
+    }
+
+    public boolean startsWith(@NotNull CharSequence prefix, int toIndex) {
+        return prefix instanceof StringSlice ? startsWith((StringSlice) prefix, toIndex) : value.startsWith(prefix.toString(), toIndex);
     }
 
     public boolean endsWith(@NotNull String suffix) {
-        return startsWith(suffix, this.length - suffix.length());
+        return value.endsWith(suffix);
     }
 
     public boolean endsWith(@NotNull StringSlice suffix) {
-        return startsWith(suffix, this.length - suffix.length());
+        return startsWith(suffix, value.length() - suffix.length());
+    }
+
+    public boolean endsWith(@NotNull CharSequence suffix) {
+        return suffix instanceof StringSlice ? endsWith((StringSlice) suffix) : value.endsWith(suffix.toString());
     }
 
     public int indexOf(char ch) {
-        return indexOf(ch, 0, length);
+        return value.indexOf(ch);
     }
 
     public int indexOf(char ch, int beginIndex) {
-        return indexOf(ch, beginIndex, length);
+        return value.indexOf(ch, beginIndex);
     }
 
     public int indexOf(char ch, int beginIndex, int endIndex) {
-        Conditions.checkPositionIndices(beginIndex, endIndex, length);
+        Conditions.checkPositionIndices(beginIndex, endIndex, value.length());
 
-        for (int i = beginIndex + offset; i < endIndex + offset; i++) {
+        for (int i = beginIndex; i < endIndex; i++) {
+            if (value.charAt(i) == ch)
+                return i;
+        }
+        return -1;
+    }
+
+    public int lastIndexOf(char ch) {
+        return value.lastIndexOf(ch);
+    }
+
+    public int lastIndexOf(char ch, int beginIndex) {
+        return value.lastIndexOf(ch, beginIndex);
+    }
+
+    public int lastIndexOf(char ch, int beginIndex, int endIndex) {
+        Conditions.checkPositionIndices(beginIndex, endIndex, value.length());
+
+        for (int i = endIndex - 1; i >= beginIndex; i--) {
             if (value.charAt(i) == ch)
                 return i;
         }
@@ -207,50 +244,43 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     }
 
     public int indexOf(int ch, int fromIndex) {
-        if (ch <= 0xFFFF)
-            return indexOf((char) ch, 0, length);
-
-        if (fromIndex >= length)
-            return -1;
-        if (fromIndex < 0)
-            fromIndex = 0;
-
-        int idx = value.indexOf(ch, fromIndex + offset);
-        return idx >= offset && idx < offset + length ? idx - offset : -1;
+        return value.indexOf(ch, fromIndex);
     }
 
-    public StringSlice replace(char oldChar, char newChar) {
-        if (oldChar == newChar)
-            return this;
+    public StringView toLowerCase() {
+        return updated(value.toLowerCase(Locale.ROOT));
+    }
 
-        int idx = indexOf(oldChar);
-        if (idx < 0)
-            return this;
+    public StringView toLowerCase(Locale locale) {
+        return updated(value.toLowerCase(locale));
+    }
 
-        StringBuilder res = new StringBuilder(this.length);
+    public StringView toUpperCase() {
+        return updated(value.toUpperCase(Locale.ROOT));
+    }
 
-        idx += offset;
-        res.append(this.value, offset, idx);
-        res.append(newChar);
+    public StringView toUpperCase(Locale locale) {
+        return updated(value.toUpperCase(locale));
+    }
 
-        while (++idx < this.offset + this.length) {
-            char ch = this.value.charAt(idx);
-            res.append(ch == oldChar ? newChar : ch);
-        }
+    public StringView trim() {
+        return updated(value.trim());
+    }
 
-        return StringSlice.of(res.toString());
+    public StringView replace(char oldChar, char newChar) {
+        return updated(value.replace(oldChar, newChar));
     }
 
     public boolean contentEquals(StringSlice other) {
-        return this == other || this.length == other.length && this.value.regionMatches(this.offset, other.value, other.offset, this.length);
+        return value.length() == other.length() && this.value.regionMatches(0, other.source(), other.sourceOffset(), value.length());
     }
 
     public boolean contentEquals(String other) {
-        return this.length == other.length() && this.value.regionMatches(this.offset, other, 0, this.length);
+        return this.value.equals(other);
     }
 
     public boolean contentEquals(CharSequence other) {
-        if (this.length != other.length())
+        if (value.length() != other.length())
             return false;
 
         if (other instanceof StringSlice)
@@ -258,23 +288,23 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         if (other instanceof String)
             return contentEquals(((String) other));
 
-        for (int i = 0; i < this.length; i++) {
-            if (this.value.charAt(offset + i) != other.charAt(i))
+        for (int i = 0; i < value.length(); i++) {
+            if (this.value.charAt(i) != other.charAt(i))
                 return false;
         }
         return true;
     }
 
     public boolean contentEqualsIgnoreCase(StringSlice other) {
-        return this == other || this.length == other.length && this.value.regionMatches(true, this.offset, other.value, other.offset, this.length);
+        return value.length() == other.length() && this.value.regionMatches(true, 0, other.source(), other.sourceOffset(), value.length());
     }
 
     public boolean contentEqualsIgnoreCase(String other) {
-        return this.length == other.length() && this.value.regionMatches(true, this.offset, other, 0, this.length);
+        return value.equalsIgnoreCase(other);
     }
 
     public boolean contentEqualsIgnoreCase(CharSequence other) {
-        if (this.length != other.length())
+        if (value.length() != other.length())
             return false;
 
         if (other instanceof StringSlice)
@@ -283,31 +313,21 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         return contentEqualsIgnoreCase(other.toString());
     }
 
-    public void appendTo(StringBuilder builder) {
-        appendTo(builder, 0, this.length);
-    }
-
-    public void appendTo(StringBuilder builder, int beginIndex, int endIndex) {
-        Conditions.checkPositionIndices(beginIndex, endIndex, this.length);
-        if (beginIndex != endIndex)
-            builder.append(this.value, this.offset + beginIndex, this.offset + endIndex);
-    }
-
     public boolean toBoolean() {
         return contentEqualsIgnoreCase("true");
     }
 
     public byte toByte() throws NumberFormatException {
-        return Byte.parseByte(toString(), 10);
+        return Byte.parseByte(value, 10);
     }
 
     public byte toByte(int radix) throws NumberFormatException {
-        return Byte.parseByte(toString(), radix);
+        return Byte.parseByte(value, radix);
     }
 
     public @Nullable Byte toByteOrNull() {
         try {
-            return Byte.parseByte(toString(), 10);
+            return Byte.parseByte(value, 10);
         } catch (NumberFormatException e) {
             return null;
         }
@@ -315,7 +335,7 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
 
     public @Nullable Byte toByteOrNull(int radix) {
         try {
-            return Byte.parseByte(toString(), radix);
+            return Byte.parseByte(value, radix);
         } catch (NumberFormatException e) {
             return null;
         }
@@ -323,7 +343,7 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
 
     public @NotNull ByteOption toByteOption() {
         try {
-            return ByteOption.some(Byte.parseByte(toString(), 10));
+            return ByteOption.some(Byte.parseByte(value, 10));
         } catch (NumberFormatException e) {
             return ByteOption.none();
         }
@@ -331,23 +351,23 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
 
     public @NotNull ByteOption toByteOption(int radix) {
         try {
-            return ByteOption.some(Byte.parseByte(toString(), radix));
+            return ByteOption.some(Byte.parseByte(value, radix));
         } catch (NumberFormatException e) {
             return ByteOption.none();
         }
     }
 
     public short toShort() throws NumberFormatException {
-        return Short.parseShort(toString(), 10);
+        return Short.parseShort(value, 10);
     }
 
     public short toShort(int radix) throws NumberFormatException {
-        return Short.parseShort(toString(), radix);
+        return Short.parseShort(value, radix);
     }
 
     public @Nullable Short toShortOrNull() {
         try {
-            return Short.parseShort(toString(), 10);
+            return Short.parseShort(value, 10);
         } catch (NumberFormatException e) {
             return null;
         }
@@ -355,7 +375,7 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
 
     public @Nullable Short toShortOrNull(int radix) {
         try {
-            return Short.parseShort(toString(), radix);
+            return Short.parseShort(value, radix);
         } catch (NumberFormatException e) {
             return null;
         }
@@ -363,7 +383,7 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
 
     public @NotNull ShortOption toShortOption() {
         try {
-            return ShortOption.some(Short.parseShort(toString(), 10));
+            return ShortOption.some(Short.parseShort(value, 10));
         } catch (NumberFormatException e) {
             return ShortOption.none();
         }
@@ -371,7 +391,7 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
 
     public @NotNull ShortOption toShortOption(int radix) {
         try {
-            return ShortOption.some(Short.parseShort(toString(), radix));
+            return ShortOption.some(Short.parseShort(value, radix));
         } catch (NumberFormatException e) {
             return ShortOption.none();
         }
@@ -382,7 +402,7 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     }
 
     public int toInt(int radix) throws NumberFormatException {
-        return Integer.parseInt(toString(), radix);
+        return Integer.parseInt(value, radix);
     }
 
     public @Nullable Integer toIntOrNull() {
@@ -422,7 +442,7 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     }
 
     public long toLong(int radix) throws NumberFormatException {
-        return Long.parseLong(toString(), radix);
+        return Long.parseLong(value, radix);
     }
 
     public @Nullable Long toLongOrNull() {
@@ -458,12 +478,12 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     }
 
     public float toFloat() throws NumberFormatException {
-        return Float.parseFloat(toString());
+        return Float.parseFloat(value);
     }
 
     public @Nullable Float toFloatOrNull() {
         try {
-            return Float.parseFloat(toString());
+            return Float.parseFloat(value);
         } catch (NumberFormatException e) {
             return null;
         }
@@ -471,19 +491,19 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
 
     public @NotNull FloatOption toFloatOption() {
         try {
-            return FloatOption.some(Float.parseFloat(toString()));
+            return FloatOption.some(Float.parseFloat(value));
         } catch (NumberFormatException e) {
             return FloatOption.none();
         }
     }
 
     public double toDouble() throws NumberFormatException {
-        return Double.parseDouble(toString());
+        return Double.parseDouble(value);
     }
 
     public @Nullable Double toDoubleOrNull() {
         try {
-            return Double.parseDouble(toString());
+            return Double.parseDouble(value);
         } catch (NumberFormatException e) {
             return null;
         }
@@ -491,48 +511,37 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
 
     public @NotNull DoubleOption toDoubleOption() {
         try {
-            return DoubleOption.some(Double.parseDouble(toString()));
+            return DoubleOption.some(Double.parseDouble(value));
         } catch (NumberFormatException e) {
             return DoubleOption.none();
         }
     }
 
     @Override
+    public int compareTo(@NotNull StringView o) {
+        return this.value.compareTo(o.value);
+    }
+
+    @Override
     public int hashCode() {
-        int h = hash;
-        if (h != 0)
-            return h;
-
-        for (int i = offset, end = offset + length; i < end; i++) {
-            h = 31 * h + value.charAt(i);
-        }
-
-        return hash = (h == 0 ? ZERO_HASH_REPLACE : h);
+        return value.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!(obj instanceof StringSlice))
-            return false;
-        return contentEquals(((StringSlice) obj));
+        return obj instanceof StringView && this.value.equals(((StringView) obj).value);
+    }
+
+    public boolean equalsIgnoreCase(String other) {
+        return this.value.equalsIgnoreCase(other);
+    }
+
+    public boolean equalsIgnoreCase(StringView other) {
+        return this.value.equalsIgnoreCase(other.value);
     }
 
     @Override
     public String toString() {
-        return value.substring(offset, offset + length);
-    }
-
-    @Override
-    public int compareTo(@NotNull StringSlice other) {
-        int lim = Math.min(this.length, other.length);
-        for (int i = 0; i < lim; i++) {
-            char c1 = this.charAt(i);
-            char c2 = other.charAt(i);
-            if (c1 != c2)
-                return c1 - c2;
-        }
-        return this.length - other.length;
+        return value;
     }
 }
