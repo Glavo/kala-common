@@ -189,6 +189,10 @@ public final class Option<@Covariant T> extends AnyOption<T>
         }
     }
 
+    public <U> @NotNull Result<T, U> toResult(U errValue) {
+        return this.isDefined() ? Result.ok(value) : Result.err(errValue);
+    }
+
     /**
      * {@inheritDoc}
      */
