@@ -171,4 +171,9 @@ public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<
     default <U> @NotNull ImmutableSet<U> filterIsInstance(@NotNull Class<? extends U> clazz) {
         return (ImmutableSet<U>) filter(clazz::isInstance);
     }
+
+    @Override
+    default @NotNull ImmutableSet<E> toImmutableSet() {
+        return this;
+    }
 }
