@@ -30,11 +30,7 @@ allprojects {
     }
 
     dependencies {
-        "org.jetbrains:annotations:23.1.0".also {
-            compileOnly(it)
-            testImplementation(it)
-        }
-
+        compileOnlyApi("org.jetbrains:annotations:23.1.0")
         testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
     }
 
