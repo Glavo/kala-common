@@ -30,7 +30,6 @@ public interface Hasher<T> extends BiPredicate<T, T> {
         return (Hasher<T>) IDENTITY;
     }
 
-
     int hash(T obj);
 
     default boolean equals(T t1, T t2) {
