@@ -2,9 +2,13 @@ package kala.collection.base;
 
 import kala.annotations.Covariant;
 import kala.annotations.DelegateBy;
+import kala.annotations.UnstableName;
 import kala.collection.base.primitive.DoubleGrowable;
 import kala.collection.base.primitive.IntGrowable;
 import kala.collection.base.primitive.LongGrowable;
+import kala.collection.factory.primitive.DoubleCollectionFactory;
+import kala.collection.factory.primitive.IntCollectionFactory;
+import kala.collection.factory.primitive.LongCollectionFactory;
 import kala.comparator.Comparators;
 import kala.concurrent.Granularity;
 import kala.concurrent.ConcurrentScope;
@@ -221,6 +225,33 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         return destination;
     }
 
+    @UnstableName
+    default <U, R> @NotNull R map(@NotNull CollectionFactory<U, ?, R> factory, @NotNull Function<? super T, ? extends U> mapper) {
+        return CollectionFactory.buildBy(factory, consumer -> {
+            for (T e : this) {
+                consumer.accept(mapper.apply(e));
+            }
+        });
+    }
+
+    @UnstableName
+    default <R> @NotNull R mapToInt(@NotNull IntCollectionFactory<?, R> factory, @NotNull ToIntFunction<? super T> mapper) {
+        return IntCollectionFactory.buildBy(factory, consumer -> {
+            for (T e : this) {
+                consumer.accept(mapper.applyAsInt(e));
+            }
+        });
+    }
+
+    @UnstableName
+    default <R> @NotNull R mapToLong(@NotNull LongCollectionFactory<?, R> factory, @NotNull ToLongFunction<? super T> mapper) {
+        return LongCollectionFactory.buildBy(factory, consumer -> {
+            for (T e : this) {
+                consumer.accept(mapper.applyAsLong(e));
+            }
+        });
+    }
+
     @Contract(value = "_, _ -> param1", mutates = "param1")
     default <U, G extends Growable<? super U>> @NotNull G mapTo(@NotNull G destination, @NotNull Function<? super T, ? extends U> mapper) {
         for (T e : this) {
@@ -237,7 +268,6 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         return destination;
     }
 
-
     @Contract(value = "_, _ -> param1", mutates = "param1")
     default <U, G extends LongGrowable> @NotNull G mapToLongTo(@NotNull G destination, @NotNull ToLongFunction<? super T> mapper) {
         for (T e : this) {
@@ -252,6 +282,14 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
             destination.plusAssign(mapper.applyAsDouble(e));
         }
         return destination;
+    }
+
+    default <R> @NotNull R mapToDoubleTo(@NotNull DoubleCollectionFactory<?, R> factory, @NotNull ToDoubleFunction<? super T> mapper) {
+        return DoubleCollectionFactory.buildBy(factory, consumer -> {
+            for (T e : this) {
+                consumer.accept(mapper.applyAsDouble(e));
+            }
+        });
     }
 
     @Contract(value = "_, _ -> param1", mutates = "param1")
@@ -833,7 +871,7 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
     }
 
     default <U> void forEachWithUnchecked(@NotNull Iterable<? extends U> other,
-                                                              @NotNull CheckedBiConsumer<? super T, ? super U, ?> action) {
+                                          @NotNull CheckedBiConsumer<? super T, ? super U, ?> action) {
         forEachWith(other, action);
     }
 

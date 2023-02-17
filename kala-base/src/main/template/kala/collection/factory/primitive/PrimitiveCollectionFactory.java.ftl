@@ -4,6 +4,7 @@ import kala.annotations.Covariant;
 import kala.collection.base.primitive.${Type}Iterator;
 import kala.collection.base.primitive.${Type}Traversable;
 import kala.function.*;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -14,6 +15,13 @@ public interface ${Type}CollectionFactory<Builder, @Covariant R> extends Primiti
     @SuppressWarnings("unchecked")
     static <Builder, R> ${Type}CollectionFactory<Builder, R> narrow(${Type}CollectionFactory<Builder, ? extends R> factory) {
         return (${Type}CollectionFactory<Builder, R>) factory;
+    }
+
+    @ApiStatus.Experimental
+    static <Builder, R> R buildBy(@NotNull ${Type}CollectionFactory<Builder, R> factory, Consumer<${Type}Consumer> consumer) {
+        Builder builder = factory.newBuilder();
+        consumer.accept(value -> factory.addToBuilder(builder, value));
+        return factory.build(builder);
     }
 
     void addToBuilder(@NotNull Builder builder, ${PrimitiveType} value);
@@ -65,7 +73,6 @@ public interface ${Type}CollectionFactory<Builder, @Covariant R> extends Primiti
         }
         return build(builder);
     }
-
 
     @Override
     default R fill(int n, ${WrapperType} value) {

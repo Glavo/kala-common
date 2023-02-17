@@ -3,7 +3,7 @@ package kala.collection.factory;
 import kala.annotations.Covariant;
 import kala.collection.base.AnyTraversable;
 import kala.collection.base.Traversable;
-import kala.collection.base.primitive.PrimitiveTraversable;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,6 +53,13 @@ public interface CollectionFactory<E, Builder, @Covariant R>
                 return collector.characteristics();
             }
         };
+    }
+
+    @ApiStatus.Experimental
+    static <E, Builder, R> R buildBy(@NotNull CollectionFactory<E, Builder, R> factory, Consumer<Consumer<E>> consumer) {
+        Builder builder = factory.newBuilder();
+        consumer.accept(value -> factory.addToBuilder(builder, value));
+        return factory.build(builder);
     }
 
     Builder newBuilder();
