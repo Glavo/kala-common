@@ -3,9 +3,7 @@ package kala.collection.base;
 import kala.annotations.Covariant;
 import kala.annotations.DelegateBy;
 import kala.annotations.UnstableName;
-import kala.collection.base.primitive.DoubleGrowable;
-import kala.collection.base.primitive.IntGrowable;
-import kala.collection.base.primitive.LongGrowable;
+import kala.collection.base.primitive.*;
 import kala.collection.factory.primitive.DoubleCollectionFactory;
 import kala.collection.factory.primitive.IntCollectionFactory;
 import kala.collection.factory.primitive.LongCollectionFactory;
@@ -225,7 +223,6 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         return destination;
     }
 
-    @UnstableName
     default <U, R> @NotNull R map(@NotNull CollectionFactory<U, ?, R> factory, @NotNull Function<? super T, ? extends U> mapper) {
         return CollectionFactory.buildBy(factory, consumer -> {
             for (T e : this) {
@@ -234,7 +231,6 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         });
     }
 
-    @UnstableName
     default <R> @NotNull R mapToInt(@NotNull IntCollectionFactory<?, R> factory, @NotNull ToIntFunction<? super T> mapper) {
         return IntCollectionFactory.buildBy(factory, consumer -> {
             for (T e : this) {
@@ -243,7 +239,6 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         });
     }
 
-    @UnstableName
     default <R> @NotNull R mapToLong(@NotNull LongCollectionFactory<?, R> factory, @NotNull ToLongFunction<? super T> mapper) {
         return LongCollectionFactory.buildBy(factory, consumer -> {
             for (T e : this) {
@@ -303,6 +298,46 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
             }
         }
         return destination;
+    }
+
+    default <U, R> @NotNull R flatMap(
+            @NotNull CollectionFactory<U, ?, R> factory,
+            @NotNull Function<? super T, ? extends Iterable<? extends U>> mapper) {
+        return CollectionFactory.buildBy(factory, consumer -> {
+            for (T e : this) {
+                mapper.apply(e).forEach(consumer);
+            }
+        });
+    }
+
+    default <R> @NotNull R flatMapToInt(
+            @NotNull IntCollectionFactory<?, R> factory,
+            @NotNull Function<? super T, ? extends IntTraversable> mapper) {
+        return IntCollectionFactory.buildBy(factory, consumer -> {
+            for (T e : this) {
+                mapper.apply(e).forEach(consumer);
+            }
+        });
+    }
+
+    default <R> @NotNull R flatMapToLong(
+            @NotNull LongCollectionFactory<?, R> factory,
+            @NotNull Function<? super T, ? extends LongTraversable> mapper) {
+        return LongCollectionFactory.buildBy(factory, consumer -> {
+            for (T e : this) {
+                mapper.apply(e).forEach(consumer);
+            }
+        });
+    }
+
+    default <R> @NotNull R flatMapToDouble(
+            @NotNull DoubleCollectionFactory<?, R> factory,
+            @NotNull Function<? super T, ? extends DoubleTraversable> mapper) {
+        return DoubleCollectionFactory.buildBy(factory, consumer -> {
+            for (T e : this) {
+                mapper.apply(e).forEach(consumer);
+            }
+        });
     }
 
     //region Aggregate Operations
