@@ -457,10 +457,8 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
 
     @Override
     public void insert(int index, E value) {
-        int size = this.size;
-        if (index < 0 || index > size) {
-            throw new IndexOutOfBoundsException();
-        }
+        Conditions.checkPositionIndex(index, size);
+
         if (index == size) {
             append(value);
             return;

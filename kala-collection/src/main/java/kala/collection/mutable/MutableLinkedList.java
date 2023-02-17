@@ -295,9 +295,8 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
 
     @Override
     public E get(int index) {
-        if (index < 0 || index >= len) {
-            throw new IndexOutOfBoundsException();
-        }
+        Conditions.checkElementIndex(index, len);
+
         return internalGetNode(index).value;
     }
 

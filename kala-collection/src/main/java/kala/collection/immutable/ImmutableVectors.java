@@ -61,7 +61,7 @@ final class ImmutableVectors {
 
         @Override
         public Object get(int index) {
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException("Index: " + index);
         }
 
         @Override
@@ -202,7 +202,7 @@ final class ImmutableVectors {
             try {
                 return (E) prefix1[index];
             } catch (ArrayIndexOutOfBoundsException e) {
-                throw new IndexOutOfBoundsException();
+                throw new IndexOutOfBoundsException("Index: " + index + " Size: " + size());
             }
         }
 

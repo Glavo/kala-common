@@ -64,7 +64,7 @@ final class ImmutableSeqs {
 
         @Override
         public E get(int index) {
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException("Index: " + index);
         }
 
         @Override

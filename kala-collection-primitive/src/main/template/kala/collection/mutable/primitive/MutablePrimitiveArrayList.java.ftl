@@ -410,10 +410,8 @@ public final class Mutable${Type}ArrayList extends AbstractMutable${Type}List im
 
     @Override
     public void insert(int index, ${PrimitiveType} value) {
-        int size = this.size;
-        if (index < 0 || index > size) {
-            throw new IndexOutOfBoundsException();
-        }
+        Conditions.checkPositionIndex(index, size);
+
         if (index == size) {
             append(value);
             return;
