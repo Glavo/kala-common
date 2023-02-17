@@ -153,12 +153,12 @@ public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<
 
     @Override
     default @NotNull ImmutableSet<E> filter(@NotNull Predicate<? super E> predicate) {
-        return AbstractImmutableCollection.filter(this, predicate, factory());
+        return filter(factory(), predicate);
     }
 
     @Override
     default @NotNull ImmutableSet<E> filterNot(@NotNull Predicate<? super E> predicate) {
-        return AbstractImmutableCollection.filterNot(this, predicate, factory());
+        return filterNot(factory(), predicate);
     }
 
     @Override

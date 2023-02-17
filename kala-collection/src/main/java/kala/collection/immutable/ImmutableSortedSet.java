@@ -19,15 +19,13 @@ public interface ImmutableSortedSet<E> extends ImmutableSet<E>, SortedSet<E> {
             Comparator<? super U> newComparator,
             @NotNull Function<? super E, ? extends U> mapper
     ) {
-        CollectionFactory<U, ?, ? extends ImmutableSortedSet<U>> factory =
-                this.iterableFactory(newComparator);
-        return AbstractImmutableCollection.map(this, mapper, factory);
+        CollectionFactory<U, ?, ? extends ImmutableSortedSet<U>> factory = this.iterableFactory(newComparator);
+        return map(factory, mapper);
     }
 
     default <U> @NotNull ImmutableCollection<U> flatMap(
             Comparator<? super U> newComparator,
             @NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
-        return AbstractImmutableCollection.flatMap(this, mapper, this.iterableFactory(newComparator));
+        return flatMap(this.iterableFactory(newComparator), mapper);
     }
-
 }

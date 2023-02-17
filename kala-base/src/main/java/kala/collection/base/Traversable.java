@@ -193,6 +193,36 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
 
     //endregion
 
+    default <R> @NotNull R filter(@NotNull CollectionFactory<T, ?, R> factory, @NotNull Predicate<? super T> predicate) {
+        return CollectionFactory.buildBy(factory, consumer -> {
+            for (T e : this) {
+                if (predicate.test(e)) {
+                    consumer.accept(e);
+                }
+            }
+        });
+    }
+
+    default <R> @NotNull R filterNot(@NotNull CollectionFactory<T, ?, R> factory, @NotNull Predicate<? super T> predicate) {
+        return CollectionFactory.buildBy(factory, consumer -> {
+            for (T e : this) {
+                if (!predicate.test(e)) {
+                    consumer.accept(e);
+                }
+            }
+        });
+    }
+
+    default <R> @NotNull R filterNotNull(@NotNull CollectionFactory<T, ?, R> factory) {
+        return CollectionFactory.buildBy(factory, consumer -> {
+            for (T e : this) {
+                if (e != null) {
+                    consumer.accept(e);
+                }
+            }
+        });
+    }
+
     @Contract(value = "_, _ -> param1", mutates = "param1")
     default <G extends Growable<? super T>> @NotNull G filterTo(@NotNull G destination, @NotNull Predicate<? super T> predicate) {
         for (T e : this) {

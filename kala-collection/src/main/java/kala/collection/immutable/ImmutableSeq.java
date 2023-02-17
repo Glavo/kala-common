@@ -343,12 +343,12 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
 
     @Override
     default @NotNull ImmutableSeq<E> filter(@NotNull Predicate<? super E> predicate) {
-        return AbstractImmutableCollection.filter(this, predicate, iterableFactory());
+        return filter(iterableFactory(), predicate);
     }
 
     @Override
     default @NotNull ImmutableSeq<E> filterNot(@NotNull Predicate<? super E> predicate) {
-        return AbstractImmutableCollection.filterNot(this, predicate, iterableFactory());
+        return filterNot(iterableFactory(), predicate);
     }
 
     @Override
@@ -362,7 +362,7 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
 
     @Override
     default <U> @NotNull ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
-        return AbstractImmutableCollection.map(this, mapper, this.<U>iterableFactory());
+        return map(this.<U>iterableFactory(), mapper);
     }
 
     @Contract(pure = true)
@@ -392,7 +392,7 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
 
     @Override
     default <U> @NotNull ImmutableSeq<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
-        return AbstractImmutableCollection.flatMap(this, mapper, iterableFactory());
+        return flatMap(iterableFactory(), mapper);
     }
 
     @Override

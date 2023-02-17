@@ -106,12 +106,12 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E>, Immuta
 
     @Contract(pure = true)
     default @NotNull ImmutableCollection<E> filter(@NotNull Predicate<? super E> predicate) {
-        return AbstractImmutableCollection.filter(this, predicate, iterableFactory());
+        return filter(iterableFactory(), predicate);
     }
 
     @Contract(pure = true)
     default @NotNull ImmutableCollection<E> filterNot(@NotNull Predicate<? super E> predicate) {
-        return AbstractImmutableCollection.filterNot(this, predicate, iterableFactory());
+        return filterNot(iterableFactory(), predicate);
     }
 
     @Contract(pure = true)
@@ -126,7 +126,7 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E>, Immuta
 
     @Contract(pure = true)
     default <U> @NotNull ImmutableCollection<U> map(@NotNull Function<? super E, ? extends U> mapper) {
-        return AbstractImmutableCollection.map(this, mapper, this.<U>iterableFactory());
+        return map(this.<U>iterableFactory(), mapper);
     }
 
     @Contract(pure = true)
@@ -141,7 +141,7 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E>, Immuta
 
     @Contract(pure = true)
     default <U> @NotNull ImmutableCollection<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
-        return AbstractImmutableCollection.flatMap(this, mapper, iterableFactory());
+        return flatMap(iterableFactory(), mapper);
     }
 
     @Override
