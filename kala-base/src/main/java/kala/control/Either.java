@@ -297,7 +297,7 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
          */
         @Override
         public @NotNull Option<B> getRightOption() {
-            return Option.none();
+            return Option.some(value);
         }
 
         @Override
