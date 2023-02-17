@@ -370,4 +370,7 @@ public interface ${Type}SeqLike extends PrimitiveSeqLike<${WrapperType}>, ${Type
     @Override
     @Contract(pure = true)
     @NotNull ${Type}SeqLike flatMap(@NotNull ${Type}Function<? extends ${Type}Traversable> mapper);
+
+    @Override
+    @NotNull <T> SeqLike<T> flatMapToObj(@NotNull ${Type}Function<? extends Iterable<? extends T>> mapper);
 }

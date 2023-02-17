@@ -29,6 +29,9 @@ public interface ${Type}CollectionLike extends PrimitiveCollectionLike<${Wrapper
     @Contract(pure = true)
     @NotNull ${Type}CollectionLike flatMap(@NotNull ${Type}Function<? extends ${Type}Traversable> mapper);
 
+    @Contract(pure = true)
+    <T> @NotNull CollectionLike<T> flatMapToObj(@NotNull ${Type}Function<? extends Iterable<? extends T>> mapper);
+
     default @NotNull ${Type}Seq toSeq() {
         return toImmutableSeq();
     }

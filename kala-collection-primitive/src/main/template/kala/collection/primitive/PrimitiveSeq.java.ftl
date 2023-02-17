@@ -242,4 +242,10 @@ public interface ${Type}Seq extends PrimitiveSeq<${WrapperType}>, ${Type}Collect
     default @NotNull Immutable${Type}Seq flatMap(@NotNull ${Type}Function<? extends ${Type}Traversable> mapper) {
         return view().flatMap(mapper).toImmutableSeq();
     }
+
+    @Override
+    @Contract(pure = true)
+    default <T> @NotNull ImmutableSeq<T> flatMapToObj(@NotNull ${Type}Function<? extends Iterable<? extends T>> mapper) {
+        return view().flatMapToObj(mapper).toImmutableSeq();
+    }
 }

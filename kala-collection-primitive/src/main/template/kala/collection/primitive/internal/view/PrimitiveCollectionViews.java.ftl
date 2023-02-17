@@ -1,6 +1,7 @@
 package kala.collection.primitive.internal.view;
 
 import kala.collection.*;
+import kala.collection.base.Iterators;
 import kala.collection.base.primitive.*;
 import kala.collection.primitive.*;
 import kala.control.primitive.${Type}Option;
@@ -459,6 +460,23 @@ public final class ${Type}CollectionViews {
         @Override
         public @NotNull ${Type}Iterator iterator() {
             return ${Type}Iterator.concat(source.mapToObj(it -> mapper.apply(it).iterator()));
+        }
+    }
+
+    public static final class FlatMapToObj<T> extends AbstractCollectionView<T> {
+        private final @NotNull ${Type}CollectionView source;
+        private final @NotNull ${Type}Function<? extends Iterable<? extends T>> mapper;
+
+        public FlatMapToObj(
+                @NotNull ${Type}CollectionView source,
+                @NotNull ${Type}Function<? extends Iterable<? extends T>> mapper) {
+            this.source = source;
+            this.mapper = mapper;
+        }
+
+        @Override
+        public @NotNull Iterator<T> iterator() {
+            return Iterators.concat(source.mapToObj(it -> mapper.apply(it).iterator()));
         }
     }
 <#if IsSpecialized>

@@ -51,4 +51,10 @@ public interface ${Type}CollectionView extends ${Type}CollectionLike, PrimitiveC
         Objects.requireNonNull(mapper);
         return new ${Type}CollectionViews.FlatMapped(this, mapper);
     }
+
+    @Override
+    default @NotNull <T> CollectionView<T> flatMapToObj(@NotNull ${Type}Function<? extends Iterable<? extends T>> mapper) {
+        Objects.requireNonNull(mapper);
+        return new ${Type}CollectionViews.FlatMapToObj<>(this, mapper);
+    }
 }

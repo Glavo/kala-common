@@ -100,4 +100,9 @@ public interface ${Type}Collection extends PrimitiveCollection<${WrapperType}>, 
     default @NotNull Immutable${Type}Collection flatMap(@NotNull ${Type}Function<? extends ${Type}Traversable> mapper) {
         return view().flatMap(mapper).toImmutableSeq();
     }
+
+    @Override
+    default @NotNull <T> ImmutableCollection<T> flatMapToObj(@NotNull ${Type}Function<? extends Iterable<? extends T>> mapper) {
+        return view().flatMapToObj(mapper).toImmutableSeq();
+    }
 }

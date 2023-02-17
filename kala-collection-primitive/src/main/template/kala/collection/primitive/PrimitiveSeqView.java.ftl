@@ -234,4 +234,10 @@ public interface ${Type}SeqView extends ${Type}SeqLike, ${Type}CollectionView, P
         Objects.requireNonNull(mapper);
         return new ${Type}SeqViews.FlatMapped(this, mapper);
     }
+
+    @Override
+    default @NotNull <T> SeqView<T> flatMapToObj(@NotNull ${Type}Function<? extends Iterable<? extends T>> mapper) {
+        Objects.requireNonNull(mapper);
+        return new ${Type}SeqViews.FlatMapToObj<>(this, mapper);
+    }
 }

@@ -2,6 +2,7 @@ package kala.collection.primitive.internal.view;
 
 import kala.Conditions;
 import kala.collection.*;
+import kala.collection.base.Iterators;
 import kala.collection.base.primitive.*;
 import kala.collection.primitive.*;
 import kala.collection.mutable.primitive.*;
@@ -1001,10 +1002,27 @@ public final class ${Type}SeqViews {
             this.mapper = mapper;
         }
 
-
         @Override
         public final @NotNull ${Type}Iterator iterator() {
             return ${Type}Iterator.concat(source.mapToObj(it -> mapper.apply(it).iterator()));
+        }
+    }
+
+    public static final class FlatMapToObj<T> extends AbstractSeqView<T> {
+        private final @NotNull ${Type}SeqLike source;
+
+        private final @NotNull ${Type}Function<? extends Iterable<? extends T>> mapper;
+
+        public FlatMapToObj(
+                @NotNull ${Type}SeqLike source,
+                @NotNull ${Type}Function<? extends Iterable<? extends T>> mapper) {
+            this.source = source;
+            this.mapper = mapper;
+        }
+
+        @Override
+        public final @NotNull Iterator<T> iterator() {
+            return Iterators.concat(source.mapToObj(it -> mapper.apply(it).iterator()));
         }
     }
 
