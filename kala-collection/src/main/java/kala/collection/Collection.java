@@ -153,6 +153,10 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
         return flatMap(mapper);
     }
 
+    default <R> Tuple2<? extends ImmutableCollection<E>, ? extends ImmutableCollection<E>> partition(@NotNull Predicate<? super E> predicate) {
+        return partition(ImmutableSeq.factory(), predicate);
+    }
+
     @Contract(pure = true)
     @DelegateBy("zip(Iterable<U>, BiFunction<E, U, R>)")
     default <U> @NotNull ImmutableCollection<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {

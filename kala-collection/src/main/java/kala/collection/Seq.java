@@ -4,12 +4,14 @@ import kala.annotations.Covariant;
 import kala.collection.base.Iterators;
 import kala.collection.base.OrderedTraversable;
 import kala.collection.factory.CollectionFactory;
+import kala.collection.immutable.ImmutableCollection;
 import kala.collection.immutable.ImmutableSeq;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
 import kala.collection.internal.view.SeqViews;
 import kala.comparator.Comparators;
 import kala.function.*;
+import kala.tuple.Tuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -390,6 +392,12 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
     @Contract(pure = true)
     default <U> @NotNull ImmutableSeq<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
         return view().flatMap(mapper).toImmutableSeq();
+    }
+
+    @Override
+    @Contract(pure = true)
+    default <R> Tuple2<? extends ImmutableSeq<E>, ? extends ImmutableSeq<E>> partition(@NotNull Predicate<? super E> predicate) {
+        return partition(ImmutableSeq.factory(), predicate);
     }
 
     @Contract(pure = true)

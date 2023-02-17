@@ -412,6 +412,11 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     }
 
     @Override
+    default <R> Tuple2<? extends ImmutableSeq<E>, ? extends ImmutableSeq<E>> partition(@NotNull Predicate<? super E> predicate) {
+        return partition(iterableFactory(), predicate);
+    }
+
+    @Override
     default @NotNull ImmutableSeq<E> distinct() {
         return AbstractImmutableCollection.distinct(this, this.<E>iterableFactory());
     }

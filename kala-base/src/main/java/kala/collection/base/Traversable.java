@@ -17,6 +17,8 @@ import kala.function.CheckedBiConsumer;
 import kala.function.CheckedBiFunction;
 import kala.function.CheckedConsumer;
 import kala.function.CheckedPredicate;
+import kala.tuple.Tuple;
+import kala.tuple.Tuple2;
 import kala.value.primitive.IntVar;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
@@ -368,6 +370,21 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
                 mapper.apply(e).forEach(consumer);
             }
         });
+    }
+
+    default <R> Tuple2<R, R> partition(@NotNull CollectionFactory<T, ?, R> factory, @NotNull Predicate<? super T> predicate) {
+        @SuppressWarnings("rawtypes")
+        CollectionFactory uncheckedFactory = factory;
+
+        Object builder1 = uncheckedFactory.newBuilder();
+        Object builder2 = uncheckedFactory.newBuilder();
+
+        for (T e : this) {
+            Object builder = predicate.test(e) ? builder1 : builder2;
+            uncheckedFactory.addToBuilder(builder, e);
+        }
+
+        return Tuple.of((R) uncheckedFactory.build(builder1), (R) uncheckedFactory.build(builder2));
     }
 
     //region Aggregate Operations
