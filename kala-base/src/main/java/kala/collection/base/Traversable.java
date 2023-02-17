@@ -279,6 +279,14 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         });
     }
 
+    default <R> @NotNull R mapToDouble(@NotNull DoubleCollectionFactory<?, R> factory, @NotNull ToDoubleFunction<? super T> mapper) {
+        return DoubleCollectionFactory.buildBy(factory, consumer -> {
+            for (T e : this) {
+                consumer.accept(mapper.applyAsDouble(e));
+            }
+        });
+    }
+
     @Contract(value = "_, _ -> param1", mutates = "param1")
     default <U, G extends Growable<? super U>> @NotNull G mapTo(@NotNull G destination, @NotNull Function<? super T, ? extends U> mapper) {
         for (T e : this) {
