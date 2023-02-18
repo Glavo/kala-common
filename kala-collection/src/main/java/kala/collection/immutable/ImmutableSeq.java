@@ -372,7 +372,7 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
 
     @Override
     default <U> @NotNull ImmutableSeq<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
-        return AbstractImmutableCollection.mapNotNull(this, mapper, this.<U>iterableFactory());
+        return mapNotNull(this.<U>iterableFactory(), mapper);
     }
 
     default <U> @NotNull ImmutableSeq<@NotNull U> mapIndexedNotNull(

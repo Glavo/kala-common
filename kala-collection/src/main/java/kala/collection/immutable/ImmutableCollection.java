@@ -131,7 +131,7 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E>, Immuta
 
     @Contract(pure = true)
     default <U> @NotNull ImmutableCollection<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
-        return AbstractImmutableCollection.mapNotNull(this, mapper, this.<U>iterableFactory());
+        return mapNotNull(this.<U>iterableFactory(), mapper);
     }
 
     @Override

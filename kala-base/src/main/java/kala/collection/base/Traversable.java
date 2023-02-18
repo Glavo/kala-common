@@ -338,6 +338,27 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         return destination;
     }
 
+    default @NotNull <U, R> R mapMulti(
+            @NotNull CollectionFactory<U, ?, R> factory,
+            @NotNull BiConsumer<? super T, ? super Consumer<? super U>> mapper) {
+        return mapMultiTo(factory.newCollectionBuilder(), mapper).build();
+    }
+
+    @Contract(value = "_, _ -> param1", mutates = "param1")
+    default @NotNull <U, G extends Growable<? super U>> G mapMultiTo(
+            @NotNull G destination,
+            @NotNull BiConsumer<? super T, ? super Consumer<? super U>> mapper) {
+
+        Consumer<? super U> consumer = destination instanceof CollectionBuilder
+                ? ((CollectionBuilder<? super U, ?>) destination)
+                : destination::plusAssign;
+
+        for (T value : this) {
+            mapper.accept(value, consumer);
+        }
+        return destination;
+    }
+
     @DelegateBy("flatMapTo(Growable<U>, Function<T, Iterable<U>>)")
     default <U, R> @NotNull R flatMap(
             @NotNull CollectionFactory<U, ?, R> factory,
@@ -345,34 +366,25 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         return flatMapTo(factory.newCollectionBuilder(), mapper).build();
     }
 
+    @DelegateBy("flatMapToIntTo(IntGrowable, Function<T, IntTraversable>)")
     default <R> @NotNull R flatMapToInt(
             @NotNull IntCollectionFactory<?, R> factory,
             @NotNull Function<? super T, ? extends IntTraversable> mapper) {
-        return IntCollectionFactory.buildBy(factory, consumer -> {
-            for (T e : this) {
-                mapper.apply(e).forEach(consumer);
-            }
-        });
+        return flatMapToIntTo(factory.newCollectionBuilder(), mapper).build();
     }
 
+    @DelegateBy("flatMapToLongTo(LongGrowable, Function<T, LongTraversable>)")
     default <R> @NotNull R flatMapToLong(
             @NotNull LongCollectionFactory<?, R> factory,
             @NotNull Function<? super T, ? extends LongTraversable> mapper) {
-        return LongCollectionFactory.buildBy(factory, consumer -> {
-            for (T e : this) {
-                mapper.apply(e).forEach(consumer);
-            }
-        });
+        return flatMapToLongTo(factory.newCollectionBuilder(), mapper).build();
     }
 
+    @DelegateBy("flatMapToDoubleTo(DoubleGrowable, Function<T, DoubleTraversable>)")
     default <R> @NotNull R flatMapToDouble(
             @NotNull DoubleCollectionFactory<?, R> factory,
             @NotNull Function<? super T, ? extends DoubleTraversable> mapper) {
-        return DoubleCollectionFactory.buildBy(factory, consumer -> {
-            for (T e : this) {
-                mapper.apply(e).forEach(consumer);
-            }
-        });
+        return flatMapToDoubleTo(factory.newCollectionBuilder(), mapper).build();
     }
 
     default <U, G extends Growable<? super U>> G flatMapTo(
@@ -826,9 +838,9 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
     }
 
     @Contract(value = "_ -> param1", mutates = "param1")
-    default <G extends Growable<? super T>> G collect(G growable) {
-        growable.plusAssign(this);
-        return growable;
+    default <G extends Growable<? super T>> G collect(G destination) {
+        destination.plusAssign(this);
+        return destination;
     }
 
     @Contract(value = "_ -> param1", mutates = "param1")

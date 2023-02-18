@@ -14,30 +14,9 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public abstract class AbstractImmutableCollection<@Covariant E>
         extends AbstractCollection<E> implements ImmutableCollection<E> {
-
-    static <E, U, T, Builder> T mapNotNull(
-            @NotNull ImmutableCollection<? extends E> collection,
-            @NotNull Function<? super E, ? extends U> mapper,
-            @NotNull CollectionFactory<? super U, Builder, ? extends T> factory
-    ) {
-        Objects.requireNonNull(mapper);
-
-        Builder builder = factory.newBuilder();
-
-        factory.sizeHint(builder, collection);
-
-        for (E e : collection) {
-            U u = mapper.apply(e);
-            if (u != null) {
-                factory.addToBuilder(builder, u);
-            }
-        }
-        return factory.build(builder);
-    }
 
     static <E, U, T, Builder> T mapMulti(
             @NotNull ImmutableCollection<? extends E> collection,

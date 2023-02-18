@@ -1105,6 +1105,25 @@ public final class Iterators {
         return factory.build(builder);
     }
 
+    static <E, G extends Growable<? super E>> G collect(
+            @NotNull Iterator<? extends E> it,
+            @NotNull G destination
+    ) {
+        while (it.hasNext()) {
+            destination.plusAssign(it.next());
+        }
+        return destination;
+    }
+
+    static <E, C extends java.util.Collection<? super E>> C collect(
+            @NotNull Iterator<? extends E> it,
+            @NotNull C collection
+    ) {
+        while (it.hasNext()) {
+            collection.add(it.next());
+        }
+        return collection;
+    }
 
     @Contract(value = "_, _ -> param2", mutates = "param1, param2")
     public static <A extends Appendable> @NotNull A joinTo(
