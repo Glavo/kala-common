@@ -2,7 +2,6 @@ package kala.collection.base;
 
 import kala.annotations.Covariant;
 import kala.annotations.DelegateBy;
-import kala.annotations.UnstableName;
 import kala.collection.base.primitive.*;
 import kala.collection.factory.primitive.DoubleCollectionFactory;
 import kala.collection.factory.primitive.IntCollectionFactory;
@@ -32,6 +31,7 @@ import java.util.concurrent.*;
 import java.util.function.*;
 import java.util.stream.*;
 
+@FunctionalInterface
 @SuppressWarnings("unchecked")
 public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T> {
 
@@ -39,6 +39,16 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
     @Contract(value = "_ -> param1", pure = true)
     static <T> Traversable<T> narrow(Traversable<? extends T> traversable) {
         return (Traversable<T>) traversable;
+    }
+
+    static <T> Traversable<T> wrap(@NotNull Iterable<T> iterable) {
+        Objects.requireNonNull(iterable);
+
+        if (iterable instanceof Traversable) {
+            return narrow((Traversable<T>) iterable);
+        }
+
+        return iterable::iterator;
     }
 
     default @NotNull Traversable<T> asGeneric() {
@@ -791,6 +801,20 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
 
     default <R, Builder> R collect(@NotNull CollectionFactory<? super T, Builder, ? extends R> factory) {
         return Iterators.collect(iterator(), factory);
+    }
+
+    @Contract(value = "_ -> param1", mutates = "param1")
+    default <G extends Growable<? super T>> G collect(G growable) {
+        growable.plusAssign(this);
+        return growable;
+    }
+
+    @Contract(value = "_ -> param1", mutates = "param1")
+    default <C extends java.util.Collection<? super T>> C collect(C collection) {
+        for (T value : this) {
+            collection.add(value);
+        }
+        return collection;
     }
 
     @Override
