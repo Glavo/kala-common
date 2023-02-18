@@ -3,6 +3,7 @@ package kala.collection.base;
 import kala.annotations.Covariant;
 import kala.annotations.DelegateBy;
 import kala.collection.base.primitive.*;
+import kala.collection.factory.CollectionBuilder;
 import kala.collection.factory.primitive.DoubleCollectionFactory;
 import kala.collection.factory.primitive.IntCollectionFactory;
 import kala.collection.factory.primitive.LongCollectionFactory;
@@ -205,34 +206,19 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
 
     //endregion
 
+    @DelegateBy("filterTo(Growable<T>, Predicate<T>)")
     default <R> @NotNull R filter(@NotNull CollectionFactory<T, ?, R> factory, @NotNull Predicate<? super T> predicate) {
-        return CollectionFactory.buildBy(factory, consumer -> {
-            for (T e : this) {
-                if (predicate.test(e)) {
-                    consumer.accept(e);
-                }
-            }
-        });
+        return filterTo(factory.newCollectionBuilder(), predicate).build();
     }
 
+    @DelegateBy("filterNotTo(Growable<T>, Predicate<T>)")
     default <R> @NotNull R filterNot(@NotNull CollectionFactory<T, ?, R> factory, @NotNull Predicate<? super T> predicate) {
-        return CollectionFactory.buildBy(factory, consumer -> {
-            for (T e : this) {
-                if (!predicate.test(e)) {
-                    consumer.accept(e);
-                }
-            }
-        });
+        return filterNotTo(factory.newCollectionBuilder(), predicate).build();
     }
 
+    @DelegateBy("filterNotNullTo(Growable<T>)")
     default <R> @NotNull R filterNotNull(@NotNull CollectionFactory<T, ?, R> factory) {
-        return CollectionFactory.buildBy(factory, consumer -> {
-            for (T e : this) {
-                if (e != null) {
-                    consumer.accept(e);
-                }
-            }
-        });
+        return filterNotNullTo(factory.newCollectionBuilder()).build();
     }
 
     @Contract(value = "_, _ -> param1", mutates = "param1")

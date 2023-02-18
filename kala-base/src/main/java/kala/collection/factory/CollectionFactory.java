@@ -64,6 +64,42 @@ public interface CollectionFactory<E, Builder, @Covariant R>
 
     Builder newBuilder();
 
+    default Builder newBuilder(int capacity) {
+        Builder builder = newBuilder();
+        sizeHint(builder, capacity);
+        return builder;
+    }
+
+    @ApiStatus.Experimental
+    default @NotNull CollectionBuilder<E, R> newCollectionBuilder(Builder builder) {
+        return new CollectionBuilder<E, R>() {
+            @Override
+            public void plusAssign(E value) {
+                CollectionFactory.this.addToBuilder(builder, value);
+            }
+
+            @Override
+            public void sizeHint(int size) {
+                CollectionFactory.this.sizeHint(builder, size);
+            }
+
+            @Override
+            public R build() {
+                return CollectionFactory.this.build(builder);
+            }
+        };
+    }
+
+    @ApiStatus.Experimental
+    default @NotNull CollectionBuilder<E, R> newCollectionBuilder() {
+        return newCollectionBuilder(newBuilder());
+    }
+
+    @ApiStatus.Experimental
+    default @NotNull CollectionBuilder<E, R> newCollectionBuilder(int capacity) {
+        return newCollectionBuilder(newBuilder(capacity));
+    }
+
     R build(Builder builder);
 
     void addToBuilder(@NotNull Builder builder, E value);
