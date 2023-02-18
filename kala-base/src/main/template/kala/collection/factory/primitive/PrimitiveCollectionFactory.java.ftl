@@ -24,6 +24,36 @@ public interface ${Type}CollectionFactory<Builder, @Covariant R> extends Primiti
         return factory.build(builder);
     }
 
+    @ApiStatus.Experimental
+    default @NotNull ${Type}CollectionBuilder<R> newCollectionBuilder(Builder builder) {
+        return new ${Type}CollectionBuilder<R>() {
+            @Override
+            public void plusAssign(${PrimitiveType} value) {
+                ${Type}CollectionFactory.this.addToBuilder(builder, value);
+            }
+
+            @Override
+            public void sizeHint(int size) {
+                ${Type}CollectionFactory.this.sizeHint(builder, size);
+            }
+
+            @Override
+            public R build() {
+                return ${Type}CollectionFactory.this.build(builder);
+            }
+        };
+    }
+
+    @ApiStatus.Experimental
+    default @NotNull ${Type}CollectionBuilder<R> newCollectionBuilder() {
+        return newCollectionBuilder(newBuilder());
+    }
+
+    @ApiStatus.Experimental
+    default @NotNull ${Type}CollectionBuilder<R> newCollectionBuilder(int capacity) {
+        return newCollectionBuilder(newBuilder(capacity));
+    }
+
     void addToBuilder(@NotNull Builder builder, ${PrimitiveType} value);
 
     @Override

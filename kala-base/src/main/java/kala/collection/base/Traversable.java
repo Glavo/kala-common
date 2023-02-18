@@ -33,7 +33,7 @@ import java.util.function.*;
 import java.util.stream.*;
 
 @FunctionalInterface
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "UnstableApiUsage"})
 public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T> {
 
     @SuppressWarnings("unchecked")
@@ -251,12 +251,9 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         return destination;
     }
 
+    @DelegateBy("mapTo(Growable<U>, Function<T, U>)")
     default <U, R> @NotNull R map(@NotNull CollectionFactory<U, ?, R> factory, @NotNull Function<? super T, ? extends U> mapper) {
-        return CollectionFactory.buildBy(factory, consumer -> {
-            for (T e : this) {
-                consumer.accept(mapper.apply(e));
-            }
-        });
+        return mapTo(factory.newCollectionBuilder(knownSize()), mapper).build();
     }
 
     default <R> @NotNull R mapToInt(@NotNull IntCollectionFactory<?, R> factory, @NotNull ToIntFunction<? super T> mapper) {
@@ -281,6 +278,11 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
                 consumer.accept(mapper.applyAsDouble(e));
             }
         });
+    }
+
+    @DelegateBy("mapNotNullTo(Growable<U>, Function<T, U>)")
+    default <U, R> @NotNull R mapNotNull(@NotNull CollectionFactory<U, ?, R> factory, @NotNull Function<? super T, ? extends U> mapper) {
+        return mapNotNullTo(factory.newCollectionBuilder(knownSize()), mapper).build();
     }
 
     @Contract(value = "_, _ -> param1", mutates = "param1")
@@ -336,14 +338,11 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         return destination;
     }
 
+    @DelegateBy("flatMapTo(Growable<U>, Function<T, Iterable<U>>)")
     default <U, R> @NotNull R flatMap(
             @NotNull CollectionFactory<U, ?, R> factory,
             @NotNull Function<? super T, ? extends Iterable<? extends U>> mapper) {
-        return CollectionFactory.buildBy(factory, consumer -> {
-            for (T e : this) {
-                mapper.apply(e).forEach(consumer);
-            }
-        });
+        return flatMapTo(factory.newCollectionBuilder(), mapper).build();
     }
 
     default <R> @NotNull R flatMapToInt(
@@ -374,6 +373,43 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
                 mapper.apply(e).forEach(consumer);
             }
         });
+    }
+
+    default <U, G extends Growable<? super U>> G flatMapTo(
+            @NotNull G destination,
+            @NotNull Function<? super T, ? extends Iterable<? extends U>> mapper) {
+        for (T value : this) {
+            destination.plusAssign(mapper.apply(value));
+        }
+
+        return destination;
+    }
+
+    default <U, G extends IntGrowable> G flatMapToIntTo(
+            @NotNull G destination,
+            @NotNull Function<? super T, ? extends IntTraversable> mapper) {
+        for (T value : this) {
+            destination.plusAssign(mapper.apply(value));
+        }
+        return destination;
+    }
+
+    default <U, G extends LongGrowable> G flatMapToLongTo(
+            @NotNull G destination,
+            @NotNull Function<? super T, ? extends LongTraversable> mapper) {
+        for (T value : this) {
+            destination.plusAssign(mapper.apply(value));
+        }
+        return destination;
+    }
+
+    default <U, G extends DoubleGrowable> G flatMapToDoubleTo(
+            @NotNull G destination,
+            @NotNull Function<? super T, ? extends DoubleTraversable> mapper) {
+        for (T value : this) {
+            destination.plusAssign(mapper.apply(value));
+        }
+        return destination;
     }
 
     default <R> Tuple2<R, R> partition(@NotNull CollectionFactory<T, ?, R> factory, @NotNull Predicate<? super T> predicate) {

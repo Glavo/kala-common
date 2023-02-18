@@ -34,6 +34,7 @@ tasks.getByName<GenerateTask>("generateSources") {
             val type = model.type
 
             generate("${type}CollectionFactory", model, "PrimitiveCollectionFactory")
+            generate("${type}CollectionBuilder", model, "PrimitiveCollectionBuilder")
         }
     }
 
