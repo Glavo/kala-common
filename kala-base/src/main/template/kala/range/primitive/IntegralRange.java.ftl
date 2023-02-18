@@ -116,18 +116,16 @@ public final class ${Type}Range extends IntegralRange<${WrapperType}> implements
 
     private ${PrimitiveType} strictLowerBound() {
         // assert this.isNotEmpty();
-
-            return type.getLowerBoundType() == BoundType.OPEN
+        return type.getLowerBoundType() == BoundType.OPEN
             ? <#if LiftToInt>(${PrimitiveType}) (</#if>lowerBound + 1<#if LiftToInt>)</#if>
-        :lowerBound;
+            :lowerBound;
     }
 
     private ${PrimitiveType} strictUpperBound() {
         // assert this.isNotEmpty();
-
-            return type.getUpperBoundType() == BoundType.OPEN
+        return type.getUpperBoundType() == BoundType.OPEN
             ? <#if LiftToInt>(${PrimitiveType}) (</#if>upperBound - 1<#if LiftToInt>)</#if>
-        :upperBound;
+            :upperBound;
     }
 
     @UnstableName
@@ -136,8 +134,8 @@ public final class ${Type}Range extends IntegralRange<${WrapperType}> implements
             throw new UnsupportedOperationException("Range is empty");
         }
 
-        final ${PrimitiveType} strictLowerBound =strictLowerBound();
-        final ${PrimitiveType} strictUpperBound =strictUpperBound();
+        final ${PrimitiveType} strictLowerBound = strictLowerBound();
+        final ${PrimitiveType} strictUpperBound = strictUpperBound();
 
         if (strictLowerBound >= value) {
             return strictLowerBound;
