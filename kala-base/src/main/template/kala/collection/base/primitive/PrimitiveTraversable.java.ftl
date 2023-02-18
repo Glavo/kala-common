@@ -1,6 +1,7 @@
 package kala.collection.base.primitive;
 
 import kala.collection.base.Growable;
+import kala.collection.factory.primitive.${Type}CollectionFactory;
 import kala.control.primitive.${Type}Option;
 import kala.function.*;
 
@@ -383,6 +384,10 @@ public interface ${Type}Traversable extends PrimitiveTraversable<${WrapperType}>
     }
 
     //endregion
+
+    default <R, Builder> R collect(@NotNull ${Type}CollectionFactory<Builder, ? extends R> factory) {
+        return ${Type}CollectionFactory.buildBy(factory, this::forEach);
+    }
 
     default ${PrimitiveType} @NotNull [] toArray() {
         int s = knownSize();
