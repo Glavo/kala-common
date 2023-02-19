@@ -389,6 +389,11 @@ public interface ${Type}Traversable extends PrimitiveTraversable<${WrapperType}>
         return ${Type}CollectionFactory.buildBy(factory, this::forEach);
     }
 
+    default <G extends ${Type}Growable> @NotNull G collect(@NotNull G destination) {
+        destination.plusAssign(this);
+        return destination;
+    }
+
     default ${PrimitiveType} @NotNull [] toArray() {
         int s = knownSize();
         if (s == 0) {

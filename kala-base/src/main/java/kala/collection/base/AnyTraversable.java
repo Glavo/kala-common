@@ -1,11 +1,13 @@
 package kala.collection.base;
 
+import kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 import java.util.*;
 import java.util.stream.BaseStream;
+import java.util.stream.Collector;
 import java.util.stream.StreamSupport;
 
 public interface AnyTraversable<T> extends Sized {
@@ -189,6 +191,32 @@ public interface AnyTraversable<T> extends Sized {
     //endregion
 
     //boolean containsAll(@NotNull Iterable<?> values);
+
+    default <R, Builder> R collect(@NotNull Collector<? super T, Builder, ? extends R> collector) {
+        return Iterators.collect(iterator(), collector);
+    }
+
+    default <R, Builder> R collect(@NotNull CollectionFactory<? super T, Builder, ? extends R> factory) {
+        return Iterators.collect(iterator(), factory);
+    }
+
+    @Contract(value = "_ -> param1", mutates = "param1")
+    default <G extends Growable<? super T>> G collect(G destination) {
+        Iterator<T> it = this.iterator();
+        while (it.hasNext()) {
+            destination.plusAssign(it.next());
+        }
+        return destination;
+    }
+
+    @Contract(value = "_ -> param1", mutates = "param1")
+    default <C extends java.util.Collection<? super T>> C collect(C collection) {
+        Iterator<T> it = this.iterator();
+        while (it.hasNext()) {
+            collection.add(it.next());
+        }
+        return collection;
+    }
 
     @NotNull Object toArray();
 

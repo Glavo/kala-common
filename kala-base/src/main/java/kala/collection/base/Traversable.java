@@ -881,28 +881,6 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
 
     //region Conversion Operations
 
-    default <R, Builder> R collect(@NotNull Collector<? super T, Builder, ? extends R> collector) {
-        return Iterators.collect(iterator(), collector);
-    }
-
-    default <R, Builder> R collect(@NotNull CollectionFactory<? super T, Builder, ? extends R> factory) {
-        return Iterators.collect(iterator(), factory);
-    }
-
-    @Contract(value = "_ -> param1", mutates = "param1")
-    default <G extends Growable<? super T>> G collect(G destination) {
-        destination.plusAssign(this);
-        return destination;
-    }
-
-    @Contract(value = "_ -> param1", mutates = "param1")
-    default <C extends java.util.Collection<? super T>> C collect(C collection) {
-        for (T value : this) {
-            collection.add(value);
-        }
-        return collection;
-    }
-
     @Override
     @DelegateBy("toArray(IntFunction<U[]>)")
     default Object @NotNull [] toArray() {
