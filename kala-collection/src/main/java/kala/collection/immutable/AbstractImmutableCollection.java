@@ -77,20 +77,4 @@ public abstract class AbstractImmutableCollection<@Covariant E>
         }
         return factory.build(builder);
     }
-
-    static <E, T, Builder> T distinct(
-            @NotNull ImmutableCollection<? extends E> collection,
-            @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
-    ) {
-        if (AnyTraversable.knownSize(collection) == 0) {
-            return factory.empty();
-        }
-        Builder builder = factory.newBuilder();
-        HashSet<E> set = new HashSet<>();
-        for (E e : collection) {
-            if (set.add(e))
-                factory.addToBuilder(builder, e);
-        }
-        return factory.build(builder);
-    }
 }

@@ -1,20 +1,25 @@
 package kala.collection.base;
 
 import kala.annotations.Contravariant;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 
 @FunctionalInterface
 public interface Growable<@Contravariant T> {
-    static <T> @NotNull Growable<T> wrapJavaList(java.util.@NotNull List<? super T> list) {
-        Objects.requireNonNull(list);
-        return list::add;
+
+    @ApiStatus.Experimental
+    static <T> @NotNull Growable<T> by(Consumer<? super T> consumer) {
+        Objects.requireNonNull(consumer);
+        return consumer::accept;
     }
 
-    static <T> @NotNull Growable<T> wrapJavaSet(java.util.@NotNull Set<? super T> set) {
-        Objects.requireNonNull(set);
-        return set::add;
+    @ApiStatus.Experimental
+    static <T> @NotNull Growable<T> by(java.util.@NotNull Collection<? super T> list) {
+        Objects.requireNonNull(list);
+        return list::add;
     }
 
     void plusAssign(T value);

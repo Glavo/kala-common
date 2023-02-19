@@ -418,7 +418,7 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
 
     @Override
     default @NotNull ImmutableSeq<E> distinct() {
-        return AbstractImmutableCollection.distinct(this, this.<E>iterableFactory());
+        return distinct(this.iterableFactory());
     }
 
     @Override

@@ -162,6 +162,6 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E>, Immuta
 
     @Override
     default @NotNull ImmutableCollection<E> distinct() {
-        return AbstractImmutableCollection.distinct(this, this.<E>iterableFactory());
+        return distinct(this.iterableFactory());
     }
 }
