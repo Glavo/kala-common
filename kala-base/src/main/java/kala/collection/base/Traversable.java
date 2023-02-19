@@ -207,18 +207,23 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
     //endregion
 
     @DelegateBy("filterTo(Growable<T>, Predicate<T>)")
-    default <R> @NotNull R filter(@NotNull CollectionFactory<T, ?, R> factory, @NotNull Predicate<? super T> predicate) {
+    default <R> R filter(@NotNull CollectionFactory<T, ?, R> factory, @NotNull Predicate<? super T> predicate) {
         return filterTo(factory.newCollectionBuilder(), predicate).build();
     }
 
     @DelegateBy("filterNotTo(Growable<T>, Predicate<T>)")
-    default <R> @NotNull R filterNot(@NotNull CollectionFactory<T, ?, R> factory, @NotNull Predicate<? super T> predicate) {
+    default <R> R filterNot(@NotNull CollectionFactory<T, ?, R> factory, @NotNull Predicate<? super T> predicate) {
         return filterNotTo(factory.newCollectionBuilder(), predicate).build();
     }
 
     @DelegateBy("filterNotNullTo(Growable<T>)")
-    default <R> @NotNull R filterNotNull(@NotNull CollectionFactory<T, ?, R> factory) {
+    default <R> R filterNotNull(@NotNull CollectionFactory<T, ?, R> factory) {
         return filterNotNullTo(factory.newCollectionBuilder()).build();
+    }
+
+    @DelegateBy("filterIsInstanceTo(Growable<U>, Class<U>)")
+    default <U, R> R filterIsInstance(@NotNull CollectionFactory<U, ?, R> factory, Class<? extends U> clazz) {
+        return filterIsInstanceTo(factory.newCollectionBuilder(), clazz).build();
     }
 
     @Contract(value = "_, _ -> param1", mutates = "param1")
@@ -251,12 +256,22 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         return destination;
     }
 
+    @Contract(value = "_, _ -> param1", mutates = "param1")
+    default <U, G extends Growable<? super U>> @NotNull G filterIsInstanceTo(@NotNull G destination, @NotNull Class<? extends U> clazz) {
+        for (T value : this) {
+            if (clazz.isInstance(value)) {
+                destination.plusAssign((U) value);
+            }
+        }
+        return destination;
+    }
+
     @DelegateBy("mapTo(Growable<U>, Function<T, U>)")
-    default <U, R> @NotNull R map(@NotNull CollectionFactory<U, ?, R> factory, @NotNull Function<? super T, ? extends U> mapper) {
+    default <U, R> R map(@NotNull CollectionFactory<U, ?, R> factory, @NotNull Function<? super T, ? extends U> mapper) {
         return mapTo(factory.newCollectionBuilder(knownSize()), mapper).build();
     }
 
-    default <R> @NotNull R mapToInt(@NotNull IntCollectionFactory<?, R> factory, @NotNull ToIntFunction<? super T> mapper) {
+    default <R> R mapToInt(@NotNull IntCollectionFactory<?, R> factory, @NotNull ToIntFunction<? super T> mapper) {
         return IntCollectionFactory.buildBy(factory, consumer -> {
             for (T e : this) {
                 consumer.accept(mapper.applyAsInt(e));
@@ -264,7 +279,7 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         });
     }
 
-    default <R> @NotNull R mapToLong(@NotNull LongCollectionFactory<?, R> factory, @NotNull ToLongFunction<? super T> mapper) {
+    default <R> R mapToLong(@NotNull LongCollectionFactory<?, R> factory, @NotNull ToLongFunction<? super T> mapper) {
         return LongCollectionFactory.buildBy(factory, consumer -> {
             for (T e : this) {
                 consumer.accept(mapper.applyAsLong(e));
@@ -272,7 +287,7 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         });
     }
 
-    default <R> @NotNull R mapToDouble(@NotNull DoubleCollectionFactory<?, R> factory, @NotNull ToDoubleFunction<? super T> mapper) {
+    default <R> R mapToDouble(@NotNull DoubleCollectionFactory<?, R> factory, @NotNull ToDoubleFunction<? super T> mapper) {
         return DoubleCollectionFactory.buildBy(factory, consumer -> {
             for (T e : this) {
                 consumer.accept(mapper.applyAsDouble(e));
@@ -281,8 +296,14 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
     }
 
     @DelegateBy("mapNotNullTo(Growable<U>, Function<T, U>)")
-    default <U, R> @NotNull R mapNotNull(@NotNull CollectionFactory<U, ?, R> factory, @NotNull Function<? super T, ? extends U> mapper) {
+    default <U, R> R mapNotNull(@NotNull CollectionFactory<U, ?, R> factory, @NotNull Function<? super T, ? extends U> mapper) {
         return mapNotNullTo(factory.newCollectionBuilder(knownSize()), mapper).build();
+    }
+
+    default @NotNull <U, R> R mapMulti(
+            @NotNull CollectionFactory<U, ?, R> factory,
+            @NotNull BiConsumer<? super T, ? super Consumer<? super U>> mapper) {
+        return mapMultiTo(factory.newCollectionBuilder(), mapper).build();
     }
 
     @Contract(value = "_, _ -> param1", mutates = "param1")
@@ -317,14 +338,6 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         return destination;
     }
 
-    default <R> @NotNull R mapToDoubleTo(@NotNull DoubleCollectionFactory<?, R> factory, @NotNull ToDoubleFunction<? super T> mapper) {
-        return DoubleCollectionFactory.buildBy(factory, consumer -> {
-            for (T e : this) {
-                consumer.accept(mapper.applyAsDouble(e));
-            }
-        });
-    }
-
     @Contract(value = "_, _ -> param1", mutates = "param1")
     default <U, G extends Growable<? super U>> @NotNull G mapNotNullTo(
             @NotNull G destination,
@@ -336,12 +349,6 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
             }
         }
         return destination;
-    }
-
-    default @NotNull <U, R> R mapMulti(
-            @NotNull CollectionFactory<U, ?, R> factory,
-            @NotNull BiConsumer<? super T, ? super Consumer<? super U>> mapper) {
-        return mapMultiTo(factory.newCollectionBuilder(), mapper).build();
     }
 
     @Contract(value = "_, _ -> param1", mutates = "param1")
@@ -437,6 +444,51 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         }
 
         return Tuple.of((R) uncheckedFactory.build(builder1), (R) uncheckedFactory.build(builder2));
+    }
+
+    @DelegateBy("distinctTo(Growable<T>)")
+    default <R> R distinct(@NotNull CollectionFactory<T, ?, R> factory) {
+        return distinctTo(factory.newCollectionBuilder()).build();
+    }
+
+    @DelegateBy("distinctByTo(Growable<T>, Function<T, U>)")
+    default <U, R> R distinctBy(@NotNull CollectionFactory<T, ?, R> factory, Function<? super T, ? extends U> mapper) {
+        return distinctByTo(factory.newCollectionBuilder(), mapper).build();
+    }
+
+    @DelegateBy("distinctByIntTo(Growable<T>, ToIntFunction<T>)")
+    default <R> R distinctByInt(@NotNull CollectionFactory<T, ?, R> factory, ToIntFunction<? super T> mapper) {
+        return distinctByIntTo(factory.newCollectionBuilder(), mapper).build();
+    }
+
+    default <G extends Growable<? super T>> @NotNull G distinctTo(G destination) {
+        HashSet<T> iteratedValues = new HashSet<>();
+        for (T value : this) {
+            if (iteratedValues.add(value)) {
+                destination.plusAssign(value);
+            }
+        }
+        return destination;
+    }
+
+    default <U, G extends Growable<? super T>> @NotNull G distinctByTo(G destination, Function<? super T, ? extends U> mapper) {
+        HashSet<U> iteratedValues = new HashSet<>();
+        for (T value : this) {
+            if (iteratedValues.add(mapper.apply(value))) {
+                destination.plusAssign(value);
+            }
+        }
+        return destination;
+    }
+
+    default <G extends Growable<? super T>> @NotNull G distinctByIntTo(G destination, ToIntFunction<? super T> mapper) {
+        HashSet<Integer> iteratedValues = new HashSet<>(); // TODO
+        for (T value : this) {
+            if (iteratedValues.add(mapper.applyAsInt(value))) {
+                destination.plusAssign(value);
+            }
+        }
+        return destination;
     }
 
     //region Aggregate Operations

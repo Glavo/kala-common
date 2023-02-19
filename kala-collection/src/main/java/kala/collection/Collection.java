@@ -55,7 +55,7 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
     @Override
     @Contract(pure = true)
     default @NotNull ImmutableCollection<E> filter(@NotNull Predicate<? super E> predicate) {
-        return view().filter(predicate).toImmutableSeq();
+        return filter(ImmutableSeq.factory(), predicate);
     }
 
     @Contract(pure = true)
@@ -73,7 +73,7 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
     @Override
     @Contract(pure = true)
     default @NotNull ImmutableCollection<E> filterNot(@NotNull Predicate<? super E> predicate) {
-        return view().filterNot(predicate).toImmutableSeq();
+        return filterNot(ImmutableSeq.factory(), predicate);
     }
 
     @Contract(pure = true)
@@ -91,17 +91,17 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
     @Override
     @Contract(pure = true)
     default @NotNull ImmutableCollection<@NotNull E> filterNotNull() {
-        return view().filterNotNull().toImmutableSeq();
+        return filterNotNull(ImmutableSeq.factory());
     }
 
     @Contract(pure = true)
     default <U> @NotNull ImmutableCollection<U> filterIsInstance(@NotNull Class<? extends U> clazz) {
-        return view().<U>filterIsInstance(clazz).toImmutableSeq();
+        return filterIsInstance(ImmutableSeq.factory(), clazz);
     }
 
     @Contract(pure = true)
     default <U> @NotNull ImmutableCollection<U> map(@NotNull Function<? super E, ? extends U> mapper) {
-        return view().<U>map(mapper).toImmutableSeq();
+        return map(ImmutableSeq.factory(), mapper);
     }
 
     @Contract(pure = true)
@@ -117,7 +117,7 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
 
     @Contract(pure = true)
     default <U> @NotNull ImmutableCollection<U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
-        return view().<U>mapNotNull(mapper).toImmutableSeq();
+        return mapNotNull(ImmutableSeq.factory(), mapper);
     }
 
     @Contract(pure = true)
@@ -133,12 +133,12 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
 
     @Contract(pure = true)
     default <U> @NotNull ImmutableCollection<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
-        return view().mapMulti(mapper).toImmutableSeq();
+        return mapMulti(ImmutableSeq.factory(), mapper);
     }
 
     @Contract(pure = true)
     default <U> @NotNull ImmutableCollection<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
-        return view().flatMap(mapper).toImmutableSeq();
+        return flatMap(ImmutableSeq.factory(), mapper);
     }
 
     @Contract(pure = true)
@@ -175,6 +175,6 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
 
     @Contract(pure = true)
     default @NotNull ImmutableCollection<E> distinct() {
-        return view().distinct().toImmutableSeq();
+        return distinct(ImmutableSeq.factory());
     }
 }

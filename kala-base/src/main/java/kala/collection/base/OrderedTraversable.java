@@ -28,7 +28,7 @@ public interface OrderedTraversable<E> extends Traversable<E> {
         }
         Iterator<E> it = this.iterator();
         if (!it.hasNext()) {
-            return it;
+            return Iterators.empty();
         }
         List<E> buffer = ks > 0
                 ? new ArrayList<>(ks)
