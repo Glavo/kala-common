@@ -192,8 +192,10 @@ final class DefaultMutableBooleanSet extends AbstractMutableBooleanSet implement
                 hf = false;
             }
 
-            if (!ht && !hf)
+            if (!ht && !hf) {
+                clear();
                 return true;
+            }
         }
 
         boolean res = false;
