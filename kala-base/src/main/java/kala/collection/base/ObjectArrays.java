@@ -873,19 +873,7 @@ public final class ObjectArrays {
     }
 
     public static @Nullable Object maxOrNull(Object @NotNull [] array) {
-        final int length = array.length; // implicit null check of array
-        if (length == 0) {
-            return null;
-        }
-
-        Object e = array[0];
-        for (int i = 1; i < length; i++) {
-            Object v = array[i];
-            if (((Comparable<Object>) e).compareTo(v) < 0) {
-                e = v;
-            }
-        }
-        return e;
+        return array.length != 0 ? max(array) : null;
     }
 
     public static Object min(Object @NotNull [] array) {
@@ -905,19 +893,7 @@ public final class ObjectArrays {
     }
 
     public static @Nullable Object minOrNull(Object @NotNull [] array) {
-        final int length = array.length; // implicit null check of array
-        if (length == 0) {
-            return null;
-        }
-
-        Object e = array[0];
-        for (int i = 1; i < length; i++) {
-            Object v = array[i];
-            if (((Comparable<Object>) e).compareTo(v) > 0) {
-                e = v;
-            }
-        }
-        return e;
+        return array.length != 0 ? min(array) : null;
     }
 
     //endregion
