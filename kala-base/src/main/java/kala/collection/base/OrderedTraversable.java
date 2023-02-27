@@ -273,9 +273,6 @@ public interface OrderedTraversable<E> extends Traversable<E> {
 
     @Override
     default E reduceRight(@NotNull BiFunction<? super E, ? super E, ? extends E> op) throws NoSuchElementException {
-        if (this.knownSize() == 0) {
-            throw new NoSuchElementException();
-        }
         final Iterator<E> it = this.reverseIterator();
         if (!it.hasNext()) {
             throw new NoSuchElementException();
