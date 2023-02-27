@@ -206,13 +206,6 @@ public final class ObjectArrays {
 
     public static Object @NotNull [] reversed(Object @NotNull [] array) {
         final int length = array.length;
-        switch (length) {
-            case 0:
-                return array;
-            case 1:
-                return array.clone();
-        }
-
         Object[] res = new Object[length];
 
         for (int i = 0; i < length; i++) {

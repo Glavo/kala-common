@@ -16,6 +16,7 @@ import java.util.function.Predicate;
 
 import static kala.Conditions.*;
 import static java.util.Arrays.copyOf;
+import static kala.collection.base.GenericArrays.copyOrUse;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 final class ImmutableVectors {
@@ -603,13 +604,6 @@ final class ImmutableVectors {
     static int vectorSliceDim(int count, int idx) {
         final int c = count / 2;
         return c + 1 - Math.abs(idx - c);
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    static <T> T[] copyOrUse(T[] a, int start, int end) {
-        return start == 0 && end == a.length
-                ? a
-                : Arrays.copyOfRange(a, start, end);
     }
 
     static <T> T[] copyTail(T[] a) {

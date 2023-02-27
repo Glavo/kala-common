@@ -1,6 +1,7 @@
 package kala.collection.base;
 
 import kala.Conditions;
+import kala.annotations.UnstableName;
 import kala.control.Option;
 import kala.annotations.Covariant;
 import kala.annotations.StaticClass;
@@ -409,6 +410,13 @@ public final class GenericArrays {
     //endregion
 
     //region Misc Operations
+
+    @UnstableName
+    public static <E> E @NotNull [] copyOrUse(E[] a, int beginIndex, int endIndex) {
+        return beginIndex == 0 && endIndex == a.length
+                ? a
+                : Arrays.copyOfRange(a, beginIndex, endIndex);
+    }
 
     public static <E> E @NotNull [] slice(E @NotNull [] array, int beginIndex, int endIndex) {
         return Arrays.copyOfRange(array, beginIndex, endIndex);

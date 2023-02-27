@@ -23,13 +23,13 @@ enum class Primitives(internal val properties: MutableMap<String, Any?> = mutabl
             for (primitive in all) {
                 primitive.apply {
                     properties["Type"] = type
-                    properties["PrimitiveType"] = type.toLowerCase()
+                    properties["PrimitiveType"] = type.lowercase()
                     properties["WrapperType"] = when (type) {
                         "Int" -> "Integer"
                         "Char" -> "Character"
                         else -> type
                     }
-                    properties["Var"] = type.first().toLowerCase()
+                    properties["Var"] = type.first().lowercase()
                     properties["IsSpecialized"] = type == "Int" || type == "Long" || type == "Double"
                     properties["IsIntegral"] = type == "Byte" || type == "Short" || type == "Int" || type == "Long"
                     properties["IsFloating"] = type == "Double" || type == "Float"
