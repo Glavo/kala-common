@@ -692,12 +692,6 @@ final class ImmutableVectors {
         return a6c;
     }
 
-    static <T> T[] concatArrays(T[] a, T[] b) {
-        T[] dest = copyOf(a, a.length + b.length);
-        System.arraycopy(b, 0, dest, a.length, b.length);
-        return dest;
-    }
-
     //endregion
 
     //region VectorStatics
@@ -1522,7 +1516,7 @@ final class ImmutableVectors {
                     Object[] a;
                     if (prefix1 != null) {
                         if (suffix1 != null) {
-                            a = concatArrays(prefix1, suffix1);
+                            a = GenericArrays.concat(prefix1, suffix1);
                         } else {
                             a = prefix1;
                         }
@@ -1551,7 +1545,7 @@ final class ImmutableVectors {
                         // The highest-dimensional data consists of two slices: concatenate if they fit into the main data array,
                         // otherwise increase the dimension
                         if (pre.length + suf.length <= WIDTH - 2) {
-                            slices[prefixIdx(maxDim)] = concatArrays(pre, suf);
+                            slices[prefixIdx(maxDim)] = GenericArrays.concat(pre, suf);
                             slices[suffixIdx(maxDim)] = null;
                         } else {
                             resultDim += 1;

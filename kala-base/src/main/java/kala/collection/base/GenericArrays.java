@@ -501,6 +501,12 @@ public final class GenericArrays {
         return newValues;
     }
 
+    public static <E> E @NotNull [] concat(E @NotNull [] a, E @NotNull [] b) {
+        E[] dest = Arrays.copyOf(a, a.length + b.length);
+        System.arraycopy(b, 0, dest, a.length, b.length);
+        return dest;
+    }
+
     public static <E> E @NotNull [] filter(E @NotNull [] array, @NotNull Predicate<? super E> predicate) {
         if (array.length == 0) {
             return array.clone();

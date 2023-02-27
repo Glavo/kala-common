@@ -590,6 +590,13 @@ public final class ObjectArrays {
         return newValues;
     }
 
+    public static Object @NotNull [] concat(Object @NotNull [] a, Object @NotNull [] b) {
+        Object[] dest = new Object[a.length + b.length];
+        System.arraycopy(a, 0, dest, 0, a.length);
+        System.arraycopy(b, 0, dest, a.length, b.length);
+        return dest;
+    }
+
     public static Object @NotNull [] filter(Object @NotNull [] array, @NotNull Predicate<?> predicate) {
         final int length = array.length;
         if (length == 0) {
