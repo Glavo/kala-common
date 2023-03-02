@@ -46,9 +46,10 @@ public final class LazyValue<@Covariant T> extends AbstractValue<T> implements M
     }
 
     public T get() {
-        if (supplier != null) {
+        Supplier<? extends T> s = supplier;
+        if (s != null) {
             synchronized (this) {
-                Supplier<? extends T> s = supplier;
+                s = supplier;
                 if (s != null) {
                     value = s.get();
                     supplier = null;
