@@ -296,8 +296,6 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     public @NotNull MutableArrayList<E> clone() {
-        final Object[] elements = this.elements;
-        final int size = this.size;
         return new MutableArrayList<>(elements.length == 0 ? elements : elements.clone(), size);
     }
 
