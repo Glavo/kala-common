@@ -162,11 +162,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
             return empty();
         }
 
-        Object[] ans = new Object[n];
-        if (value != null) {
-            Arrays.fill(ans, value);
-        }
-        return new ArraySeq<>(ans);
+        return new ArraySeq<>(ObjectArrays.fill(n, value));
     }
 
     public static <E> @NotNull ArraySeq<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
@@ -174,11 +170,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
             return empty();
         }
 
-        Object[] ans = new Object[n];
-        for (int i = 0; i < n; i++) {
-            ans[i] = supplier.get();
-        }
-        return new ArraySeq<>(ans);
+        return new ArraySeq<>(ObjectArrays.fill(n, supplier));
     }
 
     public static <E> @NotNull ArraySeq<E> fill(int n, @NotNull IntFunction<? extends E> init) {
@@ -186,11 +178,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
             return empty();
         }
 
-        Object[] ans = new Object[n];
-        for (int i = 0; i < n; i++) {
-            ans[i] = init.apply(i);
-        }
-        return new ArraySeq<>(ans);
+        return new ArraySeq<>(ObjectArrays.fill(n, init));
     }
 
     public static <E> @NotNull ArraySeq<E> generateUntil(@NotNull Supplier<? extends E> supplier, @NotNull Predicate<? super E> predicate) {
