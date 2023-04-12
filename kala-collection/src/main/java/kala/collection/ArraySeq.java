@@ -154,7 +154,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     }
 
     public static <E> @NotNull ArraySeq<E> from(@NotNull Stream<? extends E> stream) {
-        return (ArraySeq<E>) stream.collect(factory());
+        return stream.collect(ArraySeq.<E>factory());
     }
 
     public static <E> @NotNull ArraySeq<E> fill(int n, E value) {
