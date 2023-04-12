@@ -856,6 +856,18 @@ public final class ObjectArrays {
 
     //region Aggregate Operations
 
+    public static int count(Object @NotNull [] array, @NotNull Predicate<?> predicate) {
+        Predicate<Object> p = (Predicate<Object>) predicate;
+
+        int count = 0;
+        for (Object e : array) {
+            if (p.test(e)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     public static Object max(Object @NotNull [] array) {
         final int length = array.length; // implicit null check of array
         if (length == 0) {

@@ -208,7 +208,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public @NotNull String className() {
-        return "ArraySeq" ;
+        return "ArraySeq";
     }
 
     @Override
@@ -606,41 +606,28 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public <U> @NotNull ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
-        final Object[] elements = this.elements;
         final int size = elements.length;
 
         if (size == 0) {
             return ImmutableArray.empty();
         }
 
-        Object[] newValues = new Object[size];
-
-        for (int i = 0; i < size; i++) {
-            newValues[i] = mapper.apply((E) elements[i]);
-        }
-
-        return ImmutableArray.Unsafe.wrap(newValues);
+        return ImmutableArray.Unsafe.wrap(ObjectArrays.map(elements, mapper));
     }
 
     @Override
     public <U> @NotNull ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
-        final Object[] elements = this.elements;
         final int size = elements.length;
 
         if (size == 0) {
             return ImmutableArray.empty();
         }
 
-        Object[] newValues = new Object[size];
-        for (int i = 0; i < size; i++) {
-            newValues[i] = mapper.apply(i, (E) elements[i]);
-        }
-        return ImmutableArray.Unsafe.wrap(newValues);
+        return ImmutableArray.Unsafe.wrap(ObjectArrays.mapIndexed(elements, mapper));
     }
 
     @Override
     public <U> @NotNull ImmutableSeq<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
-        final Object[] elements = this.elements;
         final int size = elements.length;
 
         if (size == 0) {
@@ -669,7 +656,6 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public @NotNull <U> ImmutableSeq<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
-        final Object[] elements = this.elements;
         final int size = elements.length;
 
         if (size == 0) {
@@ -698,31 +684,18 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public <U> @NotNull ImmutableSeq<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
-        final MutableArrayList<U> builder = new MutableArrayList<>();
-        Consumer<U> consumer = builder::append;
-
-        for (Object element : elements) {
-            mapper.accept((E) element, consumer);
-        }
-
-        return builder.toImmutableArray();
+        Object[] arr = ObjectArrays.mapMulti(elements, mapper);
+        return arr.length != 0 ? ImmutableArray.Unsafe.wrap(arr) : ImmutableArray.empty();
     }
 
     @Override
     public <U> @NotNull ImmutableSeq<U> mapIndexedMulti(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
-        final MutableArrayList<U> builder = new MutableArrayList<>();
-        Consumer<U> consumer = builder::append;
-
-        for (int i = 0; i < elements.length; i++) {
-            mapper.accept(i, (E) elements[i], consumer);
-        }
-
-        return builder.toImmutableArray();
+        Object[] arr = ObjectArrays.mapIndexedMulti(elements, mapper);
+        return arr.length != 0 ? ImmutableArray.Unsafe.wrap(arr) : ImmutableArray.empty();
     }
 
     @Override
     public <U> @NotNull ImmutableSeq<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
-        final Object[] elements = this.elements;
         final int size = elements.length;
         if (size == 0) {
             return ImmutableArray.empty();
@@ -761,16 +734,11 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public @NotNull ImmutableSeq<E> reversed() {
-        final Object[] elements = this.elements;
         final int size = elements.length;
-        if (size == 0) {
+        if (size == 0 || size == 1) {
             return ImmutableArray.empty();
         }
-        Object[] res = new Object[size];
-        for (int i = 0; i < size; i++) {
-            res[i] = elements[size - i - 1];
-        }
-        return ImmutableArray.Unsafe.wrap(res);
+        return ImmutableArray.Unsafe.wrap(ObjectArrays.reversed(elements));
     }
 
     @Override
@@ -816,16 +784,15 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public final E first() {
-        try {
-            return (E) elements[0];
-        } catch (IndexOutOfBoundsException e) {
+        final int size = elements.length;
+        if (size == 0) {
             throw new NoSuchElementException();
         }
+        return (E) elements[0];
     }
 
     @Override
     public final E last() {
-        final Object[] elements = this.elements;
         final int size = elements.length;
         if (size == 0) {
             throw new NoSuchElementException();
@@ -873,32 +840,17 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public final boolean anyMatch(@NotNull Predicate<? super E> predicate) {
-        for (Object e : elements) {
-            if (predicate.test((E) e)) {
-                return true;
-            }
-        }
-        return false;
+        return ObjectArrays.anyMatch(elements, predicate);
     }
 
     @Override
     public final boolean allMatch(@NotNull Predicate<? super E> predicate) {
-        for (Object e : elements) {
-            if (!predicate.test((E) e)) {
-                return false;
-            }
-        }
-        return true;
+        return ObjectArrays.allMatch(elements, predicate);
     }
 
     @Override
     public final boolean noneMatch(@NotNull Predicate<? super E> predicate) {
-        for (Object e : elements) {
-            if (predicate.test((E) e)) {
-                return false;
-            }
-        }
-        return true;
+        return ObjectArrays.noneMatch(elements, predicate);
     }
 
     //endregion
@@ -907,42 +859,42 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public final int indexOf(Object value) {
-        return GenericArrays.indexOf(elements, value);
+        return ObjectArrays.indexOf(elements, value);
     }
 
     @Override
     public final int indexOf(Object value, int from) {
-        return GenericArrays.indexOf(elements, value, from);
+        return ObjectArrays.indexOf(elements, value, from);
     }
 
     @Override
     public final int indexWhere(@NotNull Predicate<? super E> predicate) {
-        return GenericArrays.indexWhere(elements, (Predicate<Object>) predicate);
+        return ObjectArrays.indexWhere(elements, (Predicate<Object>) predicate);
     }
 
     @Override
     public final int indexWhere(@NotNull Predicate<? super E> predicate, int from) {
-        return GenericArrays.indexWhere(elements, (Predicate<Object>) predicate, from);
+        return ObjectArrays.indexWhere(elements, (Predicate<Object>) predicate, from);
     }
 
     @Override
     public final int lastIndexOf(Object value) {
-        return GenericArrays.lastIndexOf(elements, value);
+        return ObjectArrays.lastIndexOf(elements, value);
     }
 
     @Override
     public final int lastIndexOf(Object value, int end) {
-        return GenericArrays.lastIndexOf(elements, value, end);
+        return ObjectArrays.lastIndexOf(elements, value, end);
     }
 
     @Override
     public final int lastIndexWhere(@NotNull Predicate<? super E> predicate) {
-        return GenericArrays.lastIndexWhere(elements, (Predicate<Object>) predicate);
+        return ObjectArrays.lastIndexWhere(elements, predicate);
     }
 
     @Override
     public final int lastIndexWhere(@NotNull Predicate<? super E> predicate, int end) {
-        return GenericArrays.lastIndexWhere(elements, (Predicate<Object>) predicate, end);
+        return ObjectArrays.lastIndexWhere(elements, predicate, end);
     }
 
     //endregion
@@ -951,26 +903,20 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     public @NotNull SeqView<E> sliceView(int beginIndex, int endIndex) {
         Conditions.checkPositionIndices(beginIndex, endIndex, elements.length);
         final int ns = endIndex - beginIndex;
-        switch (ns) {
-            case 0:
-                return SeqView.empty();
-            case 1:
-                return SeqView.of((E) elements[beginIndex]);
+        if (ns == 0) {
+            return SeqView.empty();
+        } else if (ns == 1) {
+            return SeqView.of((E) elements[beginIndex]);
+        } else {
+            return new SeqViews.OfArraySlice<>(elements, beginIndex, endIndex);
         }
-        return new SeqViews.OfArraySlice<>(elements, beginIndex, endIndex);
     }
 
     //region Aggregate Operations
 
     @Override
     public final int count(@NotNull Predicate<? super E> predicate) {
-        int c = 0;
-        for (Object e : this.elements) {
-            if (predicate.test(((E) e))) {
-                ++c;
-            }
-        }
-        return c;
+        return ObjectArrays.count(elements, predicate);
     }
 
     @Override
@@ -1127,7 +1073,6 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public final void forEachIndexed(@NotNull IndexedConsumer<? super E> action) {
-        final Object[] elements = this.elements;
         final int length = elements.length;
         for (int i = 0; i < length; i++) {
             action.accept(i, (E) elements[i]);
@@ -1152,7 +1097,6 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
             @NotNull A buffer,
             CharSequence separator, CharSequence prefix, CharSequence postfix
     ) {
-        final Object[] elements = this.elements;
         final int size = elements.length;
 
         try {
@@ -1174,7 +1118,6 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, CharSequence separator, CharSequence prefix, CharSequence postfix, @NotNull Function<? super E, ? extends CharSequence> transform) {
-        final Object[] elements = this.elements;
         final int size = elements.length;
 
         try {
