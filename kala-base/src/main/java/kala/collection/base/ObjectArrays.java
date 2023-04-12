@@ -674,7 +674,7 @@ public final class ObjectArrays {
         final int length = array.length;
         final Object[] res = new Object[length];
         for (int i = 0; i < length; i++) {
-            res[i] = ((Function) mapper).apply(array[i]);
+            res[i] = ((IndexedFunction) mapper).apply(i, array[i]);
         }
         return res;
     }
