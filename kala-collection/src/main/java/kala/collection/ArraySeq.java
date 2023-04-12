@@ -735,7 +735,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     @Override
     public @NotNull ImmutableSeq<E> reversed() {
         final int size = elements.length;
-        if (size == 0 || size == 1) {
+        if (size == 0) {
             return ImmutableArray.empty();
         }
         return ImmutableArray.Unsafe.wrap(ObjectArrays.reversed(elements));
