@@ -1182,8 +1182,8 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         }
 
         @Override
-        public void addToBuilder(@NotNull MutableArrayList<E> buffer, E value) {
-            buffer.append(value);
+        public void addToBuilder(@NotNull MutableArrayList<E> builder, E value) {
+            builder.append(value);
         }
 
         @Override
@@ -1193,8 +1193,8 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         }
 
         @Override
-        public void sizeHint(@NotNull MutableArrayList<E> buffer, int size) {
-            buffer.sizeHint(size);
+        public void sizeHint(@NotNull MutableArrayList<E> builder, int size) {
+            builder.sizeHint(size);
         }
 
         @Override
