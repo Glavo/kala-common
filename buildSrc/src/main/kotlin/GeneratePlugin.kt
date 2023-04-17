@@ -38,6 +38,7 @@ class GeneratePlugin : Plugin<Project> {
                 }
 
             project.tasks["compileJava17Java"].dependsOn(generateJava17Sources)
+            project.tasks["sourcesJar"].dependsOn(generateJava17Sources)
         }
     }
 }
