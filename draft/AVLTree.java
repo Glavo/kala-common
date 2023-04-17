@@ -113,7 +113,6 @@ public class AVLTree<K, N extends AVLTree.Node<K, N>> {
     }
 
     protected void linkNode(N node, N parent) {
-
     }
 
     public static class Node<K, N extends Node<K, N>> {
