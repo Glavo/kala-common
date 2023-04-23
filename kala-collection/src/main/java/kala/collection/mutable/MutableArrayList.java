@@ -467,7 +467,7 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
 
         System.arraycopy(elements, index, elements, index + 1, size - index);
         elements[index] = value;
-        ++this.size;
+        this.size++;
     }
 
     @Override
@@ -514,19 +514,21 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
         System.arraycopy(this.elements, index, elements, index + values.length, size - index);
 
         this.elements = elements;
-        size += values.length;
+        this.size += values.length;
     }
 
     public void trimToSize() {
         if (size < elements.length) {
-            elements = size == 0 ? ObjectArrays.EMPTY : Arrays.copyOf(elements, size);
+            elements = size == 0 ? DEFAULT_EMPTY_ARRAY : Arrays.copyOf(elements, size);
         }
     }
 
     @Override
     public void clear() {
-        Arrays.fill(elements, null);
-        size = 0;
+        for (int i = 0; i < size; i++) {
+            elements[i] = null;
+        }
+        this.size = 0;
     }
 
     @Override
