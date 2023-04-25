@@ -133,7 +133,7 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
     @Override
     default @NotNull
     String className() {
-        return "MutableList" ;
+        return "MutableList";
     }
 
     @Override
@@ -168,17 +168,29 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
         return this.<E>iterableFactory().from(this);
     }
 
+    @DelegateBy("appendAll(E[])")
+    default void setAll(@Flow(sourceIsContainer = true, targetIsContainer = true) E @NotNull [] values) {
+        this.clear();
+        this.appendAll(values);
+    }
+
+    @DelegateBy("appendAll(Iterable<E>)")
+    default void setAll(
+            @NotNull @Flow(sourceIsContainer = true, targetIsContainer = true) Iterable<? extends E> values
+    ) {
+        if (this != values) {
+            this.clear();
+            this.appendAll(values);
+        }
+    }
+
     @Contract(mutates = "this")
     void append(@Flow(targetIsContainer = true) E value);
 
     @Contract(mutates = "this")
+    @DelegateBy("appendAll(Iterable<E>)")
     default void appendAll(@Flow(sourceIsContainer = true, targetIsContainer = true) E @NotNull [] values) {
-        final int length = values.length;
-        //noinspection StatementWithEmptyBody
-        if (length == 0) {
-        } else if (length == 1) {
-            this.append(values[0]);
-        } else {
+        if (values.length != 0) { // implicit null check of values
             this.appendAll(ArraySeq.wrap(values));
         }
     }
@@ -303,16 +315,19 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
     E removeAt(int index);
 
     @Contract(mutates = "this")
+    @DelegateBy("removeAt(int)")
     default boolean remove(Object value) {
         int idx = indexOf(value);
-        if (idx < 0)
+        if (idx >= 0) {
+            removeAt(idx);
+            return true;
+        } else {
             return false;
-
-        removeAt(idx);
-        return true;
+        }
     }
 
     @Contract(mutates = "this")
+    @DelegateBy("removeAt(int)")
     default void removeInRange(int beginIndex, int endIndex) {
         int size = this.size();
         Conditions.checkPositionIndices(beginIndex, endIndex, size);
@@ -320,20 +335,18 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
         int rangeLength = endIndex - beginIndex;
 
         if (rangeLength == 0) {
-            return;
-        }
-
-        if (rangeLength == size) {
+            // do nothing
+        } else if (rangeLength == size) {
             clear();
-            return;
-        }
-
-        for (int i = 0; i < rangeLength; i++) {
-            this.removeAt(beginIndex);
+        } else {
+            for (int i = 0; i < rangeLength; i++) {
+                this.removeAt(beginIndex);
+            }
         }
     }
 
     @Contract(mutates = "this")
+    @DelegateBy("removeAt(int)")
     default E removeFirst() {
         if (isEmpty()) {
             throw new NoSuchElementException("Seq is empty");
@@ -354,6 +367,7 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
     }
 
     @Contract(mutates = "this")
+    @DelegateBy("removeAt(int)")
     default E removeLast() {
         final int size = this.size();
         if (size == 0) {

@@ -1672,14 +1672,13 @@ final class ImmutableSeqs {
 
             if (c == 0) {
                 return ImmutableSeq.empty();
-            }
-            if (c == 1) {
+            } else if (c == 1) {
                 return ImmutableSeq.of(value);
-            }
-            if (c == size) {
+            } else if (c == size) {
                 return this;
+            } else {
+                return new CopiesSeq<>(c, value);
             }
-            return new CopiesSeq<>(c, value);
         }
 
         @Override
@@ -1696,14 +1695,13 @@ final class ImmutableSeqs {
 
             if (c == 0) {
                 return ImmutableSeq.empty();
-            }
-            if (c == 1) {
+            } else if (c == 1) {
                 return ImmutableSeq.of(value);
-            }
-            if (c == size) {
+            } else if (c == size) {
                 return this;
+            } else {
+                return new CopiesSeq<>(c, value);
             }
-            return new CopiesSeq<>(c, value);
         }
 
         @Override
