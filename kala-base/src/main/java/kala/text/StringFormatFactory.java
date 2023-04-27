@@ -165,6 +165,9 @@ public final class StringFormatFactory {
         Object arg = args[argIndex];
 
         if (processorName.isEmpty()) {
+            if (!style.isEmpty()) {
+                throw new StringFormatException("Unknown style: " + style);
+            }
             out.append(arg);
         } else {
             @SuppressWarnings("unchecked")
