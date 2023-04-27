@@ -7,10 +7,10 @@ import java.util.*;
 
 @ApiStatus.Experimental
 public final class StringFormatFactory {
-    private final Map<String, StringFormatProcessor<?>> formatProcessors;
+    private final Map<String, StringFormatProcessor> formatProcessors;
     private final Locale locale;
 
-    private StringFormatFactory(Map<String, StringFormatProcessor<?>> formatProcessors, Locale locale) {
+    private StringFormatFactory(Map<String, StringFormatProcessor> formatProcessors, Locale locale) {
         this.formatProcessors = formatProcessors;
         this.locale = locale;
     }
@@ -33,6 +33,10 @@ public final class StringFormatFactory {
         builder.formatTypes.putAll(base.formatProcessors);
         builder.locale = base.locale;
         return builder;
+    }
+
+    public Locale getLocale() {
+        return locale;
     }
 
     public StringFormat parse(String format) {
@@ -156,7 +160,7 @@ public final class StringFormatFactory {
         Object arg = args[argIndex];
 
         @SuppressWarnings("unchecked")
-        StringFormatProcessor<Object> processor = (StringFormatProcessor<Object>) this.formatProcessors.get(processorName);
+        StringFormatProcessor processor = this.formatProcessors.get(processorName);
 
         if (processor == null) {
             throw new StringFormatException("Unknown format processor: " + processorName);
@@ -199,7 +203,7 @@ public final class StringFormatFactory {
     }
 
     public static final class Builder {
-        private final Map<String, StringFormatProcessor<?>> formatTypes = new LinkedHashMap<>();
+        private final Map<String, StringFormatProcessor> formatTypes = new LinkedHashMap<>();
         private Locale locale = Locale.ROOT;
 
         private boolean built = false;
@@ -207,7 +211,7 @@ public final class StringFormatFactory {
         Builder() {
         }
 
-        public <T> Builder registerProcessor(String type, @NotNull StringFormatProcessor<T> processor) {
+        public <T> Builder registerProcessor(String type, @NotNull StringFormatProcessor processor) {
             Objects.requireNonNull(type);
             Objects.requireNonNull(processor);
 
