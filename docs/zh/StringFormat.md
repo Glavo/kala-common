@@ -47,6 +47,5 @@ StringFormat.format("Hello {:upper}!","Glavo") // -> "Hello GLAVO!"
 
 相较于 Java 标准库中的 `String.format` 以及 `MessageFormat`， `StringFormat` 有着更出色的效率。
 
-[StringFormatBenchmark](benchmark/src/main/java/kala/benchmark/StringFormatBenchmark.java) 测量了几种方式进行字符串插值的效率，
-该测试中 `StringFormat` 的性能达到了 `String.format` 的两倍以上，最快的情况下是 `MessageFormat` 五倍的性能。 
-
+[StringFormatBenchmark](benchmark/src/main/java/kala/benchmark/StringFormatBenchmark.java) 测量了几种方式进行字符串插值的效率。
+该测试中 `StringFormat` 表现出色，性能约为 `String.format` 的 2~2.3 倍，`MessageFormat` 的 2.7~5 倍。
