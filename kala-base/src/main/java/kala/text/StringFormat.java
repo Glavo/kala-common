@@ -4,6 +4,8 @@ import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Flexible and high-performance string interpolator.
+ *
+ * @see <a href="https://github.com/Glavo/kala-common/blob/main/docs/zh/StringFormat.md">Document (Chinese)</a>
  */
 @ApiStatus.Experimental
 public final class StringFormat {
