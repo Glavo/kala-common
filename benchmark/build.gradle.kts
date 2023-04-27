@@ -16,7 +16,7 @@ tasks.compileJava {
 tasks.create<JavaExec>("runBenchmark") {
     classpath = sourceSets.main.get().runtimeClasspath
 
-    mainClass.set("org.glavo.kala.benchmark.Main")
+    mainClass.set("kala.benchmark.Main")
 
     systemProperties = mapOf(
             "file.encoding" to "UTF-8"
