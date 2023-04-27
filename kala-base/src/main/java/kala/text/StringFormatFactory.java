@@ -44,8 +44,8 @@ public final class StringFormatFactory {
     }
 
     public StringBuilder format(StringBuilder out, String format, Object... arguments) {
-        final int formatLength = format.length();       // implicit null check of format
-        final int argsCount = arguments.length;    // implicit null check of arguments
+        final int formatLength = format.length();   // implicit null check of format
+        final int argsCount = arguments.length;     // implicit null check of arguments
         int argIndex = 0;
 
         int lastOffset = 0;
@@ -62,6 +62,8 @@ public final class StringFormatFactory {
                 throw invalidFormatString(format);
             }
 
+            out.append(format, lastOffset, offset);
+
             final int nextOffset = offset + 1;
             final char nextChar = format.charAt(nextOffset);
 
@@ -77,7 +79,7 @@ public final class StringFormatFactory {
                     }
 
                     if (format.charAt(endOffset - 1) == '\'' && endOffset > nextOffset + 1) {
-                        out.append(format, nextOffset + 1, endOffset - 2);
+                        out.append(format, nextOffset + 1, endOffset - 1);
                         lastOffset = endOffset + 1;
                         continue mainLoop;
                     }
@@ -102,7 +104,7 @@ public final class StringFormatFactory {
 
                     processArg(out, arguments, idx);
                 } else {
-                    int idx = firstColonOffset == nextOffset ? argIndex++ :  parseInt(format, nextOffset, firstColonOffset);
+                    int idx = firstColonOffset == nextOffset ? argIndex++ : parseInt(format, nextOffset, firstColonOffset);
                     if (idx == -1) {
                         throw invalidFormatString(format);
                     }
