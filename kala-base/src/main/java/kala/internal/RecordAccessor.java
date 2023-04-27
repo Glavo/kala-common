@@ -1,9 +1,9 @@
-package kala.pprint;
+package kala.internal;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-abstract class RecordAccessor {
+public abstract class RecordAccessor {
     static final RecordAccessor accessor;
 
     static {
@@ -81,7 +81,7 @@ abstract class RecordAccessor {
         }
     }
 
-    static final class ComponentAccessor {
+    public static final class ComponentAccessor {
         private final String name;
         private final Method accessor;
 
