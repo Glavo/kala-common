@@ -30,7 +30,7 @@ StringFormat.format("Hello{' {} '}!","Glavo"); // -> "Hello {}!"
 ```java
 StringFormat.format("Hello {:upper}!","Glavo") // -> "Hello GLAVO!"
 
-        StringFormat.format("{:printf:%08X}",114514)   // -> "0001BF52"
+StringFormat.format("{:printf:%08X}",114514)   // -> "0001BF52"
 ```
 
 占位符内分为三部分：序号、格式化器、格式化器参数。三部分之间使用 `:` 分隔。用户可以在 `StringFormatFactory` 中注册自己的格式化器。
