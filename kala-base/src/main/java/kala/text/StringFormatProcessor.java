@@ -6,6 +6,7 @@ import org.jetbrains.annotations.ApiStatus;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 @FunctionalInterface
 @ApiStatus.Experimental
@@ -16,6 +17,8 @@ public interface StringFormatProcessor {
         }
         out.append(value);
     };
+
+    StringFormatProcessor PRINTF = (factory, out, value, style) -> out.append(String.format(factory.getLocale(), style, value));
 
     StringFormatProcessor ARRAY = (factory, out, value, style) -> {
         if (!style.isEmpty()) {
@@ -53,9 +56,32 @@ public interface StringFormatProcessor {
         out.append(format.format(value));
     };
 
+    StringFormatProcessor UPPER = (factory, out, value, style) -> {
+        Locale locale;
+        if (style.isEmpty()) {
+            locale = factory.getLocale();
+        } else {
+            locale = Locale.forLanguageTag(style);
+        }
+
+        out.append(value.toString().toUpperCase(locale));
+    };
+
+    StringFormatProcessor LOWER = (factory, out, value, style) -> {
+        Locale locale;
+        if (style.isEmpty()) {
+            locale = factory.getLocale();
+        } else {
+            locale = Locale.forLanguageTag(style);
+        }
+
+        out.append(value.toString().toLowerCase(locale));
+    };
+
+
     @UnstableName
     default boolean acceptNull() {
-        return true;
+        return false;
     }
 
     void accept(StringFormatFactory factory, StringBuilder out, Object value, String style) throws StringFormatException;

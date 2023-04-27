@@ -2,6 +2,9 @@ package kala.text;
 
 import org.jetbrains.annotations.ApiStatus;
 
+/**
+ * Flexible and high-performance string interpolator.
+ */
 @ApiStatus.Experimental
 public final class StringFormat {
 

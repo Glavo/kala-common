@@ -5,6 +5,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+/**
+ * @see StringFormat
+ */
 @ApiStatus.Experimental
 public final class StringFormatFactory {
     private final Map<String, StringFormatProcessor> formatProcessors;
@@ -16,8 +19,10 @@ public final class StringFormatFactory {
     }
 
     private static final StringFormatFactory DEFAULT = builder()
-            .registerProcessor("", StringFormatProcessor.DEFAULT)
             .registerProcessor("array", StringFormatProcessor.ARRAY)
+            .registerProcessor("lower", StringFormatProcessor.LOWER)
+            .registerProcessor("upper", StringFormatProcessor.UPPER)
+            .registerProcessor("printf", StringFormatProcessor.PRINTF)
             .build();
 
     public static StringFormatFactory getDefault() {
@@ -159,17 +164,27 @@ public final class StringFormatFactory {
 
         Object arg = args[argIndex];
 
-        @SuppressWarnings("unchecked")
-        StringFormatProcessor processor = this.formatProcessors.get(processorName);
-
-        if (processor == null) {
-            throw new StringFormatException("Unknown format processor: " + processorName);
-        }
-
-        if (arg == null && processor.acceptNull()) {
-            out.append((String) null);
+        if (processorName.isEmpty()) {
+            out.append(arg);
         } else {
-            processor.accept(this, out, arg, style);
+            @SuppressWarnings("unchecked")
+            StringFormatProcessor processor = this.formatProcessors.get(processorName);
+
+            if (processor == null) {
+                throw new StringFormatException("Unknown format processor: " + processorName);
+            }
+
+            if (arg == null && !processor.acceptNull()) {
+                out.append((String) null);
+            } else {
+                try {
+                    processor.accept(this, out, arg, style);
+                } catch (StringFormatException e) {
+                    throw e;
+                } catch (Throwable e) {
+                    throw new StringFormatException(e);
+                }
+            }
         }
     }
 
