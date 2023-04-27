@@ -1,6 +1,6 @@
 # 字符串插值器
 
-Kala 提供了一个灵活且高性能的字符串格式化器。
+`StringFormat` 是一个灵活且高性能的字符串格式化器。
 
 ## 用法
 
@@ -18,8 +18,7 @@ StringFormat.format("{} is {} years old","Glavo","5");
 
 用户可以省略占位符中的序号。`StringFormat` 拥有一个初始值为零的计数器，当遇到省略了序号的占位符时，将使用该计数器的值作为实际参数序号并递增计数器。
 
-由于 `StringFormat` 使用大括号作为占位符，因此无法直接在字符串模板中包含 `{` 字符。
-用户可以使用 `{'` 和 `'}` 括起包含 `{` 的部分。
+由于 `StringFormat` 使用大括号作为占位符，因此无法直接在字符串模板中包含 `{` 字符，用户需要使用 `{'` 和 `'}` 将包含 `{` 的部分括起，之间的内容都会被原样保留。
 
 ```java
 StringFormat.format("Hello{' {} '}!","Glavo"); // -> "Hello {}!"
@@ -48,4 +47,4 @@ StringFormat.format("{:printf:%08X}",114514)   // -> "0001BF52"
 相较于 Java 标准库中的 `String.format` 以及 `MessageFormat`， `StringFormat` 有着更出色的效率。
 
 [StringFormatBenchmark](benchmark/src/main/java/kala/benchmark/StringFormatBenchmark.java) 测量了几种方式进行字符串插值的效率。
-该测试中 `StringFormat` 表现出色，性能约为 `String.format` 的 2~2.3 倍，`MessageFormat` 的 2.7~5 倍。
+该测试中 `StringFormat` 表现出色，性能约为 `String.format` 的 2\~2.3 倍，`MessageFormat` 的 2.7\~5 倍。
