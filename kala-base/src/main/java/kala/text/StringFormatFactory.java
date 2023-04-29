@@ -19,11 +19,12 @@ public final class StringFormatFactory {
     }
 
     private static final StringFormatFactory DEFAULT = builder()
+            .registerProcessor("printf", StringFormatProcessor.PRINTF)
             .registerProcessor("array", StringFormatProcessor.ARRAY)
             .registerProcessor("lower", StringFormatProcessor.LOWER)
             .registerProcessor("upper", StringFormatProcessor.UPPER)
             .registerProcessor("substring", StringFormatProcessor.SUBSTRING)
-            .registerProcessor("printf", StringFormatProcessor.PRINTF)
+            .registerProcessor("trim", StringFormatProcessor.TRIM)
             .build();
 
     public static StringFormatFactory getDefault() {

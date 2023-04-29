@@ -40,6 +40,7 @@ StringFormat.format("{:printf:%08X}",114514)   // -> "0001BF52"
 | `printf`        | 使用 `String.format` 风格的格式说明符对参数进行格式化                | 格式说明符           |
 | `lower`/`upper` | 对参数的字符串表示大小写转换                                     |                 |
 | `substring`     | 截取参数的字符串表示的一部分                                     | \[起始索引]\[,结束索引] |
+| `trim`          |                                                    |                 |
 
 ## 性能
 

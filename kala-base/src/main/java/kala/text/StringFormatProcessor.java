@@ -101,6 +101,8 @@ public interface StringFormatProcessor {
         out.append(str, beginIndex, endIndex);
     };
 
+    StringFormatProcessor TRIM = (factory, out, value, style) -> out.append(value.toString().trim());
+
     default boolean processNull() {
         return false;
     }
