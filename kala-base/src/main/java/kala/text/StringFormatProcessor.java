@@ -78,9 +78,30 @@ public interface StringFormatProcessor {
         out.append(value.toString().toLowerCase(locale));
     };
 
+    StringFormatProcessor SUBSTRING = (factory, out, value, style) -> {
+        String str = value.toString();
 
-    @UnstableName
-    default boolean acceptNull() {
+        if (style.isEmpty()) {
+            out.append(str);
+            return;
+        }
+
+        int beginIndex;
+        int endIndex;
+
+        int comma = style.indexOf(',');
+        if (comma < 0) {
+            beginIndex = Integer.parseInt(style);
+            endIndex = str.length();
+        } else {
+            beginIndex = comma == 0 ? 0 : Integer.parseInt(style.substring(0, comma));
+            endIndex = comma == style.length() - 1 ? str.length() : Integer.parseInt(style.substring(comma + 1));
+        }
+
+        out.append(str, beginIndex, endIndex);
+    };
+
+    default boolean processNull() {
         return false;
     }
 

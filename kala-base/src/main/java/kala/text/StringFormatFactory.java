@@ -22,6 +22,7 @@ public final class StringFormatFactory {
             .registerProcessor("array", StringFormatProcessor.ARRAY)
             .registerProcessor("lower", StringFormatProcessor.LOWER)
             .registerProcessor("upper", StringFormatProcessor.UPPER)
+            .registerProcessor("substring", StringFormatProcessor.SUBSTRING)
             .registerProcessor("printf", StringFormatProcessor.PRINTF)
             .build();
 
@@ -177,7 +178,7 @@ public final class StringFormatFactory {
                 throw new StringFormatException("Unknown format processor: " + processorName);
             }
 
-            if (arg == null && !processor.acceptNull()) {
+            if (arg == null && !processor.processNull()) {
                 out.append((String) null);
             } else {
                 try {

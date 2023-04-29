@@ -5,6 +5,7 @@ import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class StringFormatTest {
+
     @Test
     void test() {
         assertEquals("", StringFormat.format(""));
@@ -48,7 +49,40 @@ public class StringFormatTest {
         assertThrows(StringFormatException.class, () -> StringFormat.format("{'}"));
         assertThrows(StringFormatException.class, () -> StringFormat.format("{'foo"));
         assertThrows(StringFormatException.class, () -> StringFormat.format("{'foo}"));
+        assertThrows(StringFormatException.class, () -> StringFormat.format("{:any:}", "str0"));
         assertThrows(StringFormatException.class, () -> StringFormat.format("{::any}", "str0"));
         assertThrows(StringFormatException.class, () -> StringFormat.format("{:array:any}", (Object) new int[0]));
+    }
+
+    @Test
+    void substringTest() {
+        assertEquals("str0", StringFormat.format("{:substring}", "str0"));
+        assertEquals("str0", StringFormat.format("{:substring:}", "str0"));
+        assertEquals("str0", StringFormat.format("{:substring:,}", "str0"));
+        assertEquals("str0", StringFormat.format("{:substring:0,}", "str0"));
+        assertEquals("str0", StringFormat.format("{:substring:0,4}", "str0"));
+
+        assertEquals("tr0", StringFormat.format("{:substring:1}", "str0"));
+        assertEquals("tr0", StringFormat.format("{:substring:1,}", "str0"));
+
+        assertEquals("str", StringFormat.format("{:substring:,3}", "str0"));
+        assertEquals("str", StringFormat.format("{:substring:0,3}", "str0"));
+
+        assertEquals("tr", StringFormat.format("{:substring:1,3}", "str0"));
+        assertEquals("", StringFormat.format("{:substring:0,0}", "str0"));
+        assertEquals("", StringFormat.format("{:substring:1,1}", "str0"));
+        assertEquals("", StringFormat.format("{:substring:2,2}", "str0"));
+
+        assertThrows(StringFormatException.class, () -> StringFormat.format("{:substring: }", "str0"));
+        assertThrows(StringFormatException.class, () -> StringFormat.format("{:substring:zzz}", "str0"));
+        assertThrows(StringFormatException.class, () -> StringFormat.format("{:substring:, }", "str0"));
+        assertThrows(StringFormatException.class, () -> StringFormat.format("{:substring:zzz,}", "str0"));
+        assertThrows(StringFormatException.class, () -> StringFormat.format("{:substring:zzz,zzz}", "str0"));
+        assertThrows(StringFormatException.class, () -> StringFormat.format("{:substring:-1}", "str0"));
+        assertThrows(StringFormatException.class, () -> StringFormat.format("{:substring:-1,}", "str0"));
+        assertThrows(StringFormatException.class, () -> StringFormat.format("{:substring:,-1}", "str0"));
+        assertThrows(StringFormatException.class, () -> StringFormat.format("{:substring:-1,-1}", "str0"));
+        assertThrows(StringFormatException.class, () -> StringFormat.format("{:substring:5}", "str0"));
+        assertThrows(StringFormatException.class, () -> StringFormat.format("{:substring:1,0}", "str0"));
     }
 }
