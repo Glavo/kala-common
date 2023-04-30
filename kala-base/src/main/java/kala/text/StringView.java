@@ -114,10 +114,16 @@ public final class StringView implements Comparable<StringView>, CharSequence, C
         }
     }
 
+    /**
+     * @see <a href="https://github.com/Glavo/kala-common/blob/main/docs/zh/StringFormat.md">Document (Chinese)</a>
+     */
     public StringView format(Object... args) {
         return format(StringFormatFactory.getDefault(), args);
     }
 
+    /**
+     * @see <a href="https://github.com/Glavo/kala-common/blob/main/docs/zh/StringFormat.md">Document (Chinese)</a>
+     */
     public StringView format(StringFormatFactory factory, Object... args) {
         return StringView.of(factory.format(this.value, args));
     }
