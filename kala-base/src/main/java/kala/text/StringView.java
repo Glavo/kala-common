@@ -114,6 +114,18 @@ public final class StringView implements Comparable<StringView>, CharSequence, C
         }
     }
 
+    public StringView format(Object... args) {
+        return format(StringFormatFactory.getDefault(), args);
+    }
+
+    public StringView format(StringFormatFactory factory, Object... args) {
+        return StringView.of(factory.format(this.value, args));
+    }
+
+    /**
+     * @see #format(Object...)
+     */
+    @Deprecated
     public StringView formatted(Object... args) {
         return updated(String.format(value, args));
     }

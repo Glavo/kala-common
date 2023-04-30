@@ -5,7 +5,7 @@
 ## 用法
 
 ```java
-StringFormat.format("{0} is {1} years old","Glavo","5"); // -> "Glavo is 5 years old"
+StringFormat.format("{0} is {1} years old", "Glavo", 5); // -> "Glavo is 5 years old"
 ```
 
 `StringFormat` 在字符串模板中使用 `{序号}` 作为占位符，将其替换为指定序号的参数。
@@ -13,21 +13,21 @@ StringFormat.format("{0} is {1} years old","Glavo","5"); // -> "Glavo is 5 years
 用户可以省略占位符中的序号。`StringFormat` 拥有一个初始值为零的计数器，当遇到省略了序号的占位符时，将使用该计数器的值作为实际参数序号并递增计数器:
 
 ```java
-StringFormat.format("{} is {} years old","Glavo","5");
+StringFormat.format("{} is {} years old", "Glavo", 5);
 ```
 
 由于 `StringFormat` 使用大括号作为占位符，因此无法直接在字符串模板中包含 `{` 字符，用户需要使用 `{'` 和 `'}` 将包含 `{` 的部分括起，之间的内容都会被原样保留。
 
 ```java
-StringFormat.format("Hello{' {} '}!","Glavo"); // -> "Hello {}!"
+StringFormat.format("Hello{' {} '}!", "Glavo"); // -> "Hello {}!"
 ```
 
 如果有更复杂的格式需求，用户可以在占位符中指定格式：
 
 ```java
-StringFormat.format("Hello {:upper}!","Glavo") // -> "Hello GLAVO!"
+StringFormat.format("Hello {:upper}!", "Glavo") // -> "Hello GLAVO!"
 
-StringFormat.format("{:printf:%08X}",114514)   // -> "0001BF52"
+StringFormat.format("{:printf:%08X}", 114514)   // -> "0001BF52"
 ```
 
 占位符内分为三部分：序号、格式化器、格式化器参数。三部分之间使用 `:` 分隔。用户可以在 `StringFormatFactory` 中注册自己的格式化器。
