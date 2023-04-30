@@ -1,5 +1,7 @@
 package kala.function;
 
+import kala.tuple.Tuple;
+import kala.tuple.Tuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -7,6 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.WeakHashMap;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 @SuppressWarnings("unchecked")
@@ -42,6 +45,26 @@ public final class Functions {
     public static <T, R> @NotNull Function<T, R> weakMemoized(@NotNull Function<? super T, ? extends R> function, boolean sync) {
         Objects.requireNonNull(function);
         return new MemoizedFunction<>(function, sync ? Collections.synchronizedMap(new WeakHashMap<>()) : new WeakHashMap<>());
+    }
+
+    public static <T, U, R> @NotNull Function<Tuple2<T, U>, R> tupled(@NotNull BiFunction<? super T, ? super U, ? extends R> biFunction) {
+        Objects.requireNonNull(biFunction);
+        return tuple -> biFunction.apply(tuple.component1(), tuple.component2());
+    }
+
+    public static <T, U, R> @NotNull BiFunction<T, U, R> untupled(@NotNull Function<? super Tuple2<? extends T, ? extends U>, ? extends R> function) {
+        Objects.requireNonNull(function);
+        return (t, u) -> function.apply(Tuple.of(t, u));
+    }
+
+    public static <T, U, R> @NotNull Function<T, Function<U, R>> curried(@NotNull BiFunction<? super T, ? super U, ? extends R> biFunction) {
+        Objects.requireNonNull(biFunction);
+        return t -> u -> biFunction.apply(t, u);
+    }
+
+    public static <T, U, R> @NotNull BiFunction<T, U, R> uncurried(@NotNull Function<? super T, ? extends Function<? super U, ? extends R>> function) {
+        Objects.requireNonNull(function);
+        return (t, u) -> function.apply(t).apply(u);
     }
 
     private enum Identity implements Function<Object, Object> {

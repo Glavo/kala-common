@@ -1,9 +1,13 @@
 package kala.function;
 
 import kala.annotations.StaticClass;
+import kala.tuple.Tuple;
+import kala.tuple.Tuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 @StaticClass
@@ -19,6 +23,18 @@ public final class Consumers {
 
     public static <T> @NotNull Consumer<T> noop() {
         return (Consumer<T>) Noop.INSTANCE;
+    }
+
+    public static <T, U> @NotNull Consumer<Tuple2<T, U>> tupled(@NotNull BiConsumer<? super T, ? super U> biConsumer) {
+        Objects.requireNonNull(biConsumer);
+
+        return tuple -> biConsumer.accept(tuple.component1(), tuple.component2());
+    }
+
+    public static <T, U> @NotNull BiConsumer<T, U> untupled(@NotNull Consumer<? super Tuple2<? extends T, ? extends U>> consumer) {
+        Objects.requireNonNull(consumer);
+
+        return (t, u) -> consumer.accept(Tuple.of(t, u));
     }
 
     private enum Noop implements Consumer<Object> {

@@ -1,12 +1,17 @@
 package kala.function;
 
 import kala.annotations.StaticClass;
+import kala.tuple.Tuple;
+import kala.tuple.Tuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 @StaticClass
@@ -69,6 +74,16 @@ public final class Predicates {
             throw new IllegalArgumentException();
         }
         return new Or<>(predicates.clone());
+    }
+
+    public static <T, U> @NotNull Predicate<Tuple2<T, U>> tupled(@NotNull BiPredicate<? super T, ? super U> biPredicate) {
+        Objects.requireNonNull(biPredicate);
+        return tuple -> biPredicate.test(tuple.component1(), tuple.component2());
+    }
+
+    public static <T, U> @NotNull BiPredicate<T, U> untupled(@NotNull Predicate<? super Tuple2<? extends T, ? extends U>> predicate) {
+        Objects.requireNonNull(predicate);
+        return (t, u) -> predicate.test(Tuple.of(t, u));
     }
 
     private enum AlwaysTrue implements Predicate<Object> {
