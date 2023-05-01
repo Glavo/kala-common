@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -35,7 +36,7 @@ public final class Functions {
         if (function instanceof kala.function.Memoized) {
             return (Function<T, R>) function;
         }
-        return new MemoizedFunction<>(function, sync ? Collections.synchronizedMap(new HashMap<>()) : new HashMap<>());
+        return new MemoizedFunction<>(function, sync ? new ConcurrentHashMap<>() : new HashMap<>());
     }
 
     public static <T, R> @NotNull Function<T, R> weakMemoized(@NotNull Function<? super T, ? extends R> function) {
