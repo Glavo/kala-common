@@ -2,13 +2,12 @@ package kala.function;
 
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
+import kala.tuple.Tuple3;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.WeakHashMap;
+import java.io.Serializable;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -68,6 +67,15 @@ public final class Functions {
         return (t, u) -> function.apply(t).apply(u);
     }
 
+    private enum NullHole {
+        INSTANCE;
+
+        @Override
+        public String toString() {
+            return "null";
+        }
+    }
+
     private enum Identity implements Function<Object, Object> {
         INSTANCE;
 
@@ -92,4 +100,35 @@ public final class Functions {
         }
     }
 
+    private static final class MemoizedFunction<T, R> implements Function<T, R>, Memoized, Serializable {
+        private static final long serialVersionUID = -904511663627169337L;
+
+        private final @NotNull Function<? super T, ? extends R> function;
+        private final @NotNull Map<T, Object> cache;
+
+        MemoizedFunction(@NotNull Function<? super T, ? extends R> function, @NotNull Map<T, Object> cache) {
+            this.function = function;
+            this.cache = cache;
+        }
+
+        @Override
+        public R apply(T t) {
+            Object res = cache.computeIfAbsent(t, key -> {
+                R v = function.apply(key);
+                return v != null ? v : NullHole.INSTANCE;
+            });
+
+            return res != NullHole.INSTANCE ? (R) res : null;
+        }
+
+        @Override
+        public String toString() {
+            return "MemoizedFunction[" +
+                    "function=" + function +
+                    ", cache=" + cache +
+                    ']';
+        }
+
+
+    }
 }
