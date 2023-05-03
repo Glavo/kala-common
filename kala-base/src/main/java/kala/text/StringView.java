@@ -222,13 +222,11 @@ public final class StringView implements Comparable<StringView>, CharSequence, C
     }
 
     public boolean startsWith(@NotNull StringSlice prefix) {
-        return startsWith(prefix, 0);
+        return StringUtils.startsWith(value, prefix);
     }
 
     public boolean startsWith(@NotNull StringSlice prefix, int toIndex) {
-        if (toIndex < 0 || toIndex > value.length() - prefix.length())
-            return false;
-        return value.regionMatches(toIndex, prefix.source(), prefix.sourceOffset(), prefix.length());
+        return StringUtils.startsWith(value, prefix, toIndex);
     }
 
     public boolean startsWith(@NotNull CharSequence prefix) {
@@ -579,7 +577,7 @@ public final class StringView implements Comparable<StringView>, CharSequence, C
     }
 
     public void forEachCodePoint(@NotNull IntConsumer action) {
-        for(int offset = 0; offset < value.length();) {
+        for (int offset = 0; offset < value.length(); ) {
             int ch = value.codePointAt(offset);
             action.accept(ch);
             offset += Character.charCount(ch);
