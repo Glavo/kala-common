@@ -31,7 +31,7 @@ allprojects {
 
     dependencies {
         compileOnlyApi("org.jetbrains:annotations:24.0.1")
-        testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
+        testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
     }
 
     val hasJava17Sources = project.file("src/main/java17").exists()
