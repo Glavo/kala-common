@@ -86,9 +86,10 @@ public final class Try<@Covariant T> extends AnyTry<T> implements Traversable<T>
     @Contract("_ -> fail")
     public static <R> R sneakyThrow(Throwable exception) {
         sneakyThrow0(exception);
-        throw new AssertionError(); // make compiler happy
+        return null; // make compiler happy
     }
 
+    @Contract("_ -> fail")
     private static <Ex extends Throwable> void sneakyThrow0(Throwable exception) throws Ex {
         throw (Ex) exception;
     }
@@ -159,12 +160,6 @@ public final class Try<@Covariant T> extends AnyTry<T> implements Traversable<T>
         } catch (Throwable ex) {
             return failure(ex);
         }
-    }
-
-    @Deprecated
-    @ReplaceWith("runCatching(CheckedRunnable<?>)")
-    public static @NotNull Try<Void> run(@NotNull CheckedRunnable<?> runnable) {
-        return runCatching(runnable);
     }
 
     public static @NotNull Try<Void> runCatching(@NotNull CheckedRunnable<?> runnable) {
