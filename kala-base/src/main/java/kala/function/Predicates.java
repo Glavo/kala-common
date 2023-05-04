@@ -9,9 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 @StaticClass
@@ -54,19 +52,11 @@ public final class Predicates {
         return type == Object.class ? isNotNull() : new InstanceOf<>(type);
     }
 
-    public static <T> @NotNull Predicate<T> and(@NotNull Predicate<? super T> predicate1, @NotNull Predicate<? super T> predicate2) {
-        return ((Predicate<T>) predicate1).and(predicate2);
-    }
-
     public static <T> @NotNull Predicate<T> and(Predicate<? super T> @NotNull ... predicates) {
         if (predicates.length < 2) {
             throw new IllegalArgumentException();
         }
         return new And<>(predicates.clone());
-    }
-
-    public static <T> @NotNull Predicate<T> or(@NotNull Predicate<? super T> predicate1, @NotNull Predicate<? super T> predicate2) {
-        return ((Predicate<T>) predicate1).or(predicate2);
     }
 
     public static <T> @NotNull Predicate<T> or(Predicate<? super T> @NotNull ... predicates) {
@@ -322,8 +312,8 @@ public final class Predicates {
             if (!(o instanceof And)) {
                 return false;
             }
-            And<?> and = (And<?>) o;
-            return Arrays.equals(predicates, and.predicates);
+            And<?> other = (And<?>) o;
+            return Arrays.equals(predicates, other.predicates);
         }
 
         @Override
@@ -366,8 +356,8 @@ public final class Predicates {
             if (!(o instanceof Or)) {
                 return false;
             }
-            Or<?> and = (Or<?>) o;
-            return Arrays.equals(predicates, and.predicates);
+            Or<?> other = (Or<?>) o;
+            return Arrays.equals(predicates, other.predicates);
         }
 
         @Override
