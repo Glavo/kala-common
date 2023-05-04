@@ -32,10 +32,13 @@ public final class Functions {
 
     public static <T, R> @NotNull Function<T, R> memoized(@NotNull Function<? super T, ? extends R> function, boolean sync) {
         Objects.requireNonNull(function);
-        if (function instanceof kala.function.Memoized) {
+        if (function instanceof MemoizedFunction) {
+            Memoized function1 = (Memoized) function;
+
+
             return (Function<T, R>) function;
         }
-        return new MemoizedFunction<>(function, sync ? new ConcurrentHashMap<>() : new HashMap<>());
+        return new MemoizedFunction<>(function, sync ? new ConcurrentHashMap<>() : new HashMap<>(), sync);
     }
 
     public static <T, R> @NotNull Function<T, R> weakMemoized(@NotNull Function<? super T, ? extends R> function) {
@@ -44,7 +47,7 @@ public final class Functions {
 
     public static <T, R> @NotNull Function<T, R> weakMemoized(@NotNull Function<? super T, ? extends R> function, boolean sync) {
         Objects.requireNonNull(function);
-        return new MemoizedFunction<>(function, sync ? Collections.synchronizedMap(new WeakHashMap<>()) : new WeakHashMap<>());
+        return new MemoizedFunction<>(function, sync ? Collections.synchronizedMap(new WeakHashMap<>()) : new WeakHashMap<>(), sync);
     }
 
     public static <T, U, R> @NotNull Function<Tuple2<T, U>, R> tupled(@NotNull BiFunction<? super T, ? super U, ? extends R> biFunction) {
@@ -103,12 +106,14 @@ public final class Functions {
     private static final class MemoizedFunction<T, R> implements Function<T, R>, Memoized, Serializable {
         private static final long serialVersionUID = -904511663627169337L;
 
-        private final @NotNull Function<? super T, ? extends R> function;
-        private final @NotNull Map<T, Object> cache;
+        final @NotNull Function<? super T, ? extends R> function;
+        final @NotNull Map<T, Object> cache;
+        final boolean sync;
 
-        MemoizedFunction(@NotNull Function<? super T, ? extends R> function, @NotNull Map<T, Object> cache) {
+        MemoizedFunction(@NotNull Function<? super T, ? extends R> function, @NotNull Map<T, Object> cache, boolean sync) {
             this.function = function;
             this.cache = cache;
+            this.sync = sync;
         }
 
         @Override

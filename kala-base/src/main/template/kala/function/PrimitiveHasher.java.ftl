@@ -1,12 +1,20 @@
 package kala.function;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import java.io.Serializable;
 
 @FunctionalInterface
 public interface ${Type}Hasher extends Hasher<${WrapperType}> {
+
+    @ApiStatus.Internal
     ${Type}Hasher DEFAULT = new Default();
 <#if IsFloating>
+
+    @ApiStatus.Internal
     ${Type}Hasher RAW_BITS = new RawBits();
+
+    @ApiStatus.Internal
     ${Type}Hasher PRIMITIVE = new Primitive();
 </#if>
 
@@ -42,6 +50,7 @@ public interface ${Type}Hasher extends Hasher<${WrapperType}> {
         return equals(a.${PrimitiveType}Value(), b.${PrimitiveType}Value());
     }
 
+    @ApiStatus.Internal
     final class Default implements ${Type}Hasher, Serializable {
         private static final long serialVersionUID = 0L;
 
@@ -61,6 +70,7 @@ public interface ${Type}Hasher extends Hasher<${WrapperType}> {
     }
 <#if IsFloating>
 
+    @ApiStatus.Internal
     final class RawBits implements ${Type}Hasher, Serializable {
         private static final long serialVersionUID = 0L;
 
@@ -87,6 +97,7 @@ public interface ${Type}Hasher extends Hasher<${WrapperType}> {
         }
     }
 
+    @ApiStatus.Internal
     final class Primitive implements ${Type}Hasher, Serializable {
         private static final long serialVersionUID = 0L;
 
