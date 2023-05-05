@@ -230,11 +230,11 @@ public final class StringView implements Comparable<StringView>, CharSequence, C
     }
 
     public boolean startsWith(@NotNull CharSequence prefix) {
-        return prefix instanceof StringSlice ? startsWith((StringSlice) prefix) : value.startsWith(prefix.toString());
+        return StringUtils.startsWith(value, prefix);
     }
 
     public boolean startsWith(@NotNull CharSequence prefix, int toIndex) {
-        return prefix instanceof StringSlice ? startsWith((StringSlice) prefix, toIndex) : value.startsWith(prefix.toString(), toIndex);
+        return StringUtils.startsWith(value, prefix, toIndex);
     }
 
     public boolean endsWith(@NotNull String suffix) {
