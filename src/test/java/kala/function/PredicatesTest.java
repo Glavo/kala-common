@@ -1,13 +1,9 @@
 package kala.function;
 
-import kala.tuple.Tuple;
-import kala.tuple.Tuple2;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
-import java.util.function.Function;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PredicatesTest {
 
@@ -39,7 +35,15 @@ public class PredicatesTest {
 
     @Test
     void isNullTest() {
-        assertFalse(Predicates.isNull().test());
+        assertFalse(Predicates.isNull().test(obj));
+        assertFalse(Predicates.isNull().test(""));
+        assertTrue(Predicates.isNull().test(null));
     }
 
+    @Test
+    void isNotNullTest() {
+        assertTrue(Predicates.isNotNull().test(obj));
+        assertTrue(Predicates.isNotNull().test(""));
+        assertFalse(Predicates.isNotNull().test(null));
+    }
 }
