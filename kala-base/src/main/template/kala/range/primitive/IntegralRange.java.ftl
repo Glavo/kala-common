@@ -88,7 +88,7 @@ public final class ${Type}Range extends IntegralRange<${WrapperType}> implements
     }
 
     public static @NotNull ${Type}Range lessThan(${PrimitiveType} upperBound) {
-        return new ${Type}Range(RangeType.CLOSED_OPEN, ${WrapperType}.MIN_VALUE,upperBound);
+        return new ${Type}Range(RangeType.CLOSED_OPEN, ${WrapperType}.MIN_VALUE, upperBound);
     }
 
     public static @NotNull ${Type}Range atMost(${PrimitiveType} upperBound) {
