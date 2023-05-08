@@ -27,17 +27,15 @@ public final class Functions {
     }
 
     public static <T, R> @NotNull Function<T, R> memoized(@NotNull Function<? super T, ? extends R> function) {
+        if (function instanceof Memoized) {
+            return of(function);
+        }
+
         return memoized(function, false);
     }
 
     public static <T, R> @NotNull Function<T, R> memoized(@NotNull Function<? super T, ? extends R> function, boolean sync) {
         Objects.requireNonNull(function);
-        if (function instanceof MemoizedFunction) {
-            Memoized function1 = (Memoized) function;
-
-
-            return (Function<T, R>) function;
-        }
         return new MemoizedFunction<>(function, sync ? new ConcurrentHashMap<>() : new HashMap<>(), sync);
     }
 
