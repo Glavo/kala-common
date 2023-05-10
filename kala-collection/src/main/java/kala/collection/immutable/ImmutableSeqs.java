@@ -550,7 +550,7 @@ final class ImmutableSeqs {
 
         @Override
         public final boolean contains(Object value) {
-            return Objects.equals(value, this.size);
+            return Objects.equals(value, this.value);
         }
 
         @Override
