@@ -63,7 +63,7 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     }
 
     static <E> @NotNull ImmutableSeq<E> of(E value1, E value2, E value3, E value4, E value5) {
-        return new ImmutableSeqs.Seq5<>(value1, value2, value3, value4, value5);
+        return ImmutableVector.of(value1, value2, value3, value4, value5);
     }
 
     @SafeVarargs
