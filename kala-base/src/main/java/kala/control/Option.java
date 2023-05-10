@@ -151,6 +151,10 @@ public final class Option<@Covariant T> extends AnyOption<T>
         return this;
     }
 
+    public @NotNull Option<T> orElse(Option<? extends T> other) {
+        return this.isDefined() ? this : narrow(other);
+    }
+
     /**
      * {@inheritDoc}
      */

@@ -108,6 +108,10 @@ public final class ${Type}Option extends PrimitiveOption<${WrapperType}> impleme
         return value;
     }
 
+    public @NotNull ${Type}Option orElse(${Type}Option other) {
+        return this.isDefined() ? this : other;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this) return true;
