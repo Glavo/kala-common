@@ -23,22 +23,24 @@ class GeneratePlugin : Plugin<Project> {
         project.tasks["compileJava"].dependsOn(generateSources)
         project.tasks["sourcesJar"].dependsOn(generateSources)
 
-        if (project.file("src/main/template-java17").exists()) {
-            val srcGen17 = project.buildDir.resolve("src-gen-java17")
-            val generateJava17Sources = project.tasks.create<GenerateTask>("generateJava17Sources") {
-                templateDirectory = project.file("src/main/template-java17").absolutePath
-                generateSourceDirectory = srcGen17.absolutePath
-            }
-
-            project.extensions.getByType(JavaPluginExtension::class.java)
-                .sourceSets
-                .getByName("java17")
-                .java {
-                    srcDir(srcGen17)
+        for (multiVersion in 9..21) {
+            if (project.file("src/main/template-java$multiVersion").exists()) {
+                val srcGenMulti = project.buildDir.resolve("src-gen-java$multiVersion")
+                val generateJavaMultiSources = project.tasks.create<GenerateTask>("generateJava${multiVersion}Sources") {
+                    templateDirectory = project.file("src/main/template-java$multiVersion").absolutePath
+                    generateSourceDirectory = srcGenMulti.absolutePath
                 }
 
-            project.tasks["compileJava17Java"].dependsOn(generateJava17Sources)
-            project.tasks["sourcesJar"].dependsOn(generateJava17Sources)
+                project.extensions.getByType(JavaPluginExtension::class.java)
+                    .sourceSets
+                    .getByName("java$multiVersion")
+                    .java {
+                        srcDir(srcGenMulti)
+                    }
+
+                project.tasks["compileJava${multiVersion}Java"].dependsOn(generateJavaMultiSources)
+                project.tasks["sourcesJar"].dependsOn(generateJavaMultiSources)
+            }
         }
     }
 }
