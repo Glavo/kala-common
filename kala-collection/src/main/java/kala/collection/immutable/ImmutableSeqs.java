@@ -897,13 +897,6 @@ final class ImmutableSeqs {
             super(size, value);
         }
 
-        public static <E> @NotNull ImmutableSeq<E> fill(int n, E value) {
-            if (n <= 0) {
-                return ImmutableSeq.empty();
-            }
-            return new CopiesSeq<>(n, value);
-        }
-
         @Override
         public @NotNull SeqView<E> view() {
             return size == 1 ? new SeqViews.Single<>(value) : new CopiesSeqView<>(size, value);
