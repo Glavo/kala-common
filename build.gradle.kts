@@ -10,7 +10,7 @@ plugins {
 
 allprojects {
     group = "org.glavo.kala"
-    version = "0.67.0"// + "-SNAPSHOT"
+    version = "0.68.0" + "-SNAPSHOT"
 
     description = "Basic components of Kala"
 
@@ -34,28 +34,42 @@ allprojects {
         testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
     }
 
-    val hasJava17Sources = project.file("src/main/java17").exists()
+    var multiRelease = false;
 
-    if (hasJava17Sources) {
-        val java17SourceSet = sourceSets.create("java17") {
-            java.srcDir("src/main/java17")
+    for (multiVersion in 9..21) {
+        if (!project.file("src/main/java$multiVersion").exists()) {
+            continue
         }
 
-        tasks.named<JavaCompile>("compileJava17Java") {
-            sourceCompatibility = "17"
-            targetCompatibility = "17"
+        multiRelease = true
+
+        val multiSourceSet = sourceSets.create("java$multiVersion") {
+            java.srcDir("src/main/java$multiVersion")
+        }
+
+        tasks.named<JavaCompile>("compileJava${multiVersion}Java") {
+            sourceCompatibility = "$multiVersion"
+            targetCompatibility = "$multiVersion"
         }
 
         dependencies {
-            "java17CompileOnly"("org.jetbrains:annotations:23.1.0")
-            "java17Implementation"(sourceSets.main.get().output.classesDirs)
+            "java${multiVersion}CompileOnly"("org.jetbrains:annotations:23.1.0")
+            "java${multiVersion}Implementation"(sourceSets.main.get().output.classesDirs)
         }
 
         tasks.jar {
-            into("META-INF/versions/17") {
-                from(java17SourceSet.output)
+            into("META-INF/versions/${multiVersion}") {
+                from(multiSourceSet.output)
             }
 
+            manifest.attributes(
+                "Multi-Release" to "true"
+            )
+        }
+    }
+
+    if (multiRelease) {
+        tasks.jar {
             manifest.attributes(
                 "Multi-Release" to "true"
             )
@@ -73,11 +87,12 @@ allprojects {
         archiveClassifier.set("sources")
 
         from(sourceSets.main.get().allSource)
-        if (hasJava17Sources) {
-            into("META-INF/versions/17") {
-                from(sourceSets["java17"].allSource)
-            }
-        }
+
+//        if (hasJava17Sources) {
+//            into("META-INF/versions/17") {
+//                from(sourceSets["java17"].allSource)
+//            }
+//        }
     }
 
     val javadocJar = tasks.create<Jar>("javadocJar") {
