@@ -2,7 +2,7 @@ plugins {
     `java-library`
     `maven-publish`
     signing
-    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
+    id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
     id("org.glavo.compile-module-info-plugin") version "2.0"
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("org.glavo.load-maven-publish-properties") version "0.1.0"
