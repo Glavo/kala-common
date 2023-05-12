@@ -3,6 +3,7 @@ package kala.internal;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -30,7 +31,7 @@ public final class RecordAccessor {
                 Class<?> rcc = Class.forName("java.lang.reflect.RecordComponent");
 
                 getRecordComponentsHandle = lookup
-                        .findVirtual(Class.class, "getRecordComponents", MethodType.methodType(rcc.arrayType()))
+                        .findVirtual(Class.class, "getRecordComponents", MethodType.methodType(Array.newInstance(rcc, 0).getClass()))
                         .asType(MethodType.methodType(Object[].class, Class.class));
 
                 getRecordComponentNameHandle = lookup
