@@ -1,105 +1,102 @@
 package kala.internal;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public abstract class RecordAccessor {
-    static final RecordAccessor accessor;
+public final class RecordAccessor {
+
+    private static final Class<?> recordClass;
+
+    private static final MethodHandle getRecordComponentsHandle;
+    private static final MethodHandle getRecordComponentNameHandle;
+    private static final MethodHandle getRecordComponentAccessorHandle;
 
     static {
-        RecordAccessor a = null;
-
+        Class<?> rc = null;
         try {
-            Class<?> cls = Class.forName("java.lang.Record");
-            Class<?> rcCls = Class.forName("java.lang.reflect.RecordComponent");
-
-            a = new RecordAccessor.Default(
-                    cls,
-                    Class.class.getMethod("getRecordComponents"),
-                    rcCls.getMethod("getName"),
-                    rcCls.getMethod("getAccessor")
-            );
+            rc = Class.forName("java.lang.Record");
         } catch (Throwable ignored) {
         }
 
-        if (a == null) a = new RecordAccessor.Fallback();
+        recordClass = rc;
 
-        accessor = a;
-    }
-
-    abstract boolean isRecord(Object obj);
-
-    abstract ComponentAccessor[] getComponentAccessors(Object obj);
-
-    private static final class Default extends RecordAccessor {
-        private final Class<?> recordCls;
-        private final Method classGetRecordComponentsMethod;
-        private final Method recordComponentGetNameMethod;
-        private final Method recordComponentGetAccessorMethod;
-
-        private Default(Class<?> recordCls, Method classGetRecordComponentsMethod, Method recordComponentGetNameMethod, Method recordComponentGetAccessorMethod) {
-            this.recordCls = recordCls;
-            this.classGetRecordComponentsMethod = classGetRecordComponentsMethod;
-            this.recordComponentGetNameMethod = recordComponentGetNameMethod;
-            this.recordComponentGetAccessorMethod = recordComponentGetAccessorMethod;
-        }
-
-        @Override
-        boolean isRecord(Object obj) {
-            return recordCls.isInstance(obj);
-        }
-
-        @Override
-        ComponentAccessor[] getComponentAccessors(Object obj) {
+        if (rc != null) {
             try {
-                Object[] components = (Object[]) classGetRecordComponentsMethod.invoke(obj.getClass());
-                ComponentAccessor[] res = new ComponentAccessor[components.length];
-                for (int i = 0; i < components.length; i++) {
-                    Object c = components[i];
-                    res[i] = new ComponentAccessor(
-                            (String) recordComponentGetNameMethod.invoke(c),
-                            (Method) recordComponentGetAccessorMethod.invoke(c)
-                    );
-                }
-                return res;
-            } catch (Throwable e) {
-                throw new AssertionError(e);
-            }
+                MethodHandles.Lookup lookup = MethodHandles.publicLookup();
 
+                Class<?> rcc = Class.forName("java.lang.reflect.RecordComponent");
+
+                getRecordComponentsHandle = lookup
+                        .findVirtual(Class.class, "getRecordComponents", MethodType.methodType(rcc.arrayType()))
+                        .asType(MethodType.methodType(Object[].class, Class.class));
+
+                getRecordComponentNameHandle = lookup
+                        .findVirtual(rcc, "getName", MethodType.methodType(String.class))
+                        .asType(MethodType.methodType(String.class, Object.class));
+
+                getRecordComponentAccessorHandle = lookup
+                        .findVirtual(rcc, "getAccessor", MethodType.methodType(Method.class))
+                        .asType(MethodType.methodType(Method.class, Object.class));
+
+
+            } catch (Throwable e) {
+                throw new InternalError(e);
+            }
+        } else {
+            getRecordComponentsHandle = null;
+            getRecordComponentNameHandle = null;
+            getRecordComponentAccessorHandle = null;
         }
     }
 
-    private static final class Fallback extends RecordAccessor {
-        @Override
-        boolean isRecord(Object obj) {
-            return false;
-        }
+    public static boolean isRecord(Object obj) {
+        return recordClass != null && recordClass.isInstance(obj);
+    }
 
-        @Override
-        ComponentAccessor[] getComponentAccessors(Object obj) {
+    public static Object[] getRecordComponents(Class<?> cls) {
+        if (getRecordComponentsHandle == null) {
             throw new UnsupportedOperationException();
         }
+
+        try {
+            return (Object[]) getRecordComponentsHandle.invokeExact(cls);
+        } catch (Throwable e) {
+            throw new InternalError(e);
+        }
     }
 
-    public static final class ComponentAccessor {
-        private final String name;
-        private final Method accessor;
-
-        ComponentAccessor(String name, Method accessor) {
-            this.name = name;
-            this.accessor = accessor;
+    public static String getName(Object component) {
+        if (getRecordComponentNameHandle == null) {
+            throw new UnsupportedOperationException();
         }
 
-        public String getName() {
-            return name;
+        try {
+            return (String) getRecordComponentNameHandle.invokeExact(component);
+        } catch (Throwable e) {
+            throw new InternalError(e);
+        }
+    }
+
+    public static Method getComponentAccessor(Object component) {
+        if (getRecordComponentAccessorHandle == null) {
+            throw new UnsupportedOperationException();
         }
 
-        public Object getComponent(Object value) {
-            try {
-                return accessor.invoke(value);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new AssertionError(e);
-            }
+        try {
+            return (Method) getRecordComponentAccessorHandle.invokeExact(component);
+        } catch (Throwable e) {
+            throw new InternalError(e);
+        }
+    }
+
+    public static Object getComponent(Object record, Object component) {
+        try {
+            return getComponentAccessor(component).invoke(record);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new InternalError(e);
         }
     }
 }
