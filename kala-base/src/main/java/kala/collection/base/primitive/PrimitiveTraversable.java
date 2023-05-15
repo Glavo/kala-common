@@ -6,6 +6,8 @@ import kala.control.AnyOption;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Iterator;
+
 public interface PrimitiveTraversable<T> extends AnyTraversable<T> {
 
     default @NotNull Traversable<T> asGeneric() {
@@ -23,6 +25,27 @@ public interface PrimitiveTraversable<T> extends AnyTraversable<T> {
     @Override
     default int size() {
         return iterator().size();
+    }
+
+    @Override
+    default int sizeCompare(int otherSize) {
+        if (otherSize < 0) {
+            return 1;
+        }
+        final int knownSize = knownSize();
+        if (knownSize >= 0) {
+            return Integer.compare(knownSize, otherSize);
+        }
+        int i = 0;
+        PrimitiveIterator<T, ?> it = iterator();
+        while (it.hasNext()) {
+            it.nextIgnoreResult();
+            if (i == otherSize) {
+                return 1;
+            }
+            i++;
+        }
+        return i - otherSize;
     }
 
     //endregion
