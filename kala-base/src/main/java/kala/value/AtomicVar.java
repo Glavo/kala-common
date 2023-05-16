@@ -5,6 +5,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @SuppressWarnings("NullableProblems")
 public final class AtomicVar<T> extends AtomicReference<T> implements MutableValue<T> {
+    private static final long serialVersionUID = 0L;
+
     public AtomicVar() {
     }
 
