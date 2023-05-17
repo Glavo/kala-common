@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * A container object which may or may not contain a value.
@@ -153,6 +154,10 @@ public final class Option<@Covariant T> extends AnyOption<T>
 
     public @NotNull Option<T> orElse(Option<? extends T> other) {
         return this.isDefined() ? this : narrow(other);
+    }
+
+    public @NotNull Option<T> orElse(@NotNull Supplier<? extends @NotNull Option<? extends T>> other) {
+        return this.isDefined() ? this : narrow(other.get());
     }
 
     /**
