@@ -59,5 +59,7 @@ public final class Vector<E> extends AbstractImmutableSeq<E> implements IndexedS
             case 1:
                 return ((Object[][]) array)[index % LEAF_LENGTH][];
         }
+
+        throw new UnsupportedOperationException(); // TODO
     }
 }
