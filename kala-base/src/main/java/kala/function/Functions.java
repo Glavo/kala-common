@@ -1,5 +1,6 @@
 package kala.function;
 
+import kala.annotations.StaticClass;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import kala.tuple.Tuple3;
@@ -12,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+@StaticClass
 @SuppressWarnings("unchecked")
 public final class Functions {
     private Functions() {

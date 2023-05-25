@@ -54,11 +54,11 @@ public final class Vector<E> extends AbstractImmutableSeq<E> implements IndexedS
     }
 
     private E get0(int index) {
-        index += offset;
-        switch (depth) {
-            case 1:
-                return ((Object[][]) array)[index % LEAF_LENGTH][];
-        }
+//        index += offset;
+//        switch (depth) {
+//            case 1:
+//                return ((Object[][]) array)[index % LEAF_LENGTH];
+//        }
 
         throw new UnsupportedOperationException(); // TODO
     }
