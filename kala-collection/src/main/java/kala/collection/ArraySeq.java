@@ -37,7 +37,7 @@ import static kala.Conditions.checkPositionIndices;
 public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>, Serializable {
     private static final long serialVersionUID = 4981379062449237945L;
 
-    public static final ArraySeq<?> EMPTY = new ArraySeq<>(GenericArrays.EMPTY_OBJECT_ARRAY);
+    private static final ArraySeq<?> EMPTY = new ArraySeq<>(GenericArrays.EMPTY_OBJECT_ARRAY);
 
     private static final ArraySeq.Factory<?> FACTORY = new ArraySeq.Factory<>();
 
