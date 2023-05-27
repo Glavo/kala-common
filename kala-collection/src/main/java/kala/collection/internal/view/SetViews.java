@@ -30,7 +30,7 @@ public final class SetViews {
         }
 
         @Override
-        public final @NotNull Iterator<E> iterator() {
+        public @NotNull Iterator<E> iterator() {
             return Iterators.filter(source.iterator(), predicate);
         }
     }
