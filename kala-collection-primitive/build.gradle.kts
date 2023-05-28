@@ -90,7 +90,9 @@ tasks.getByName<GenerateTask>("generateSources") {
             generate("Mutable${model["Type"]}ListIterator", model, "MutablePrimitiveListIterator")
 
             generate("Mutable${model["Type"]}Array", model, "MutablePrimitiveArray")
-            generate("Mutable${model["Type"]}ArrayList", model, "MutablePrimitiveArrayList")
+
+            if (model != Primitives.Boolean)
+                generate("Mutable${model["Type"]}ArrayList", model, "MutablePrimitiveArrayList")
 
             generate("Mutable${model["Type"]}Set", model, "MutablePrimitiveSet")
             generate("AbstractMutable${model["Type"]}Set", model, "AbstractMutablePrimitiveSet")
