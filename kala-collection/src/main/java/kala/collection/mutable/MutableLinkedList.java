@@ -131,7 +131,7 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
 
     public static <E> @NotNull MutableLinkedList<E> fill(int n, E value) {
         MutableLinkedList<E> res = new MutableLinkedList<>();
-        while (n-- > 0) {
+        for (int i = 0; i < n; i++) {
             res.append(value);
         }
         return res;
@@ -139,7 +139,7 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
 
     public static <E> @NotNull MutableLinkedList<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
         MutableLinkedList<E> res = new MutableLinkedList<>();
-        while (n-- > 0) {
+        for (int i = 0; i < n; i++) {
             res.append(supplier.get());
         }
         return res;
