@@ -1,15 +1,13 @@
-package kala.internal;
+package kala.collection.base.primitive;
 
 import kala.Conditions;
 import kala.annotations.StaticClass;
-import kala.collection.base.primitive.AbstractBooleanIterator;
-import kala.collection.base.primitive.BooleanIterator;
 
 import java.util.Objects;
 
 @StaticClass
-public final class BooleanUtils {
-    private BooleanUtils() {
+public final class BitArrays {
+    private BitArrays() {
     }
 
     public static final int BITS_PRE_VALUE = Long.SIZE;
