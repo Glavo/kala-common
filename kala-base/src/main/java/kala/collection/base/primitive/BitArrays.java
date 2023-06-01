@@ -34,20 +34,49 @@ public final class BitArrays {
         bitsArray[i] = set(bitsArray[i], index % BITS_PRE_VALUE, newValue);
     }
 
+    public static BooleanIterator iterator(long bits, int beginIndex, int endIndex) {
+        Conditions.checkPositionIndices(beginIndex, endIndex, BITS_PRE_VALUE);
+        return new Itr(bits, beginIndex, endIndex);
+    }
+
     public static BooleanIterator iterator(long[] bitsArray, int beginIndex, int endIndex) {
         Objects.requireNonNull(bitsArray);
         Conditions.checkPositionIndices(beginIndex, endIndex, bitsArray.length * BITS_PRE_VALUE);
-        return new BitsArrayIterator(bitsArray, beginIndex, endIndex);
+        return new LargeItr(bitsArray, beginIndex, endIndex);
     }
 
-    private static final class BitsArrayIterator extends AbstractBooleanIterator {
+    private static final class Itr extends AbstractBooleanIterator {
+        private final long bits;
+        private final int endIndex;
+
+        private int index;
+
+        Itr(long bits, int index, int endIndex) {
+            this.bits = bits;
+            this.endIndex = endIndex;
+            this.index = index;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return index < endIndex;
+        }
+
+        @Override
+        public boolean nextBoolean() {
+            checkStatus();
+            return get(bits, index++);
+        }
+    }
+
+    private static final class LargeItr extends AbstractBooleanIterator {
         private final int endIndex;
         private final long[] bitsArray;
 
         private long bits;
         private int index;
 
-        BitsArrayIterator(long[] bitsArray, int index, int endIndex) {
+        LargeItr(long[] bitsArray, int index, int endIndex) {
             this.bitsArray = bitsArray;
             this.index = index;
             this.endIndex = endIndex;
@@ -55,7 +84,6 @@ public final class BitArrays {
             if (index % BITS_PRE_VALUE != 0)
                 bits = bitsArray[index / BITS_PRE_VALUE];
         }
-
 
         @Override
         public boolean hasNext() {
