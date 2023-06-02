@@ -15,12 +15,24 @@ public class BitArray extends AbstractBooleanSeq implements IndexedBooleanSeq, S
 
     //region Static Factories
 
+    public static @NotNull BitArray wrap(long bits, int size) {
+        if (size < 0 || size > Long.SIZE) {
+            throw new IllegalArgumentException();
+        }
+
+        return new BitArray(bits, size);
+    }
+
     public static @NotNull BitArray wrap(long[] bitArray, int size) {
         if (bitArray.length * Long.SIZE < size) {
             throw new IllegalArgumentException();
         }
 
-        return new BitArray(bitArray, size);
+        if (size <= Long.SIZE) {
+            return new BitArray(bitArray[0], size);
+        } else {
+            return new BitArray(bitArray, size);
+        }
     }
 
 
@@ -31,10 +43,18 @@ public class BitArray extends AbstractBooleanSeq implements IndexedBooleanSeq, S
     //endregion
 
     protected final long[] bitsArray;
+    protected final long bits;
     protected final int size;
 
     protected BitArray(long[] bitsArray, int size) {
         this.bitsArray = bitsArray;
+        this.bits = 0L;
+        this.size = size;
+    }
+
+    protected BitArray(long bits, int size) {
+        this.bitsArray = null;
+        this.bits = bits;
         this.size = size;
     }
 
@@ -56,6 +76,10 @@ public class BitArray extends AbstractBooleanSeq implements IndexedBooleanSeq, S
     @Override
     public boolean get(int index) {
         Conditions.checkElementIndex(index, size);
-        return BitArrays.get(bitsArray, index);
+        if (size <= Long.SIZE) {
+            return BitArrays.get(bits, index);
+        } else {
+            return BitArrays.get(bitsArray, index);
+        }
     }
 }

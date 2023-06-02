@@ -2,6 +2,7 @@ package kala.collection.base.primitive;
 
 import kala.Conditions;
 import kala.annotations.StaticClass;
+import org.jetbrains.annotations.Range;
 
 import java.util.Objects;
 
@@ -13,11 +14,11 @@ public final class BitArrays {
     public static final int BITS_PRE_VALUE = Long.SIZE;
     public static final long FULL_BITS = 0xffff_ffff_ffff_ffffL;
 
-    public static boolean get(long bits, int position) {
+    public static boolean get(long bits, @Range(from = 0, to = BITS_PRE_VALUE - 1) int position) {
         return ((bits >> position) & 1) != 0;
     }
 
-    public static long set(long bits, int position, boolean newValue) {
+    public static long set(long bits, @Range(from = 0, to = BITS_PRE_VALUE - 1) int position, boolean newValue) {
         if (newValue) {
             return bits | (1L << position);
         } else {
