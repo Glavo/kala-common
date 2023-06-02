@@ -8,6 +8,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 
+import static kala.collection.base.primitive.BitArrays.BITS_PRE_VALUE;
+
 public class BitArray extends AbstractBooleanSeq implements IndexedBooleanSeq, Serializable {
     private static final long serialVersionUID = 4673372256434484L;
 
@@ -76,10 +78,41 @@ public class BitArray extends AbstractBooleanSeq implements IndexedBooleanSeq, S
     @Override
     public boolean get(int index) {
         Conditions.checkElementIndex(index, size);
-        if (size <= Long.SIZE) {
+        if (size <= BITS_PRE_VALUE) {
             return BitArrays.get(bits, index);
         } else {
             return BitArrays.get(bitsArray, index);
         }
+    }
+
+    @Override
+    public boolean @NotNull [] toArray() {
+        boolean[] res = new boolean[size];
+        if (size <= BITS_PRE_VALUE) {
+            for (int i = 0; i < size; i++) {
+                res[i] = BitArrays.get(bits, i);
+            }
+        } else {
+            final int fullChunkCount = size / Long.SIZE;
+            final int notFullChunkLength = size % Long.SIZE;
+
+            for (int i = 0; i < fullChunkCount; i++) {
+                final long currentBits = bitsArray[i];
+                final int baseIndex = i * BITS_PRE_VALUE;
+
+                for (int j = 0; j < BITS_PRE_VALUE; j++) {
+                    res[baseIndex + j] = BitArrays.get(currentBits, j);
+                }
+            }
+
+            if (notFullChunkLength != 0) {
+                final long currentBits = bitsArray[bitsArray.length - 1];
+                final int baseIndex = (bitsArray.length - 1) * BITS_PRE_VALUE;
+                for (int i = 0; i < notFullChunkLength; i++) {
+                    res[baseIndex + i] = BitArrays.get(currentBits, i);
+                }
+            }
+        }
+        return res;
     }
 }
