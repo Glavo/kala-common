@@ -11,6 +11,15 @@ import static org.junit.jupiter.api.Assertions.*;
 public class BitArraysTest {
     @Test
     public void iteratorTest() {
+        assertArrayEquals(new boolean[]{}, BitArrays.iterator(0L, 0, 0).toArray());
+        assertArrayEquals(new boolean[]{}, BitArrays.iterator(0b00L, 0, 0).toArray());
+        assertArrayEquals(new boolean[]{false}, BitArrays.iterator(0b00L, 0, 1).toArray());
+        assertArrayEquals(new boolean[]{}, BitArrays.iterator(0b01L, 0, 0).toArray());
+        assertArrayEquals(new boolean[]{true}, BitArrays.iterator(0b01L, 0, 1).toArray());
+        assertArrayEquals(new boolean[]{true, false, false, false}, BitArrays.iterator(0b01L, 0, 4).toArray());
+        assertArrayEquals(new boolean[]{false, false, false}, BitArrays.iterator(0b01L, 1, 4).toArray());
+        assertArrayEquals(new boolean[]{true, false, false}, BitArrays.iterator(0b10L, 1, 4).toArray());
+
         assertArrayEquals(new boolean[]{}, BitArrays.iterator(new long[]{}, 0, 0).toArray());
         assertArrayEquals(new boolean[]{}, BitArrays.iterator(new long[]{0b00}, 0, 0).toArray());
         assertArrayEquals(new boolean[]{false}, BitArrays.iterator(new long[]{0b00}, 0, 1).toArray());
