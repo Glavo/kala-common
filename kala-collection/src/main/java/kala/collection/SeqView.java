@@ -241,7 +241,7 @@ public interface SeqView<@Covariant E> extends CollectionView<E>, SeqLike<E>, An
     }
 
     @Override
-    default @NotNull SeqView<E> filterNotNull() {
+    default @NotNull SeqView<@NotNull E> filterNotNull() {
         return new SeqViews.FilterNotNull<>(this);
     }
 
@@ -263,13 +263,13 @@ public interface SeqView<@Covariant E> extends CollectionView<E>, SeqLike<E>, An
     }
 
     @Override
-    default <U> @NotNull SeqView<U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
+    default <U> @NotNull SeqView<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
         Objects.requireNonNull(mapper);
         return new SeqViews.MapNotNull<>(this, mapper);
     }
 
     @Override
-    default <U> @NotNull SeqView<U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
+    default <U> @NotNull SeqView<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
         Objects.requireNonNull(mapper);
         return new SeqViews.MapIndexedNotNull<>(this, mapper);
     }
