@@ -308,12 +308,12 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
     //region Element Retrieval Operations
 
     @Override
-    public E first() {
+    public E getFirst() {
         return node.head();
     }
 
     @Override
-    public E last() {
+    public E getLast() {
         if (node == NIL_NODE) {
             throw new NoSuchElementException();
         }
@@ -643,7 +643,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
         }
 
         @Override
-        public final E first() {
+        public final E getFirst() {
             if (first == null) {
                 throw new NoSuchElementException();
             } else {
@@ -652,7 +652,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
         }
 
         @Override
-        public final E last() {
+        public final E getLast() {
             if (last == null) {
                 throw new NoSuchElementException();
             } else {

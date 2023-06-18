@@ -338,12 +338,12 @@ public final class AsJavaConvert {
 
         @Override
         public E first() {
-            return source.first();
+            return source.getFirst();
         }
 
         @Override
         public E last() {
-            return source.last();
+            return source.getLast();
         }
     }
 

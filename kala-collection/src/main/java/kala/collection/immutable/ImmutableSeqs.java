@@ -515,32 +515,32 @@ final class ImmutableSeqs {
         //region Element Retrieval Operations
 
         @Override
-        public final E first() {
+        public final E getFirst() {
             return value;
         }
 
         @Override
-        public final @Nullable E firstOrNull() {
+        public final @Nullable E getFirstOrNull() {
             return value;
         }
 
         @Override
-        public final @NotNull Option<E> firstOption() {
+        public final @NotNull Option<E> getFirstOption() {
             return Option.some(value);
         }
 
         @Override
-        public final E last() {
+        public final E getLast() {
             return value;
         }
 
         @Override
-        public final @Nullable E lastOrNull() {
+        public final @Nullable E getLastOrNull() {
             return value;
         }
 
         @Override
-        public final @NotNull Option<E> lastOption() {
+        public final @NotNull Option<E> getLastOption() {
             return Option.some(value);
         }
 

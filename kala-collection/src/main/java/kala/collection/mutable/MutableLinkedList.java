@@ -526,7 +526,7 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
     }
 
     @Override
-    public E first() {
+    public E getFirst() {
         final Node<E> first = this.first;
         if (first == null) {
             throw new NoSuchElementException();
@@ -539,7 +539,7 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
     }
 
     @Override
-    public E last() {
+    public E getLast() {
         final Node<E> last = this.last;
         if (last == null) {
             throw new NoSuchElementException();
@@ -573,7 +573,7 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
 
     @Override
     public E peek() {
-        return first();
+        return this.getFirst();
     }
 
     @Override

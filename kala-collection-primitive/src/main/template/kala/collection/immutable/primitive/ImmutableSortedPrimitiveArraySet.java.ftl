@@ -218,7 +218,7 @@ public final class ImmutableSorted${Type}ArraySet extends AbstractImmutable${Typ
     }
 
     // @Override
-    public ${PrimitiveType} first() {
+    public ${PrimitiveType} getFirst() {
         if (elements.length == 0) {
             throw new NoSuchElementException();
         }
@@ -226,7 +226,7 @@ public final class ImmutableSorted${Type}ArraySet extends AbstractImmutable${Typ
     }
 
     // @Override
-    public ${PrimitiveType} last() {
+    public ${PrimitiveType} getLast() {
         final int size = elements.length;
         if (size == 0) {
             throw new NoSuchElementException();

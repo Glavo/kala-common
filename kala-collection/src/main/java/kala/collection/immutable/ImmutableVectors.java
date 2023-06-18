@@ -285,33 +285,33 @@ final class ImmutableVectors {
         //endregion
 
         @Override
-        public E first() {
+        public E getFirst() {
             return (E) prefix1[0];
         }
 
 
         @Override
-        public @Nullable E firstOrNull() {
-            return first();
+        public @Nullable E getFirstOrNull() {
+            return this.getFirst();
         }
 
         @Override
-        public @NotNull Option<E> firstOption() {
+        public @NotNull Option<E> getFirstOption() {
             return Option.some((E) prefix1[0]);
         }
 
         @Override
-        public E last() {
+        public E getLast() {
             return (E) prefix1[prefix1.length - 1];
         }
 
         @Override
-        public @Nullable E lastOrNull() {
-            return last();
+        public @Nullable E getLastOrNull() {
+            return this.getLast();
         }
 
         @Override
-        public @NotNull Option<E> lastOption() {
+        public @NotNull Option<E> getLastOption() {
             return Option.some((E) prefix1[prefix1.length - 1]);
         }
 
@@ -479,32 +479,32 @@ final class ImmutableVectors {
         }
 
         @Override
-        public final E first() {
+        public final E getFirst() {
             return (E) prefix1[0];
         }
 
         @Override
-        public @Nullable E firstOrNull() {
-            return first();
+        public @Nullable E getFirstOrNull() {
+            return this.getFirst();
         }
 
         @Override
-        public @NotNull Option<E> firstOption() {
+        public @NotNull Option<E> getFirstOption() {
             return Option.some((E) prefix1[0]);
         }
 
         @Override
-        public final E last() {
+        public final E getLast() {
             return (E) suffix1[suffix1.length - 1];
         }
 
         @Override
-        public @Nullable E lastOrNull() {
-            return last();
+        public @Nullable E getLastOrNull() {
+            return this.getLast();
         }
 
         @Override
-        public @NotNull Option<E> lastOption() {
+        public @NotNull Option<E> getLastOption() {
             return Option.some((E) suffix1[suffix1.length - 1]);
         }
 

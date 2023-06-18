@@ -1,7 +1,6 @@
 package kala.collection;
 
 import kala.collection.immutable.ImmutableArray;
-import kala.collection.immutable.ImmutableLinkedSeq;
 import kala.collection.immutable.ImmutableSeq;
 import kala.collection.immutable.ImmutableVector;
 import kala.comparator.Comparators;
@@ -151,25 +150,25 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
 
     @Test
     default void firstTest() {
-        assertThrows(NoSuchElementException.class, () -> of().first());
-        assertNull(of().firstOrNull());
-        assertEquals(Option.none(), of().firstOption());
+        assertThrows(NoSuchElementException.class, () -> of().getFirst());
+        assertNull(of().getFirstOrNull());
+        assertEquals(Option.none(), of().getFirstOption());
         for (Integer[] data : data1()) {
-            assertSame(data[0], from(data).first());
-            assertSame(data[0], from(data).firstOrNull());
-            assertEquals(Option.some(data[0]), from(data).firstOption());
+            assertSame(data[0], from(data).getFirst());
+            assertSame(data[0], from(data).getFirstOrNull());
+            assertEquals(Option.some(data[0]), from(data).getFirstOption());
         }
     }
 
     @Test
     default void lastTest() {
-        assertThrows(NoSuchElementException.class, () -> of().last());
-        assertNull(of().lastOrNull());
-        assertEquals(Option.none(), of().lastOption());
+        assertThrows(NoSuchElementException.class, () -> of().getLast());
+        assertNull(of().getLastOrNull());
+        assertEquals(Option.none(), of().getLastOption());
         for (Integer[] data : data1()) {
-            assertSame(data[data.length - 1], from(data).last());
-            assertSame(data[data.length - 1], from(data).lastOrNull());
-            assertEquals(Option.some(data[data.length - 1]), from(data).lastOption());
+            assertSame(data[data.length - 1], from(data).getLast());
+            assertSame(data[data.length - 1], from(data).getLastOrNull());
+            assertEquals(Option.some(data[data.length - 1]), from(data).getLastOption());
         }
     }
 

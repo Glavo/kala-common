@@ -625,7 +625,7 @@ public final class MutableArrayDeque<E> extends AbstractMutableList<E> implement
     //region Element Retrieval Operations
 
     @Override
-    public E first() {
+    public E getFirst() {
         if (isEmpty()) {
             throw new NoSuchElementException();
         }
@@ -633,7 +633,7 @@ public final class MutableArrayDeque<E> extends AbstractMutableList<E> implement
     }
 
     @Override
-    public E last() {
+    public E getLast() {
         if (isEmpty()) {
             throw new NoSuchElementException();
         }

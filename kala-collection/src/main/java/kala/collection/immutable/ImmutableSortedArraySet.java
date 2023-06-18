@@ -425,7 +425,7 @@ public final class ImmutableSortedArraySet<E>
     }
 
     @Override
-    public E first() {
+    public E getFirst() {
         if (elements.length == 0) {
             throw new NoSuchElementException();
         }
@@ -433,7 +433,7 @@ public final class ImmutableSortedArraySet<E>
     }
 
     @Override
-    public E last() {
+    public E getLast() {
         final int size = elements.length;
         if (size == 0) {
             throw new NoSuchElementException();

@@ -8,28 +8,28 @@ import org.jetbrains.annotations.Nullable;
 @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
 public abstract class AbstractSeq<E> extends AbstractCollection<E> implements Seq<E> {
 
-    public E first() {
-        return Seq.super.first();
+    public E getFirst() {
+        return Seq.super.getFirst();
     }
 
-    public @Nullable E firstOrNull() {
-        return Seq.super.firstOrNull();
+    public @Nullable E getFirstOrNull() {
+        return Seq.super.getFirstOrNull();
     }
 
-    public @NotNull Option<E> firstOption() {
-        return Seq.super.firstOption();
+    public @NotNull Option<E> getFirstOption() {
+        return Seq.super.getFirstOption();
     }
 
-    public E last() {
-        return Seq.super.last();
+    public E getLast() {
+        return Seq.super.getLast();
     }
 
-    public @Nullable E lastOrNull() {
-        return Seq.super.lastOrNull();
+    public @Nullable E getLastOrNull() {
+        return Seq.super.getLastOrNull();
     }
 
-    public @NotNull Option<E> lastOption() {
-        return Seq.super.lastOption();
+    public @NotNull Option<E> getLastOption() {
+        return Seq.super.getLastOption();
     }
 
     @Override

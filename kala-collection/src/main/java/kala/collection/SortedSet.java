@@ -26,12 +26,12 @@ public interface SortedSet<@Covariant E> extends Set<E>, OrderedTraversable<E> {
     }
 
     @Contract(pure = true)
-    default E first() {
+    default E getFirst() {
         return iterator().next();
     }
 
     @Contract(pure = true)
-    default E last() {
+    default E getLast() {
         Iterator<E> iterator = iterator();
         E res = iterator.next();
         while (iterator.hasNext()) {
@@ -41,14 +41,14 @@ public interface SortedSet<@Covariant E> extends Set<E>, OrderedTraversable<E> {
     }
 
     @Override
-    @DelegateBy("last()")
+    @DelegateBy("getLast()")
     default E max() {
-        return last();
+        return getLast();
     }
 
     @Override
-    @DelegateBy("first()")
+    @DelegateBy("getFirst()")
     default E min() {
-        return first();
+        return getFirst();
     }
 }

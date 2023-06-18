@@ -98,18 +98,12 @@
     * `find(Predicate<E>)`
     * `findFirst(Predicate<E>)`
     * `findLast(Predicate<E>)`
-    * `first()`
-    * `first(Predicate<E>)`
-    * `firstOrNull()`
-    * `firstOrNull(Predicate<E>)`
-    * `firstOption()`
-    * `firstOption(Predicate<E>)`
-    * `last()`
-    * `last(Predicate<E>)`
-    * `lastOrNull()`
-    * `lastOrNull(Predicate<E>)`
-    * `lastOption()`
-    * `lastOption(Predicate<E>)`
+    * `getFirst()`
+    * `getFirstOrNull()`
+    * `getFirstOption()`
+    * `getLast()`
+    * `getLastOrNull()`
+    * `getLastOption()`
 * Element Conditions
     * `contains(Object)`
     * `containsAll(Object[])`

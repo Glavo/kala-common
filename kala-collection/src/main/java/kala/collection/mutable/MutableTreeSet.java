@@ -371,7 +371,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     }
 
     @Override
-    public E first() {
+    public E getFirst() {
         final Node<E> node = firstNode();
         if (node == null) {
             throw new NoSuchElementException();
@@ -380,7 +380,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     }
 
     @Override
-    public E last() {
+    public E getLast() {
         final Node<E> node = lastNode();
         if (node == null) {
             throw new NoSuchElementException();

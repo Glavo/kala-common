@@ -48,12 +48,12 @@ public interface MutableDeque<E> extends MutableQueue<E> {
             }
 
             @Override
-            public E first() {
+            public E getFirst() {
                 return deque.getFirst();
             }
 
             @Override
-            public E last() {
+            public E getLast() {
                 return deque.getLast();
             }
 
@@ -104,28 +104,28 @@ public interface MutableDeque<E> extends MutableQueue<E> {
         return isNotEmpty() ? Option.some(removeLast()) : Option.none();
     }
 
-    E first();
+    E getFirst();
 
-    @DelegateBy("first()")
-    default @Nullable E firstOrNull() {
-        return isNotEmpty() ? first() : null;
+    @DelegateBy("getFirst()")
+    default @Nullable E getFirstOrNull() {
+        return isNotEmpty() ? getFirst() : null;
     }
 
-    @DelegateBy("first()")
-    default @NotNull Option<E> firstOption() {
-        return isNotEmpty() ? Option.some(first()) : Option.none();
+    @DelegateBy("getFirst()")
+    default @NotNull Option<E> getFirstOption() {
+        return isNotEmpty() ? Option.some(getFirst()) : Option.none();
     }
 
-    E last();
+    E getLast();
 
-    @DelegateBy("last()")
-    default @Nullable E lastOrNull() {
-        return isNotEmpty() ? last() : null;
+    @DelegateBy("getLast()")
+    default @Nullable E getLastOrNull() {
+        return isNotEmpty() ? getLast() : null;
     }
 
-    @DelegateBy("last()")
-    default @NotNull Option<E> lastOption() {
-        return isNotEmpty() ? Option.some(last()) : Option.none();
+    @DelegateBy("getLast()")
+    default @NotNull Option<E> getLastOption() {
+        return isNotEmpty() ? Option.some(getLast()) : Option.none();
     }
 
     @Override

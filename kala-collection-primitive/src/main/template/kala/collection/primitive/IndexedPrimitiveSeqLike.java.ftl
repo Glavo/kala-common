@@ -155,14 +155,14 @@ public interface Indexed${Type}SeqLike extends ${Type}SeqLike, RandomAccess {
     }
 
     @Override
-    default ${PrimitiveType} first() {
+    default ${PrimitiveType} getFirst() {
         if (isEmpty()) throw new NoSuchElementException();
 
         return get(0);
     }
 
     @Override
-    default ${PrimitiveType} last() {
+    default ${PrimitiveType} getLast() {
         final int size = size();
         if (size == 0) throw new NoSuchElementException();
 

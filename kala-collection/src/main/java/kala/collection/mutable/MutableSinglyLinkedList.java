@@ -199,7 +199,7 @@ public final class MutableSinglyLinkedList<E> extends ImmutableLinkedSeq.Builder
 
     @Override
     public E peek() {
-        return first();
+        return this.getFirst();
     }
 
     @Override

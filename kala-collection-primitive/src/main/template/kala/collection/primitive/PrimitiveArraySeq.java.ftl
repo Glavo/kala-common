@@ -198,7 +198,7 @@ public class ${Type}ArraySeq extends Abstract${Type}Seq implements Indexed${Type
     //region Element Retrieval Operations
 
     @Override
-    public final ${PrimitiveType} first() {
+    public final ${PrimitiveType} getFirst() {
         try {
             return elements[0];
         } catch (IndexOutOfBoundsException e) {
@@ -207,7 +207,7 @@ public class ${Type}ArraySeq extends Abstract${Type}Seq implements Indexed${Type
     }
 
     @Override
-    public final ${PrimitiveType} last() {
+    public final ${PrimitiveType} getLast() {
         final int size = elements.length;
         if (size == 0) {
             throw new NoSuchElementException();

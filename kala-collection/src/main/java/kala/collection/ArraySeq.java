@@ -783,7 +783,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     //region Element Retrieval Operations
 
     @Override
-    public final E first() {
+    public final E getFirst() {
         final int size = elements.length;
         if (size == 0) {
             throw new NoSuchElementException();
@@ -792,7 +792,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     }
 
     @Override
-    public final E last() {
+    public final E getLast() {
         final int size = elements.length;
         if (size == 0) {
             throw new NoSuchElementException();

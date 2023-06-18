@@ -1,6 +1,7 @@
 package kala.collection.base;
 
 import kala.annotations.DelegateBy;
+import kala.annotations.ReplaceWith;
 import kala.control.Option;
 import kala.function.CheckedIndexedConsumer;
 import kala.function.IndexedBiFunction;
@@ -57,60 +58,66 @@ public interface OrderedTraversable<E> extends Traversable<E> {
         return Iterators.firstOption(reverseIterator(), predicate);
     }
 
-    default E first() {
+    default E getFirst() {
         return this.iterator().next();
     }
 
-    @DelegateBy("first()")
-    default @Nullable E firstOrNull() {
-        return isNotEmpty() ? first() : null;
+    @DelegateBy("getFirst()")
+    default @Nullable E getFirstOrNull() {
+        return isNotEmpty() ? getFirst() : null;
     }
 
-    @DelegateBy("first()")
-    default @NotNull Option<E> firstOption() {
-        return isNotEmpty() ? Option.some(first()) : Option.none();
+    @DelegateBy("getFirst()")
+    default @NotNull Option<E> getFirstOption() {
+        return isNotEmpty() ? Option.some(getFirst()) : Option.none();
     }
 
-    default E last() {
+    default E getLast() {
         return reverseIterator().next();
     }
 
-    @DelegateBy("last()")
-    default @Nullable E lastOrNull() {
-        return isNotEmpty() ? last() : null;
+    @DelegateBy("getLast()")
+    default @Nullable E getLastOrNull() {
+        return isNotEmpty() ? getLast() : null;
     }
 
-    @DelegateBy("last()")
-    default @NotNull Option<E> lastOption() {
-        return isNotEmpty() ? Option.some(last()) : Option.none();
+    @DelegateBy("getLast()")
+    default @NotNull Option<E> getLastOption() {
+        return isNotEmpty() ? Option.some(getLast()) : Option.none();
     }
 
-    @DelegateBy("findFirst(Predicate<E>)")
+    @Deprecated
+    @ReplaceWith("findFirst(Predicate<E>)")
     default E first(@NotNull Predicate<? super E> predicate) {
         return findFirst(predicate).get();
     }
 
-    @DelegateBy("findFirst(Predicate<E>)")
+    @Deprecated
+    @ReplaceWith("findFirst(Predicate<E>)")
     default @Nullable E firstOrNull(@NotNull Predicate<? super E> predicate) {
         return findFirst(predicate).getOrNull();
     }
 
-    @DelegateBy("findFirst(Predicate<E>)")
+    @Deprecated
+    @ReplaceWith("findFirst(Predicate<E>)")
     default @NotNull Option<E> firstOption(@NotNull Predicate<? super E> predicate) {
         return findFirst(predicate);
     }
 
-    @DelegateBy("findLast(Predicate<E>)")
+    @Deprecated
+    @ReplaceWith("findLast(Predicate<E>)")
     default E last(@NotNull Predicate<? super E> predicate) {
         return findLast(predicate).get();
     }
 
-    @DelegateBy("findLast(Predicate<E>)")
+    @Deprecated
+    @ReplaceWith("findLast(Predicate<E>)")
     default @Nullable E lastOrNull(@NotNull Predicate<? super E> predicate) {
         return findLast(predicate).getOrNull();
     }
 
-    @DelegateBy("findLast(Predicate<E>)")
+    @Deprecated
+    @ReplaceWith("findLast(Predicate<E>)")
     default @NotNull Option<E> lastOption(@NotNull Predicate<? super E> predicate) {
         return findLast(predicate);
     }

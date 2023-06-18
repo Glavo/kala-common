@@ -1,7 +1,6 @@
 package kala.collection.mutable;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Range;
 
 import java.io.Serializable;
 import java.util.Iterator;
@@ -47,7 +46,7 @@ final class MutableListStackAdapter<E> implements MutableStack<E>, Serializable 
 
     @Override
     public E peek() {
-        return seq.last();
+        return seq.getLast();
     }
 
     @Override

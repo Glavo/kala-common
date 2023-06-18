@@ -125,32 +125,32 @@ public interface ${Type}SeqLike extends PrimitiveSeqLike<${WrapperType}>, ${Type
         return reverseIterator().find(predicate);
     }
 
-    default ${PrimitiveType} first() {
+    default ${PrimitiveType} getFirst() {
         return this.iterator().next${Type}();
     }
 
-    @DelegateBy("first()")
-    default @Nullable ${WrapperType} firstOrNull() {
-        return isNotEmpty() ? first() : null;
+    @DelegateBy("getFirst()")
+    default @Nullable ${WrapperType} getFirstOrNull() {
+        return isNotEmpty() ? getFirst() : null;
     }
 
-    @DelegateBy("first()")
-    default @NotNull ${Type}Option firstOption() {
-        return isNotEmpty() ? ${Type}Option.some(first()) : ${Type}Option.none();
+    @DelegateBy("getFirst()")
+    default @NotNull ${Type}Option getFirstOption() {
+        return isNotEmpty() ? ${Type}Option.some(getFirst()) : ${Type}Option.none();
     }
 
-    default ${PrimitiveType} last() {
+    default ${PrimitiveType} getLast() {
         return reverseIterator().next${Type}();
     }
 
-    @DelegateBy("last()")
-    default @Nullable ${WrapperType} lastOrNull() {
-        return isNotEmpty() ? last() : null;
+    @DelegateBy("getLast()")
+    default @Nullable ${WrapperType} getLastOrNull() {
+        return isNotEmpty() ? getLast() : null;
     }
 
-    @DelegateBy("last()")
-    default @NotNull ${Type}Option lastOption() {
-        return isNotEmpty() ? ${Type}Option.some(last()) : ${Type}Option.none();
+    @DelegateBy("getLast()")
+    default @NotNull ${Type}Option getLastOption() {
+        return isNotEmpty() ? ${Type}Option.some(getLast()) : ${Type}Option.none();
     }
 
     @DelegateBy("findFirst(${Type}Predicate)")

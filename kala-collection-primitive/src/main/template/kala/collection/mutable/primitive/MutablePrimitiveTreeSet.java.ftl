@@ -199,7 +199,7 @@ public final class Mutable${Type}TreeSet extends ${Type}RedBlackTree<Mutable${Ty
     }
 
     // @Override
-    public ${PrimitiveType} first() {
+    public ${PrimitiveType} getFirst() {
         final Node node = firstNode();
         if (node == null) {
             throw new NoSuchElementException();
@@ -208,7 +208,7 @@ public final class Mutable${Type}TreeSet extends ${Type}RedBlackTree<Mutable${Ty
     }
 
     // @Override
-    public ${PrimitiveType} last() {
+    public ${PrimitiveType} getLast() {
         final Node node = lastNode();
         if (node == null) {
             throw new NoSuchElementException();

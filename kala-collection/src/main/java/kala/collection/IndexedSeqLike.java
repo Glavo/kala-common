@@ -139,7 +139,7 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     }
 
     @Override
-    default E first() {
+    default E getFirst() {
         if (isEmpty()) {
             throw new NoSuchElementException();
         }
@@ -147,7 +147,7 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     }
 
     @Override
-    default E last() {
+    default E getLast() {
         final int size = size();
         if (size == 0) {
             throw new NoSuchElementException();
