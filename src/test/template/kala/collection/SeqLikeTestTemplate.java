@@ -149,7 +149,7 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
     }
 
     @Test
-    default void firstTest() {
+    default void getFirstTest() {
         assertThrows(NoSuchElementException.class, () -> of().getFirst());
         assertNull(of().getFirstOrNull());
         assertEquals(Option.none(), of().getFirstOption());
@@ -161,7 +161,7 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
     }
 
     @Test
-    default void lastTest() {
+    default void getLastTest() {
         assertThrows(NoSuchElementException.class, () -> of().getLast());
         assertNull(of().getLastOrNull());
         assertEquals(Option.none(), of().getLastOption());

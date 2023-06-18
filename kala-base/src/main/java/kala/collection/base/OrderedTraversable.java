@@ -72,6 +72,24 @@ public interface OrderedTraversable<E> extends Traversable<E> {
         return isNotEmpty() ? Option.some(getFirst()) : Option.none();
     }
 
+    @Deprecated
+    @ReplaceWith("getFirst()")
+    default E first() {
+        return getFirst();
+    }
+
+    @Deprecated
+    @ReplaceWith("getFirstOrNull()")
+    default E firstOrNull() {
+        return getFirstOrNull();
+    }
+
+    @Deprecated
+    @ReplaceWith("getFirstOption()")
+    default Option<E> firstOption() {
+        return getFirstOption();
+    }
+
     default E getLast() {
         return reverseIterator().next();
     }
@@ -84,6 +102,24 @@ public interface OrderedTraversable<E> extends Traversable<E> {
     @DelegateBy("getLast()")
     default @NotNull Option<E> getLastOption() {
         return isNotEmpty() ? Option.some(getLast()) : Option.none();
+    }
+
+    @Deprecated
+    @ReplaceWith("getLast()")
+    default E last() {
+        return getLast();
+    }
+
+    @Deprecated
+    @ReplaceWith("getLastOrNull()")
+    default E lastOrNull() {
+        return getLastOrNull();
+    }
+
+    @Deprecated
+    @ReplaceWith("getLastOption()")
+    default Option<E> lastOption() {
+        return getLastOption();
     }
 
     @Deprecated
