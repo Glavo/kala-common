@@ -306,10 +306,12 @@ public final class Iterators {
     }
 
 
+    @Deprecated
     public static <E> E first(@NotNull Iterator<? extends E> it) {
         return it.next();
     }
 
+    @Deprecated
     public static <E> E first(@NotNull Iterator<? extends E> it, @NotNull Predicate<? super E> predicate) {
         while (it.hasNext()) { // implicit null check of it
             E e = it.next();
@@ -320,10 +322,12 @@ public final class Iterators {
         throw new NoSuchElementException();
     }
 
+    @Deprecated
     public static <E> @Nullable E firstOrNull(@NotNull Iterator<? extends E> it) {
         return it.hasNext() ? it.next() : null;
     }
 
+    @Deprecated
     public static <E> @Nullable E firstOrNull(@NotNull Iterator<? extends E> it, @NotNull Predicate<? super E> predicate) {
         while (it.hasNext()) {
             E e = it.next();
@@ -334,10 +338,12 @@ public final class Iterators {
         return null;
     }
 
+    @Deprecated
     public static <E> @NotNull Option<E> firstOption(@NotNull Iterator<? extends E> it) {
         return it.hasNext() ? Option.some(it.next()) : Option.none();
     }
 
+    @Deprecated
     public static <E> @NotNull Option<E> firstOption(@NotNull Iterator<? extends E> it, @NotNull Predicate<? super E> predicate) {
         while (it.hasNext()) {
             E e = it.next();
@@ -348,6 +354,7 @@ public final class Iterators {
         return Option.none();
     }
 
+    @Deprecated
     public static <E> E last(@NotNull Iterator<? extends E> it) {
         E res = it.next();
         while (it.hasNext()) {
@@ -356,6 +363,7 @@ public final class Iterators {
         return res;
     }
 
+    @Deprecated
     public static <E> E last(@NotNull Iterator<? extends E> it, Predicate<? super E> predicate) {
         E res = null;
         boolean hasValue = false;
@@ -374,6 +382,7 @@ public final class Iterators {
         return res;
     }
 
+    @Deprecated
     public static <E> @Nullable E lastOrNull(@NotNull Iterator<? extends E> it) {
         E res = null;
         while (it.hasNext()) {
@@ -382,6 +391,7 @@ public final class Iterators {
         return res;
     }
 
+    @Deprecated
     public static <E> @Nullable E lastOrNull(@NotNull Iterator<? extends E> it, Predicate<? super E> predicate) {
         E res = null;
 
@@ -395,6 +405,7 @@ public final class Iterators {
         return res;
     }
 
+    @Deprecated
     public static <E> @NotNull Option<E> lastOption(@NotNull Iterator<? extends E> it) {
         if (!it.hasNext()) {
             return Option.none();
@@ -406,6 +417,7 @@ public final class Iterators {
         return Option.some(res);
     }
 
+    @Deprecated
     public static <E> @NotNull Option<E> lastOption(@NotNull Iterator<? extends E> it, Predicate<? super E> predicate) {
         E res = null;
         boolean hasValue = false;
@@ -419,6 +431,45 @@ public final class Iterators {
         }
 
         return hasValue ? Option.some(res) : Option.none();
+    }
+
+    public static <E> E getFirst(@NotNull Iterator<? extends E> it) {
+        return it.next();
+    }
+
+    public static <E> @Nullable E getFirstOrNull(@NotNull Iterator<? extends E> it) {
+        return it.hasNext() ? it.next() : null;
+    }
+
+    public static <E> @NotNull Option<E> getFirstOption(@NotNull Iterator<? extends E> it) {
+        return it.hasNext() ? Option.some(it.next()) : Option.none();
+    }
+
+    public static <E> E getLast(@NotNull Iterator<? extends E> it) {
+        E res = it.next();
+        while (it.hasNext()) {
+            res = it.next();
+        }
+        return res;
+    }
+
+    public static <E> @Nullable E getLastOrNull(@NotNull Iterator<? extends E> it) {
+        E res = null;
+        while (it.hasNext()) {
+            res = it.next();
+        }
+        return res;
+    }
+
+    public static <E> @NotNull Option<E> getLastOption(@NotNull Iterator<? extends E> it) {
+        if (!it.hasNext()) {
+            return Option.none();
+        }
+        E res = null;
+        while (it.hasNext()) {
+            res = it.next();
+        }
+        return Option.some(res);
     }
 
     public static <E extends Comparable<E>> E max(@NotNull Iterator<? extends E> it) {
