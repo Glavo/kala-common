@@ -87,12 +87,6 @@ allprojects {
         archiveClassifier.set("sources")
 
         from(sourceSets.main.get().allSource)
-
-//        if (hasJava17Sources) {
-//            into("META-INF/versions/17") {
-//                from(sourceSets["java17"].allSource)
-//            }
-//        }
     }
 
     val javadocJar = tasks.create<Jar>("javadocJar") {
