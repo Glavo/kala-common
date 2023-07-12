@@ -18,9 +18,9 @@ import java.util.Objects;
 public final class StdIn {
     private static final int BUFFER_SIZE = 128;
 
-    private static InputStream in;
+    private volatile static InputStream in;
 
-    private static BufferedReader reader;
+    private volatile static BufferedReader reader;
 
     private static BufferedReader reader() {
         final InputStream stdin = System.in;
