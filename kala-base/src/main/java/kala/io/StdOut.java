@@ -86,7 +86,6 @@ public final class StdOut {
         final int size = array.length;
         final PrintStream out = System.out;
 
-        //noinspection SynchronizationOnLocalVariableOrMethodParameter
         synchronized (out) {
             out.print('[');
             if (size > 0) {
@@ -109,7 +108,6 @@ public final class StdOut {
         final int size = array.length;
         final PrintStream out = System.out;
 
-        //noinspection SynchronizationOnLocalVariableOrMethodParameter
         synchronized (out) {
             out.print('[');
             if (size > 0) {
@@ -132,7 +130,6 @@ public final class StdOut {
         final int size = array.length;
         final PrintStream out = System.out;
 
-        //noinspection SynchronizationOnLocalVariableOrMethodParameter
         synchronized (out) {
             out.print('[');
             if (size > 0) {
@@ -155,7 +152,6 @@ public final class StdOut {
         final int size = array.length;
         final PrintStream out = System.out;
 
-        //noinspection SynchronizationOnLocalVariableOrMethodParameter
         synchronized (out) {
             out.print('[');
             if (size > 0) {
@@ -178,7 +174,6 @@ public final class StdOut {
         final int size = array.length;
         final PrintStream out = System.out;
 
-        //noinspection SynchronizationOnLocalVariableOrMethodParameter
         synchronized (out) {
             out.print('[');
             if (size > 0) {
@@ -201,7 +196,6 @@ public final class StdOut {
         final int size = array.length;
         final PrintStream out = System.out;
 
-        //noinspection SynchronizationOnLocalVariableOrMethodParameter
         synchronized (out) {
             out.print('[');
             if (size > 0) {
@@ -224,7 +218,6 @@ public final class StdOut {
         final int size = array.length;
         final PrintStream out = System.out;
 
-        //noinspection SynchronizationOnLocalVariableOrMethodParameter
         synchronized (out) {
             out.print('[');
             if (size > 0) {
@@ -247,7 +240,6 @@ public final class StdOut {
         final int size = array.length;
         final PrintStream out = System.out;
 
-        //noinspection SynchronizationOnLocalVariableOrMethodParameter
         synchronized (out) {
             out.print('[');
             if (size > 0) {
@@ -270,7 +262,6 @@ public final class StdOut {
         final int size = array.length;
         final PrintStream out = System.out;
 
-        //noinspection SynchronizationOnLocalVariableOrMethodParameter
         synchronized (out) {
             out.print('[');
             if (size > 0) {
@@ -363,7 +354,6 @@ public final class StdOut {
         final int size = array.length;
         final PrintStream out = System.out;
 
-        //noinspection SynchronizationOnLocalVariableOrMethodParameter
         synchronized (out) {
             out.print('[');
             if (size > 0) {
@@ -386,7 +376,6 @@ public final class StdOut {
         final int size = array.length;
         final PrintStream out = System.out;
 
-        //noinspection SynchronizationOnLocalVariableOrMethodParameter
         synchronized (out) {
             out.print('[');
             if (size > 0) {
@@ -409,7 +398,6 @@ public final class StdOut {
         final int size = array.length;
         final PrintStream out = System.out;
 
-        //noinspection SynchronizationOnLocalVariableOrMethodParameter
         synchronized (out) {
             out.print('[');
             if (size > 0) {
@@ -432,7 +420,6 @@ public final class StdOut {
         final int size = array.length;
         final PrintStream out = System.out;
 
-        //noinspection SynchronizationOnLocalVariableOrMethodParameter
         synchronized (out) {
             out.print('[');
             if (size > 0) {
@@ -455,7 +442,6 @@ public final class StdOut {
         final int size = array.length;
         final PrintStream out = System.out;
 
-        //noinspection SynchronizationOnLocalVariableOrMethodParameter
         synchronized (out) {
             out.print('[');
             if (size > 0) {
@@ -478,7 +464,6 @@ public final class StdOut {
         final int size = array.length;
         final PrintStream out = System.out;
 
-        //noinspection SynchronizationOnLocalVariableOrMethodParameter
         synchronized (out) {
             out.print('[');
             if (size > 0) {
@@ -501,7 +486,6 @@ public final class StdOut {
         final int size = array.length;
         final PrintStream out = System.out;
 
-        //noinspection SynchronizationOnLocalVariableOrMethodParameter
         synchronized (out) {
             out.print('[');
             if (size > 0) {
@@ -524,7 +508,6 @@ public final class StdOut {
         final int size = array.length;
         final PrintStream out = System.out;
 
-        //noinspection SynchronizationOnLocalVariableOrMethodParameter
         synchronized (out) {
             out.print('[');
             if (size > 0) {
@@ -547,7 +530,6 @@ public final class StdOut {
         final int size = array.length;
         final PrintStream out = System.out;
 
-        //noinspection SynchronizationOnLocalVariableOrMethodParameter
         synchronized (out) {
             out.print('[');
             if (size > 0) {
