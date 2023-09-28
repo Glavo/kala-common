@@ -36,7 +36,7 @@ allprojects {
 
     var multiRelease = false;
 
-    for (multiVersion in 9..21) {
+    for (multiVersion in 9..27) {
         if (!project.file("src/main/java$multiVersion").exists()) {
             continue
         }
