@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -76,6 +77,13 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
     public abstract <U> U fold(
             @NotNull Function<? super A, ? extends U> leftMapper,
             @NotNull Function<? super B, ? extends U> rightMapper
+    );
+
+    public abstract <C, D, U> U bifold(
+            @NotNull Either<? extends C, ? extends D> other,
+            U defaultValue,
+            @NotNull BiFunction<? super A, ? super C, ? extends U> leftMapper,
+            @NotNull BiFunction<? super B, ? super D, ? extends U> rightMapper
     );
 
     @Contract("-> new")
@@ -188,6 +196,20 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
                 @NotNull Function<? super A, ? extends U> leftMapper,
                 @NotNull Function<? super B, ? extends U> rightMapper) {
             return leftMapper.apply(value);
+        }
+
+        @Override
+        public <C, D, U> U bifold(
+                @NotNull Either<? extends C, ? extends D> other,
+                U defaultValue,
+                @NotNull BiFunction<? super A, ? super C, ? extends U> leftMapper,
+                @NotNull BiFunction<? super B, ? super D, ? extends U> rightMapper) {
+
+            if (other instanceof Left) {
+                return leftMapper.apply(this.value, ((Left<? extends C, ? extends D>) other).value);
+            } else {
+                return defaultValue;
+            }
         }
 
         /**
@@ -330,6 +352,20 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
                 @NotNull Function<? super A, ? extends U> leftMapper,
                 @NotNull Function<? super B, ? extends U> rightMapper) {
             return rightMapper.apply(value);
+        }
+
+        @Override
+        public <C, D, U> U bifold(
+                @NotNull Either<? extends C, ? extends D> other,
+                U defaultValue,
+                @NotNull BiFunction<? super A, ? super C, ? extends U> leftMapper,
+                @NotNull BiFunction<? super B, ? super D, ? extends U> rightMapper) {
+
+            if (other instanceof Right) {
+                return rightMapper.apply(this.value, ((Right<? extends C, ? extends D>) other).value);
+            } else {
+                return defaultValue;
+            }
         }
 
         /**
