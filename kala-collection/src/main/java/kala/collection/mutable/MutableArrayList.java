@@ -25,7 +25,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public final class MutableArrayList<E> extends AbstractMutableList<E> implements IndexedSeq<E>, Serializable {
+public final class MutableArrayList<E> extends AbstractMutableList<E> implements MutableStack<E>, IndexedSeq<E>, Serializable {
     private static final long serialVersionUID = 2545219250020890853L;
 
     private static final MutableArrayList.Factory<?> FACTORY = new Factory<>();
@@ -651,6 +651,25 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
     public @NotNull ImmutableArray<E> toImmutableArray() {
         return size == 0 ? ImmutableArray.empty() : (ImmutableArray<E>) ImmutableArray.Unsafe.wrap(Arrays.copyOf(elements, size));
     }
+
+    //region Stack
+
+    @Override
+    public void push(E value) {
+        this.append(value);
+    }
+
+    @Override
+    public E pop() {
+        return removeLast();
+    }
+
+    @Override
+    public E peek() {
+        return getLast();
+    }
+
+    //endregion
 
     //region Serialization
 

@@ -9,8 +9,10 @@ public interface MutableStack<E> extends MutableCollection<E> {
 
     @Contract("-> new")
     static <E> @NotNull MutableStack<E> create() {
-        return new MutableSinglyLinkedList<>();
+        return MutableArrayList.create();
     }
+
+    // boolean isEmpty();
 
     @Contract(mutates = "this")
     void push(E value);
@@ -19,6 +21,4 @@ public interface MutableStack<E> extends MutableCollection<E> {
     E pop();
 
     E peek();
-
-    boolean isEmpty();
 }
