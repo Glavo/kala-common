@@ -219,6 +219,10 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         return idx >= offset && idx < offset + length ? idx - offset : -1;
     }
 
+    public boolean contains(char ch) {
+        return indexOf(ch) >= 0;
+    }
+
     public boolean contains(String other) {
         int idx = value.indexOf(other, offset);
         return idx >= 0 && idx <= offset + length - other.length();
