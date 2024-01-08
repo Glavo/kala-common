@@ -2,7 +2,6 @@ package kala.function;
 
 import kala.control.Try;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
 public interface CheckedTriFunction<T, U, V, R, Ex extends Throwable> extends TriFunction<T, U, V, R> {
@@ -24,13 +23,5 @@ public interface CheckedTriFunction<T, U, V, R, Ex extends Throwable> extends Tr
             return Try.sneakyThrow(e);
         }
     }
-
-    @Deprecated
-    default @NotNull Try<R> tryApply(T t, U u, V v) {
-        try {
-            return Try.success(applyChecked(t, u, v));
-        } catch (Throwable ex) {
-            return Try.failure(ex);
-        }
-    }
 }
+z

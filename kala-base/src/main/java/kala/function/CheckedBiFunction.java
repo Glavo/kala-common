@@ -2,10 +2,8 @@ package kala.function;
 
 import kala.control.Try;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 @FunctionalInterface
 public interface CheckedBiFunction<T, U, R, Ex extends Throwable> extends BiFunction<T, U, R> {
@@ -24,15 +22,6 @@ public interface CheckedBiFunction<T, U, R, Ex extends Throwable> extends BiFunc
             return applyChecked(t, u);
         } catch (Throwable e) {
             return Try.sneakyThrow(e);
-        }
-    }
-
-    @Deprecated
-    default @NotNull Try<R> tryApply(T t, U u) {
-        try {
-            return Try.success(applyChecked(t, u));
-        } catch (Throwable ex) {
-            return Try.failure(ex);
         }
     }
 }

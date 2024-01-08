@@ -1,7 +1,6 @@
 package kala.function;
 
 import kala.control.Try;
-import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
 public interface CheckedRunnable<Ex extends Throwable> extends Runnable {
@@ -14,16 +13,6 @@ public interface CheckedRunnable<Ex extends Throwable> extends Runnable {
             runChecked();
         } catch (Throwable e) {
             Try.sneakyThrow(e);
-        }
-    }
-
-    @Deprecated
-    default @NotNull Try<Void> tryRun() {
-        try {
-            runChecked();
-            return Try.VOID;
-        } catch (Throwable e) {
-            return Try.failure(e);
         }
     }
 }

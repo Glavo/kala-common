@@ -2,7 +2,6 @@ package kala.function;
 
 import kala.control.Try;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiConsumer;
 
@@ -23,16 +22,6 @@ public interface CheckedBiConsumer<T, U, Ex extends Throwable> extends BiConsume
             acceptChecked(t, u);
         } catch (Throwable ex) {
             Try.sneakyThrow(ex);
-        }
-    }
-
-    @Deprecated
-    default @NotNull Try<Void> tryAccept(T t, U u) {
-        try {
-            acceptChecked(t, u);
-            return Try.VOID;
-        } catch (Throwable ex) {
-            return Try.failure(ex);
         }
     }
 }

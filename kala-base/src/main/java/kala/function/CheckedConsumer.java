@@ -26,7 +26,6 @@ package kala.function;
 
 import kala.control.Try;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
@@ -46,16 +45,6 @@ public interface CheckedConsumer<T, Ex extends Throwable> extends Consumer<T> {
             acceptChecked(t);
         } catch (Throwable ex) {
             Try.sneakyThrow(ex);
-        }
-    }
-
-    @Deprecated
-    default @NotNull Try<Void> tryAccept(T t) {
-        try {
-            acceptChecked(t);
-            return Try.VOID;
-        } catch (Throwable ex) {
-            return Try.failure(ex);
         }
     }
 }

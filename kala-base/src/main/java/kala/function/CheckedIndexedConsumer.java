@@ -2,7 +2,6 @@ package kala.function;
 
 import kala.control.Try;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
 public interface CheckedIndexedConsumer<T, Ex extends Throwable> extends IndexedConsumer<T> {
@@ -21,16 +20,6 @@ public interface CheckedIndexedConsumer<T, Ex extends Throwable> extends Indexed
             acceptChecked(index, t);
         } catch (Throwable e) {
             Try.sneakyThrow(e);
-        }
-    }
-
-    @Deprecated
-    default @NotNull Try<Void> tryAccept(int index, T t) {
-        try {
-            acceptChecked(index, t);
-            return Try.VOID;
-        } catch (Throwable e) {
-            return Try.failure(e);
         }
     }
 }

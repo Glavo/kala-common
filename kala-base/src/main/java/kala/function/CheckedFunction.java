@@ -2,7 +2,6 @@ package kala.function;
 
 import kala.control.Try;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
@@ -38,15 +37,6 @@ public interface CheckedFunction<T, R, Ex extends Throwable> extends Function<T,
             return applyChecked(t);
         } catch (Throwable e) {
             return Try.sneakyThrow(e);
-        }
-    }
-
-    @Deprecated
-    default @NotNull Try<R> tryApply(T t) {
-        try {
-            return Try.success(applyChecked(t));
-        } catch (Throwable ex) {
-            return Try.failure(ex);
         }
     }
 }
