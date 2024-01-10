@@ -24,4 +24,3 @@ public interface CheckedTriFunction<T, U, V, R, Ex extends Throwable> extends Tr
         }
     }
 }
-z
