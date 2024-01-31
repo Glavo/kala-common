@@ -13,20 +13,20 @@ Its documentation is not ready, please contact me if you have any questions.
 
 ## Adding Kala to your build
 
-Please replace `kala_version` with the current kala version.
+Please replace `$kala_version` with the current kala version.
 
 Maven:
 ```xml
 <dependency>
   <groupId>org.glavo.kala</groupId>
   <artifactId>kala-common</artifactId>
-  <version>kala_version</version>
+  <version>$kala_version</version>
 </dependency>
 ```
 
 Gradle:
-```groovy
-implementation group: 'org.glavo.kala', name: 'kala-common', version: kala_version
+```kotlin
+implementation("org.glavo.kala:kala-common:$kala_version")
 ```
 
 ## Donate
