@@ -6,7 +6,9 @@ import org.gradle.kotlin.dsl.*
 
 class GeneratePlugin : Plugin<Project> {
     override fun apply(project: Project) {
-        val srcGen = project.buildDir.resolve("src-gen")
+        val buildDir = project.layout.buildDirectory.asFile.get()
+
+        val srcGen = buildDir.resolve("src-gen")
 
         project.extensions.getByType(JavaPluginExtension::class.java)
             .sourceSets
@@ -25,7 +27,7 @@ class GeneratePlugin : Plugin<Project> {
 
         for (multiVersion in 9..21) {
             if (project.file("src/main/template-java$multiVersion").exists()) {
-                val srcGenMulti = project.buildDir.resolve("src-gen-java$multiVersion")
+                val srcGenMulti = buildDir.resolve("src-gen-java$multiVersion")
                 val generateJavaMultiSources = project.tasks.create<GenerateTask>("generateJava${multiVersion}Sources") {
                     templateDirectory = project.file("src/main/template-java$multiVersion").absolutePath
                     generateSourceDirectory = srcGenMulti.absolutePath
