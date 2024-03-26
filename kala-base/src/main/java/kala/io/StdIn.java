@@ -18,35 +18,10 @@ import java.util.Objects;
 public final class StdIn {
     private static final int BUFFER_SIZE = 128;
 
-    private volatile static InputStream in;
+    private static final BufferedReader reader;
 
-    private volatile static BufferedReader reader;
-
-    private static BufferedReader reader() {
-        final InputStream stdin = System.in;
-
-        if (StdIn.in == stdin) {
-            return reader;
-        }
-
-        synchronized (StdIn.class) {
-            if (StdIn.in == stdin) {
-                return reader;
-            }
-
-            if (stdin == null) {
-                StdIn.in = null;
-                StdIn.reader = null;
-                return null;
-            }
-
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(stdin), BUFFER_SIZE);
-
-            StdIn.in = stdin;
-            StdIn.reader = reader;
-
-            return reader;
-        }
+    static {
+        reader = new BufferedReader(new InputStreamReader(new FileInputStream(FileDescriptor.in)));
     }
 
     public static InputStream stdin() {
@@ -61,19 +36,9 @@ public final class StdIn {
         return System.err;
     }
 
-    public static void clearStdIOCache() {
-        final PrintStream out = System.out;
-        if (out != null) {
-            out.flush();
-        }
-        synchronized (StdIn.class) {
-            in = null;
-            reader = null;
-        }
-    }
 
     public static @NotNull String readLine() throws IOException {
-        return Objects.requireNonNull(reader(), "System.in is null").readLine();
+        return Objects.requireNonNull(reader, "System.in is null").readLine();
     }
 
     public static @NotNull String readLine(String prompt) throws IOException {
