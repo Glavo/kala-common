@@ -24,16 +24,12 @@ public record IntTuple3(int component1, int component2, int component3) implemen
     @Override
     @SuppressWarnings("unchecked")
     public <U> U elementAt(int index) {
-        switch (index) {
-            case 0:
-                return (U) Integer.valueOf(component1);
-            case 1:
-                return (U) Integer.valueOf(component2);
-            case 2:
-                return (U) Integer.valueOf(component3);
-            default:
-                throw new IndexOutOfBoundsException();
-        }
+        return switch (index) {
+            case 0 -> (U) Integer.valueOf(component1);
+            case 1 -> (U) Integer.valueOf(component2);
+            case 2 -> (U) Integer.valueOf(component3);
+            default -> throw new IndexOutOfBoundsException();
+        };
     }
 
     public @NotNull Tuple3<@NotNull Integer, @NotNull Integer, @NotNull Integer> toTuple3() {

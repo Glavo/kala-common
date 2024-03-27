@@ -23,14 +23,11 @@ public record ${ClassName}(${PrimitiveType1} component1, ${PrimitiveType2} compo
     @Override
     @SuppressWarnings("unchecked")
     public <U> U elementAt(int index) {
-        switch (index) {
-            case 0:
-                return (U) (Object) component1;
-            case 1:
-                return (U) (Object) component2;
-            default:
-                throw new IndexOutOfBoundsException();
-        }
+        return switch (index) {
+            case 0 -> (U) (Object) component1;
+            case 1 -> (U) (Object) component2;
+            default -> throw new IndexOutOfBoundsException();
+        };
     }
 
     public @NotNull Tuple2<${"@NotNull"} ${WrapperType1}, @NotNull ${WrapperType2}> toTuple2() {
@@ -57,18 +54,15 @@ public record ${ClassName}(${PrimitiveType1} component1, ${PrimitiveType2} compo
     public boolean equals(Object o) {
         if (this == o) return true;
 
-        if (o instanceof ${ClassName}) {
-            ${ClassName} other = (${ClassName}) o;
+        if (o instanceof ${ClassName} other) {
             return Conditions.equals(component1, other.component1) && Conditions.equals(component2, other.component2);
         }
 
-        if (o instanceof Map.Entry) {
-            Map.Entry<?, ?> other = (Map.Entry<?, ?>) o;
+        if (o instanceof Map.Entry<?, ?> other) {
             return Conditions.equals(component1, other.getKey()) && Conditions.equals(component2, other.getValue());
         }
 
-        if (o instanceof AnyTuple) {
-            AnyTuple other = (AnyTuple) o;
+        if (o instanceof AnyTuple other) {
             return other.arity() == 2
                     && Conditions.equals(component1, other.elementAt(0))
                     && Conditions.equals(component2, other.elementAt(1));
