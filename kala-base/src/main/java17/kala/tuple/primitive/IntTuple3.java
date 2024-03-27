@@ -6,7 +6,10 @@ import kala.tuple.Tuple;
 import kala.tuple.Tuple3;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
+
 public record IntTuple3(int component1, int component2, int component3) implements PrimitiveTuple {
+    @Serial
     private static final long serialVersionUID = 0L;
 
     public static @NotNull IntTuple3 of(int i1, int i2, int i3) {
@@ -41,13 +44,11 @@ public record IntTuple3(int component1, int component2, int component3) implemen
     public boolean equals(Object o) {
         if (this == o) return true;
 
-        if (o instanceof IntTuple3) {
-            IntTuple3 other = (IntTuple3) o;
+        if (o instanceof IntTuple3 other) {
             return component1 == other.component1 && component2 == other.component2 && this.component3 == other.component3;
         }
 
-        if (o instanceof AnyTuple) {
-            AnyTuple other = (AnyTuple) o;
+        if (o instanceof AnyTuple other) {
             return other.arity() == 3
                     && Conditions.equals(component1, other.elementAt(0))
                     && Conditions.equals(component2, other.elementAt(1))

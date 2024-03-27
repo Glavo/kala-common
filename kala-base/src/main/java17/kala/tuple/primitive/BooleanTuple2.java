@@ -6,9 +6,11 @@ import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
 import java.util.Map;
 
 public record BooleanTuple2(boolean component1, boolean component2) implements Map.Entry<Boolean, Boolean>, PrimitiveTuple {
+    @Serial
     private static final long serialVersionUID = 0L;
 
     private static final BooleanTuple2 TT = new BooleanTuple2(true, true);
@@ -37,14 +39,11 @@ public record BooleanTuple2(boolean component1, boolean component2) implements M
     @Override
     @SuppressWarnings("unchecked")
     public <U> U elementAt(int index) {
-        switch (index) {
-            case 0:
-                return (U) Boolean.valueOf(component1);
-            case 1:
-                return (U) Boolean.valueOf(component2);
-            default:
-                throw new IndexOutOfBoundsException();
-        }
+        return switch (index) {
+            case 0 -> (U) Boolean.valueOf(component1);
+            case 1 -> (U) Boolean.valueOf(component2);
+            default -> throw new IndexOutOfBoundsException();
+        };
     }
 
     public @NotNull Tuple2<@NotNull Boolean, @NotNull Boolean> toTuple2() {
@@ -70,18 +69,15 @@ public record BooleanTuple2(boolean component1, boolean component2) implements M
     public boolean equals(Object o) {
         if (this == o) return true;
 
-        if (o instanceof BooleanTuple2) {
-            BooleanTuple2 other = (BooleanTuple2) o;
+        if (o instanceof BooleanTuple2 other) {
             return component1 == other.component1 && component2 == other.component2;
         }
 
-        if (o instanceof Map.Entry) {
-            Map.Entry<?, ?> other = (Map.Entry<?, ?>) o;
+        if (o instanceof Map.Entry<?, ?> other) {
             return Conditions.equals(component1, other.getKey()) && Conditions.equals(component2, other.getValue());
         }
 
-        if (o instanceof AnyTuple) {
-            AnyTuple other = (AnyTuple) o;
+        if (o instanceof AnyTuple other) {
             return other.arity() == 2
                     && Conditions.equals(component1, other.elementAt(0))
                     && Conditions.equals(component2, other.elementAt(1));
