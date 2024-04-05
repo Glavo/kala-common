@@ -112,6 +112,18 @@ public final class ${Type}Option extends PrimitiveOption<${WrapperType}> impleme
         return this.isDefined() ? this : other;
     }
 
+    public @NotNull ${Type}Option map(${Type}UnaryOperator mapper) {
+        return isDefined() ? ${Type}Option.some(mapper.applyAs${Type}(value)) : None;
+    }
+
+    public <T> @NotNull Option<T> mapToObj(@NotNull ${Type}Function<? extends T> mapper) {
+        return isDefined() ? Option.some(mapper.apply(value)) : Option.none();
+    }
+
+    public @NotNull ${Type}Option filter(@NotNull ${Type}Predicate predicate) {
+        return isDefined() && predicate.test(value) ? this : None;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this) return true;
