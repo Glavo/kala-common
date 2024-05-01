@@ -9,7 +9,7 @@ plugins {
 
 allprojects {
     group = "org.glavo.kala"
-    version = "0.71.0"// + "-SNAPSHOT"
+    version = "0.72.0" + "-SNAPSHOT"
 
     description = "Basic components of Kala"
 
@@ -32,21 +32,16 @@ allprojects {
         testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     }
 
+    java {
+        withJavadocJar()
+        withSourcesJar()
+    }
+
     tasks.compileJava {
         options.release.set(21)
+        options.javaModuleVersion.set(project.version.toString())
+        options.encoding = "UTF-8"
         options.isWarnings = false
-    }
-
-    val sourcesJar = tasks.create<Jar>("sourcesJar") {
-        group = "build"
-        archiveClassifier.set("sources")
-
-        from(sourceSets.main.get().allSource)
-    }
-
-    val javadocJar = tasks.create<Jar>("javadocJar") {
-        group = "build"
-        archiveClassifier.set("javadoc")
     }
 
     tasks.withType<Javadoc>().configureEach {
@@ -69,8 +64,6 @@ allprojects {
                 version = this@allprojects.version.toString()
                 artifactId = this@allprojects.name
                 from(components["java"])
-                artifact(javadocJar)
-                artifact(sourcesJar)
 
                 pom {
                     name.set(project.name)
