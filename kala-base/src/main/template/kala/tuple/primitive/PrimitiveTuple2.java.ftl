@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.tuple.primitive;
 
 import kala.Conditions;
@@ -8,16 +23,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-public final class ${ClassName} implements PrimitiveTuple, Map.Entry<${WrapperType1}, ${WrapperType2}> {
+public record ${ClassName}(${PrimitiveType1} component1, ${PrimitiveType2} component2) implements PrimitiveTuple, Map.Entry<${WrapperType1}, ${WrapperType2}> {
     private static final long serialVersionUID = 0L;
-
-    private final ${PrimitiveType1} component1;
-    private final ${PrimitiveType2} component2;
-
-    private ${ClassName}(${PrimitiveType1} v1, ${PrimitiveType2} v2) {
-        component1 = v1;
-        component2 = v2;
-    }
 
     public static @NotNull ${ClassName} of(${PrimitiveType1} v1, ${PrimitiveType2} v2) {
         return new ${ClassName}(v1, v2);
@@ -31,22 +38,11 @@ public final class ${ClassName} implements PrimitiveTuple, Map.Entry<${WrapperTy
     @Override
     @SuppressWarnings("unchecked")
     public <U> U elementAt(int index) {
-        switch (index) {
-            case 0:
-                return (U) (Object) component1;
-            case 1:
-                return (U) (Object) component2;
-            default:
-                throw new IndexOutOfBoundsException();
-        }
-    }
-
-    public ${PrimitiveType1} component1() {
-        return component1;
-    }
-
-    public ${PrimitiveType2} component2() {
-        return component2;
+        return switch (index) {
+            case 0 -> (U) (Object) component1;
+            case 1 -> (U) (Object) component2;
+            default -> throw new IndexOutOfBoundsException();
+        };
     }
 
     public @NotNull Tuple2<${"@NotNull"} ${WrapperType1}, @NotNull ${WrapperType2}> toTuple2() {
@@ -73,18 +69,15 @@ public final class ${ClassName} implements PrimitiveTuple, Map.Entry<${WrapperTy
     public boolean equals(Object o) {
         if (this == o) return true;
 
-        if (o instanceof ${ClassName}) {
-            ${ClassName} other = (${ClassName}) o;
+        if (o instanceof ${ClassName} other) {
             return Conditions.equals(component1, other.component1) && Conditions.equals(component2, other.component2);
         }
 
-        if (o instanceof Map.Entry) {
-            Map.Entry<?, ?> other = (Map.Entry<?, ?>) o;
+        if (o instanceof Map.Entry<?, ?> other) {
             return Conditions.equals(component1, other.getKey()) && Conditions.equals(component2, other.getValue());
         }
 
-        if (o instanceof AnyTuple) {
-            AnyTuple other = (AnyTuple) o;
+        if (o instanceof AnyTuple other) {
             return other.arity() == 2
                     && Conditions.equals(component1, other.elementAt(0))
                     && Conditions.equals(component2, other.elementAt(1));

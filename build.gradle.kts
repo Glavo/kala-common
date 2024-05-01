@@ -1,9 +1,8 @@
 plugins {
-    `java-library`
-    `maven-publish`
-    signing
+    id("java-library")
+    id("maven-publish")
+    id("signing")
     id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
-    id("org.glavo.compile-module-info-plugin") version "2.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("org.glavo.load-maven-publish-properties") version "0.1.0"
 }
@@ -22,7 +21,6 @@ allprojects {
         plugin("java-library")
         plugin("maven-publish")
         plugin("signing")
-        plugin("org.glavo.compile-module-info-plugin")
     }
 
     repositories {
@@ -34,51 +32,8 @@ allprojects {
         testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     }
 
-    var multiRelease = false;
-
-    for (multiVersion in 9..27) {
-        if (!project.file("src/main/java$multiVersion").exists()) {
-            continue
-        }
-
-        multiRelease = true
-
-        val multiSourceSet = sourceSets.create("java$multiVersion") {
-            java.srcDir("src/main/java$multiVersion")
-        }
-
-        tasks.named<JavaCompile>("compileJava${multiVersion}Java") {
-            sourceCompatibility = "$multiVersion"
-            targetCompatibility = "$multiVersion"
-        }
-
-        dependencies {
-            "java${multiVersion}CompileOnly"("org.jetbrains:annotations:23.1.0")
-            "java${multiVersion}Implementation"(sourceSets.main.get().output.classesDirs)
-        }
-
-        tasks.jar {
-            into("META-INF/versions/${multiVersion}") {
-                from(multiSourceSet.output)
-            }
-
-            manifest.attributes(
-                "Multi-Release" to "true"
-            )
-        }
-    }
-
-    if (multiRelease) {
-        tasks.jar {
-            manifest.attributes(
-                "Multi-Release" to "true"
-            )
-        }
-    }
-
     tasks.compileJava {
-        sourceCompatibility = "9"
-        options.release.set(8)
+        options.release.set(21)
         options.isWarnings = false
     }
 
@@ -92,10 +47,6 @@ allprojects {
     val javadocJar = tasks.create<Jar>("javadocJar") {
         group = "build"
         archiveClassifier.set("javadoc")
-    }
-
-    tasks.withType<org.glavo.mic.tasks.CompileModuleInfo> {
-        moduleVersion = project.version.toString()
     }
 
     tasks.withType<Javadoc>().configureEach {

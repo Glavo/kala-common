@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.tuple.primitive;
 
 import kala.Conditions;
@@ -6,9 +21,11 @@ import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
 import java.util.Map;
 
-public final class BooleanTuple2 implements Map.Entry<Boolean, Boolean>, PrimitiveTuple {
+public record BooleanTuple2(boolean component1, boolean component2) implements Map.Entry<Boolean, Boolean>, PrimitiveTuple {
+    @Serial
     private static final long serialVersionUID = 0L;
 
     private static final BooleanTuple2 TT = new BooleanTuple2(true, true);
@@ -20,14 +37,6 @@ public final class BooleanTuple2 implements Map.Entry<Boolean, Boolean>, Primiti
     private static final String TF_S = "BooleanTuple2(true, false)" ;
     private static final String FT_S = "BooleanTuple2(false, true)" ;
     private static final String FF_S = "BooleanTuple2(false, false)" ;
-
-    private final boolean component1;
-    private final boolean component2;
-
-    private BooleanTuple2(boolean b1, boolean b2) {
-        component1 = b1;
-        component2 = b2;
-    }
 
     public static @NotNull BooleanTuple2 of(boolean b1, boolean b2) {
         if (b1) {
@@ -45,22 +54,11 @@ public final class BooleanTuple2 implements Map.Entry<Boolean, Boolean>, Primiti
     @Override
     @SuppressWarnings("unchecked")
     public <U> U elementAt(int index) {
-        switch (index) {
-            case 0:
-                return (U) Boolean.valueOf(component1);
-            case 1:
-                return (U) Boolean.valueOf(component2);
-            default:
-                throw new IndexOutOfBoundsException();
-        }
-    }
-
-    public boolean component1() {
-        return component1;
-    }
-
-    public boolean component2() {
-        return component2;
+        return switch (index) {
+            case 0 -> (U) Boolean.valueOf(component1);
+            case 1 -> (U) Boolean.valueOf(component2);
+            default -> throw new IndexOutOfBoundsException();
+        };
     }
 
     public @NotNull Tuple2<@NotNull Boolean, @NotNull Boolean> toTuple2() {
@@ -86,18 +84,15 @@ public final class BooleanTuple2 implements Map.Entry<Boolean, Boolean>, Primiti
     public boolean equals(Object o) {
         if (this == o) return true;
 
-        if (o instanceof BooleanTuple2) {
-            BooleanTuple2 other = (BooleanTuple2) o;
+        if (o instanceof BooleanTuple2 other) {
             return component1 == other.component1 && component2 == other.component2;
         }
 
-        if (o instanceof Map.Entry) {
-            Map.Entry<?, ?> other = (Map.Entry<?, ?>) o;
+        if (o instanceof Map.Entry<?, ?> other) {
             return Conditions.equals(component1, other.getKey()) && Conditions.equals(component2, other.getValue());
         }
 
-        if (o instanceof AnyTuple) {
-            AnyTuple other = (AnyTuple) o;
+        if (o instanceof AnyTuple other) {
             return other.arity() == 2
                     && Conditions.equals(component1, other.elementAt(0))
                     && Conditions.equals(component2, other.elementAt(1));

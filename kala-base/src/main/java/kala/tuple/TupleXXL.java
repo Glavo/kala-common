@@ -1,7 +1,23 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.tuple;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
@@ -14,6 +30,7 @@ import java.util.function.IntFunction;
  */
 @SuppressWarnings("unchecked")
 final class TupleXXL implements HList<Object, HList<?, ?>>, Serializable {
+    @Serial
     private static final long serialVersionUID = 0L;
 
     private final Object @NotNull [] values;
@@ -79,13 +96,11 @@ final class TupleXXL implements HList<Object, HList<?, ?>>, Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
 
-        if (o instanceof TupleXXL) {
-            TupleXXL other = (TupleXXL) o;
+        if (o instanceof TupleXXL other) {
             return Arrays.equals(this.values, other.values);
         }
 
-        if (o instanceof AnyTuple) {
-            AnyTuple other = (AnyTuple) o;
+        if (o instanceof AnyTuple other) {
             if (this.arity() != other.arity()) return false;
             for (int i = 0; i < values.length; i++) {
                 if (!Objects.equals(values[i], other.elementAt(i))) return false;

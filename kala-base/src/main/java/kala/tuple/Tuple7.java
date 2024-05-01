@@ -1,12 +1,28 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.tuple;
-
-import java.io.Serializable;
-import java.util.Objects;
-import java.util.function.IntFunction;
 
 import kala.annotations.Covariant;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.Objects;
+import java.util.function.IntFunction;
 
 /**
  * A tuple of 7 elements.
@@ -20,65 +36,13 @@ import org.jetbrains.annotations.NotNull;
  * @param <T7> type of the 7th element
  * @author Glavo
  */
-public final class Tuple7<@Covariant T1, @Covariant T2, @Covariant T3, @Covariant T4, @Covariant T5, @Covariant T6, @Covariant T7>
-        implements HList<T1, Tuple6<T2, T3, T4, T5, T6, T7>>, Serializable {
+public record Tuple7<@Covariant T1, @Covariant T2, @Covariant T3, @Covariant T4, @Covariant T5, @Covariant T6, @Covariant T7>(
+        T1 component1, T2 component2, T3 component3,
+        T4 component4, T5 component5, T6 component6,
+        T7 component7
+) implements HList<T1, Tuple6<T2, T3, T4, T5, T6, T7>>, Serializable {
+    @Serial
     private static final long serialVersionUID = 0L;
-
-    /**
-     * The 1st element of this tuple.
-     */
-    private final T1 component1;
-
-    /**
-     * The 2nd element of this tuple.
-     */
-    private final T2 component2;
-
-    /**
-     * The 3rd element of this tuple.
-     */
-    private final T3 component3;
-
-    /**
-     * The 4th element of this tuple.
-     */
-    private final T4 component4;
-
-    /**
-     * The 5th element of this tuple.
-     */
-    private final T5 component5;
-
-    /**
-     * The 6th element of this tuple.
-     */
-    private final T6 component6;
-
-    /**
-     * The 7th element of this tuple.
-     */
-    private final T7 component7;
-
-    /**
-     * Constructs a tuple of 7 elements.
-     *
-     * @param t1 the 1st element
-     * @param t2 the 2nd element
-     * @param t3 the 3rd element
-     * @param t4 the 4th element
-     * @param t5 the 5th element
-     * @param t6 the 6th element
-     * @param t7 the 7th element
-     */
-    public Tuple7(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7) {
-        this.component1 = t1;
-        this.component2 = t2;
-        this.component3 = t3;
-        this.component4 = t4;
-        this.component5 = t5;
-        this.component6 = t6;
-        this.component7 = t7;
-    }
 
     @Contract(value = "_ -> param1", pure = true)
     @SuppressWarnings("unchecked")
@@ -101,24 +65,16 @@ public final class Tuple7<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
     @Override
     @SuppressWarnings("unchecked")
     public <U> U elementAt(int index) {
-        switch (index) {
-            case 0:
-                return (U) component1;
-            case 1:
-                return (U) component2;
-            case 2:
-                return (U) component3;
-            case 3:
-                return (U) component4;
-            case 4:
-                return (U) component5;
-            case 5:
-                return (U) component6;
-            case 6:
-                return (U) component7;
-            default:
-                throw new IndexOutOfBoundsException("Index out of range: " + index);
-        }
+        return switch (index) {
+            case 0 -> (U) component1;
+            case 1 -> (U) component2;
+            case 2 -> (U) component3;
+            case 3 -> (U) component4;
+            case 4 -> (U) component5;
+            case 5 -> (U) component6;
+            case 6 -> (U) component7;
+            default -> throw new IndexOutOfBoundsException("Index out of range: " + index);
+        };
     }
 
     /**
@@ -136,69 +92,6 @@ public final class Tuple7<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
         arr[5] = (U) this.component6;
         arr[6] = (U) this.component7;
         return arr;
-    }
-
-    /**
-     * Returns the 1st element of this tuple.
-     *
-     * @return the 1st element of this tuple
-     */
-    public T1 component1() {
-        return component1;
-    }
-
-    /**
-     * Returns the 2nd element of this tuple.
-     *
-     * @return the 2nd element of this tuple
-     */
-    public T2 component2() {
-        return component2;
-    }
-
-    /**
-     * Returns the 3rd element of this tuple.
-     *
-     * @return the 3rd element of this tuple
-     */
-    public T3 component3() {
-        return component3;
-    }
-
-    /**
-     * Returns the 4th element of this tuple.
-     *
-     * @return the 4th element of this tuple
-     */
-    public T4 component4() {
-        return component4;
-    }
-
-    /**
-     * Returns the 5th element of this tuple.
-     *
-     * @return the 5th element of this tuple
-     */
-    public T5 component5() {
-        return component5;
-    }
-
-    /**
-     * Returns the 6th element of this tuple.
-     *
-     * @return the 6th element of this tuple
-     */
-    public T6 component6() {
-        return component6;
-    }
-
-    /**
-     * Returns the 7th element of this tuple.
-     *
-     * @return the 7th element of this tuple
-     */
-    public T7 component7() {
-        return component7;
     }
 
     /**
@@ -233,8 +126,7 @@ public final class Tuple7<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
     public boolean equals(Object o) {
         if (this == o) return true;
 
-        if (o instanceof Tuple7) {
-            Tuple7<?, ?, ?, ?, ?, ?, ?> other = (Tuple7<?, ?, ?, ?, ?, ?, ?>) o;
+        if (o instanceof Tuple7<?, ?, ?, ?, ?, ?, ?> other) {
             return Objects.equals(this.component1, other.component1)
                     && Objects.equals(this.component2, other.component2)
                     && Objects.equals(this.component3, other.component3)
@@ -244,8 +136,7 @@ public final class Tuple7<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
                     && Objects.equals(this.component7, other.component7);
         }
 
-        if (o instanceof AnyTuple) {
-            AnyTuple other = (AnyTuple) o;
+        if (o instanceof AnyTuple other) {
             return other.arity() == 7
                     && Objects.equals(this.component1, other.elementAt(0))
                     && Objects.equals(this.component2, other.elementAt(1))
@@ -283,6 +174,7 @@ public final class Tuple7<@Covariant T1, @Covariant T2, @Covariant T3, @Covarian
         return "(" + component1 + ", " + component2 + ", " + component3 + ", " + component4 + ", " + component5 + ", " + component6 + ", " + component7 + ")";
     }
 
+    @Serial
     private Object writeReplace() {
         return new SerializedTuple(toArray());
     }

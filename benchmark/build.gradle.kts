@@ -22,7 +22,7 @@ tasks.create<JavaExec>("runBenchmark") {
             "file.encoding" to "UTF-8"
     )
 
-    val logDir = project.buildDir.toPath().resolve("logs").also {
+    val logDir = project.layout.buildDirectory.asFile.get().toPath().resolve("logs").also {
         if (Files.notExists(it)) {
             Files.createDirectories(it)
         }

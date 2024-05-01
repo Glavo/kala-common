@@ -29,6 +29,10 @@ Gradle:
 implementation("org.glavo.kala:kala-common:$kala_version")
 ```
 
+## Note
+
+The last version compatible with Java 8 was 0.70.0. Building and running kala common now require Java 21.
+
 ## Donate
 
 If you like this library, donating to me is my greatest support!

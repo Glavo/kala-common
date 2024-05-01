@@ -1,5 +1,21 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.tuple;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -16,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Glavo
  * @see HList
  */
-public /* sealed */ interface Tuple extends AnyTuple, Serializable {
+public sealed interface Tuple extends AnyTuple, Serializable permits EmptyTuple, NonEmptyTuple {
     /**
      * Returns the number of elements of this {@code Tuple}.
      *
@@ -266,41 +282,30 @@ public /* sealed */ interface Tuple extends AnyTuple, Serializable {
     @SuppressWarnings("unchecked")
     @Contract("_ -> new")
     static <T extends Tuple> @NotNull T of(Object... values) {
-        switch (values.length) {
-            case 0:
-                return (T) Unit.INSTANCE;
-            case 1:
-                return (T) new Tuple1<>(values[0]);
-            case 2:
-                return (T) new Tuple2<>(values[0], values[1]);
-            case 3:
-                return (T) new Tuple3<>(values[0], values[1], values[2]);
-            case 4:
-                return (T) new Tuple4<>(values[0], values[1], values[2], values[3]);
-            case 5:
-                return (T) new Tuple5<>(values[0], values[1], values[2], values[3], values[4]);
-            case 6:
-                return (T)
-                        new Tuple6<>(
-                                values[0], values[1], values[2], values[3], values[4], values[5]);
-            case 7:
-                return (T)
-                        new Tuple7<>(
-                                values[0], values[1], values[2], values[3], values[4], values[5],
-                                values[6]);
-            case 8:
-                return (T)
-                        new Tuple8<>(
-                                values[0], values[1], values[2], values[3], values[4], values[5],
-                                values[6], values[7]);
-            case 9:
-                return (T)
-                        new Tuple9<>(
-                                values[0], values[1], values[2], values[3], values[4], values[5],
-                                values[6], values[7], values[8]);
-            default:
-                return (T) new TupleXXL(values.clone());
-        }
+        return switch (values.length) {
+            case 0 -> (T) Unit.INSTANCE;
+            case 1 -> (T) new Tuple1<>(values[0]);
+            case 2 -> (T) new Tuple2<>(values[0], values[1]);
+            case 3 -> (T) new Tuple3<>(values[0], values[1], values[2]);
+            case 4 -> (T) new Tuple4<>(values[0], values[1], values[2], values[3]);
+            case 5 -> (T) new Tuple5<>(values[0], values[1], values[2], values[3], values[4]);
+            case 6 -> (T)
+                    new Tuple6<>(
+                            values[0], values[1], values[2], values[3], values[4], values[5]);
+            case 7 -> (T)
+                    new Tuple7<>(
+                            values[0], values[1], values[2], values[3], values[4], values[5],
+                            values[6]);
+            case 8 -> (T)
+                    new Tuple8<>(
+                            values[0], values[1], values[2], values[3], values[4], values[5],
+                            values[6], values[7]);
+            case 9 -> (T)
+                    new Tuple9<>(
+                            values[0], values[1], values[2], values[3], values[4], values[5],
+                            values[6], values[7], values[8]);
+            default -> (T) new TupleXXL(values.clone());
+        };
     }
 
     /**
@@ -1270,29 +1275,25 @@ public /* sealed */ interface Tuple extends AnyTuple, Serializable {
     @SuppressWarnings("unchecked")
     static <T extends Tuple> @NotNull Comparator<T> comparator(@NotNull Comparator<?>... comparators) {
         final int n = comparators.length;
-        switch (n) {
-            case 0:
-                return (Comparator<T>) comparator();
-            case 1:
-                return (Comparator<T>) comparator(comparators[0]);
-            case 2:
-                return (Comparator<T>) comparator(comparators[0], comparators[1]);
-            case 3:
-                return (Comparator<T>) comparator(comparators[0], comparators[1], comparators[2]);
-            case 4:
-                return (Comparator<T>) comparator(comparators[0], comparators[1], comparators[2], comparators[3]);
-            case 5:
-                return (Comparator<T>) comparator(comparators[0], comparators[1], comparators[2], comparators[3], comparators[4]);
-            case 6:
-                return (Comparator<T>) comparator(comparators[0], comparators[1], comparators[2], comparators[3], comparators[4], comparators[5]);
-            case 7:
-                return (Comparator<T>) comparator(comparators[0], comparators[1], comparators[2], comparators[3], comparators[4], comparators[5], comparators[6]);
-            case 8:
-                return (Comparator<T>) comparator(comparators[0], comparators[1], comparators[2], comparators[3], comparators[4], comparators[5], comparators[6], comparators[7]);
-            case 9:
-                return (Comparator<T>) comparator(comparators[0], comparators[1], comparators[2], comparators[3], comparators[4], comparators[5], comparators[6], comparators[7], comparators[8]);
-            default:
+        return switch (n) {
+            case 0 -> (Comparator<T>) comparator();
+            case 1 -> (Comparator<T>) comparator(comparators[0]);
+            case 2 -> (Comparator<T>) comparator(comparators[0], comparators[1]);
+            case 3 -> (Comparator<T>) comparator(comparators[0], comparators[1], comparators[2]);
+            case 4 -> (Comparator<T>) comparator(comparators[0], comparators[1], comparators[2], comparators[3]);
+            case 5 ->
+                    (Comparator<T>) comparator(comparators[0], comparators[1], comparators[2], comparators[3], comparators[4]);
+            case 6 ->
+                    (Comparator<T>) comparator(comparators[0], comparators[1], comparators[2], comparators[3], comparators[4], comparators[5]);
+            case 7 ->
+                    (Comparator<T>) comparator(comparators[0], comparators[1], comparators[2], comparators[3], comparators[4], comparators[5], comparators[6]);
+            case 8 ->
+                    (Comparator<T>) comparator(comparators[0], comparators[1], comparators[2], comparators[3], comparators[4], comparators[5], comparators[6], comparators[7]);
+            case 9 ->
+                    (Comparator<T>) comparator(comparators[0], comparators[1], comparators[2], comparators[3], comparators[4], comparators[5], comparators[6], comparators[7], comparators[8]);
+            default -> {
                 final class ComparatorN implements Comparator<Tuple>, Serializable {
+                    @Serial
                     private static final long serialVersionUID = 0L;
                     private final @NotNull Comparator<?>[] comparators;
 
@@ -1319,17 +1320,11 @@ public /* sealed */ interface Tuple extends AnyTuple, Serializable {
 
                     @Override
                     public boolean equals(Object obj) {
-                        if (this == obj) {
-                            return true;
-                        }
-                        if (!(obj instanceof ComparatorN)) {
-                            return false;
-                        }
-                        ComparatorN cn = (ComparatorN) obj;
-                        return Arrays.equals(this.comparators, cn.comparators);
+                        return this == obj || obj instanceof ComparatorN cn && Arrays.equals(this.comparators, cn.comparators);
                     }
                 }
-                return (Comparator<T>) new ComparatorN(comparators.clone());
-        }
+                yield (Comparator<T>) new ComparatorN(comparators.clone());
+            }
+        };
     }
 }
