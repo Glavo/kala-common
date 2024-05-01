@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.control;
 
 import kala.annotations.ReplaceWith;
@@ -10,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -25,6 +41,7 @@ import java.util.function.Supplier;
  */
 @SuppressWarnings("unchecked")
 public final class Try<@Covariant T> extends AnyTry<T> implements Traversable<T>, Serializable {
+    @Serial
     private static final long serialVersionUID = -876749736621195838L;
 
     public static final Try<Void> VOID = new Try<>(null, null);
@@ -97,20 +114,16 @@ public final class Try<@Covariant T> extends AnyTry<T> implements Traversable<T>
     public static String getStackTraceAsString(@NotNull Throwable exception) {
         Objects.requireNonNull(exception);
 
-        try {
-            ByteArrayOutputStream buffer = new ByteArrayOutputStream(4096);
-            try (PrintStream stream = new PrintStream(buffer, false, "UTF-8")) {
-                exception.printStackTrace(stream);
-            }
-            return buffer.toString("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new InternalError(e);
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream(4096);
+        try (PrintStream stream = new PrintStream(buffer, false, StandardCharsets.UTF_8)) {
+            exception.printStackTrace(stream);
         }
+        return buffer.toString(StandardCharsets.UTF_8);
     }
 
     public static String getStackTraceAsString(StackTraceElement @NotNull [] stackTrace) {
         StringBuilder builder = new StringBuilder(4096);
-        String lineSeparator = System.getProperty("line.separator");
+        String lineSeparator = System.lineSeparator();
 
         for (StackTraceElement traceElement : stackTrace) {
             builder.append("\tat ").append(traceElement).append(lineSeparator);
@@ -120,7 +133,7 @@ public final class Try<@Covariant T> extends AnyTry<T> implements Traversable<T>
 
     public static String getStackTraceAsString(@NotNull Iterable<StackTraceElement> stackTrace) {
         StringBuilder builder = new StringBuilder(4096);
-        String lineSeparator = System.getProperty("line.separator");
+        String lineSeparator = System.lineSeparator();
 
         for (StackTraceElement traceElement : stackTrace) {
             builder.append("\tat ").append(traceElement).append(lineSeparator);
@@ -473,6 +486,7 @@ public final class Try<@Covariant T> extends AnyTry<T> implements Traversable<T>
         }
     }
 
+    @Serial
     private Object writeReplace() {
         if (isSuccess()) {
             return new Replaced(true, value);
@@ -482,6 +496,7 @@ public final class Try<@Covariant T> extends AnyTry<T> implements Traversable<T>
     }
 
     private static final class Replaced implements Serializable {
+        @Serial
         private static final long serialVersionUID = -3487244164062636325L;
 
         private final boolean isSuccess;
@@ -492,6 +507,7 @@ public final class Try<@Covariant T> extends AnyTry<T> implements Traversable<T>
             this.value = value;
         }
 
+        @Serial
         private Object readResolve() {
             return isSuccess ? success(value) : failure((Throwable) value);
         }

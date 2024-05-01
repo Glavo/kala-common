@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.control.primitive;
 
 import kala.annotations.ReplaceWith;
@@ -9,12 +24,14 @@ import kala.function.CheckedBooleanSupplier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
 @SuppressWarnings("unchecked")
-public final class BooleanTry extends AnyTry<Boolean> implements BooleanTraversable, Serializable {
+public final class BooleanTry extends PrimitiveTry<Boolean> implements BooleanTraversable, Serializable {
+    @Serial
     private static final long serialVersionUID = 8279218383491584792L;
 
     public static final BooleanTry True = new BooleanTry(null);
@@ -117,9 +134,7 @@ public final class BooleanTry extends AnyTry<Boolean> implements BooleanTraversa
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof AnyTry)) return false;
-
-        AnyTry<?> other = (AnyTry<?>) o;
+        if (!(o instanceof AnyTry<?> other)) return false;
 
         if (this.isSuccess() && other.isSuccess()) {
             return Boolean.valueOf(this.get()).equals(other.getValue());

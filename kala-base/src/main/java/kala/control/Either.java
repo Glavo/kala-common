@@ -1,11 +1,26 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.control;
 
 import kala.annotations.Covariant;
-import kala.annotations.Sealed;
 import kala.annotations.UnstableName;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -13,9 +28,8 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-@Sealed(subclasses = {Either.Left.class, Either.Right.class})
 @SuppressWarnings("unchecked")
-public abstract class Either<@Covariant A, @Covariant B> implements Serializable {
+public abstract sealed class Either<@Covariant A, @Covariant B> implements Serializable {
     Either() {
     }
 
@@ -108,6 +122,7 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
     );
 
     public final static class Left<@Covariant A, @Covariant B> extends Either<A, B> {
+        @Serial
         private static final long serialVersionUID = -1160729620210301179L;
 
         private static final int HASH_MAGIC = -1951578063;
@@ -263,6 +278,7 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
     }
 
     public final static class Right<@Covariant A, @Covariant B> extends Either<A, B> {
+        @Serial
         private static final long serialVersionUID = -3372589401685464421L;
 
         private static final int HASH_MAGIC = 1973604283;
@@ -418,7 +434,7 @@ public abstract class Either<@Covariant A, @Covariant B> implements Serializable
         }
     }
 
-    public abstract class Projection<@Covariant T> implements OptionContainer<T> {
+    public abstract sealed class Projection<@Covariant T> implements OptionContainer<T> {
         Projection() {
         }
 

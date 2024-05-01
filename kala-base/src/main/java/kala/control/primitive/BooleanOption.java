@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.control.primitive;
 
 import kala.annotations.ReplaceWith;
@@ -8,9 +23,11 @@ import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serial;
 import java.util.NoSuchElementException;
 
 public final class BooleanOption extends PrimitiveOption<Boolean> implements BooleanTraversable {
+    @Serial
     private static final long serialVersionUID = 3226319253753655469L;
     private static final int HASH_MAGIC = 773806848;
 
@@ -136,6 +153,7 @@ public final class BooleanOption extends PrimitiveOption<Boolean> implements Boo
         return name;
     }
 
+    @Serial
     private Object readResolve() {
         if (isDefined) {
             return value ? True : False;

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.control.primitive;
 
 import kala.collection.base.primitive.*;
@@ -7,6 +22,7 @@ import kala.control.Option;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -20,6 +36,7 @@ import kala.function.*;
 </#if>
 
 public final class ${Type}Option extends PrimitiveOption<${WrapperType}> implements ${Type}Traversable {
+    @Serial
     private static final long serialVersionUID = -8990024629462620023L;
 
     public static final ${Type}Option None = new ${Type}Option();
@@ -128,13 +145,12 @@ public final class ${Type}Option extends PrimitiveOption<${WrapperType}> impleme
     public boolean equals(Object o) {
         if (o == this) return true;
 
-        if (o instanceof ${Type}Option) {
+        if (o instanceof ${Type}Option other) {
             return this != None && o != None
-                    && ${PrimitiveEquals("value", "((${Type}Option) o).value")};
+                    && ${PrimitiveEquals("value", "other.value")};
         }
 
-        if (o instanceof Option) {
-            Option<?> other = (Option<?>) o;
+        if (o instanceof Option<?> other) {
             if (this.isEmpty()) return other.isEmpty();
             if (other.isEmpty()) return false;
 
@@ -172,6 +188,7 @@ public final class ${Type}Option extends PrimitiveOption<${WrapperType}> impleme
     }
 
     private static final class Data implements Serializable {
+        @Serial
         private static final long serialVersionUID = -2044232156734869349L;
         private final ${WrapperType} value;
 
@@ -179,6 +196,7 @@ public final class ${Type}Option extends PrimitiveOption<${WrapperType}> impleme
             this.value = value;
         }
 
+        @Serial
         Object readResolve() {
             return value == null ? None : some(value);
         }

@@ -15,12 +15,10 @@
  */
 package kala.tuple;
 
-import kala.annotations.Sealed;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.IntFunction;
 
-@Sealed(subclasses = {Unit.class})
 public sealed interface EmptyTuple extends Tuple permits Unit {
     @Override
     default int arity() {

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.control;
 
 import kala.annotations.Covariant;
@@ -5,6 +20,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -12,6 +28,7 @@ import java.util.function.Function;
 
 @SuppressWarnings("unchecked")
 public abstract class Result<@Covariant T, @Covariant E> implements OptionContainer<T>, Serializable {
+    @Serial
     private static final long serialVersionUID = -3388441653871179293L;
 
     Result() {
@@ -86,6 +103,7 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
     }
 
     private static final class Ok<T, E> extends Result<T, E> {
+        @Serial
         private static final long serialVersionUID = -7623929614408282297L;
         private static final int HASH_MAGIC = 227556744;
 
@@ -124,11 +142,11 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
             if (this == o) {
                 return true;
             }
-            if (!(o instanceof Ok<?, ?>)) {
+            if (!(o instanceof Ok<?, ?> other)) {
                 return false;
             }
 
-            return Objects.equals(value, ((Ok<?, ?>) o).value);
+            return Objects.equals(value, other.value);
         }
 
         /**
@@ -141,6 +159,7 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
     }
 
     private static final class Err<T, E> extends Result<T, E> {
+        @Serial
         private static final long serialVersionUID = 8182313103380510810L;
         private static final int HASH_MAGIC = 1638357662;
 
@@ -179,11 +198,11 @@ public abstract class Result<@Covariant T, @Covariant E> implements OptionContai
             if (this == o) {
                 return true;
             }
-            if (!(o instanceof Err<?, ?>)) {
+            if (!(o instanceof Err<?, ?> other)) {
                 return false;
             }
 
-            return Objects.equals(err, ((Err<?, ?>) o).err);
+            return Objects.equals(err, other.err);
         }
 
         /**
