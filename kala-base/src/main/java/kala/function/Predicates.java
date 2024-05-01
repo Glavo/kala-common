@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.function;
 
 import kala.annotations.StaticClass;
@@ -6,6 +21,7 @@ import kala.tuple.Tuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
@@ -173,6 +189,7 @@ public final class Predicates {
     }
 
     private static final class IsEqual<T> implements Predicate<T>, Serializable {
+        @Serial
         private static final long serialVersionUID = -9166392848522200720L;
         private static final int HASH_MAGIC = -793051311;
 
@@ -192,10 +209,10 @@ public final class Predicates {
             if (this == o) {
                 return true;
             }
-            if (!(o instanceof IsEqual)) {
+            if (!(o instanceof IsEqual<?> other)) {
                 return false;
             }
-            return target.equals(((IsEqual<?>) o).target);
+            return target.equals(other.target);
         }
 
         @Override
@@ -210,6 +227,7 @@ public final class Predicates {
     }
 
     private static final class IsSame<T> implements Predicate<T>, Serializable {
+        @Serial
         private static final long serialVersionUID = 8158787942500779468L;
         private static final int HASH_MAGIC = 1242821667;
 
@@ -229,10 +247,10 @@ public final class Predicates {
             if (this == o) {
                 return true;
             }
-            if (!(o instanceof IsEqual)) {
+            if (!(o instanceof IsSame<?> other)) {
                 return false;
             }
-            return target == ((IsEqual<?>) o).target;
+            return target == other.target;
         }
 
         @Override
@@ -247,6 +265,7 @@ public final class Predicates {
     }
 
     private static final class InstanceOf<T> implements Predicate<T>, Serializable {
+        @Serial
         private static final long serialVersionUID = -8612667810008827121L;
         private static final int HASH_MAGIC = 990779813;
 
@@ -266,10 +285,10 @@ public final class Predicates {
             if (this == o) {
                 return true;
             }
-            if (!(o instanceof InstanceOf)) {
+            if (!(o instanceof InstanceOf other)) {
                 return false;
             }
-            return type.equals(((InstanceOf<?>) o).type);
+            return type.equals(other.type);
         }
 
         @Override
@@ -284,6 +303,7 @@ public final class Predicates {
     }
 
     private static final class And<T> implements Predicate<T>, Serializable {
+        @Serial
         private static final long serialVersionUID = -5136772671431728242L;
 
         private static final int HASH_MAGIC = 67623;
@@ -309,10 +329,9 @@ public final class Predicates {
             if (this == o) {
                 return true;
             }
-            if (!(o instanceof And)) {
+            if (!(o instanceof And<?> other)) {
                 return false;
             }
-            And<?> other = (And<?>) o;
             return Arrays.equals(predicates, other.predicates);
         }
 
@@ -328,6 +347,7 @@ public final class Predicates {
     }
 
     private static final class Or<T> implements Predicate<T>, Serializable {
+        @Serial
         private static final long serialVersionUID = -3902328690682783689L;
 
         private static final int HASH_MAGIC = -2329323;
@@ -353,10 +373,9 @@ public final class Predicates {
             if (this == o) {
                 return true;
             }
-            if (!(o instanceof Or)) {
+            if (!(o instanceof Or<?> other)) {
                 return false;
             }
-            Or<?> other = (Or<?>) o;
             return Arrays.equals(predicates, other.predicates);
         }
 
