@@ -9,7 +9,7 @@ plugins {
 
 allprojects {
     group = "org.glavo.kala"
-    version = "0.71.0" + "-SNAPSHOT"
+    version = "0.71.0"// + "-SNAPSHOT"
 
     description = "Basic components of Kala"
 
@@ -140,8 +140,7 @@ tasks.test {
 
 tasks.shadowJar {
     manifest.attributes(
-        "Automatic-Module-Name" to "kala.common",
-        "Multi-Release" to "true"
+        "Automatic-Module-Name" to "kala.common"
     )
 }
 
