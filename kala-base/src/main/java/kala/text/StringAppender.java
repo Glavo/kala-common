@@ -1,15 +1,33 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.text;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.io.Writer;
 import java.util.Formatter;
 import java.util.Locale;
 import java.util.Objects;
 
+
 public class StringAppender extends Writer implements Serializable {
+    @Serial
     private static final long serialVersionUID = 0L;
 
     private final StringBuilder builder;
@@ -119,26 +137,17 @@ public class StringAppender extends Writer implements Serializable {
         if (obj == null) {
             builder.append((String) null);
         } else if (obj.getClass().isArray()) {
-            if (obj instanceof Object[]) {
-                appendArray((Object[]) obj);
-            } else if (obj instanceof char[]) {
-                appendArray((char[]) obj);
-            } else if (obj instanceof boolean[]) {
-                appendArray((boolean[]) obj);
-            } else if (obj instanceof byte[]) {
-                appendArray((byte[]) obj);
-            } else if (obj instanceof short[]) {
-                appendArray((short[]) obj);
-            } else if (obj instanceof int[]) {
-                appendArray((int[]) obj);
-            } else if (obj instanceof long[]) {
-                appendArray((long[]) obj);
-            } else if (obj instanceof float[]) {
-                appendArray((float[]) obj);
-            } else if (obj instanceof double[]) {
-                appendArray((double[]) obj);
-            } else {
-                throw new AssertionError("Unknown array type: " + obj.getClass());
+            switch (obj) {
+                case Object[] objects -> appendArray(objects);
+                case char[] chars -> appendArray(chars);
+                case boolean[] booleans -> appendArray(booleans);
+                case byte[] bytes -> appendArray(bytes);
+                case short[] shorts -> appendArray(shorts);
+                case int[] ints -> appendArray(ints);
+                case long[] longs -> appendArray(longs);
+                case float[] floats -> appendArray(floats);
+                case double[] doubles -> appendArray(doubles);
+                default -> throw new AssertionError("Unknown array type: " + obj.getClass());
             }
         } else {
             builder.append(obj);

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.text;
 
 import kala.Conditions;
@@ -8,12 +23,14 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.*;
 
 public final class StringSlice implements Comparable<StringSlice>, CharSequence, Serializable {
+    @Serial
     private static final long serialVersionUID = 0L;
     private static final int ZERO_HASH_REPLACE = 914090028;
 
@@ -31,7 +48,7 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     }
 
     public static StringSlice of(@NotNull String value) {
-        return value.length() != 0 ? new StringSlice(value, 0, value.length()) : EMPTY;
+        return !value.isEmpty() ? new StringSlice(value, 0, value.length()) : EMPTY;
     }
 
     public static StringSlice of(@NotNull String value, int beginIndex, int endIndex) {
@@ -39,7 +56,6 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         return beginIndex != endIndex ? new StringSlice(value, beginIndex, endIndex - beginIndex) : EMPTY;
     }
 
-    @SuppressWarnings("Since15")
     public boolean isEmpty() {
         return this.length == 0;
     }
