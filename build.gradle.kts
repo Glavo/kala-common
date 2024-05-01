@@ -52,7 +52,7 @@ allprojects {
     tasks.withType<Javadoc>().configureEach {
         (options as StandardJavadocDocletOptions).also {
             it.encoding("UTF-8")
-            it.addStringOption("link", "https://docs.oracle.com/en/java/javase/17/docs/api/")
+            it.addStringOption("link", "https://docs.oracle.com/en/java/javase/21/docs/api/")
             it.addBooleanOption("html5", true)
             it.addStringOption("Xdoclint:none", "-quiet")
         }
@@ -130,7 +130,7 @@ sourceSets {
 }
 
 tasks.compileTestJava {
-    options.release.set(17)
+    options.release.set(21)
 }
 
 tasks.test {

@@ -10,7 +10,7 @@ val jmhVersion = "1.36"
 val jolVersion = "0.17"
 
 tasks.compileJava {
-    options.release.set(17)
+    options.release.set(21)
 }
 
 tasks.create<JavaExec>("runBenchmark") {
