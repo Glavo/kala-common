@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.Serial;
 import java.util.NoSuchElementException;
 
-public final class BooleanOption extends PrimitiveOption<Boolean> implements BooleanTraversable {
+public final class BooleanOption implements PrimitiveOption<Boolean>, BooleanTraversable {
     @Serial
     private static final long serialVersionUID = 3226319253753655469L;
     private static final int HASH_MAGIC = 773806848;

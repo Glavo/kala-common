@@ -23,46 +23,46 @@ import org.jetbrains.annotations.Nullable;
 import java.io.Serializable;
 import java.util.function.Supplier;
 
-public sealed abstract class AnyTry<@Covariant T> implements Serializable permits Try, PrimitiveTry {
+public sealed interface AnyTry<@Covariant T> extends Serializable permits Try, PrimitiveTry {
 
-    protected static final int SUCCESS_HASH_MAGIC = 518848667;
-    protected static final int FAILURE_HASH_MAGIC = 1918688519;
+    int SUCCESS_HASH_MAGIC = "SUCCESS".hashCode();
+    int FAILURE_HASH_MAGIC = "FAILURE".hashCode();
 
     /**
      * Returns {@code true} if the {@code Try} is {@code Success}, otherwise return {@code false}.
      *
      * @return {@code true} if the {@code Try} is {@code Success}, otherwise {@code false}
      */
-    public abstract boolean isSuccess();
+    boolean isSuccess();
 
     /**
      * Returns {@code true} if the {@code Try} is {@code Failure}, otherwise return {@code false}.
      *
      * @return {@code true} if the {@code Try} is {@code Failure}, otherwise {@code false}
      */
-    public abstract boolean isFailure();
+    boolean isFailure();
 
-    public abstract T getValue();
+    T getValue();
 
-    public abstract @Nullable T getOrNull();
+    @Nullable T getOrNull();
 
-    public abstract AnyOption<T> getOption();
+    AnyOption<T> getOption();
 
-    public abstract @NotNull Throwable getCause();
+    @NotNull Throwable getCause();
 
-    public @Nullable Throwable getCauseOrNull() {
+    default @Nullable Throwable getCauseOrNull() {
         return isFailure() ? getCause() : null;
     }
 
-    public @NotNull Option<Throwable> getCauseOption() {
+    default @NotNull Option<Throwable> getCauseOption() {
         return isFailure() ? Option.some(getCause()) : Option.none();
     }
 
-    public Throwable getCauseOrDefault(Throwable defaultValue) {
+    default Throwable getCauseOrDefault(Throwable defaultValue) {
         return isFailure() ? getCause() : defaultValue;
     }
 
-    public Throwable getCauseOrElse(@NotNull Supplier<? extends Throwable> supplier) {
+    default Throwable getCauseOrElse(@NotNull Supplier<? extends Throwable> supplier) {
         return isFailure() ? getCause() : supplier.get();
     }
 
@@ -73,7 +73,7 @@ public sealed abstract class AnyTry<@Covariant T> implements Serializable permit
      * @return {@code this} if the {@code Try} is a {@code Success}
      * @throws Ex if the {@code Try} is a {@code Failure}
      */
-    public abstract <Ex extends Throwable> @NotNull AnyTry<T> rethrow() throws Ex;
+    <Ex extends Throwable> @NotNull AnyTry<T> rethrow() throws Ex;
 
     /**
      * If the {@code Try} is a {@code Failure} and the {@code throwable} is an instance of {@code type},
@@ -84,7 +84,7 @@ public sealed abstract class AnyTry<@Covariant T> implements Serializable permit
      * or the {@code throwable} not an instance of {@code type}
      * @throws Ex if the {@code Try} is a {@code Failure} and the {@code throwable}'s type is {@code type}
      */
-    public abstract <Ex extends Throwable> @NotNull AnyTry<T> rethrow(@NotNull Class<? extends Ex> type) throws Ex;
+    <Ex extends Throwable> @NotNull AnyTry<T> rethrow(@NotNull Class<? extends Ex> type) throws Ex;
 
-    public abstract @NotNull AnyTry<T> rethrowFatal();
+    @NotNull AnyTry<T> rethrowFatal();
 }

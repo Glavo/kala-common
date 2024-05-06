@@ -17,7 +17,5 @@ package kala.control.primitive;
 
 import kala.control.AnyTry;
 
-public abstract sealed class PrimitiveTry<T> extends AnyTry<T> permits BooleanTry, ByteTry, ShortTry, IntTry, LongTry, CharTry, DoubleTry, FloatTry {
-    PrimitiveTry() {
-    }
+public sealed interface PrimitiveTry<T> extends AnyTry<T> permits BooleanTry, ByteTry, ShortTry, IntTry, LongTry, CharTry, DoubleTry, FloatTry {
 }

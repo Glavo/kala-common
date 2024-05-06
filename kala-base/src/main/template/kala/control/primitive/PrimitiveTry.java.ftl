@@ -30,7 +30,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 
 @SuppressWarnings("unchecked")
-public final class ${Type}Try extends PrimitiveTry<${WrapperType}> implements ${Type}Traversable, Serializable {
+public final class ${Type}Try implements PrimitiveTry<${WrapperType}>, ${Type}Traversable, Serializable {
     @Serial
     private static final long serialVersionUID = 8279218383491584792L;
 

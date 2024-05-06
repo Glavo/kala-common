@@ -40,7 +40,7 @@ import java.util.function.Supplier;
  * @param <T>
  */
 @SuppressWarnings("unchecked")
-public final class Try<@Covariant T> extends AnyTry<T> implements Traversable<T>, Serializable {
+public final class Try<@Covariant T> implements AnyTry<T>, Traversable<T>, Serializable {
     @Serial
     private static final long serialVersionUID = -876749736621195838L;
 

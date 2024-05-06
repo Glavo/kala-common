@@ -17,7 +17,5 @@ package kala.control.primitive;
 
 import kala.control.AnyOption;
 
-public abstract sealed class PrimitiveOption<E> extends AnyOption<E> permits BooleanOption, ByteOption, ShortOption, IntOption, LongOption, CharOption, DoubleOption, FloatOption {
-    PrimitiveOption() {
-    }
+public sealed interface PrimitiveOption<E> extends AnyOption<E> permits BooleanOption, ByteOption, ShortOption, IntOption, LongOption, CharOption, DoubleOption, FloatOption {
 }

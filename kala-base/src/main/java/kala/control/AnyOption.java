@@ -20,10 +20,7 @@ import kala.control.primitive.PrimitiveOption;
 
 import java.io.Serializable;
 
-public abstract sealed class AnyOption<@Covariant T> implements Serializable permits Option, PrimitiveOption {
-    protected static final int HASH_MAGIC = -818206074;
-    protected static final int NONE_HASH = 1937147281;
-
-    protected AnyOption() {
-    }
+public sealed interface AnyOption<@Covariant T> extends Serializable permits Option, PrimitiveOption {
+    int HASH_MAGIC = -818206074;
+    int NONE_HASH = 1937147281;
 }

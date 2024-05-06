@@ -30,7 +30,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 
 @SuppressWarnings("unchecked")
-public final class BooleanTry extends PrimitiveTry<Boolean> implements BooleanTraversable, Serializable {
+public final class BooleanTry implements PrimitiveTry<Boolean>, BooleanTraversable, Serializable {
     @Serial
     private static final long serialVersionUID = 8279218383491584792L;
 

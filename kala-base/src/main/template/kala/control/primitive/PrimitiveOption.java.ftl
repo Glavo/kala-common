@@ -35,7 +35,7 @@ import java.util.function.Supplier;
 import kala.function.*;
 </#if>
 
-public final class ${Type}Option extends PrimitiveOption<${WrapperType}> implements ${Type}Traversable {
+public final class ${Type}Option implements PrimitiveOption<${WrapperType}>, ${Type}Traversable {
     @Serial
     private static final long serialVersionUID = -8990024629462620023L;
 
