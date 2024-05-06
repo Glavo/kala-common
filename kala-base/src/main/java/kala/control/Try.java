@@ -141,6 +141,7 @@ public final class Try<@Covariant T> extends AnyTry<T> implements Traversable<T>
         return builder.toString();
     }
 
+    @SuppressWarnings("removal")
     public static boolean isFatal(Throwable exception) {
         return exception instanceof InterruptedException
                 || exception instanceof LinkageError
