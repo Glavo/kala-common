@@ -9,7 +9,7 @@ plugins {
 
 allprojects {
     group = "org.glavo.kala"
-    version = "0.72.0"// + "-SNAPSHOT"
+    version = "0.73.0" + "-SNAPSHOT"
 
     description = "Basic components of Kala"
 

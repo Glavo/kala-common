@@ -58,15 +58,17 @@ public sealed interface Result<@Covariant T, @Covariant E> extends OptionContain
     default T get() {
         if (this instanceof Ok(var value)) {
             return value;
+        } else {
+            throw new NoSuchElementException("Result.Err#get()");
         }
-        throw new NoSuchElementException("Result.Err#get()");
     }
 
     default E getErr() {
         if (this instanceof Err(var err)) {
             return err;
+        } else {
+            throw new NoSuchElementException("Result.Ok#getErr()");
         }
-        throw new NoSuchElementException("Result.Ok#getErr()");
     }
 
     default @Nullable E getErrOrNull() {
