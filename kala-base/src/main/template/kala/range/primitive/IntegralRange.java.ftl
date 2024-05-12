@@ -250,10 +250,9 @@ public final class ${Type}Range extends IntegralRange<${WrapperType}> implements
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ${Type}Range)) {
+        if (!(o instanceof ${Type}Range ${Type}Range)) {
             return false;
         }
-        ${Type}Range ${Type}Range = (${Type}Range) o;
         return lowerBound == ${Type}Range.lowerBound && upperBound == ${Type}Range.upperBound && type == ${Type}Range.type;
     }
 

@@ -16,6 +16,5 @@
 package kala.range.primitive;
 
 public abstract sealed class IntegralRange<T> extends PrimitiveRange<T> permits ByteRange, CharRange, IntRange, LongRange, ShortRange {
-    IntegralRange() {
-    }
+
 }
