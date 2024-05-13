@@ -15,13 +15,13 @@ import kala.function.CheckedPredicate;
 import kala.function.IndexedBiConsumer;
 import kala.function.IndexedConsumer;
 import kala.function.IndexedFunction;
-import kala.tuple.Tuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.io.UncheckedIOException;
 import java.util.*;
@@ -35,6 +35,7 @@ import static kala.Conditions.checkPositionIndices;
 @SuppressWarnings("unchecked")
 @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "elements")
 public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>, Serializable {
+    @Serial
     private static final long serialVersionUID = 4981379062449237945L;
 
     private static final ArraySeq<?> EMPTY = new ArraySeq<>(GenericArrays.EMPTY_OBJECT_ARRAY);
@@ -128,9 +129,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     }
 
     public static <E> @NotNull ArraySeq<E> from(@NotNull java.util.Collection<? extends E> values) {
-        return values.size() == 0
-                ? empty()
-                : new ArraySeq<>(values.toArray());
+        return values.isEmpty() ? empty() : new ArraySeq<>(values.toArray());
     }
 
     public static <E> @NotNull ArraySeq<E> from(@NotNull Iterable<? extends E> values) {
