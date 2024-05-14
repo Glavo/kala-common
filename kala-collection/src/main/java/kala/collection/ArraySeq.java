@@ -805,20 +805,19 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Override
     public final boolean contains(Object value) {
-        final Object[] elements = this.elements;
-
         if (elements.length == 0) {
             return false;
         }
-        if (value == null) {
+
+        if (value != null) {
             for (Object e : elements) {
-                if (null == e) {
+                if (value.equals(e)) {
                     return true;
                 }
             }
         } else {
             for (Object e : elements) {
-                if (value.equals(e)) {
+                if (null == e) {
                     return true;
                 }
             }
