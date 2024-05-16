@@ -15,9 +15,19 @@
  */
 package kala.value.primitive;
 
+<#if IsSpecialized || Type == "Boolean">
+import java.util.function.${Type}Supplier;
+<#else>
+import kala.function.${Type}Supplier;
+</#if>
+
 public final class LateInit${Type}Value extends Abstract${Type}Value implements ${Type}Value {
     private volatile boolean initialized = false;
     private ${PrimitiveType} value;
+
+    public boolean isInitialized() {
+        return initialized;
+    }
 
     public void initialize(${PrimitiveType} value) {
         if (initialized) {
@@ -32,8 +42,18 @@ public final class LateInit${Type}Value extends Abstract${Type}Value implements 
         }
     }
 
-    public boolean isInitialized() {
-        return initialized;
+    public ${PrimitiveType} computeIfUninitialized(${Type}Supplier supplier) {
+        if (initialized) {
+            return value;
+        }
+
+        synchronized (this) {
+            if (initialized) {
+                return value;
+            }
+
+            return value = supplier.getAs${Type}();
+        }
     }
 
     @Override

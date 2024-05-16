@@ -15,9 +15,15 @@
  */
 package kala.value;
 
+import java.util.function.Supplier;
+
 public final class LateInitValue<T> implements Value<T> {
     private volatile boolean initialized = false;
     private T value;
+
+    public boolean isInitialized() {
+        return initialized;
+    }
 
     public void initialize(T value) {
         if (initialized) {
@@ -32,8 +38,18 @@ public final class LateInitValue<T> implements Value<T> {
         }
     }
 
-    public boolean isInitialized() {
-        return initialized;
+    public T computeIfUninitialized(Supplier<? extends T> supplier) {
+        if (initialized) {
+            return value;
+        }
+
+        synchronized (this) {
+            if (initialized) {
+                return value;
+            }
+
+            return value = supplier.get();
+        }
     }
 
     @Override
