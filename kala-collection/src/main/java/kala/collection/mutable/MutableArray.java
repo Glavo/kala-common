@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.Function;
@@ -20,6 +21,7 @@ import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Serializable {
+    @Serial
     private static final long serialVersionUID = 8060307722127719792L;
 
     public static final MutableArray<?> EMPTY = new MutableArray<>(GenericArrays.EMPTY_OBJECT_ARRAY);
@@ -28,7 +30,7 @@ public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Seria
 
     //region Constructors
 
-    MutableArray(Object @NotNull [] array) {
+    private MutableArray(Object @NotNull [] array) {
         super(array);
     }
 
@@ -101,7 +103,7 @@ public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Seria
     }
 
     public static <E> @NotNull MutableArray<E> from(@NotNull java.util.Collection<? extends E> values) {
-        return values.size() == 0 // implicit null check of values
+        return values.isEmpty() // implicit null check of values
                 ? empty()
                 : new MutableArray<>(values.toArray());
 
@@ -227,11 +229,7 @@ public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Seria
 
     @Override
     public final void set(int index, E newValue) {
-        try {
-            elements[index] = newValue;
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new IndexOutOfBoundsException(e.getMessage());
-        }
+        elements[index] = newValue;
     }
 
     @Override
@@ -262,6 +260,7 @@ public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Seria
     }
 
     private static final class Checked<E> extends MutableArray<E> {
+        @Serial
         private static final long serialVersionUID = 3903230112786321463L;
 
         Checked(Object @NotNull [] array) {

@@ -18,17 +18,18 @@ package kala.collection.primitive;
 import kala.Conditions;
 import kala.collection.base.primitive.BitArrays;
 import kala.collection.base.primitive.BooleanIterator;
-import kala.collection.base.primitive.LongArrays;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import static kala.collection.base.primitive.BitArrays.BITS_PRE_VALUE;
 
 public class BitArray extends AbstractBooleanSeq implements IndexedBooleanSeq, Serializable {
+    @Serial
     private static final long serialVersionUID = 4673372256434484L;
 
-    private static final BitArray EMPTY = new BitArray(LongArrays.EMPTY, 0);
+    private static final BitArray EMPTY = new BitArray(0, 0);
 
     //region Static Factories
 
@@ -70,6 +71,8 @@ public class BitArray extends AbstractBooleanSeq implements IndexedBooleanSeq, S
     }
 
     protected BitArray(long bits, int size) {
+        assert size <= BITS_PRE_VALUE;
+
         this.bitsArray = null;
         this.bits = bits;
         this.size = size;
@@ -93,7 +96,7 @@ public class BitArray extends AbstractBooleanSeq implements IndexedBooleanSeq, S
     @Override
     public boolean get(int index) {
         Conditions.checkElementIndex(index, size);
-        if (size <= BITS_PRE_VALUE) {
+        if (bitsArray == null) {
             return BitArrays.get(bits, index);
         } else {
             return BitArrays.get(bitsArray, index);
@@ -103,14 +106,12 @@ public class BitArray extends AbstractBooleanSeq implements IndexedBooleanSeq, S
     @Override
     public boolean @NotNull [] toArray() {
         boolean[] res = new boolean[size];
-        if (size <= BITS_PRE_VALUE) {
+        if (bitsArray == null) {
             for (int i = 0; i < size; i++) {
                 res[i] = BitArrays.get(bits, i);
             }
         } else {
-            final int fullChunkCount = size / Long.SIZE;
-            final int notFullChunkLength = size % Long.SIZE;
-
+            final int fullChunkCount = size / BITS_PRE_VALUE;
             for (int i = 0; i < fullChunkCount; i++) {
                 final long currentBits = bitsArray[i];
                 final int baseIndex = i * BITS_PRE_VALUE;
@@ -120,6 +121,7 @@ public class BitArray extends AbstractBooleanSeq implements IndexedBooleanSeq, S
                 }
             }
 
+            final int notFullChunkLength = size % BITS_PRE_VALUE;
             if (notFullChunkLength != 0) {
                 final long currentBits = bitsArray[bitsArray.length - 1];
                 final int baseIndex = (bitsArray.length - 1) * BITS_PRE_VALUE;
