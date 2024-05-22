@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Serializable {
+public sealed class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Serializable {
     @Serial
     private static final long serialVersionUID = 8060307722127719792L;
 

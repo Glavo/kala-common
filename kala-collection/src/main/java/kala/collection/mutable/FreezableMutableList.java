@@ -15,10 +15,22 @@
  */
 package kala.collection.mutable;
 
+import kala.collection.factory.CollectionFactory;
 import kala.collection.immutable.ImmutableSeq;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 public interface FreezableMutableList<E> extends MutableList<E> {
+
+    @Contract("-> new")
+    static <E> FreezableMutableList<E> create() {
+        return MutableCopyOnWriteList.create();
+    }
+
+    @Contract("_ -> new")
+    static <E> @NotNull FreezableMutableList<E> create(@NotNull CollectionFactory<E, ?, ? extends MutableList<E>> factory) {
+        return MutableCopyOnWriteList.create(factory);
+    }
 
     @NotNull ImmutableSeq<E> freeze();
 

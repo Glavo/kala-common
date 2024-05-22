@@ -1,10 +1,12 @@
 package kala.collection.mutable;
 
 import kala.collection.factory.CollectionFactory;
+import kala.collection.immutable.ImmutableSeq;
+import kala.collection.internal.convert.AsImmutableConvert;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-public final class MutableCopyOnWriteList<E> extends MutableCopyOnWriteSeqBase<E, MutableList<E>> implements MutableList<E> {
+public final class MutableCopyOnWriteList<E> extends MutableCopyOnWriteSeqBase<E, MutableList<E>> implements FreezableMutableList<E> {
     MutableCopyOnWriteList(MutableList<E> source, boolean exclusive) {
         super(source, exclusive);
     }
@@ -69,5 +71,11 @@ public final class MutableCopyOnWriteList<E> extends MutableCopyOnWriteSeqBase<E
             exclusive = true;
             source = source.<E>iterableFactory().empty();
         }
+    }
+
+    @Override
+    public @NotNull ImmutableSeq<E> freeze() {
+        this.exclusive = false;
+        return new AsImmutableConvert.SeqWrapper<>(source);
     }
 }

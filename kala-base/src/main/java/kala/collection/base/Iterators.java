@@ -188,6 +188,10 @@ public final class Iterators {
         return new ConcatAll<>(its);
     }
 
+    public static <E> @NotNull Iterator<E> freeze(@NotNull Iterator<E> it) {
+        return new Frozen<>(it);
+    }
+
     @Contract(mutates = "param1")
     public static int hash(@NotNull Iterator<?> it) {
         int res = 0;
@@ -1393,6 +1397,24 @@ public final class Iterators {
     };
 
     static final Object TAG_VALUE = new InternalIdentifyObject();
+
+    private static final class Frozen<E> extends AbstractIterator<E> {
+        private final Iterator<E> source;
+
+        private Frozen(Iterator<E> source) {
+            this.source = source;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return source.hasNext();
+        }
+
+        @Override
+        public E next() {
+            return source.next();
+        }
+    }
 
     private static final class OfNotNull<E> extends AbstractIterator<E> {
         private @Nullable E value;
