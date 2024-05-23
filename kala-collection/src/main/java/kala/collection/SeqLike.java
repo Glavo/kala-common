@@ -1,9 +1,23 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.collection;
 
 import kala.Conditions;
 import kala.annotations.DelegateBy;
 import kala.collection.base.Growable;
-import kala.collection.base.Iterators;
 import kala.collection.base.OrderedTraversable;
 import kala.collection.internal.SeqIterators;
 import kala.collection.internal.view.SeqViews;
@@ -37,30 +51,7 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E>, OrderedTra
         return "SeqLike";
     }
 
-    default @NotNull Iterator<E> iterator(int beginIndex) {
-        if (beginIndex < 0) {
-            throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") < 0");
-        }
-        final int knownSize = knownSize();
-        if (knownSize >= 0) {
-            if (beginIndex > knownSize) {
-                throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") > size(" + knownSize + ")");
-            }
-            if (beginIndex == knownSize) {
-                return Iterators.empty();
-            }
-        }
-
-        final Iterator<E> it = iterator();
-        for (int i = 0; i < beginIndex; i++) {
-            if (!it.hasNext()) {
-                throw new IndexOutOfBoundsException("beginIndex: " + beginIndex);
-            }
-            it.next();
-        }
-        return it;
-    }
-
+    @DelegateBy("seqIterator(int)")
     default @NotNull SeqIterator<E> seqIterator() {
         return seqIterator(0);
     }

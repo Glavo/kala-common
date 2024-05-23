@@ -37,6 +37,30 @@ import java.util.function.Predicate;
  */
 public interface OrderedTraversable<E> extends Traversable<E> {
 
+    default @NotNull Iterator<E> iterator(int beginIndex) {
+        if (beginIndex < 0) {
+            throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") < 0");
+        }
+        final int knownSize = knownSize();
+        if (knownSize >= 0) {
+            if (beginIndex > knownSize) {
+                throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") > size(" + knownSize + ")");
+            }
+            if (beginIndex == knownSize) {
+                return Iterators.empty();
+            }
+        }
+
+        final Iterator<E> it = iterator();
+        for (int i = 0; i < beginIndex; i++) {
+            if (!it.hasNext()) {
+                throw new IndexOutOfBoundsException("beginIndex: " + beginIndex);
+            }
+            it.next();
+        }
+        return it;
+    }
+
     default @NotNull Iterator<E> reverseIterator() {
         final int ks = this.knownSize();
         if (ks == 0) {
