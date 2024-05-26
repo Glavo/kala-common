@@ -60,9 +60,8 @@ final class ${Type}Iterators {
 
         @Override
         public char nextChar() {
-            if (idx < str.length())
-                return str.charAt(idx);
-            throw new NoSuchElementException();
+            checkStatus();
+            return str.charAt(idx++);
         }
     }
 </#if>
@@ -97,8 +96,7 @@ final class ${Type}Iterators {
 
         @Override
         public ${PrimitiveType} next${Type}() {
-            if (!hasNext())
-                throw new NoSuchElementException();
+            checkStatus();
 
             if (it1 != null)
                 return it1.next${Type}();
@@ -129,7 +127,7 @@ final class ${Type}Iterators {
 
         @Override
         public ${PrimitiveType} next${Type}() {
-            if (!hasNext()) throw new NoSuchElementException(this + ".next()");
+            checkStatus();
 
             return current.next${Type}();
         }
@@ -151,11 +149,9 @@ final class ${Type}Iterators {
 
         @Override
         public ${PrimitiveType} next${Type}() {
-            if (hasNext()) {
-                --n;
-                return source.next${Type}();
-            }
-            throw new NoSuchElementException();
+            checkStatus();
+            n--;
+            return source.next${Type}();
         }
     }
 
@@ -195,12 +191,9 @@ final class ${Type}Iterators {
 
         @Override
         public ${PrimitiveType} next${Type}() {
-            if (hasNext()) {
-                tag = false;
-                return nextValue;
-            } else {
-                throw new NoSuchElementException();
-            }
+            checkStatus();
+            tag = false;
+            return nextValue;
         }
     }
 
@@ -329,12 +322,9 @@ final class ${Type}Iterators {
 
         @Override
         public ${PrimitiveType} next${Type}() {
-            if (hasNext()) {
-                flag = false;
-                return nextValue;
-            } else {
-                throw new NoSuchElementException();
-            }
+            checkStatus();
+            flag = false;
+            return nextValue;
         }
     }
 }
