@@ -15,7 +15,6 @@
  */
 package kala.control;
 
-import kala.annotations.ReplaceWith;
 import kala.collection.base.Iterators;
 import kala.control.primitive.PrimitiveOption;
 import kala.tuple.Tuple2;
@@ -88,12 +87,6 @@ public final class Option<@Covariant T> implements AnyOption<T>, OptionContainer
     @SuppressWarnings("unchecked")
     public static <T> @NotNull Option<T> none() {
         return (Option<T>) None;
-    }
-
-    @Deprecated
-    @ReplaceWith("ofNullable(T)")
-    public static <T> @NotNull Option<T> of(@Nullable T value) {
-        return value == null ? none() : new Option<>(value);
     }
 
     /**

@@ -283,36 +283,36 @@ public interface MutableListTestTemplate extends MutableSeqTestTemplate {
     }
 
     @Test
-    default void retainAllTest() {
+    default void retainIfTest() {
         final MutableList<?> empty = factory().empty();
-        empty.retainAll(e -> true);
+        empty.retainIf(e -> true);
         assertIterableEquals(List.of(), empty);
-        empty.retainAll(e -> false);
+        empty.retainIf(e -> false);
         assertIterableEquals(List.of(), empty);
 
         final MutableList<Integer> b1 = of(0, 1, 2, 3, 4, 5);
-        b1.retainAll(it -> it > 2);
+        b1.retainIf(it -> it > 2);
         assertIterableEquals(List.of(3, 4, 5), b1);
 
         final MutableList<Integer> b2 = of(0, 1, 2, 3, 4, 5);
-        b2.retainAll(it -> it % 2 == 0);
+        b2.retainIf(it -> it % 2 == 0);
         assertIterableEquals(List.of(0, 2, 4), b2);
     }
 
     @Test
-    default void removeAllTest() {
+    default void removeIfTest() {
         final MutableList<?> empty = factory().empty();
-        empty.removeAll(e -> true);
+        empty.removeIf(e -> true);
         assertIterableEquals(List.of(), empty);
-        empty.removeAll(e -> false);
+        empty.removeIf(e -> false);
         assertIterableEquals(List.of(), empty);
 
         final MutableList<Integer> b1 = of(0, 1, 2, 3, 4, 5);
-        b1.removeAll(it -> it > 2);
+        b1.removeIf(it -> it > 2);
         assertIterableEquals(List.of(0, 1, 2), b1);
 
         final MutableList<Integer> b2 = of(0, 1, 2, 3, 4, 5);
-        b2.removeAll(it -> it % 2 == 0);
+        b2.removeIf(it -> it % 2 == 0);
         assertIterableEquals(List.of(1, 3, 5), b2);
     }
 

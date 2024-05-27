@@ -16,7 +16,6 @@
 package kala.collection.base;
 
 import kala.annotations.DelegateBy;
-import kala.annotations.ReplaceWith;
 import kala.control.Option;
 import kala.function.CheckedIndexedConsumer;
 import kala.function.IndexedBiFunction;
@@ -115,24 +114,6 @@ public interface OrderedTraversable<T> extends Traversable<T> {
         return isNotEmpty() ? Option.some(getFirst()) : Option.none();
     }
 
-    @Deprecated
-    @ReplaceWith("getFirst()")
-    default T first() {
-        return getFirst();
-    }
-
-    @Deprecated
-    @ReplaceWith("getFirstOrNull()")
-    default T firstOrNull() {
-        return getFirstOrNull();
-    }
-
-    @Deprecated
-    @ReplaceWith("getFirstOption()")
-    default Option<T> firstOption() {
-        return getFirstOption();
-    }
-
     default T getLast() {
         return reverseIterator().next();
     }
@@ -145,60 +126,6 @@ public interface OrderedTraversable<T> extends Traversable<T> {
     @DelegateBy("getLast()")
     default @NotNull Option<T> getLastOption() {
         return isNotEmpty() ? Option.some(getLast()) : Option.none();
-    }
-
-    @Deprecated
-    @ReplaceWith("getLast()")
-    default T last() {
-        return getLast();
-    }
-
-    @Deprecated
-    @ReplaceWith("getLastOrNull()")
-    default T lastOrNull() {
-        return getLastOrNull();
-    }
-
-    @Deprecated
-    @ReplaceWith("getLastOption()")
-    default Option<T> lastOption() {
-        return getLastOption();
-    }
-
-    @Deprecated
-    @ReplaceWith("findFirst(Predicate<T>)")
-    default T first(@NotNull Predicate<? super T> predicate) {
-        return findFirst(predicate).get();
-    }
-
-    @Deprecated
-    @ReplaceWith("findFirst(Predicate<T>)")
-    default @Nullable T firstOrNull(@NotNull Predicate<? super T> predicate) {
-        return findFirst(predicate).getOrNull();
-    }
-
-    @Deprecated
-    @ReplaceWith("findFirst(Predicate<T>)")
-    default @NotNull Option<T> firstOption(@NotNull Predicate<? super T> predicate) {
-        return findFirst(predicate);
-    }
-
-    @Deprecated
-    @ReplaceWith("findLast(Predicate<T>)")
-    default T last(@NotNull Predicate<? super T> predicate) {
-        return findLast(predicate).get();
-    }
-
-    @Deprecated
-    @ReplaceWith("findLast(Predicate<T>)")
-    default @Nullable T lastOrNull(@NotNull Predicate<? super T> predicate) {
-        return findLast(predicate).getOrNull();
-    }
-
-    @Deprecated
-    @ReplaceWith("findLast(Predicate<T>)")
-    default @NotNull Option<T> lastOption(@NotNull Predicate<? super T> predicate) {
-        return findLast(predicate);
     }
 
     //endregion

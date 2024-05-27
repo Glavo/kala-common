@@ -833,7 +833,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
         }
 
         @Override
-        public final boolean retainAll(@NotNull Predicate<? super E> predicate) {
+        public final boolean retainIf(@NotNull Predicate<? super E> predicate) {
             Node<E> prev = null;
             Node<E> cur = first;
             if (cur == null) {

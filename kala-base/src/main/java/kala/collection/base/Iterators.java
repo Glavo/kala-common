@@ -319,7 +319,6 @@ public final class Iterators {
         return true;
     }
 
-
     @Deprecated
     public static <E> E first(@NotNull Iterator<? extends E> it) {
         return it.next();

@@ -402,12 +402,6 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
         return changed;
     }
 
-    @Deprecated
-    @ReplaceWith("removeIf(Predicate<E>)")
-    default boolean removeAll(@NotNull Predicate<? super E> predicate) {
-        return removeIf(predicate);
-    }
-
     @Contract(mutates = "this")
     default boolean retainIf(@NotNull Predicate<? super E> predicate) {
         MutableListIterator<E> it = this.seqIterator();
@@ -420,12 +414,6 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
             }
         }
         return changed;
-    }
-
-    @Deprecated
-    @ReplaceWith("retainIf(Predicate<E>)")
-    default boolean retainAll(@NotNull Predicate<? super E> predicate) {
-        return retainIf(predicate);
     }
 
     @Contract(mutates = "this")
