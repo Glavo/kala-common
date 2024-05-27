@@ -1,5 +1,21 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.collection.immutable;
 
+import kala.annotations.StaticClass;
 import kala.collection.*;
 import kala.collection.base.Iterators;
 import kala.collection.internal.view.SeqViews;
@@ -12,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.*;
@@ -20,14 +37,16 @@ import java.util.function.*;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+@StaticClass
 final class ImmutableSeqs {
     private ImmutableSeqs() {
     }
 
-    static abstract class SeqN<E> extends AbstractImmutableSeq<E> implements IndexedSeq<E> {
+    static sealed abstract class SeqN<E> extends AbstractImmutableSeq<E> implements IndexedSeq<E> {
     }
 
     static final class Seq0<E> extends SeqN<E> implements Serializable {
+        @Serial
         private static final long serialVersionUID = 0L;
 
         static final Seq0<?> INSTANCE = new Seq0<>();
@@ -145,12 +164,14 @@ final class ImmutableSeqs {
             return ImmutableSeq.empty();
         }
 
+        @Serial
         private Object readResolve() {
             return INSTANCE;
         }
     }
 
     static final class Seq1<E> extends SeqN<E> implements Serializable {
+        @Serial
         private static final long serialVersionUID = 0L;
 
         private final E value1;
@@ -290,6 +311,7 @@ final class ImmutableSeqs {
     }
 
     static final class Seq2<E> extends SeqN<E> implements Serializable {
+        @Serial
         private static final long serialVersionUID = 0L;
 
         private final E value1;
@@ -322,14 +344,11 @@ final class ImmutableSeqs {
 
         @Override
         public E get(int index) {
-            switch (index) {
-                case 0:
-                    return value1;
-                case 1:
-                    return value2;
-                default:
-                    throw new IndexOutOfBoundsException();
-            }
+            return switch (index) {
+                case 0 -> value1;
+                case 1 -> value2;
+                default -> throw new IndexOutOfBoundsException(index);
+            };
         }
 
         @Override
@@ -386,13 +405,11 @@ final class ImmutableSeqs {
             if (n < 0) {
                 throw new IllegalArgumentException();
             }
-            switch (n) {
-                case 0:
-                    return this;
-                case 1:
-                    return ImmutableSeq.of(value2);
-            }
-            return ImmutableSeq.empty();
+            return switch (n) {
+                case 0 -> this;
+                case 1 -> ImmutableSeq.of(value2);
+                default -> ImmutableSeq.empty();
+            };
         }
 
         @Override
@@ -422,13 +439,11 @@ final class ImmutableSeqs {
 
         @Override
         public @NotNull ImmutableSeq<E> updated(int index, E newValue) {
-            switch (index) {
-                case 0:
-                    return ImmutableSeq.of(newValue, value2);
-                case 1:
-                    return ImmutableSeq.of(value1, newValue);
-            }
-            throw new IndexOutOfBoundsException("index: " + index);
+            return switch (index) {
+                case 0 -> ImmutableSeq.of(newValue, value2);
+                case 1 -> ImmutableSeq.of(value1, newValue);
+                default -> throw new IndexOutOfBoundsException("index: " + index);
+            };
         }
 
         @Override
@@ -449,7 +464,7 @@ final class ImmutableSeqs {
     }
 
     @SuppressWarnings("unchecked")
-    static abstract class CopiesSeqBase<E> implements IndexedSeqLike<E>, Serializable {
+    static sealed abstract class CopiesSeqBase<E> implements IndexedSeqLike<E>, Serializable {
         protected final @Range(from = 1, to = Integer.MAX_VALUE) int size;
         protected final E value;
 
@@ -891,6 +906,7 @@ final class ImmutableSeqs {
 
     @SuppressWarnings("unchecked")
     static final class CopiesSeq<E> extends CopiesSeqBase<E> implements ImmutableSeq<E>, Serializable {
+        @Serial
         private static final long serialVersionUID = 6615175156982747837L;
 
         CopiesSeq(@Range(from = 1, to = Integer.MAX_VALUE) int size, E value) {
