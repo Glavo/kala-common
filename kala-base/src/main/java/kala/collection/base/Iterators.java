@@ -164,17 +164,12 @@ public final class Iterators {
     }
 
     public static <E> @NotNull Iterator<E> concat(@NotNull Iterator<? extends E>... its) {
-        switch (its.length) { // implicit null check of its
-            case 0:
-                return Iterators.empty();
-            case 1:
-                return Objects.requireNonNull((Iterator<E>) its[0]);
-            case 2:
-                return concat(its[0], its[1]);
-            default:
-                return new ConcatAll<>(GenericArrays.iterator(its));
-        }
-
+        return switch (its.length) { // implicit null check of its
+            case 0 -> Iterators.empty();
+            case 1 -> Objects.requireNonNull((Iterator<E>) its[0]);
+            case 2 -> concat(its[0], its[1]);
+            default -> new ConcatAll<>(GenericArrays.iterator(its));
+        };
     }
 
     public static <E> @NotNull Iterator<E> concat(@NotNull Iterable<? extends Iterator<? extends E>> its) {
@@ -1083,10 +1078,9 @@ public final class Iterators {
             throw new NoSuchElementException();
         }
         ArrayList<E> list = new ArrayList<>();
-        list.add(it.next());
-        while (it.hasNext()) {
+        do {
             list.add(it.next());
-        }
+        } while (it.hasNext());
         final int size = list.size();
         E e = list.get(size - 1);
 
@@ -1374,7 +1368,7 @@ public final class Iterators {
         forEachWith(it1, it2, action);
     }
 
-    private static final Iterator<?> EMPTY = new AbstractIterator<Object>() {
+    private static final Iterator<?> EMPTY = new AbstractIterator<>() {
         @Override
         public boolean hasNext() {
             return false;
