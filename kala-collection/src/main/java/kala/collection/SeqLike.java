@@ -21,6 +21,7 @@ import kala.collection.base.Growable;
 import kala.collection.base.OrderedTraversable;
 import kala.collection.internal.SeqIterators;
 import kala.collection.internal.view.SeqViews;
+import kala.collection.mutable.MutableSeq;
 import kala.control.Option;
 import kala.function.IndexedBiConsumer;
 import kala.function.IndexedFunction;
@@ -275,5 +276,62 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E>, OrderedTra
 
     default <U> @NotNull SeqView<@NotNull Tuple2<E, U>> zipView(@NotNull SeqLike<? extends U> other) {
         return new SeqViews.Zip<>(this, other);
+    }
+
+    @Override
+    default int copyTo(@NotNull MutableSeq<? super E> dest, int destPos, int limit) {
+        return copyTo(0, dest, destPos, limit);
+    }
+
+    @Contract(mutates = "param2")
+    @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
+    default int copyTo(int srcPos, @NotNull MutableSeq<? super E> dest) {
+        return copyTo(srcPos, dest, 0, Integer.MAX_VALUE);
+    }
+
+    @Contract(mutates = "param2")
+    @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
+    default int copyTo(int srcPos, @NotNull MutableSeq<? super E> dest, int destPos) {
+        return copyTo(srcPos, dest, destPos, Integer.MAX_VALUE);
+    }
+
+    @Contract(mutates = "param2")
+    @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
+    default int copyTo(int srcPos, @NotNull MutableSeq<? super E> dest, int destPos, int limit) {
+        if (srcPos < 0) {
+            throw new IllegalArgumentException("srcPos(" + srcPos + ") < 0");
+        }
+        if (destPos < 0) {
+            throw new IllegalArgumentException("destPos(" + destPos + ") < 0");
+        }
+
+        if (limit <= 0) {
+            return 0;
+        }
+
+        final int dl = dest.size(); // implicit null check of dest
+        if (destPos > dl) {
+            return 0;
+        }
+
+        final int kn = this.knownSize();
+        if (kn >= 0 && srcPos >= kn) {
+            return 0;
+        }
+
+        int end = Math.min(dl - destPos, limit) + destPos;
+
+        Iterator<E> it;
+        try {
+            it = this.iterator(srcPos);
+        } catch (IndexOutOfBoundsException ignored) {
+            return 0;
+        }
+
+        int idx = destPos;
+        while (it.hasNext() && idx < end) {
+            dest.set(idx++, it.next());
+        }
+        return idx - destPos;
     }
 }

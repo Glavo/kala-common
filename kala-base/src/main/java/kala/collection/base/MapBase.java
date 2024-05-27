@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package kala.internal;
+package kala.collection.base;
 
 import kala.annotations.UnstableName;
-import kala.collection.base.MapIterator;
-import kala.collection.base.Sized;
 import org.jetbrains.annotations.NotNull;
 
 @UnstableName

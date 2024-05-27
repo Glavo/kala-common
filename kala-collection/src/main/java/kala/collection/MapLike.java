@@ -6,7 +6,7 @@ import kala.collection.immutable.*;
 import kala.collection.internal.view.MapViews;
 import kala.control.Option;
 import kala.function.CheckedBiConsumer;
-import kala.internal.MapBase;
+import kala.collection.base.MapBase;
 import kala.tuple.Tuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

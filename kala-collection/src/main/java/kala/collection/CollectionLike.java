@@ -1,9 +1,24 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.collection;
 
 import kala.collection.base.Traversable;
 import kala.collection.factory.MapFactory;
 import kala.collection.immutable.*;
-import kala.collection.mutable.MutableArray;
+import kala.collection.mutable.MutableSeq;
 import kala.tuple.Tuple2;
 import kala.tuple.Tuple3;
 import org.intellij.lang.annotations.Flow;
@@ -21,13 +36,17 @@ public interface CollectionLike<E> extends Traversable<E>, AnyCollectionLike<E> 
     }
 
     @Override
-    @NotNull CollectionView<E> view();
+    @NotNull
+    CollectionView<E> view();
 
-    @NotNull CollectionLike<E> filter(@NotNull Predicate<? super E> predicate);
+    @NotNull
+    CollectionLike<E> filter(@NotNull Predicate<? super E> predicate);
 
-    @NotNull CollectionLike<E> filterNot(@NotNull Predicate<? super E> predicate);
+    @NotNull
+    CollectionLike<E> filterNot(@NotNull Predicate<? super E> predicate);
 
-    @NotNull CollectionLike<@NotNull E> filterNotNull();
+    @NotNull
+    CollectionLike<@NotNull E> filterNotNull();
 
     <U> @NotNull CollectionLike<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz);
 
@@ -45,44 +64,48 @@ public interface CollectionLike<E> extends Traversable<E>, AnyCollectionLike<E> 
 
     <U, V> @NotNull CollectionLike<@NotNull Tuple3<E, U, V>> zip3(@NotNull Iterable<? extends U> other1, @NotNull Iterable<? extends V> other2);
 
-    @NotNull CollectionLike<E> distinct();
+    @NotNull
+    CollectionLike<E> distinct();
 
     //region Copy Operations
 
     @Contract(mutates = "param1")
     @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
-    default int copyToArray(@NotNull MutableArray<? super E> dest) {
-        return copyToArray(0, dest.getArray(), 0, Integer.MAX_VALUE);
+    default int copyTo(@NotNull MutableSeq<? super E> dest) {
+        return copyTo(dest, 0, Integer.MAX_VALUE);
     }
 
     @Contract(mutates = "param1")
     @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
-    default int copyToArray(@NotNull MutableArray<? super E> dest, int destPos) {
-        return copyToArray(0, dest.getArray(), destPos, Integer.MAX_VALUE);
+    default int copyTo(@NotNull MutableSeq<? super E> dest, int destPos) {
+        return copyTo(dest, destPos, Integer.MAX_VALUE);
     }
 
     @Contract(mutates = "param1")
     @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
-    default int copyToArray(@NotNull MutableArray<? super E> dest, int destPos, int limit) {
-        return copyToArray(0, dest.getArray(), destPos, limit);
-    }
+    default int copyTo(@NotNull MutableSeq<? super E> dest, int destPos, int limit) {
+        if (destPos < 0) {
+            throw new IllegalArgumentException("destPos(" + destPos + ") < 0");
+        }
 
-    @Contract(mutates = "param2")
-    @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
-    default int copyToArray(int srcPos, @NotNull MutableArray<? super E> dest) {
-        return copyToArray(srcPos, dest.getArray(), 0, Integer.MAX_VALUE);
-    }
+        if (limit <= 0) {
+            return 0;
+        }
 
-    @Contract(mutates = "param2")
-    @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
-    default int copyToArray(int srcPos, @NotNull MutableArray<? super E> dest, int destPos) {
-        return copyToArray(srcPos, dest.getArray(), destPos, Integer.MAX_VALUE);
-    }
+        final int dl = dest.size(); // implicit null check of dest
+        if (destPos > dl) {
+            return 0;
+        }
 
-    @Contract(mutates = "param2")
-    @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
-    default int copyToArray(int srcPos, @NotNull MutableArray<? super E> dest, int destPos, int limit) {
-        return copyToArray(srcPos, dest.getArray(), destPos, limit);
+        int end = Math.min(dl - destPos, limit) + destPos;
+
+        Iterator<E> it = this.iterator();
+
+        int idx = destPos;
+        while (it.hasNext() && idx < end) {
+            dest.set(idx++, it.next());
+        }
+        return idx - destPos;
     }
 
     //endregion
@@ -115,7 +138,7 @@ public interface CollectionLike<E> extends Traversable<E>, AnyCollectionLike<E> 
         return ImmutableSet.from(this);
     }
 
-    default <K, V> @NotNull ImmutableMap<K, V> toImmutableMap(CollectionLike<E /* ? extends java.util.Map.Entry<? extends K, ? extends V> */> this) {
+    default <K, V> @NotNull ImmutableMap<K, V> toImmutableMap(CollectionLike<E /* ? extends java.util.Map.Entry<? extends K, ? extends V> */>this) {
         final int ks = knownSize();
         if (ks == 0) {
             return ImmutableMap.empty();

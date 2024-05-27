@@ -822,8 +822,7 @@ final class ImmutableVectors {
     }
 
     static Object[] append1IfSpace(Object[] suffix1, Iterable<?> xs) {
-        if (xs instanceof Traversable<?>) {
-            Traversable<?> it = (Traversable<?>) xs;
+        if (xs instanceof OrderedTraversable<?> it) {
             if (it.sizeCompare(WIDTH - suffix1.length) <= 0) {
                 int s = it.size();
                 if (s == 0) {

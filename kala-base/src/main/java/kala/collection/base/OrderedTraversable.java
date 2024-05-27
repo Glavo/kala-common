@@ -21,6 +21,7 @@ import kala.control.Option;
 import kala.function.CheckedIndexedConsumer;
 import kala.function.IndexedBiFunction;
 import kala.function.IndexedConsumer;
+import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,9 +36,12 @@ import java.util.function.Predicate;
  * This order can be insertion order, sort order, or any other meaningful order,
  * its iterators and iteration methods should follow this order.
  */
-public interface OrderedTraversable<E> extends Traversable<E> {
+public interface OrderedTraversable<T> extends Traversable<T> {
 
-    default @NotNull Iterator<E> iterator(int beginIndex) {
+    /**
+     * @throws IndexOutOfBoundsException
+     */
+    default @NotNull Iterator<T> iterator(int beginIndex) {
         if (beginIndex < 0) {
             throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") < 0");
         }
@@ -51,7 +55,7 @@ public interface OrderedTraversable<E> extends Traversable<E> {
             }
         }
 
-        final Iterator<E> it = iterator();
+        final Iterator<T> it = iterator();
         for (int i = 0; i < beginIndex; i++) {
             if (!it.hasNext()) {
                 throw new IndexOutOfBoundsException("beginIndex: " + beginIndex);
@@ -61,16 +65,16 @@ public interface OrderedTraversable<E> extends Traversable<E> {
         return it;
     }
 
-    default @NotNull Iterator<E> reverseIterator() {
+    default @NotNull Iterator<T> reverseIterator() {
         final int ks = this.knownSize();
         if (ks == 0) {
             return Iterators.empty();
         }
-        Iterator<E> it = this.iterator();
+        Iterator<T> it = this.iterator();
         if (!it.hasNext()) {
             return Iterators.empty();
         }
-        List<E> buffer = ks > 0
+        List<T> buffer = ks > 0
                 ? new ArrayList<>(ks)
                 : new ArrayList<>();
         while (it.hasNext()) {
@@ -78,122 +82,122 @@ public interface OrderedTraversable<E> extends Traversable<E> {
         }
 
         @SuppressWarnings("unchecked")
-        Iterator<E> res = (Iterator<E>) GenericArrays.reverseIterator(buffer.toArray());
+        Iterator<T> res = (Iterator<T>) GenericArrays.reverseIterator(buffer.toArray());
         return res;
     }
 
     //region Element Retrieval Operations
 
     @Override
-    default @NotNull Option<E> find(@NotNull Predicate<? super E> predicate) {
+    default @NotNull Option<T> find(@NotNull Predicate<? super T> predicate) {
         return findFirst(predicate);
     }
 
-    default @NotNull Option<E> findFirst(@NotNull Predicate<? super E> predicate) {
+    default @NotNull Option<T> findFirst(@NotNull Predicate<? super T> predicate) {
         return Iterators.firstOption(iterator(), predicate);
     }
 
-    default @NotNull Option<E> findLast(@NotNull Predicate<? super E> predicate) {
+    default @NotNull Option<T> findLast(@NotNull Predicate<? super T> predicate) {
         return Iterators.firstOption(reverseIterator(), predicate);
     }
 
-    default E getFirst() {
+    default T getFirst() {
         return this.iterator().next();
     }
 
     @DelegateBy("getFirst()")
-    default @Nullable E getFirstOrNull() {
+    default @Nullable T getFirstOrNull() {
         return isNotEmpty() ? getFirst() : null;
     }
 
     @DelegateBy("getFirst()")
-    default @NotNull Option<E> getFirstOption() {
+    default @NotNull Option<T> getFirstOption() {
         return isNotEmpty() ? Option.some(getFirst()) : Option.none();
     }
 
     @Deprecated
     @ReplaceWith("getFirst()")
-    default E first() {
+    default T first() {
         return getFirst();
     }
 
     @Deprecated
     @ReplaceWith("getFirstOrNull()")
-    default E firstOrNull() {
+    default T firstOrNull() {
         return getFirstOrNull();
     }
 
     @Deprecated
     @ReplaceWith("getFirstOption()")
-    default Option<E> firstOption() {
+    default Option<T> firstOption() {
         return getFirstOption();
     }
 
-    default E getLast() {
+    default T getLast() {
         return reverseIterator().next();
     }
 
     @DelegateBy("getLast()")
-    default @Nullable E getLastOrNull() {
+    default @Nullable T getLastOrNull() {
         return isNotEmpty() ? getLast() : null;
     }
 
     @DelegateBy("getLast()")
-    default @NotNull Option<E> getLastOption() {
+    default @NotNull Option<T> getLastOption() {
         return isNotEmpty() ? Option.some(getLast()) : Option.none();
     }
 
     @Deprecated
     @ReplaceWith("getLast()")
-    default E last() {
+    default T last() {
         return getLast();
     }
 
     @Deprecated
     @ReplaceWith("getLastOrNull()")
-    default E lastOrNull() {
+    default T lastOrNull() {
         return getLastOrNull();
     }
 
     @Deprecated
     @ReplaceWith("getLastOption()")
-    default Option<E> lastOption() {
+    default Option<T> lastOption() {
         return getLastOption();
     }
 
     @Deprecated
-    @ReplaceWith("findFirst(Predicate<E>)")
-    default E first(@NotNull Predicate<? super E> predicate) {
+    @ReplaceWith("findFirst(Predicate<T>)")
+    default T first(@NotNull Predicate<? super T> predicate) {
         return findFirst(predicate).get();
     }
 
     @Deprecated
-    @ReplaceWith("findFirst(Predicate<E>)")
-    default @Nullable E firstOrNull(@NotNull Predicate<? super E> predicate) {
+    @ReplaceWith("findFirst(Predicate<T>)")
+    default @Nullable T firstOrNull(@NotNull Predicate<? super T> predicate) {
         return findFirst(predicate).getOrNull();
     }
 
     @Deprecated
-    @ReplaceWith("findFirst(Predicate<E>)")
-    default @NotNull Option<E> firstOption(@NotNull Predicate<? super E> predicate) {
+    @ReplaceWith("findFirst(Predicate<T>)")
+    default @NotNull Option<T> firstOption(@NotNull Predicate<? super T> predicate) {
         return findFirst(predicate);
     }
 
     @Deprecated
-    @ReplaceWith("findLast(Predicate<E>)")
-    default E last(@NotNull Predicate<? super E> predicate) {
+    @ReplaceWith("findLast(Predicate<T>)")
+    default T last(@NotNull Predicate<? super T> predicate) {
         return findLast(predicate).get();
     }
 
     @Deprecated
-    @ReplaceWith("findLast(Predicate<E>)")
-    default @Nullable E lastOrNull(@NotNull Predicate<? super E> predicate) {
+    @ReplaceWith("findLast(Predicate<T>)")
+    default @Nullable T lastOrNull(@NotNull Predicate<? super T> predicate) {
         return findLast(predicate).getOrNull();
     }
 
     @Deprecated
-    @ReplaceWith("findLast(Predicate<E>)")
-    default @NotNull Option<E> lastOption(@NotNull Predicate<? super E> predicate) {
+    @ReplaceWith("findLast(Predicate<T>)")
+    default @NotNull Option<T> lastOption(@NotNull Predicate<? super T> predicate) {
         return findLast(predicate);
     }
 
@@ -205,15 +209,15 @@ public interface OrderedTraversable<E> extends Traversable<E> {
     default int indexOf(Object value) {
         int idx = 0;
         if (value == null) {
-            for (E e : this) {
-                if (null == e) {
+            for (T t : this) {
+                if (null == t) {
                     return idx;
                 }
                 ++idx;
             }
         } else {
-            for (E e : this) {
-                if (value.equals(e)) {
+            for (T t : this) {
+                if (value.equals(t)) {
                     return idx;
                 }
                 ++idx;
@@ -226,15 +230,15 @@ public interface OrderedTraversable<E> extends Traversable<E> {
     default int indexOf(Object value, int from) {
         int idx = 0;
         if (value == null) {
-            for (E e : this) {
-                if (idx >= from && null == e) {
+            for (T t : this) {
+                if (idx >= from && null == t) {
                     return idx;
                 }
                 ++idx;
             }
         } else {
-            for (E e : this) {
-                if (idx >= from && value.equals(e)) {
+            for (T t : this) {
+                if (idx >= from && value.equals(t)) {
                     return idx;
                 }
                 ++idx;
@@ -244,10 +248,10 @@ public interface OrderedTraversable<E> extends Traversable<E> {
     }
 
     @Contract(pure = true)
-    default int indexWhere(@NotNull Predicate<? super E> predicate) {
+    default int indexWhere(@NotNull Predicate<? super T> predicate) {
         int idx = 0;
-        for (E e : this) {
-            if (predicate.test(e)) { // implicit null check of predicate
+        for (T t : this) {
+            if (predicate.test(t)) { // implicit null check of predicate
                 return idx;
             }
             ++idx;
@@ -256,10 +260,10 @@ public interface OrderedTraversable<E> extends Traversable<E> {
     }
 
     @Contract(pure = true)
-    default int indexWhere(@NotNull Predicate<? super E> predicate, int from) {
+    default int indexWhere(@NotNull Predicate<? super T> predicate, int from) {
         int idx = 0;
-        for (E e : this) {
-            if (idx >= from && predicate.test(e)) { // implicit null check of predicate
+        for (T t : this) {
+            if (idx >= from && predicate.test(t)) { // implicit null check of predicate
                 return idx;
             }
             ++idx;
@@ -270,7 +274,7 @@ public interface OrderedTraversable<E> extends Traversable<E> {
     @Contract(pure = true)
     default int lastIndexOf(Object value) {
         int idx = size() - 1;
-        Iterator<E> it = reverseIterator();
+        Iterator<T> it = reverseIterator();
 
         if (value == null) {
             while (it.hasNext()) {
@@ -293,7 +297,7 @@ public interface OrderedTraversable<E> extends Traversable<E> {
     @Contract(pure = true)
     default int lastIndexOf(Object value, int end) {
         int idx = size() - 1;
-        Iterator<E> it = reverseIterator();
+        Iterator<T> it = reverseIterator();
 
         if (value == null) {
             while (it.hasNext()) {
@@ -314,9 +318,9 @@ public interface OrderedTraversable<E> extends Traversable<E> {
     }
 
     @Contract(pure = true)
-    default int lastIndexWhere(@NotNull Predicate<? super E> predicate) {
+    default int lastIndexWhere(@NotNull Predicate<? super T> predicate) {
         int idx = size() - 1;
-        Iterator<E> it = reverseIterator();
+        Iterator<T> it = reverseIterator();
         while (it.hasNext()) {
             if (predicate.test(it.next())) { // implicit null check of predicate
                 return idx;
@@ -327,9 +331,9 @@ public interface OrderedTraversable<E> extends Traversable<E> {
     }
 
     @Contract(pure = true)
-    default int lastIndexWhere(@NotNull Predicate<? super E> predicate, int end) {
+    default int lastIndexWhere(@NotNull Predicate<? super T> predicate, int end) {
         int idx = size() - 1;
-        Iterator<E> it = reverseIterator();
+        Iterator<T> it = reverseIterator();
         while (it.hasNext()) {
             if (idx <= end && predicate.test(it.next())) { // implicit null check of predicate
                 return idx;
@@ -341,44 +345,107 @@ public interface OrderedTraversable<E> extends Traversable<E> {
 
     //endregion
 
-    default E foldIndexed(E zero, @NotNull IndexedBiFunction<? super E, ? super E, ? extends E> op) {
+    default T foldIndexed(T zero, @NotNull IndexedBiFunction<? super T, ? super T, ? extends T> op) {
         return foldLeftIndexed(zero, op);
     }
 
-    default <U> U foldLeftIndexed(U zero, @NotNull IndexedBiFunction<? super U, ? super E, ? extends U> op) {
+    default <U> U foldLeftIndexed(U zero, @NotNull IndexedBiFunction<? super U, ? super T, ? extends U> op) {
         return Iterators.foldLeftIndexed(this.iterator(), zero, op);
     }
 
-    default <U> U foldRightIndexed(U zero, @NotNull IndexedBiFunction<? super E, ? super U, ? extends U> op) {
+    default <U> U foldRightIndexed(U zero, @NotNull IndexedBiFunction<? super T, ? super U, ? extends U> op) {
         return Iterators.foldRightIndexed(this.iterator(), zero, op);
     }
 
     @Override
-    default E reduceRight(@NotNull BiFunction<? super E, ? super E, ? extends E> op) throws NoSuchElementException {
-        final Iterator<E> it = this.reverseIterator();
+    default T reduceRight(@NotNull BiFunction<? super T, ? super T, ? extends T> op) throws NoSuchElementException {
+        final Iterator<T> it = this.reverseIterator();
         if (!it.hasNext()) {
             throw new NoSuchElementException();
         }
-        E e = it.next();
+        T t = it.next();
         while (it.hasNext()) {
-            e = op.apply(it.next(), e);
+            t = op.apply(it.next(), t);
         }
-        return e;
+        return t;
     }
 
-    default void forEachIndexed(@NotNull IndexedConsumer<? super E> action) {
+    //region Copy Operations
+
+    @Override
+    @Contract(mutates = "param1")
+    @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
+    default int copyToArray(Object @NotNull [] dest, int destPos, int limit) {
+        return copyToArray(0, dest, destPos, limit);
+    }
+
+    @Contract(mutates = "param2")
+    @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
+    default int copyToArray(int srcPos, Object @NotNull [] dest) {
+        return copyToArray(srcPos, dest, 0, Integer.MAX_VALUE);
+    }
+
+    @Contract(mutates = "param2")
+    @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
+    default int copyToArray(int srcPos, Object @NotNull [] dest, int destPos) {
+        return copyToArray(srcPos, dest, destPos, Integer.MAX_VALUE);
+    }
+
+    @Contract(mutates = "param2")
+    @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
+    default int copyToArray(int srcPos, Object @NotNull [] dest, int destPos, int limit) {
+        if (srcPos < 0) {
+            throw new IllegalArgumentException("srcPos(" + srcPos + ") < 0");
+        }
+        if (destPos < 0) {
+            throw new IllegalArgumentException("destPos(" + destPos + ") < 0");
+        }
+
+        if (limit <= 0) {
+            return 0;
+        }
+
+        final int dl = dest.length; //implicit null check of dest
+        if (destPos > dl) {
+            return 0;
+        }
+
+        final int kn = this.knownSize();
+        if (kn >= 0 && srcPos >= kn) {
+            return 0;
+        }
+
+        int end = Math.min(dl - destPos, limit) + destPos;
+
+        Iterator<T> it;
+        try {
+            it = this.iterator(srcPos);
+        } catch (IndexOutOfBoundsException ignored) {
+            return 0;
+        }
+
+        int idx = destPos;
+        while (it.hasNext() && idx < end) {
+            dest[idx++] = it.next();
+        }
+        return idx - destPos;
+    }
+
+    //endregion
+
+    default void forEachIndexed(@NotNull IndexedConsumer<? super T> action) {
         int idx = 0;
-        for (E e : this) {
-            action.accept(idx++, e); // implicit null check of action
+        for (T t : this) {
+            action.accept(idx++, t); // implicit null check of action
         }
     }
 
     default <Ex extends Throwable> void forEachIndexedChecked(
-            @NotNull CheckedIndexedConsumer<? super E, ? extends Ex> action) throws Ex {
+            @NotNull CheckedIndexedConsumer<? super T, ? extends Ex> action) throws Ex {
         forEachIndexed(action);
     }
 
-    default void forEachIndexedUnchecked(@NotNull CheckedIndexedConsumer<? super E, ?> action) {
+    default void forEachIndexedUnchecked(@NotNull CheckedIndexedConsumer<? super T, ?> action) {
         forEachIndexed(action);
     }
 }

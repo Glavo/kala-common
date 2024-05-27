@@ -822,39 +822,18 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
     @Contract(mutates = "param1")
     @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
     default int copyToArray(Object @NotNull [] dest) {
-        return copyToArray(0, dest, 0, Integer.MAX_VALUE);
+        return copyToArray(dest, 0, Integer.MAX_VALUE);
     }
 
     @Contract(mutates = "param1")
     @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
     default int copyToArray(Object @NotNull [] dest, int destPos) {
-        return copyToArray(0, dest, destPos, Integer.MAX_VALUE);
+        return copyToArray(dest, destPos, Integer.MAX_VALUE);
     }
 
     @Contract(mutates = "param1")
     @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
     default int copyToArray(Object @NotNull [] dest, int destPos, int limit) {
-        return copyToArray(0, dest, destPos, limit);
-    }
-
-    @Contract(mutates = "param2")
-    @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
-    default int copyToArray(int srcPos, Object @NotNull [] dest) {
-        return copyToArray(srcPos, dest, 0, Integer.MAX_VALUE);
-    }
-
-    @Contract(mutates = "param2")
-    @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
-    default int copyToArray(int srcPos, Object @NotNull [] dest, int destPos) {
-        return copyToArray(srcPos, dest, destPos, Integer.MAX_VALUE);
-    }
-
-    @Contract(mutates = "param2")
-    @Flow(sourceIsContainer = true, target = "dest", targetIsContainer = true)
-    default int copyToArray(int srcPos, Object @NotNull [] dest, int destPos, int limit) {
-        if (srcPos < 0) {
-            throw new IllegalArgumentException("srcPos(" + srcPos + ") < 0");
-        }
         if (destPos < 0) {
             throw new IllegalArgumentException("destPos(" + destPos + ") < 0");
         }
@@ -868,22 +847,9 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
             return 0;
         }
 
-        final int kn = this.knownSize();
-        if (kn >= 0 && srcPos >= kn) {
-            return 0;
-        }
-
         int end = Math.min(dl - destPos, limit) + destPos;
 
-        int n = 0;
         Iterator<T> it = this.iterator();
-        while (n++ < srcPos) {
-            if (it.hasNext()) {
-                it.next();
-            } else {
-                return 0;
-            }
-        }
 
         int idx = destPos;
         while (it.hasNext() && idx < end) {

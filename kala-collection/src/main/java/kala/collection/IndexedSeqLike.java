@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.collection;
 
 import kala.Conditions;
@@ -6,6 +21,7 @@ import kala.collection.base.Growable;
 import kala.collection.base.Iterators;
 import kala.collection.factory.MapFactory;
 import kala.collection.immutable.ImmutableMap;
+import kala.collection.mutable.MutableSeq;
 import kala.control.Option;
 import kala.function.IndexedBiFunction;
 import kala.function.IndexedConsumer;
@@ -570,6 +586,31 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     //endregion
 
     @Override
+    default int copyTo(int srcPos, @NotNull MutableSeq<? super E> dest, int destPos, int limit) {
+        if (srcPos < 0) {
+            throw new IllegalArgumentException("srcPos(" + destPos + ") < 0");
+        }
+        if (destPos < 0) {
+            throw new IllegalArgumentException("destPos(" + destPos + ") < 0");
+        }
+
+        final int sourceSize = size();
+        final int destSize = dest.size();
+
+        if (destPos >= destSize || srcPos >= sourceSize) {
+            return 0;
+        }
+
+        final int n = Math.min(Math.min(sourceSize - srcPos, destSize - destPos), limit);
+
+        for (int i = 0; i < n; i++) {
+            dest.set(i + destPos, get(i + srcPos));
+        }
+
+        return n;
+    }
+
+    @Override
     default int copyToArray(int srcPos, Object @NotNull [] dest, int destPos, int limit) {
         if (srcPos < 0) {
             throw new IllegalArgumentException("srcPos(" + destPos + ") < 0");
@@ -578,14 +619,14 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
             throw new IllegalArgumentException("destPos(" + destPos + ") < 0");
         }
 
-        final int dl = dest.length;
-        final int size = size();
+        final int sourceSize = size();
+        final int destSize = dest.length;
 
-        if (destPos >= dl || srcPos >= size) {
+        if (destPos >= destSize || srcPos >= sourceSize) {
             return 0;
         }
 
-        final int n = Math.min(Math.min(size - srcPos, dl - destPos), limit);
+        final int n = Math.min(Math.min(sourceSize - srcPos, destSize - destPos), limit);
 
         for (int i = 0; i < n; i++) {
             dest[i + destPos] = get(i + srcPos);
