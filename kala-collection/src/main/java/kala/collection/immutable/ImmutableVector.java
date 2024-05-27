@@ -28,7 +28,8 @@ import java.util.function.*;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq<E> implements IndexedSeq<E>, Serializable {
+public sealed abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq<E> implements IndexedSeq<E>, Serializable
+        permits ImmutableVectors.Vector0, ImmutableVectors.Vector1, ImmutableVectors.BigVector {
 
     final Object[] prefix1;
 

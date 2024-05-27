@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.collection.immutable;
 
 import kala.collection.base.*;
@@ -8,6 +23,7 @@ import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serial;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.Consumer;
@@ -22,6 +38,7 @@ import static kala.collection.base.GenericArrays.copyOrUse;
 final class ImmutableVectors {
     @Debug.Renderer(hasChildren = "false", childrenArray = "new Object[0]")
     final static class Vector0 extends ImmutableVector<Object> {
+        @Serial
         private static final long serialVersionUID = 6286060267578716429L;
 
         static final Vector0 INSTANCE = new Vector0();
@@ -155,6 +172,7 @@ final class ImmutableVectors {
             // do nothing
         }
 
+        @Serial
         private Object readResolve() {
             return INSTANCE;
         }
@@ -162,6 +180,7 @@ final class ImmutableVectors {
 
     @Debug.Renderer(hasChildren = "true", childrenArray = "prefix1")
     final static class Vector1<E> extends ImmutableVector<E> {
+        @Serial
         private static final long serialVersionUID = -2956354586637109936L;
 
         Vector1(Object[] prefix1) {
@@ -453,7 +472,7 @@ final class ImmutableVectors {
     }
 
     @Debug.Renderer(hasChildren = "true", childrenArray = "toArray()")
-    static abstract class BigVector<E> extends ImmutableVector<E> {
+    static sealed abstract class BigVector<E> extends ImmutableVector<E> {
         final Object[] suffix1;
         final int length0;
 
