@@ -147,7 +147,9 @@ tasks.jacocoTestReport {
 
     val task = this
     subprojects {
-        task.sourceSets(sourceSets.main.get())
+        if (this != project(":benchmark")) {
+            task.sourceSets(sourceSets.main.get())
+        }
     }
 
     reports {

@@ -1,6 +1,8 @@
 # kala-common
 
 ![Gradle Check](https://github.com/Glavo/kala-common/workflows/Gradle%20Check/badge.svg?branch=main)
+[![codecov](https://codecov.io/github/Glavo/kala-common/graph/badge.svg?token=IHM4ZK7K7A)](https://codecov.io/github/Glavo/kala-common)
+
 
 This is a powerful set of Java base libraries that provide a series of easy-to-use abstractions and collections.
 If you have used Scala, it should be easy for you to get started with this collection library.
