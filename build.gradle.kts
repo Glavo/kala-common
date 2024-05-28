@@ -20,7 +20,6 @@ allprojects {
 
     apply {
         plugin("java-library")
-        plugin("jacoco")
         plugin("maven-publish")
         plugin("signing")
     }
@@ -44,15 +43,6 @@ allprojects {
         options.javaModuleVersion.set(project.version.toString())
         options.encoding = "UTF-8"
         options.isWarnings = false
-    }
-
-    tasks.jacocoTestReport {
-        dependsOn(tasks.test)
-        reports {
-            xml.required.set(true)
-            csv.required.set(false)
-            html.required.set(false)
-        }
     }
 
     tasks.withType<Javadoc>().configureEach {
@@ -150,6 +140,21 @@ tasks.shadowJar {
 
 tasks.javadoc {
     enabled = false
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+
+    val task = this
+    subprojects {
+        task.sourceSets(sourceSets.main.get())
+    }
+
+    reports {
+        xml.required.set(true)
+        csv.required.set(false)
+        html.required.set(false)
+    }
 }
 
 // ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository
