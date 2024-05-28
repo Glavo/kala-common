@@ -19,19 +19,14 @@ import kala.annotations.Covariant;
 import kala.annotations.DelegateBy;
 import kala.collection.base.primitive.*;
 import kala.collection.factory.CollectionBuilder;
-import kala.collection.factory.primitive.DoubleCollectionFactory;
-import kala.collection.factory.primitive.IntCollectionFactory;
-import kala.collection.factory.primitive.LongCollectionFactory;
+import kala.collection.factory.primitive.*;
 import kala.comparator.Comparators;
 import kala.concurrent.Granularity;
 import kala.concurrent.ConcurrentScope;
 import kala.concurrent.LateInitCountDownLatch;
 import kala.control.Option;
 import kala.collection.factory.CollectionFactory;
-import kala.function.CheckedBiConsumer;
-import kala.function.CheckedBiFunction;
-import kala.function.CheckedConsumer;
-import kala.function.CheckedPredicate;
+import kala.function.*;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import kala.value.primitive.IntVar;
@@ -310,6 +305,22 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         });
     }
 
+    default <R> R mapToChar(@NotNull CharCollectionFactory<?, R> factory, @NotNull ToCharFunction<? super T> mapper) {
+        return CharCollectionFactory.buildBy(factory, consumer -> {
+            for (T e : this) {
+                consumer.accept(mapper.applyAsChar(e));
+            }
+        });
+    }
+
+    default <R> R mapToBoolean(@NotNull BooleanCollectionFactory<?, R> factory, @NotNull ToBooleanFunction<? super T> mapper) {
+        return BooleanCollectionFactory.buildBy(factory, consumer -> {
+            for (T e : this) {
+                consumer.accept(mapper.applyAsBoolean(e));
+            }
+        });
+    }
+
     @DelegateBy("mapNotNullTo(Growable<U>, Function<T, U>)")
     default <U, R> R mapNotNull(@NotNull CollectionFactory<U, ?, R> factory, @NotNull Function<? super T, ? extends U> mapper) {
         return mapNotNullTo(factory.newCollectionBuilder(knownSize()), mapper).build();
@@ -349,6 +360,22 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
     default <U, G extends DoubleGrowable> @NotNull G mapToDoubleTo(@NotNull G destination, @NotNull ToDoubleFunction<? super T> mapper) {
         for (T e : this) {
             destination.plusAssign(mapper.applyAsDouble(e));
+        }
+        return destination;
+    }
+
+    @Contract(value = "_, _ -> param1", mutates = "param1")
+    default <U, G extends CharGrowable> @NotNull G mapToCharTo(@NotNull G destination, @NotNull ToCharFunction<? super T> mapper) {
+        for (T e : this) {
+            destination.plusAssign(mapper.applyAsChar(e));
+        }
+        return destination;
+    }
+
+    @Contract(value = "_, _ -> param1", mutates = "param1")
+    default <U, G extends BooleanGrowable> @NotNull G mapToBooleanTo(@NotNull G destination, @NotNull ToBooleanFunction<? super T> mapper) {
+        for (T e : this) {
+            destination.plusAssign(mapper.applyAsBoolean(e));
         }
         return destination;
     }
