@@ -17,4 +17,8 @@ jobs:
           java-version: '21'
       - uses: gradle/gradle-build-action@v2
         with:
-          arguments: check --info --no-daemon --stacktrace
+          arguments: check jacocoTestReport --info --no-daemon --stacktrace
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
