@@ -2,6 +2,7 @@ package kala.collection;
 
 import kala.collection.base.GenericArrays;
 import kala.collection.immutable.ImmutableLinkedSeq;
+import kala.collection.mutable.MutableArray;
 import kala.comparator.Comparators;
 import kala.concurrent.ConcurrentScope;
 import kala.control.Option;
@@ -292,5 +293,52 @@ public interface CollectionLikeTestTemplate {
         assertEquals(2, of(1, 0, 2, 1).min(reversedComparator));
         assertEquals(2, of(1, 0, 2, 1).minOrNull(reversedComparator));
         assertEquals(Option.some(2), of(1, 0, 2, 1).minOption(reversedComparator));
+    }
+
+    @Test
+    default void copyToTest() {
+        CollectionLike<Integer> collection = of(0, 1, 2, 3);
+
+        MutableArray<Integer> target;
+
+        target = MutableArray.create(0);
+        assertEquals(0, collection.copyTo(target, 0));
+        assertEquals(0, collection.copyTo(target, 10));
+
+        target = MutableArray.create(5);
+        assertEquals(4, collection.copyTo(target, 0));
+        assertIterableEquals(Arrays.asList(0, 1, 2, 3, null), target);
+
+        target = MutableArray.create(5);
+        assertEquals(4, collection.copyTo(target, 1));
+        assertIterableEquals(Arrays.asList(null, 0, 1, 2, 3), target);
+
+        target = MutableArray.create(5);
+        assertEquals(3, collection.copyTo(target, 2));
+        assertIterableEquals(Arrays.asList(null, null, 0, 1, 2), target);
+
+        target = MutableArray.create(5);
+        assertEquals(2, collection.copyTo(target, 2, 2));
+        assertIterableEquals(Arrays.asList(null, null, 0, 1, null), target);
+
+
+        if (collection instanceof SeqLike<Integer> seq) {
+            target = MutableArray.create(0);
+            assertEquals(0, seq.copyTo(0, target, 0));
+            assertEquals(0, seq.copyTo(10, target, 0));
+            assertEquals(0, seq.copyTo(10, target, 10));
+
+            target = MutableArray.create(5);
+            assertEquals(4, seq.copyTo(0, target, 0));
+            assertIterableEquals(Arrays.asList(0, 1, 2, 3, null), target);
+
+            target = MutableArray.create(5);
+            assertEquals(3, seq.copyTo(1, target, 0));
+            assertIterableEquals(Arrays.asList(1, 2, 3, null, null), target);
+
+            target = MutableArray.create(5);
+            assertEquals(2, seq.copyTo(1, target, 2, 2));
+            assertIterableEquals(Arrays.asList(null, null, 1, 2, null), target);
+        }
     }
 }
