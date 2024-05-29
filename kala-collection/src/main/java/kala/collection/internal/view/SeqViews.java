@@ -1021,6 +1021,45 @@ public final class SeqViews {
         }
     }
 
+    public static class RemovedAt<E> extends AbstractSeqView<E> {
+        protected final @NotNull SeqView<E> source;
+
+        protected final int removedIndex;
+
+        public RemovedAt(@NotNull SeqView<E> source, int index) {
+            this.source = source;
+            this.removedIndex = index;
+        }
+
+        @Override
+        public boolean supportsFastRandomAccess() {
+            return source.supportsFastRandomAccess();
+        }
+
+        @Override
+        public int size() {
+            int size = source.size();
+            return size > 0 ? size - 1 : size;
+        }
+
+        @Override
+        public int knownSize() {
+            int size = source.knownSize();
+            return size > 0 ? size - 1 : size;
+        }
+
+        @Override
+        public @NotNull Iterator<E> iterator() {
+            return Iterators.removed(source.iterator(), removedIndex);
+        }
+
+        @Override
+        public E get(int index) {
+            Conditions.checkElementIndex(index, size());
+            return source.get(index < removedIndex ? index : index -1);
+        }
+    }
+
     public static class Reversed<E> extends AbstractSeqView<E> {
         protected final @NotNull SeqView<E> source;
 

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.collection.immutable;
 
 import kala.collection.AbstractSeq;
@@ -25,15 +40,13 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractSeq<E> 
             E newValue,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
-        final int s = seq.size();
+        final int size = seq.size();
 
-        if (index < 0 || index >= s) {
-            throw new IndexOutOfBoundsException();
-        }
+        Conditions.checkElementIndex(index, size);
 
         Builder builder = factory.newBuilder();
 
-        factory.sizeHint(builder, s);
+        factory.sizeHint(builder, size);
 
         for (E e : seq) {
             if (index-- == 0) {
@@ -43,6 +56,34 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractSeq<E> 
             }
         }
 
+        return factory.build(builder);
+    }
+
+    static <E, T, Builder> T removedAt(
+            @NotNull ImmutableSeq<? extends E> seq,
+            int index,
+            @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
+    ) {
+        final int s = seq.size();
+
+        Conditions.checkElementIndex(index, s);
+
+        if (s == 1) {
+            return factory.empty();
+        }
+
+        Builder builder = factory.newBuilder();
+
+        factory.sizeHint(builder, s - 1);
+
+        Iterator<? extends E> iterator = seq.iterator();
+
+        for (int i = 0; i < index; i++) {
+            factory.addToBuilder(builder, iterator.next());
+        }
+
+        iterator.next();
+        factory.addAllToBuilder(builder, iterator);
         return factory.build(builder);
     }
 

@@ -216,6 +216,19 @@ public interface SeqView<@Covariant E> extends CollectionView<E>, SeqLike<E>, An
         return new SeqViews.Concat<>(ArraySeq.wrap(prefix), this);
     }
 
+    default @NotNull SeqView<E> removedAt(int index) {
+        final int ks = this.knownSize();
+        if (ks < 0) {
+            if (index < 0) {
+                throw new IndexOutOfBoundsException("index(" + index + ") < 0");
+            }
+        } else {
+            Conditions.checkElementIndex(index, ks);
+        }
+
+        return new SeqViews.RemovedAt<>(this, index);
+    }
+
     default @NotNull SeqView<E> sorted() {
         return sorted(null);
     }

@@ -461,6 +461,42 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
     }
 
     @Test
+    default void removedAtTest() {
+        {
+            var empty = of();
+
+            assertThrows(IndexOutOfBoundsException.class, () -> empty.removedAt(0));
+            assertThrows(IndexOutOfBoundsException.class, () -> empty.removedAt(1));
+            assertThrows(IndexOutOfBoundsException.class, () -> empty.removedAt(-1));
+            assertThrows(IndexOutOfBoundsException.class, () -> empty.removedAt(Integer.MAX_VALUE));
+            assertThrows(IndexOutOfBoundsException.class, () -> empty.removedAt(Integer.MIN_VALUE));
+        }
+
+        {
+            var seq = from(List.of("foo"));
+            assertIterableEquals(List.of(), seq.removedAt(0));
+
+            if (seq instanceof Seq<String>) {
+                assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(1));
+                assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(-1));
+                assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(Integer.MAX_VALUE));
+                assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(Integer.MIN_VALUE));
+            }
+        }
+
+        {
+            var seq = from(List.of("str0", "str1", "str2"));
+            assertIterableEquals(List.of("str1", "str2"), seq.removedAt(0));
+            assertIterableEquals(List.of("str0", "str2"), seq.removedAt(1));
+            assertIterableEquals(List.of("str0", "str1"), seq.removedAt(2));
+
+            if (seq instanceof Seq<String>) {
+                assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(3));
+            }
+        }
+    }
+
+    @Test
     default void sliceTest() {
         assertIterableEquals(List.of(), of().slice(0, 0));
         assertThrows(IndexOutOfBoundsException.class, () -> of().slice(-1, 0));
@@ -571,7 +607,7 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
     @Test
     default void takeLastTest() {
         var empty = of();
-        assertThrows(IllegalArgumentException.class, () ->  empty.takeLast(-1));
+        assertThrows(IllegalArgumentException.class, () -> empty.takeLast(-1));
         assertThrows(IllegalArgumentException.class, () -> empty.takeLast(Integer.MIN_VALUE));
         assertIterableEquals(List.of(), empty.takeLast(0));
         assertIterableEquals(List.of(), empty.takeLast(1));
@@ -579,8 +615,8 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
 
         List<String> list = List.of("str1", "str2", "str3", "str4", "str5");
         var seq = from(list);
-        assertThrows(IllegalArgumentException.class, () ->  seq.takeLast(-1));
-        assertThrows(IllegalArgumentException.class, () ->  seq.takeLast(Integer.MIN_VALUE));
+        assertThrows(IllegalArgumentException.class, () -> seq.takeLast(-1));
+        assertThrows(IllegalArgumentException.class, () -> seq.takeLast(Integer.MIN_VALUE));
         assertIterableEquals(List.of(), seq.takeLast(0));
         assertIterableEquals(list, seq.takeLast(Integer.MAX_VALUE));
         assertIterableEquals(list, seq.takeLast(5));
@@ -609,16 +645,19 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
 
     @Test
     default void updatedTest() {
-        var empty = of();
+        {
+            var empty = of();
 
-        assertThrows(IndexOutOfBoundsException.class, () -> empty.updated(0, "foo"));
-        assertThrows(IndexOutOfBoundsException.class, () -> empty.updated(1, "foo"));
-        assertThrows(IndexOutOfBoundsException.class, () -> empty.updated(-1, "foo"));
-        assertThrows(IndexOutOfBoundsException.class, () -> empty.updated(Integer.MAX_VALUE, "foo"));
-        assertThrows(IndexOutOfBoundsException.class, () -> empty.updated(Integer.MIN_VALUE, "foo"));
+            assertThrows(IndexOutOfBoundsException.class, () -> empty.updated(0, "foo"));
+            assertThrows(IndexOutOfBoundsException.class, () -> empty.updated(1, "foo"));
+            assertThrows(IndexOutOfBoundsException.class, () -> empty.updated(-1, "foo"));
+            assertThrows(IndexOutOfBoundsException.class, () -> empty.updated(Integer.MAX_VALUE, "foo"));
+            assertThrows(IndexOutOfBoundsException.class, () -> empty.updated(Integer.MIN_VALUE, "foo"));
+        }
 
         {
             var seq = from(List.of("foo"));
+            assertIterableEquals(List.of("foo"), seq.updated(0, "foo"));
             assertIterableEquals(List.of("bar"), seq.updated(0, "bar"));
             assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(1, "bar").toImmutableLinkedSeq());
             assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(-1, "bar").toImmutableLinkedSeq());

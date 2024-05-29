@@ -326,6 +326,12 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
         return AbstractImmutableSeq.appendedAll(this, values, iterableFactory());
     }
 
+    @Override
+    @NotNull
+    default SeqLike<E> removedAt(int index) {
+        return AbstractImmutableSeq.removedAt(this, index, iterableFactory());
+    }
+
     @Contract(pure = true)
     default @NotNull ImmutableSeq<E> sorted() {
         return sorted(Comparators.naturalOrder());

@@ -799,6 +799,34 @@ public final class Iterators {
         return value == null ? new PrependedNull<>(it) : new PrependedNotNull<>(it, value);
     }
 
+    public static <E> @NotNull Iterator<E> removed(@NotNull Iterator<? extends E> it, int index) {
+        return new AbstractIterator<E>() {
+            private int count = 0;
+
+            @Override
+            public boolean hasNext() {
+                if (count == index) {
+                    try {
+                        it.next();
+                        count++;
+                    } catch (NoSuchElementException ignored) {
+                        return false;
+                    }
+                }
+
+                return it.hasNext();
+            }
+
+            @Override
+            public E next() {
+                checkStatus();
+                E res = it.next();
+                count++;
+                return res;
+            }
+        };
+    }
+
     public static <E> @NotNull Iterator<E> filter(@NotNull Iterator<? extends E> it, @NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
         if (!it.hasNext()) { // implicit null check of it
