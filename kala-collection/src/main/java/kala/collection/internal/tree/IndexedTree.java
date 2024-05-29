@@ -73,12 +73,21 @@ public final class IndexedTree<V> implements Iterable<V> {
         return true;
     }
 
-    public V get(final long key) {
-        if (size == 0) return null;
-        if (key < this.key) return left.get(key - this.key);
-        if (key > this.key) return right.get(key - this.key);
-        // otherwise key==this.key:
-        return value;
+    public V get(long key) {
+        IndexedTree<V> node = this;
+        while (true) {
+            if (node.size == 0) {
+                return null;
+            }
+
+            key -= node.key;
+
+            if (key == 0) {
+                return node.value;
+            }
+
+            node = key < 0 ? node.left : node.right;
+        }
     }
 
     public IndexedTree<V> plus(final long key, final V value) {
