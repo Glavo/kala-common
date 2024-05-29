@@ -267,6 +267,12 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
     }
 
     @Override
+    public @NotNull ImmutableSeq<E> inserted(int index, E value) {
+        Conditions.checkPositionIndex(index, size());
+        return new ImmutableTreeSeq<>(root.changeKeysAbove(index, 1).plus(index, value));
+    }
+
+    @Override
     public @NotNull ImmutableSeq<E> removedAt(int index) {
         final int size = size();
         Conditions.checkElementIndex(index, size);

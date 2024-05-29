@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.collection;
 
 import kala.collection.base.GenericArrays;
@@ -459,6 +474,20 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
         Object[] newValues = elements.clone();
         newValues[index] = newValue;
+        return ImmutableArray.Unsafe.wrap(newValues);
+    }
+
+    @Override
+    public @NotNull ImmutableSeq<E> inserted(int index, E value) {
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+
+        Conditions.checkPositionIndex(index, size);
+
+        Object[] newValues = new Object[size + 1];
+        System.arraycopy(elements, 0, newValues, 0, index);
+        System.arraycopy(elements, index, newValues, index + 1, size - index);
+        newValues[index] = value;
         return ImmutableArray.Unsafe.wrap(newValues);
     }
 
