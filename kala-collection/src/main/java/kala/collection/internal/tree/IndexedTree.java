@@ -124,8 +124,8 @@ public final class IndexedTree<V> implements Iterable<V> {
     /**
      * Changes every key k>=key to k+delta.
      *
-     * <p>This method will create an _invalid_ tree if delta<0 and the distance between the smallest
-     * k>=key in this and the largest j<key in this is |delta| or less.
+     * <p>This method will create an _invalid_ tree if delta&lt;0 and the distance between the smallest
+     * k&gt;=key in this and the largest j&lt;key in this is |delta| or less.
      *
      * <p>In other words, this method must not result in any change in the order of the keys in this,
      * since the tree structure is not being changed at all.
@@ -147,9 +147,9 @@ public final class IndexedTree<V> implements Iterable<V> {
     }
 
     /**
-     * Changes every key k<key to k+delta.
+     * Changes every key k&lt;key to k+delta.
      *
-     * <p>This method will create an _invalid_ tree if delta>0 and the distance between the largest
+     * <p>This method will create an _invalid_ tree if delta&gt;0 and the distance between the largest
      * k<key in this and the smallest j>=key in this is delta or less.
      *
      * <p>In other words, this method must not result in any overlap or change in the order of the

@@ -18,7 +18,7 @@ package kala.function;
 /**
  * Represents an operation that accepts an index and an object-valued argument, and returns no result.
  *
- * <p>This is a functional interface whose functional method is {@link #accept(int, Object)}.
+ * <p>This is a functional interface whose functional method is {@link #accept(long, Object)}.
  *
  * @param <T> the type of the input to the operation
  * @author Glavo
