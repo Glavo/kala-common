@@ -799,8 +799,30 @@ public final class Iterators {
         return value == null ? new PrependedNull<>(it) : new PrependedNotNull<>(it, value);
     }
 
+    public static <E> @NotNull Iterator<E> inserted(@NotNull Iterator<? extends E> it, int index, E value) {
+        return new AbstractIterator<>() {
+            private int i;
+
+            @Override
+            public boolean hasNext() {
+                return i == index || it.hasNext();
+            }
+
+            @Override
+            public E next() {
+                checkStatus();
+
+                if (i++ == index) {
+                    return value;
+                } else {
+                    return it.next();
+                }
+            }
+        };
+    }
+
     public static <E> @NotNull Iterator<E> removed(@NotNull Iterator<? extends E> it, int index) {
-        return new AbstractIterator<E>() {
+        return new AbstractIterator<>() {
             private int count = 0;
 
             @Override
@@ -969,7 +991,7 @@ public final class Iterators {
     }
 
     public static <E, U, V> @NotNull Iterator<@NotNull Tuple3<E, U, V>> zip3(@NotNull Iterator<? extends E> it1, Iterator<? extends U> it2, Iterator<? extends V> it3) {
-        if (!it1.hasNext() || !it2.hasNext() ||!it3.hasNext()) { // implicit null check of it1 and it2
+        if (!it1.hasNext() || !it2.hasNext() || !it3.hasNext()) { // implicit null check of it1 and it2
             return Iterators.empty();
         }
         return new Zip3<>(it1, it2, it3);

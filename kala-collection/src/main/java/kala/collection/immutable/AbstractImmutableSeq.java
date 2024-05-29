@@ -59,22 +59,42 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractSeq<E> 
         return factory.build(builder);
     }
 
+    static <E, T, Builder> T inserted(
+            @NotNull ImmutableSeq<? extends E> seq,
+            int index,
+            E newValue,
+            @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
+    ) {
+        final int size = seq.size();
+        Conditions.checkPositionIndex(index, size);
+
+        Builder builder = factory.newBuilder();
+        factory.sizeHint(builder, size - 1);
+
+        Iterator<? extends E> iterator = seq.iterator();
+
+        for (int i = 0; i < index; i++) {
+            factory.addToBuilder(builder, iterator.next());
+        }
+        factory.addToBuilder(builder, newValue);
+        factory.addAllToBuilder(builder, iterator);
+        return factory.build(builder);
+    }
+
     static <E, T, Builder> T removedAt(
             @NotNull ImmutableSeq<? extends E> seq,
             int index,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
-        final int s = seq.size();
+        final int size = seq.size();
+        Conditions.checkElementIndex(index, size);
 
-        Conditions.checkElementIndex(index, s);
-
-        if (s == 1) {
+        if (size == 1) {
             return factory.empty();
         }
 
         Builder builder = factory.newBuilder();
-
-        factory.sizeHint(builder, s - 1);
+        factory.sizeHint(builder, size - 1);
 
         Iterator<? extends E> iterator = seq.iterator();
 

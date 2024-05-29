@@ -248,6 +248,12 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
     }
 
     @Override
+    default @NotNull ImmutableSeq<E> inserted(int index, E value) {
+        Conditions.checkPositionIndex(index, size());
+        return view().inserted(index, value).toImmutableSeq();
+    }
+
+    @Override
     @Contract(pure = true)
     default @NotNull ImmutableSeq<E> removedAt(int index) {
         Conditions.checkElementIndex(index, size());

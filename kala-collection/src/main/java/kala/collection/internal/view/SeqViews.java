@@ -505,83 +505,6 @@ public final class SeqViews {
         }
     }
 
-    public static class Updated<E> extends AbstractSeqView<E> {
-        private final @NotNull SeqView<E> source;
-
-        private final int index;
-
-        private final E newValue;
-
-        public Updated(@NotNull SeqView<E> source, int index, E newValue) {
-            this.source = source;
-            this.index = index;
-            this.newValue = newValue;
-        }
-
-        @Override
-        public final @NotNull Iterator<E> iterator() {
-            return new Iterator<E>() {
-                private final Iterator<E> it = source.iterator();
-                private int i = 0;
-
-                @Override
-                public final boolean hasNext() {
-                    if (it.hasNext()) {
-                        return true;
-                    }
-                    if (index >= i) {
-                        throw new IndexOutOfBoundsException();
-                    }
-                    return false;
-                }
-
-                @Override
-                public final E next() {
-                    E value = it.next();
-                    if (i++ == index) {
-                        value = newValue;
-                    }
-
-                    return value;
-                }
-            };
-        }
-
-        @Override
-        public final int size() {
-            return source.size();
-        }
-
-        @Override
-        public int knownSize() {
-            return source.knownSize();
-        }
-
-        @Override
-        public final E get(int index) {
-            if (index == this.index) {
-                return newValue;
-            }
-            return source.get(index);
-        }
-
-        @Override
-        public @Nullable E getOrNull(int index) {
-            if (index == this.index) {
-                return newValue;
-            }
-            return source.getOrNull(index);
-        }
-
-        @Override
-        public final @NotNull Option<E> getOption(int index) {
-            if (index == this.index) {
-                return Option.some(newValue);
-            }
-            return source.getOption(index);
-        }
-    }
-
     public static class Drop<E> extends AbstractSeqView<E> {
         protected final @NotNull SeqView<E> source;
 
@@ -936,6 +859,83 @@ public final class SeqViews {
         }
     }
 
+    public static class Updated<E> extends AbstractSeqView<E> {
+        private final @NotNull SeqView<E> source;
+
+        private final int index;
+
+        private final E newValue;
+
+        public Updated(@NotNull SeqView<E> source, int index, E newValue) {
+            this.source = source;
+            this.index = index;
+            this.newValue = newValue;
+        }
+
+        @Override
+        public final @NotNull Iterator<E> iterator() {
+            return new Iterator<E>() {
+                private final Iterator<E> it = source.iterator();
+                private int i = 0;
+
+                @Override
+                public final boolean hasNext() {
+                    if (it.hasNext()) {
+                        return true;
+                    }
+                    if (index >= i) {
+                        throw new IndexOutOfBoundsException();
+                    }
+                    return false;
+                }
+
+                @Override
+                public final E next() {
+                    E value = it.next();
+                    if (i++ == index) {
+                        value = newValue;
+                    }
+
+                    return value;
+                }
+            };
+        }
+
+        @Override
+        public final int size() {
+            return source.size();
+        }
+
+        @Override
+        public int knownSize() {
+            return source.knownSize();
+        }
+
+        @Override
+        public final E get(int index) {
+            if (index == this.index) {
+                return newValue;
+            }
+            return source.get(index);
+        }
+
+        @Override
+        public @Nullable E getOrNull(int index) {
+            if (index == this.index) {
+                return newValue;
+            }
+            return source.getOrNull(index);
+        }
+
+        @Override
+        public final @NotNull Option<E> getOption(int index) {
+            if (index == this.index) {
+                return Option.some(newValue);
+            }
+            return source.getOption(index);
+        }
+    }
+
     public static class Prepended<E> extends AbstractSeqView<E> {
 
         private final @NotNull SeqView<E> source;
@@ -1018,6 +1018,50 @@ public final class SeqViews {
         @Override
         public final @NotNull Iterator<E> iterator() {
             return Iterators.appended(source.iterator(), value);
+        }
+    }
+
+    public static class Inserted<E> extends AbstractSeqView<E> {
+        private final @NotNull SeqView<E> source;
+
+        private final int insertedIndex;
+        private final E value;
+
+        public Inserted(@NotNull SeqView<E> source, int index, E value) {
+            this.source = source;
+            this.insertedIndex = index;
+            this.value = value;
+        }
+
+        @Override
+        public final @NotNull Iterator<E> iterator() {
+            return Iterators.inserted(source.iterator(), insertedIndex, value);
+        }
+
+        @Override
+        public final int size() {
+            return source.size() + 1;
+        }
+
+        @Override
+        public int knownSize() {
+            int ks = source.knownSize();
+            if (ks < 0) {
+                return ks;
+            } else {
+                return ks + 1;
+            }
+        }
+
+        @Override
+        public final E get(int index) {
+            if (index == insertedIndex) {
+                return value;
+            } else if (index > insertedIndex) {
+                return source.get(index - 1);
+            } else {
+                return source.get(index);
+            }
         }
     }
 

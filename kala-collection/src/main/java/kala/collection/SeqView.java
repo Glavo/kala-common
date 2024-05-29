@@ -216,16 +216,13 @@ public interface SeqView<@Covariant E> extends CollectionView<E>, SeqLike<E>, An
         return new SeqViews.Concat<>(ArraySeq.wrap(prefix), this);
     }
 
-    default @NotNull SeqView<E> removedAt(int index) {
-        final int ks = this.knownSize();
-        if (ks < 0) {
-            if (index < 0) {
-                throw new IndexOutOfBoundsException("index(" + index + ") < 0");
-            }
-        } else {
-            Conditions.checkElementIndex(index, ks);
-        }
+    default @NotNull SeqLike<E> inserted(int index, E value) {
+        Conditions.checkPositionIndex(index, size());
+        return new SeqViews.Inserted<>(this, index, value);
+    }
 
+    default @NotNull SeqView<E> removedAt(int index) {
+        Conditions.checkElementIndex(index, size());
         return new SeqViews.RemovedAt<>(this, index);
     }
 

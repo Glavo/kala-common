@@ -461,6 +461,27 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
     }
 
     @Test
+    default void insertedTest() {
+        assertIterableEquals(List.of("str"), this.<String>of().inserted(0, "str"));
+        assertThrows(IndexOutOfBoundsException.class, () -> this.<String>of().inserted(1, "str"));
+        assertThrows(IndexOutOfBoundsException.class, () -> this.<String>of().inserted(-1, "str"));
+        assertThrows(IndexOutOfBoundsException.class, () -> this.<String>of().inserted(Integer.MAX_VALUE, "str"));
+        assertThrows(IndexOutOfBoundsException.class, () -> this.<String>of().inserted(Integer.MIN_VALUE, "str"));
+
+        assertIterableEquals(List.of("str1", "str0"), this.of("str0").inserted(0, "str1"));
+        assertIterableEquals(List.of("str0", "str1"), this.of("str0").inserted(1, "str1"));
+        assertThrows(IndexOutOfBoundsException.class, () -> this.of("str0").inserted(2, "str1"));
+
+        assertIterableEquals(List.of("str2", "str0", "str1"), this.of("str0", "str1").inserted(0, "str2"));
+        assertIterableEquals(List.of("str0", "str2", "str1"), this.of("str0", "str1").inserted(1, "str2"));
+        assertIterableEquals(List.of("str0", "str1", "str2"), this.of("str0", "str1").inserted(2, "str2"));
+        assertThrows(IndexOutOfBoundsException.class, () -> this.of("str0", "str1").inserted(3, "str2"));
+
+
+
+    }
+
+    @Test
     default void removedAtTest() {
         {
             var empty = of();

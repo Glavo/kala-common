@@ -250,6 +250,13 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
     }
 
     @Override
+    public @NotNull ImmutableSeq<E> updated(int index, E newValue) {
+        Conditions.checkElementIndex(index, size());
+        IndexedTree<E> newRoot = root.plus(index, newValue);
+        return newRoot != root ? new ImmutableTreeSeq<>(newRoot) : this;
+    }
+
+    @Override
     public @NotNull ImmutableSeq<E> prepended(E value) {
         return new ImmutableTreeSeq<>(root.changeKeysAbove(0, 1).plus(0, value));
     }
@@ -257,13 +264,6 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
     @Override
     public @NotNull ImmutableSeq<E> appended(E value) {
         return new ImmutableTreeSeq<>(root.plus(size(), value));
-    }
-
-    @Override
-    public @NotNull ImmutableSeq<E> updated(int index, E newValue) {
-        Conditions.checkElementIndex(index, size());
-        IndexedTree<E> newRoot = root.plus(index, newValue);
-        return newRoot != root ? new ImmutableTreeSeq<>(newRoot) : this;
     }
 
     @Override

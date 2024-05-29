@@ -219,6 +219,15 @@ final class ImmutableSeqs {
         }
 
         @Override
+        public @NotNull ImmutableSeq<E> inserted(int index, E value) {
+            return switch (index) {
+                case 0 -> ImmutableSeq.of(value, value1);
+                case 1 -> ImmutableSeq.of(value1, value);
+                default -> throw new IndexOutOfBoundsException(index);
+            };
+        }
+
+        @Override
         public @NotNull ImmutableSeq<E> removedAt(int index) {
             if (index != 0) {
                 throw new IndexOutOfBoundsException(index);
@@ -376,6 +385,16 @@ final class ImmutableSeqs {
         @Override
         public @NotNull ImmutableSeq<E> appended(E value) {
             return ImmutableSeq.of(value1, value2, value);
+        }
+
+        @Override
+        public @NotNull ImmutableSeq<E> inserted(int index, E value) {
+            return switch (index) {
+                case 0 -> ImmutableSeq.of(value, value1, value2);
+                case 1 -> ImmutableSeq.of(value1, value, value2);
+                case 2 -> ImmutableSeq.of(value1, value2, value);
+                default -> throw new IndexOutOfBoundsException(index);
+            };
         }
 
         @Override
