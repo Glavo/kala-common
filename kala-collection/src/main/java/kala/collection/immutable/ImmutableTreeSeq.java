@@ -266,6 +266,13 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
         return newRoot != root ? new ImmutableTreeSeq<>(newRoot) : this;
     }
 
+    @Override
+    public @NotNull ImmutableSeq<E> removedAt(int index) {
+        final int size = size();
+        Conditions.checkElementIndex(index, size);
+        return size > 1 ? new ImmutableTreeSeq<>(root.minus(index).changeKeysBelow(index, -1)) : empty();
+    }
+
     @Serial
     private Object writeReplace() {
         return new SerializationReplaced<>(this);

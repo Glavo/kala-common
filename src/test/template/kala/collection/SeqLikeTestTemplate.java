@@ -473,15 +473,24 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
         }
 
         {
-            var seq = from(List.of("foo"));
+            var seq = from(List.of("str0"));
             assertIterableEquals(List.of(), seq.removedAt(0));
 
-            if (seq instanceof Seq<String>) {
-                assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(1));
-                assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(-1));
-                assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(Integer.MAX_VALUE));
-                assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(Integer.MIN_VALUE));
-            }
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(1));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(-1));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(Integer.MAX_VALUE));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(Integer.MIN_VALUE));
+        }
+
+        {
+            var seq = from(List.of("str0", "str1"));
+            assertIterableEquals(List.of("str1"), seq.removedAt(0));
+            assertIterableEquals(List.of("str0"), seq.removedAt(1));
+
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(2));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(-1));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(Integer.MAX_VALUE));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(Integer.MIN_VALUE));
         }
 
         {
@@ -490,9 +499,7 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
             assertIterableEquals(List.of("str0", "str2"), seq.removedAt(1));
             assertIterableEquals(List.of("str0", "str1"), seq.removedAt(2));
 
-            if (seq instanceof Seq<String>) {
-                assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(3));
-            }
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(3));
         }
     }
 

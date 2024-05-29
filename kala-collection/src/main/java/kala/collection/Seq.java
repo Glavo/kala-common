@@ -249,7 +249,7 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
 
     @Override
     @Contract(pure = true)
-    default @NotNull SeqLike<E> removedAt(int index) {
+    default @NotNull ImmutableSeq<E> removedAt(int index) {
         Conditions.checkElementIndex(index, size());
         return view().removedAt(index).toImmutableSeq();
     }

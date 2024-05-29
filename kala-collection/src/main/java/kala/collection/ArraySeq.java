@@ -463,6 +463,23 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     }
 
     @Override
+    public @NotNull ImmutableSeq<E> removedAt(int index) {
+        final Object[] elements = this.elements;
+        final int size = elements.length;
+
+        Conditions.checkElementIndex(index, size);
+
+        if (size == 1) {
+            return ImmutableArray.empty();
+        }
+
+        Object[] newValues = new Object[size - 1];
+        System.arraycopy(elements, 0, newValues, 0, index);
+        System.arraycopy(elements, index + 1, newValues, index, size - index - 1);
+        return ImmutableArray.Unsafe.wrap(newValues);
+    }
+
+    @Override
     public @NotNull ImmutableSeq<E> concat(@NotNull SeqLike<? extends E> other) {
         return appendedAll(other);
     }

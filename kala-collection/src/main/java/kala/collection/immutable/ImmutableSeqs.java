@@ -219,6 +219,14 @@ final class ImmutableSeqs {
         }
 
         @Override
+        public @NotNull ImmutableSeq<E> removedAt(int index) {
+            if (index != 0) {
+                throw new IndexOutOfBoundsException(index);
+            }
+            return ImmutableSeq.empty();
+        }
+
+        @Override
         public @NotNull ImmutableSeq<E> take(int n) {
             if (n < 0) {
                 throw new IllegalArgumentException();
@@ -278,7 +286,7 @@ final class ImmutableSeqs {
         @Override
         public @NotNull ImmutableSeq<E> updated(int index, E newValue) {
             if (index != 0) {
-                throw new IndexOutOfBoundsException("index: " + index);
+                throw new IndexOutOfBoundsException(index);
             }
             return ImmutableSeq.of(newValue);
         }
@@ -352,6 +360,15 @@ final class ImmutableSeqs {
         }
 
         @Override
+        public @NotNull ImmutableSeq<E> updated(int index, E newValue) {
+            return switch (index) {
+                case 0 -> ImmutableSeq.of(newValue, value2);
+                case 1 -> ImmutableSeq.of(value1, newValue);
+                default -> throw new IndexOutOfBoundsException(index);
+            };
+        }
+
+        @Override
         public @NotNull ImmutableSeq<E> prepended(E value) {
             return ImmutableSeq.of(value, value1, value2);
         }
@@ -359,6 +376,15 @@ final class ImmutableSeqs {
         @Override
         public @NotNull ImmutableSeq<E> appended(E value) {
             return ImmutableSeq.of(value1, value2, value);
+        }
+
+        @Override
+        public @NotNull ImmutableSeq<E> removedAt(int index) {
+            return switch (index) {
+                case 0 -> ImmutableSeq.of(value2);
+                case 1 -> ImmutableSeq.of(value1);
+                default -> throw new IndexOutOfBoundsException(index);
+            };
         }
 
         @Override
@@ -435,15 +461,6 @@ final class ImmutableSeqs {
                 return ImmutableSeq.of(value2);
             }
             return ImmutableSeq.empty();
-        }
-
-        @Override
-        public @NotNull ImmutableSeq<E> updated(int index, E newValue) {
-            return switch (index) {
-                case 0 -> ImmutableSeq.of(newValue, value2);
-                case 1 -> ImmutableSeq.of(value1, newValue);
-                default -> throw new IndexOutOfBoundsException("index: " + index);
-            };
         }
 
         @Override
