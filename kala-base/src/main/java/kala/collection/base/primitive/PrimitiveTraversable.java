@@ -32,9 +32,6 @@ public interface PrimitiveTraversable<T> extends AnyTraversable<T> {
 
     //region Size Info
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     default int size() {
         return iterator().size();

@@ -177,9 +177,6 @@ public sealed interface Either<@Covariant A, @Covariant B> extends Serializable 
     }
 
     record Left<@Covariant A, @Covariant B>(A value) implements Either<A, B> {
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public String toString() {
             return "Either.Left[" + value + "]";
@@ -187,9 +184,6 @@ public sealed interface Either<@Covariant A, @Covariant B> extends Serializable 
     }
 
     record Right<@Covariant A, @Covariant B>(B value) implements Either<A, B> {
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public String toString() {
             return "Either.Right[" + value + "]";
@@ -226,9 +220,6 @@ public sealed interface Either<@Covariant A, @Covariant B> extends Serializable 
             return (LeftProjection<U, B>) this;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @NotNull
         @Override
         public String toString() {
@@ -262,9 +253,6 @@ public sealed interface Either<@Covariant A, @Covariant B> extends Serializable 
             return (RightProjection<A, U>) this;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public @NotNull String toString() {
             return either + ".RightProjection";

@@ -39,22 +39,17 @@ public final class Unit implements EmptyTuple {
     private Unit() {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         return HASH_CODE;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "()";
     }
 
+    @Serial
     private Object readResolve() {
         return INSTANCE;
     }

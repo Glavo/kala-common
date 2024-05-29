@@ -125,9 +125,6 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
 
     //region Element Conditions
 
-    /**
-     * {@inheritDoc}
-     */
     default boolean contains(Object value) {
         return Iterators.contains(iterator(), value);
     }

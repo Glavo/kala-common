@@ -29,15 +29,9 @@ import java.util.NoSuchElementException;
 
 public interface PrimitiveIterator<T, T_CONSUMER> extends java.util.PrimitiveIterator<T, T_CONSUMER> {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     boolean hasNext();
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @NotNull T next();
 

@@ -42,17 +42,11 @@ public record Tuple1<@Covariant T1>(T1 component1) implements HList<T1, Unit>, M
         return (Tuple1<T1>) tuple;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int arity() {
         return 1;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @SuppressWarnings("unchecked")
     public <U> U elementAt(int index) {
@@ -62,9 +56,6 @@ public record Tuple1<@Covariant T1>(T1 component1) implements HList<T1, Unit>, M
         throw new IndexOutOfBoundsException("Index out of range: " + index);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @SuppressWarnings("unchecked")
     public <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
@@ -73,25 +64,16 @@ public record Tuple1<@Covariant T1>(T1 component1) implements HList<T1, Unit>, M
         return arr;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public T1 head() {
         return component1;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Unit tail() {
         return Unit.INSTANCE;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Contract("_ -> new")
     public <H> @NotNull Tuple2<H, T1> cons(H head) {
@@ -103,9 +85,6 @@ public record Tuple1<@Covariant T1>(T1 component1) implements HList<T1, Unit>, M
         return new Tuple1<>(mapper.apply(component1));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -121,17 +100,11 @@ public record Tuple1<@Covariant T1>(T1 component1) implements HList<T1, Unit>, M
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         return Objects.hashCode(component1);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "(" + component1 + ")" ;

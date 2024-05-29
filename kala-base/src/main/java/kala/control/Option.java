@@ -121,9 +121,6 @@ public final class Option<@Covariant T> implements AnyOption<T>, OptionContainer
         return this != None;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isEmpty() {
         return this == None;
@@ -143,18 +140,12 @@ public final class Option<@Covariant T> implements AnyOption<T>, OptionContainer
         return value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Contract(value = "-> this", pure = true)
     public @NotNull Option<T> getOption() {
         return this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Contract(value = "-> this", pure = true)
     public @NotNull Option<T> toOption() {
@@ -169,9 +160,6 @@ public final class Option<@Covariant T> implements AnyOption<T>, OptionContainer
         return this.isDefined() ? this : narrow(other.get());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public <U> @NotNull Option<U> map(@NotNull Function<? super T, ? extends U> mapper) {
         return isDefined() ? some(mapper.apply(value)) : none();
@@ -211,18 +199,12 @@ public final class Option<@Covariant T> implements AnyOption<T>, OptionContainer
         return this.isDefined() ? Result.ok(value) : Result.err(errValue);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Contract(pure = true)
     public boolean contains(Object value) {
         return isDefined() && Objects.equals(this.value, value);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Option<T> find(@NotNull Predicate<? super T> predicate) {
         return isDefined() && predicate.test(value) ? this : none();
@@ -243,9 +225,6 @@ public final class Option<@Covariant T> implements AnyOption<T>, OptionContainer
         return isDefined() ? Iterators.of(value) : Iterators.empty();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -262,17 +241,11 @@ public final class Option<@Covariant T> implements AnyOption<T>, OptionContainer
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         return isDefined() ? Objects.hashCode(value) + HASH_MAGIC : NONE_HASH;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Contract(pure = true)
     @Override
     public @NotNull String toString() {

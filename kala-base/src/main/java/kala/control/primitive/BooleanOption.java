@@ -145,9 +145,6 @@ public final class BooleanOption implements PrimitiveOption<Boolean>, BooleanTra
         return this.hashCode;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return name;

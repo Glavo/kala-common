@@ -48,9 +48,6 @@ public sealed interface HList<@Covariant H, @Covariant T extends Tuple> extends 
     @NotNull
     T tail();
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     <HH> @NotNull HList<HH, ? extends HList<H, T>> cons(HH head);
 }

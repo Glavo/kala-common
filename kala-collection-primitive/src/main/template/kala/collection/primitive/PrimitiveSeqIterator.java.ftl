@@ -33,31 +33,16 @@ public interface ${Type}SeqIterator extends PrimitiveSeqIterator<${WrapperType},
         return ${Type}SeqIterators.EMPTY;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     boolean hasNext();
 
-    /**
-     * {@inheritDoc}
-     */
     ${PrimitiveType} next${Type}();
 
-    /**
-     * {@inheritDoc}
-     */
     boolean hasPrevious();
 
     ${PrimitiveType} previous${Type}();
 
-    /**
-     * {@inheritDoc}
-     */
     int nextIndex();
 
-    /**
-     * {@inheritDoc}
-     */
     int previousIndex();
 
     @Override

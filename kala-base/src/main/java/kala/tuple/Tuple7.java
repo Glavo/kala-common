@@ -51,17 +51,11 @@ public record Tuple7<@Covariant T1, @Covariant T2, @Covariant T3, @Covariant T4,
         return (Tuple7<T1, T2, T3, T4, T5, T6, T7>) tuple;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int arity() {
         return 7;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @SuppressWarnings("unchecked")
     public <U> U elementAt(int index) {
@@ -77,9 +71,6 @@ public record Tuple7<@Covariant T1, @Covariant T2, @Covariant T3, @Covariant T4,
         };
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @SuppressWarnings("unchecked")
     public <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
@@ -94,34 +85,22 @@ public record Tuple7<@Covariant T1, @Covariant T2, @Covariant T3, @Covariant T4,
         return arr;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public T1 head() {
         return component1;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Tuple6<T2, T3, T4, T5, T6, T7> tail() {
         return Tuple.of(component2, component3, component4, component5, component6, component7);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Contract("_ -> new")
     public <H> @NotNull Tuple8<H, T1, T2, T3, T4, T5, T6, T7> cons(H head) {
         return new Tuple8<>(head, component1, component2, component3, component4, component5, component6, component7);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -150,9 +129,6 @@ public record Tuple7<@Covariant T1, @Covariant T2, @Covariant T3, @Covariant T4,
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         int hash = 0;
@@ -166,9 +142,6 @@ public record Tuple7<@Covariant T1, @Covariant T2, @Covariant T3, @Covariant T4,
         return hash;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "(" + component1 + ", " + component2 + ", " + component3 + ", " + component4 + ", " + component5 + ", " + component6 + ", " + component7 + ")";

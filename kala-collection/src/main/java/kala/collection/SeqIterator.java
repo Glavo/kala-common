@@ -26,34 +26,16 @@ public interface SeqIterator<E> extends java.util.ListIterator<E> {
         return (SeqIterator<E>) SeqIterators.EMPTY;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     boolean hasNext();
 
-    /**
-     * {@inheritDoc}
-     */
     E next();
 
-    /**
-     * {@inheritDoc}
-     */
     boolean hasPrevious();
 
-    /**
-     * {@inheritDoc}
-     */
     E previous();
 
-    /**
-     * {@inheritDoc}
-     */
     int nextIndex();
 
-    /**
-     * {@inheritDoc}
-     */
     int previousIndex();
 
     //region Modification Operations

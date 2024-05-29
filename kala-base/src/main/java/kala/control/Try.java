@@ -413,9 +413,6 @@ public final class Try<@Covariant T> implements AnyTry<T>, Traversable<T>, Seria
         return isSuccess() ? Result.ok(value) : Result.err(cause);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public <U> @NotNull Try<U> map(@NotNull CheckedFunction<? super T, ? extends U, ?> mapper) {
         Objects.requireNonNull(mapper);
         if (isFailure()) {

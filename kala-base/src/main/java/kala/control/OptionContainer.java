@@ -62,17 +62,11 @@ public interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>,
         return stream().parallel();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     default @NotNull Iterator<T> iterator() {
         return isDefined() ? Iterators.of(get()) : Iterators.empty();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     default int size() {
         return isDefined() ? 1 : 0;
@@ -222,9 +216,6 @@ public interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>,
     @Override
     <U> @NotNull OptionContainer<U> map(@NotNull Function<? super T, ? extends U> mapper);
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Contract(pure = true)
     default int count(@NotNull Predicate<? super T> predicate) {
@@ -232,9 +223,6 @@ public interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>,
         return anyMatch(predicate) ? 1 : 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     default <U> U foldLeft(U zero, @NotNull BiFunction<? super U, ? super T, ? extends U> op) {
         if (isEmpty()) {
@@ -243,9 +231,6 @@ public interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>,
         return op.apply(zero, get());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Contract(pure = true)
     default <U> U foldRight(U zero, @NotNull BiFunction<? super T, ? super U, ? extends U> op) {
@@ -255,9 +240,6 @@ public interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>,
         return op.apply(get(), zero);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     default T reduceLeft(@NotNull BiFunction<? super T, ? super T, ? extends T> op) {
         if (isEmpty()) {
@@ -266,9 +248,6 @@ public interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>,
         return get();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     default T reduceRight(@NotNull BiFunction<? super T, ? super T, ? extends T> op) {
         if (isEmpty()) {
@@ -277,62 +256,41 @@ public interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>,
         return get();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Contract(pure = true)
     default @NotNull Option<T> reduceLeftOption(@NotNull BiFunction<? super T, ? super T, ? extends T> op) {
         return getOption();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Contract(pure = true)
     default @NotNull Option<T> reduceRightOption(@NotNull BiFunction<? super T, ? super T, ? extends T> op) {
         return getOption();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Contract(pure = true)
     default boolean anyMatch(@NotNull Predicate<? super T> predicate) {
         return isDefined() && predicate.test(get());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Contract(pure = true)
     default boolean allMatch(@NotNull Predicate<? super T> predicate) {
         return isEmpty() || predicate.test(get());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Contract(pure = true)
     default boolean noneMatch(@NotNull Predicate<? super T> predicate) {
         return isEmpty() || !predicate.test(get());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     default boolean contains(Object value) {
         return isDefined() && Objects.equals(value, get());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     default @NotNull Option<T> find(@NotNull Predicate<? super T> predicate) {
         return isDefined() && predicate.test(get()) // implicit null check of predicate
@@ -340,9 +298,6 @@ public interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>,
                 : Option.none();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     default void forEach(@NotNull Consumer<? super T> action) {
         Objects.requireNonNull(action);

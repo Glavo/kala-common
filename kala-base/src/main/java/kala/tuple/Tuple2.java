@@ -43,17 +43,11 @@ public record Tuple2<@Covariant T1, @Covariant T2>(T1 component1, T2 component2)
         return (Tuple2<T1, T2>) tuple;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int arity() {
         return 2;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @SuppressWarnings("unchecked")
     public <U> U elementAt(int index) {
@@ -64,9 +58,6 @@ public record Tuple2<@Covariant T1, @Covariant T2>(T1 component1, T2 component2)
         };
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @SuppressWarnings("unchecked")
     public <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
@@ -76,42 +67,27 @@ public record Tuple2<@Covariant T1, @Covariant T2>(T1 component1, T2 component2)
         return arr;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public T1 head() {
         return component1;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Tuple1<T2> tail() {
         return Tuple.of(component2);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Contract("_ -> new")
     @Override
     public <H> @NotNull Tuple3<H, T1, T2> cons(H head) {
         return new Tuple3<>(head, component1, component2);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public T1 getKey() {
         return component1;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public T2 getValue() {
         return component2;
@@ -130,9 +106,6 @@ public record Tuple2<@Covariant T1, @Covariant T2>(T1 component1, T2 component2)
         throw new UnsupportedOperationException("Tuple2.setValue");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -154,17 +127,11 @@ public record Tuple2<@Covariant T1, @Covariant T2>(T1 component1, T2 component2)
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         return Objects.hashCode(component1) ^ Objects.hashCode(component2);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "(" + component1 + ", " + component2 + ")" ;

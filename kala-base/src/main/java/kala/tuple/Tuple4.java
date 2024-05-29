@@ -46,17 +46,11 @@ public record Tuple4<@Covariant T1, @Covariant T2, @Covariant T3, @Covariant T4>
         return (Tuple4<T1, T2, T3, T4>) tuple;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int arity() {
         return 4;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @SuppressWarnings("unchecked")
     public <U> U elementAt(int index) {
@@ -69,9 +63,6 @@ public record Tuple4<@Covariant T1, @Covariant T2, @Covariant T3, @Covariant T4>
         };
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @SuppressWarnings("unchecked")
     public <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
@@ -83,34 +74,22 @@ public record Tuple4<@Covariant T1, @Covariant T2, @Covariant T3, @Covariant T4>
         return arr;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public T1 head() {
         return component1;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public @NotNull Tuple3<T2, T3, T4> tail() {
         return Tuple.of(component2, component3, component4);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Contract("_ -> new")
     public <H> @NotNull Tuple5<H, T1, T2, T3, T4> cons(H head) {
         return new Tuple5<>(head, component1, component2, component3, component4);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -133,9 +112,6 @@ public record Tuple4<@Covariant T1, @Covariant T2, @Covariant T3, @Covariant T4>
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         int hash = 0;
@@ -146,9 +122,6 @@ public record Tuple4<@Covariant T1, @Covariant T2, @Covariant T3, @Covariant T4>
         return hash;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "(" + component1 + ", " + component2 + ", " + component3 + ", " + component4 + ")";
