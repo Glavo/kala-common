@@ -15,7 +15,9 @@
  */
 package kala.benchmark;
 
+import kala.collection.immutable.ImmutableArray;
 import kala.collection.immutable.ImmutableTreeSeq;
+import kala.collection.immutable.ImmutableVector;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;
 
@@ -33,18 +35,36 @@ public class TreeSeqBenchmark {
     @Param({"1", "10", "100", "1000", "10000", "100000", "1000000"})
     private int length;
 
-    private ImmutableTreeSeq<Integer> seq;
+    private ImmutableTreeSeq<Integer> treeSeq;
+    private ImmutableVector<Integer> vector;
+    private ImmutableArray<Integer> array;
 
     @Setup
     public void setup() {
         Random random = new Random(0);
-        seq = ImmutableTreeSeq.fill(length, () -> random.nextInt());
+        array = ImmutableArray.fill(length, () -> random.nextInt());
+        vector = array.collect(ImmutableVector.factory());
+        treeSeq = array.collect(ImmutableTreeSeq.factory());
     }
 
     @Benchmark
-    public void get(Blackhole bh) {
+    public void treeGet(Blackhole bh) {
         for (int i = 0; i < length; i++) {
-            bh.consume(seq.get(i));
+            bh.consume(treeSeq.get(i));
+        }
+    }
+
+    @Benchmark
+    public void vectorGet(Blackhole bh) {
+        for (int i = 0; i < length; i++) {
+            bh.consume(vector.get(i));
+        }
+    }
+
+    @Benchmark
+    public void arrayGet(Blackhole bh) {
+        for (int i = 0; i < length; i++) {
+            bh.consume(array.get(i));
         }
     }
 }
