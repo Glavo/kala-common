@@ -45,9 +45,9 @@ Here are the ways to donate: [捐赠支持 Glavo](https://donate.glavo.site/)
 
 ## Especially thanks
 
-![PLCT Logo](./PLCT.svg)
+<img alt="PLCT Logo" src="./PLCT.svg" width="200" height="200">
 
-Thanks to [PLCT Lab](https://plctlab.github.io/) for supporting me.
+Thanks to [PLCT Lab](https://plctlab.github.io/ =200x80) for supporting me.
 
 ![IntelliJ IDEA logo](https://resources.jetbrains.com/storage/products/company/brand/logos/IntelliJ_IDEA.svg)
 
