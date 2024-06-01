@@ -45,9 +45,11 @@ Here are the ways to donate: [捐赠支持 Glavo](https://donate.glavo.site/)
 
 ## Especially thanks
 
+![PLCT Logo](./PLCT.svg)
+
 Thanks to [PLCT Lab](https://plctlab.github.io/) for supporting me.
 
-<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/IntelliJ_IDEA.svg" alt="IntelliJ IDEA logo.">
+![IntelliJ IDEA logo](https://resources.jetbrains.com/storage/products/company/brand/logos/IntelliJ_IDEA.svg)
 
 
 This project is developed using JetBrains IDEA.
