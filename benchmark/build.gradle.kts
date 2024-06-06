@@ -6,7 +6,7 @@ plugins {
     java
 }
 
-val jmhVersion = "1.36"
+val jmhVersion = "1.37"
 val jolVersion = "0.17"
 
 tasks.compileJava {
