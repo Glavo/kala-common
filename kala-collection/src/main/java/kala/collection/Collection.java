@@ -16,6 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
+import java.io.*;
+import java.util.Iterator;
 import java.util.function.*;
 
 public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollection<E> {
@@ -176,5 +178,66 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
     @Contract(pure = true)
     default @NotNull ImmutableCollection<E> distinct() {
         return distinct(ImmutableSeq.factory());
+    }
+
+    final class SerializationWrapper<E, C extends Collection<E>> implements Serializable {
+        @Serial
+        private static final long serialVersionUID = 0L;
+
+        private final CollectionFactory<E, ?, C> factory;
+        private transient C value;
+
+        public SerializationWrapper(CollectionFactory<E, ?, C> factory, C value) {
+            this.factory = factory;
+            this.value = value;
+        }
+
+        @SuppressWarnings("unchecked")
+        private static <E, B, C extends Collection<E>> C readObjectImpl(ObjectInputStream input, CollectionFactory<E, B, C> factory, int size) throws IOException, ClassNotFoundException {
+            if (size < 0) {
+                throw new IOException("Invalid size: " + size);
+            }
+
+            if (size == 0) {
+                return factory.empty();
+            }
+
+            B builder = factory.newBuilder(size);
+            for (int i = 0; i < size; i++) {
+                factory.addToBuilder(builder, (E) input.readObject());
+            }
+            return factory.build(builder);
+        }
+
+        @Serial
+        private void readObject(ObjectInputStream input) throws IOException, ClassNotFoundException {
+            input.defaultReadObject();
+            value = readObjectImpl(input, factory, input.readInt());
+        }
+
+        @Serial
+        private void writeObject(ObjectOutputStream output) throws IOException {
+            output.defaultWriteObject();
+            int size = value.size();
+
+            output.writeInt(size);
+            if (size == 0) {
+                return;
+            }
+
+            Iterator<E> iterator = value.iterator();
+            for (int i = 0; i < size; i++) {
+                if (!iterator.hasNext()) {
+                    throw new IOException("No more elements");
+                }
+
+                output.writeObject(iterator.next());
+            }
+        }
+
+        @Serial
+        private Object readResolve() {
+            return value;
+        }
     }
 }

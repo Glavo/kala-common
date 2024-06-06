@@ -83,7 +83,9 @@ final class ImmutableMaps {
         }
     }
 
-    static final class Map2<K, V> extends MapN<K, V> {
+    static final class Map2<K, V> extends MapN<K, V> implements Serializable {
+        @Serial
+        private static final long serialVersionUID = 0L;
 
         private final K k0;
         private final V v0;
@@ -111,7 +113,9 @@ final class ImmutableMaps {
         }
     }
 
-    static final class Map3<K, V> extends MapN<K, V> {
+    static final class Map3<K, V> extends MapN<K, V> implements Serializable {
+        @Serial
+        private static final long serialVersionUID = 0L;
 
         private final K k0;
         private final V v0;

@@ -162,7 +162,7 @@ public final class ImmutableHashSet<E> extends FromJavaConvert.SetFromJava<E> im
 
     @Serial
     private Object writeReplace() {
-        return new SerializationWrapper<>(this);
+        return new SerializationWrapper<>(factory(), this);
     }
 
     private static final class Builder<E> {
@@ -193,7 +193,10 @@ public final class ImmutableHashSet<E> extends FromJavaConvert.SetFromJava<E> im
         }
     }
 
-    private static final class Factory<E> implements CollectionFactory<E, Builder<E>, ImmutableHashSet<E>> {
+    private static final class Factory<E> implements CollectionFactory<E, Builder<E>, ImmutableHashSet<E>>, Serializable {
+
+        @Serial
+        private static final long serialVersionUID = 0L;
 
         @Override
         public Builder<E> newBuilder() {
@@ -214,43 +217,11 @@ public final class ImmutableHashSet<E> extends FromJavaConvert.SetFromJava<E> im
         public Builder<E> mergeBuilder(@NotNull Builder<E> builder1, @NotNull Builder<E> builder2) {
             return builder1.merge(builder2);
         }
-    }
-
-    private static final class SerializationWrapper<E> implements Externalizable {
-        private ImmutableHashSet<E> value;
-
-        public SerializationWrapper() {
-        }
-
-        SerializationWrapper(ImmutableHashSet<E> value) {
-            this.value = value;
-        }
-
-        @Override
-        public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeInt(value.size());
-            for (E e : value) {
-                out.writeObject(e);
-            }
-        }
-
-        @Override
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            assert value == null;
-
-            HashSet<E> set = new HashSet<>();
-
-            int len = in.readInt();
-            for (int i = 0; i < len; i++) {
-                set.add((E) in.readObject());
-            }
-
-            value = set.isEmpty() ? ImmutableHashSet.empty() : new ImmutableHashSet<>(set);
-        }
 
         @Serial
         private Object readResolve() {
-            return value;
+            return factory();
         }
     }
+
 }

@@ -5,7 +5,6 @@ import kala.annotations.Covariant;
 import kala.collection.base.Iterators;
 import kala.collection.base.OrderedTraversable;
 import kala.collection.factory.CollectionFactory;
-import kala.collection.immutable.ImmutableCollection;
 import kala.collection.immutable.ImmutableSeq;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
@@ -419,4 +418,5 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
     default @NotNull ImmutableSeq<E> distinct() {
         return view().distinct().toImmutableSeq();
     }
+
 }
