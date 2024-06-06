@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.collection.mutable;
 
 import kala.collection.MapLike;
@@ -16,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InvalidObjectException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -29,6 +45,7 @@ import static kala.collection.internal.hash.HashUtils.computeHash;
 @SuppressWarnings("unchecked")
 @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
 public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<K, V>> implements MutableMap<K, V>, Cloneable, Serializable {
+    @Serial
     private static final long serialVersionUID = 4445503260710443405L;
 
     private static final Factory<?, ?> FACTORY = new Factory<>();
@@ -347,7 +364,7 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
             Node<K, V> n = old;
 
             while (n != null && n.hash <= hash) {
-                if (n.hash == hash && hasher.test(key, n.key)) {
+                if (n.hash == hash && hasher.equals(key, n.key)) {
                     n.value = value;
                     return;
                 }
@@ -381,7 +398,7 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
             Node<K, V> n = old;
 
             while (n != null && n.hash <= hash) {
-                if (n.hash == hash && hasher.test(key, n.key)) {
+                if (n.hash == hash && hasher.equals(key, n.key)) {
                     V oldValue = n.value;
                     n.value = value;
                     return Option.some(oldValue);
@@ -648,6 +665,7 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
         return className() + '{' + joinToString() + '}';
     }
 
+    @Serial
     private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
         final int size = in.readInt();
         final double loadFactor = in.readDouble();
@@ -669,7 +687,6 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
         this.table = createNodeArray(HashUtils.tableSizeFor(size));
         this.threshold = newThreshold(table.length);
 
-
         for (int i = 0; i < size; i++) {
             Object key = in.readObject();
             Object value = in.readObject();
@@ -678,6 +695,7 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
         }
     }
 
+    @Serial
     private void writeObject(java.io.ObjectOutputStream out) throws IOException {
         out.writeInt(contentSize);
         out.writeDouble(loadFactor);
