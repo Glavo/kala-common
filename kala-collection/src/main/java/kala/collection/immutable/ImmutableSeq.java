@@ -87,21 +87,15 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     }
 
     static <E> @NotNull ImmutableSeq<E> from(E @NotNull [] values) {
-        switch (values.length) {
-            case 0:
-                return ImmutableSeq.empty();
-            case 1:
-                return ImmutableSeq.of(values[0]);
-            case 2:
-                return ImmutableSeq.of(values[0], values[1]);
-            case 3:
-                return ImmutableSeq.of(values[0], values[1], values[2]);
-            case 4:
-                return ImmutableSeq.of(values[0], values[1], values[2], values[3]);
-            case 5:
-                return ImmutableSeq.of(values[0], values[1], values[2], values[3], values[4]);
-        }
-        return ImmutableVector.from(values);
+        return switch (values.length) {
+            case 0 -> ImmutableSeq.empty();
+            case 1 -> ImmutableSeq.of(values[0]);
+            case 2 -> ImmutableSeq.of(values[0], values[1]);
+            case 3 -> ImmutableSeq.of(values[0], values[1], values[2]);
+            case 4 -> ImmutableSeq.of(values[0], values[1], values[2], values[3]);
+            case 5 -> ImmutableSeq.of(values[0], values[1], values[2], values[3], values[4]);
+            default -> ImmutableVector.from(values);
+        };
     }
 
     static <E> @NotNull ImmutableSeq<E> from(java.util.@NotNull Collection<? extends E> values) {
@@ -115,20 +109,14 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
             final int length = arr.length;
             //noinspection ConstantConditions
             assert length == size;
-            switch (length) {
-                case 1:
-                    return (ImmutableSeq<E>) ImmutableSeq.of(arr[0]);
-                case 2:
-                    return (ImmutableSeq<E>) ImmutableSeq.of(arr[0], arr[1]);
-                case 3:
-                    return (ImmutableSeq<E>) ImmutableSeq.of(arr[0], arr[1], arr[2]);
-                case 4:
-                    return (ImmutableSeq<E>) ImmutableSeq.of(arr[0], arr[1], arr[2], arr[3]);
-                case 5:
-                    return (ImmutableSeq<E>) ImmutableSeq.of(arr[0], arr[1], arr[2], arr[3], arr[4]);
-                default:
-                    return new ImmutableVectors.Vector1<>(arr);
-            }
+            return switch (length) {
+                case 1 -> (ImmutableSeq<E>) ImmutableSeq.of(arr[0]);
+                case 2 -> (ImmutableSeq<E>) ImmutableSeq.of(arr[0], arr[1]);
+                case 3 -> (ImmutableSeq<E>) ImmutableSeq.of(arr[0], arr[1], arr[2]);
+                case 4 -> (ImmutableSeq<E>) ImmutableSeq.of(arr[0], arr[1], arr[2], arr[3]);
+                case 5 -> (ImmutableSeq<E>) ImmutableSeq.of(arr[0], arr[1], arr[2], arr[3], arr[4]);
+                default -> new ImmutableVectors.Vector1<>(arr);
+            };
         }
         return ImmutableVector.from(values.iterator());
     }
@@ -145,20 +133,14 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
             Object[] arr = new Object[knownSize];
             final int cn = values.copyToArray(arr);
             assert cn == knownSize;
-            switch (knownSize) {
-                case 1:
-                    return (ImmutableSeq<E>) ImmutableSeq.of(arr[0]);
-                case 2:
-                    return (ImmutableSeq<E>) ImmutableSeq.of(arr[0], arr[1]);
-                case 3:
-                    return (ImmutableSeq<E>) ImmutableSeq.of(arr[0], arr[1], arr[2]);
-                case 4:
-                    return (ImmutableSeq<E>) ImmutableSeq.of(arr[0], arr[1], arr[2], arr[3]);
-                case 5:
-                    return (ImmutableSeq<E>) ImmutableSeq.of(arr[0], arr[1], arr[2], arr[3], arr[4]);
-                default:
-                    return new ImmutableVectors.Vector1<>(arr);
-            }
+            return switch (knownSize) {
+                case 1 -> (ImmutableSeq<E>) ImmutableSeq.of(arr[0]);
+                case 2 -> (ImmutableSeq<E>) ImmutableSeq.of(arr[0], arr[1]);
+                case 3 -> (ImmutableSeq<E>) ImmutableSeq.of(arr[0], arr[1], arr[2]);
+                case 4 -> (ImmutableSeq<E>) ImmutableSeq.of(arr[0], arr[1], arr[2], arr[3]);
+                case 5 -> (ImmutableSeq<E>) ImmutableSeq.of(arr[0], arr[1], arr[2], arr[3], arr[4]);
+                default -> new ImmutableVectors.Vector1<>(arr);
+            };
         }
         return from(values.iterator());
     }
@@ -202,38 +184,28 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
         if (n <= 0) {
             return ImmutableSeq.empty();
         }
-        switch (n) {
-            case 1:
-                return ImmutableSeq.of(supplier.get());
-            case 2:
-                return ImmutableSeq.of(supplier.get(), supplier.get());
-            case 3:
-                return ImmutableSeq.of(supplier.get(), supplier.get(), supplier.get());
-            case 4:
-                return ImmutableSeq.of(supplier.get(), supplier.get(), supplier.get(), supplier.get());
-            case 5:
-                return ImmutableSeq.of(supplier.get(), supplier.get(), supplier.get(), supplier.get(), supplier.get());
-        }
-        return ImmutableVector.fill(n, supplier);
+        return switch (n) {
+            case 1 -> ImmutableSeq.of(supplier.get());
+            case 2 -> ImmutableSeq.of(supplier.get(), supplier.get());
+            case 3 -> ImmutableSeq.of(supplier.get(), supplier.get(), supplier.get());
+            case 4 -> ImmutableSeq.of(supplier.get(), supplier.get(), supplier.get(), supplier.get());
+            case 5 -> ImmutableSeq.of(supplier.get(), supplier.get(), supplier.get(), supplier.get(), supplier.get());
+            default -> ImmutableVector.fill(n, supplier);
+        };
     }
 
     static <E> @NotNull ImmutableSeq<E> fill(int n, @NotNull IntFunction<? extends E> init) {
         if (n <= 0) {
             return ImmutableSeq.empty();
         }
-        switch (n) {
-            case 1:
-                return ImmutableSeq.of(init.apply(0));
-            case 2:
-                return ImmutableSeq.of(init.apply(0), init.apply(1));
-            case 3:
-                return ImmutableSeq.of(init.apply(0), init.apply(1), init.apply(2));
-            case 4:
-                return ImmutableSeq.of(init.apply(0), init.apply(1), init.apply(2), init.apply(3));
-            case 5:
-                return ImmutableSeq.of(init.apply(0), init.apply(1), init.apply(2), init.apply(3), init.apply(4));
-        }
-        return ImmutableVector.fill(n, init);
+        return switch (n) {
+            case 1 -> ImmutableSeq.of(init.apply(0));
+            case 2 -> ImmutableSeq.of(init.apply(0), init.apply(1));
+            case 3 -> ImmutableSeq.of(init.apply(0), init.apply(1), init.apply(2));
+            case 4 -> ImmutableSeq.of(init.apply(0), init.apply(1), init.apply(2), init.apply(3));
+            case 5 -> ImmutableSeq.of(init.apply(0), init.apply(1), init.apply(2), init.apply(3), init.apply(4));
+            default -> ImmutableVector.fill(n, init);
+        };
     }
 
     static <E> @NotNull ImmutableSeq<E> generateUntil(@NotNull Supplier<? extends E> supplier, @NotNull Predicate<? super E> predicate) {

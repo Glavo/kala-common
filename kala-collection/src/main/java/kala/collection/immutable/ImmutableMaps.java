@@ -21,6 +21,9 @@ import kala.collection.base.MapIterator;
 import kala.tuple.Tuple;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 @StaticClass
 final class ImmutableMaps {
     static sealed abstract class MapN<K, V> extends AbstractImmutableMap<K, V> {
@@ -30,12 +33,14 @@ final class ImmutableMaps {
         }
 
         @Override
-        public boolean isEmpty() {
+        public final boolean isEmpty() {
             return size() == 0;
         }
     }
 
-    static final class Map0<K, V> extends MapN<K, V> {
+    static final class Map0<K, V> extends MapN<K, V> implements Serializable {
+        @Serial
+        private static final long serialVersionUID = 0L;
 
         static final Map0<?, ?> INSTANCE = new Map0<>();
 
@@ -48,9 +53,16 @@ final class ImmutableMaps {
         public @NotNull MapIterator<K, V> iterator() {
             return MapIterator.empty();
         }
+
+        @Serial
+        private Object readResolve() {
+            return INSTANCE;
+        }
     }
 
-    static final class Map1<K, V> extends MapN<K, V> {
+    static final class Map1<K, V> extends MapN<K, V> implements Serializable {
+        @Serial
+        private static final long serialVersionUID = 0L;
 
         private final K k0;
         private final V v0;
