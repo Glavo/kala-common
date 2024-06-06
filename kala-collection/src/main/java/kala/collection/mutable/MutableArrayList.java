@@ -827,7 +827,5 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
                 throw new ConcurrentModificationException(String.format("lastReturned=%d,size=%d,array=%s", lastReturned, seq.size, Arrays.toString(seq.elements)), ex);
             }
         }
-
-
     }
 }
