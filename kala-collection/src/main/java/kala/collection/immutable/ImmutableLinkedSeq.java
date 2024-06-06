@@ -1,10 +1,24 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.collection.immutable;
 
 import kala.annotations.Covariant;
 import kala.collection.base.AbstractIterator;
 import kala.collection.base.Iterators;
 import kala.collection.mutable.AbstractMutableList;
-import kala.collection.mutable.MutableArrayList;
 import kala.collection.mutable.MutableSinglyLinkedList;
 import kala.function.*;
 import kala.Conditions;
@@ -18,6 +32,7 @@ import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> implements Serializable {
+    @Serial
     private static final long serialVersionUID = -2711437988200648694L;
 
     private static final Factory<?> FACTORY = new Factory<>();
@@ -379,11 +394,13 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
 
     //endregion
 
+    @Serial
     private Object writeReplace() {
         return new SerializationReplaced<>(this);
     }
 
     private static final class SerializationReplaced<E> implements Serializable, Externalizable {
+        @Serial
         private static final long serialVersionUID = 0L;
 
         private ImmutableLinkedSeq<E> value;
@@ -422,6 +439,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
             this.value = new ImmutableLinkedSeq<>(node, c);
         }
 
+        @Serial
         private Object readResolve() {
             return value;
         }
