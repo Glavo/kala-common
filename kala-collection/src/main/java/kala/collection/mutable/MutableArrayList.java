@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.collection.mutable;
 
 import kala.Conditions;
@@ -14,10 +29,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.util.*;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
@@ -26,7 +38,6 @@ import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 public final class MutableArrayList<E> extends AbstractMutableList<E> implements MutableStack<E>, IndexedSeq<E>, Serializable {
-    private static final long serialVersionUID = 2545219250020890853L;
 
     private static final MutableArrayList.Factory<?> FACTORY = new Factory<>();
 
@@ -673,28 +684,18 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
 
     //region Serialization
 
-    private void writeObject(ObjectOutputStream out) throws IOException {
-        out.writeInt(size);
-        for (int i = 0; i < size; i++) {
-            out.writeObject(elements[i]);
-        }
-    }
-
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        final int size = in.readInt();
-        final Object[] elements = size == 0 ? ObjectArrays.EMPTY : new Object[Integer.max(DEFAULT_CAPACITY, size)];
-
-        for (int i = 0; i < size; i++) {
-            elements[i] = in.readObject();
-        }
-
-        this.size = size;
-        this.elements = elements;
+    @Serial
+    private Object writeReplace() {
+        return new SerializationWrapper<>(factory(), this);
     }
 
     //endregion
 
-    private static final class Factory<E> implements MutableListFactory<E, MutableArrayList<E>> {
+    private static final class Factory<E> implements MutableListFactory<E, MutableArrayList<E>>, Serializable {
+
+        @Serial
+        private static final long serialVersionUID = 0L;
+
         @Override
         public MutableArrayList<E> newBuilder() {
             return new MutableArrayList<>();
@@ -733,6 +734,11 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
         @Override
         public MutableArrayList<E> fill(int n, @NotNull IntFunction<? extends E> init) {
             return MutableArrayList.fill(n, init);
+        }
+
+        @Serial
+        private Object readResolve() {
+            return factory();
         }
     }
 
