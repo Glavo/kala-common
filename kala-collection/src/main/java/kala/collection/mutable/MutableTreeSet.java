@@ -1,7 +1,21 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.collection.mutable;
 
 import kala.collection.AnySet;
-import kala.collection.Collection;
 import kala.collection.SortedSet;
 import kala.collection.base.Iterators;
 import kala.collection.Set;
@@ -14,8 +28,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -28,6 +42,7 @@ import java.util.stream.Stream;
 public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node<E>>
         implements MutableSortedSet<E>, Cloneable, Serializable {
 
+    @Serial
     private static final long serialVersionUID = 6211626172352429615L;
 
     private static final MutableTreeSet.Factory<? extends Comparable<?>> DEFAULT_FACTORY = new Factory<>(null);
@@ -228,7 +243,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
         return s;
     }
 
-    @Contract(value = "_ -> new", pure = true)
+    @Contract(value = "_ -> new")
     public static <E extends Comparable<? super E>> @NotNull MutableTreeSet<E> from(@NotNull Iterator<? extends E> it) {
         MutableTreeSet<E> s = new MutableTreeSet<>();
         while (it.hasNext()) { // implicit null check of it
@@ -237,7 +252,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
         return s;
     }
 
-    @Contract(value = "_ -> new", pure = true)
+    @Contract(value = "_ -> new")
     public static <E extends Comparable<? super E>> @NotNull MutableTreeSet<E> from(@NotNull Stream<? extends E> stream) {
         return stream.collect(factory());
     }
@@ -258,7 +273,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
         return s;
     }
 
-    @Contract(value = "_, _ -> new", pure = true)
+    @Contract(value = "_, _ -> new")
     public static <E> @NotNull MutableTreeSet<E> from(Comparator<? super E> comparator, @NotNull Iterator<? extends E> it) {
         MutableTreeSet<E> s = new MutableTreeSet<>(comparator);
         while (it.hasNext()) { // implicit null check of it
@@ -268,7 +283,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     }
 
 
-    @Contract(value = "_, _ -> new", pure = true)
+    @Contract(value = "_, _ -> new")
     public static <E> @NotNull MutableTreeSet<E> from(Comparator<? super E> comparator, @NotNull Stream<? extends E> stream) {
         return stream.collect(factory(comparator));
     }
@@ -424,6 +439,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
 
     //region Serialization Operations
 
+    @Serial
     private void readObject(java.io.ObjectInputStream in)
             throws IOException, ClassNotFoundException {
         in.defaultReadObject();
@@ -433,6 +449,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
         }
     }
 
+    @Serial
     private void writeObject(java.io.ObjectOutputStream out)
             throws IOException {
         out.defaultWriteObject();
