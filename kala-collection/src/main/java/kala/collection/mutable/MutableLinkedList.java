@@ -26,7 +26,6 @@ import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Iterator;
@@ -42,7 +41,7 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
 
     private static final boolean enableAssertions = Boolean.getBoolean("kala.collection.mutable.MutableLinkedList.enableAssertions");
 
-    private static final MutableListFactory<Object, MutableLinkedList<Object>> FACTORY = MutableLinkedList::new;
+    private static final MutableListFactory<?, ?> FACTORY = (MutableListFactory<Object, MutableLinkedList<Object>> & Serializable) MutableLinkedList::new;
 
     private int len = 0;
     private Node<E> first = null;
@@ -676,37 +675,8 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
     }
 
     @Serial
-    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-        out.writeInt(len);
-        Node<E> node = this.first;
-        for (int i = 0; i < len; i++) {
-            out.writeObject(node.value);
-            node = node.next;
-        }
-    }
-
-    @Serial
-    @SuppressWarnings("unchecked")
-    private void readObject(java.io.ObjectInputStream in)
-            throws IOException, ClassNotFoundException {
-        clear();
-        final int size = in.readInt();
-        if (size == 0) {
-            return;
-        }
-
-        final Node<E> first = new Node<>(null, null, (E) in.readObject());
-        Node<E> last = first;
-
-        for (int i = 1; i < size; i++) {
-            Node<E> node = new Node<>(null, null, (E) in.readObject());
-            last.next = node;
-            last = node;
-        }
-
-        this.len = size;
-        this.first = first;
-        this.last = last;
+    private Object writeReplace() {
+        return new SerializationWrapper<>(factory(), this);
     }
 
     public static final class Node<E> {
