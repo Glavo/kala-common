@@ -32,9 +32,6 @@ import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> implements Serializable {
-    @Serial
-    private static final long serialVersionUID = -2711437988200648694L;
-
     private static final Factory<?> FACTORY = new Factory<>();
 
     private static final Node<?> NIL_NODE = new Node<>();
@@ -396,56 +393,12 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
 
     @Serial
     private Object writeReplace() {
-        return new SerializationReplaced<>(this);
+        return new SerializationWrapper<>(factory(), this);
     }
 
-    private static final class SerializationReplaced<E> implements Serializable, Externalizable {
+    private static final class Factory<E> implements CollectionFactory<E, MutableSinglyLinkedList<E>, ImmutableLinkedSeq<E>>, Serializable {
         @Serial
         private static final long serialVersionUID = 0L;
-
-        private ImmutableLinkedSeq<E> value;
-
-        public SerializationReplaced() {
-        }
-
-        public SerializationReplaced(ImmutableLinkedSeq<E> value) {
-            this.value = value;
-        }
-
-        @Override
-        public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeInt(value.size());
-            for (E v : value) {
-                out.writeObject(v);
-            }
-        }
-
-        @Override
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            int size = in.readInt();
-            if (size == 0) {
-                value = empty();
-                return;
-            }
-
-            Node<E> node = new Node<>((E) in.readObject());
-            Node<E> tail = node;
-            int c = 1;
-            for (int i = 1; i < size; i++) {
-                tail = (tail.tail = new Node<>((E) in.readObject()));
-                c++;
-            }
-            tail.tail = nilNode();
-            this.value = new ImmutableLinkedSeq<>(node, c);
-        }
-
-        @Serial
-        private Object readResolve() {
-            return value;
-        }
-    }
-
-    private static final class Factory<E> implements CollectionFactory<E, MutableSinglyLinkedList<E>, ImmutableLinkedSeq<E>> {
 
         @Override
         public MutableSinglyLinkedList<E> newBuilder() {
@@ -465,6 +418,11 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
         @Override
         public MutableSinglyLinkedList<E> mergeBuilder(@NotNull MutableSinglyLinkedList<E> builder1, @NotNull MutableSinglyLinkedList<E> builder2) {
             return (MutableSinglyLinkedList<E>) Builder.merge(builder1, builder2);
+        }
+
+        @Serial
+        private Object readResolve() {
+            return factory();
         }
     }
 
