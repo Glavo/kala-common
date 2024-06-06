@@ -36,6 +36,8 @@ public interface MapIterator<K, V> extends Iterator<Tuple2<K, V>> {
         return (MapIterator<K, V>) MapIterators.EMPTY;
     }
 
+
+
     static <K, V> @NotNull MapIterator<K, V> ofIterator(@NotNull Iterator<? extends java.util.Map.Entry<? extends K, ? extends V>> it) {
         if (!it.hasNext()) { // implicit null check of it
             return empty();
