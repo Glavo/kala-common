@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.collection.mutable;
 
 import kala.Conditions;
@@ -12,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -21,6 +37,7 @@ import java.util.stream.Stream;
 
 @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
 public final class MutableLinkedList<E> extends AbstractMutableList<E> implements MutableStack<E>, MutableDeque<E>, Serializable {
+    @Serial
     private static final long serialVersionUID = 8463536184690478447L;
 
     private static final boolean enableAssertions = Boolean.getBoolean("kala.collection.mutable.MutableLinkedList.enableAssertions");
@@ -658,6 +675,7 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
         }
     }
 
+    @Serial
     private void writeObject(java.io.ObjectOutputStream out) throws IOException {
         out.writeInt(len);
         Node<E> node = this.first;
@@ -667,6 +685,7 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
         }
     }
 
+    @Serial
     @SuppressWarnings("unchecked")
     private void readObject(java.io.ObjectInputStream in)
             throws IOException, ClassNotFoundException {
