@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Objects;
 
 @StaticClass
 final class ImmutableMaps {
@@ -54,6 +55,11 @@ final class ImmutableMaps {
             return MapIterator.empty();
         }
 
+        @Override
+        public @NotNull ImmutableMap<K, V> putted(K key, V value) {
+            return new Map1<>(key, value);
+        }
+
         @Serial
         private Object readResolve() {
             return INSTANCE;
@@ -80,6 +86,29 @@ final class ImmutableMaps {
         @Override
         public @NotNull MapIterator<K, V> iterator() {
             return MapIterator.ofIterator(Iterators.of(Tuple.of(k0, v0)));
+        }
+
+        @Override
+        public boolean containsKey(K key) {
+            return Objects.equals(key, k0);
+        }
+
+        @Override
+        public boolean containsValue(Object value) {
+            return Objects.equals(value, v0);
+        }
+
+        @Override
+        public @NotNull ImmutableMap<K, V> putted(K key, V value) {
+            if (Objects.equals(key, k0)) {
+                if (value == v0) {
+                    return this;
+                } else {
+                    return new Map1<>(key, value);
+                }
+            }
+
+            return new Map2<>(k0, v0, key, value);
         }
     }
 
@@ -110,6 +139,45 @@ final class ImmutableMaps {
                     Tuple.of(k0, v0),
                     Tuple.of(k1, v1)
             ));
+        }
+
+        @Override
+        public boolean containsKey(K key) {
+            if (key != null) {
+                return key.equals(k0) || key.equals(k1);
+            } else {
+                return k0 == null || k1 == null;
+            }
+        }
+
+        @Override
+        public boolean containsValue(Object value) {
+            if (value != null) {
+                return value.equals(v0) || value.equals(v1);
+            } else {
+                return v0 == null || v1 == null;
+            }
+        }
+
+        @Override
+        public @NotNull ImmutableMap<K, V> putted(K key, V value) {
+            if (Objects.equals(key, k0)) {
+                if (value == v0) {
+                    return this;
+                } else {
+                    return new Map2<>(key, value, k1, v1);
+                }
+            }
+
+            if (Objects.equals(key, k1)) {
+                if (value == v1) {
+                    return this;
+                } else {
+                    return new Map2<>(k0, v0, key, value);
+                }
+            }
+
+            return new Map3<>(k0, v0, k1, v1, key, value);
         }
     }
 
@@ -145,6 +213,53 @@ final class ImmutableMaps {
                     Tuple.of(k1, v1),
                     Tuple.of(k2, v2)
             ));
+        }
+
+        @Override
+        public boolean containsKey(K key) {
+            if (key != null) {
+                return key.equals(k0) || key.equals(k1) || key.equals(k2);
+            } else {
+                return k0 == null || k1 == null || k2 == null;
+            }
+        }
+
+        @Override
+        public boolean containsValue(Object value) {
+            if (value != null) {
+                return value.equals(v0) || value.equals(v1) || value.equals(v2);
+            } else {
+                return v0 == null || v1 == null || v2 == null;
+            }
+        }
+
+        @Override
+        public @NotNull ImmutableMap<K, V> putted(K key, V value) {
+            if (Objects.equals(key, k0)) {
+                if (value == v0) {
+                    return this;
+                } else {
+                    return new Map3<>(key, value, k1, v1, k2, v2);
+                }
+            }
+
+            if (Objects.equals(key, k1)) {
+                if (value == v1) {
+                    return this;
+                } else {
+                    return new Map3<>(k0, v0, key, value, k2, v2);
+                }
+            }
+
+            if (Objects.equals(key, k2)) {
+                if (value == v2) {
+                    return this;
+                } else {
+                    return new Map3<>(k0, v0, k1, v1, key, value);
+                }
+            }
+
+            return super.putted(key, value);
         }
     }
 }
