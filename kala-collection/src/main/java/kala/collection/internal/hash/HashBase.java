@@ -1,8 +1,24 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.collection.internal.hash;
 
 import kala.function.Hasher;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
@@ -10,6 +26,7 @@ import java.util.Objects;
 import static kala.collection.internal.hash.HashUtils.tableSizeFor;
 
 public abstract class HashBase<K, N extends HashNode<K, N>> implements Serializable {
+    @Serial
     private static final long serialVersionUID = 5938151855937027660L;
 
     protected static final int DEFAULT_INITIAL_CAPACITY = 16;
@@ -100,7 +117,7 @@ public abstract class HashBase<K, N extends HashNode<K, N>> implements Serializa
             return null;
         }
 
-        if (nd.hash == hash && hasher.test(nd.key, elem)) {
+        if (nd.hash == hash && hasher.equals(nd.key, elem)) {
             table[idx] = nd.next;
             contentSize -= 1;
             return nd;
@@ -111,7 +128,7 @@ public abstract class HashBase<K, N extends HashNode<K, N>> implements Serializa
         N next = nd.next;
 
         while (next != null && next.hash <= hash) {
-            if (next.hash == hash && hasher.test(next.key, elem)) {
+            if (next.hash == hash && hasher.equals(next.key, elem)) {
                 prev.next = next.next;
                 contentSize -= 1;
                 return next;
