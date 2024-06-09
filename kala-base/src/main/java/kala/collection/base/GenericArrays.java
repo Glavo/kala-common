@@ -163,39 +163,33 @@ public final class GenericArrays {
     public static <E> @NotNull Iterator<E> iterator(E @NotNull [] array) {
         final int arrayLength = array.length; // implicit null check of array
 
-        switch (arrayLength) {
-            case 0:
-                return Iterators.empty();
-            case 1:
-                return Iterators.of(array[0]);
-        }
-        return new Itr<>(array, 0, arrayLength);
+        return switch (arrayLength) {
+            case 0 -> Iterators.empty();
+            case 1 -> Iterators.of(array[0]);
+            default -> new Itr<>(array, 0, arrayLength);
+        };
     }
 
     public static <E> @NotNull Iterator<E> iterator(E @NotNull [] array, int beginIndex) {
         final int arrayLength = array.length; // implicit null check of array
         Conditions.checkPositionIndex(beginIndex, arrayLength);
 
-        switch (arrayLength - beginIndex) {
-            case 0:
-                return Iterators.empty();
-            case 1:
-                return Iterators.of(array[beginIndex]);
-        }
-        return new Itr<>(array, beginIndex, arrayLength);
+        return switch (arrayLength - beginIndex) {
+            case 0 -> Iterators.empty();
+            case 1 -> Iterators.of(array[beginIndex]);
+            default -> new Itr<>(array, beginIndex, arrayLength);
+        };
     }
 
     public static <E> @NotNull Iterator<E> iterator(E @NotNull [] array, int beginIndex, int endIndex) {
         final int arrayLength = array.length; // implicit null check of array
         Conditions.checkPositionIndices(beginIndex, endIndex, arrayLength);
 
-        switch (endIndex - beginIndex) {
-            case 0:
-                return Iterators.empty();
-            case 1:
-                return Iterators.of(array[beginIndex]);
-        }
-        return new Itr<>(array, beginIndex, endIndex);
+        return switch (endIndex - beginIndex) {
+            case 0 -> Iterators.empty();
+            case 1 -> Iterators.of(array[beginIndex]);
+            default -> new Itr<>(array, beginIndex, endIndex);
+        };
     }
 
     public static <E> @NotNull Spliterator<E> spliterator(E[] array) {
@@ -260,6 +254,25 @@ public final class GenericArrays {
         }
     }
 
+    public static <E> E @NotNull [] inserted(E @NotNull [] array, int index, E value) {
+        final int arrayLength = array.length; // implicit null check of array
+        Conditions.checkPositionIndex(index, arrayLength);
+        E[] result = newArrayByOldType(array, arrayLength + 1);
+        result[index] = value;
+        System.arraycopy(array, 0, result, 0, index);
+        System.arraycopy(array, index, result, index + 1, arrayLength - index);
+        return result;
+    }
+
+    public static <E> E @NotNull [] removedAt(E @NotNull [] array, int index) {
+        final int arrayLength = array.length; // implicit null check of array
+        Conditions.checkElementIndex(index, arrayLength);
+        E[] result = newArrayByOldType(array, arrayLength - 1);
+        System.arraycopy(array, 0, result, 0, index);
+        System.arraycopy(array, index + 1, result, index, arrayLength - index - 1);
+        return result;
+    }
+
     //endregion
 
     //region Reversal Operations
@@ -285,13 +298,11 @@ public final class GenericArrays {
 
     public static <E> @NotNull Iterator<E> reverseIterator(E @NotNull [] array) {
         final int length = array.length;
-        switch (length) {
-            case 0:
-                return Iterators.empty();
-            case 1:
-                return Iterators.of(array[0]);
-        }
-        return new ReverseItr<>(array, length - 1);
+        return switch (length) {
+            case 0 -> Iterators.empty();
+            case 1 -> Iterators.of(array[0]);
+            default -> new ReverseItr<>(array, length - 1);
+        };
     }
 
     //endregion

@@ -483,12 +483,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         final int size = elements.length;
 
         Conditions.checkPositionIndex(index, size);
-
-        Object[] newValues = new Object[size + 1];
-        System.arraycopy(elements, 0, newValues, 0, index);
-        System.arraycopy(elements, index, newValues, index + 1, size - index);
-        newValues[index] = value;
-        return ImmutableArray.Unsafe.wrap(newValues);
+        return ImmutableArray.Unsafe.wrap(ObjectArrays.inserted(elements, index, value));
     }
 
     @Override
@@ -502,10 +497,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
             return ImmutableArray.empty();
         }
 
-        Object[] newValues = new Object[size - 1];
-        System.arraycopy(elements, 0, newValues, 0, index);
-        System.arraycopy(elements, index + 1, newValues, index, size - index - 1);
-        return ImmutableArray.Unsafe.wrap(newValues);
+        return ImmutableArray.Unsafe.wrap(ObjectArrays.removedAt(elements, index));
     }
 
     @Override

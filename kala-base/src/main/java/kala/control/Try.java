@@ -40,22 +40,11 @@ import java.util.function.Supplier;
  * @param <T>
  */
 @SuppressWarnings("unchecked")
-public final class Try<@Covariant T> implements AnyTry<T>, Traversable<T>, Serializable {
-    @Serial
-    private static final long serialVersionUID = -876749736621195838L;
-
-    public static final Try<Void> VOID = new Try<>(null, null);
-
-    private final T value;
-    private final Throwable cause;
-
-    private Try(T value, Throwable cause) {
-        this.value = value;
-        this.cause = cause;
-    }
+public sealed interface Try<@Covariant T> extends AnyTry<T>, Traversable<T>, Serializable {
+    Try<Void> VOID = new Success<>(null);
 
     @Contract(value = "_ -> param1", pure = true)
-    public static <T> Try<T> narrow(Try<? extends T> t) {
+    static <T> Try<T> narrow(Try<? extends T> t) {
         return (Try<T>) t;
     }
 
@@ -79,7 +68,7 @@ public final class Try<@Covariant T> implements AnyTry<T>, Traversable<T>, Seria
      *     // do something
      * }}</pre>
      */
-    public static <Ex extends Throwable> void maybeThrows() throws Ex {
+    static <Ex extends Throwable> void maybeThrows() throws Ex {
         // do nothing
     }
 
@@ -91,7 +80,7 @@ public final class Try<@Covariant T> implements AnyTry<T>, Traversable<T>, Seria
      * }</pre>
      */
     @Contract("_ -> fail")
-    public static <R, Ex extends Throwable> R throwException(Ex exception) throws Ex {
+    static <R, Ex extends Throwable> R throwException(Ex exception) throws Ex {
         throw exception;
     }
 
@@ -101,7 +90,7 @@ public final class Try<@Covariant T> implements AnyTry<T>, Traversable<T>, Seria
      * It never returns, so you can use it as an expression of any type.
      */
     @Contract("_ -> fail")
-    public static <R> R sneakyThrow(Throwable exception) {
+    static <R> R sneakyThrow(Throwable exception) {
         sneakyThrow0(exception);
         return null; // make compiler happy
     }
@@ -111,7 +100,7 @@ public final class Try<@Covariant T> implements AnyTry<T>, Traversable<T>, Seria
         throw (Ex) exception;
     }
 
-    public static String getStackTraceAsString(@NotNull Throwable exception) {
+    static String getStackTraceAsString(@NotNull Throwable exception) {
         Objects.requireNonNull(exception);
 
         ByteArrayOutputStream buffer = new ByteArrayOutputStream(4096);
@@ -121,7 +110,7 @@ public final class Try<@Covariant T> implements AnyTry<T>, Traversable<T>, Seria
         return buffer.toString(StandardCharsets.UTF_8);
     }
 
-    public static String getStackTraceAsString(StackTraceElement @NotNull [] stackTrace) {
+    static String getStackTraceAsString(StackTraceElement @NotNull [] stackTrace) {
         StringBuilder builder = new StringBuilder(4096);
         String lineSeparator = System.lineSeparator();
 
@@ -131,7 +120,7 @@ public final class Try<@Covariant T> implements AnyTry<T>, Traversable<T>, Seria
         return builder.toString();
     }
 
-    public static String getStackTraceAsString(@NotNull Iterable<StackTraceElement> stackTrace) {
+    static String getStackTraceAsString(@NotNull Iterable<StackTraceElement> stackTrace) {
         StringBuilder builder = new StringBuilder(4096);
         String lineSeparator = System.lineSeparator();
 
@@ -142,23 +131,23 @@ public final class Try<@Covariant T> implements AnyTry<T>, Traversable<T>, Seria
     }
 
     @SuppressWarnings("removal")
-    public static boolean isFatal(Throwable exception) {
+    static boolean isFatal(Throwable exception) {
         return exception instanceof InterruptedException
                 || exception instanceof LinkageError
                 || exception instanceof ThreadDeath
                 || exception instanceof VirtualMachineError;
     }
 
-    public static <T> @NotNull Try<T> success(T value) {
-        return new Try<>(value, null);
+    static <T> @NotNull Try<T> success(T value) {
+        return new Success<>(value);
     }
 
-    public static <T> @NotNull Try<T> failure(@NotNull Throwable exception) {
+    static <T> @NotNull Try<T> failure(@NotNull Throwable exception) {
         Objects.requireNonNull(exception);
-        return new Try<>(null, exception);
+        return new Failure<>(exception);
     }
 
-    public static <T> @NotNull Try<T> of(@NotNull CheckedSupplier<? extends T, ?> supplier) {
+    static <T> @NotNull Try<T> of(@NotNull CheckedSupplier<? extends T, ?> supplier) {
         Objects.requireNonNull(supplier);
         try {
             return success(supplier.getChecked());
@@ -167,7 +156,7 @@ public final class Try<@Covariant T> implements AnyTry<T>, Traversable<T>, Seria
         }
     }
 
-    public static <T> @NotNull Try<T> ofCallable(@NotNull Callable<? extends T> callable) {
+    static <T> @NotNull Try<T> ofCallable(@NotNull Callable<? extends T> callable) {
         Objects.requireNonNull(callable);
         try {
             return success(callable.call());
@@ -176,7 +165,7 @@ public final class Try<@Covariant T> implements AnyTry<T>, Traversable<T>, Seria
         }
     }
 
-    public static @NotNull Try<Void> runCatching(@NotNull CheckedRunnable<?> runnable) {
+    static @NotNull Try<Void> runCatching(@NotNull CheckedRunnable<?> runnable) {
         Objects.requireNonNull(runnable);
         try {
             runnable.runChecked();
@@ -186,7 +175,7 @@ public final class Try<@Covariant T> implements AnyTry<T>, Traversable<T>, Seria
         }
     }
 
-    public static @NotNull Try<Void> runRunnable(@NotNull Runnable runnable) {
+    static @NotNull Try<Void> runRunnable(@NotNull Runnable runnable) {
         Objects.requireNonNull(runnable);
         try {
             runnable.run();
@@ -196,7 +185,7 @@ public final class Try<@Covariant T> implements AnyTry<T>, Traversable<T>, Seria
         }
     }
 
-    public static void runIgnoreException(@NotNull CheckedRunnable<?> runnable) {
+    static void runIgnoreException(@NotNull CheckedRunnable<?> runnable) {
         Objects.requireNonNull(runnable);
         try {
             runnable.runChecked();
@@ -204,11 +193,11 @@ public final class Try<@Covariant T> implements AnyTry<T>, Traversable<T>, Seria
         }
     }
 
-    public static void runUnchecked(@NotNull CheckedRunnable<?> runnable) {
+    static void runUnchecked(@NotNull CheckedRunnable<?> runnable) {
         runnable.run();
     }
 
-    public static <U, R0 extends AutoCloseable> @NotNull Try<U> using(
+    static <U, R0 extends AutoCloseable> @NotNull Try<U> using(
             R0 resource0,
             @NotNull CheckedFunction<? super R0, ? extends U, ?> action) {
         Objects.requireNonNull(action);
@@ -219,7 +208,7 @@ public final class Try<@Covariant T> implements AnyTry<T>, Traversable<T>, Seria
         }
     }
 
-    public static <U, R0 extends AutoCloseable, R1 extends AutoCloseable> @NotNull Try<U> using(
+    static <U, R0 extends AutoCloseable, R1 extends AutoCloseable> @NotNull Try<U> using(
             R0 resource0, R1 resource1,
             @NotNull CheckedBiFunction<? super R0, ? super R1, ? extends U, ?> action) {
         Objects.requireNonNull(action);
@@ -230,7 +219,7 @@ public final class Try<@Covariant T> implements AnyTry<T>, Traversable<T>, Seria
         }
     }
 
-    public static <U, R0 extends AutoCloseable, R1 extends AutoCloseable, R2 extends AutoCloseable> @NotNull Try<U> using(
+    static <U, R0 extends AutoCloseable, R1 extends AutoCloseable, R2 extends AutoCloseable> @NotNull Try<U> using(
             R0 resource0, R1 resource1, R2 resource2,
             @NotNull CheckedTriFunction<? super R0, ? super R1, ? super R2, ? extends U, ?> action) {
         Objects.requireNonNull(action);
@@ -247,8 +236,8 @@ public final class Try<@Covariant T> implements AnyTry<T>, Traversable<T>, Seria
      * @return {@code true} if the {@code Try} is {@code Success}, otherwise {@code false}
      */
     @Override
-    public boolean isSuccess() {
-        return cause == null;
+    default boolean isSuccess() {
+        return this instanceof Try.Success<T>;
     }
 
     /**
@@ -257,116 +246,135 @@ public final class Try<@Covariant T> implements AnyTry<T>, Traversable<T>, Seria
      * @return {@code true} if the {@code Try} is {@code Failure}, otherwise {@code false}
      */
     @Override
-    public boolean isFailure() {
-        return cause != null;
+    default boolean isFailure() {
+        return this instanceof Try.Failure<T>;
     }
 
     @Override
     @Deprecated
     @ReplaceWith("get()")
-    public T getValue() {
+    default T getValue() {
         return get();
     }
 
-    public T get() {
-        if (isFailure()) throw new NoSuchElementException();
-        return value;
-    }
-
-    public @Nullable T getOrNull() {
-        return value;
-    }
-
-    public @NotNull Option<T> getOption() {
-        return isSuccess() ? Option.some(value) : Option.none();
-    }
-
-    public T getOrDefault(T defaultValue) {
-        return isSuccess() ? value : defaultValue;
-    }
-
-    public T getOrElse(@NotNull Supplier<? extends T> supplier) {
-        return isSuccess() ? value : supplier.get();
-    }
-
-    public <Ex extends Throwable> T getOrThrow() throws Ex {
-        if (isFailure()) {
-            throw (Ex) cause;
+    default T get() {
+        if (this instanceof Try.Success(var value)) {
+            return value;
         }
-        return value;
-    }
-
-    public <Ex extends Throwable> T getOrThrow(@NotNull Supplier<? extends Ex> supplier) throws Ex {
-        if (isFailure()) {
-            throw supplier.get();
-        }
-        return value;
-    }
-
-    public <Ex extends Throwable> T getOrThrowException(Ex exception) throws Ex {
-        if (isFailure()) {
-            throw exception;
-        }
-        return value;
+        throw new NoSuchElementException("No value present");
     }
 
     @Override
-    public @NotNull Throwable getCause() {
-        if (isSuccess()) {
-            throw new UnsupportedOperationException();
-        }
-        return cause;
+    default @Nullable T getOrNull() {
+        return this instanceof Success(var value) ? value : null;
     }
 
-    public @NotNull Try<T> recover(@NotNull CheckedFunction<? super Throwable, ? extends T, ?> op) {
+    @Override
+    default @NotNull Option<T> getOption() {
+        return this instanceof Success(var value) ? Option.some(value) : Option.none();
+    }
+
+    default T getOrDefault(T defaultValue) {
+        return this instanceof Success(var value) ? value : defaultValue;
+    }
+
+    default T getOrElse(@NotNull Supplier<? extends T> supplier) {
+        return this instanceof Success(var value) ? value : supplier.get();
+    }
+
+    default <Ex extends Throwable> T getOrThrow() throws Ex {
+        return switch (this) {
+            case Success(var value) -> value;
+            case Failure(var cause) -> throw (Ex) cause;
+        };
+    }
+
+    default <Ex extends Throwable> T getOrThrow(@NotNull Supplier<? extends Ex> supplier) throws Ex {
+        if (this instanceof Try.Success(var value)) {
+            return value;
+        }
+        throw supplier.get();
+    }
+
+    default <Ex extends Throwable> T getOrThrowException(Ex exception) throws Ex {
+        if (this instanceof Try.Success(var value)) {
+            return value;
+        }
+        throw exception;
+    }
+
+    @Override
+    default @NotNull Throwable getCause() {
+        return switch (this) {
+            case Success<T> __ -> throw new UnsupportedOperationException();
+            case Failure(var cause) -> cause;
+        };
+    }
+
+    default @NotNull Try<T> recover(@NotNull CheckedFunction<? super Throwable, ? extends T, ?> op) {
         Objects.requireNonNull(op);
-        if (isSuccess()) {
-            return this;
-        }
-        try {
-            return success(op.applyChecked(cause));
-        } catch (Throwable ex) {
-            return failure(ex);
-        }
+
+        return switch (this) {
+            case Success<T> success -> success;
+            case Failure<T>(var cause) -> {
+                try {
+                    yield success(op.applyChecked(cause));
+                } catch (Throwable ex) {
+                    yield failure(ex);
+                }
+            }
+        };
     }
 
-    public <X> @NotNull Try<T> recover(
-            @NotNull Class<? extends X> type, @NotNull CheckedFunction<? super X, ? extends T, ?> op) {
+    default <X> @NotNull Try<T> recover(@NotNull Class<? extends X> type, @NotNull CheckedFunction<? super X, ? extends T, ?> op) {
         Objects.requireNonNull(op);
-        if (!type.isInstance(cause)) {
-            return this;
-        }
-
-        try {
-            return success(op.applyChecked((X) cause));
-        } catch (Throwable ex) {
-            return failure(ex);
-        }
+        return switch (this) {
+            case Success<T> __ -> this;
+            case Failure<T>(var cause) -> {
+                if (!type.isInstance(cause)) {
+                    yield this;
+                }
+                try {
+                    yield success(op.applyChecked((X) cause));
+                } catch (Throwable ex) {
+                    yield failure(ex);
+                }
+            }
+        };
     }
 
-    public @NotNull Try<T> recoverWith(@NotNull CheckedFunction<? super Throwable, ? extends Try<? extends T>, ?> op) {
+    @NotNull
+    default Try<T> recoverWith(@NotNull CheckedFunction<? super Throwable, ? extends Try<? extends T>, ?> op) {
         Objects.requireNonNull(op);
-        if (isSuccess()) {
-            return this;
-        }
-        try {
-            return (Try<T>) op.applyChecked(cause);
-        } catch (Throwable ex) {
-            return failure(ex);
-        }
+        return switch (this) {
+            case Success<T> __ -> this;
+            case Failure<T>(var cause) -> {
+                try {
+                    yield (Try<T>) success(op.applyChecked(cause));
+                } catch (Throwable ex) {
+                    yield failure(ex);
+                }
+            }
+        };
     }
 
-    public <X> @NotNull Try<T> recoverWith(
+    default <X> @NotNull Try<T> recoverWith(
             @NotNull Class<? extends X> type, @NotNull CheckedFunction<? super X, ? extends Try<? extends T>, ?> op) {
         Objects.requireNonNull(op);
-        if (!type.isInstance(cause)) {
-            return this;
-        }
-        try {
-            return (Try<T>) op.applyChecked((X) cause);
-        } catch (Throwable ex) {
-            return failure(ex);
-        }
+        return switch (this) {
+            case Success<T> __ -> this;
+            case Failure<T>(var cause) -> {
+                if (!type.isInstance(cause)) {
+                    yield this;
+                }
+
+                try {
+                    yield (Try<T>) success(op.applyChecked((X) cause));
+                } catch (Throwable ex) {
+                    yield failure(ex);
+                }
+            }
+        };
     }
 
     /**
@@ -377,9 +385,11 @@ public final class Try<@Covariant T> implements AnyTry<T>, Traversable<T>, Seria
      * @throws Ex if the {@code Try} is a {@code Failure}
      */
     @Override
-    public <Ex extends Throwable> @NotNull Try<T> rethrow() throws Ex {
-        if (isFailure()) throw (Ex) cause;
-        return this;
+    default <Ex extends Throwable> @NotNull Try<T> rethrow() throws Ex {
+        return switch (this) {
+            case Success<T> __ -> this;
+            case Failure<T>(var cause) -> throw (Ex) cause;
+        };
     }
 
     /**
@@ -392,122 +402,126 @@ public final class Try<@Covariant T> implements AnyTry<T>, Traversable<T>, Seria
      * @throws Ex if the {@code Try} is a {@code Failure} and the {@code throwable}'s type is {@code type}
      */
     @Override
-    public <Ex extends Throwable> @NotNull Try<T> rethrow(@NotNull Class<? extends Ex> type) throws Ex {
-        if (type.isInstance(cause)) throw (Ex) cause;
+    default <Ex extends Throwable> @NotNull Try<T> rethrow(@NotNull Class<? extends Ex> type) throws Ex {
+        if (this instanceof Try.Failure<T>(var cause) && type.isInstance(cause)) {
+            throw (Ex) cause;
+        }
+
         return this;
     }
 
     @Override
-    public @NotNull Try<T> rethrowFatal() {
-        if (isFatal(cause)) {
+    default @NotNull Try<T> rethrowFatal() {
+        if (this instanceof Try.Failure<T>(var cause) && isFatal(cause)) {
             sneakyThrow(cause);
         }
         return this;
     }
 
-    public @NotNull Either<@NotNull Throwable, T> toEither() {
-        return isSuccess() ? Either.right(value) : Either.left(cause);
+    default @NotNull Either<@NotNull Throwable, T> toEither() {
+        return switch (this) {
+            case Success<T>(var value) -> Either.right(value);
+            case Failure<T>(var cause) -> Either.left(cause);
+        };
     }
 
-    public @NotNull Result<T, @NotNull Throwable> toResult() {
-        return isSuccess() ? Result.ok(value) : Result.err(cause);
+    default @NotNull Result<T, @NotNull Throwable> toResult() {
+        return switch (this) {
+            case Success<T>(var value) -> Result.ok(value);
+            case Failure<T>(var cause) -> Result.err(cause);
+        };
     }
 
-    public <U> @NotNull Try<U> map(@NotNull CheckedFunction<? super T, ? extends U, ?> mapper) {
+    default <U> @NotNull Try<U> map(@NotNull CheckedFunction<? super T, ? extends U, ?> mapper) {
         Objects.requireNonNull(mapper);
-        if (isFailure()) {
-            return (Try<U>) this;
-        }
-        try {
-            return success(mapper.applyChecked(value));
-        } catch (Throwable ex) {
-            return failure(ex);
-        }
+        return switch (this) {
+            case Success<T>(var value) -> {
+                try {
+                    yield success(mapper.applyChecked(value));
+                } catch (Throwable ex) {
+                    yield failure(ex);
+                }
+            }
+            case Failure<T> failure -> failure.cast();
+        };
     }
 
-    public <U> @NotNull Try<U> flatMap(@NotNull CheckedFunction<? super T, ? extends Try<? extends U>, ?> mapper) {
+    default <U> @NotNull Try<U> flatMap(@NotNull CheckedFunction<? super T, ? extends Try<? extends U>, ?> mapper) {
         Objects.requireNonNull(mapper);
-        if (isFailure()) {
-            return (Try<U>) this;
-        }
 
-        try {
-            return (Try<U>) mapper.applyChecked(value);
-        } catch (Throwable ex) {
-            return failure(ex);
-        }
+        return switch (this) {
+            case Success<T>(var value) -> {
+                try {
+                    yield narrow(mapper.applyChecked(value));
+                } catch (Throwable ex) {
+                    yield failure(ex);
+                }
+            }
+            case Failure<T> failure -> failure.cast();
+        };
     }
 
     @Override
-    public @NotNull Iterator<T> iterator() {
-        return isSuccess() ? Iterators.of(value) : Iterators.empty();
+    default @NotNull Iterator<T> iterator() {
+        return switch (this) {
+            case Success<T>(var value) -> Iterators.of(value);
+            case Failure<T> failure -> Iterators.empty();
+        };
     }
 
     @Override
-    public void forEach(@NotNull Consumer<? super T> action) {
-        if (isSuccess()) {
+    default void forEach(@NotNull Consumer<? super T> action) {
+        if (this instanceof Try.Success<T>(var value)) {
             action.accept(value);
         }
     }
 
-    @Override
-    public int hashCode() {
-        if (isSuccess()) {
+    record Success<T>(T value) implements Try<T> {
+
+        @Override
+        public int hashCode() {
             return Objects.hashCode(value) + SUCCESS_HASH_MAGIC;
-        } else {
-            return getCause().hashCode() + FAILURE_HASH_MAGIC;
         }
-    }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof AnyTry)) return false;
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof AnyTry<?> other) || other.isFailure()) return false;
 
-        AnyTry<?> other = (AnyTry<?>) o;
-
-        if (this.isSuccess() && other.isSuccess()) {
             return Objects.equals(this.get(), other.getValue());
-        } else if (this.isFailure() && other.isFailure()) {
-            return this.getCause().equals(other.getCause());
-        } else {
-            return false;
         }
-    }
 
-    @Override
-    public String toString() {
-        if (isSuccess()) {
+        @Override
+        public String toString() {
             return "Try.Success[" + value + "]";
-        } else {
+        }
+    }
+
+    record Failure<T>(@NotNull Throwable cause) implements Try<T> {
+        public Failure {
+            Objects.requireNonNull(cause);
+        }
+
+        public <U> Failure<U> cast() {
+            return (Failure<U>) this;
+        }
+
+        @Override
+        public int hashCode() {
+            return cause.hashCode() + FAILURE_HASH_MAGIC;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof AnyTry<?> other) || other.isSuccess()) return false;
+
+            return Objects.equals(cause, other.getCause());
+        }
+
+        @Override
+        public String toString() {
             return "Try.Failure[" + cause + "]";
-        }
-    }
-
-    @Serial
-    private Object writeReplace() {
-        if (isSuccess()) {
-            return new Replaced(true, value);
-        } else {
-            return new Replaced(false, cause);
-        }
-    }
-
-    private static final class Replaced implements Serializable {
-        @Serial
-        private static final long serialVersionUID = -3487244164062636325L;
-
-        private final boolean isSuccess;
-        private final Object value;
-
-        Replaced(boolean isSuccess, Object value) {
-            this.isSuccess = isSuccess;
-            this.value = value;
-        }
-
-        @Serial
-        private Object readResolve() {
-            return isSuccess ? success(value) : failure((Throwable) value);
         }
     }
 }

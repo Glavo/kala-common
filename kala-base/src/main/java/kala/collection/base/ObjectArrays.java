@@ -215,6 +215,25 @@ public final class ObjectArrays {
         }
     }
 
+    public static Object @NotNull [] inserted(Object @NotNull [] array, int index, Object value) {
+        final int arrayLength = array.length; // implicit null check of array
+        Conditions.checkPositionIndex(index, arrayLength);
+        Object[] result = new Object[arrayLength + 1];
+        result[index] = value;
+        System.arraycopy(array, 0, result, 0, index);
+        System.arraycopy(array, index, result, index + 1, arrayLength - index);
+        return result;
+    }
+
+    public static Object @NotNull [] removedAt(Object @NotNull [] array, int index) {
+        final int arrayLength = array.length; // implicit null check of array
+        Conditions.checkElementIndex(index, arrayLength);
+        Object[] result = new Object[arrayLength - 1];
+        System.arraycopy(array, 0, result, 0, index);
+        System.arraycopy(array, index + 1, result, index, arrayLength - index - 1);
+        return result;
+    }
+
     //endregion
 
     //region Reversal Operations
