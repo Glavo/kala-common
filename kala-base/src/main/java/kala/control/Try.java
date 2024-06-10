@@ -350,7 +350,7 @@ public sealed interface Try<@Covariant T> extends AnyTry<T>, Traversable<T>, Ser
             case Success<T> __ -> this;
             case Failure<T>(var cause) -> {
                 try {
-                    yield (Try<T>) success(op.applyChecked(cause));
+                    yield narrow(op.applyChecked(cause));
                 } catch (Throwable ex) {
                     yield failure(ex);
                 }
@@ -369,7 +369,7 @@ public sealed interface Try<@Covariant T> extends AnyTry<T>, Traversable<T>, Ser
                 }
 
                 try {
-                    yield (Try<T>) success(op.applyChecked((X) cause));
+                    yield narrow(op.applyChecked((X) cause));
                 } catch (Throwable ex) {
                     yield failure(ex);
                 }
