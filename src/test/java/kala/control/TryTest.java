@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.control;
 
 import kala.SerializationUtils;
@@ -10,7 +25,6 @@ import java.util.concurrent.atomic.LongAdder;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SuppressWarnings("ResultOfMethodCallIgnored")
 public class TryTest {
 
     @Test
@@ -254,6 +268,22 @@ public class TryTest {
     }
 
     @Test
+    public void toEitherTest() {
+        MyException ex = new MyException();
+
+        assertEquals(Either.right("foo"), Try.success("foo").toEither());
+        assertEquals(Either.left(ex), Try.failure(ex).toEither());
+    }
+
+    @Test
+    public void toResultTest() {
+        MyException ex = new MyException();
+
+        assertEquals(Result.ok("foo"), Try.success("foo").toResult());
+        assertEquals(Result.err(ex), Try.failure(ex).toResult());
+    }
+
+    @Test
     public void mapTest() {
         MyException ex = new MyException();
 
@@ -309,6 +339,7 @@ public class TryTest {
     @Test
     public void serializationTest() throws IOException, ClassNotFoundException {
         assertEquals(Try.success("foo"), SerializationUtils.writeAndRead(Try.success("foo")));
+        assertInstanceOf(MyException.class, SerializationUtils.writeAndRead(Try.failure(new MyException())).getCause());
     }
 
     private static final class MyException extends RuntimeException {
