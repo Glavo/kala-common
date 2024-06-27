@@ -3,7 +3,6 @@
 ![Gradle Check](https://github.com/Glavo/kala-common/workflows/Gradle%20Check/badge.svg?branch=main)
 [![codecov](https://codecov.io/github/Glavo/kala-common/graph/badge.svg?token=IHM4ZK7K7A)](https://codecov.io/github/Glavo/kala-common)
 
-
 This is a powerful set of Java base libraries that provide a series of easy-to-use abstractions and collections.
 If you have used Scala, it should be easy for you to get started with this collection library.
 
@@ -12,6 +11,8 @@ but we already use it in Aya language:
 [aya-prover/aya-dev](https://github.com/aya-prover/aya-dev)
 
 Its documentation is not ready, please contact me if you have any questions.
+
+This project is hosted on GitHub: [Glavo/kala-common](https://github.com/Glavo/kala-common). 
 
 ## Adding Kala to your build
 
@@ -42,6 +43,12 @@ If you like this library, donating to me is my greatest support!
 Due to payment method restrictions, donations are currently only supported through payment channels in Chinese mainland (微信，支付宝，爱发电等).
 
 Here are the ways to donate: [捐赠支持 Glavo](https://donate.glavo.site/)
+
+## License
+
+All Java code is released under the [Apache 2.0](./LICENSE) license.
+
+This README file is released under the [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) license.
 
 ## Especially thanks
 
