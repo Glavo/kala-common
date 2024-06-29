@@ -13,19 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package kala.collection.base;
+package kala.collection;
 
-import kala.annotations.UnstableName;
+import kala.Equatable;
 
-@UnstableName
-public interface Sized {
-    boolean isEmpty();
+public interface AnyMap<K, V> extends AnyMapLike<K, V>, Equatable {
 
-    default boolean isNotEmpty() {
-        return !isEmpty();
-    }
-
-    int size();
-
-    int knownSize();
 }

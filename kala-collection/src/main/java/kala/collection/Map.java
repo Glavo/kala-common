@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.collection;
 
 import kala.Equatable;
@@ -16,7 +31,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collector;
 
-public interface Map<K, V> extends MapLike<K, V>, Equatable {
+public interface Map<K, V> extends AnyMap<K, V>, MapLike<K, V>, Equatable {
 
     int HASH_MAGIC = 124549981;
 
@@ -25,7 +40,7 @@ public interface Map<K, V> extends MapLike<K, V>, Equatable {
     }
 
     @SuppressWarnings("unchecked")
-    static boolean equals(@NotNull Map<?, ?> map1, @NotNull Map<?, ?> map2) {
+    static boolean equals(@NotNull Map<?, ?> map1, @NotNull AnyMap<?, ?> map2) {
         if (!map1.canEqual(map2) || !map2.canEqual(map1)) {
             return false;
         }
@@ -197,11 +212,6 @@ public interface Map<K, V> extends MapLike<K, V>, Equatable {
 
     default java.util.@NotNull @UnmodifiableView Map<K, V> asJava() {
         return new AsJavaConvert.MapAsJava<>(this);
-    }
-
-    @Override
-    default boolean canEqual(Object other) {
-        return other instanceof Map<?, ?>;
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})

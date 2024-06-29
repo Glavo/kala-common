@@ -77,11 +77,6 @@ public interface AnyTraversable<T> extends Sized {
         }
     }
 
-    @Override
-    default boolean isNotEmpty() {
-        return !isEmpty();
-    }
-
     /**
      * Returns the size of this {@code AnyTraversable} if is a finite structure.
      *

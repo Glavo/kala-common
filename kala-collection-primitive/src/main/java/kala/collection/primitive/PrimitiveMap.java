@@ -13,19 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package kala.collection.base;
+package kala.collection.primitive;
 
-import kala.annotations.UnstableName;
+import kala.collection.AnyMap;
 
-@UnstableName
-public interface Sized {
-    boolean isEmpty();
-
-    default boolean isNotEmpty() {
-        return !isEmpty();
-    }
-
-    int size();
-
-    int knownSize();
+public interface PrimitiveMap<K, V> extends PrimitiveMapLike<K, V>, AnyMap<K, V> {
 }
