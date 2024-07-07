@@ -22,10 +22,12 @@ import kala.function.BooleanConsumer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @SuppressWarnings("PointlessBooleanExpression")
 final class DefaultMutableBooleanSet extends AbstractMutableBooleanSet implements Serializable {
+    @Serial
     private static final long serialVersionUID = 0L;
 
     private static final Factory FACTORY = new Factory();

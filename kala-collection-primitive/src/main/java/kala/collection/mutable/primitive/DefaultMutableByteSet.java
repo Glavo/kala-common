@@ -22,7 +22,10 @@ import kala.collection.primitive.AbstractDefaultByteSet;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
+
 final class DefaultMutableByteSet extends AbstractDefaultByteSet implements MutableByteSet {
+    @Serial
     private static final long serialVersionUID = 6028841354144450491L;
 
     private static final Factory FACTORY = new Factory();
@@ -122,23 +125,13 @@ final class DefaultMutableByteSet extends AbstractDefaultByteSet implements Muta
         int bitsNumber = v / Long.SIZE;
         int bitOffset = v % Long.SIZE;
 
-        long bits;
-        switch (bitsNumber) {
-            case 0:
-                bits = bits0;
-                break;
-            case 1:
-                bits = bits1;
-                break;
-            case 2:
-                bits = bits2;
-                break;
-            case 3:
-                bits = bits3;
-                break;
-            default:
-                throw new AssertionError();
-        }
+        long bits = switch (bitsNumber) {
+            case 0 -> bits0;
+            case 1 -> bits1;
+            case 2 -> bits2;
+            case 3 -> bits3;
+            default -> throw new AssertionError();
+        };
 
         long newBits = bits | (1L << bitOffset);
 
@@ -173,23 +166,13 @@ final class DefaultMutableByteSet extends AbstractDefaultByteSet implements Muta
         int bitsNumber = v / Long.SIZE;
         int bitOffset = v % Long.SIZE;
 
-        long bits;
-        switch (bitsNumber) {
-            case 0:
-                bits = bits0;
-                break;
-            case 1:
-                bits = bits1;
-                break;
-            case 2:
-                bits = bits2;
-                break;
-            case 3:
-                bits = bits3;
-                break;
-            default:
-                throw new AssertionError();
-        }
+        long bits = switch (bitsNumber) {
+            case 0 -> bits0;
+            case 1 -> bits1;
+            case 2 -> bits2;
+            case 3 -> bits3;
+            default -> throw new AssertionError();
+        };
 
         long newBits = bits & ~(1L << bitOffset);
 
