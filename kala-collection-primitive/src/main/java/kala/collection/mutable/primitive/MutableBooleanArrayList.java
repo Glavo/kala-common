@@ -153,7 +153,7 @@ public final class MutableBooleanArrayList extends AbstractMutableBooleanList im
     public static @NotNull MutableBooleanArrayList from(@NotNull BooleanIterator it) {
         MutableBooleanArrayList buffer = new MutableBooleanArrayList();
         while (it.hasNext()) {
-            buffer.append(it.next());
+            buffer.append(it.nextBoolean());
         }
         return buffer;
     }
@@ -164,8 +164,8 @@ public final class MutableBooleanArrayList extends AbstractMutableBooleanList im
         }
 
         boolean[] arr = new boolean[Integer.max(DEFAULT_CAPACITY, n)];
-        if (value != false) {
-            Arrays.fill(arr, 0, n, value);
+        if (value) {
+            Arrays.fill(arr, 0, n, true);
         }
         return new MutableBooleanArrayList(arr, n);
     }
@@ -313,8 +313,7 @@ public final class MutableBooleanArrayList extends AbstractMutableBooleanList im
         }
 
         final int size = this.size;
-        if (values instanceof BooleanSeqLike && ((BooleanSeqLike) values).supportsFastRandomAccess()) {
-            BooleanSeqLike seq = (BooleanSeqLike) values;
+        if (values instanceof BooleanSeqLike seq && seq.supportsFastRandomAccess()) {
             int s = seq.size();
             if (s == 0) {
                 return;
@@ -511,12 +510,6 @@ public final class MutableBooleanArrayList extends AbstractMutableBooleanList im
 
         int tailElementsCount = size - endIndex;
         System.arraycopy(elements, endIndex, elements, beginIndex, tailElementsCount);
-        /*
-        if (tailElementsCount < rangeLength) {
-            Arrays.fill(elements, beginIndex + tailElementsCount, beginIndex + rangeLength, 0);
-        }
-         */
-
         this.size = size - rangeLength;
     }
 
@@ -594,6 +587,7 @@ public final class MutableBooleanArrayList extends AbstractMutableBooleanList im
         }
     }
 
+    @Serial
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         final int size = in.readInt();
         final boolean[] elements = size == 0 ? DEFAULT_EMPTY_ARRAY : new boolean[Integer.max(DEFAULT_CAPACITY, size)];
@@ -716,7 +710,6 @@ public final class MutableBooleanArrayList extends AbstractMutableBooleanList im
             }
         }
 
-
         @Override
         public void remove() {
             if (lastReturned < 0) {
@@ -731,7 +724,5 @@ public final class MutableBooleanArrayList extends AbstractMutableBooleanList im
                 throw new ConcurrentModificationException(String.format("lastReturned=%d,size=%d,array=%s", lastReturned, seq.size, Arrays.toString(seq.elements)), ex);
             }
         }
-
-
     }
 }
