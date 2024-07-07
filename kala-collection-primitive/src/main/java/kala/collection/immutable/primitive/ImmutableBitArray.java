@@ -24,9 +24,11 @@ import kala.collection.primitive.BitArray;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.function.BooleanSupplier;
 
 import static kala.collection.base.primitive.BitArrays.BITS_PRE_VALUE;
+import static kala.collection.base.primitive.BitArrays.FULL_BITS;
 
 final class ImmutableBitArray extends BitArray implements ImmutableBooleanSeq {
 
@@ -112,7 +114,7 @@ final class ImmutableBitArray extends BitArray implements ImmutableBooleanSeq {
             return empty();
         }
 
-        if (size < BITS_PRE_VALUE) {
+        if (size <= BITS_PRE_VALUE) {
             long bits = 0L;
             for (int i = 0; i < size; i++) {
                 bits = BitArrays.set(bits, i, values[i]);
@@ -122,8 +124,8 @@ final class ImmutableBitArray extends BitArray implements ImmutableBooleanSeq {
 
         final int fullChunkCount = size / BITS_PRE_VALUE;
         final int notFullChunkLength = size % BITS_PRE_VALUE;
+        final long[] bitsArray = new long[notFullChunkLength > 0 ? fullChunkCount + 1 : fullChunkCount];
 
-        long[] bitsArray = new long[notFullChunkLength > 0 ? fullChunkCount + 1 : fullChunkCount];
         for (int i = 0; i < fullChunkCount; i++) {
             final int baseIndex = i * BITS_PRE_VALUE;
             long bits = 0L;
@@ -157,7 +159,6 @@ final class ImmutableBitArray extends BitArray implements ImmutableBooleanSeq {
         throw new NotImplementedError();
     }
 
-
     public static @NotNull ImmutableBitArray from(@NotNull BooleanIterator it) {
         if (!it.hasNext()) { // implicit null check of it
             return empty();
@@ -170,7 +171,27 @@ final class ImmutableBitArray extends BitArray implements ImmutableBooleanSeq {
             return empty();
         }
 
-        throw new NotImplementedError();
+        if (n <= BITS_PRE_VALUE) {
+            if (value) {
+                long bits = 0L;
+                for (int i = 0; i < n; i++) {
+                    bits = BitArrays.set(bits, i, true);
+                }
+                return new ImmutableBitArray(bits, n);
+            } else {
+                return new ImmutableBitArray(0L, n);
+            }
+        }
+
+        final int fullChunkCount = n / BITS_PRE_VALUE;
+        final int notFullChunkLength = n % BITS_PRE_VALUE;
+        final long[] bitsArray = new long[notFullChunkLength > 0 ? fullChunkCount + 1 : fullChunkCount];
+
+        if (value) {
+            Arrays.fill(bitsArray, FULL_BITS);
+        }
+
+        return new ImmutableBitArray(bitsArray, n);
     }
 
     public static @NotNull ImmutableBitArray fill(int n, @NotNull BooleanSupplier supplier) {
