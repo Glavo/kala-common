@@ -22,7 +22,10 @@ import kala.collection.mutable.primitive.MutableByteSet;
 import kala.collection.primitive.AbstractDefaultByteSet;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
+
 final class DefaultImmutableByteSet extends AbstractDefaultByteSet implements ImmutableByteSet {
+    @Serial
     private static final long serialVersionUID = 6028841354144450491L;
 
     private static final Factory FACTORY = new Factory();
@@ -127,23 +130,13 @@ final class DefaultImmutableByteSet extends AbstractDefaultByteSet implements Im
         int bitsNumber = v / Long.SIZE;
         int bitOffset = v % Long.SIZE;
 
-        long bits;
-        switch (bitsNumber) {
-            case 0:
-                bits = bits0;
-                break;
-            case 1:
-                bits = bits1;
-                break;
-            case 2:
-                bits = bits2;
-                break;
-            case 3:
-                bits = bits3;
-                break;
-            default:
-                throw new AssertionError();
-        }
+        long bits = switch (bitsNumber) {
+            case 0 -> bits0;
+            case 1 -> bits1;
+            case 2 -> bits2;
+            case 3 -> bits3;
+            default -> throw new AssertionError();
+        };
 
         long newBits = bits | (1L << bitOffset);
 
@@ -151,20 +144,16 @@ final class DefaultImmutableByteSet extends AbstractDefaultByteSet implements Im
             return this;
         }
 
-        switch (bitsNumber) {
-            case 0:
-                return new DefaultImmutableByteSet(size + 1, newBits, bits1, bits2, bits3);
-            case 1:
-                return new DefaultImmutableByteSet(size + 1, bits0, newBits, bits2, bits3);
-            case 2:
-                return new DefaultImmutableByteSet(size + 1, bits0, bits1, newBits, bits3);
-            case 3:
-                return new DefaultImmutableByteSet(size + 1, bits0, bits1, bits2, newBits);
-            default:
-                throw new AssertionError();
-        }
+        return switch (bitsNumber) {
+            case 0 -> new DefaultImmutableByteSet(size + 1, newBits, bits1, bits2, bits3);
+            case 1 -> new DefaultImmutableByteSet(size + 1, bits0, newBits, bits2, bits3);
+            case 2 -> new DefaultImmutableByteSet(size + 1, bits0, bits1, newBits, bits3);
+            case 3 -> new DefaultImmutableByteSet(size + 1, bits0, bits1, bits2, newBits);
+            default -> throw new AssertionError();
+        };
     }
 
+    @Serial
     private Object readResolve() {
         if (size == 0)
             return EMPTY;
@@ -185,7 +174,8 @@ final class DefaultImmutableByteSet extends AbstractDefaultByteSet implements Im
 
         @Override
         public MutableByteSet mergeBuilder(@NotNull MutableByteSet builder1, @NotNull MutableByteSet builder2) {
-            return null;
+            builder1.addAll(builder2);
+            return builder1;
         }
 
         @Override
