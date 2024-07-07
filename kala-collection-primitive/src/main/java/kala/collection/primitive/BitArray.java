@@ -18,6 +18,7 @@ package kala.collection.primitive;
 import kala.Conditions;
 import kala.collection.base.primitive.BitArrays;
 import kala.collection.base.primitive.BooleanIterator;
+import kala.function.BooleanConsumer;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serial;
@@ -53,7 +54,6 @@ public class BitArray extends AbstractBooleanSeq implements IndexedBooleanSeq, S
         }
     }
 
-
     public static @NotNull BitArray emtpy() {
         return EMPTY;
     }
@@ -85,7 +85,11 @@ public class BitArray extends AbstractBooleanSeq implements IndexedBooleanSeq, S
 
     @Override
     public @NotNull BooleanIterator iterator() {
-        return BitArrays.iterator(bitsArray, 0, size);
+        if (bitsArray == null) {
+            return BitArrays.iterator(bits, 0, size);
+        } else {
+            return BitArrays.iterator(bitsArray, 0, size);
+        }
     }
 
     @Override
