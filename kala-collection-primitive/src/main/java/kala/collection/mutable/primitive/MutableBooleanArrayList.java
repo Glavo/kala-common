@@ -20,18 +20,15 @@ import kala.collection.base.primitive.*;
 import kala.collection.factory.primitive.BooleanCollectionFactory;
 import kala.collection.immutable.primitive.ImmutableBooleanArray;
 import kala.collection.primitive.*;
-import kala.function.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.util.*;
 import java.util.function.*;
 
 public final class MutableBooleanArrayList extends AbstractMutableBooleanList implements IndexedBooleanSeq, Serializable {
+    @Serial
     private static final long serialVersionUID = 2545219250020890853L;
 
     private static final Factory FACTORY = new Factory();
@@ -589,6 +586,7 @@ public final class MutableBooleanArrayList extends AbstractMutableBooleanList im
 
     //region Serialization
 
+    @Serial
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.writeInt(size);
         for (int i = 0; i < size; i++) {

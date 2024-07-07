@@ -24,14 +24,12 @@ import kala.function.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.util.*;
 import java.util.function.*;
 
 public final class Mutable${Type}ArrayList extends AbstractMutable${Type}List implements Indexed${Type}Seq, Serializable {
+    @Serial
     private static final long serialVersionUID = 2545219250020890853L;
 
     private static final Factory FACTORY = new Factory();
@@ -156,7 +154,7 @@ public final class Mutable${Type}ArrayList extends AbstractMutable${Type}List im
     public static @NotNull Mutable${Type}ArrayList from(@NotNull ${Type}Iterator it) {
         Mutable${Type}ArrayList buffer = new Mutable${Type}ArrayList();
         while (it.hasNext()) {
-            buffer.append(it.next());
+            buffer.append(it.next${Type}());
         }
         return buffer;
     }
@@ -323,8 +321,7 @@ public final class Mutable${Type}ArrayList extends AbstractMutable${Type}List im
         }
 
         final int size = this.size;
-        if (values instanceof ${Type}SeqLike && ((${Type}SeqLike) values).supportsFastRandomAccess()) {
-            ${Type}SeqLike seq = (${Type}SeqLike) values;
+        if (values instanceof ${Type}SeqLike seq && seq.supportsFastRandomAccess()) {
             int s = seq.size();
             if (s == 0) {
                 return;
@@ -533,12 +530,6 @@ public final class Mutable${Type}ArrayList extends AbstractMutable${Type}List im
 
         int tailElementsCount = size - endIndex;
         System.arraycopy(elements, endIndex, elements, beginIndex, tailElementsCount);
-        /*
-        if (tailElementsCount < rangeLength) {
-            Arrays.fill(elements, beginIndex + tailElementsCount, beginIndex + rangeLength, 0);
-        }
-         */
-
         this.size = size - rangeLength;
     }
 
@@ -608,6 +599,7 @@ public final class Mutable${Type}ArrayList extends AbstractMutable${Type}List im
 
     //region Serialization
 
+    @Serial
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.writeInt(size);
         for (int i = 0; i < size; i++) {
@@ -615,6 +607,7 @@ public final class Mutable${Type}ArrayList extends AbstractMutable${Type}List im
         }
     }
 
+    @Serial
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         final int size = in.readInt();
         final ${PrimitiveType}[] elements = size == 0 ? DEFAULT_EMPTY_ARRAY : new ${PrimitiveType}[Integer.max(DEFAULT_CAPACITY, size)];
