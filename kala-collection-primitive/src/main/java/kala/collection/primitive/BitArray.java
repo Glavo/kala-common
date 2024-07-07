@@ -61,7 +61,7 @@ public class BitArray extends AbstractBooleanSeq implements IndexedBooleanSeq, S
     //endregion
 
     protected final long[] bitsArray;
-    protected final long bits;
+    protected long bits;
     protected final int size;
 
     protected BitArray(long[] bitsArray, int size) {
@@ -84,7 +84,7 @@ public class BitArray extends AbstractBooleanSeq implements IndexedBooleanSeq, S
     }
 
     @Override
-    public @NotNull BooleanIterator iterator() {
+    public final @NotNull BooleanIterator iterator() {
         if (bitsArray == null) {
             return BitArrays.iterator(bits, 0, size);
         } else {
@@ -93,12 +93,12 @@ public class BitArray extends AbstractBooleanSeq implements IndexedBooleanSeq, S
     }
 
     @Override
-    public int size() {
+    public final int size() {
         return size;
     }
 
     @Override
-    public boolean get(int index) {
+    public final boolean get(int index) {
         Conditions.checkElementIndex(index, size);
         if (bitsArray == null) {
             return BitArrays.get(bits, index);
@@ -108,7 +108,7 @@ public class BitArray extends AbstractBooleanSeq implements IndexedBooleanSeq, S
     }
 
     @Override
-    public boolean @NotNull [] toArray() {
+    public final boolean @NotNull [] toArray() {
         boolean[] res = new boolean[size];
         if (bitsArray == null) {
             for (int i = 0; i < size; i++) {
@@ -127,13 +127,41 @@ public class BitArray extends AbstractBooleanSeq implements IndexedBooleanSeq, S
 
             final int notFullChunkLength = size % BITS_PRE_VALUE;
             if (notFullChunkLength != 0) {
-                final long currentBits = bitsArray[bitsArray.length - 1];
-                final int baseIndex = (bitsArray.length - 1) * BITS_PRE_VALUE;
+                final long currentBits = bitsArray[fullChunkCount];
+                final int baseIndex = fullChunkCount * BITS_PRE_VALUE;
                 for (int i = 0; i < notFullChunkLength; i++) {
                     res[baseIndex + i] = BitArrays.get(currentBits, i);
                 }
             }
         }
         return res;
+    }
+
+    @Override
+    public final void forEach(@NotNull BooleanConsumer action) {
+        if (bitsArray == null) {
+            for (int i = 0; i < size; i++) {
+                action.accept(BitArrays.get(bits, i));
+            }
+        } else {
+            final int fullChunkCount = size / BITS_PRE_VALUE;
+            for (int i = 0; i < fullChunkCount; i++) {
+                final long currentBits = bitsArray[i];
+                final int baseIndex = i * BITS_PRE_VALUE;
+
+                for (int j = 0; j < BITS_PRE_VALUE; j++) {
+                    action.accept(BitArrays.get(currentBits, j));
+                }
+            }
+
+            final int notFullChunkLength = size % BITS_PRE_VALUE;
+            if (notFullChunkLength != 0) {
+                final long currentBits = bitsArray[fullChunkCount];
+                final int baseIndex = (bitsArray.length - 1) * BITS_PRE_VALUE;
+                for (int i = 0; i < notFullChunkLength; i++) {
+                    action.accept(BitArrays.get(currentBits, i));
+                }
+            }
+        }
     }
 }
