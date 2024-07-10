@@ -17,16 +17,13 @@ package kala.text;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-import java.io.Serial;
-import java.io.Serializable;
-import java.io.Writer;
+import java.io.*;
 import java.util.Formatter;
 import java.util.Locale;
 import java.util.Objects;
 
-
-public class StringAppender extends Writer implements Serializable {
+@SuppressWarnings("resource")
+public class StringAppender extends Writer implements Externalizable {
     @Serial
     private static final long serialVersionUID = 0L;
 
@@ -446,6 +443,17 @@ public class StringAppender extends Writer implements Serializable {
 
     private void beforeAppend(int n) {
         builder.ensureCapacity(builder.length() + n);
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(builder.toString());
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        this.builder.setLength(0);
+        this.builder.append((String) in.readObject());
     }
 
     @Override
