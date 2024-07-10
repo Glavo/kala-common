@@ -1172,10 +1172,10 @@ final class ImmutableSeqs {
 
         @Override
         public boolean equals(Object obj) {
-            if (!(obj instanceof Seq)) {
+            if (!(obj instanceof Seq<?> other)) {
                 return false;
             }
-            return Seq.equals(this, ((Seq<?>) obj));
+            return Seq.equals(this, other);
         }
     }
 
