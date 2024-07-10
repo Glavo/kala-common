@@ -186,26 +186,6 @@ public sealed abstract class ImmutableVector<@Covariant E> extends AbstractImmut
         return builder.build();
     }
 
-    public static <E> @NotNull ImmutableVector<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
-        if (n <= 0) {
-            return empty();
-        }
-
-        if (n <= ImmutableVectors.WIDTH) {
-            Object[] arr = new Object[n];
-            for (int i = 0; i < n; i++) {
-                arr[i] = supplier.get();
-            }
-            return new ImmutableVectors.Vector1<>(arr);
-        }
-
-        ImmutableVectors.VectorBuilder<E> builder = new ImmutableVectors.VectorBuilder<>();
-        while (n-- > 0) {
-            builder.add(supplier.get());
-        }
-        return builder.build();
-    }
-
     public static <E> @NotNull ImmutableVector<E> fill(int n, @NotNull IntFunction<? extends E> init) {
         if (n <= 0) {
             return empty();
@@ -594,11 +574,6 @@ public sealed abstract class ImmutableVector<@Covariant E> extends AbstractImmut
         @Override
         public ImmutableVector<E> fill(int n, E value) {
             return ImmutableVector.fill(n, value);
-        }
-
-        @Override
-        public ImmutableVector<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
-            return ImmutableVector.fill(n, supplier);
         }
 
         @Override

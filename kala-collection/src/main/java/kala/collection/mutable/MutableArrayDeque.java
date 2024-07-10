@@ -217,18 +217,6 @@ public final class MutableArrayDeque<E> extends AbstractMutableList<E> implement
         return new MutableArrayDeque<>(arr, 0, n);
     }
 
-    public static <E> @NotNull MutableArrayDeque<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
-        if (n <= 0) {
-            return new MutableArrayDeque<>();
-        }
-
-        Object[] arr = new Object[Integer.max(DEFAULT_CAPACITY, n)];
-        for (int i = 0; i < n; i++) {
-            arr[i] = supplier.get();
-        }
-        return new MutableArrayDeque<>(arr, 0, n);
-    }
-
     public static <E> @NotNull MutableArrayDeque<E> fill(int n, @NotNull IntFunction<? extends E> init) {
         if (n <= 0) {
             return new MutableArrayDeque<>();

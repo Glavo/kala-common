@@ -83,10 +83,6 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E>, Immuta
         return ImmutableSeq.fill(n, value);
     }
 
-    static <E> @NotNull ImmutableCollection<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
-        return ImmutableSeq.fill(n, supplier);
-    }
-
     static <E> @NotNull ImmutableCollection<E> fill(int n, @NotNull IntFunction<? extends E> init) {
         return ImmutableSeq.fill(n, init);
     }

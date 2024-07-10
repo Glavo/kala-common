@@ -174,18 +174,6 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E> implements I
         return new ImmutableArray<>(ans);
     }
 
-    public static <E> @NotNull ImmutableArray<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
-        if (n <= 0) {
-            return empty();
-        }
-
-        Object[] ans = new Object[n];
-        for (int i = 0; i < n; i++) {
-            ans[i] = supplier.get();
-        }
-        return new ImmutableArray<>(ans);
-    }
-
     public static <E> @NotNull ImmutableArray<E> fill(int n, @NotNull IntFunction<? extends E> init) {
         if (n <= 0) {
             return empty();
@@ -317,11 +305,6 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E> implements I
         @Override
         public ImmutableArray<E> fill(int n, E value) {
             return ImmutableArray.fill(n, value);
-        }
-
-        @Override
-        public ImmutableArray<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
-            return ImmutableArray.fill(n, supplier);
         }
 
         @Override

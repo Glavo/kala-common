@@ -42,7 +42,7 @@ public class TreeSeqBenchmark {
     @Setup
     public void setup() {
         Random random = new Random(0);
-        array = ImmutableArray.fill(length, () -> random.nextInt());
+        array = ImmutableArray.fill(length, i -> random.nextInt());
         vector = array.collect(ImmutableVector.factory());
         treeSeq = array.collect(ImmutableTreeSeq.factory());
     }

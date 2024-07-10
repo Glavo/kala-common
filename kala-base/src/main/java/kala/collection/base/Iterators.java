@@ -131,17 +131,6 @@ public final class Iterators {
         return new Copies<>(n, value);
     }
 
-    public static <E> @NotNull Iterator<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
-        if (n <= 0) {
-            return empty();
-        }
-        if (n == 1) {
-            return of(supplier.get());
-        }
-        Objects.requireNonNull(supplier);
-        return new FillSupplier<>(n, supplier);
-    }
-
     public static <E> @NotNull Iterator<E> fill(int n, @NotNull IntFunction<? extends E> init) {
         if (n <= 0) {
             return empty();

@@ -150,22 +150,6 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
         return new ImmutableLinkedSeq<>(res, n);
     }
 
-    public static <E> @NotNull ImmutableLinkedSeq<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
-        if (n <= 0) {
-            return empty();
-        }
-        final Node<E> res = new Node<>(supplier.get());
-        Node<E> t = res;
-
-        for (int i = 1; i < n; i++) {
-            Node<E> nl = new Node<>(supplier.get());
-            t.tail = nl;
-            t = nl;
-        }
-        t.tail = nilNode();
-        return new ImmutableLinkedSeq<>(res, n);
-    }
-
     public static <E> @NotNull ImmutableLinkedSeq<E> fill(int n, @NotNull IntFunction<? extends E> init) {
         if (n <= 0) {
             return empty();

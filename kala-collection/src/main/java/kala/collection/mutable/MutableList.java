@@ -98,10 +98,6 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
         return MutableArrayList.fill(n, value);
     }
 
-    static <E> @NotNull MutableList<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
-        return MutableArrayList.fill(n, supplier);
-    }
-
     static <E> @NotNull MutableList<E> fill(int n, @NotNull IntFunction<? extends E> init) {
         return MutableArrayList.fill(n, init);
     }

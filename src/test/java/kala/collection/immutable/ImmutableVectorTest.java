@@ -58,16 +58,12 @@ public final class ImmutableVectorTest implements ImmutableSeqTestTemplate {
 
         v = ImmutableVector.fill(ImmutableVectors.WIDTH, "str");
         assertSame(ImmutableVectors.Vector1.class, v.getClass());
-        v = ImmutableVector.fill(ImmutableVectors.WIDTH, () -> "str");
-        assertSame(ImmutableVectors.Vector1.class, v.getClass());
-        v = ImmutableVector.fill(ImmutableVectors.WIDTH, (i) -> "str");
+        v = ImmutableVector.fill(ImmutableVectors.WIDTH, i -> "str");
         assertSame(ImmutableVectors.Vector1.class, v.getClass());
 
         v = ImmutableVector.fill(ImmutableVectors.WIDTH + 1, "str");
         assertSame(ImmutableVectors.Vector2.class, v.getClass());
-        v = ImmutableVector.fill(ImmutableVectors.WIDTH + 1, () -> "str");
-        assertSame(ImmutableVectors.Vector2.class, v.getClass());
-        v = ImmutableVector.fill(ImmutableVectors.WIDTH + 1, (i) -> "str");
+        v = ImmutableVector.fill(ImmutableVectors.WIDTH + 1, i -> "str");
         assertSame(ImmutableVectors.Vector2.class, v.getClass());
     }
 

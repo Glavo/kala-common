@@ -160,21 +160,6 @@ public final class MutableSmartArrayList<E> extends AbstractMutableList<E> imple
         return new MutableSmartArrayList<>(n, arr);
     }
 
-    public static <E> @NotNull MutableSmartArrayList<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
-        if (n <= 0) {
-            return new MutableSmartArrayList<>();
-        }
-        if (n == 1) {
-            return MutableSmartArrayList.of(supplier.get());
-        }
-
-        Object[] arr = new Object[Integer.max(DEFAULT_CAPACITY, n)];
-        for (int i = 0; i < n; i++) {
-            arr[i] = supplier.get();
-        }
-        return new MutableSmartArrayList<>(n, arr);
-    }
-
     public static <E> @NotNull MutableSmartArrayList<E> fill(int n, @NotNull IntFunction<? extends E> init) {
         if (n <= 0) {
             return new MutableSmartArrayList<>();

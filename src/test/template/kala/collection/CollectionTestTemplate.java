@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.io.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.IntFunction;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -75,10 +76,6 @@ public interface CollectionTestTemplate extends CollectionLikeTestTemplate {
         assertIterableEquals(List.of(), factory.fill(-1, "foo"));
         assertIterableEquals(List.of(), factory.fill(Integer.MIN_VALUE, "foo"));
 
-        assertIterableEquals(List.of(), factory.fill(0, () -> "foo"));
-        assertIterableEquals(List.of(), factory.fill(-1, () -> "foo"));
-        assertIterableEquals(List.of(), factory.fill(Integer.MIN_VALUE, () -> "foo"));
-
         assertIterableEquals(List.of(), factory.fill(0, i -> "foo"));
         assertIterableEquals(List.of(), factory.fill(-1, i -> "foo"));
         assertIterableEquals(List.of(), factory.fill(Integer.MIN_VALUE, i -> "foo"));
@@ -88,13 +85,13 @@ public interface CollectionTestTemplate extends CollectionLikeTestTemplate {
         assertIterableEquals(List.of("foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo"), factory.fill(10, "foo"));
 
 
-        assertIterableEquals(List.of("foo"), factory.fill(1, () -> "foo"));
+        assertIterableEquals(List.of("foo"), factory.fill(1, i -> "foo"));
         assertIterableEquals(List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
-                factory.fill(10, new Supplier<>() {
+                factory.fill(10, new IntFunction<>() {
                     int i = 0;
 
                     @Override
-                    public Object get() {
+                    public Object apply(int value) {
                         return i++;
                     }
                 })

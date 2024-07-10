@@ -98,10 +98,6 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E>, MutableAnyS
         return MutableArray.fill(n, value);
     }
 
-    static <E> @NotNull MutableSeq<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
-        return MutableArray.fill(n, supplier);
-    }
-
     static <E> @NotNull MutableSeq<E> fill(int n, @NotNull IntFunction<? extends E> init) {
         return MutableArray.fill(n, init);
     }

@@ -165,18 +165,6 @@ public sealed class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>
         return new MutableArray<>(ans);
     }
 
-    public static <E> @NotNull MutableArray<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
-        if (n <= 0) {
-            return empty();
-        }
-
-        Object[] ans = new Object[n];
-        for (int i = 0; i < n; i++) {
-            ans[i] = supplier.get();
-        }
-        return new MutableArray<>(ans);
-    }
-
     public static <E> @NotNull MutableArray<E> fill(int n, @NotNull IntFunction<? extends E> init) {
         if (n <= 0) {
             return empty();
@@ -315,11 +303,6 @@ public sealed class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>
         @Override
         public MutableArray<E> fill(int n, E value) {
             return MutableArray.fill(n, value);
-        }
-
-        @Override
-        public MutableArray<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
-            return MutableArray.fill(n, supplier);
         }
 
         @Override

@@ -127,14 +127,6 @@ public final class MutableSinglyLinkedList<E> extends ImmutableLinkedSeq.Builder
         return res;
     }
 
-    public static <E> @NotNull MutableSinglyLinkedList<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
-        MutableSinglyLinkedList<E> res = new MutableSinglyLinkedList<>();
-        while (n-- > 0) {
-            res.append(supplier.get());
-        }
-        return res;
-    }
-
     public static <E> @NotNull MutableSinglyLinkedList<E> fill(int n, @NotNull IntFunction<? extends E> init) {
         MutableSinglyLinkedList<E> res = new MutableSinglyLinkedList<>();
         for (int i = 0; i < n; i++) {

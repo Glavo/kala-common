@@ -185,18 +185,6 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
         return new MutableArrayList<>(arr, n);
     }
 
-    public static <E> @NotNull MutableArrayList<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
-        if (n <= 0) {
-            return new MutableArrayList<>();
-        }
-
-        Object[] arr = new Object[Integer.max(DEFAULT_CAPACITY, n)];
-        for (int i = 0; i < n; i++) {
-            arr[i] = supplier.get();
-        }
-        return new MutableArrayList<>(arr, n);
-    }
-
     public static <E> @NotNull MutableArrayList<E> fill(int n, @NotNull IntFunction<? extends E> init) {
         if (n <= 0) {
             return new MutableArrayList<>();
@@ -724,11 +712,6 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
         @Override
         public MutableArrayList<E> fill(int n, E value) {
             return MutableArrayList.fill(n, value);
-        }
-
-        @Override
-        public MutableArrayList<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
-            return MutableArrayList.fill(n, supplier);
         }
 
         @Override

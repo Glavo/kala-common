@@ -88,10 +88,6 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
         return ImmutableSeq.fill(n, value);
     }
 
-    static <E> @NotNull Seq<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
-        return ImmutableSeq.fill(n, supplier);
-    }
-
     static <E> @NotNull Seq<E> fill(int n, @NotNull IntFunction<? extends E> init) {
         return ImmutableSeq.fill(n, init);
     }

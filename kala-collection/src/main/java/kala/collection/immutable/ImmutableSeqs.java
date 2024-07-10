@@ -1228,11 +1228,6 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public ImmutableSeq<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
-            return ImmutableSeq.fill(n, supplier);
-        }
-
-        @Override
         public ImmutableSeq<E> fill(int n, @NotNull IntFunction<? extends E> init) {
             return ImmutableSeq.fill(n, init);
         }

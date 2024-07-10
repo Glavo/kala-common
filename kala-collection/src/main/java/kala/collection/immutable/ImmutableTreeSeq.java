@@ -168,17 +168,6 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
         return new ImmutableTreeSeq<>(node);
     }
 
-    public static <E> @NotNull ImmutableTreeSeq<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
-        if (n <= 0) {
-            return empty();
-        }
-        IndexedTree<E> node = IndexedTree.empty();
-        for (int i = 0; i < n; i++) {
-            node = node.plus(i, supplier.get());
-        }
-        return new ImmutableTreeSeq<>(node);
-    }
-
     public static <E> @NotNull ImmutableTreeSeq<E> fill(int n, @NotNull IntFunction<? extends E> init) {
         if (n <= 0) {
             return empty();

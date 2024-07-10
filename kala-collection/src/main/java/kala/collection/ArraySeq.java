@@ -179,14 +179,6 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         return new ArraySeq<>(ObjectArrays.fill(n, value));
     }
 
-    public static <E> @NotNull ArraySeq<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
-        if (n <= 0) {
-            return empty();
-        }
-
-        return new ArraySeq<>(ObjectArrays.fill(n, supplier));
-    }
-
     public static <E> @NotNull ArraySeq<E> fill(int n, @NotNull IntFunction<? extends E> init) {
         if (n <= 0) {
             return empty();
@@ -1200,11 +1192,6 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         @Override
         public ArraySeq<E> fill(int n, E value) {
             return ArraySeq.fill(n, value);
-        }
-
-        @Override
-        public ArraySeq<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
-            return ArraySeq.fill(n, supplier);
         }
 
         @Override

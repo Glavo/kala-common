@@ -132,7 +132,6 @@ public interface SeqTestTemplate extends CollectionTestTemplate, SeqLikeTestTemp
                 final MethodHandles.Lookup lookup = MethodHandles.publicLookup();
 
                 final MethodHandle fillValue = lookup.findStatic(klass, "fill", MethodType.methodType(klass, int.class, Object.class));
-                final MethodHandle fillSupplier = lookup.findStatic(klass, "fill", MethodType.methodType(klass, int.class, Supplier.class));
                 final MethodHandle fillIntFunction = lookup.findStatic(klass, "fill", MethodType.methodType(klass, int.class, IntFunction.class));
 
                 assertIterableEquals(List.of(), (Seq<String>) fillValue.invoke(0, "value"));
@@ -140,17 +139,13 @@ public interface SeqTestTemplate extends CollectionTestTemplate, SeqLikeTestTemp
                 assertIterableEquals(List.of("value", "value", "value"), (Seq<String>) fillValue.invoke(3, "value"));
 
                 assertIterableEquals(List.of("value0"), (Seq<String>) fillIntFunction.invoke(1, (IntFunction<String>) i -> "value" + i));
-                assertIterableEquals(List.of("value"), (Seq<String>) fillSupplier.invoke(1, (Supplier<String>) () -> "value"));
 
                 List<Integer> expected = List.of(0, 1, 2, 3, 4, 5);
 
                 IntVar intVar = new IntVar();
-                Supplier<Integer> supplier = () -> intVar.value++;
                 IntFunction<Integer> function = i -> i;
 
-                assertIterableEquals(List.of(), (Seq<Integer>) fillSupplier.invoke(0, supplier));
                 assertIterableEquals(List.of(), (Seq<Integer>) fillIntFunction.invoke(0, function));
-                assertIterableEquals(expected, (Seq<Integer>) fillSupplier.invoke(6, supplier));
                 assertIterableEquals(expected, (Seq<Integer>) fillIntFunction.invoke(6, function));
             } catch (Throwable e) {
                 fail(e);

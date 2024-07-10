@@ -180,20 +180,6 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
         return new ImmutableSeqs.CopiesSeq<>(n, value);
     }
 
-    static <E> @NotNull ImmutableSeq<E> fill(int n, @NotNull Supplier<? extends E> supplier) {
-        if (n <= 0) {
-            return ImmutableSeq.empty();
-        }
-        return switch (n) {
-            case 1 -> ImmutableSeq.of(supplier.get());
-            case 2 -> ImmutableSeq.of(supplier.get(), supplier.get());
-            case 3 -> ImmutableSeq.of(supplier.get(), supplier.get(), supplier.get());
-            case 4 -> ImmutableSeq.of(supplier.get(), supplier.get(), supplier.get(), supplier.get());
-            case 5 -> ImmutableSeq.of(supplier.get(), supplier.get(), supplier.get(), supplier.get(), supplier.get());
-            default -> ImmutableVector.fill(n, supplier);
-        };
-    }
-
     static <E> @NotNull ImmutableSeq<E> fill(int n, @NotNull IntFunction<? extends E> init) {
         if (n <= 0) {
             return ImmutableSeq.empty();
