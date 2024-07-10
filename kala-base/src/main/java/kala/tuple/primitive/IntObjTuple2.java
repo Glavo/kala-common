@@ -41,14 +41,11 @@ public record IntObjTuple2<T>(int component1, T component2) implements Primitive
     @Override
     @SuppressWarnings("unchecked")
     public <U> U elementAt(int index) {
-        switch (index) {
-            case 0:
-                return (U) Integer.valueOf(component1);
-            case 1:
-                return (U) component2;
-            default:
-                throw new IndexOutOfBoundsException();
-        }
+        return switch (index) {
+            case 0 -> (U) Integer.valueOf(component1);
+            case 1 -> (U) component2;
+            default -> throw new IndexOutOfBoundsException();
+        };
     }
 
     public @NotNull Tuple2<@NotNull Integer, T> toTuple2() {

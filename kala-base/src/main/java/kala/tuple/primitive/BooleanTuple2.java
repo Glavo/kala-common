@@ -115,6 +115,7 @@ public record BooleanTuple2(boolean component1, boolean component2) implements M
         }
     }
 
+    @Serial
     private Object readResolve() {
         return of(component1, component2);
     }
