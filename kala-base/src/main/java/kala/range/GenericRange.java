@@ -275,10 +275,9 @@ public final class GenericRange<T> extends Range<T> implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof GenericRange)) {
+        if (!(o instanceof GenericRange<?> other)) {
             return false;
         }
-        GenericRange<?> other = (GenericRange<?>) o;
 
         return type == other.type
                 && ComparableUtils.comparatorEquals(comparator, other.comparator)
@@ -403,10 +402,9 @@ public final class GenericRange<T> extends Range<T> implements Serializable {
             if (this == o) {
                 return true;
             }
-            if (!(o instanceof WithStep)) {
+            if (!(o instanceof WithStep<?> other)) {
                 return false;
             }
-            WithStep<?> other = (WithStep<?>) o;
             return range.equals(other.range) && step.equals(other.step);
         }
 
@@ -426,14 +424,11 @@ public final class GenericRange<T> extends Range<T> implements Serializable {
 
             @Override
             public boolean hasNext() {
-                switch (range.getType().getUpperBoundType()) {
-                    case OPEN:
-                        return ComparableUtils.compare(value, range.upperBound, range.comparator) < 0;
-                    case CLOSED:
-                        return ComparableUtils.compare(value, range.upperBound, range.comparator) <= 0;
-                    default:
-                        return true;
-                }
+                return switch (range.getType().getUpperBoundType()) {
+                    case OPEN -> ComparableUtils.compare(value, range.upperBound, range.comparator) < 0;
+                    case CLOSED -> ComparableUtils.compare(value, range.upperBound, range.comparator) <= 0;
+                    default -> true;
+                };
             }
 
             @Override
