@@ -136,6 +136,7 @@ final class TupleXXL implements HList<Object, HList<?, ?>>, Serializable {
         return builder.toString();
     }
 
+    @Serial
     private Object writeReplace() {
         return new SerializedTuple(values);
     }

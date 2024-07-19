@@ -15,6 +15,8 @@
  */
 package kala.tuple;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serial;
 import java.io.Serializable;
 
@@ -22,9 +24,9 @@ final class SerializedTuple implements Serializable {
     @Serial
     private static final long serialVersionUID = 0L;
 
-    private final Object[] values;
+    private final Object @NotNull [] values;
 
-    SerializedTuple(Object[] values) {
+    SerializedTuple(Object @NotNull [] values) {
         this.values = values;
     }
 
