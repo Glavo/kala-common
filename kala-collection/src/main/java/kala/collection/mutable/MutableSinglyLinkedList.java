@@ -134,7 +134,7 @@ public final class MutableSinglyLinkedList<E> extends ImmutableLinkedSeq.Builder
 
     public static <E> @NotNull MutableSinglyLinkedList<E> fill(int n, E value) {
         MutableSinglyLinkedList<E> res = new MutableSinglyLinkedList<>();
-        while (n-- > 0) {
+        for (int i = 0; i < n; i++) {
             res.append(value);
         }
         return res;
