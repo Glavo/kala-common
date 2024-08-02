@@ -83,8 +83,8 @@ public final class MutableCopyOnWriteList<E> extends MutableCopyOnWriteSeqBase<E
         if (exclusive) {
             source.clear();
         } else {
-            exclusive = true;
             source = source.<E>iterableFactory().empty();
+            exclusive = true;
         }
     }
 
