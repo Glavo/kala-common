@@ -55,15 +55,51 @@ public final class MutableCopyOnWriteList<E> extends MutableCopyOnWriteSeqBase<E
     }
 
     @Override
+    public void appendAll(E @NotNull [] values) {
+        ensureExclusive();
+        source.appendAll(values);
+    }
+
+    @Override
+    public void appendAll(@NotNull Iterable<? extends E> values) {
+        ensureExclusive();
+        source.appendAll(values);
+    }
+
+    @Override
     public void prepend(E value) {
         ensureExclusive();
         source.prepend(value);
     }
 
     @Override
+    public void prependAll(E @NotNull [] values) {
+        ensureExclusive();
+        source.prependAll(values);
+    }
+
+    @Override
+    public void prependAll(@NotNull Iterable<? extends E> values) {
+        ensureExclusive();
+        source.prependAll(values);
+    }
+
+    @Override
     public void insert(int index, E value) {
         ensureExclusive();
         source.insert(index, value);
+    }
+
+    @Override
+    public void insertAll(int index, E @NotNull [] values) {
+        ensureExclusive();
+        source.insertAll(index, values);
+    }
+
+    @Override
+    public void insertAll(int index, @NotNull Iterable<? extends E> values) {
+        ensureExclusive();
+        source.insertAll(index, values);
     }
 
     @Override
