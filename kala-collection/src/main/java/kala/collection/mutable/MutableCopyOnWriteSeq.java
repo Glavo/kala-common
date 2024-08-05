@@ -36,7 +36,7 @@ public final class MutableCopyOnWriteSeq<E> extends MutableCopyOnWriteSeqBase<E,
 
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public MutableCopyOnWriteSeq<E> clone() {
+    public @NotNull MutableCopyOnWriteSeq<E> clone() {
         this.exclusive = false;
         return new MutableCopyOnWriteSeq<>(source, false);
     }
