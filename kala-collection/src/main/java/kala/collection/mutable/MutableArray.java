@@ -35,7 +35,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
-public sealed class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Serializable {
+public final class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>, Serializable {
     @Serial
     private static final long serialVersionUID = 8060307722127719792L;
 
@@ -100,7 +100,7 @@ public sealed class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>
     }
 
     public static <E> @NotNull MutableArray<E> from(E @NotNull [] values) {
-        final int length = values.length; // implicit null check of values+
+        final int length = values.length; // implicit null check of values
         if (length == 0) {
             return empty();
         }
@@ -201,18 +201,18 @@ public sealed class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>
 
     public static <E> @NotNull MutableArray<E> wrap(E @NotNull [] array) {
         Objects.requireNonNull(array);
-        return new Checked<>(array);
+        return new MutableArray<>(array);
     }
 
     //endregion
 
     @Override
-    public final @NotNull String className() {
+    public @NotNull String className() {
         return "MutableArray";
     }
 
     @Override
-    public final <U> @NotNull CollectionFactory<U, ?, MutableArray<U>> iterableFactory() {
+    public <U> @NotNull CollectionFactory<U, ?, MutableArray<U>> iterableFactory() {
         return factory();
     }
 
@@ -222,27 +222,23 @@ public sealed class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>
         return new MutableArray<>(this.elements.clone());
     }
 
-    public final Object @NotNull [] getArray() {
+    public Object @NotNull [] getArray() {
         return elements;
     }
 
-    public boolean isChecked() {
-        return false;
-    }
-
     @Override
-    public final void set(int index, E newValue) {
+    public void set(int index, E newValue) {
         elements[index] = newValue;
     }
 
     @Override
-    public final @NotNull MutableArraySliceView<E> sliceView(int beginIndex, int endIndex) {
+    public @NotNull MutableArraySliceView<E> sliceView(int beginIndex, int endIndex) {
         Conditions.checkPositionIndices(beginIndex, endIndex, elements.length);
         return new MutableArraySliceView<>(elements, beginIndex, endIndex);
     }
 
     @Override
-    public final void replaceAll(@NotNull Function<? super E, ? extends E> operator) {
+    public void replaceAll(@NotNull Function<? super E, ? extends E> operator) {
         final Object[] elements = this.elements;
         for (int i = 0; i < elements.length; i++) {
             elements[i] = operator.apply((E) elements[i]);
@@ -250,7 +246,7 @@ public sealed class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>
     }
 
     @Override
-    public final void replaceAllIndexed(@NotNull IndexedFunction<? super E, ? extends E> operator) {
+    public void replaceAllIndexed(@NotNull IndexedFunction<? super E, ? extends E> operator) {
         final Object[] elements = this.elements;
         for (int i = 0; i < elements.length; i++) {
             elements[i] = operator.apply(i, (E) elements[i]);
@@ -258,27 +254,8 @@ public sealed class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>
     }
 
     @Override
-    public final void sort(@NotNull Comparator<? super E> comparator) {
+    public void sort(@NotNull Comparator<? super E> comparator) {
         Arrays.sort(elements, (Comparator<? super Object>) comparator);
-    }
-
-    private static final class Checked<E> extends MutableArray<E> {
-        @Serial
-        private static final long serialVersionUID = 3903230112786321463L;
-
-        Checked(Object @NotNull [] array) {
-            super(array);
-        }
-
-        @Override
-        public boolean isChecked() {
-            return true;
-        }
-
-        @Override
-        public @NotNull MutableArray<E> clone() {
-            return new Checked<>(this.elements.clone());
-        }
     }
 
     private static final class Factory<E> implements CollectionFactory<E, MutableArrayList<E>, MutableArray<E>> {
