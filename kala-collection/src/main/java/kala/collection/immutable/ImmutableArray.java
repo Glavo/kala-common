@@ -124,26 +124,20 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E> implements I
     }
 
     public static <E> @NotNull ImmutableArray<E> from(@NotNull java.util.Collection<? extends E> values) {
-        if (values.size() == 0) {
+        if (values.isEmpty()) { // implicit null check of values
             return empty();
         }
         return new ImmutableArray<>(values.toArray());
     }
 
     public static <E> @NotNull ImmutableArray<E> from(@NotNull Iterable<? extends E> values) {
-        Objects.requireNonNull(values);
+        return switch (values) { // implicit null check of values
+            case ImmutableArray<?> immutableArray -> ((ImmutableArray<E>) values);
+            case Traversable<?> traversable -> from((Traversable<E>) values);
+            case java.util.Collection<?> collection -> from(((java.util.Collection<E>) values));
+            default -> MutableArrayList.<E>from(values).toImmutableArray();
+        };
 
-        if (values instanceof ImmutableArray) {
-            return ((ImmutableArray<E>) values);
-        }
-        if (values instanceof Traversable) {
-            return from((Traversable<E>) values);
-        }
-        if (values instanceof java.util.Collection) {
-            return from(((java.util.Collection<E>) values));
-        }
-
-        return MutableArrayList.<E>from(values).toImmutableArray();
     }
 
     public static <E> @NotNull ImmutableArray<E> from(@NotNull Iterator<? extends E> it) {
