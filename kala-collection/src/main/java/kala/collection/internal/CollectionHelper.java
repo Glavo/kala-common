@@ -20,11 +20,11 @@ import java.util.*;
 public final class CollectionHelper {
 
     public static Object[] copyToArray(@NotNull Iterable<?> it) {
-        if (it instanceof Traversable<?>) {
-            return ((Traversable<?>) it).toArray();
+        if (it instanceof Traversable<?> traversable) {
+            return traversable.toArray();
         }
-        if (it instanceof java.util.Collection<?>) {
-            return ((java.util.Collection<?>) it).toArray();
+        if (it instanceof java.util.Collection<?> collection) {
+            return collection.toArray();
         }
         MutableArrayList<Object> buffer = new MutableArrayList<>();
         for (Object o : it) {
@@ -34,73 +34,60 @@ public final class CollectionHelper {
     }
 
     public static Object[] asArray(@NotNull Iterable<?> it) {
-        if (it instanceof MutableArray<?>) {
-            return ((MutableArray<?>) it).getArray();
-        }
-        if (it instanceof Traversable<?>) {
-            return ((Traversable<?>) it).toArray();
-        }
-        if (it instanceof java.util.Collection<?>) {
-            return ((java.util.Collection<?>) it).toArray();
-        }
-        MutableArrayList<Object> buffer = new MutableArrayList<>();
-        for (Object o : it) {
-            buffer.append(o);
-        }
-        return buffer.toArray();
+        return it instanceof MutableArray<?> array ? array.getArray() : copyToArray(it);
     }
 
     public static <E> Seq<E> asIndexedSeq(Object collection) {
-        if (collection instanceof Seq && ((Seq<?>) collection).supportsFastRandomAccess()) {
-            return (Seq<E>) collection;
+        if (collection instanceof Seq<?> seq && seq.supportsFastRandomAccess()) {
+            return (Seq<E>) seq;
         }
-        if (collection instanceof java.util.List<?> && collection instanceof RandomAccess) {
-            return new FromJavaConvert.IndexedSeqFromJava<>(((List<E>) collection));
+        if (collection instanceof java.util.List<?> list && list instanceof RandomAccess) {
+            return new FromJavaConvert.IndexedSeqFromJava<>(((List<E>) list));
         }
-        if (collection instanceof Traversable<?>) {
-            return (ArraySeq<E>) ArraySeq.wrap(((Traversable<?>) collection).toArray(Object[]::new));
+        if (collection instanceof Traversable<?> traversable) {
+            return (ArraySeq<E>) ArraySeq.wrap(traversable.toArray(Object[]::new));
         }
-        if (collection instanceof Object[]) {
-            return ArraySeq.wrap(((E[]) collection));
-        }
-
-        if (collection instanceof java.util.Collection) {
-            return (ArraySeq<E>) ArraySeq.wrap(((java.util.Collection<E>) collection).toArray());
-        }
-        if (collection instanceof Iterable<?>) {
-            return MutableArrayList.from(((Iterable<E>) collection));
-        }
-        if (collection instanceof Iterator<?>) {
-            return MutableArrayList.from((Iterator<E>) collection);
+        if (collection instanceof Object[] array) {
+            return ArraySeq.wrap(((E[]) array));
         }
 
-        throw new IllegalArgumentException();
+        if (collection instanceof java.util.Collection<?> juc) {
+            return (ArraySeq<E>) ArraySeq.wrap(juc.toArray());
+        }
+        if (collection instanceof Iterable<?> iterable) {
+            return MutableArrayList.from(((Iterable<E>) iterable));
+        }
+        if (collection instanceof Iterator<?> iterator) {
+            return MutableArrayList.from((Iterator<E>) iterator);
+        }
+
+        throw new IllegalArgumentException(collection + "cannot be converted to an array");
     }
 
     public static <E> kala.collection.Collection<E> asSizedCollection(Object obj) {
         if (obj instanceof Seq && ((Seq<?>) obj).supportsFastRandomAccess()) {
             return (Seq<E>) obj;
         }
-        if (obj instanceof java.util.List<?>) {
-            return Seq.wrapJava((java.util.List<E>) obj);
+        if (obj instanceof java.util.List<?> list) {
+            return Seq.wrapJava((java.util.List<E>) list);
         }
-        if (obj instanceof Traversable<?>) {
-            return (ArraySeq<E>) ArraySeq.wrap(((Traversable<?>) obj).toArray(Object[]::new));
+        if (obj instanceof Traversable<?> traversable) {
+            return (ArraySeq<E>) ArraySeq.wrap(traversable.toArray());
         }
-        if (obj instanceof Object[]) {
-            return ArraySeq.wrap(((E[]) obj));
+        if (obj instanceof Object[] array) {
+            return ArraySeq.wrap(((E[]) array));
         }
-        if (obj instanceof java.util.Collection) {
-            return ArraySeq.wrap((E[]) ((Collection<?>) obj).toArray());
+        if (obj instanceof java.util.Collection<?> collection) {
+            return ArraySeq.wrap((E[]) collection.toArray());
         }
-        if (obj instanceof Iterable<?>) {
-            return MutableArrayList.from(((Iterable<E>) obj));
+        if (obj instanceof Iterable<?> iterable) {
+            return MutableArrayList.from(((Iterable<E>) iterable));
         }
-        if (obj instanceof Iterator<?>) {
-            return MutableArrayList.from((Iterator<E>) obj);
+        if (obj instanceof Iterator<?> iterator) {
+            return MutableArrayList.from((Iterator<E>) iterator);
         }
 
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException(obj + " cannot be converted to an sized collection");
     }
 
     public static <E> kala.collection.Collection<E> asCollection(Object collection) {
@@ -112,8 +99,7 @@ public final class CollectionHelper {
             return new FromJavaConvert.CollectionFromJava<>(((java.util.Collection<E>) collection));
         }
 
-        if (collection instanceof Iterator<?>) {
-            Iterator<?> iterator = (Iterator<?>) collection;
+        if (collection instanceof Iterator<?> iterator) {
             if (!iterator.hasNext()) {
                 return ImmutableSeq.empty();
             }
@@ -159,5 +145,4 @@ public final class CollectionHelper {
 
         throw new IllegalArgumentException();
     }
-
 }
