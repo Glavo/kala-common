@@ -12,7 +12,6 @@ import kala.collection.IndexedSeq;
 import kala.collection.SeqLike;
 import kala.collection.base.AnyTraversable;
 import kala.collection.base.Traversable;
-import kala.collection.mutable.MutableArrayList;
 import kala.comparator.Comparators;
 import kala.function.*;
 import kala.annotations.Covariant;
@@ -452,12 +451,12 @@ public sealed abstract class ImmutableVector<@Covariant E> extends AbstractImmut
     }
 
     @Override
-    public @NotNull <U> ImmutableSeq<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
+    public <U> @NotNull ImmutableSeq<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
         return ((ImmutableVector<U>) filter(clazz::isInstance));
     }
 
     @Override
-    public @NotNull <U> ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
+    public <U> @NotNull ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
         ImmutableVectors.VectorBuilder<U> builder = new ImmutableVectors.VectorBuilder<>();
         for (E e : this) {
             builder.add(mapper.apply(e));
@@ -466,7 +465,7 @@ public sealed abstract class ImmutableVector<@Covariant E> extends AbstractImmut
     }
 
     @Override
-    public @NotNull <U> ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
+    public <U> @NotNull ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
         ImmutableVectors.VectorBuilder<U> builder = new ImmutableVectors.VectorBuilder<>();
         int idx = 0;
         for (E e : this) {
@@ -476,7 +475,7 @@ public sealed abstract class ImmutableVector<@Covariant E> extends AbstractImmut
     }
 
     @Override
-    public @NotNull <U> ImmutableSeq<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
+    public <U> @NotNull ImmutableSeq<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
         ImmutableVectors.VectorBuilder<U> builder = new ImmutableVectors.VectorBuilder<>();
 
         for (E e : this) {
@@ -489,7 +488,7 @@ public sealed abstract class ImmutableVector<@Covariant E> extends AbstractImmut
     }
 
     @Override
-    public @NotNull <U> ImmutableSeq<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
+    public <U> @NotNull ImmutableSeq<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
         ImmutableVectors.VectorBuilder<U> builder = new ImmutableVectors.VectorBuilder<>();
         int idx = 0;
         for (E e : this) {
@@ -502,7 +501,7 @@ public sealed abstract class ImmutableVector<@Covariant E> extends AbstractImmut
     }
 
     @Override
-    public @NotNull <U> ImmutableSeq<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
+    public <U> @NotNull ImmutableSeq<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
         if (this == ImmutableVectors.Vector0.INSTANCE) {
             return ImmutableVector.empty();
         }
