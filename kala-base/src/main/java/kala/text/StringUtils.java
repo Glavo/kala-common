@@ -50,6 +50,22 @@ public final class StringUtils {
         return prefix instanceof StringSlice ? startsWith(str, (StringSlice) prefix, toIndex) : startsWith(str, prefix.toString(), toIndex);
     }
 
+    public static boolean endsWith(@NotNull String str, @NotNull String prefix) {
+        return str.endsWith(prefix);
+    }
+
+    public static boolean endsWith(@NotNull String str, @NotNull StringSlice prefix) {
+        if (str.length() < prefix.length()) {
+            return false;
+        }
+
+        return str.regionMatches(str.length() - prefix.length(), prefix.source(), prefix.sourceOffset(), prefix.length());
+    }
+
+    public static boolean endsWith(@NotNull String str, @NotNull CharSequence prefix) {
+        return prefix instanceof StringSlice ? endsWith(str, (StringSlice) prefix) : endsWith(str, prefix.toString());
+    }
+
     public static String removePrefix(@NotNull String str, @NotNull String prefix) {
         return str.startsWith(prefix) ? str.substring(prefix.length()) : str;
     }
@@ -62,4 +78,15 @@ public final class StringUtils {
         return startsWith(str, prefix) ? str.substring(prefix.length()) : str;
     }
 
+    public static String removeSuffix(@NotNull String str, @NotNull String prefix) {
+        return str.endsWith(prefix) ? str.substring(0, str.length() - prefix.length()) : str;
+    }
+
+    public static String removeSuffix(@NotNull String str, @NotNull StringSlice prefix) {
+        return endsWith(str, prefix) ? str.substring(0, str.length() - prefix.length()) : str;
+    }
+
+    public static String removeSuffix(@NotNull String str, @NotNull CharSequence prefix) {
+        return endsWith(str, prefix) ? str.substring(0, str.length() - prefix.length()) : str;
+    }
 }
