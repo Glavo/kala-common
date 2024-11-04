@@ -8,5 +8,5 @@ repositories {
 
 dependencies {
     implementation(gradleApi())
-    implementation("org.freemarker:freemarker:2.3.31")
+    implementation("org.freemarker:freemarker:2.3.33")
 }
