@@ -426,7 +426,7 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
             final ArrayList<Integer> al = new ArrayList<>(Arrays.asList(data));
             al.add(last);
 
-            assertIterableEquals(al, from(data).appended(12345));
+            assertIterableEquals(al, from(data).appended(last));
         }
     }
 
