@@ -20,7 +20,6 @@ import kala.collection.*;
 import kala.collection.base.Iterators;
 import kala.annotations.Covariant;
 import kala.collection.immutable.ImmutableSet;
-import kala.collection.mutable.MutableHashSet;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -51,7 +50,7 @@ public final class SetViews {
 
         @Override
         public boolean contains(Object value) {
-            return Objects.equals(this.addedValue, value) || source.contains(value);
+            return Objects.equals(addedValue, value) || source.contains(value);
         }
 
         @Override
@@ -60,10 +59,7 @@ public final class SetViews {
                 return this;
             }
 
-            var addedValues = new MutableHashSet<E>();
-            addedValues.add(this.addedValue);
-            addedValues.add(value);
-
+            var addedValues = ImmutableSet.of(value, addedValue);
             Conditions.assertEquals(2, addedValues.size());
             return new AddedAll<>(this, addedValues.toImmutableSet());
         }
