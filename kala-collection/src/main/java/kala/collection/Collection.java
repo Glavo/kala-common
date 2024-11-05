@@ -21,6 +21,8 @@ import kala.collection.immutable.*;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.internal.view.CollectionViews;
+import kala.function.CheckedBiConsumer;
+import kala.function.CheckedBiFunction;
 import kala.function.CheckedFunction;
 import kala.function.CheckedPredicate;
 import kala.tuple.Tuple;
@@ -154,17 +156,33 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
     }
 
     @Contract(pure = true)
+    @DelegateBy("mapMulti(BiConsumer<E, Consumer<U>>)")
+    default <U, Ex extends Throwable> @NotNull ImmutableCollection<U> mapMultiChecked(
+            @NotNull CheckedBiConsumer<? super E, ? super Consumer<? super U>, Ex> mapper) throws Ex {
+        return mapMulti(mapper);
+    }
+
+    @Contract(pure = true)
+    @DelegateBy("mapMulti(BiConsumer<E, Consumer<U>>)")
+    default <U> @NotNull ImmutableCollection<U> mapMultiUnchecked(
+            @NotNull CheckedBiConsumer<? super E, ? super Consumer<? super U>, ?> mapper) {
+        return mapMulti(mapper);
+    }
+
+    @Contract(pure = true)
     default <U> @NotNull ImmutableCollection<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
         return flatMap(ImmutableSeq.factory(), mapper);
     }
 
     @Contract(pure = true)
+    @DelegateBy("flatMap(Function<E, Iterable<U>>)")
     default <U, Ex extends Throwable> @NotNull ImmutableCollection<U> flatMapChecked(
             @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ? extends Ex> mapper) throws Ex {
         return flatMap(mapper);
     }
 
     @Contract(pure = true)
+    @DelegateBy("flatMap(Function<E, Iterable<U>>)")
     default <U> @NotNull ImmutableCollection<U> flatMapUnchecked(
             @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ?> mapper) {
         return flatMap(mapper);
@@ -183,6 +201,22 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
     @Contract(pure = true)
     default <U, R> @NotNull ImmutableCollection<R> zip(@NotNull Iterable<? extends U> other, @NotNull BiFunction<? super E, ? super U, ? extends R> mapper) {
         return view().<U, R>zip(other, mapper).toImmutableSeq();
+    }
+
+    @Contract(pure = true)
+    @DelegateBy("zip(Iterable<U>, BiFunction<E, U, R>)")
+    default <U, R, Ex extends Throwable> @NotNull ImmutableCollection<R> zipChecked(
+            @NotNull Iterable<? extends U> other,
+            @NotNull CheckedBiFunction<? super E, ? super U, ? extends R, ? extends Ex> mapper) throws Ex {
+        return zip(other, mapper);
+    }
+
+    @Contract(pure = true)
+    @DelegateBy("zip(Iterable<U>, BiFunction<E, U, R>)")
+    default <U, R> @NotNull ImmutableCollection<R> zipUnchecked(
+            @NotNull Iterable<? extends U> other,
+            @NotNull CheckedBiFunction<? super E, ? super U, ? extends R, ?> mapper) {
+        return zip(other, mapper);
     }
 
     @Contract(pure = true)

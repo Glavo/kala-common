@@ -2,16 +2,21 @@ package kala.collection;
 
 import kala.Conditions;
 import kala.annotations.Covariant;
+import kala.annotations.DelegateBy;
 import kala.collection.base.Iterators;
 import kala.collection.base.OrderedTraversable;
 import kala.collection.factory.CollectionFactory;
+import kala.collection.immutable.AbstractImmutableCollection;
+import kala.collection.immutable.ImmutableCollection;
 import kala.collection.immutable.ImmutableSeq;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
 import kala.collection.internal.view.SeqViews;
 import kala.comparator.Comparators;
 import kala.function.*;
+import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
+import kala.tuple.Tuple3;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -394,6 +399,22 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
 
     @Override
     @Contract(pure = true)
+    @DelegateBy("mapMulti(BiConsumer<E, Consumer<U>>)")
+    default <U, Ex extends Throwable> @NotNull ImmutableSeq<U> mapMultiChecked(
+            @NotNull CheckedBiConsumer<? super E, ? super Consumer<? super U>, Ex> mapper) throws Ex {
+        return mapMulti(mapper);
+    }
+
+    @Override
+    @Contract(pure = true)
+    @DelegateBy("mapMulti(BiConsumer<E, Consumer<U>>)")
+    default <U> @NotNull ImmutableSeq<U> mapMultiUnchecked(
+            @NotNull CheckedBiConsumer<? super E, ? super Consumer<? super U>, ?> mapper) {
+        return mapMulti(mapper);
+    }
+
+    @Override
+    @Contract(pure = true)
     default @NotNull <U> ImmutableSeq<U> mapIndexedMulti(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
         return view().mapIndexedMulti(mapper).toImmutableSeq();
     }
@@ -402,6 +423,52 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
     @Contract(pure = true)
     default <U> @NotNull ImmutableSeq<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
         return view().flatMap(mapper).toImmutableSeq();
+    }
+
+    @Override
+    @DelegateBy("flatMap(Function<E, Iterable<U>>)")
+    default <U, Ex extends Throwable> @NotNull ImmutableSeq<U> flatMapChecked(
+            @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ? extends Ex> mapper) throws Ex {
+        return flatMap(mapper);
+    }
+
+    @Override
+    @DelegateBy("flatMap(Function<E, Iterable<U>>)")
+    default <U> @NotNull ImmutableSeq<U> flatMapUnchecked(
+            @NotNull CheckedFunction<? super E, ? extends Iterable<? extends U>, ?> mapper) {
+        return flatMap(mapper);
+    }
+
+    @Override
+    @DelegateBy("zip(Iterable<U>, BiFunction<E, U, R>)")
+    default <U> @NotNull ImmutableSeq<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
+        return zip(other, Tuple::of);
+    }
+
+    @Contract(pure = true)
+    default <U, R> @NotNull ImmutableSeq<R> zip(@NotNull Iterable<? extends U> other, @NotNull BiFunction<? super E, ? super U, ? extends R> mapper) {
+        return view().<U, R>zip(other, mapper).toImmutableSeq();
+    }
+
+    @Contract(pure = true)
+    @DelegateBy("zip(Iterable<U>, BiFunction<E, U, R>)")
+    default <U, R, Ex extends Throwable> @NotNull ImmutableSeq<R> zipChecked(
+            @NotNull Iterable<? extends U> other,
+            @NotNull CheckedBiFunction<? super E, ? super U, ? extends R, ? extends Ex> mapper) throws Ex {
+        return zip(other, mapper);
+    }
+
+    @Contract(pure = true)
+    @DelegateBy("zip(Iterable<U>, BiFunction<E, U, R>)")
+    default <U, R> @NotNull ImmutableSeq<R> zipUnchecked(
+            @NotNull Iterable<? extends U> other,
+            @NotNull CheckedBiFunction<? super E, ? super U, ? extends R, ?> mapper) {
+        return zip(other, mapper);
+    }
+
+    @Override
+    default <U, V> @NotNull ImmutableSeq<@NotNull Tuple3<E, U, V>> zip3(@NotNull Iterable<? extends U> other1, @NotNull Iterable<? extends V> other2) {
+        return view().<U, V>zip3(other1, other2).toImmutableSeq();
     }
 
     @Override
