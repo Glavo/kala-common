@@ -1,11 +1,26 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.collection.immutable;
 
+import kala.annotations.DelegateBy;
 import kala.collection.ArraySeq;
 import kala.collection.SortedSet;
 import kala.annotations.Covariant;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.Set;
-import kala.collection.factory.Factory;
 import kala.function.Predicates;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -80,7 +95,7 @@ public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<
 
     @Override
     default @NotNull String className() {
-        return "ImmutableSet" ;
+        return "ImmutableSet";
     }
 
     @Override
@@ -88,6 +103,7 @@ public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<
         return factory();
     }
 
+    @Override
     default @NotNull ImmutableSet<E> added(E value) {
         if (contains(value))
             return this;
@@ -102,18 +118,22 @@ public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<
         return AbstractImmutableSet.added(this, value, factory);
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
     default @NotNull ImmutableSet<E> addedAll(@NotNull Iterable<? extends E> values) {
         CollectionFactory<E, ?, ? extends ImmutableSet<E>> factory;
-        if (this instanceof SortedSet<?>) {
-            factory = (CollectionFactory<E, ?, ? extends ImmutableSet<E>>)
-                    ((SortedSet<?>) this).iterableFactory(((SortedSet<?>) this).comparator());
+        if (this instanceof SortedSet<?> sortedSet) {
+            factory = (CollectionFactory<E, ?, ? extends ImmutableSet<E>>) sortedSet.iterableFactory(sortedSet.comparator());
         } else {
             factory = iterableFactory();
         }
         return AbstractImmutableSet.addedAll(this, values, factory);
     }
 
+    @Override
+    @DelegateBy("addedAll(Iterable<E>)")
     default @NotNull ImmutableSet<E> addedAll(E @NotNull [] values) {
+        Objects.requireNonNull(values);
         return addedAll(ArraySeq.wrap(values));
     }
 

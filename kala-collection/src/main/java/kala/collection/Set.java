@@ -15,8 +15,11 @@
  */
 package kala.collection;
 
+import kala.annotations.DelegateBy;
 import kala.collection.base.Iterators;
 import kala.collection.factory.CollectionFactory;
+import kala.collection.immutable.AbstractImmutableSet;
+import kala.collection.immutable.ImmutableHashSet;
 import kala.collection.immutable.ImmutableSet;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
@@ -24,6 +27,7 @@ import kala.collection.internal.view.SetViews;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -131,6 +135,21 @@ public interface Set<E> extends Collection<E>, SetLike<E>, AnySet<E> {
     @Override
     default java.util.@NotNull Set<E> asJava() {
         return new AsJavaConvert.SetAsJava<>(this);
+    }
+
+    @Override
+    default @NotNull ImmutableSet<E> added(E value) {
+        return this.view().added(value).toImmutableSet();
+    }
+
+    @Override
+    default @NotNull ImmutableSet<E> addedAll(@NotNull Iterable<? extends E> values) {
+        return this.view().addedAll(values).toImmutableSet();
+    }
+
+    @Override
+    default @NotNull ImmutableSet<E> addedAll(E @NotNull [] values) {
+        return this.view().addedAll(values).toImmutableSet();
     }
 
     @Override
