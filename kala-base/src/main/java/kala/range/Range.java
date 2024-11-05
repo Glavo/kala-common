@@ -18,7 +18,9 @@ package kala.range;
 import kala.range.primitive.PrimitiveRange;
 import org.jetbrains.annotations.NotNull;
 
-public sealed abstract class Range<T> permits GenericRange, PrimitiveRange {
+import java.io.Serializable;
+
+public sealed abstract class Range<T> implements Serializable permits GenericRange, PrimitiveRange {
     public abstract @NotNull RangeType getType();
 
     public final BoundType getLowerBoundType() {
