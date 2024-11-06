@@ -31,11 +31,11 @@ public interface AnyTraversable<T> extends Sized {
 
     static int knownSize(@NotNull Object c) {
         Objects.requireNonNull(c);
-        if (c instanceof Sized) {
-            return ((AnyTraversable<?>) c).knownSize();
+        if (c instanceof Sized other) {
+            return other.knownSize();
         }
-        if (c instanceof Collection<?>) {
-            return ((Collection<?>) c).size();
+        if (c instanceof Collection<?> other) {
+            return other.size();
         }
         return -1;
     }
@@ -97,6 +97,7 @@ public interface AnyTraversable<T> extends Sized {
 
     //region Size Compare Operations
 
+    @Override
     default int sizeCompare(int otherSize) {
         if (otherSize < 0) {
             return 1;
@@ -154,44 +155,20 @@ public interface AnyTraversable<T> extends Sized {
         return 0;
     }
 
-    default boolean sizeIs(int otherSize) {
-        return sizeCompare(otherSize) == 0;
-    }
-
-    default boolean sizeEquals(int otherSize) {
-        return sizeIs(otherSize);
-    }
-
     default boolean sizeEquals(@NotNull Iterable<?> other) {
         return sizeCompare(other) == 0;
-    }
-
-    default boolean sizeLessThan(int otherSize) {
-        return sizeCompare(otherSize) < 0;
     }
 
     default boolean sizeLessThan(@NotNull Iterable<?> other) {
         return sizeCompare(other) < 0;
     }
 
-    default boolean sizeLessThanOrEquals(int otherSize) {
-        return sizeCompare(otherSize) <= 0;
-    }
-
     default boolean sizeLessThanOrEquals(@NotNull Iterable<?> other) {
         return sizeCompare(other) <= 0;
     }
 
-    default boolean sizeGreaterThan(int otherSize) {
-        return sizeCompare(otherSize) > 0;
-    }
-
     default boolean sizeGreaterThan(@NotNull Iterable<?> other) {
         return sizeCompare(other) > 0;
-    }
-
-    default boolean sizeGreaterThanOrEquals(int otherSize) {
-        return sizeCompare(otherSize) >= 0;
     }
 
     default boolean sizeGreaterThanOrEquals(@NotNull Iterable<?> other) {

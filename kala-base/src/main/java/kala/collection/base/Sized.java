@@ -28,4 +28,36 @@ public interface Sized {
     int size();
 
     int knownSize();
+
+    //region Size Compare Operations
+
+    default int sizeCompare(int otherSize) {
+        return Integer.compare(size(), otherSize);
+    }
+
+    default boolean sizeIs(int otherSize) {
+        return sizeCompare(otherSize) == 0;
+    }
+
+    default boolean sizeEquals(int otherSize) {
+        return sizeIs(otherSize);
+    }
+
+    default boolean sizeLessThan(int otherSize) {
+        return sizeCompare(otherSize) < 0;
+    }
+
+    default boolean sizeLessThanOrEquals(int otherSize) {
+        return sizeCompare(otherSize) <= 0;
+    }
+
+    default boolean sizeGreaterThan(int otherSize) {
+        return sizeCompare(otherSize) > 0;
+    }
+
+    default boolean sizeGreaterThanOrEquals(int otherSize) {
+        return sizeCompare(otherSize) >= 0;
+    }
+
+    //endregion
 }
