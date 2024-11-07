@@ -145,17 +145,12 @@ public interface ${Type}Iterator extends PrimitiveIterator<${WrapperType}, ${Typ
     }
 
     static @NotNull ${Type}Iterator concat(@NotNull ${Type}Iterator... its) {
-        switch (its.length) { // implicit null check of its
-            case 0:
-                return ${Type}Iterator.empty();
-            case 1:
-                return Objects.requireNonNull(its[0]);
-            case 2:
-                return concat(its[0], its[1]);
-            default:
-                return new ${Type}Iterators.ConcatAll(GenericArrays.iterator(its));
-        }
-
+        return switch (its.length) { // implicit null check of its
+            case 0 -> ${Type}Iterator.empty();
+            case 1 -> Objects.requireNonNull(its[0]);
+            case 2 -> concat(its[0], its[1]);
+            default -> new ${Type}Iterators.ConcatAll(GenericArrays.iterator(its));
+        };
     }
 
     static @NotNull ${Type}Iterator concat(@NotNull Iterable<? extends ${Type}Iterator> its) {
