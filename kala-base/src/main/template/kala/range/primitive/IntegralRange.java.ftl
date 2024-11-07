@@ -38,7 +38,7 @@ public final class ${Type}Range extends IntegralRange<${WrapperType}> implements
     private static final long serialVersionUID = ${SerialVersionUID};
     private static final int HASH_MAGIC = ${HashMagic};
 
-    public static final ${StepType} DEFAULT_STEP =1;
+    public static final ${StepType} DEFAULT_STEP = 1;
     public static final ${StepType} MAX_STEP = ${MaxStep};
     public static final ${StepType} MAX_REVERSE_STEP = ${MaxReverseStep};
 
