@@ -183,6 +183,7 @@ public final class ${Type}Option implements PrimitiveOption<${WrapperType}>, ${T
         }
     }
 
+    @Serial
     private Object writeReplace() {
         return new Data(this == None ? null : value);
     }

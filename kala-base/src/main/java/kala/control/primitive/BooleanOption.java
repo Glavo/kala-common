@@ -128,8 +128,7 @@ public final class BooleanOption implements PrimitiveOption<Boolean>, BooleanTra
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o instanceof Option) {
-            Option<?> other = (Option<?>) o;
+        if (o instanceof Option<?> other) {
             if (this.isEmpty()) return other.isEmpty();
             if (other.isEmpty()) return false;
 

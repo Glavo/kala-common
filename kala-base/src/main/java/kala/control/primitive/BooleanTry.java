@@ -153,18 +153,4 @@ public final class BooleanTry implements PrimitiveTry<Boolean>, BooleanTraversab
             return "BooleanTry.Failure[" + cause + "]";
         }
     }
-
-    private static final class Replaced implements Serializable {
-        private static final long serialVersionUID = 8898176688746795097L;
-
-        private final boolean value;
-
-        Replaced(boolean value) {
-            this.value = value;
-        }
-
-        private Object readResolve() {
-            return value ? BooleanTry.True : BooleanTry.False;
-        }
-    }
 }
