@@ -15,11 +15,8 @@
  */
 package kala.collection;
 
-import kala.annotations.DelegateBy;
 import kala.collection.base.Iterators;
 import kala.collection.factory.CollectionFactory;
-import kala.collection.immutable.AbstractImmutableSet;
-import kala.collection.immutable.ImmutableHashSet;
 import kala.collection.immutable.ImmutableSet;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
@@ -27,7 +24,6 @@ import kala.collection.internal.view.SetViews;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
