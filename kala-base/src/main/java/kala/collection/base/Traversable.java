@@ -110,6 +110,18 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         }
     }
 
+    default T getAny() {
+        return iterator().next();
+    }
+
+    default @Nullable T getAnyOrNull() {
+        return isNotEmpty() ? getAny() : null;
+    }
+
+    default @NotNull Option<T> getAnyOption() {
+        return isNotEmpty() ? Option.some(getAny()) : Option.none();
+    }
+
     //region Element Retrieval Operations
 
     default @NotNull Option<T> find(@NotNull Predicate<? super T> predicate) {

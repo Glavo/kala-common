@@ -100,6 +100,11 @@ public interface OrderedTraversable<T> extends Traversable<T> {
         return Iterators.firstOption(reverseIterator(), predicate);
     }
 
+    @Override
+    default T getAny() {
+        return getFirst();
+    }
+
     default T getFirst() {
         return this.iterator().next();
     }
