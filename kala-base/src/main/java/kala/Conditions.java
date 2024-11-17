@@ -31,24 +31,6 @@ public final class Conditions {
 
     public static void checkElementIndex(int index, @Range(from = 0, to = Integer.MAX_VALUE) int size) throws IndexOutOfBoundsException {
         Objects.checkIndex(index, size);
-        if (index < 0 || index >= size) {
-            // Optimized for execution by hotspot
-            checkElementIndexFailed(index, size);
-        }
-    }
-
-    @Contract("_, _ -> fail")
-    private static void checkElementIndexFailed(int index, int size) {
-        if (size < 0) {
-            throw new IllegalArgumentException("size(" + size + ") < 0");
-        }
-        if (index < 0) {
-            throw new IndexOutOfBoundsException("index(" + index + ") < 0");
-        }
-        if (index >= size) {
-            throw new IndexOutOfBoundsException("index(" + index + ") >= size(" + size + ")");
-        }
-        throw new AssertionError();
     }
 
     public static void checkPositionIndex(int index, @Range(from = 0, to = Integer.MAX_VALUE) int size) throws IndexOutOfBoundsException {
