@@ -57,34 +57,7 @@ public final class Conditions {
     public static void checkPositionIndices(int beginIndex, int endIndex,
                                             @Range(from = 0, to = Integer.MAX_VALUE) int size)
             throws IndexOutOfBoundsException, IllegalArgumentException {
-        if (beginIndex < 0 || beginIndex > endIndex || endIndex > size) {
-            // Optimized for execution by hotspot
-            checkPositionIndicesFailed(beginIndex, endIndex, size);
-        }
-    }
-
-    @Contract("_, _, _ -> fail")
-    private static void checkPositionIndicesFailed(int beginIndex, int endIndex, int size) {
-        if (size < 0) {
-            throw new IllegalArgumentException("size(" + size + ") < 0");
-        }
-        if (beginIndex < 0) {
-            throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") < 0");
-        }
-        if (beginIndex > size) {
-            throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") > size(" + size + ")");
-        }
-        if (endIndex < 0) {
-            throw new IndexOutOfBoundsException("endIndex(" + endIndex + ") < 0");
-        }
-        if (endIndex > size) {
-            throw new IndexOutOfBoundsException("endIndex(" + endIndex + ") > size(" + size + ")");
-        }
-        if (beginIndex > endIndex) {
-            throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
-        }
-
-        throw new AssertionError("checkPositionIndicesFailed");
+        Objects.checkFromToIndex(beginIndex, endIndex, size);
     }
 
     //region Equals
