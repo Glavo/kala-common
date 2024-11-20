@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -234,13 +235,13 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
 
     @Override
     public E get(int index) {
-        Conditions.checkElementIndex(index, size());
+        Objects.checkIndex(index, size());
         return root.get(index);
     }
 
     @Override
     public @NotNull ImmutableSeq<E> updated(int index, E newValue) {
-        Conditions.checkElementIndex(index, size());
+        Objects.checkIndex(index, size());
         IndexedTree<E> newRoot = root.plus(index, newValue);
         return newRoot != root ? new ImmutableTreeSeq<>(newRoot) : this;
     }
@@ -264,7 +265,7 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
     @Override
     public @NotNull ImmutableSeq<E> removedAt(int index) {
         final int size = size();
-        Conditions.checkElementIndex(index, size);
+        Objects.checkIndex(index, size);
         return size > 1 ? new ImmutableTreeSeq<>(root.minus(index).changeKeysBelow(index, -1)) : empty();
     }
 

@@ -42,7 +42,7 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractSeq<E> 
     ) {
         final int size = seq.size();
 
-        Conditions.checkElementIndex(index, size);
+        Objects.checkIndex(index, size);
 
         Builder builder = factory.newBuilder();
 
@@ -87,7 +87,7 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractSeq<E> 
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
         final int size = seq.size();
-        Conditions.checkElementIndex(index, size);
+        Objects.checkIndex(index, size);
 
         if (size == 1) {
             return factory.empty();

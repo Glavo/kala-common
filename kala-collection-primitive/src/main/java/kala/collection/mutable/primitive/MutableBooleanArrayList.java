@@ -278,13 +278,13 @@ public final class MutableBooleanArrayList extends AbstractMutableBooleanList im
 
     @Override
     public boolean get(int index) {
-        Conditions.checkElementIndex(index, size);
+        Objects.checkIndex(index, size);
         return elements[index];
     }
 
     @Override
     public void set(int index, boolean newValue) {
-        Conditions.checkElementIndex(index, size);
+        Objects.checkIndex(index, size);
         elements[index] = newValue;
     }
 
@@ -476,7 +476,7 @@ public final class MutableBooleanArrayList extends AbstractMutableBooleanList im
 
     @Override
     public boolean removeAt(int index) {
-        Conditions.checkElementIndex(index, size);
+        Objects.checkIndex(index, size);
         boolean oldValue = elements[index];
         int newSize = size - 1;
         if (newSize > index) {

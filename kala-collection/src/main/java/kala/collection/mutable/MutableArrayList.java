@@ -311,13 +311,13 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
 
     @Override
     public E get(int index) {
-        Conditions.checkElementIndex(index, size);
+        Objects.checkIndex(index, size);
         return (E) elements[index];
     }
 
     @Override
     public void set(int index, E newValue) {
-        Conditions.checkElementIndex(index, size);
+        Objects.checkIndex(index, size);
         elements[index] = newValue;
     }
 
@@ -532,7 +532,7 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
 
     @Override
     public E removeAt(int index) {
-        Conditions.checkElementIndex(index, size);
+        Objects.checkIndex(index, size);
         E oldValue = (E) elements[index];
         int newSize = size - 1;
         if (newSize > index) {

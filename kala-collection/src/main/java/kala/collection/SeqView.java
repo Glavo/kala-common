@@ -29,6 +29,7 @@ import kala.collection.internal.CollectionHelper;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.util.Comparator;
 import java.util.LinkedHashSet;
@@ -183,7 +184,7 @@ public interface SeqView<@Covariant E> extends CollectionView<E>, SeqLike<E>, An
                 throw new IndexOutOfBoundsException("index(" + index + ") < 0");
             }
         } else {
-            Conditions.checkElementIndex(index, ks);
+            Objects.checkIndex(index, ks);
         }
         return new SeqViews.Updated<>(this, index, newValue);
     }
@@ -237,7 +238,7 @@ public interface SeqView<@Covariant E> extends CollectionView<E>, SeqLike<E>, An
     }
 
     default @NotNull SeqView<E> removedAt(int index) {
-        Conditions.checkElementIndex(index, size());
+        Objects.checkIndex(index, size());
         return new SeqViews.RemovedAt<>(this, index);
     }
 

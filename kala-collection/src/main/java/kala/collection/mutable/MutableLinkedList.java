@@ -21,10 +21,7 @@ import kala.function.IndexedConsumer;
 import kala.function.IndexedFunction;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.base.AbstractIterator;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Debug;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.*;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -286,7 +283,7 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
     }
 
     public Node<E> getNode(int index) {
-        Conditions.checkElementIndex(index, len);
+        Objects.checkIndex(index, len);
         return internalGetNode(index);
     }
 
@@ -303,7 +300,7 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
 
     @Override
     public E get(int index) {
-        Conditions.checkElementIndex(index, len);
+        Objects.checkIndex(index, len);
 
         return internalGetNode(index).value;
     }
@@ -482,7 +479,7 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
 
     @Override
     public E removeAt(int index) {
-        Conditions.checkElementIndex(index, len);
+        Objects.checkIndex(index, len);
 
         final Node<E> node = internalGetNode(index);
         final E value = node.value;
@@ -529,7 +526,7 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
 
     @Override
     public void set(int index, E newValue) {
-        Conditions.checkElementIndex(index, len);
+        Objects.checkIndex(index, len);
         internalGetNode(index).value = newValue;
     }
 

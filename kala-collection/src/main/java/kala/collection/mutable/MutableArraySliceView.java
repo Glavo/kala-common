@@ -4,6 +4,8 @@ import kala.Conditions;
 import kala.collection.internal.view.SeqViews;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 public final class MutableArraySliceView<E> extends SeqViews.OfArraySlice<E> {
     MutableArraySliceView(Object[] array, int beginIndex, int endIndex) {
         super(array, beginIndex, endIndex);
@@ -15,7 +17,7 @@ public final class MutableArraySliceView<E> extends SeqViews.OfArraySlice<E> {
     }
 
     public void set(int index, E value) {
-        Conditions.checkElementIndex(index, endIndex - beginIndex);
+        Objects.checkIndex(index, endIndex - beginIndex);
         array[beginIndex + index] = value;
     }
 

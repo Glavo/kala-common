@@ -30,10 +30,7 @@ import kala.function.CheckedPredicate;
 import kala.function.IndexedBiConsumer;
 import kala.function.IndexedConsumer;
 import kala.function.IndexedFunction;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Debug;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.*;
 
 import java.io.IOException;
 import java.io.Serial;
@@ -462,7 +459,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         final Object[] elements = this.elements;
         final int size = elements.length;
 
-        Conditions.checkElementIndex(index, size);
+        Objects.checkIndex(index, size);
 
         Object[] newValues = elements.clone();
         newValues[index] = newValue;
@@ -483,7 +480,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         final Object[] elements = this.elements;
         final int size = elements.length;
 
-        Conditions.checkElementIndex(index, size);
+        Objects.checkIndex(index, size);
 
         if (size == 1) {
             return ImmutableArray.empty();

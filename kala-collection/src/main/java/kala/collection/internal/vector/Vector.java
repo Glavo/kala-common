@@ -15,12 +15,13 @@
  */
 package kala.collection.internal.vector;
 
-import kala.Conditions;
 import kala.collection.IndexedSeq;
 import kala.collection.base.ObjectArrays;
 import kala.collection.immutable.AbstractImmutableSeq;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
+
+import java.util.Objects;
 
 @SuppressWarnings("unchecked")
 public final class Vector<E> extends AbstractImmutableSeq<E> implements IndexedSeq<E> {
@@ -58,7 +59,7 @@ public final class Vector<E> extends AbstractImmutableSeq<E> implements IndexedS
 
     @Override
     public E get(int index) {
-        Conditions.checkElementIndex(index, size);
+        Objects.checkIndex(index, size);
 
         // fastpath
         if (depth == 0) {

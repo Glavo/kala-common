@@ -286,13 +286,13 @@ public final class Mutable${Type}ArrayList extends AbstractMutable${Type}List im
 
     @Override
     public ${PrimitiveType} get(int index) {
-        Conditions.checkElementIndex(index, size);
+        Objects.checkIndex(index, size);
         return elements[index];
     }
 
     @Override
     public void set(int index, ${PrimitiveType} newValue) {
-        Conditions.checkElementIndex(index, size);
+        Objects.checkIndex(index, size);
         elements[index] = newValue;
     }
 
@@ -496,7 +496,7 @@ public final class Mutable${Type}ArrayList extends AbstractMutable${Type}List im
 
     @Override
     public ${PrimitiveType} removeAt(int index) {
-        Conditions.checkElementIndex(index, size);
+        Objects.checkIndex(index, size);
         ${PrimitiveType} oldValue = elements[index];
         int newSize = size - 1;
         if (newSize > index) {

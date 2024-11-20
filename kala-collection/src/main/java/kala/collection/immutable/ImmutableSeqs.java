@@ -538,7 +538,7 @@ final class ImmutableSeqs {
 
         @Override
         public final E get(int index) {
-            Conditions.checkElementIndex(index, size);
+            Objects.checkIndex(index, size);
             return value;
         }
 

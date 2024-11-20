@@ -28,6 +28,7 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.*;
+import java.util.Objects;
 
 public final class StringSlice implements Comparable<StringSlice>, CharSequence, Serializable {
     @Serial
@@ -77,7 +78,7 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
 
     @Override
     public char charAt(int index) {
-        Conditions.checkElementIndex(index, length);
+        Objects.checkIndex(index, length);
         return value.charAt(index + offset);
     }
 

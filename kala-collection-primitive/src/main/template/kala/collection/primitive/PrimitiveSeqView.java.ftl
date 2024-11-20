@@ -159,7 +159,7 @@ public interface ${Type}SeqView extends ${Type}SeqLike, ${Type}CollectionView, P
                 throw new IndexOutOfBoundsException("index(" + index + ") < 0");
             }
         } else {
-            Conditions.checkElementIndex(index, ks);
+            Objects.checkIndex(index, ks);
         }
         return new ${Type}SeqViews.Updated(this, index, newValue);
     }

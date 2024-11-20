@@ -6,8 +6,6 @@ import kala.annotations.DelegateBy;
 import kala.collection.base.Iterators;
 import kala.collection.base.OrderedTraversable;
 import kala.collection.factory.CollectionFactory;
-import kala.collection.immutable.AbstractImmutableCollection;
-import kala.collection.immutable.ImmutableCollection;
 import kala.collection.immutable.ImmutableSeq;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
@@ -17,10 +15,7 @@ import kala.function.*;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import kala.tuple.Tuple3;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnmodifiableView;
+import org.jetbrains.annotations.*;
 
 import java.util.*;
 import java.util.function.*;
@@ -195,7 +190,7 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
     @Override
     @Contract(pure = true)
     default @NotNull ImmutableSeq<E> updated(int index, E newValue) {
-        Conditions.checkElementIndex(index, size());
+        Objects.checkIndex(index, size());
         return view().updated(index, newValue).toImmutableSeq();
     }
 
@@ -256,7 +251,7 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
     @Override
     @Contract(pure = true)
     default @NotNull ImmutableSeq<E> removedAt(int index) {
-        Conditions.checkElementIndex(index, size());
+        Objects.checkIndex(index, size());
         return view().removedAt(index).toImmutableSeq();
     }
 

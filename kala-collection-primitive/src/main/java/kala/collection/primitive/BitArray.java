@@ -15,7 +15,6 @@
  */
 package kala.collection.primitive;
 
-import kala.Conditions;
 import kala.collection.base.primitive.BitArrays;
 import kala.collection.base.primitive.BooleanIterator;
 import kala.function.BooleanConsumer;
@@ -23,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Objects;
 
 import static kala.collection.base.primitive.BitArrays.BITS_PRE_VALUE;
 
@@ -99,7 +99,7 @@ public class BitArray extends AbstractBooleanSeq implements IndexedBooleanSeq, S
 
     @Override
     public final boolean get(int index) {
-        Conditions.checkElementIndex(index, size);
+        Objects.checkIndex(index, size);
         if (bitsArray == null) {
             return BitArrays.get(bits, index);
         } else {

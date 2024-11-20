@@ -30,7 +30,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static kala.Conditions.*;
 import static java.util.Arrays.copyOf;
 import static kala.collection.base.GenericArrays.copyOrUse;
 
@@ -350,7 +349,7 @@ final class ImmutableVectors {
         public @NotNull ImmutableVector<E> updated(int index, E newValue) {
             final Object[] prefix1 = this.prefix1;
             final int size = prefix1.length;
-            checkElementIndex(index, size);
+            Objects.checkIndex(index, size);
             Object[] res = prefix1.clone();
             res[index] = newValue;
             return new ImmutableVectors.Vector1<>(res);
@@ -887,7 +886,7 @@ final class ImmutableVectors {
 
         @Override
         public E get(int index) {
-            checkElementIndex(index, length0);
+            Objects.checkIndex(index, length0);
 
             int io = index - len1;
             if (io >= 0) {
@@ -970,7 +969,7 @@ final class ImmutableVectors {
 
         @Override
         public E get(int index) {
-            checkElementIndex(index, length0);
+            Objects.checkIndex(index, length0);
 
             int io = index - len12;
             if (io >= 0) {
@@ -1084,7 +1083,7 @@ final class ImmutableVectors {
 
         @Override
         public E get(int index) {
-            checkElementIndex(index, length0);
+            Objects.checkIndex(index, length0);
             int io = index - len123;
             if (io >= 0) {
                 int i4 = io >>> BITS3;
@@ -1218,7 +1217,7 @@ final class ImmutableVectors {
 
         @Override
         public E get(int index) {
-            checkElementIndex(index, length0);
+            Objects.checkIndex(index, length0);
             int io = index - len1234;
             if (io >= 0) {
                 int i5 = io >>> BITS4;
@@ -1377,7 +1376,7 @@ final class ImmutableVectors {
 
         @Override
         public E get(int index) {
-            checkElementIndex(index, length0);
+            Objects.checkIndex(index, length0);
             int io = index - len12345;
             if (io >= 0) {
                 int i6 = io >>> BITS5;

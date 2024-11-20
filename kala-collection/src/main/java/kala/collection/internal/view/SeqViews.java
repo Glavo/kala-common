@@ -33,10 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -280,7 +277,7 @@ public final class SeqViews {
 
         @Override
         public final E get(int index) {
-            Conditions.checkElementIndex(index, size());
+            Objects.checkIndex(index, size());
             return (E) array[index + beginIndex];
         }
 
@@ -587,7 +584,7 @@ public final class SeqViews {
             }
 
             final int size = Integer.max(source.size() - n, 0);
-            Conditions.checkElementIndex(index, size);
+            Objects.checkIndex(index, size);
 
             return this.source.get(index);
         }
@@ -1099,7 +1096,7 @@ public final class SeqViews {
 
         @Override
         public E get(int index) {
-            Conditions.checkElementIndex(index, size());
+            Objects.checkIndex(index, size());
             return source.get(index < removedIndex ? index : index -1);
         }
     }

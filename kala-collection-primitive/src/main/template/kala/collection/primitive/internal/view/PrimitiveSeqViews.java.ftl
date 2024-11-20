@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Range;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 <#if IsSpecialized>
 import java.util.function.*;
 import java.util.stream.${Type}Stream;
@@ -218,7 +219,7 @@ public final class ${Type}SeqViews {
 
         @Override
         public final ${PrimitiveType} get(int index) {
-            Conditions.checkElementIndex(index, size());
+            Objects.checkIndex(index, size());
             return array[index + beginIndex];
         }
 
@@ -574,7 +575,7 @@ public final class ${Type}SeqViews {
             }
 
             final int size = Integer.max(source.size() - n, 0);
-            Conditions.checkElementIndex(index, size);
+            Objects.checkIndex(index, size);
 
             return this.source.get(index);
         }

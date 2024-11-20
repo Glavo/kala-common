@@ -247,7 +247,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
 
     @Override
     public E get(int index) {
-        Conditions.checkElementIndex(index, size);
+        Objects.checkIndex(index, size);
         Node<E> list = this.node;
         for (int i = 0; i < index; i++) {
             list = list.tail;
@@ -559,7 +559,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
 
         @Override
         public final E get(int index) {
-            Conditions.checkElementIndex(index, len);
+            Objects.checkIndex(index, len);
             if (index == len - 1)
                 return last.head;
 
@@ -573,8 +573,8 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
 
         @Override
         public final void swap(int index1, int index2) {
-            Conditions.checkElementIndex(index1, len);
-            Conditions.checkElementIndex(index2, len);
+            Objects.checkIndex(index1, len);
+            Objects.checkIndex(index2, len);
             if (index1 == index2) {
                 return;
             }
@@ -676,7 +676,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
 
         @Override
         public final E removeAt(int index) {
-            Conditions.checkElementIndex(index, len);
+            Objects.checkIndex(index, len);
 
             if (index == 0) {
                 E v = first.head;
@@ -721,7 +721,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
 
         @Override
         public final void set(int index, E newValue) {
-            Conditions.checkElementIndex(index, len);
+            Objects.checkIndex(index, len);
 
             ensureUnaliased();
             if (index == len - 1) {

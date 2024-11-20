@@ -266,7 +266,7 @@ public final class GenericArrays {
 
     public static <E> E @NotNull [] removedAt(E @NotNull [] array, int index) {
         final int arrayLength = array.length; // implicit null check of array
-        Conditions.checkElementIndex(index, arrayLength);
+        Objects.checkIndex(index, arrayLength);
         E[] result = newArrayByOldType(array, arrayLength - 1);
         System.arraycopy(array, 0, result, 0, index);
         System.arraycopy(array, index + 1, result, index, arrayLength - index - 1);
@@ -528,7 +528,7 @@ public final class GenericArrays {
     }
 
     public static <E> E @NotNull [] updated(E @NotNull [] array, int index, E newValue) {
-        Conditions.checkElementIndex(index, array.length);
+        Objects.checkIndex(index, array.length);
 
         E[] newValues = array.clone();
         newValues[index] = newValue;

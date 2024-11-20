@@ -29,10 +29,6 @@ public final class Conditions {
     private Conditions() {
     }
 
-    public static void checkElementIndex(int index, @Range(from = 0, to = Integer.MAX_VALUE) int size) throws IndexOutOfBoundsException {
-        Objects.checkIndex(index, size);
-    }
-
     public static void checkPositionIndex(int index, @Range(from = 0, to = Integer.MAX_VALUE) int size) throws IndexOutOfBoundsException {
         if (index < 0 || index > size) {
             // Optimized for execution by hotspot

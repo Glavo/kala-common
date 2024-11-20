@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -299,10 +300,10 @@ public final class MutableArrayDeque<E> extends AbstractMutableList<E> implement
         if (isEmpty()) {
             throw new IndexOutOfBoundsException("Index out of range: " + index);
         } else if (begin < end) {
-            Conditions.checkElementIndex(index, end - begin);
+            Objects.checkIndex(index, end - begin);
             return (E) elements[begin + index];
         } else {
-            Conditions.checkElementIndex(index, elements.length - begin + end);
+            Objects.checkIndex(index, elements.length - begin + end);
             return (E) elements[inc(begin, index, elements.length)];
         }
     }
@@ -312,11 +313,11 @@ public final class MutableArrayDeque<E> extends AbstractMutableList<E> implement
         if (isEmpty()) {
             throw new IndexOutOfBoundsException();
         } else if (begin < end) {
-            Conditions.checkElementIndex(index, end - begin);
+            Objects.checkIndex(index, end - begin);
             elements[begin + index] = newValue;
         } else {
             final int size = elements.length - begin + end;
-            Conditions.checkElementIndex(index, size);
+            Objects.checkIndex(index, size);
             elements[inc(begin, index, elements.length)] = newValue;
         }
     }
@@ -416,7 +417,7 @@ public final class MutableArrayDeque<E> extends AbstractMutableList<E> implement
     @Override
     public E removeAt(int index) {
         final int oldSize = size();
-        Conditions.checkElementIndex(index, oldSize);
+        Objects.checkIndex(index, oldSize);
 
         if (index == 0) {
             return removeFirst();
