@@ -89,6 +89,7 @@ public final class AnsiColors {
      * Reset ANSI styles
      */
     public static final String RESET = "\u001b[0m";
+
     /**
      * ANSI bold
      */
