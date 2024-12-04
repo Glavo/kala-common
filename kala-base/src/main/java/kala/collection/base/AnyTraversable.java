@@ -16,6 +16,7 @@
 package kala.collection.base;
 
 import kala.collection.factory.CollectionFactory;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
@@ -155,22 +156,27 @@ public interface AnyTraversable<T> extends Sized {
         return 0;
     }
 
+    @ApiStatus.NonExtendable
     default boolean sizeEquals(@NotNull Iterable<?> other) {
         return sizeCompare(other) == 0;
     }
 
+    @ApiStatus.NonExtendable
     default boolean sizeLessThan(@NotNull Iterable<?> other) {
         return sizeCompare(other) < 0;
     }
 
+    @ApiStatus.NonExtendable
     default boolean sizeLessThanOrEquals(@NotNull Iterable<?> other) {
         return sizeCompare(other) <= 0;
     }
 
+    @ApiStatus.NonExtendable
     default boolean sizeGreaterThan(@NotNull Iterable<?> other) {
         return sizeCompare(other) > 0;
     }
 
+    @ApiStatus.NonExtendable
     default boolean sizeGreaterThanOrEquals(@NotNull Iterable<?> other) {
         return sizeCompare(other) >= 0;
     }

@@ -16,11 +16,13 @@
 package kala.collection.base;
 
 import kala.annotations.UnstableName;
+import org.jetbrains.annotations.ApiStatus;
 
 @UnstableName
 public interface Sized {
     boolean isEmpty();
 
+    @ApiStatus.NonExtendable
     default boolean isNotEmpty() {
         return !isEmpty();
     }
@@ -35,26 +37,32 @@ public interface Sized {
         return Integer.compare(size(), otherSize);
     }
 
+    @ApiStatus.NonExtendable
     default boolean sizeIs(int otherSize) {
         return sizeCompare(otherSize) == 0;
     }
 
+    @ApiStatus.NonExtendable
     default boolean sizeEquals(int otherSize) {
         return sizeIs(otherSize);
     }
 
+    @ApiStatus.NonExtendable
     default boolean sizeLessThan(int otherSize) {
         return sizeCompare(otherSize) < 0;
     }
 
+    @ApiStatus.NonExtendable
     default boolean sizeLessThanOrEquals(int otherSize) {
         return sizeCompare(otherSize) <= 0;
     }
 
+    @ApiStatus.NonExtendable
     default boolean sizeGreaterThan(int otherSize) {
         return sizeCompare(otherSize) > 0;
     }
 
+    @ApiStatus.NonExtendable
     default boolean sizeGreaterThanOrEquals(int otherSize) {
         return sizeCompare(otherSize) >= 0;
     }
