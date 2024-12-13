@@ -31,6 +31,7 @@ import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import kala.value.primitive.IntVar;
 import org.intellij.lang.annotations.Flow;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -182,6 +183,16 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         return Iterators.anyMatch(iterator(), predicate);
     }
 
+    @ApiStatus.NonExtendable
+    default <Ex extends Throwable> boolean anyMatchChecked(@NotNull CheckedPredicate<? super T, ? extends Ex> predicate) throws Ex {
+        return anyMatch(predicate);
+    }
+
+    @ApiStatus.NonExtendable
+    default boolean anyMatchUnchecked(@NotNull CheckedPredicate<? super T, ?> predicate) {
+        return anyMatch(predicate);
+    }
+
     /**
      * Tests whether all elements of this {@code Traversable} match the {@code predicate}.
      *
@@ -190,6 +201,16 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
      */
     default boolean allMatch(@NotNull Predicate<? super T> predicate) {
         return Iterators.allMatch(iterator(), predicate);
+    }
+
+    @ApiStatus.NonExtendable
+    default <Ex extends Throwable> boolean allMatchChecked(@NotNull CheckedPredicate<? super T, ? extends Ex> predicate) throws Ex {
+        return allMatch(predicate);
+    }
+
+    @ApiStatus.NonExtendable
+    default boolean allMatchUnchecked(@NotNull CheckedPredicate<? super T, ?> predicate) {
+        return allMatch(predicate);
     }
 
     /**
@@ -202,11 +223,35 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         return Iterators.noneMatch(iterator(), predicate);
     }
 
+    @ApiStatus.NonExtendable
+    default <Ex extends Throwable> boolean noneMatchChecked(@NotNull CheckedPredicate<? super T, ? extends Ex> predicate) throws Ex {
+        return noneMatch(predicate);
+    }
+
+    @ApiStatus.NonExtendable
+    default boolean noneMatchUnchecked(@NotNull CheckedPredicate<? super T, ?> predicate) {
+        return noneMatch(predicate);
+    }
+
     /**
      * Equivalent to {@code this.zip(other).anyMatch(it -> predicate.test(it._1, it._2))}
      */
     default <U> boolean anyMatchWith(@NotNull Iterable<? extends U> other, @NotNull BiPredicate<? super T, ? super U> predicate) {
         return Iterators.anyMatchWith(iterator(), other.iterator(), predicate);
+    }
+
+    @ApiStatus.NonExtendable
+    default <U, Ex extends Throwable> boolean anyMatchWithChecked(
+            @NotNull Iterable<? extends U> other,
+            @NotNull CheckedBiPredicate<? super T, ? super U, ? extends Ex> predicate) throws Ex {
+        return anyMatchWith(other, predicate);
+    }
+
+    @ApiStatus.NonExtendable
+    default <U> boolean anyMatchWithUnchecked(
+            @NotNull Iterable<? extends U> other,
+            @NotNull CheckedBiPredicate<? super T, ? super U, ?> predicate) {
+        return anyMatchWith(other, predicate);
     }
 
     /**
@@ -216,11 +261,39 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         return Iterators.allMatchWith(iterator(), other.iterator(), predicate);
     }
 
+    @ApiStatus.NonExtendable
+    default <U, Ex extends Throwable> boolean allMatchWithChecked(
+            @NotNull Iterable<? extends U> other,
+            @NotNull CheckedBiPredicate<? super T, ? super U, ? extends Ex> predicate) throws Ex {
+        return allMatchWith(other, predicate);
+    }
+
+    @ApiStatus.NonExtendable
+    default <U> boolean allMatchWithUnchecked(
+            @NotNull Iterable<? extends U> other,
+            @NotNull CheckedBiPredicate<? super T, ? super U, ?> predicate) {
+        return allMatchWith(other, predicate);
+    }
+
     /**
      * Equivalent to {@code this.zip(other).noneMatch(it -> predicate.test(it._1, it._2))}
      */
     default <U> boolean noneMatchWith(@NotNull Iterable<? extends U> other, @NotNull BiPredicate<? super T, ? super U> predicate) {
         return Iterators.noneMatchWith(iterator(), other.iterator(), predicate);
+    }
+
+    @ApiStatus.NonExtendable
+    default <U, Ex extends Throwable> boolean noneMatchWithChecked(
+            @NotNull Iterable<? extends U> other,
+            @NotNull CheckedBiPredicate<? super T, ? super U, ? extends Ex> predicate) throws Ex {
+        return noneMatchWith(other, predicate);
+    }
+
+    @ApiStatus.NonExtendable
+    default <U> boolean noneMatchWithUnchecked(
+            @NotNull Iterable<? extends U> other,
+            @NotNull CheckedBiPredicate<? super T, ? super U, ?> predicate) {
+        return noneMatchWith(other, predicate);
     }
 
     //endregion
