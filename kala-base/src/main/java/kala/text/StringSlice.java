@@ -29,6 +29,7 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.*;
+import java.util.Locale;
 import java.util.Objects;
 
 public final class StringSlice implements Comparable<StringSlice>, CharSequence, Serializable {
@@ -64,14 +65,6 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
 
     private static StringSlice ofChecked(String value, int beginIndex, int endIndex) {
         return beginIndex != endIndex ? new StringSlice(value, beginIndex, endIndex - beginIndex) : EMPTY;
-    }
-
-    public boolean isEmpty() {
-        return this.length == 0;
-    }
-
-    public boolean isNotEmpty() {
-        return this.length != 0;
     }
 
     @ApiStatus.Internal
@@ -208,6 +201,110 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         return end - begin == this.length ? this : StringSlice.ofChecked(value, begin, end);
     }
 
+    // ---
+
+    public @NotNull StringSlice replace(char oldChar, char newChar) {
+        if (oldChar == newChar)
+            return this;
+
+        int idx = indexOf(oldChar);
+        if (idx < 0)
+            return this;
+
+        StringBuilder res = new StringBuilder(this.length);
+
+        idx += offset;
+        res.append(this.value, offset, idx);
+        res.append(newChar);
+
+        while (++idx < this.offset + this.length) {
+            char ch = this.value.charAt(idx);
+            res.append(ch == oldChar ? newChar : ch);
+        }
+
+        return StringSlice.of(res.toString());
+    }
+
+    public @NotNull StringSlice repeat(int times) {
+        if (times < 0) {
+            throw new IllegalArgumentException("Times cannot be negative");
+        }
+
+        if (times == 0 || this.isEmpty()) {
+            return EMPTY;
+        }
+
+        if (times == 1) {
+            return this;
+        }
+
+        if (this.length == 1) {
+            return this.value.length() == 1
+                    ? StringSlice.of(this.value.repeat(times))
+                    : StringSlice.of(String.valueOf(this.value.charAt(offset)).repeat(times));
+        }
+
+        long newLength = (long) this.length * times;
+        if (newLength > Integer.MAX_VALUE) {
+            throw new OutOfMemoryError("Required length exceeds implementation limit");
+        }
+
+        StringBuilder builder = new StringBuilder((int) newLength);
+        for (int i = 0; i < times; i++) {
+            this.appendTo(builder);
+        }
+        return StringSlice.of(builder.toString());
+    }
+
+    public @NotNull StringSlice toLowerCase() {
+        return toLowerCase(Locale.ROOT);
+    }
+
+    public @NotNull StringSlice toLowerCase(Locale locale) {
+        if (isEmpty()) {
+            return this;
+        }
+
+        String newValue = toString().toLowerCase(locale);
+        //noinspection StringEquality
+        return newValue == value ? this : StringSlice.of(newValue);
+    }
+
+    public @NotNull StringSlice toUpperCase() {
+        return toUpperCase(Locale.ROOT);
+    }
+
+    public @NotNull StringSlice toUpperCase(Locale locale) {
+        if (isEmpty()) {
+            return this;
+        }
+
+        String newValue = toString().toUpperCase(locale);
+        //noinspection StringEquality
+        return newValue == value ? this : StringSlice.of(newValue);
+    }
+
+    // ---
+
+    public boolean isEmpty() {
+        return this.length == 0;
+    }
+
+    public boolean isNotEmpty() {
+        return this.length != 0;
+    }
+
+    public boolean isBlank() {
+        for (int i = 0; i < this.length; i++) {
+            char ch = this.value.charAt(offset + i);
+            if (!Character.isWhitespace(ch)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public boolean startsWith(@NotNull String prefix) {
         return startsWith(prefix, 0);
     }
@@ -286,59 +383,6 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
 
     public boolean contains(CharSequence other) {
         return contains(other.toString());
-    }
-
-    public StringSlice replace(char oldChar, char newChar) {
-        if (oldChar == newChar)
-            return this;
-
-        int idx = indexOf(oldChar);
-        if (idx < 0)
-            return this;
-
-        StringBuilder res = new StringBuilder(this.length);
-
-        idx += offset;
-        res.append(this.value, offset, idx);
-        res.append(newChar);
-
-        while (++idx < this.offset + this.length) {
-            char ch = this.value.charAt(idx);
-            res.append(ch == oldChar ? newChar : ch);
-        }
-
-        return StringSlice.of(res.toString());
-    }
-
-    public StringSlice repeat(int times) {
-        if (times < 0) {
-            throw new IllegalArgumentException("Times cannot be negative");
-        }
-
-        if (times == 0 || this.isEmpty()) {
-            return EMPTY;
-        }
-
-        if (times == 1) {
-            return this;
-        }
-
-        if (this.length == 1) {
-            return this.value.length() == 1
-                    ? StringSlice.of(this.value.repeat(times))
-                    : StringSlice.of(String.valueOf(this.value.charAt(offset)).repeat(times));
-        }
-
-        long newLength = (long) this.length * times;
-        if (newLength > Integer.MAX_VALUE) {
-            throw new OutOfMemoryError("Required length exceeds implementation limit");
-        }
-
-        StringBuilder builder = new StringBuilder((int) newLength);
-        for (int i = 0; i < times; i++) {
-            this.appendTo(builder);
-        }
-        return StringSlice.of(builder.toString());
     }
 
     public boolean contentEquals(StringSlice other) {
