@@ -201,6 +201,23 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         return end - begin == this.length ? this : StringSlice.ofChecked(value, begin, end);
     }
 
+    public @NotNull StringSlice removePrefix(@NotNull String prefix) {
+        return startsWith(prefix) ? substring(prefix.length()) : this;
+    }
+
+    public @NotNull StringSlice removePrefix(@NotNull StringSlice prefix) {
+        return startsWith(prefix) ? substring(prefix.length()) : this;
+    }
+
+
+    public @NotNull StringSlice removeSuffix(@NotNull String prefix) {
+        return endsWith(prefix) ? substring(0, this.length - prefix.length()) : this;
+    }
+
+    public @NotNull StringSlice removeSuffix(@NotNull StringSlice prefix) {
+        return endsWith(prefix) ? substring(0, this.length - prefix.length) : this;
+    }
+
     // ---
 
     public @NotNull StringSlice replace(char oldChar, char newChar) {
