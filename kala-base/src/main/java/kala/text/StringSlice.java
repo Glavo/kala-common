@@ -19,6 +19,7 @@ import kala.Conditions;
 import kala.collection.base.primitive.ByteArrays;
 import kala.collection.base.primitive.CharArrays;
 import kala.control.primitive.*;
+import kala.function.CharPredicate;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -48,12 +49,20 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         this.length = length;
     }
 
-    public static StringSlice of(@NotNull String value) {
+    public static @NotNull StringSlice empty() {
+        return EMPTY;
+    }
+
+    public static @NotNull StringSlice of(@NotNull String value) {
         return !value.isEmpty() ? new StringSlice(value, 0, value.length()) : EMPTY;
     }
 
-    public static StringSlice of(@NotNull String value, int beginIndex, int endIndex) {
+    public static @NotNull StringSlice of(@NotNull String value, int beginIndex, int endIndex) {
         Conditions.checkPositionIndices(beginIndex, endIndex, value.length());
+        return ofChecked(value, beginIndex, endIndex);
+    }
+
+    private static StringSlice ofChecked(String value, int beginIndex, int endIndex) {
         return beginIndex != endIndex ? new StringSlice(value, beginIndex, endIndex - beginIndex) : EMPTY;
     }
 
@@ -173,6 +182,28 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         return StringSlice.of(builder.toString());
     }
 
+    public @NotNull StringSlice trim() {
+        return trim(ch -> ch <= ' ');
+    }
+
+    public @NotNull StringSlice trim(char... chars) {
+        return trim(ch -> CharArrays.contains(chars, ch));
+    }
+
+    public @NotNull StringSlice trim(@NotNull CharPredicate predicate) {
+        int begin = offset;
+        int end = offset + length;
+
+        while (begin < end && predicate.test(value.charAt(begin))) {
+            begin++;
+        }
+        while (begin < end && predicate.test(value.charAt(end - 1))) {
+            end--;
+        }
+
+        return end - begin == this.length ? this : StringSlice.ofChecked(value, begin, end);
+    }
+
     public boolean startsWith(@NotNull String prefix) {
         return startsWith(prefix, 0);
     }
@@ -237,6 +268,10 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     }
 
     public boolean contains(char ch) {
+        return indexOf(ch) >= 0;
+    }
+
+    public boolean contains(int ch) {
         return indexOf(ch) >= 0;
     }
 
@@ -322,6 +357,8 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         if (beginIndex != endIndex)
             builder.append(this.value, this.offset + beginIndex, this.offset + endIndex);
     }
+
+    //region Convert
 
     public boolean toBoolean() {
         return contentEqualsIgnoreCase("true");
@@ -527,6 +564,8 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         }
     }
 
+    //endregion
+
     @Override
     public int hashCode() {
         int h = hash;
@@ -550,7 +589,7 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return value.substring(offset, offset + length);
     }
 

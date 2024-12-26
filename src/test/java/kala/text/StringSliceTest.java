@@ -56,4 +56,15 @@ public class StringSliceTest {
         assertSliceEquals("", slice.substring(3));
         assertThrows(IndexOutOfBoundsException.class, () -> slice.substring(4));
     }
+
+    @Test
+    void trimTest() {
+        assertSliceEquals("", StringSlice.of("").trim());
+        assertSliceEquals("", StringSlice.of("\t").trim());
+        assertSliceEquals("", StringSlice.of("\t\t").trim());
+        assertSliceEquals("abc", StringSlice.of("abc").trim());
+        assertSliceEquals("abc", StringSlice.of(" abc ").trim());
+        assertSliceEquals("abc", StringSlice.of(" abc\t").trim());
+        assertSliceEquals("a b\tc", StringSlice.of(" \ta b\tc\t  \t\b").trim());
+    }
 }
