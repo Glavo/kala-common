@@ -54,6 +54,8 @@ public class StringSliceTest {
         assertSliceEquals("bc", slice.substring(1));
         assertSliceEquals("c", slice.substring(2));
         assertSliceEquals("", slice.substring(3));
+        assertSliceEquals("ab", slice.substring(0, 2));
+        assertSliceEquals("b", slice.substring(1, 2));
         assertThrows(IndexOutOfBoundsException.class, () -> slice.substring(4));
     }
 
@@ -66,5 +68,23 @@ public class StringSliceTest {
         assertSliceEquals("abc", StringSlice.of(" abc ").trim());
         assertSliceEquals("abc", StringSlice.of(" abc\t").trim());
         assertSliceEquals("a b\tc", StringSlice.of(" \ta b\tc\t  \t\b").trim());
+    }
+
+    @Test
+    void replaceTest() {
+        assertSliceEquals("zbc", StringSlice.of("abc").replace('a', 'z'));
+        assertSliceEquals("zzbcz", StringSlice.of("aabca").replace('a', 'z'));
+    }
+
+    @Test
+    void repeatTest() {
+        assertSliceEquals("", StringSlice.empty().repeat(0));
+        assertSliceEquals("", StringSlice.empty().repeat(1));
+        assertSliceEquals("", StringSlice.empty().repeat(10));
+        assertSliceEquals("", StringSlice.of("a").repeat(0));
+        assertSliceEquals("a", StringSlice.of("a").repeat(1));
+        assertSliceEquals("a".repeat(10), StringSlice.of("a").repeat(10));
+        assertSliceEquals("abc", StringSlice.of("abc").repeat(1));
+        assertSliceEquals("abc".repeat(10), StringSlice.of("abc").repeat(10));
     }
 }

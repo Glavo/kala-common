@@ -70,6 +70,10 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         return this.length == 0;
     }
 
+    public boolean isNotEmpty() {
+        return this.length != 0;
+    }
+
     @ApiStatus.Internal
     public String source() {
         return value;
@@ -306,6 +310,37 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         return StringSlice.of(res.toString());
     }
 
+    public StringSlice repeat(int times) {
+        if (times < 0) {
+            throw new IllegalArgumentException("Times cannot be negative");
+        }
+
+        if (times == 0 || this.isEmpty()) {
+            return EMPTY;
+        }
+
+        if (times == 1) {
+            return this;
+        }
+
+        if (this.length == 1) {
+            return this.value.length() == 1
+                    ? StringSlice.of(this.value.repeat(times))
+                    : StringSlice.of(String.valueOf(this.value.charAt(offset)).repeat(times));
+        }
+
+        long newLength = (long) this.length * times;
+        if (newLength > Integer.MAX_VALUE) {
+            throw new OutOfMemoryError("Required length exceeds implementation limit");
+        }
+
+        StringBuilder builder = new StringBuilder((int) newLength);
+        for (int i = 0; i < times; i++) {
+            this.appendTo(builder);
+        }
+        return StringSlice.of(builder.toString());
+    }
+
     public boolean contentEquals(StringSlice other) {
         return this == other || this.length == other.length && this.value.regionMatches(this.offset, other.value, other.offset, this.length);
     }
@@ -356,6 +391,13 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         Conditions.checkPositionIndices(beginIndex, endIndex, this.length);
         if (beginIndex != endIndex)
             builder.append(this.value, this.offset + beginIndex, this.offset + endIndex);
+    }
+
+    /**
+     * @see StringFormat
+     */
+    public StringSlice format(Object... args) {
+        return StringSlice.of(StringFormat.format(this.toString(), args)); // TODO: opt
     }
 
     //region Convert
