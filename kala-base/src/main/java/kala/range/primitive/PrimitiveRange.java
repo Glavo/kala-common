@@ -17,7 +17,5 @@ package kala.range.primitive;
 
 import kala.range.Range;
 
-public abstract sealed class PrimitiveRange<T> extends Range<T> permits FloatingRange, IntegralRange {
-    PrimitiveRange() {
-    }
+public sealed interface PrimitiveRange<T> extends Range<T> permits FloatingRange, IntegralRange {
 }

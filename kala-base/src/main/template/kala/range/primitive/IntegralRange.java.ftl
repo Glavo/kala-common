@@ -33,7 +33,7 @@ import java.util.function.${Type}Consumer;
 import kala.function.${Type}Consumer;
 </#if>
 
-public final class ${Type}Range extends IntegralRange<${WrapperType}> implements ${Type}Traversable, Serializable {
+public final class ${Type}Range implements IntegralRange<${WrapperType}>, ${Type}Traversable, Serializable {
     @Serial
     private static final long serialVersionUID = ${SerialVersionUID};
     private static final int HASH_MAGIC = ${HashMagic};

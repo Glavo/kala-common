@@ -30,7 +30,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
-public final class GenericRange<T> extends Range<T> implements Serializable {
+public final class GenericRange<T> implements Range<T>, Serializable {
     @Serial
     private static final long serialVersionUID = 4151410859736356449L;
 

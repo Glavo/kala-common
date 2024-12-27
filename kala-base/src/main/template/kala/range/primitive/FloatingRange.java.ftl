@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Serial;
 
-public final class ${Type}Range extends FloatingRange<${WrapperType}> {
+public final class ${Type}Range implements FloatingRange<${WrapperType}> {
     @Serial
     private static final long serialVersionUID = ${SerialVersionUID};
     private static final int HASH_MAGIC = ${HashMagic};

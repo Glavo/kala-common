@@ -20,22 +20,23 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 
-public sealed abstract class Range<T> implements Serializable permits GenericRange, PrimitiveRange {
-    public abstract @NotNull RangeType getType();
+public sealed interface Range<T> extends Serializable permits GenericRange, PrimitiveRange {
 
-    public final BoundType getLowerBoundType() {
+    @NotNull RangeType getType();
+
+    default BoundType getLowerBoundType() {
         return getType().getLowerBoundType();
     }
 
-    public final BoundType getUpperBoundType() {
+    default BoundType getUpperBoundType() {
         return getType().getUpperBoundType();
     }
 
-    public final boolean hasLowerBound() {
+    default boolean hasLowerBound() {
         return getType() != RangeType.EMPTY && getLowerBoundType() != BoundType.INFINITY;
     }
 
-    public final boolean hasUpperBound() {
+    default boolean hasUpperBound() {
         return getType() != RangeType.EMPTY && getUpperBoundType() != BoundType.INFINITY;
     }
 }

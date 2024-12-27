@@ -15,7 +15,5 @@
  */
 package kala.range.primitive;
 
-public abstract sealed class FloatingRange<T extends Number> extends PrimitiveRange<T> permits DoubleRange, FloatRange {
-    FloatingRange() {
-    }
+public sealed interface FloatingRange<T extends Number> extends PrimitiveRange<T> permits DoubleRange, FloatRange {
 }
