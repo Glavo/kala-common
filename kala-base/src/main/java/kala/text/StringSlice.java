@@ -16,6 +16,8 @@
 package kala.text;
 
 import kala.Conditions;
+import kala.collection.base.AbstractIterator;
+import kala.collection.base.Traversable;
 import kala.collection.base.primitive.ByteArrays;
 import kala.collection.base.primitive.CharArrays;
 import kala.control.primitive.*;
@@ -299,6 +301,12 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         String newValue = toString().toUpperCase(locale);
         //noinspection StringEquality
         return newValue == value ? this : StringSlice.of(newValue);
+    }
+
+    // ---
+
+    public @NotNull Traversable<StringSlice> lines() {
+        return Traversable.ofSupplier(LinesIterator::new);
     }
 
     // ---
@@ -706,5 +714,48 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
                 return c1 - c2;
         }
         return this.length - other.length;
+    }
+
+    private final class LinesIterator extends AbstractIterator<StringSlice> {
+        private int index = offset;
+        private final int endIndex = offset + length;
+
+        private int indexOfLineSeparator(int beginIndex) {
+            for (int i = beginIndex; i < endIndex; i++) {
+                char ch = value.charAt(i);
+                if (ch == '\n' || ch == '\r') {
+                    return i;
+                }
+            }
+            return endIndex;
+        }
+
+        private int skipLineSeparator(int beginIndex) {
+            if (beginIndex < endIndex) {
+                if (value.charAt(beginIndex) == '\r') {
+                    int next = beginIndex + 1;
+                    if (next < endIndex && value.charAt(next) == '\n') {
+                        return next + 1;
+                    }
+                }
+                return beginIndex + 1;
+            }
+            return endIndex;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return index < endIndex;
+        }
+
+        @Override
+        public StringSlice next() {
+            checkStatus();
+
+            int start = index;
+            int end = indexOfLineSeparator(start);
+            index = skipLineSeparator(end);
+            return StringSlice.ofChecked(value, start, end);
+        }
     }
 }

@@ -15,7 +15,11 @@
  */
 package kala.text;
 
+import kala.collection.CollectionLike;
+import kala.collection.Seq;
 import org.junit.jupiter.api.*;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -86,5 +90,11 @@ public class StringSliceTest {
         assertSliceEquals("a".repeat(10), StringSlice.of("a").repeat(10));
         assertSliceEquals("abc", StringSlice.of("abc").repeat(1));
         assertSliceEquals("abc".repeat(10), StringSlice.of("abc").repeat(10));
+    }
+
+    @Test
+    void linesTest() {
+        assertIterableEquals(List.of("123", "456", "", "789", "", "101112"),
+                StringSlice.of("123\r\n456\n\n789\r\n\n101112\n").lines().map(Seq.factory(), StringSlice::toString));
     }
 }

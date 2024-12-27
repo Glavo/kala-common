@@ -44,16 +44,16 @@ import java.util.function.*;
 import java.util.stream.*;
 
 @FunctionalInterface
-@SuppressWarnings({"unchecked", "UnstableApiUsage"})
+@SuppressWarnings("unchecked")
 public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T> {
 
     @SuppressWarnings("unchecked")
     @Contract(value = "_ -> param1", pure = true)
-    static <T> Traversable<T> narrow(Traversable<? extends T> traversable) {
+    static <T> @NotNull Traversable<T> narrow(Traversable<? extends T> traversable) {
         return (Traversable<T>) traversable;
     }
 
-    static <T> Traversable<T> wrap(@NotNull Iterable<T> iterable) {
+    static <T> @NotNull Traversable<T> wrap(@NotNull Iterable<T> iterable) {
         Objects.requireNonNull(iterable);
 
         if (iterable instanceof Traversable) {
@@ -61,6 +61,21 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         }
 
         return iterable::iterator;
+    }
+
+    static <T> @NotNull Traversable<T> ofSupplier(@NotNull Supplier<? extends Iterator<? extends T>> supplier) {
+        Objects.requireNonNull(supplier);
+        return new Traversable<>() {
+            @Override
+            public @NotNull Iterator<T> iterator() {
+                return Iterators.narrow(supplier.get());
+            }
+
+            @Override
+            public String toString() {
+                return joinToString(", ", "Traversable[", "]");
+            }
+        };
     }
 
     default @NotNull Traversable<T> asGeneric() {
