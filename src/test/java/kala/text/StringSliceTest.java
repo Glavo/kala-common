@@ -81,6 +81,11 @@ public class StringSliceTest {
     }
 
     @Test
+    void replaceRangeTest() {
+        assertSliceEquals("3foo6", StringSlice.of("123456789", 2, 6).replaceRange(1, 3, "foo"));
+    }
+
+    @Test
     void repeatTest() {
         assertSliceEquals("", StringSlice.empty().repeat(0));
         assertSliceEquals("", StringSlice.empty().repeat(1));

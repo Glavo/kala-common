@@ -17,6 +17,7 @@ package kala.text;
 
 import kala.Conditions;
 import kala.collection.base.AbstractIterator;
+import kala.collection.base.Iterators;
 import kala.collection.base.Traversable;
 import kala.collection.base.primitive.ByteArrays;
 import kala.collection.base.primitive.CharArrays;
@@ -31,8 +32,13 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.ServiceLoader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class StringSlice implements Comparable<StringSlice>, CharSequence, Serializable {
     @Serial
@@ -244,6 +250,24 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         return StringSlice.of(res.toString());
     }
 
+    public @NotNull StringSlice replaceRange(int beginIndex, int endIndex, @NotNull String replacement) {
+        return replaceRange(beginIndex, endIndex, StringSlice.of(replacement));
+    }
+
+    public @NotNull StringSlice replaceRange(int beginIndex, int endIndex, @NotNull StringSlice replacement) {
+        Conditions.checkPositionIndices(beginIndex, endIndex, length);
+
+        if (this.length == 0) {
+            return replacement;
+        }
+
+        StringBuilder builder = new StringBuilder(this.length - endIndex + beginIndex + replacement.length);
+        builder.append(this.value, offset, offset + beginIndex);
+        replacement.appendTo(builder);
+        builder.append(this.value, offset + endIndex, offset + length);
+        return StringSlice.of(builder.toString());
+    }
+
     public @NotNull StringSlice repeat(int times) {
         if (times < 0) {
             throw new IllegalArgumentException("Times cannot be negative");
@@ -328,6 +352,10 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         }
 
         return true;
+    }
+
+    public boolean isNotBlank() {
+        return !isBlank();
     }
 
     public boolean startsWith(@NotNull String prefix) {

@@ -60,7 +60,7 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
             return narrow((Traversable<T>) iterable);
         }
 
-        return iterable::iterator;
+        return ofSupplier(iterable::iterator);
     }
 
     static <T> @NotNull Traversable<T> ofSupplier(@NotNull Supplier<? extends Iterator<? extends T>> supplier) {
