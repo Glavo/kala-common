@@ -26,6 +26,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
@@ -501,6 +502,12 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     }
 
     public void appendTo(StringBuffer builder) {
+        if (length > 0) {
+            builder.append(this.value, this.offset, this.offset + this.length);
+        }
+    }
+
+    public void appendTo(Appendable builder) throws IOException {
         if (length > 0) {
             builder.append(this.value, this.offset, this.offset + this.length);
         }
