@@ -32,6 +32,8 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.*;
+import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -88,6 +90,10 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     @Override
     public int length() {
         return length;
+    }
+
+    public CharacterIterator characterIterator() {
+        return new StringCharacterIterator(value, offset, offset + length, offset);
     }
 
     @Override
