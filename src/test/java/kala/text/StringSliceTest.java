@@ -15,7 +15,6 @@
  */
 package kala.text;
 
-import kala.collection.CollectionLike;
 import kala.collection.Seq;
 import org.junit.jupiter.api.*;
 
@@ -49,6 +48,17 @@ public class StringSliceTest {
         assertFalse(slice.contains("bc"));
         assertFalse(slice.contains("abc"));
         assertFalse(slice.contains("ac"));
+    }
+
+    @Test
+    void indexOfTest() {
+        assertEquals(1, StringSlice.of("abc").indexOf('b'));
+        assertEquals(0, StringSlice.of("abc", 1).indexOf('b'));
+        assertEquals(-1, StringSlice.of("abc").indexOf('d'));
+        assertEquals(-1, StringSlice.of("abc", 1, 2).indexOf('a'));
+        assertEquals(-1, StringSlice.of("abc").indexOf('a', 1, 2));
+        assertEquals(1, StringSlice.of("abc").indexOf('b', 1, 2));
+        assertEquals(0, StringSlice.of("abc", 1, 3).indexOf('b', 0, 1));
     }
 
     @Test

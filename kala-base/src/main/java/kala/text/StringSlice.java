@@ -17,7 +17,6 @@ package kala.text;
 
 import kala.Conditions;
 import kala.collection.base.AbstractIterator;
-import kala.collection.base.Iterators;
 import kala.collection.base.Traversable;
 import kala.collection.base.primitive.ByteArrays;
 import kala.collection.base.primitive.CharArrays;
@@ -32,13 +31,8 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.ServiceLoader;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public final class StringSlice implements Comparable<StringSlice>, CharSequence, Serializable {
     @Serial
@@ -64,6 +58,11 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
 
     public static @NotNull StringSlice of(@NotNull String value) {
         return !value.isEmpty() ? new StringSlice(value, 0, value.length()) : EMPTY;
+    }
+
+    public static @NotNull StringSlice of(@NotNull String value, int beginIndex) {
+        Conditions.checkPositionIndex(beginIndex, value.length());
+        return ofChecked(value, beginIndex, value.length());
     }
 
     public static @NotNull StringSlice of(@NotNull String value, int beginIndex, int endIndex) {
@@ -386,39 +385,36 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         return startsWith(suffix, this.length - suffix.length());
     }
 
+    private int mapResultIndex(int sourceIndex) {
+        return sourceIndex >= 0 ? sourceIndex - offset : sourceIndex;
+    }
+
     public int indexOf(char ch) {
-        return indexOf(ch, 0, length);
+        return indexOf(ch, 0);
     }
 
     public int indexOf(char ch, int beginIndex) {
-        return indexOf(ch, beginIndex, length);
+        Conditions.checkPositionIndex(beginIndex, length);
+        return mapResultIndex(value.indexOf(ch, offset + beginIndex, offset + length));
     }
 
     public int indexOf(char ch, int beginIndex, int endIndex) {
         Conditions.checkPositionIndices(beginIndex, endIndex, length);
-
-        for (int i = beginIndex + offset; i < endIndex + offset; i++) {
-            if (value.charAt(i) == ch)
-                return i;
-        }
-        return -1;
+        return mapResultIndex(value.indexOf(ch, offset + beginIndex, offset + endIndex));
     }
 
     public int indexOf(int ch) {
         return indexOf(ch, 0);
     }
 
-    public int indexOf(int ch, int fromIndex) {
-        if (ch <= 0xFFFF)
-            return indexOf((char) ch, 0, length);
+    public int indexOf(int ch, int beginIndex) {
+        Conditions.checkPositionIndex(beginIndex, length);
+        return mapResultIndex(value.indexOf(ch, offset + beginIndex, offset + length));
+    }
 
-        if (fromIndex >= length)
-            return -1;
-        if (fromIndex < 0)
-            fromIndex = 0;
-
-        int idx = value.indexOf(ch, fromIndex + offset);
-        return idx >= offset && idx < offset + length ? idx - offset : -1;
+    public int indexOf(int ch, int beginIndex, int endIndex) {
+        Conditions.checkPositionIndices(beginIndex, endIndex, length);
+        return mapResultIndex(value.indexOf(ch, offset + beginIndex, offset + endIndex));
     }
 
     public boolean contains(char ch) {
