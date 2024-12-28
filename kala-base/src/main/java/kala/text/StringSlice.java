@@ -92,7 +92,19 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     @Override
     public char charAt(int index) {
         Objects.checkIndex(index, length);
-        return value.charAt(index + offset);
+        return value.charAt(offset + index);
+    }
+
+    public int codePointAt(int index) {
+        Objects.checkIndex(index, length);
+        char c1 = value.charAt(offset + index);
+        if (Character.isHighSurrogate(c1) && index < length - 1) {
+            char c2 = value.charAt(index + 1);
+            if (Character.isLowSurrogate(c2)) {
+                return Character.toCodePoint(c1, c2);
+            }
+        }
+        return c1;
     }
 
     public char[] getChars() {
@@ -216,7 +228,6 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         return startsWith(prefix) ? substring(prefix.length()) : this;
     }
 
-
     public @NotNull StringSlice removeSuffix(@NotNull String prefix) {
         return endsWith(prefix) ? substring(0, this.length - prefix.length()) : this;
     }
@@ -228,24 +239,24 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     // ---
 
     public @NotNull StringSlice replace(char oldChar, char newChar) {
-        if (oldChar == newChar)
+        if (oldChar == newChar) {
             return this;
-
-        int idx = indexOf(oldChar);
-        if (idx < 0)
-            return this;
-
-        StringBuilder res = new StringBuilder(this.length);
-
-        idx += offset;
-        res.append(this.value, offset, idx);
-        res.append(newChar);
-
-        while (++idx < this.offset + this.length) {
-            char ch = this.value.charAt(idx);
-            res.append(ch == oldChar ? newChar : ch);
         }
 
+        int idx = indexOf(oldChar);
+        if (idx < 0) {
+            return this;
+        }
+
+        StringBuilder res = new StringBuilder(this.length);
+        this.appendTo(res);
+        do {
+            res.setCharAt(idx, newChar);
+            if (idx == this.length - 1) {
+                break;
+            }
+            idx = indexOf(oldChar, idx + 1);
+        } while (idx >= 0);
         return StringSlice.of(res.toString());
     }
 
@@ -477,13 +488,16 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     }
 
     public void appendTo(StringBuilder builder) {
-        appendTo(builder, 0, this.length);
+        if (length > 0) {
+            builder.append(this.value, this.offset, this.offset + this.length);
+        }
     }
 
     public void appendTo(StringBuilder builder, int beginIndex, int endIndex) {
         Conditions.checkPositionIndices(beginIndex, endIndex, this.length);
-        if (beginIndex != endIndex)
+        if (beginIndex != endIndex) {
             builder.append(this.value, this.offset + beginIndex, this.offset + endIndex);
+        }
     }
 
     /**

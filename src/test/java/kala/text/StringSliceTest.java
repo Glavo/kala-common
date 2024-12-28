@@ -29,6 +29,14 @@ public class StringSliceTest {
     }
 
     @Test
+    void isEmptyTest() {
+        assertTrue(StringSlice.of("").isEmpty());
+        assertFalse(StringSlice.of("abc").isEmpty());
+        assertFalse(StringSlice.of("abc", 1, 2).isEmpty());
+        assertTrue(StringSlice.of("abc", 1, 1).isEmpty());
+    }
+
+    @Test
     void containsTest() {
         StringSlice slice = StringSlice.of("abc");
         assertTrue(slice.contains(""));
