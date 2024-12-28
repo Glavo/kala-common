@@ -500,6 +500,12 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         }
     }
 
+    public void appendTo(StringBuffer builder) {
+        if (length > 0) {
+            builder.append(this.value, this.offset, this.offset + this.length);
+        }
+    }
+
     /**
      * @see StringFormat
      */
