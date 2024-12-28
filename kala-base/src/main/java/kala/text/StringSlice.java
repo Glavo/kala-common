@@ -35,6 +35,7 @@ import java.nio.charset.*;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public final class StringSlice implements Comparable<StringSlice>, CharSequence, Serializable {
@@ -348,6 +349,65 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
 
     public @NotNull Traversable<StringSlice> lines() {
         return Traversable.ofSupplier(LinesIterator::new);
+    }
+
+    public @NotNull Traversable<StringSlice> split(char delimiter) {
+        return split((int) delimiter);
+    }
+
+    public @NotNull Traversable<StringSlice> split(char delimiter, int limit) {
+        return split((int) delimiter, limit);
+    }
+
+    public @NotNull Traversable<StringSlice> split(int delimiter) {
+        return split(delimiter, 0);
+    }
+
+    public @NotNull Traversable<StringSlice> split(int delimiter, int limit) {
+        int end = this.offset + this.length;
+        int delimiterCharCount = Character.charCount(delimiter);
+
+        return Traversable.ofSupplier(() -> new AbstractIterator<>() {
+            private int index = offset;
+            private int resultCount = 0;
+            private boolean hasTrailingEmpty = true;
+
+            @Override
+            public boolean hasNext() {
+                return index < end || hasTrailingEmpty;
+            }
+
+            @Override
+            public StringSlice next() {
+                if (index >= end) {
+                    if (hasTrailingEmpty) {
+                        hasTrailingEmpty = false;
+                        return StringSlice.empty();
+                    } else {
+                        throw new NoSuchElementException();
+                    }
+                }
+
+                StringSlice result;
+                if (limit <= 0 || resultCount < limit - 1) {
+                    int delimiterIdx = value.indexOf(delimiter, index, end);
+                    if (delimiterIdx < 0) {
+                        result = StringSlice.of(value, index, end);
+                        hasTrailingEmpty = false;
+                        index = end;
+                    } else {
+                        result = StringSlice.of(value, index, delimiterIdx);
+                        index = delimiterIdx + delimiterCharCount;
+                    }
+                } else {
+                    result = StringSlice.of(value, index, end);
+                    hasTrailingEmpty = false;
+                    index = end;
+                }
+                resultCount++;
+                return result;
+            }
+        });
     }
 
     // ---

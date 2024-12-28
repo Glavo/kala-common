@@ -16,6 +16,7 @@
 package kala.text;
 
 import kala.collection.Seq;
+import kala.collection.base.Traversable;
 import org.junit.jupiter.api.*;
 
 import java.util.List;
@@ -26,6 +27,10 @@ public class StringSliceTest {
 
     private static void assertSliceEquals(String expected, StringSlice actual) {
         assertEquals(StringSlice.of(expected), actual);
+    }
+
+    private static void assertSlicesEquals(List<String> expected, Traversable<StringSlice> actual) {
+        assertIterableEquals(expected, actual.stream().map(StringSlice::toString).toList());
     }
 
     @Test
@@ -117,7 +122,17 @@ public class StringSliceTest {
 
     @Test
     void linesTest() {
-        assertIterableEquals(List.of("123", "456", "", "789", "", "101112"),
-                StringSlice.of("123\r\n456\n\n789\r\n\n101112\n").lines().map(Seq.factory(), StringSlice::toString));
+        assertSlicesEquals(List.of("123", "456", "", "789", "", "101112"),
+                StringSlice.of("123\r\n456\n\n789\r\n\n101112\n").lines());
+    }
+
+    @Test
+    void splitTest() {
+        assertSlicesEquals(List.of(""), StringSlice.of("").split(':'));
+        assertSlicesEquals(List.of("a", "b"), StringSlice.of("a:b").split(':'));
+        assertSlicesEquals(List.of("a", "", "b"), StringSlice.of("a::b").split(':'));
+        assertSlicesEquals(List.of("", "a", "", "b", ""), StringSlice.of(":a::b:").split(':'));
+        assertSlicesEquals(List.of("", "a", "", "b", ""), StringSlice.of("\uD83D\uDE00a\uD83D\uDE00\uD83D\uDE00b\uD83D\uDE00").split(Character.toCodePoint('\uD83D', '\uDE00')));
+        assertSlicesEquals(List.of("", "a", ":b:"), StringSlice.of(":a::b:").split(':', 3));
     }
 }
