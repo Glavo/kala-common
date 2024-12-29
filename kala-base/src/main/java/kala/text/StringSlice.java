@@ -40,6 +40,7 @@ import java.text.StringCharacterIterator;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 
 public final class StringSlice implements Comparable<StringSlice>, CharSequence, Serializable {
@@ -126,8 +127,10 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         return getChars(0, length);
     }
 
-    public char @NotNull [] getChars(int beginIndex, int endIndex) {
-        Conditions.checkPositionIndices(beginIndex, endIndex, length);
+    public char @NotNull [] getChars(@Index int beginIndex, @Index int endIndex) {
+        beginIndex = Indexes.checkBeginIndex(beginIndex, length);
+        endIndex = Indexes.checkEndIndex(beginIndex, endIndex, length);
+
         int resLength = endIndex - beginIndex;
         if (resLength == 0)
             return CharArrays.EMPTY;
@@ -149,8 +152,10 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         return getBytes(charset, 0, length);
     }
 
-    public byte @NotNull [] getBytes(Charset charset, int beginIndex, int endIndex) {
-        Conditions.checkPositionIndices(beginIndex, endIndex, length);
+    public byte @NotNull [] getBytes(Charset charset, @Index int beginIndex, @Index int endIndex) {
+        beginIndex = Indexes.checkBeginIndex(beginIndex, length);
+        endIndex = Indexes.checkEndIndex(beginIndex, endIndex, length);
+
         if (beginIndex == endIndex)
             return ByteArrays.EMPTY;
         if (this.value.length() == endIndex - beginIndex)
@@ -829,6 +834,10 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
 
             action.accept(c1);
         }
+    }
+
+    public void forEachGrapheme(@NotNull Consumer<? super StringSlice> action) {
+
     }
 
     @Override
