@@ -38,9 +38,7 @@ import java.text.StringCharacterIterator;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.IntConsumer;
-import java.util.function.IntPredicate;
 
 public final class StringSlice implements Comparable<StringSlice>, CharSequence, Serializable {
     @Serial
@@ -457,6 +455,20 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     public int indexOf(int ch, int beginIndex, int endIndex) {
         Conditions.checkPositionIndices(beginIndex, endIndex, length);
         return mapResultIndex(value.indexOf(ch, offset + beginIndex, offset + endIndex));
+    }
+
+    public int indexOf(String str) {
+        return indexOf(str, 0);
+    }
+
+    public int indexOf(String str, int beginIndex) {
+        Conditions.checkPositionIndex(beginIndex, length);
+        return mapResultIndex(value.indexOf(str, offset + beginIndex, offset + length));
+    }
+
+    public int indexOf(String str, int beginIndex, int endIndex) {
+        Conditions.checkPositionIndices(beginIndex, endIndex, length);
+        return mapResultIndex(value.indexOf(str, offset + beginIndex, offset + endIndex));
     }
 
     public boolean contains(char ch) {
