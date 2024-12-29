@@ -48,6 +48,9 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     private final String value;
     private final int offset;
     private final int length;
+
+    // Cache
+    private String toString;
     private int hash;
 
     private StringSlice(String value, int offset, int length) {
@@ -767,7 +770,11 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
 
     @Override
     public @NotNull String toString() {
-        return value.substring(offset, offset + length);
+        if (toString != null) {
+            return toString;
+        }
+
+        return toString = value.substring(offset, offset + length);
     }
 
     @Override
