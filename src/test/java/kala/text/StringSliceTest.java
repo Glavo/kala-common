@@ -50,16 +50,29 @@ public class StringSliceTest {
     @Test
     void graphemes() {
         String family = "\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67\u200D\uD83D\uDC66";
-        List<String> expected = List.of("a", "b", "c", " ", "你", "好", " ", family);
-        StringSlice slice = StringSlice.of("abc 你好 " + family);
+
+        var expected = List.of("a", "b", "c", " ", "你", "好", " ", family, "\uD83D\uDE0A");
+        var slice = StringSlice.of("abc 你好 " + family + "\uD83D\uDE0A");
+
+        var expected2 = List.of("b", "c", " ", "你", "好", " ", family, "\uD83D");
+        var slice2 = slice.slice(1, ~1);
 
         ArrayList<String> result = new ArrayList<>();
+
         slice.forEachGrapheme(grapheme -> result.add(grapheme.toString()));
         assertEquals(expected, result);
 
         result.clear();
+        slice2.forEachGrapheme(grapheme -> result.add(grapheme.toString()));
+        assertEquals(expected2, result);
+
+        result.clear();
         slice.graphemes().forEach(grapheme -> result.add(grapheme.toString()));
         assertEquals(expected, result);
+
+        result.clear();
+        slice2.graphemes().forEach(grapheme -> result.add(grapheme.toString()));
+        assertEquals(expected2, result);
     }
 
     @Test
