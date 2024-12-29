@@ -16,6 +16,7 @@
 package kala.text;
 
 import kala.Conditions;
+import kala.annotations.ReplaceWith;
 import kala.collection.base.AbstractIterator;
 import kala.collection.base.Traversable;
 import kala.collection.base.primitive.ByteArrays;
@@ -23,7 +24,9 @@ import kala.collection.base.primitive.CharArrays;
 import kala.control.primitive.*;
 import kala.function.CharConsumer;
 import kala.function.CharPredicate;
+import kala.index.Index;
 import kala.index.IndexRange;
+import kala.index.Indexes;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -104,13 +107,13 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     }
 
     @Override
-    public char charAt(int index) {
-        Objects.checkIndex(index, length);
-        return value.charAt(offset + index);
+    public char charAt(@Index int index) {
+        return value.charAt(offset + Indexes.checkElementIndex(index, length));
     }
 
-    public int codePointAt(int index) {
-        Objects.checkIndex(index, length);
+    public int codePointAt(@Index int index) {
+        index = Indexes.checkElementIndex(index, length);
+
         char c1 = value.charAt(offset + index);
         if (Character.isHighSurrogate(c1) && index < length - 1) {
             char c2 = value.charAt(index + 1);
@@ -176,29 +179,26 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
 
     @Override
     public @NotNull StringSlice subSequence(int start, int end) {
-        return this.slice(start, end);
+        Objects.checkFromToIndex(start, end, length);
+        return slice(start, end);
     }
 
-    public @NotNull StringSlice substring(int beginIndex) {
+    public @NotNull StringSlice substring(@Index int beginIndex) {
         return slice(beginIndex);
     }
 
-    public @NotNull StringSlice substring(int beginIndex, int endIndex) {
+    public @NotNull StringSlice substring(@Index int beginIndex, @Index int endIndex) {
         return slice(beginIndex, endIndex);
     }
 
-    public @NotNull StringSlice slice(int beginIndex) {
+    public @NotNull StringSlice slice(@Index int beginIndex) {
         return slice(beginIndex, length);
     }
 
-    public @NotNull StringSlice slice(int beginIndex, int endIndex) {
-        Conditions.checkPositionIndices(beginIndex, endIndex, length);
+    public @NotNull StringSlice slice(@Index int beginIndex, @Index int endIndex) {
+        beginIndex = Indexes.checkBeginIndex(beginIndex, length);
+        endIndex = Indexes.checkEndIndex(beginIndex, endIndex, length);
         return beginIndex != endIndex ? new StringSlice(value, offset + beginIndex, endIndex - beginIndex) : EMPTY;
-    }
-
-    public @NotNull StringSlice slice(@NotNull IndexRange range) {
-        range = range.check(length);
-        return slice(range.getBeginIndex(), range.getEndIndex());
     }
 
     public @NotNull StringSlice concat(@NotNull String other) {

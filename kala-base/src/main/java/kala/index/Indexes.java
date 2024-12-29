@@ -61,5 +61,15 @@ public final class Indexes {
         return normalizePositionIndex(index, length);
     }
 
+    public static int checkBeginIndex(@Index int index, @Range(from = 0, to = Integer.MAX_VALUE) int length) {
+        return checkPositionIndex(index, length);
+    }
 
+    public static int checkEndIndex(int checkedBeginIndex, @Index int endIndex, @Range(from = 0, to = Integer.MAX_VALUE) int length) {
+        int checkedEndIndex = checkPositionIndex(endIndex, length);
+        if (checkedEndIndex < checkedBeginIndex) {
+            throw new IndexOutOfBoundsException("beginIndex is larger than endIndex");
+        }
+        return checkedEndIndex;
+    }
 }
