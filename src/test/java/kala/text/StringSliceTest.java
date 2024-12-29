@@ -33,6 +33,20 @@ public class StringSliceTest {
     }
 
     @Test
+    void charAtTest() {
+        var slice = StringSlice.of("abc");
+        assertEquals('a', slice.charAt(0));
+        assertEquals('b', slice.charAt(1));
+        assertEquals('c', slice.charAt(2));
+        assertEquals('c', slice.charAt(~1));
+        assertEquals('b', slice.charAt(~2));
+        assertEquals('a', slice.charAt(~3));
+
+        assertThrows(IndexOutOfBoundsException.class, () -> slice.charAt(4));
+        assertThrows(IndexOutOfBoundsException.class, () -> slice.charAt(~4));
+    }
+
+    @Test
     void isEmptyTest() {
         assertTrue(StringSlice.of("").isEmpty());
         assertFalse(StringSlice.of("abc").isEmpty());
