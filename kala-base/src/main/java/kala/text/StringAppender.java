@@ -400,8 +400,8 @@ public class StringAppender extends Writer implements Externalizable {
 
     @Override
     public StringAppender append(CharSequence s) {
-        if (s instanceof StringSlice)
-            ((StringSlice) s).appendTo(builder);
+        if (s instanceof StringSlice slice)
+            slice.appendTo(builder);
         else
             builder.append(s);
         return this;
@@ -409,8 +409,8 @@ public class StringAppender extends Writer implements Externalizable {
 
     @Override
     public StringAppender append(CharSequence s, int beginIndex, int endIndex) {
-        if (s instanceof StringSlice)
-            ((StringSlice) s).appendTo(builder, beginIndex, endIndex);
+        if (s instanceof StringSlice slice)
+            slice.slice(beginIndex, endIndex).appendTo(builder);
         else
             builder.append(s);
         return this;
