@@ -27,7 +27,7 @@ public final class Indexes {
 
     private static int normalizeElementIndex(int index, int length) {
         int actualIndex = length - ~index;
-        if (actualIndex < 0) {
+        if (actualIndex < 0 || actualIndex == length) {
             throw outOfBounds(index, length);
         }
         return actualIndex;
@@ -45,7 +45,7 @@ public final class Indexes {
 
     private static int normalizePositionIndex(int index, int length) {
         int actualIndex = length - ~index;
-        if (actualIndex <= 0) {
+        if (actualIndex < 0) {
             throw outOfBounds(index, length);
         }
         return actualIndex;
