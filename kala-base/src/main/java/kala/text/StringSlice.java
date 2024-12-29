@@ -93,7 +93,7 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         return length;
     }
 
-    public CharacterIterator characterIterator() {
+    public @NotNull CharacterIterator characterIterator() {
         return new StringCharacterIterator(value, offset, offset + length, offset);
     }
 
@@ -115,11 +115,11 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         return c1;
     }
 
-    public char[] getChars() {
+    public char @NotNull [] getChars() {
         return getChars(0, length);
     }
 
-    public char[] getChars(int beginIndex, int endIndex) {
+    public char @NotNull [] getChars(int beginIndex, int endIndex) {
         Conditions.checkPositionIndices(beginIndex, endIndex, length);
         int resLength = endIndex - beginIndex;
         if (resLength == 0)
@@ -130,19 +130,19 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         return res;
     }
 
-    public byte[] getBytes() {
+    public byte @NotNull [] getBytes() {
         return getBytes(StandardCharsets.UTF_8, 0, length);
     }
 
-    public byte[] getBytes(int beginIndex, int endIndex) {
+    public byte @NotNull [] getBytes(int beginIndex, int endIndex) {
         return getBytes(StandardCharsets.UTF_8, beginIndex, endIndex);
     }
 
-    public byte[] getBytes(Charset charset) {
+    public byte @NotNull [] getBytes(Charset charset) {
         return getBytes(charset, 0, length);
     }
 
-    public byte[] getBytes(Charset charset, int beginIndex, int endIndex) {
+    public byte @NotNull [] getBytes(Charset charset, int beginIndex, int endIndex) {
         Conditions.checkPositionIndices(beginIndex, endIndex, length);
         if (beginIndex == endIndex)
             return ByteArrays.EMPTY;
@@ -460,31 +460,35 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         return indexOf(ch) >= 0;
     }
 
-    public boolean contains(String other) {
+    public boolean contains(@NotNull String other) {
         int idx = value.indexOf(other, offset);
         return idx >= 0 && idx <= offset + length - other.length();
     }
 
-    public boolean contains(CharSequence other) {
+    public boolean contains(@NotNull StringSlice other) {
         return contains(other.toString());
     }
 
-    public boolean contentEquals(StringSlice other) {
-        return this == other || this.length == other.length && this.value.regionMatches(this.offset, other.value, other.offset, this.length);
+    public boolean contains(@NotNull CharSequence other) {
+        return contains(other.toString());
     }
 
-    public boolean contentEquals(String other) {
+    public boolean contentEquals(@NotNull String other) {
         return this.length == other.length() && this.value.regionMatches(this.offset, other, 0, this.length);
     }
 
-    public boolean contentEquals(CharSequence other) {
+    public boolean contentEquals(@NotNull StringSlice other) {
+        return this == other || this.length == other.length && this.value.regionMatches(this.offset, other.value, other.offset, this.length);
+    }
+
+    public boolean contentEquals(@NotNull CharSequence other) {
         if (this.length != other.length())
             return false;
 
-        if (other instanceof StringSlice)
-            return contentEquals(((StringSlice) other));
-        if (other instanceof String)
-            return contentEquals(((String) other));
+        if (other instanceof StringSlice s)
+            return contentEquals(s);
+        if (other instanceof String s)
+            return contentEquals(s);
 
         for (int i = 0; i < this.length; i++) {
             if (this.value.charAt(offset + i) != other.charAt(i))
@@ -493,15 +497,15 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         return true;
     }
 
-    public boolean contentEqualsIgnoreCase(StringSlice other) {
-        return this == other || this.length == other.length && this.value.regionMatches(true, this.offset, other.value, other.offset, this.length);
-    }
-
-    public boolean contentEqualsIgnoreCase(String other) {
+    public boolean contentEqualsIgnoreCase(@NotNull String other) {
         return this.length == other.length() && this.value.regionMatches(true, this.offset, other, 0, this.length);
     }
 
-    public boolean contentEqualsIgnoreCase(CharSequence other) {
+    public boolean contentEqualsIgnoreCase(@NotNull StringSlice other) {
+        return this == other || this.length == other.length && this.value.regionMatches(true, this.offset, other.value, other.offset, this.length);
+    }
+
+    public boolean contentEqualsIgnoreCase(@NotNull CharSequence other) {
         if (this.length != other.length())
             return false;
 
@@ -511,20 +515,20 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         return contentEqualsIgnoreCase(other.toString());
     }
 
-    public void appendTo(StringBuilder builder) {
+    public void appendTo(@NotNull StringBuilder builder) {
         builder.append(this.value, this.offset, this.offset + this.length);
     }
 
-    public void appendTo(StringBuilder builder, int beginIndex, int endIndex) {
+    public void appendTo(@NotNull StringBuilder builder, int beginIndex, int endIndex) {
         Conditions.checkPositionIndices(beginIndex, endIndex, this.length);
         builder.append(this.value, this.offset + beginIndex, this.offset + endIndex);
     }
 
-    public void appendTo(StringBuffer builder) {
+    public void appendTo(@NotNull StringBuffer builder) {
         builder.append(this.value, this.offset, this.offset + this.length);
     }
 
-    public void appendTo(Appendable builder) throws IOException {
+    public void appendTo(@NotNull Appendable builder) throws IOException {
         builder.append(this.value, this.offset, this.offset + this.length);
     }
 
@@ -758,11 +762,7 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!(obj instanceof StringSlice))
-            return false;
-        return contentEquals(((StringSlice) obj));
+        return this == obj || obj instanceof StringSlice other && contentEquals(other);
     }
 
     @Override
