@@ -71,13 +71,13 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         return !value.isEmpty() ? new StringSlice(value, 0, value.length()) : EMPTY;
     }
 
-    public static @NotNull StringSlice of(@NotNull String value, int beginIndex) {
-        Conditions.checkPositionIndex(beginIndex, value.length());
-        return ofChecked(value, beginIndex, value.length());
+    public static @NotNull StringSlice of(@NotNull String value, @Index int beginIndex) {
+        return ofChecked(value, Indexes.checkPositionIndex(beginIndex, value.length()), value.length());
     }
 
-    public static @NotNull StringSlice of(@NotNull String value, int beginIndex, int endIndex) {
-        Conditions.checkPositionIndices(beginIndex, endIndex, value.length());
+    public static @NotNull StringSlice of(@NotNull String value, @Index int beginIndex, @Index int endIndex) {
+        beginIndex = Indexes.checkBeginIndex(beginIndex, value.length());
+        endIndex = Indexes.checkEndIndex(beginIndex, endIndex, value.length());
         return ofChecked(value, beginIndex, endIndex);
     }
 
