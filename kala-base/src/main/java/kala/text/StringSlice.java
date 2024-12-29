@@ -35,6 +35,7 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.*;
+import java.text.BreakIterator;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 import java.util.Locale;
@@ -837,7 +838,14 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     }
 
     public void forEachGrapheme(@NotNull Consumer<? super StringSlice> action) {
+        BreakIterator iterator = BreakIterator.getCharacterInstance(Locale.ROOT);
+        iterator.setText(characterIterator());
 
+        int start = iterator.first();
+        for (int end = iterator.next(); end != BreakIterator.DONE; end = iterator.next()) {
+            action.accept(StringSlice.ofChecked(source(), start, end));
+            start = end;
+        }
     }
 
     @Override

@@ -18,6 +18,7 @@ package kala.text;
 import kala.collection.base.Traversable;
 import org.junit.jupiter.api.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -141,8 +142,7 @@ public class StringSliceTest {
 
     @Test
     void linesTest() {
-        assertSlicesEquals(List.of("123", "456", "", "789", "", "101112"),
-                StringSlice.of("123\r\n456\n\n789\r\n\n101112\n").lines());
+        assertSlicesEquals(List.of("123", "456", "", "789", "", "101112"), StringSlice.of("123\r\n456\n\n789\r\n\n101112\n").lines());
     }
 
     @Test
@@ -153,5 +153,17 @@ public class StringSliceTest {
         assertSlicesEquals(List.of("", "a", "", "b", ""), StringSlice.of(":a::b:").split(':'));
         assertSlicesEquals(List.of("", "a", "", "b", ""), StringSlice.of("\uD83D\uDE00a\uD83D\uDE00\uD83D\uDE00b\uD83D\uDE00").split(Character.toCodePoint('\uD83D', '\uDE00')));
         assertSlicesEquals(List.of("", "a", ":b:"), StringSlice.of(":a::b:").split(':', 3));
+    }
+
+    @Test
+    void forEachGraphemeTest() {
+        String family = "\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67\u200D\uD83D\uDC66";
+        List<String> expected = List.of("a", "b", "c", " ", "你", "好", " ", family);
+        StringSlice slice = StringSlice.of("abc 你好 " + family);
+
+        ArrayList<String> result = new ArrayList<>();
+        slice.forEachGrapheme(grapheme -> result.add(grapheme.toString()));
+
+        assertEquals(expected, result);
     }
 }
