@@ -21,6 +21,8 @@ import kala.collection.factory.CollectionFactory;
 import kala.control.Option;
 import kala.function.IndexedBiConsumer;
 import kala.function.IndexedFunction;
+import kala.index.Index;
+import kala.index.Indexes;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import org.jetbrains.annotations.Contract;
@@ -145,11 +147,11 @@ public final class ObjectArrays {
         return GenericArrays.iterator(array);
     }
 
-    public static @NotNull Iterator<Object> iterator(Object @NotNull [] array, int beginIndex) {
+    public static @NotNull Iterator<Object> iterator(Object @NotNull [] array, @Index int beginIndex) {
         return GenericArrays.iterator(array, beginIndex);
     }
 
-    public static @NotNull Iterator<Object> iterator(Object @NotNull [] array, int beginIndex, int endIndex) {
+    public static @NotNull Iterator<Object> iterator(Object @NotNull [] array, @Index int beginIndex, @Index int endIndex) {
         return GenericArrays.iterator(array, beginIndex, endIndex);
     }
 
@@ -171,6 +173,10 @@ public final class ObjectArrays {
         return array.length == 0;
     }
 
+    public static boolean isNotEmpty(Object @NotNull [] array) {
+        return array.length != 0;
+    }
+
     public static int size(Object @NotNull [] array) {
         return array.length;
     }
@@ -187,37 +193,25 @@ public final class ObjectArrays {
         return index >= 0 && index <= array.length;
     }
 
-    public static Object get(Object @NotNull [] array, int index) {
-        try {
-            return array[index];
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new IndexOutOfBoundsException(e.getMessage());
-        }
+    public static Object get(Object @NotNull [] array, @Index int index) {
+        return GenericArrays.get(array, index);
     }
 
-    public static @Nullable Object getOrNull(Object @NotNull [] array, int index) {
-        return index >= 0 && index <= array.length
-                ? array[index]
-                : null;
+    public static @Nullable Object getOrNull(Object @NotNull [] array, @Index int index) {
+        return GenericArrays.getOrNull(array, index);
     }
 
-    public static @NotNull Option<Object> getOption(Object @NotNull [] array, int index) {
-        return index >= 0 && index <= array.length
-                ? Option.some(array[index])
-                : Option.none();
+    public static @NotNull Option<Object> getOption(Object @NotNull [] array, @Index int index) {
+        return GenericArrays.getOption(array, index);
     }
 
-    public static void set(Object @NotNull [] array, int index, Object value) {
-        try {
-            array[index] = value;
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new IndexOutOfBoundsException(e.getMessage());
-        }
+    public static void set(Object @NotNull [] array, @Index int index, Object value) {
+        GenericArrays.set(array, index, value);
     }
 
-    public static Object @NotNull [] inserted(Object @NotNull [] array, int index, Object value) {
+    public static Object @NotNull [] inserted(Object @NotNull [] array, @Index int index, Object value) {
         final int arrayLength = array.length; // implicit null check of array
-        Conditions.checkPositionIndex(index, arrayLength);
+        index = Indexes.checkPositionIndex(index, arrayLength);
         Object[] result = new Object[arrayLength + 1];
         result[index] = value;
         System.arraycopy(array, 0, result, 0, index);
@@ -225,9 +219,9 @@ public final class ObjectArrays {
         return result;
     }
 
-    public static Object @NotNull [] removedAt(Object @NotNull [] array, int index) {
+    public static Object @NotNull [] removedAt(Object @NotNull [] array, @Index int index) {
         final int arrayLength = array.length; // implicit null check of array
-        Objects.checkIndex(index, arrayLength);
+        index = Indexes.checkElementIndex(index, arrayLength);
         Object[] result = new Object[arrayLength - 1];
         System.arraycopy(array, 0, result, 0, index);
         System.arraycopy(array, index + 1, result, index, arrayLength - index - 1);

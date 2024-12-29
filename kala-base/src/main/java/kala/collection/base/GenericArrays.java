@@ -23,6 +23,8 @@ import kala.annotations.StaticClass;
 import kala.collection.factory.CollectionFactory;
 import kala.function.IndexedBiConsumer;
 import kala.function.IndexedFunction;
+import kala.index.Index;
+import kala.index.Indexes;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import org.jetbrains.annotations.Contract;
@@ -93,10 +95,10 @@ public final class GenericArrays {
         Objects.requireNonNull(values);
         Objects.requireNonNull(type);
 
-        if (values instanceof Collection<?>) {
-            return ((Collection<? extends E>) values).toArray(create(type, 0));
-        } else if (values instanceof Traversable<?>) {
-            return ((Traversable<E>) values).toArray(type);
+        if (values instanceof Collection<? extends E> collection) {
+            return collection.toArray(create(type, 0));
+        } else if (values instanceof Traversable<? extends E> traversable) {
+            return traversable.toArray(type);
         } else {
             ArrayList<E> tmp = new ArrayList<>();
             for (E e : values) {
@@ -170,9 +172,9 @@ public final class GenericArrays {
         };
     }
 
-    public static <E> @NotNull Iterator<E> iterator(E @NotNull [] array, int beginIndex) {
+    public static <E> @NotNull Iterator<E> iterator(E @NotNull [] array, @Index int beginIndex) {
         final int arrayLength = array.length; // implicit null check of array
-        Conditions.checkPositionIndex(beginIndex, arrayLength);
+        beginIndex = Indexes.checkPositionIndex(beginIndex, arrayLength);
 
         return switch (arrayLength - beginIndex) {
             case 0 -> Iterators.empty();
@@ -181,9 +183,10 @@ public final class GenericArrays {
         };
     }
 
-    public static <E> @NotNull Iterator<E> iterator(E @NotNull [] array, int beginIndex, int endIndex) {
+    public static <E> @NotNull Iterator<E> iterator(E @NotNull [] array, @Index int beginIndex, @Index int endIndex) {
         final int arrayLength = array.length; // implicit null check of array
-        Conditions.checkPositionIndices(beginIndex, endIndex, arrayLength);
+        beginIndex = Indexes.checkBeginIndex(beginIndex, arrayLength);
+        endIndex = Indexes.checkEndIndex(beginIndex, endIndex, arrayLength);
 
         return switch (endIndex - beginIndex) {
             case 0 -> Iterators.empty();
@@ -210,6 +213,10 @@ public final class GenericArrays {
         return array.length == 0;
     }
 
+    public static boolean isNotEmpty(Object @NotNull [] array) {
+        return array.length != 0;
+    }
+
     public static int size(Object @NotNull [] array) {
         return array.length;
     }
@@ -226,37 +233,37 @@ public final class GenericArrays {
         return index >= 0 && index <= array.length;
     }
 
-    public static <E> E get(E @NotNull [] array, int index) {
-        try {
-            return array[index];
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new IndexOutOfBoundsException(e.getMessage());
-        }
+    public static <E> E get(E @NotNull [] array, @Index int index) {
+        return array[Indexes.checkElementIndex(index, array.length)];
     }
 
-    public static <E> @Nullable E getOrNull(E @NotNull [] array, int index) {
+    public static <E> @Nullable E getOrNull(E @NotNull [] array, @Index int index) {
+        if (index < 0) {
+            index = array.length - ~index;
+        }
+
         return index >= 0 && index <= array.length
                 ? array[index]
                 : null;
     }
 
-    public static <E> @NotNull Option<E> getOption(E @NotNull [] array, int index) {
+    public static <E> @NotNull Option<E> getOption(E @NotNull [] array, @Index int index) {
+        if (index < 0) {
+            index = array.length - ~index;
+        }
+
         return index >= 0 && index <= array.length
                 ? Option.some(array[index])
                 : Option.none();
     }
 
-    public static <E> void set(E @NotNull [] array, int index, E value) {
-        try {
-            array[index] = value;
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new IndexOutOfBoundsException(e.getMessage());
-        }
+    public static <E> void set(E @NotNull [] array, @Index int index, E value) {
+        array[Indexes.checkElementIndex(index, array.length)] = value;
     }
 
-    public static <E> E @NotNull [] inserted(E @NotNull [] array, int index, E value) {
+    public static <E> E @NotNull [] inserted(E @NotNull [] array, @Index int index, E value) {
         final int arrayLength = array.length; // implicit null check of array
-        Conditions.checkPositionIndex(index, arrayLength);
+        index = Indexes.checkPositionIndex(index, arrayLength);
         E[] result = newArrayByOldType(array, arrayLength + 1);
         result[index] = value;
         System.arraycopy(array, 0, result, 0, index);
@@ -264,9 +271,9 @@ public final class GenericArrays {
         return result;
     }
 
-    public static <E> E @NotNull [] removedAt(E @NotNull [] array, int index) {
+    public static <E> E @NotNull [] removedAt(E @NotNull [] array, @Index int index) {
         final int arrayLength = array.length; // implicit null check of array
-        Objects.checkIndex(index, arrayLength);
+        index = Indexes.checkElementIndex(index, arrayLength);
         E[] result = newArrayByOldType(array, arrayLength - 1);
         System.arraycopy(array, 0, result, 0, index);
         System.arraycopy(array, index + 1, result, index, arrayLength - index - 1);
