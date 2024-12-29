@@ -555,28 +555,20 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     }
 
     public void appendTo(StringBuilder builder) {
-        if (length > 0) {
-            builder.append(this.value, this.offset, this.offset + this.length);
-        }
+        builder.append(this.value, this.offset, this.offset + this.length);
     }
 
     public void appendTo(StringBuilder builder, int beginIndex, int endIndex) {
         Conditions.checkPositionIndices(beginIndex, endIndex, this.length);
-        if (beginIndex != endIndex) {
-            builder.append(this.value, this.offset + beginIndex, this.offset + endIndex);
-        }
+        builder.append(this.value, this.offset + beginIndex, this.offset + endIndex);
     }
 
     public void appendTo(StringBuffer builder) {
-        if (length > 0) {
-            builder.append(this.value, this.offset, this.offset + this.length);
-        }
+        builder.append(this.value, this.offset, this.offset + this.length);
     }
 
     public void appendTo(Appendable builder) throws IOException {
-        if (length > 0) {
-            builder.append(this.value, this.offset, this.offset + this.length);
-        }
+        builder.append(this.value, this.offset, this.offset + this.length);
     }
 
     /**
