@@ -181,6 +181,30 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         }
     }
 
+    public @NotNull Traversable<StringSlice> graphemes() {
+        BreakIterator iterator = BreakIterator.getCharacterInstance(Locale.ROOT);
+        iterator.setText(characterIterator());
+
+        return Traversable.ofSupplier(() -> new AbstractIterator<>() {
+            private int start = iterator.first();
+            private int end = iterator.next();
+
+            @Override
+            public boolean hasNext() {
+                return end != BreakIterator.DONE;
+            }
+
+            @Override
+            public StringSlice next() {
+                checkStatus();
+                StringSlice result = StringSlice.ofChecked(value, start, end);
+                start = end;
+                end = iterator.next();
+                return result;
+            }
+        });
+    }
+
     @Override
     public @NotNull StringSlice subSequence(int start, int end) {
         Objects.checkFromToIndex(start, end, length);
@@ -843,7 +867,7 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
 
         int start = iterator.first();
         for (int end = iterator.next(); end != BreakIterator.DONE; end = iterator.next()) {
-            action.accept(StringSlice.ofChecked(source(), start, end));
+            action.accept(StringSlice.ofChecked(value, start, end));
             start = end;
         }
     }

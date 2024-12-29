@@ -48,6 +48,21 @@ public class StringSliceTest {
     }
 
     @Test
+    void graphemes() {
+        String family = "\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67\u200D\uD83D\uDC66";
+        List<String> expected = List.of("a", "b", "c", " ", "你", "好", " ", family);
+        StringSlice slice = StringSlice.of("abc 你好 " + family);
+
+        ArrayList<String> result = new ArrayList<>();
+        slice.forEachGrapheme(grapheme -> result.add(grapheme.toString()));
+        assertEquals(expected, result);
+
+        result.clear();
+        slice.graphemes().forEach(grapheme -> result.add(grapheme.toString()));
+        assertEquals(expected, result);
+    }
+
+    @Test
     void isEmptyTest() {
         assertTrue(StringSlice.of("").isEmpty());
         assertFalse(StringSlice.of("abc").isEmpty());
@@ -153,17 +168,5 @@ public class StringSliceTest {
         assertSlicesEquals(List.of("", "a", "", "b", ""), StringSlice.of(":a::b:").split(':'));
         assertSlicesEquals(List.of("", "a", "", "b", ""), StringSlice.of("\uD83D\uDE00a\uD83D\uDE00\uD83D\uDE00b\uD83D\uDE00").split(Character.toCodePoint('\uD83D', '\uDE00')));
         assertSlicesEquals(List.of("", "a", ":b:"), StringSlice.of(":a::b:").split(':', 3));
-    }
-
-    @Test
-    void forEachGraphemeTest() {
-        String family = "\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67\u200D\uD83D\uDC66";
-        List<String> expected = List.of("a", "b", "c", " ", "你", "好", " ", family);
-        StringSlice slice = StringSlice.of("abc 你好 " + family);
-
-        ArrayList<String> result = new ArrayList<>();
-        slice.forEachGrapheme(grapheme -> result.add(grapheme.toString()));
-
-        assertEquals(expected, result);
     }
 }
