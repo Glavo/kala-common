@@ -16,7 +16,6 @@
 package kala.text;
 
 import kala.Conditions;
-import kala.annotations.ReplaceWith;
 import kala.collection.base.AbstractIterator;
 import kala.collection.base.Traversable;
 import kala.collection.base.primitive.ByteArrays;
@@ -25,7 +24,6 @@ import kala.control.primitive.*;
 import kala.function.CharConsumer;
 import kala.function.CharPredicate;
 import kala.index.Index;
-import kala.index.IndexRange;
 import kala.index.Indexes;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -447,13 +445,14 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         return indexOf(ch, 0);
     }
 
-    public int indexOf(char ch, int beginIndex) {
-        Conditions.checkPositionIndex(beginIndex, length);
+    public int indexOf(char ch, @Index int beginIndex) {
+        beginIndex = Indexes.checkPositionIndex(beginIndex, length);
         return mapResultIndex(value.indexOf(ch, offset + beginIndex, offset + length));
     }
 
-    public int indexOf(char ch, int beginIndex, int endIndex) {
-        Conditions.checkPositionIndices(beginIndex, endIndex, length);
+    public int indexOf(char ch, @Index int beginIndex, @Index int endIndex) {
+        beginIndex = Indexes.checkBeginIndex(beginIndex, length);
+        endIndex = Indexes.checkEndIndex(beginIndex, endIndex, length);
         return mapResultIndex(value.indexOf(ch, offset + beginIndex, offset + endIndex));
     }
 
@@ -461,13 +460,14 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         return indexOf(ch, 0);
     }
 
-    public int indexOf(int ch, int beginIndex) {
-        Conditions.checkPositionIndex(beginIndex, length);
+    public int indexOf(int ch, @Index int beginIndex) {
+        beginIndex = Indexes.checkPositionIndex(beginIndex, length);
         return mapResultIndex(value.indexOf(ch, offset + beginIndex, offset + length));
     }
 
-    public int indexOf(int ch, int beginIndex, int endIndex) {
-        Conditions.checkPositionIndices(beginIndex, endIndex, length);
+    public int indexOf(int ch, @Index int beginIndex, @Index int endIndex) {
+        beginIndex = Indexes.checkBeginIndex(beginIndex, length);
+        endIndex = Indexes.checkEndIndex(beginIndex, endIndex, length);
         return mapResultIndex(value.indexOf(ch, offset + beginIndex, offset + endIndex));
     }
 
@@ -475,13 +475,14 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         return indexOf(str, 0);
     }
 
-    public int indexOf(String str, int beginIndex) {
-        Conditions.checkPositionIndex(beginIndex, length);
+    public int indexOf(String str, @Index int beginIndex) {
+        beginIndex = Indexes.checkPositionIndex(beginIndex, length);
         return mapResultIndex(value.indexOf(str, offset + beginIndex, offset + length));
     }
 
-    public int indexOf(String str, int beginIndex, int endIndex) {
-        Conditions.checkPositionIndices(beginIndex, endIndex, length);
+    public int indexOf(String str, @Index int beginIndex, @Index int endIndex) {
+        beginIndex = Indexes.checkBeginIndex(beginIndex, length);
+        endIndex = Indexes.checkEndIndex(beginIndex, endIndex, length);
         return mapResultIndex(value.indexOf(str, offset + beginIndex, offset + endIndex));
     }
 

@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 
 /**
  * Marks a parameter as an index that can be negative.
- *
+ * <br/>
  * When an index is negative, it represents an index from the end of the collection,
  * its actual value is {@code collection.size() - ~index};
  */
