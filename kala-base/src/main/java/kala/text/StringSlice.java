@@ -348,7 +348,7 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     // ---
 
     public @NotNull Traversable<StringSlice> lines() {
-        return Traversable.ofSupplier(LinesIterator::new);
+        return Traversable.ofSupplier(() -> new LinesIterator(this));
     }
 
     public @NotNull Traversable<StringSlice> split(char delimiter) {
@@ -364,50 +364,7 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     }
 
     public @NotNull Traversable<StringSlice> split(int delimiter, int limit) {
-        int end = this.offset + this.length;
-        int delimiterCharCount = Character.charCount(delimiter);
-
-        return Traversable.ofSupplier(() -> new AbstractIterator<>() {
-            private int index = offset;
-            private int resultCount = 0;
-            private boolean hasTrailingEmpty = true;
-
-            @Override
-            public boolean hasNext() {
-                return index < end || hasTrailingEmpty;
-            }
-
-            @Override
-            public StringSlice next() {
-                if (index >= end) {
-                    if (hasTrailingEmpty) {
-                        hasTrailingEmpty = false;
-                        return StringSlice.empty();
-                    } else {
-                        throw new NoSuchElementException();
-                    }
-                }
-
-                StringSlice result;
-                if (limit <= 0 || resultCount < limit - 1) {
-                    int delimiterIdx = value.indexOf(delimiter, index, end);
-                    if (delimiterIdx < 0) {
-                        result = StringSlice.of(value, index, end);
-                        hasTrailingEmpty = false;
-                        index = end;
-                    } else {
-                        result = StringSlice.of(value, index, delimiterIdx);
-                        index = delimiterIdx + delimiterCharCount;
-                    }
-                } else {
-                    result = StringSlice.of(value, index, end);
-                    hasTrailingEmpty = false;
-                    index = end;
-                }
-                resultCount++;
-                return result;
-            }
-        });
+        return Traversable.ofSupplier(() -> new SplitIterator(this, delimiter, limit));
     }
 
     // ---
@@ -825,9 +782,73 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         return this.length - other.length;
     }
 
-    private final class LinesIterator extends AbstractIterator<StringSlice> {
-        private int index = offset;
-        private final int endIndex = offset + length;
+    private static final class SplitIterator extends AbstractIterator<StringSlice> {
+        private final String value;
+        private final int end;
+        private final int delimiter;
+        private final int delimiterCharCount;
+        private final int limit;
+
+        private int index;
+        private int resultCount = 0;
+        private boolean hasTrailingEmpty = true;
+
+        private SplitIterator(StringSlice slice, int delimiter, int limit) {
+            this.value = slice.value;
+            this.end = slice.offset + slice.length;
+            this.delimiter = delimiter;
+            this.delimiterCharCount = Character.charCount(delimiter);
+            this.index = slice.offset;
+            this.limit = limit;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return index < end || hasTrailingEmpty;
+        }
+
+        @Override
+        public StringSlice next() {
+            if (index >= end) {
+                if (hasTrailingEmpty) {
+                    hasTrailingEmpty = false;
+                    return StringSlice.empty();
+                } else {
+                    throw new NoSuchElementException();
+                }
+            }
+
+            StringSlice result;
+            if (limit <= 0 || resultCount < limit - 1) {
+                int delimiterIdx = value.indexOf(delimiter, index, end);
+                if (delimiterIdx < 0) {
+                    result = StringSlice.of(value, index, end);
+                    hasTrailingEmpty = false;
+                    index = end;
+                } else {
+                    result = StringSlice.of(value, index, delimiterIdx);
+                    index = delimiterIdx + delimiterCharCount;
+                }
+            } else {
+                result = StringSlice.of(value, index, end);
+                hasTrailingEmpty = false;
+                index = end;
+            }
+            resultCount++;
+            return result;
+        }
+    }
+
+    private static final class LinesIterator extends AbstractIterator<StringSlice> {
+        private final String value;
+        private int index;
+        private final int endIndex;
+
+        private LinesIterator(StringSlice slice) {
+            this.value = slice.value;
+            this.index = slice.offset;
+            this.endIndex = slice.offset + slice.length;
+        }
 
         private int indexOfLineSeparator(int beginIndex) {
             for (int i = beginIndex; i < endIndex; i++) {
