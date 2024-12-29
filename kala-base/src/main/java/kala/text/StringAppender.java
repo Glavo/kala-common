@@ -393,7 +393,7 @@ public class StringAppender extends Writer implements Externalizable {
         if (view == null)
             appendNull();
         else
-            view.appendTo(builder, beginIndex, endIndex);
+            view.slice(beginIndex, endIndex).appendTo(builder);
 
         return this;
     }
