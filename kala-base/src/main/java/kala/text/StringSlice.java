@@ -586,11 +586,6 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         builder.append(this.value, this.offset, this.offset + this.length);
     }
 
-    public void appendTo(@NotNull StringBuilder builder, int beginIndex, int endIndex) {
-        Conditions.checkPositionIndices(beginIndex, endIndex, this.length);
-        builder.append(this.value, this.offset + beginIndex, this.offset + endIndex);
-    }
-
     public void appendTo(@NotNull StringBuffer builder) {
         builder.append(this.value, this.offset, this.offset + this.length);
     }
