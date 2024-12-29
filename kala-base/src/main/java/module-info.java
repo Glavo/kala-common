@@ -25,6 +25,7 @@ module kala.base {
     exports kala.control.primitive;
     exports kala.concurrent;
     exports kala.function;
+    exports kala.index;
     exports kala.io;
     exports kala.tuple;
     exports kala.tuple.primitive;

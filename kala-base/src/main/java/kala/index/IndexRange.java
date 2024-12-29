@@ -13,28 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package kala.range;
+package kala.index;
 
-import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 import java.util.Objects;
 
-@ApiStatus.Experimental
 public final class IndexRange {
 
     private static final IndexRange EMPTY = new IndexRange(0, 0);
     private static final IndexRange ALL = new IndexRange(0, ~0);
 
-    public static IndexRange empty() {
+    private static IndexRange normalizeRange(int beginIndex, int endIndex, int length) {
+        int actualBeginIndex = Indexes.checkPositionIndex(beginIndex, length);
+        int actualEndIndex = Indexes.checkPositionIndex(endIndex, length);
+        if (actualBeginIndex > actualEndIndex) {
+            throw new IndexOutOfBoundsException("beginIndex > endIndex");
+        }
+        return new IndexRange(actualBeginIndex, actualEndIndex);
+    }
+
+    public static @NotNull IndexRange check(int beginIndex, int endIndex, int length) {
+        if (beginIndex >= 0 && endIndex >= 0) {
+            Objects.checkFromToIndex(beginIndex, endIndex, length);
+            return new IndexRange(beginIndex, endIndex);
+        }
+        return normalizeRange(beginIndex, endIndex, length);
+    }
+
+    public static @NotNull IndexRange empty() {
         return EMPTY;
     }
 
-    public static IndexRange all() {
+    public static @NotNull IndexRange all() {
         return ALL;
     }
 
-    public static IndexRange of(int beginIndex, int endIndex) {
+    public static @NotNull IndexRange of(@Index int beginIndex, @Index int endIndex) {
         if ((beginIndex ^ endIndex) >= 0) {
             if (beginIndex > endIndex) {
                 throw new IndexOutOfBoundsException("beginIndex > endIndex");
@@ -44,11 +60,11 @@ public final class IndexRange {
         return new IndexRange(beginIndex, endIndex);
     }
 
-    public static IndexRange from(int beginIndex) {
+    public static @NotNull IndexRange from(int beginIndex) {
         return new IndexRange(beginIndex, ~0);
     }
 
-    public static IndexRange until(int endIndex) {
+    public static @NotNull IndexRange until(int endIndex) {
         return new IndexRange(0, endIndex);
     }
 
@@ -60,33 +76,13 @@ public final class IndexRange {
         this.endIndex = endIndex;
     }
 
-    private static int check(int index, int length) {
-        if (index >= 0) {
-            if (index > length) {
-                throw new IndexOutOfBoundsException(index);
-            }
-            return index;
-        } else {
-            int actualIndex = length - ~index;
-            if (actualIndex < 0) {
-                throw new IndexOutOfBoundsException("Index out of range: ~" + ~index);
-            }
-            return actualIndex;
-        }
-    }
-
-    public IndexRange check(@Range(from = 0, to = Integer.MAX_VALUE) int length) {
+    public @NotNull IndexRange check(@Range(from = 0, to = Integer.MAX_VALUE) int length) {
         if (beginIndex >= 0 && endIndex >= 0) {
             Objects.checkFromToIndex(beginIndex, endIndex, length);
             return this;
-        } else {
-            int actualBeginIndex = check(beginIndex, length);
-            int actualEndIndex = check(endIndex, length);
-            if (actualBeginIndex > actualEndIndex) {
-                throw new IndexOutOfBoundsException("beginIndex > endIndex");
-            }
-            return new IndexRange(actualBeginIndex, actualEndIndex);
         }
+
+        return normalizeRange(beginIndex, endIndex, length);
     }
 
     public int getBeginIndex() {

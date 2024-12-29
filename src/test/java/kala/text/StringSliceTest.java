@@ -15,8 +15,8 @@
  */
 package kala.text;
 
-import kala.collection.Seq;
 import kala.collection.base.Traversable;
+import kala.index.IndexRange;
 import org.junit.jupiter.api.*;
 
 import java.util.List;
@@ -75,15 +75,25 @@ public class StringSliceTest {
     }
 
     @Test
-    void substringTest() {
+    void sliceTest() {
         StringSlice slice = StringSlice.of("abc");
-        assertSliceEquals("abc", slice.substring(0));
-        assertSliceEquals("bc", slice.substring(1));
-        assertSliceEquals("c", slice.substring(2));
-        assertSliceEquals("", slice.substring(3));
-        assertSliceEquals("ab", slice.substring(0, 2));
-        assertSliceEquals("b", slice.substring(1, 2));
-        assertThrows(IndexOutOfBoundsException.class, () -> slice.substring(4));
+        assertSliceEquals("abc", slice.slice(0));
+        assertSliceEquals("bc", slice.slice(1));
+        assertSliceEquals("c", slice.slice(2));
+        assertSliceEquals("", slice.slice(3));
+        assertSliceEquals("ab", slice.slice(0, 2));
+        assertSliceEquals("b", slice.slice(1, 2));
+
+        assertSliceEquals("abc", slice.slice(IndexRange.all()));
+        assertSliceEquals("bc", slice.slice(IndexRange.from(1)));
+        assertSliceEquals("c", slice.slice(IndexRange.from(2)));
+        assertSliceEquals("", slice.slice(IndexRange.from(3)));
+        assertSliceEquals("abc", slice.slice(IndexRange.from(~3)));
+        assertSliceEquals("bc", slice.slice(IndexRange.from(~2)));
+        assertSliceEquals("c", slice.slice(IndexRange.from(~1)));
+        assertSliceEquals("b", slice.slice(IndexRange.of(1, ~1)));
+
+        assertThrows(IndexOutOfBoundsException.class, () -> slice.slice(4));
     }
 
     @Test

@@ -23,6 +23,7 @@ import kala.collection.base.primitive.CharArrays;
 import kala.control.primitive.*;
 import kala.function.CharConsumer;
 import kala.function.CharPredicate;
+import kala.index.IndexRange;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -175,16 +176,29 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
 
     @Override
     public @NotNull StringSlice subSequence(int start, int end) {
-        return this.substring(start, end);
+        return this.slice(start, end);
     }
 
     public @NotNull StringSlice substring(int beginIndex) {
-        return substring(beginIndex, length);
+        return slice(beginIndex);
     }
 
     public @NotNull StringSlice substring(int beginIndex, int endIndex) {
+        return slice(beginIndex, endIndex);
+    }
+
+    public @NotNull StringSlice slice(int beginIndex) {
+        return slice(beginIndex, length);
+    }
+
+    public @NotNull StringSlice slice(int beginIndex, int endIndex) {
         Conditions.checkPositionIndices(beginIndex, endIndex, length);
         return beginIndex != endIndex ? new StringSlice(value, offset + beginIndex, endIndex - beginIndex) : EMPTY;
+    }
+
+    public @NotNull StringSlice slice(@NotNull IndexRange range) {
+        range = range.check(length);
+        return slice(range.getBeginIndex(), range.getEndIndex());
     }
 
     public @NotNull StringSlice concat(@NotNull String other) {
@@ -234,19 +248,19 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     }
 
     public @NotNull StringSlice removePrefix(@NotNull String prefix) {
-        return startsWith(prefix) ? substring(prefix.length()) : this;
+        return startsWith(prefix) ? slice(prefix.length()) : this;
     }
 
     public @NotNull StringSlice removePrefix(@NotNull StringSlice prefix) {
-        return startsWith(prefix) ? substring(prefix.length()) : this;
+        return startsWith(prefix) ? slice(prefix.length()) : this;
     }
 
     public @NotNull StringSlice removeSuffix(@NotNull String prefix) {
-        return endsWith(prefix) ? substring(0, this.length - prefix.length()) : this;
+        return endsWith(prefix) ? slice(0, this.length - prefix.length()) : this;
     }
 
     public @NotNull StringSlice removeSuffix(@NotNull StringSlice prefix) {
-        return endsWith(prefix) ? substring(0, this.length - prefix.length) : this;
+        return endsWith(prefix) ? slice(0, this.length - prefix.length) : this;
     }
 
     // ---
