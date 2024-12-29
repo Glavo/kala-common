@@ -44,6 +44,14 @@ public final class IndexRange {
         return new IndexRange(beginIndex, endIndex);
     }
 
+    public static IndexRange from(int beginIndex) {
+        return new IndexRange(beginIndex, ~0);
+    }
+
+    public static IndexRange until(int endIndex) {
+        return new IndexRange(0, endIndex);
+    }
+
     private final int beginIndex;
     private final int endIndex;
 
