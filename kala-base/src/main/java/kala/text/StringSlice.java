@@ -21,6 +21,7 @@ import kala.collection.base.Traversable;
 import kala.collection.base.primitive.ByteArrays;
 import kala.collection.base.primitive.CharArrays;
 import kala.control.primitive.*;
+import kala.function.CharConsumer;
 import kala.function.CharPredicate;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -37,6 +38,9 @@ import java.text.StringCharacterIterator;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.IntConsumer;
+import java.util.function.IntPredicate;
 
 public final class StringSlice implements Comparable<StringSlice>, CharSequence, Serializable {
     @Serial
@@ -518,6 +522,39 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         return contentEqualsIgnoreCase(other.toString());
     }
 
+    public boolean allMatch(@NotNull CharPredicate predicate) {
+        for (int i = offset, end = offset + length; i < end; i++) {
+            char ch = this.value.charAt(i);
+            if (!predicate.test(ch)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public boolean anyMatch(@NotNull CharPredicate predicate) {
+        for (int i = offset, end = offset + length; i < end; i++) {
+            char ch = this.value.charAt(i);
+            if (predicate.test(ch)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean noneMatch(@NotNull CharPredicate predicate) {
+        for (int i = offset, end = offset + length; i < end; i++) {
+            char ch = this.value.charAt(i);
+            if (predicate.test(ch)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public void appendTo(@NotNull StringBuilder builder) {
         builder.append(this.value, this.offset, this.offset + this.length);
     }
@@ -749,6 +786,28 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     }
 
     //endregion
+
+    public void forEach(@NotNull CharConsumer action) {
+        for (int i = offset, end = offset + length; i < end; i++) {
+            action.accept(value.charAt(i));
+        }
+    }
+
+    public void forEachCodePoint(@NotNull IntConsumer action) {
+        for (int i = offset, end = offset + length; i < end; ) {
+            char c1 = value.charAt(i++);
+            if (Character.isHighSurrogate(c1) && i < end) {
+                char c2 = value.charAt(i + 1);
+                if (Character.isLowSurrogate(c2)) {
+                    i++;
+                    action.accept(Character.toCodePoint(c1, c2));
+                    continue;
+                }
+            }
+
+            action.accept(c1);
+        }
+    }
 
     @Override
     public int hashCode() {
