@@ -71,11 +71,6 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E>, OrderedTra
 
     //region Positional Access Operations
 
-    @Contract(pure = true)
-    default boolean isDefinedAt(int index) {
-        return index >= 0 && sizeGreaterThan(index);
-    }
-
     @Override
     default E elementAt(int index) {
         return get(index);

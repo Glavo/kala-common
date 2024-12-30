@@ -194,10 +194,6 @@ public final class SeqViews {
             return source.getOption(index);
         }
 
-        public boolean isDefinedAt(int index) {
-            return source.isDefinedAt(index);
-        }
-
         public int indexOf(Object value) {
             return source.indexOf(value);
         }
@@ -1316,11 +1312,6 @@ public final class SeqViews {
         }
 
         //endregion
-
-        @Override
-        public final boolean isDefinedAt(int index) {
-            return source.isDefinedAt(index);
-        }
 
         @Override
         public final E get(int index) {

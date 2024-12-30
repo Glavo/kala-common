@@ -95,11 +95,6 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     }
 
     @Override
-    default boolean isDefinedAt(int index) {
-        return index >= 0 && index < size();
-    }
-
-    @Override
     E get(int index);
 
     //endregion

@@ -25,6 +25,8 @@ import kala.collection.primitive.internal.${Type}SeqIterators;
 import kala.collection.mutable.primitive.Mutable${Type}ArrayList;
 import kala.control.primitive.${Type}Option;
 import kala.function.*;
+import kala.index.Index;
+import kala.index.Indexes;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -79,8 +81,12 @@ public interface ${Type}SeqLike extends PrimitiveSeqLike<${WrapperType}>, ${Type
     //region Positional Access Operations
 
     @Contract(pure = true)
-    default boolean isDefinedAt(int index) {
-        return index >= 0 && sizeGreaterThan(index);
+    default boolean isDefinedAt(@Index int index) {
+        if (index >= 0) {
+            return sizeGreaterThan(index);
+        } else {
+            return index != ~0 && sizeGreaterThanOrEquals(~index);
+        }
     }
 
     @Override

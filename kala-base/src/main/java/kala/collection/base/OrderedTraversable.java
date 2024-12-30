@@ -90,6 +90,15 @@ public interface OrderedTraversable<T> extends Traversable<T> {
         return res;
     }
 
+    @Contract(pure = true)
+    default boolean isDefinedAt(@Index int index) {
+        if (index >= 0) {
+            return sizeGreaterThan(index);
+        } else {
+            return index != ~0 && sizeGreaterThanOrEquals(~index);
+        }
+    }
+
     //region Element Retrieval Operations
 
     @Override

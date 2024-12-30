@@ -141,10 +141,6 @@ public final class ${Type}SeqViews {
             return source.get(index);
         }
 
-        public boolean isDefinedAt(int index) {
-            return source.isDefinedAt(index);
-        }
-
         public int indexOf(${PrimitiveType} value) {
             return source.indexOf(value);
         }
@@ -475,11 +471,6 @@ public final class ${Type}SeqViews {
         @Override
         public int knownSize() {
             return source.knownSize();
-        }
-
-        @Override
-        public boolean isDefinedAt(int index) {
-            return source.isDefinedAt(index);
         }
 
         @Override
@@ -1092,11 +1083,6 @@ public final class ${Type}SeqViews {
         @Override
         public final int knownSize() {
             return source.knownSize();
-        }
-
-        @Override
-        public boolean isDefinedAt(int index) {
-            return source.isDefinedAt(index);
         }
 
         @Override

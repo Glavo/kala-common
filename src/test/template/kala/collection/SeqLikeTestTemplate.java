@@ -88,12 +88,15 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
 
         for (Integer[] data : data1()) {
             SeqLike<Integer> seq = from(data);
-            assertFalse(seq.isDefinedAt(-1));
+            assertFalse(seq.isDefinedAt(~0));
             assertFalse(seq.isDefinedAt(Integer.MIN_VALUE));
 
             for (int i = 0; i < data.length; i++) {
                 assertTrue(seq.isDefinedAt(i));
+                assertTrue(seq.isDefinedAt(~(i + 1)));
             }
+
+            assertFalse(seq.isDefinedAt(~(data.length + 1)));
             assertFalse(seq.isDefinedAt(data.length));
             assertFalse(seq.isDefinedAt(Integer.MAX_VALUE));
         }

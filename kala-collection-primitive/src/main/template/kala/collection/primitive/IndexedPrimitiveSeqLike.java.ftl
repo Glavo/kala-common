@@ -85,11 +85,6 @@ public interface Indexed${Type}SeqLike extends ${Type}SeqLike, RandomAccess {
     }
 
     @Override
-    default boolean isDefinedAt(int index) {
-        return index >= 0 && index < size();
-    }
-
-    @Override
     ${PrimitiveType} get(int index);
 
     //endregion
