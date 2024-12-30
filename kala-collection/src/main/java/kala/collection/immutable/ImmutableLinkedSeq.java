@@ -23,6 +23,8 @@ import kala.collection.mutable.MutableSinglyLinkedList;
 import kala.function.*;
 import kala.Conditions;
 import kala.collection.factory.CollectionFactory;
+import kala.index.Index;
+import kala.index.Indexes;
 import org.jetbrains.annotations.*;
 
 import java.io.*;
@@ -212,8 +214,9 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
         return new NodeItr<>(node);
     }
 
-    public @NotNull Iterator<E> iterator(int beginIndex) {
-        Conditions.checkPositionIndex(beginIndex, size);
+    public @NotNull Iterator<E> iterator(@Index int beginIndex) {
+        beginIndex = Indexes.checkPositionIndex(beginIndex, size);
+
         if (beginIndex == 0) return iterator();
         if (beginIndex == size) return Iterators.empty();
 
@@ -534,8 +537,8 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
         }
 
         @Override
-        public @NotNull Iterator<E> iterator(int beginIndex) {
-            Conditions.checkPositionIndex(beginIndex, len);
+        public @NotNull Iterator<E> iterator(@Index int beginIndex) {
+            beginIndex = Indexes.checkPositionIndex(beginIndex, len);
             if (beginIndex == len) {
                 return Iterators.empty();
             }

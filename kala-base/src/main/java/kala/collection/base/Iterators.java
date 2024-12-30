@@ -1193,7 +1193,7 @@ public final class Iterators {
         return collector.finisher().apply(builder);
     }
 
-    static <E, R, Builder> R collect(
+    public static <E, R, Builder> R collect(
             @NotNull Iterator<? extends E> it,
             @NotNull CollectionFactory<? super E, Builder, ? extends R> factory
     ) {
@@ -1207,7 +1207,7 @@ public final class Iterators {
         return factory.build(builder);
     }
 
-    static <E, G extends Growable<? super E>> G collect(
+    public static <E, G extends Growable<? super E>> G collect(
             @NotNull Iterator<? extends E> it,
             @NotNull G destination
     ) {
@@ -1217,7 +1217,7 @@ public final class Iterators {
         return destination;
     }
 
-    static <E, C extends java.util.Collection<? super E>> C collect(
+    public static <E, C extends java.util.Collection<? super E>> C collect(
             @NotNull Iterator<? extends E> it,
             @NotNull C collection
     ) {

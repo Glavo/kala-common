@@ -25,6 +25,7 @@ import kala.collection.base.ObjectArrays;
 import kala.collection.immutable.ImmutableArray;
 import kala.collection.internal.CollectionHelper;
 import kala.collection.factory.CollectionFactory;
+import kala.index.Index;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -277,7 +278,7 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
     }
 
     @Override
-    public @NotNull Iterator<E> iterator(int beginIndex) {
+    public @NotNull Iterator<E> iterator(@Index int beginIndex) {
         return (Iterator<E>) GenericArrays.iterator(elements, beginIndex, size);
     }
 

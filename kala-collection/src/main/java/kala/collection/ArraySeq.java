@@ -30,6 +30,7 @@ import kala.function.CheckedPredicate;
 import kala.function.IndexedBiConsumer;
 import kala.function.IndexedConsumer;
 import kala.function.IndexedFunction;
+import kala.index.Index;
 import org.jetbrains.annotations.*;
 
 import java.io.IOException;
@@ -220,7 +221,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     }
 
     @Override
-    public @NotNull Iterator<E> iterator(int beginIndex) {
+    public @NotNull Iterator<E> iterator(@Index int beginIndex) {
         return (Iterator<E>) GenericArrays.iterator(elements, beginIndex);
     }
 

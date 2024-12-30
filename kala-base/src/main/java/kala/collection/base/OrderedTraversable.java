@@ -20,6 +20,8 @@ import kala.control.Option;
 import kala.function.CheckedIndexedConsumer;
 import kala.function.IndexedBiFunction;
 import kala.function.IndexedConsumer;
+import kala.index.Index;
+import kala.index.Indexes;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -37,19 +39,22 @@ import java.util.function.Predicate;
  */
 public interface OrderedTraversable<T> extends Traversable<T> {
 
-    /**
-     * @throws IndexOutOfBoundsException
-     */
-    default @NotNull Iterator<T> iterator(int beginIndex) {
-        if (beginIndex < 0) {
-            throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") < 0");
-        }
-        final int knownSize = knownSize();
-        if (knownSize >= 0) {
-            if (beginIndex > knownSize) {
-                throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") > size(" + knownSize + ")");
+    default @NotNull Iterator<T> iterator(@Index int beginIndex) {
+        if (beginIndex >= 0) {
+            final int knownSize = knownSize();
+            if (knownSize >= 0) {
+                if (beginIndex > knownSize) {
+                    throw new IndexOutOfBoundsException(beginIndex);
+                }
+                if (beginIndex == knownSize) {
+                    return Iterators.empty();
+                }
             }
-            if (beginIndex == knownSize) {
+        } else {
+            int size = size();
+            beginIndex = Indexes.checkPositionIndex(beginIndex, size);
+
+            if (beginIndex == size) {
                 return Iterators.empty();
             }
         }
@@ -57,7 +62,7 @@ public interface OrderedTraversable<T> extends Traversable<T> {
         final Iterator<T> it = iterator();
         for (int i = 0; i < beginIndex; i++) {
             if (!it.hasNext()) {
-                throw new IndexOutOfBoundsException("beginIndex: " + beginIndex);
+                throw new IndexOutOfBoundsException(beginIndex);
             }
             it.next();
         }

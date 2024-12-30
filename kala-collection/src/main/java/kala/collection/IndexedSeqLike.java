@@ -15,7 +15,6 @@
  */
 package kala.collection;
 
-import kala.Conditions;
 import kala.collection.base.AbstractIterator;
 import kala.collection.base.Growable;
 import kala.collection.base.Iterators;
@@ -26,6 +25,8 @@ import kala.control.Option;
 import kala.function.IndexedBiFunction;
 import kala.function.IndexedConsumer;
 import kala.function.IndexedFunction;
+import kala.index.Index;
+import kala.index.Indexes;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -42,9 +43,9 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     }
 
     @Override
-    default @NotNull Iterator<E> iterator(int beginIndex) {
+    default @NotNull Iterator<E> iterator(@Index int beginIndex) {
         final int size = size();
-        Conditions.checkPositionIndex(beginIndex, size);
+        beginIndex = Indexes.checkPositionIndex(beginIndex, size);
 
         if (beginIndex == size) return Iterators.empty();
 

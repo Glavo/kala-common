@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.collection;
 
 import kala.collection.immutable.ImmutableArray;
@@ -11,6 +26,7 @@ import java.util.*;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static kala.ExtendedAssertions.assertIteratorEquals;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -28,40 +44,27 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
     @Test
     default void iteratorTest() {
         assertFalse(of().iterator(0).hasNext());
-        // TODO: assertThrows(IndexOutOfBoundsException.class, () -> of().iterator(-1));
+        assertFalse(of().iterator(~0).hasNext());
+
+        assertThrows(IndexOutOfBoundsException.class, () -> of().iterator(~1));
         assertThrows(IndexOutOfBoundsException.class, () -> of().iterator(Integer.MIN_VALUE));
         assertThrows(IndexOutOfBoundsException.class, () -> of().iterator(1));
         assertThrows(IndexOutOfBoundsException.class, () -> of().iterator(Integer.MAX_VALUE));
 
-        assertIterableEquals(
-                List.of("str"),
-                ImmutableSeq.from(of("str").iterator(0))
-        );
-        assertIterableEquals(
-                List.of(),
-                ImmutableSeq.from(of("str").iterator(1))
-        );
-        // TODO: assertThrows(IndexOutOfBoundsException.class, () -> of("str").iterator(-1));
+        assertIteratorEquals(List.of("str"), of("str").iterator(0));
+        assertIteratorEquals(List.of("str"), of("str").iterator(~1));
+        assertIteratorEquals(List.of(), of("str").iterator(1));
+        assertIteratorEquals(List.of(), of("str").iterator(~0));
+
+        assertThrows(IndexOutOfBoundsException.class, () -> of("str").iterator(~2));
         assertThrows(IndexOutOfBoundsException.class, () -> of("str").iterator(Integer.MIN_VALUE));
         assertThrows(IndexOutOfBoundsException.class, () -> of("str").iterator(2));
         assertThrows(IndexOutOfBoundsException.class, () -> of("str").iterator(Integer.MAX_VALUE));
 
-        assertIterableEquals(
-                List.of("str1", "str2", "str3"),
-                ImmutableSeq.from(of("str1", "str2", "str3").iterator(0))
-        );
-        assertIterableEquals(
-                List.of("str2", "str3"),
-                ImmutableSeq.from(of("str1", "str2", "str3").iterator(1))
-        );
-        assertIterableEquals(
-                List.of("str3"),
-                ImmutableSeq.from(of("str1", "str2", "str3").iterator(2))
-        );
-        assertIterableEquals(
-                List.of(),
-                ImmutableSeq.from(of("str1", "str2", "str3").iterator(3))
-        );
+        assertIteratorEquals(List.of("str1", "str2", "str3"), of("str1", "str2", "str3").iterator(0));
+        assertIteratorEquals(List.of("str2", "str3"), of("str1", "str2", "str3").iterator(1));
+        assertIteratorEquals(List.of("str3"), of("str1", "str2", "str3").iterator(2));
+        assertIteratorEquals(List.of(), of("str1", "str2", "str3").iterator(3));
     }
 
     @Test

@@ -15,19 +15,14 @@
  */
 package kala.collection.base;
 
+import kala.ExtendedAssertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ArraysTest {
-
-    private static void assertIteratorEquals(Iterable<?> expected, Iterator<?> actual) {
-        assertIterableEquals(expected, Iterators.collect(actual, new ArrayList<>()));
-    }
 
     private static void assertArrayTypeAndEquals(Object[] expected, Object[] actual) {
         assertSame(expected.getClass(), actual.getClass());
@@ -36,22 +31,22 @@ public class ArraysTest {
 
     @Test
     void iteratorTest() {
-        assertIteratorEquals(List.of(), ObjectArrays.iterator(new Object[]{}));
-        assertIteratorEquals(List.of(1, 2, 3, 4, 5), ObjectArrays.iterator(new Object[]{1, 2, 3, 4, 5}));
+        ExtendedAssertions.assertIteratorEquals(List.of(), ObjectArrays.iterator(new Object[]{}));
+        ExtendedAssertions.assertIteratorEquals(List.of(1, 2, 3, 4, 5), ObjectArrays.iterator(new Object[]{1, 2, 3, 4, 5}));
 
-        assertIteratorEquals(List.of(1, 2, 3, 4, 5), ObjectArrays.iterator(new Object[]{1, 2, 3, 4, 5}, 0));
-        assertIteratorEquals(List.of(1, 2, 3, 4, 5), ObjectArrays.iterator(new Object[]{1, 2, 3, 4, 5}, ~5));
-        assertIteratorEquals(List.of(2, 3, 4, 5), ObjectArrays.iterator(new Object[]{1, 2, 3, 4, 5}, 1));
-        assertIteratorEquals(List.of(2, 3, 4, 5), ObjectArrays.iterator(new Object[]{1, 2, 3, 4, 5}, ~4));
-        assertIteratorEquals(List.of(), ObjectArrays.iterator(new Object[]{1, 2, 3, 4, 5}, 5));
-        assertIteratorEquals(List.of(), ObjectArrays.iterator(new Object[]{1, 2, 3, 4, 5}, ~0));
+        ExtendedAssertions.assertIteratorEquals(List.of(1, 2, 3, 4, 5), ObjectArrays.iterator(new Object[]{1, 2, 3, 4, 5}, 0));
+        ExtendedAssertions.assertIteratorEquals(List.of(1, 2, 3, 4, 5), ObjectArrays.iterator(new Object[]{1, 2, 3, 4, 5}, ~5));
+        ExtendedAssertions.assertIteratorEquals(List.of(2, 3, 4, 5), ObjectArrays.iterator(new Object[]{1, 2, 3, 4, 5}, 1));
+        ExtendedAssertions.assertIteratorEquals(List.of(2, 3, 4, 5), ObjectArrays.iterator(new Object[]{1, 2, 3, 4, 5}, ~4));
+        ExtendedAssertions.assertIteratorEquals(List.of(), ObjectArrays.iterator(new Object[]{1, 2, 3, 4, 5}, 5));
+        ExtendedAssertions.assertIteratorEquals(List.of(), ObjectArrays.iterator(new Object[]{1, 2, 3, 4, 5}, ~0));
         assertThrows(IndexOutOfBoundsException.class, () -> ObjectArrays.iterator(new Object[]{1, 2, 3, 4, 5}, 6));
         assertThrows(IndexOutOfBoundsException.class, () -> ObjectArrays.iterator(new Object[]{1, 2, 3, 4, 5}, ~6));
 
-        assertIteratorEquals(List.of(1, 2, 3, 4, 5), ObjectArrays.iterator(new Object[]{1, 2, 3, 4, 5}, 0, 5));
-        assertIteratorEquals(List.of(1, 2, 3, 4, 5), ObjectArrays.iterator(new Object[]{1, 2, 3, 4, 5}, 0, ~0));
-        assertIteratorEquals(List.of(2, 3, 4), ObjectArrays.iterator(new Object[]{1, 2, 3, 4, 5}, 1, 4));
-        assertIteratorEquals(List.of(2, 3, 4), ObjectArrays.iterator(new Object[]{1, 2, 3, 4, 5}, 1, ~1));
+        ExtendedAssertions.assertIteratorEquals(List.of(1, 2, 3, 4, 5), ObjectArrays.iterator(new Object[]{1, 2, 3, 4, 5}, 0, 5));
+        ExtendedAssertions.assertIteratorEquals(List.of(1, 2, 3, 4, 5), ObjectArrays.iterator(new Object[]{1, 2, 3, 4, 5}, 0, ~0));
+        ExtendedAssertions.assertIteratorEquals(List.of(2, 3, 4), ObjectArrays.iterator(new Object[]{1, 2, 3, 4, 5}, 1, 4));
+        ExtendedAssertions.assertIteratorEquals(List.of(2, 3, 4), ObjectArrays.iterator(new Object[]{1, 2, 3, 4, 5}, 1, ~1));
         assertThrows(IndexOutOfBoundsException.class, () -> ObjectArrays.iterator(new Object[]{1, 2, 3, 4, 5}, 2, 1));
         assertThrows(IndexOutOfBoundsException.class, () -> ObjectArrays.iterator(new Object[]{1, 2, 3, 4, 5}, 2, ~4));
     }

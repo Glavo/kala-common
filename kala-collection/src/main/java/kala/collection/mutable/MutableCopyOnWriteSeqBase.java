@@ -16,6 +16,7 @@
 package kala.collection.mutable;
 
 import kala.function.IndexedFunction;
+import kala.index.Index;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
@@ -49,7 +50,7 @@ sealed class MutableCopyOnWriteSeqBase<E, S extends MutableSeq<E>> extends Abstr
     }
 
     @Override
-    public @NotNull Iterator<E> iterator(int beginIndex) {
+    public @NotNull Iterator<E> iterator(@Index int beginIndex) {
         return source.iterator(beginIndex);
     }
 
