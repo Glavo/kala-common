@@ -15,7 +15,6 @@
  */
 package kala.collection.base;
 
-import kala.Conditions;
 import kala.annotations.UnstableName;
 import kala.control.Option;
 import kala.annotations.Covariant;

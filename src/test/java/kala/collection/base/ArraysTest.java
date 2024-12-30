@@ -23,7 +23,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class GenericArraysTest {
+public class ArraysTest {
 
     private static void assertIteratorEquals(Iterable<?> expected, Iterator<?> actual) {
         assertIterableEquals(expected, Iterators.collect(actual, new ArrayList<>()));

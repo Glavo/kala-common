@@ -19,6 +19,7 @@ import kala.Conditions;
 import kala.annotations.StaticClass;
 import kala.control.primitive.${Type}Option;
 import kala.function.*;
+import kala.index.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

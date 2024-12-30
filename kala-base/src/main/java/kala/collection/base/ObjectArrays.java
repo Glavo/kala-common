@@ -15,7 +15,6 @@
  */
 package kala.collection.base;
 
-import kala.Conditions;
 import kala.annotations.StaticClass;
 import kala.collection.factory.CollectionFactory;
 import kala.control.Option;
@@ -507,9 +506,10 @@ public final class ObjectArrays {
 
     //region Misc Operations
 
-    public static Object @NotNull [] slice(Object @NotNull [] array, int beginIndex, int endIndex) {
+    public static Object @NotNull [] slice(Object @NotNull [] array, @Index int beginIndex, @Index int endIndex) {
         final int length = array.length;
-        Conditions.checkPositionIndices(beginIndex, endIndex, length);
+        beginIndex = Indexes.checkBeginIndex(beginIndex, length);
+        endIndex = Indexes.checkEndIndex(beginIndex, endIndex, length);
 
         final int newLength = endIndex - beginIndex;
         if (newLength == 0) {
@@ -601,11 +601,10 @@ public final class ObjectArrays {
         return Arrays.copyOf(array, count);
     }
 
-    public static Object @NotNull [] updated(Object @NotNull [] array, int index, Object newValue) {
-        final int size = array.length;
+    public static Object @NotNull [] updated(Object @NotNull [] array, @Index int index, Object newValue) {
+        final int length = array.length;
 
-        Objects.checkIndex(index, size);
-
+        index = Indexes.checkElementIndex(index, length);
         Object[] newValues = array.clone();
         newValues[index] = newValue;
         return newValues;
