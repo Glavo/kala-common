@@ -15,7 +15,6 @@
  */
 package kala.collection.base.primitive;
 
-import kala.Conditions;
 import kala.annotations.StaticClass;
 import kala.control.primitive.${Type}Option;
 import kala.function.*;
@@ -85,33 +84,17 @@ public final class ${Type}Arrays {
     }
 
     public static @NotNull ${Type}Iterator iterator(${PrimitiveType} @NotNull [] array) {
-        final int arrayLength = array.length; // implicit null check of array
-
-        switch (arrayLength) {
-            case 0:
-                return ${Type}Iterator.empty();
-            case 1:
-                return ${Type}Iterator.of(array[0]);
-        }
-        return new Itr(array, 0, arrayLength);
+        return iterator(array, 0, array.length);
     }
 
-    public static @NotNull ${Type}Iterator iterator(${PrimitiveType} @NotNull [] array, int beginIndex) {
-        final int arrayLength = array.length; // implicit null check of array
-        Conditions.checkPositionIndex(beginIndex, arrayLength);
-
-        switch (arrayLength - beginIndex) {
-            case 0:
-                return ${Type}Iterator.empty();
-            case 1:
-                return ${Type}Iterator.of(array[beginIndex]);
-        }
-        return new Itr(array, beginIndex, arrayLength);
+    public static @NotNull ${Type}Iterator iterator(${PrimitiveType} @NotNull [] array, @Index int beginIndex) {
+        return iterator(array, beginIndex, array.length);
     }
 
-    public static @NotNull ${Type}Iterator iterator(${PrimitiveType} @NotNull [] array, int beginIndex, int endIndex) {
+    public static @NotNull ${Type}Iterator iterator(${PrimitiveType} @NotNull [] array, @Index int beginIndex, @Index int endIndex) {
         final int arrayLength = array.length; // implicit null check of array
-        Conditions.checkPositionIndices(beginIndex, endIndex, arrayLength);
+        beginIndex = Indexes.checkBeginIndex(beginIndex, arrayLength);
+        endIndex = Indexes.checkEndIndex(beginIndex, endIndex, arrayLength);
 
         switch (endIndex - beginIndex) {
             case 0:
@@ -154,36 +137,34 @@ public final class ${Type}Arrays {
 
     //region Positional Access Operations
 
-    public static boolean isDefineAt(${PrimitiveType} @NotNull [] array, int index) {
+    public static boolean isDefineAt(${PrimitiveType} @NotNull [] array, int index) { // TODO: Index
         return index >= 0 && index <= array.length;
     }
 
-    public static ${PrimitiveType} get(${PrimitiveType} @NotNull [] array, int index) {
-        try {
-            return array[index];
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new IndexOutOfBoundsException(e.getMessage());
-        }
+    public static ${PrimitiveType} get(${PrimitiveType} @NotNull [] array, @Index int index) {
+        return array[Indexes.checkElementIndex(index, array.length)];
     }
 
-    public static @Nullable ${WrapperType} getOrNull(${PrimitiveType} @NotNull [] array, int index) {
+    public static @Nullable ${WrapperType} getOrNull(${PrimitiveType} @NotNull [] array, @Index int index) {
+        if (index < 0) {
+            index = array.length - ~index;
+        }
         return index >= 0 && index <= array.length
                 ? array[index]
                 : null;
     }
 
-    public static @NotNull ${Type}Option getOption(${PrimitiveType} @NotNull [] array, int index) {
+    public static @NotNull ${Type}Option getOption(${PrimitiveType} @NotNull [] array, @Index int index) {
+        if (index < 0) {
+            index = array.length - ~index;
+        }
         return index >= 0 && index <= array.length
                 ? ${Type}Option.some(array[index])
                 : ${Type}Option.none();
     }
 
-    public static void set(${PrimitiveType} @NotNull [] array, int index, ${PrimitiveType} value) {
-        try {
-            array[index] = value;
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new IndexOutOfBoundsException(e.getMessage());
-        }
+    public static void set(${PrimitiveType} @NotNull [] array, @Index int index, ${PrimitiveType} value) {
+        array[Indexes.checkElementIndex(index, array.length)] = value;
     }
 
     //endregion
@@ -244,9 +225,11 @@ public final class ${Type}Arrays {
 </#if>
     }
 
-    public static void sort(${PrimitiveType} @NotNull [] array, int beginIndex, int endIndex) {
+    public static void sort(${PrimitiveType} @NotNull [] array, @Index int beginIndex, @Index int endIndex) {
+        final int arrayLength = array.length;
+        beginIndex = Indexes.checkBeginIndex(beginIndex, arrayLength);
+        endIndex = Indexes.checkEndIndex(beginIndex, endIndex, arrayLength);
 <#if Type == "Boolean">
-        Conditions.checkPositionIndices(beginIndex, endIndex, array.length);
         int trueCount = 0;
         int falseCount;
         for (int i = beginIndex; i < endIndex; i++) {
