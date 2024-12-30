@@ -96,7 +96,7 @@ public interface ${Type}SeqLike extends PrimitiveSeqLike<${WrapperType}>, ${Type
 
     @Contract(pure = true)
     @Flow(sourceIsContainer = true)
-    default ${PrimitiveType} get(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
+    default ${PrimitiveType} get(@Index int index) {
         return iterator(index).next${Type}();
     }
 

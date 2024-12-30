@@ -19,6 +19,8 @@ import kala.Conditions;
 import kala.collection.base.Traversable;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.internal.tree.IndexedTree;
+import kala.index.Index;
+import kala.index.Indexes;
 import kala.value.Var;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -234,9 +236,8 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
     }
 
     @Override
-    public E get(int index) {
-        Objects.checkIndex(index, size());
-        return root.get(index);
+    public E get(@Index int index) {
+        return root.get(Indexes.checkElementIndex(index, size()));
     }
 
     @Override

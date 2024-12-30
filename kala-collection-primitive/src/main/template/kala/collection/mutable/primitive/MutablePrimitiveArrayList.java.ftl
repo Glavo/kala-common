@@ -21,6 +21,8 @@ import kala.collection.factory.primitive.${Type}CollectionFactory;
 import kala.collection.immutable.primitive.Immutable${Type}Array;
 import kala.collection.primitive.*;
 import kala.function.*;
+import kala.index.Index;
+import kala.index.Indexes;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -285,9 +287,8 @@ public final class Mutable${Type}ArrayList extends AbstractMutable${Type}List im
     //region Positional Access Operations
 
     @Override
-    public ${PrimitiveType} get(int index) {
-        Objects.checkIndex(index, size);
-        return elements[index];
+    public ${PrimitiveType} get(@Index int index) {
+        return elements[Indexes.checkElementIndex(index, size)];
     }
 
     @Override

@@ -17,6 +17,7 @@ package kala.collection.internal.convert;
 
 import kala.collection.mutable.*;
 import kala.control.Option;
+import kala.index.Index;
 import kala.internal.InternalIdentifyObject;
 import kala.tuple.Tuple2;
 import kala.annotations.StaticClass;
@@ -85,7 +86,10 @@ public final class FromJavaConvert {
         }
 
         @Override
-        public E get(int index) {
+        public E get(@Index int index) {
+            if (index < 0) {
+                index = source.size() - ~index;
+            }
             return source.get(index);
         }
 

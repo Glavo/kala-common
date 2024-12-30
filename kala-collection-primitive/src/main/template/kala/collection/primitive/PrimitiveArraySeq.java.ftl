@@ -21,6 +21,8 @@ import kala.collection.factory.primitive.${Type}CollectionFactory;
 import kala.collection.mutable.primitive.Mutable${Type}ArrayList;
 import kala.collection.immutable.primitive.Immutable${Type}Array;
 import kala.function.*;
+import kala.index.Index;
+import kala.index.Indexes;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
@@ -192,8 +194,8 @@ public class ${Type}ArraySeq extends Abstract${Type}Seq implements Indexed${Type
 
     //region Positional Access Operations
 
-    public final ${PrimitiveType} get(int index) {
-        return elements[index];
+    public final ${PrimitiveType} get(@Index int index) {
+        return elements[Indexes.checkElementIndex(index, elements.length)];
     }
 
     //endregion

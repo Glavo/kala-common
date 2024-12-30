@@ -95,7 +95,7 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     }
 
     @Override
-    E get(int index);
+    E get(@Index int index);
 
     //endregion
 

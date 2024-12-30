@@ -31,6 +31,7 @@ import kala.function.IndexedBiConsumer;
 import kala.function.IndexedConsumer;
 import kala.function.IndexedFunction;
 import kala.index.Index;
+import kala.index.Indexes;
 import org.jetbrains.annotations.*;
 
 import java.io.IOException;
@@ -266,8 +267,8 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     //region Positional Access Operations
 
-    public final E get(int index) {
-        return (E) elements[index];
+    public final E get(@Index int index) {
+        return (E) elements[Indexes.checkElementIndex(index, elements.length)];
     }
 
     //endregion

@@ -24,6 +24,8 @@ import kala.function.IndexedConsumer;
 import kala.function.IndexedFunction;
 import kala.Conditions;
 import kala.collection.factory.CollectionFactory;
+import kala.index.Index;
+import kala.index.Indexes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -201,9 +203,9 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public E get(int index) {
-            if (index != 0) {
-                throw new IndexOutOfBoundsException();
+        public E get(@Index int index) {
+            if (index != 0 && index != ~1) {
+                throw Indexes.outOfBounds(index, size());
             }
             return value1;
         }
@@ -362,8 +364,8 @@ final class ImmutableSeqs {
         @Override
         public E get(int index) {
             return switch (index) {
-                case 0 -> value1;
-                case 1 -> value2;
+                case 0, ~2 -> value1;
+                case 1, ~1 -> value2;
                 default -> throw new IndexOutOfBoundsException(index);
             };
         }
@@ -390,9 +392,9 @@ final class ImmutableSeqs {
         @Override
         public @NotNull ImmutableSeq<E> inserted(int index, E value) {
             return switch (index) {
-                case 0 -> ImmutableSeq.of(value, value1, value2);
-                case 1 -> ImmutableSeq.of(value1, value, value2);
-                case 2 -> ImmutableSeq.of(value1, value2, value);
+                case 0, ~3 -> ImmutableSeq.of(value, value1, value2);
+                case 1, ~2 -> ImmutableSeq.of(value1, value, value2);
+                case 2, ~1 -> ImmutableSeq.of(value1, value2, value);
                 default -> throw new IndexOutOfBoundsException(index);
             };
         }
@@ -537,19 +539,9 @@ final class ImmutableSeqs {
         //region Positional Access Operations
 
         @Override
-        public final E get(int index) {
-            Objects.checkIndex(index, size);
+        public final E get(@Index int index) {
+            Indexes.checkElementIndex(index, size);
             return value;
-        }
-
-        @Override
-        public final @Nullable E getOrNull(int index) {
-            return index >= 0 && index < size ? value : null;
-        }
-
-        @Override
-        public final @NotNull Option<E> getOption(int index) {
-            return index >= 0 && index < size ? Option.some(value) : Option.none();
         }
 
         //endregion

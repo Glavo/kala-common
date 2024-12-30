@@ -26,6 +26,7 @@ import kala.collection.immutable.ImmutableArray;
 import kala.collection.internal.CollectionHelper;
 import kala.collection.factory.CollectionFactory;
 import kala.index.Index;
+import kala.index.Indexes;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -311,9 +312,8 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
     //region Positional Access Operations
 
     @Override
-    public E get(int index) {
-        Objects.checkIndex(index, size);
-        return (E) elements[index];
+    public E get(@Index int index) {
+        return (E) elements[Indexes.checkElementIndex(index, size)];
     }
 
     @Override

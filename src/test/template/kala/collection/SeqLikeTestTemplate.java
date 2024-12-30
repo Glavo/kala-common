@@ -103,7 +103,6 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
     }
 
     @Test
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     default void getTest() {
         for (int i = -10; i < 10; i++) {
             final int iv = i;
@@ -116,17 +115,21 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
 
         for (Integer[] data : data1()) {
             SeqLike<Integer> seq = this.from(data);
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.get(-1));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.get(~0));
             assertThrows(IndexOutOfBoundsException.class, () -> seq.get(Integer.MIN_VALUE));
-            assertNull(seq.getOrNull(-1));
+            assertNull(seq.getOrNull(~0));
             assertNull(seq.getOrNull(Integer.MIN_VALUE));
-            assertSame(Option.none(), seq.getOption(-1));
+            assertSame(Option.none(), seq.getOption(~0));
             assertSame(Option.none(), seq.getOption(Integer.MIN_VALUE));
 
             for (int i = 0; i < data.length; i++) {
                 assertSame(data[i], seq.get(i));
                 assertSame(data[i], seq.getOrNull(i));
                 assertEquals(Option.some(data[i]), seq.getOption(i));
+
+                assertSame(data[data.length - i - 1], seq.get(~(i + 1)));
+                assertSame(data[data.length - i - 1], seq.getOrNull(~(i + 1)));
+                assertEquals(Option.some(data[data.length - i - 1]), seq.getOption(~(i + 1)));
             }
             assertThrows(IndexOutOfBoundsException.class, () -> seq.get(data.length));
             assertThrows(IndexOutOfBoundsException.class, () -> seq.get(Integer.MAX_VALUE));

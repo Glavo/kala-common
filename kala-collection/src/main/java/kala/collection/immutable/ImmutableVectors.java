@@ -19,6 +19,8 @@ import kala.collection.base.*;
 import kala.control.Option;
 import kala.function.IndexedConsumer;
 import kala.function.IndexedFunction;
+import kala.index.Index;
+import kala.index.Indexes;
 import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -77,8 +79,8 @@ final class ImmutableVectors {
         }
 
         @Override
-        public Object get(int index) {
-            throw new IndexOutOfBoundsException("Index: " + index);
+        public Object get(@Index int index) {
+            throw new IndexOutOfBoundsException(index);
         }
 
         @Override
@@ -218,11 +220,7 @@ final class ImmutableVectors {
 
         @Override
         public E get(int index) {
-            try {
-                return (E) prefix1[index];
-            } catch (ArrayIndexOutOfBoundsException e) {
-                throw new IndexOutOfBoundsException("Index: " + index + " Size: " + size());
-            }
+            return (E) GenericArrays.get(prefix1, index);
         }
 
         @Override
@@ -885,8 +883,8 @@ final class ImmutableVectors {
         }
 
         @Override
-        public E get(int index) {
-            Objects.checkIndex(index, length0);
+        public E get(@Index int index) {
+            index = Indexes.checkElementIndex(index, length0);
 
             int io = index - len1;
             if (io >= 0) {
@@ -968,8 +966,8 @@ final class ImmutableVectors {
         }
 
         @Override
-        public E get(int index) {
-            Objects.checkIndex(index, length0);
+        public E get(@Index int index) {
+            index = Indexes.checkElementIndex(index, length0);
 
             int io = index - len12;
             if (io >= 0) {
@@ -1082,8 +1080,8 @@ final class ImmutableVectors {
         }
 
         @Override
-        public E get(int index) {
-            Objects.checkIndex(index, length0);
+        public E get(@Index int index) {
+            index = Indexes.checkElementIndex(index, length0);
             int io = index - len123;
             if (io >= 0) {
                 int i4 = io >>> BITS3;
@@ -1216,8 +1214,8 @@ final class ImmutableVectors {
         }
 
         @Override
-        public E get(int index) {
-            Objects.checkIndex(index, length0);
+        public E get(@Index int index) {
+            index = Indexes.checkElementIndex(index, length0);
             int io = index - len1234;
             if (io >= 0) {
                 int i5 = io >>> BITS4;
@@ -1375,8 +1373,8 @@ final class ImmutableVectors {
         }
 
         @Override
-        public E get(int index) {
-            Objects.checkIndex(index, length0);
+        public E get(@Index int index) {
+            index = Indexes.checkElementIndex(index, length0);
             int io = index - len12345;
             if (io >= 0) {
                 int i6 = io >>> BITS5;

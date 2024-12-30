@@ -21,6 +21,8 @@ import kala.function.IndexedConsumer;
 import kala.function.IndexedFunction;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.base.AbstractIterator;
+import kala.index.Index;
+import kala.index.Indexes;
 import org.jetbrains.annotations.*;
 
 import java.io.Serial;
@@ -299,10 +301,8 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
     }
 
     @Override
-    public E get(int index) {
-        Objects.checkIndex(index, len);
-
-        return internalGetNode(index).value;
+    public E get(@Index int index) {
+        return internalGetNode(Indexes.checkElementIndex(index, len)).value;
     }
 
     @Override

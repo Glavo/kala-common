@@ -7,6 +7,8 @@ import kala.collection.base.primitive.*;
 import kala.collection.primitive.*;
 import kala.collection.mutable.primitive.*;
 import kala.function.*;
+import kala.index.Index;
+import kala.index.Indexes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
@@ -39,8 +41,8 @@ public final class ${Type}SeqViews {
         }
 
         @Override
-        public ${PrimitiveType} get(int index) {
-            throw new IndexOutOfBoundsException("index: " + index);
+        public ${PrimitiveType} get(@Index int index) {
+            throw Indexes.outOfBounds(index);
         }
 
         @Override
@@ -101,10 +103,10 @@ public final class ${Type}SeqViews {
         }
 
         @Override
-        public ${PrimitiveType} get(int index) {
-            if (index != 0) throw new IndexOutOfBoundsException("index: " + index);
-
-            return value;
+        public ${PrimitiveType} get(@Index int index) {
+            if (index == 0 || index == ~1)
+                return value;
+            throw Indexes.outOfBounds(index, 1);
         }
 
         @Override
@@ -137,7 +139,7 @@ public final class ${Type}SeqViews {
             return source.supportsFastRandomAccess();
         }
 
-        public ${PrimitiveType} get(int index) {
+        public ${PrimitiveType} get(@Index int index) {
             return source.get(index);
         }
 
@@ -214,9 +216,8 @@ public final class ${Type}SeqViews {
         }
 
         @Override
-        public final ${PrimitiveType} get(int index) {
-            Objects.checkIndex(index, size());
-            return array[index + beginIndex];
+        public final ${PrimitiveType} get(@Index int index) {
+            return array[Indexes.checkElementIndex(index, size()) + beginIndex];
         }
 
         @Override
@@ -474,7 +475,8 @@ public final class ${Type}SeqViews {
         }
 
         @Override
-        public final ${PrimitiveType} get(int index) {
+        public final ${PrimitiveType} get(@Index int index) {
+            index = Indexes.checkElementIndex(index, size());
             if (index == this.index) {
                 return newValue;
             }
@@ -553,22 +555,8 @@ public final class ${Type}SeqViews {
         }
 
         @Override
-        public final ${PrimitiveType} get(int index) {
-            if (index < 0) {
-                throw new IndexOutOfBoundsException("Index(" + index + ") < 0");
-            }
-
-            final ${Type}SeqView source = this.source;
-            final int n = this.n;
-
-            if (n <= 0) {
-                return this.source.get(index);
-            }
-
-            final int size = Integer.max(source.size() - n, 0);
-            Objects.checkIndex(index, size);
-
-            return this.source.get(index);
+        public final ${PrimitiveType} get(@Index int index) {
+            return this.source.get(Indexes.checkElementIndex(index, size()));
         }
 
         @Override
@@ -671,30 +659,42 @@ public final class ${Type}SeqViews {
 
     public static class TakeLast extends Abstract${Type}SeqView {
         protected final @NotNull ${Type}SeqView source;
-
         private final int n;
-        private final int delta;
 
-        public TakeLast(@NotNull ${Type}SeqView source, int n) {
+        public TakeLast(@NotNull ${Type}SeqView source, @Range(from = 1, to = Integer.MAX_VALUE) int n) {
             this.source = source;
-            this.n = Integer.max(n, 0);
-            this.delta = Integer.max(0, source.size() - Integer.max(0, n));
+            this.n = n;
         }
 
         @Override
-        public final ${PrimitiveType} get(int index) {
-            return source.get(index + delta);
+        public final ${PrimitiveType} get(@Index int index) {
+            if (index >= 0) {
+                int sourceSize = source.size();
+                if (sourceSize <= n) {
+                    return source.get(index);
+                } else {
+                    Objects.checkIndex(index, n);
+                    int delta = sourceSize - n;
+                    return source.get(index + delta);
+                }
+            } else {
+                if (index == ~0 || ~index > n) {
+                    throw Indexes.outOfBounds(index);
+                }
+
+                return source.get(index);
+            }
         }
 
         @Override
         public final int size() {
-            return source.size() - delta;
+            return Integer.min(source.size(), n);
         }
 
         @Override
         public final int knownSize() {
-            int kn = source.knownSize();
-            return kn >= 0 ? Integer.min(kn, n) : -1;
+            int ks = source.knownSize();
+            return ks >= 0 ? Integer.min(ks, n) : -1;
         }
 
         @Override
@@ -819,7 +819,6 @@ public final class ${Type}SeqViews {
 
     public static class Prepended extends Abstract${Type}SeqView {
         private final @NotNull ${Type}SeqView source;
-
         private final ${PrimitiveType} value;
 
         public Prepended(@NotNull ${Type}SeqView source, ${PrimitiveType} value) {
@@ -833,10 +832,8 @@ public final class ${Type}SeqViews {
         }
 
         @Override
-        public final ${PrimitiveType} get(int index) {
-            if (index < 0) {
-                throw new IndexOutOfBoundsException("index(" + index + ") < 0");
-            }
+        public final ${PrimitiveType} get(@Index int index) {
+            index = Indexes.checkElementIndex(index, size());
             return index == 0 ? value : source.get(index - 1);
         }
 
@@ -913,8 +910,16 @@ public final class ${Type}SeqViews {
         }
 
         @Override
-        public final ${PrimitiveType} get(int index) {
-            return source.get(size() - 1 - index);
+        public final ${PrimitiveType} get(@Index int index) {
+            if (index >= 0) {
+                return source.get(size() - 1 - index);
+            } else {
+                if (index == ~0) {
+                    throw Indexes.outOfBounds(index);
+                }
+
+                return source.get(~index - 1);
+            }
         }
 
         @Override
@@ -1056,7 +1061,7 @@ public final class ${Type}SeqViews {
         }
 
         @Override
-        public final ${PrimitiveType} get(int index) {
+        public final ${PrimitiveType} get(@Index int index) {
             return mapper.applyAs${Type}(source.get(index));
         }
     }
@@ -1086,7 +1091,7 @@ public final class ${Type}SeqViews {
         }
 
         @Override
-        public final E get(int index) {
+        public final E get(@Index int index) {
             return mapper.apply(source.get(index));
         }
     }
@@ -1125,16 +1130,9 @@ public final class ${Type}SeqViews {
         }
 
         @Override
-        public final ${PrimitiveType} get(int index) {
-            if (index < 0) {
-                throw new IndexOutOfBoundsException("index(" + index + ") < 0");
-            }
+        public final ${PrimitiveType} get(@Index int index) {
             initSorted();
-            try {
-                return sorted[index];
-            } catch (ArrayIndexOutOfBoundsException e) {
-                throw new IndexOutOfBoundsException(e.getMessage());
-            }
+            return sorted[Indexes.checkElementIndex(index, sorted.length)];
         }
 
         @Override

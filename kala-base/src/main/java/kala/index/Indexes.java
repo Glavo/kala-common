@@ -18,11 +18,20 @@ package kala.index;
 import org.jetbrains.annotations.Range;
 
 public final class Indexes {
-    private static IndexOutOfBoundsException outOfBounds(int index, int length) {
+
+    public static IndexOutOfBoundsException outOfBounds(int index) {
+        return new IndexOutOfBoundsException("Index " + toString(index) + " out of bounds");
+    }
+
+    public static IndexOutOfBoundsException outOfBounds(int index, int length) {
         return new IndexOutOfBoundsException("Index %s out of bounds for length %d".formatted(
-                index >= 0 ? index : "~" + ~index,
+                toString(index),
                 length
         ));
+    }
+
+    public static String toString(@Index int index) {
+        return index >= 0 ? String.valueOf(index) : "~" + ~index;
     }
 
     private static int normalizeElementIndex(int index, int length) {

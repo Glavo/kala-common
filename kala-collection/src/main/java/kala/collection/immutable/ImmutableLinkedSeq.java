@@ -249,8 +249,9 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
     //region Positional Access Operations
 
     @Override
-    public E get(int index) {
-        Objects.checkIndex(index, size);
+    public E get(@Index int index) {
+        index = Indexes.checkElementIndex(index, size);
+
         Node<E> list = this.node;
         for (int i = 0; i < index; i++) {
             list = list.tail;
@@ -561,8 +562,9 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
         }
 
         @Override
-        public final E get(int index) {
-            Objects.checkIndex(index, len);
+        public final E get(@Index int index) {
+            index = Indexes.checkElementIndex(index, len);
+
             if (index == len - 1)
                 return last.head;
 

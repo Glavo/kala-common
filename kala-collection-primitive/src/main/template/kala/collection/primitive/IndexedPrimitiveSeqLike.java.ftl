@@ -20,6 +20,7 @@ import kala.collection.base.primitive.Abstract${Type}Iterator;
 import kala.collection.base.primitive.${Type}Iterator;
 import kala.control.primitive.${Type}Option;
 import kala.function.*;
+import kala.index.Index;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;
@@ -85,7 +86,7 @@ public interface Indexed${Type}SeqLike extends ${Type}SeqLike, RandomAccess {
     }
 
     @Override
-    ${PrimitiveType} get(int index);
+    ${PrimitiveType} get(@Index int index);
 
     //endregion
 

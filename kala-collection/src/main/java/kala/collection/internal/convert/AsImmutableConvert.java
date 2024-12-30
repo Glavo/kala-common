@@ -21,6 +21,7 @@ import kala.collection.immutable.AbstractImmutableCollection;
 import kala.collection.immutable.ImmutableSeq;
 import kala.collection.mutable.MutableCollection;
 import kala.collection.mutable.MutableSeq;
+import kala.index.Index;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -80,7 +81,7 @@ public final class AsImmutableConvert {
         }
 
         @Override
-        public E get(int index) {
+        public E get(@Index int index) {
             return source.get(index);
         }
 

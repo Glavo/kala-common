@@ -5,6 +5,8 @@ import kala.collection.IndexedSeq;
 import kala.collection.base.Iterators;
 import kala.collection.base.ObjectArrays;
 import kala.collection.factory.CollectionFactory;
+import kala.index.Index;
+import kala.index.Indexes;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -296,14 +298,14 @@ public final class MutableArrayDeque<E> extends AbstractMutableList<E> implement
     //region Positional Access Operations
 
     @Override
-    public E get(int index) {
+    public E get(@Index int index) {
         if (isEmpty()) {
             throw new IndexOutOfBoundsException("Index out of range: " + index);
         } else if (begin < end) {
-            Objects.checkIndex(index, end - begin);
+            index = Indexes.checkElementIndex(index, end - begin);
             return (E) elements[begin + index];
         } else {
-            Objects.checkIndex(index, elements.length - begin + end);
+            index = Indexes.checkElementIndex(index, elements.length - begin + end);
             return (E) elements[inc(begin, index, elements.length)];
         }
     }

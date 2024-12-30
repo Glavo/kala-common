@@ -25,12 +25,12 @@ import kala.collection.mutable.MutableSeq;
 import kala.control.Option;
 import kala.function.IndexedBiConsumer;
 import kala.function.IndexedFunction;
+import kala.index.Index;
 import kala.tuple.Tuple2;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 
 import java.util.Comparator;
 import java.util.Iterator;
@@ -73,12 +73,15 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E>, OrderedTra
 
     @Override
     default E elementAt(int index) {
+        if (index < 0) {
+            throw new IndexOutOfBoundsException(index);
+        }
         return get(index);
     }
 
     @Contract(pure = true)
     @Flow(sourceIsContainer = true)
-    default E get(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
+    default E get(@Index int index) {
         Iterator<E> it = iterator(index);
         if (!it.hasNext()) throw new IndexOutOfBoundsException("Index: " + index);
 
@@ -87,14 +90,14 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E>, OrderedTra
 
     @Contract(pure = true)
     @DelegateBy("get(int)")
-    default @Nullable E getOrNull(int index) {
+    default @Nullable E getOrNull(@Index int index) {
         return isDefinedAt(index) ? get(index) : null;
     }
 
     @Contract(pure = true)
     @Flow(sourceIsContainer = true, targetIsContainer = true)
     @DelegateBy("get(int)")
-    default @NotNull Option<E> getOption(int index) {
+    default @NotNull Option<E> getOption(@Index int index) {
         return isDefinedAt(index) ? Option.some(get(index)) : Option.none();
     }
 

@@ -27,6 +27,8 @@ import kala.function.IndexedBiConsumer;
 import kala.function.IndexedConsumer;
 import kala.function.IndexedFunction;
 import kala.function.Predicates;
+import kala.index.Index;
+import kala.index.Indexes;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
@@ -63,8 +65,8 @@ public final class SeqViews {
         }
 
         @Override
-        public E get(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
-            throw new IndexOutOfBoundsException("index: " + index);
+        public E get(@Index int index) {
+            throw new IndexOutOfBoundsException(index);
         }
 
         @Override
@@ -181,17 +183,8 @@ public final class SeqViews {
             return source.supportsFastRandomAccess();
         }
 
-        public E get(int index) {
+        public E get(@Index int index) {
             return source.get(index);
-        }
-
-        @Override
-        public @Nullable E getOrNull(int index) {
-            return source.getOrNull(index);
-        }
-
-        public @NotNull Option<E> getOption(int index) {
-            return source.getOption(index);
         }
 
         public int indexOf(Object value) {
@@ -272,23 +265,8 @@ public final class SeqViews {
         }
 
         @Override
-        public final E get(int index) {
-            Objects.checkIndex(index, size());
-            return (E) array[index + beginIndex];
-        }
-
-        @Override
-        public final @Nullable E getOrNull(int index) {
-            return index < 0 || index >= size()
-                    ? null
-                    : (E) array[index + beginIndex];
-        }
-
-        @Override
-        public final @NotNull Option<E> getOption(int index) {
-            return index < 0 || index >= size()
-                    ? Option.none()
-                    : Option.some((E) array[index + beginIndex]);
+        public final E get(@Index int index) {
+            return (E) array[Indexes.checkElementIndex(index, size()) + beginIndex];
         }
 
         @Override
@@ -567,22 +545,8 @@ public final class SeqViews {
         }
 
         @Override
-        public final E get(int index) {
-            if (index < 0) {
-                throw new IndexOutOfBoundsException("Index(" + index + ") < 0");
-            }
-
-            final SeqView<E> source = this.source;
-            final int n = this.n;
-
-            if (n <= 0) {
-                return this.source.get(index);
-            }
-
-            final int size = Integer.max(source.size() - n, 0);
-            Objects.checkIndex(index, size);
-
-            return this.source.get(index);
+        public final E get(@Index int index) {
+            return this.source.get(Indexes.checkElementIndex(index, size()));
         }
 
         @Override
@@ -693,47 +657,57 @@ public final class SeqViews {
     }
 
     public static class TakeLast<E> extends AbstractSeqView<E> {
-        @NotNull
-        protected final SeqView<E> source;
-
+        protected final @NotNull SeqView<E> source;
 
         private final int n;
-        private final int delta;
 
-        public TakeLast(@NotNull SeqView<E> source, int n) {
+        public TakeLast(@NotNull SeqView<E> source, @Range(from = 1, to = Integer.MAX_VALUE) int n) {
             this.source = source;
-            this.n = Integer.max(n, 0);
-            this.delta = Integer.max(0, source.size() - Integer.max(0, n));
+            this.n = n;
         }
 
         @Override
-        public final E get(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
-            return source.get(index + delta);
+        public final E get(@Index int index) {
+            if (index >= 0) {
+                int sourceSize = source.size();
+                if (sourceSize <= n) {
+                    return source.get(index);
+                } else {
+                    Objects.checkIndex(index, n);
+                    int delta = sourceSize - n;
+                    return source.get(index + delta);
+                }
+            } else {
+                if (index == ~0 || ~index > n) {
+                    throw Indexes.outOfBounds(index);
+                }
+
+                return source.get(index);
+            }
         }
 
         @Override
         public final int size() {
-            return source.size() - delta;
+            return Integer.min(source.size(), n);
         }
 
         @Override
         public final int knownSize() {
-            int kn = source.knownSize();
-            return kn >= 0 ? Integer.min(kn, n) : -1;
+            int ks = source.knownSize();
+            return ks >= 0 ? Integer.min(ks, n) : -1;
         }
 
-        @NotNull
         @Override
-        public final Iterator<E> iterator() {
-            int k = source.knownSize();
-            if (k == 0 || n <= 0) {
+        public final @NotNull Iterator<E> iterator() {
+            int ks = source.knownSize();
+            if (ks == 0 || n <= 0) {
                 return Iterators.empty();
             }
             if (n == Integer.MAX_VALUE) {
                 return source.iterator();
             }
-            if (k > 0) {
-                return Iterators.drop(source.iterator(), Integer.max(k - n, 0));
+            if (ks > 0) {
+                return Iterators.drop(source.iterator(), Integer.max(ks - n, 0));
             }
             return new AbstractIterator<E>() {
                 Iterator<E> it = source.iterator();
@@ -905,34 +879,19 @@ public final class SeqViews {
         }
 
         @Override
-        public final E get(int index) {
+        public final E get(@Index int index) {
+            index = Indexes.checkElementIndex(index, size());
+
             if (index == this.index) {
                 return newValue;
             }
             return source.get(index);
-        }
-
-        @Override
-        public @Nullable E getOrNull(int index) {
-            if (index == this.index) {
-                return newValue;
-            }
-            return source.getOrNull(index);
-        }
-
-        @Override
-        public final @NotNull Option<E> getOption(int index) {
-            if (index == this.index) {
-                return Option.some(newValue);
-            }
-            return source.getOption(index);
         }
     }
 
     public static class Prepended<E> extends AbstractSeqView<E> {
 
         private final @NotNull SeqView<E> source;
-
         private final E value;
 
         public Prepended(@NotNull SeqView<E> source, E value) {
@@ -943,30 +902,6 @@ public final class SeqViews {
         @Override
         public final @NotNull Iterator<E> iterator() {
             return Iterators.prepended(source.iterator(), value);
-        }
-
-        @Override
-        public final E get(int index) {
-            if (index < 0) {
-                throw new IndexOutOfBoundsException("index(" + index + ") < 0");
-            }
-            return index == 0 ? value : source.get(index - 1);
-        }
-
-        @Override
-        public @Nullable E getOrNull(int index) {
-            if (index < 0) {
-                return null;
-            }
-            return index == 0 ? value : source.getOrNull(index + 1);
-        }
-
-        @Override
-        public final @NotNull Option<E> getOption(int index) {
-            if (index < 0) {
-                return Option.none();
-            }
-            return index == 0 ? Option.some(value) : source.getOption(index + 1);
         }
 
         @Override
@@ -981,6 +916,12 @@ public final class SeqViews {
                 return -1;
             }
             return sks + 1;
+        }
+
+        @Override
+        public final E get(@Index int index) {
+            index = Indexes.checkElementIndex(index, size());
+            return index == 0 ? value : source.get(index - 1);
         }
     }
 
@@ -1047,7 +988,9 @@ public final class SeqViews {
         }
 
         @Override
-        public final E get(int index) {
+        public final E get(@Index int index) {
+            index = Indexes.checkElementIndex(index, size());
+
             if (index == insertedIndex) {
                 return value;
             } else if (index > insertedIndex) {
@@ -1091,8 +1034,8 @@ public final class SeqViews {
         }
 
         @Override
-        public E get(int index) {
-            Objects.checkIndex(index, size());
+        public E get(@Index int index) {
+            index = Indexes.checkElementIndex(index, size());
             return source.get(index < removedIndex ? index : index -1);
         }
     }
@@ -1125,8 +1068,16 @@ public final class SeqViews {
         }
 
         @Override
-        public final E get(int index) {
-            return source.get(size() - 1 - index);
+        public final E get(@Index int index) {
+            if (index >= 0) {
+                return source.get(size() - 1 - index);
+            } else {
+                if (index == ~0) {
+                    throw Indexes.outOfBounds(index);
+                }
+
+                return source.get(~index - 1);
+            }
         }
 
         @Override
@@ -1269,7 +1220,7 @@ public final class SeqViews {
         }
 
         @Override
-        public final E get(int index) {
+        public final E get(@Index int index) {
             return mapper.apply(source.get(index));
         }
 
@@ -1314,18 +1265,9 @@ public final class SeqViews {
         //endregion
 
         @Override
-        public final E get(int index) {
+        public final E get(@Index int index) {
+            index = Indexes.checkElementIndex(index, size());
             return mapper.apply(index, source.get(index));
-        }
-
-        @Override
-        public @Nullable E getOrNull(int index) {
-            return getOption(index).getOrNull();
-        }
-
-        @Override
-        public final @NotNull Option<E> getOption(int index) {
-            return source.getOption(index).map(a -> mapper.apply(index, a));
         }
     }
 
@@ -1427,41 +1369,9 @@ public final class SeqViews {
         }
 
         @Override
-        public final E get(int index) {
-            if (index < 0) {
-                throw new IndexOutOfBoundsException("index(" + index + ") < 0");
-            }
+        public final E get(@Index int index) {
             initSorted();
-            try {
-                return (E) sorted[index];
-            } catch (ArrayIndexOutOfBoundsException e) {
-                throw new IndexOutOfBoundsException(e.getMessage());
-            }
-        }
-
-        @Override
-        public final @Nullable E getOrNull(int index) {
-            if (index < 0) {
-                return null;
-            }
-
-            initSorted();
-            Object[] sorted = this.sorted;
-            if (index >= sorted.length) {
-                return null;
-            }
-            return (E) sorted[index];
-        }
-
-        @Override
-        public final @NotNull Option<E> getOption(int index) {
-            if (index < 0) {
-                return Option.none();
-            }
-
-            initSorted();
-            Object[] sorted = this.sorted;
-            return index >= sorted.length ? Option.none() : (Option<E>) Option.some(sorted[index]);
+            return (E) GenericArrays.get(sorted, index);
         }
 
         @Override
@@ -1522,26 +1432,9 @@ public final class SeqViews {
         }
 
         @Override
-        public final @NotNull Tuple2<E, U> get(int index) {
+        public final @NotNull Tuple2<E, U> get(@Index int index) {
+            index = Indexes.checkElementIndex(index, size());
             return Tuple.of(source.get(index), other.get(index));
-        }
-
-        @Override
-        public @Nullable Tuple2<E, U> getOrNull(int index) {
-            return getOption(index).getOrNull();
-        }
-
-        @Override
-        public final @NotNull Option<Tuple2<E, U>> getOption(int index) {
-            final Option<? extends E> o1 = source.getOption(index);
-            if (o1.isEmpty()) {
-                return Option.none();
-            }
-            final Option<? extends U> o2 = other.getOption(index);
-            if (o2.isEmpty()) {
-                return Option.none();
-            }
-            return Option.some(Tuple.of(o1.get(), o2.get()));
         }
 
         @Override

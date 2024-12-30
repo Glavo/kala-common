@@ -6,6 +6,8 @@ import kala.collection.base.GenericArrays;
 import kala.collection.base.Iterators;
 import kala.function.IndexedFunction;
 import kala.collection.factory.CollectionFactory;
+import kala.index.Index;
+import kala.index.Indexes;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -269,9 +271,9 @@ public final class MutableSmartArrayList<E> extends AbstractMutableList<E> imple
     //region Positional Access Operations
 
     @Override
-    public E get(int index) {
+    public E get(@Index int index) {
         final int size = this.size;
-        Objects.checkIndex(index, size);
+        index = Indexes.checkElementIndex(index, size);
         if (size == 1) {
             return (E) elem;
         } else {
