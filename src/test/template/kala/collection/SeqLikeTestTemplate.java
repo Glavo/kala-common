@@ -132,10 +132,13 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
                 assertEquals(Option.some(data[data.length - i - 1]), seq.getOption(~(i + 1)));
             }
             assertThrows(IndexOutOfBoundsException.class, () -> seq.get(data.length));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.get(~(data.length + 1)));
             assertThrows(IndexOutOfBoundsException.class, () -> seq.get(Integer.MAX_VALUE));
             assertNull(seq.getOrNull(data.length));
+            assertNull(seq.getOrNull(~(data.length + 1)));
             assertNull(seq.getOrNull(Integer.MAX_VALUE));
             assertSame(Option.none(), seq.getOption(data.length));
+            assertSame(Option.none(), seq.getOption(~(data.length + 1)));
             assertSame(Option.none(), seq.getOption(Integer.MAX_VALUE));
         }
     }
@@ -144,8 +147,8 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
     default void reversedIteratorTest() {
         assertFalse(of().reverseIterator().hasNext());
 
-        assertIterableEquals(List.of(0), ImmutableSeq.from(from(List.of(0)).reverseIterator()));
-        assertIterableEquals(List.of(1, 0), ImmutableSeq.from(from(List.of(0, 1)).reverseIterator()));
+        assertIteratorEquals(List.of(0), from(List.of(0)).reverseIterator());
+        assertIteratorEquals(List.of(1, 0), from(List.of(0, 1)).reverseIterator());
 
         for (Integer[] data : data1()) {
             Integer[] rdata = new Integer[data.length];
@@ -153,7 +156,7 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
                 rdata[data.length - i - 1] = data[i];
             }
 
-            assertIterableEquals(Arrays.asList(rdata), ImmutableSeq.from(from(data).reverseIterator()));
+            assertIteratorEquals(Arrays.asList(rdata), from(data).reverseIterator());
         }
     }
 
