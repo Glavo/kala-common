@@ -15,6 +15,7 @@
  */
 package kala.function;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -24,6 +25,7 @@ final class Hashers {
     static final Hasher<?> IDENTITY = new Identity<>();
 
     private static final class Default<T> implements Hasher<T>, Serializable {
+        @Serial
         private static final long serialVersionUID = 0L;
 
         @Override
@@ -36,12 +38,14 @@ final class Hashers {
             return "Hashers.Default";
         }
 
+        @Serial
         private Object readResolve() {
             return DEFAULT;
         }
     }
 
     private static final class Optimized<T> implements Hasher<T>, Serializable {
+        @Serial
         private static final long serialVersionUID = 0L;
 
         @Override
@@ -51,7 +55,6 @@ final class Hashers {
             }
 
             int originalHash = obj.hashCode();
-
             return originalHash ^ (originalHash >>> 16);
         }
 
@@ -60,12 +63,14 @@ final class Hashers {
             return "Hashers.Optimized";
         }
 
+        @Serial
         private Object readResolve() {
             return OPTIMIZED;
         }
     }
 
     private static final class Identity<T> implements Hasher<T>, Serializable {
+        @Serial
         private static final long serialVersionUID = 0L;
 
         @Override
@@ -83,6 +88,7 @@ final class Hashers {
             return "Hashers.Optimized";
         }
 
+        @Serial
         private Object readResolve() {
             return IDENTITY;
         }

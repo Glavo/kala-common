@@ -17,7 +17,6 @@ package kala.function;
 
 import kala.annotations.ReplaceWith;
 
-import java.io.Serializable;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 
