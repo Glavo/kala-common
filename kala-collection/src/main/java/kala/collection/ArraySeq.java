@@ -457,11 +457,11 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     }
 
     @Override
-    public @NotNull ImmutableSeq<E> updated(int index, E newValue) {
+    public @NotNull ImmutableSeq<E> updated(@Index int index, E newValue) {
         final Object[] elements = this.elements;
         final int size = elements.length;
 
-        Objects.checkIndex(index, size);
+        index = Indexes.checkElementIndex(index, size);
 
         Object[] newValues = elements.clone();
         newValues[index] = newValue;

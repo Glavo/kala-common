@@ -651,7 +651,7 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
 
             assertThrows(IndexOutOfBoundsException.class, () -> empty.updated(0, "foo"));
             assertThrows(IndexOutOfBoundsException.class, () -> empty.updated(1, "foo"));
-            assertThrows(IndexOutOfBoundsException.class, () -> empty.updated(-1, "foo"));
+            assertThrows(IndexOutOfBoundsException.class, () -> empty.updated(~0, "foo"));
             assertThrows(IndexOutOfBoundsException.class, () -> empty.updated(Integer.MAX_VALUE, "foo"));
             assertThrows(IndexOutOfBoundsException.class, () -> empty.updated(Integer.MIN_VALUE, "foo"));
         }
@@ -660,20 +660,26 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
             var seq = from(List.of("foo"));
             assertIterableEquals(List.of("foo"), seq.updated(0, "foo"));
             assertIterableEquals(List.of("bar"), seq.updated(0, "bar"));
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(1, "bar").toImmutableLinkedSeq());
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(-1, "bar").toImmutableLinkedSeq());
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MAX_VALUE, "bar").toImmutableLinkedSeq());
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MIN_VALUE, "bar").toImmutableLinkedSeq());
+            assertIterableEquals(List.of("foo"), seq.updated(~1, "foo"));
+            assertIterableEquals(List.of("bar"), seq.updated(~1, "bar"));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(1, "bar").toImmutableSeq());
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(~0, "bar").toImmutableSeq());
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(~2, "bar").toImmutableSeq());
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MAX_VALUE, "bar").toImmutableSeq());
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MIN_VALUE, "bar").toImmutableSeq());
         }
 
         {
             var seq = from(List.of("foo", "bar"));
             assertIterableEquals(List.of("zzz", "bar"), seq.updated(0, "zzz"));
+            assertIterableEquals(List.of("zzz", "bar"), seq.updated(~2, "zzz"));
             assertIterableEquals(List.of("foo", "zzz"), seq.updated(1, "zzz"));
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(2, "zzz").toImmutableLinkedSeq());
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MIN_VALUE, "zzz").toImmutableLinkedSeq());
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(-1, "zzz"));
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MIN_VALUE, "zzz").toImmutableLinkedSeq());
+            assertIterableEquals(List.of("foo", "zzz"), seq.updated(~1, "zzz"));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(2, "zzz").toImmutableSeq());
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MIN_VALUE, "zzz").toImmutableSeq());
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(~0, "zzz"));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(~3, "zzz"));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MIN_VALUE, "zzz").toImmutableSeq());
         }
     }
 

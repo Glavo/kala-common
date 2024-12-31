@@ -164,14 +164,7 @@ public interface SeqView<@Covariant E> extends CollectionView<E>, SeqLike<E>, An
     }
 
     default @NotNull SeqView<E> updated(int index, E newValue) {
-        final int ks = this.knownSize();
-        if (ks < 0) {
-            if (index < 0) {
-                throw new IndexOutOfBoundsException("index(" + index + ") < 0");
-            }
-        } else {
-            Objects.checkIndex(index, ks);
-        }
+        index = Indexes.checkElementIndex(index, size()); // TODO
         return new SeqViews.Updated<>(this, index, newValue);
     }
 

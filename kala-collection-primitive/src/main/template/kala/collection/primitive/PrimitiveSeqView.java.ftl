@@ -138,15 +138,8 @@ public interface ${Type}SeqView extends ${Type}SeqLike, ${Type}CollectionView, P
     }
 
     @Contract(pure = true)
-    default @NotNull ${Type}SeqView updated(int index, ${PrimitiveType} newValue) {
-        final int ks = this.knownSize();
-        if (ks < 0) {
-            if (index < 0) {
-                throw new IndexOutOfBoundsException("index(" + index + ") < 0");
-            }
-        } else {
-            Objects.checkIndex(index, ks);
-        }
+    default @NotNull ${Type}SeqView updated(@Index int index, ${PrimitiveType} newValue) {
+        index = Indexes.checkElementIndex(index, size()); // TODO
         return new ${Type}SeqViews.Updated(this, index, newValue);
     }
 

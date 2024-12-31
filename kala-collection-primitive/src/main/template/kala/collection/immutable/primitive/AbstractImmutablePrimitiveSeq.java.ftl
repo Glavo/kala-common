@@ -32,14 +32,11 @@ import java.util.function.*;
 public abstract class AbstractImmutable${Type}Seq extends Abstract${Type}Seq implements Immutable${Type}Seq {
     static <T, Builder> T updated(
             @NotNull Immutable${Type}Seq seq,
-            int index, ${PrimitiveType} newValue,
+            @Index int index, ${PrimitiveType} newValue,
             @NotNull ${Type}CollectionFactory<Builder, ? extends T> factory
     ) {
         final int s = seq.size();
-
-        if (index < 0 || index >= s) {
-            throw new IndexOutOfBoundsException();
-        }
+        index = Indexes.checkElementIndex(index, s);
 
         Builder builder = factory.newBuilder();
 

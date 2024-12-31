@@ -110,10 +110,11 @@ public final class ${Type}SeqViews {
         }
 
         @Override
-        public @NotNull ${Type}SeqView updated(int index, ${PrimitiveType} newValue) {
-            if (index != 0) throw new IndexOutOfBoundsException("index: " + index);
-
-            return new Single(newValue);
+        public @NotNull ${Type}SeqView updated(@Index int index, ${PrimitiveType} newValue) {
+            if (index == 0 || index == ~1) {
+                return new Single(newValue);
+            }
+            throw Indexes.outOfBounds(index, 1);
         }
     }
 

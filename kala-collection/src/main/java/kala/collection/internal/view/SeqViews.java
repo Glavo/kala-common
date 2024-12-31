@@ -149,12 +149,11 @@ public final class SeqViews {
         }
 
         @Override
-        public @NotNull SeqView<E> updated(int index, E newValue) {
-            if (index != 0) {
-                throw new IndexOutOfBoundsException("index: " + index);
+        public @NotNull SeqView<E> updated(@Index int index, E newValue) {
+            if (index == 0 || index == ~1) {
+                return new Single<>(value);
             }
-
-            return new Single<>(newValue);
+            throw Indexes.outOfBounds(index, 1);
         }
 
         @Override
@@ -828,7 +827,6 @@ public final class SeqViews {
         private final @NotNull SeqView<E> source;
 
         private final int index;
-
         private final E newValue;
 
         public Updated(@NotNull SeqView<E> source, int index, E newValue) {

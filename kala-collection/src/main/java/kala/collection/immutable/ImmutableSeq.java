@@ -266,7 +266,7 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     }
 
     @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> updated(int index, E newValue) {
+    default @NotNull ImmutableSeq<E> updated(@Index int index, E newValue) {
         return AbstractImmutableSeq.updated(this, index, newValue, iterableFactory());
     }
 

@@ -38,13 +38,12 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractSeq<E> 
 
     static <E, T, Builder> T updated(
             @NotNull ImmutableSeq<? extends E> seq,
-            int index,
+            @Index int index,
             E newValue,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
         final int size = seq.size();
-
-        Objects.checkIndex(index, size);
+        index = Indexes.checkElementIndex(index, size);
 
         Builder builder = factory.newBuilder();
 

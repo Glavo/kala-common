@@ -156,7 +156,7 @@ public interface Immutable${Type}Seq extends ImmutablePrimitiveSeq<${WrapperType
 
     @Override
     @Contract(pure = true)
-    default @NotNull Immutable${Type}Seq updated(int index, ${PrimitiveType} newValue) {
+    default @NotNull Immutable${Type}Seq updated(@Index int index, ${PrimitiveType} newValue) {
         return AbstractImmutable${Type}Seq.updated(this, index, newValue, iterableFactory());
     }
 

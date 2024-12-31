@@ -344,10 +344,10 @@ final class ImmutableVectors {
         }
 
         @Override
-        public @NotNull ImmutableVector<E> updated(int index, E newValue) {
+        public @NotNull ImmutableVector<E> updated(@Index int index, E newValue) {
             final Object[] prefix1 = this.prefix1;
             final int size = prefix1.length;
-            Objects.checkIndex(index, size);
+            index = Indexes.checkElementIndex(index, size);
             Object[] res = prefix1.clone();
             res[index] = newValue;
             return new ImmutableVectors.Vector1<>(res);

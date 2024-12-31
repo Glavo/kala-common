@@ -13,6 +13,7 @@ import kala.collection.internal.view.SeqViews;
 import kala.comparator.Comparators;
 import kala.function.*;
 import kala.index.Index;
+import kala.index.Indexes;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import kala.tuple.Tuple3;
@@ -190,8 +191,8 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
 
     @Override
     @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> updated(int index, E newValue) {
-        Objects.checkIndex(index, size());
+    default @NotNull ImmutableSeq<E> updated(@Index int index, E newValue) {
+        index = Indexes.checkElementIndex(index, size());
         return view().updated(index, newValue).toImmutableSeq();
     }
 
@@ -378,7 +379,6 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
     default <U> @NotNull ImmutableSeq<U> mapNotNullUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
         return mapNotNull(mapper);
     }
-
 
     @Override
     @Contract(pure = true)

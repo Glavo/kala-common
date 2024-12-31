@@ -343,7 +343,7 @@ public interface ${Type}SeqLike extends PrimitiveSeqLike<${WrapperType}>, ${Type
     @NotNull ${Type}SeqLike takeWhile(@NotNull ${Type}Predicate predicate);
 
     @Contract(pure = true)
-    @NotNull ${Type}SeqLike updated(int index, ${PrimitiveType} newValue);
+    @NotNull ${Type}SeqLike updated(@Index int index, ${PrimitiveType} newValue);
 
     @Contract(pure = true)
     @NotNull ${Type}SeqLike concat(@NotNull ${Type}SeqLike other);

@@ -171,7 +171,7 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E>, OrderedTra
     @NotNull SeqLike<E> takeWhile(@NotNull Predicate<? super E> predicate);
 
     @Contract(pure = true)
-    @NotNull SeqLike<E> updated(int index, E newValue);
+    @NotNull SeqLike<E> updated(@Index int index, E newValue);
 
     @Contract(pure = true)
     @NotNull SeqLike<E> concat(@NotNull SeqLike<? extends E> other);
