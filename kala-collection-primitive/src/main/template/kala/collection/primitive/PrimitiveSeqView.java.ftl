@@ -21,6 +21,8 @@ import kala.collection.base.primitive.${Type}Traversable;
 import kala.collection.immutable.primitive.Immutable${Type}Seq;
 import kala.collection.primitive.internal.view.${Type}SeqViews;
 import kala.function.*;
+import kala.index.Index;
+import kala.index.Indexes;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,26 +46,10 @@ public interface ${Type}SeqView extends ${Type}SeqLike, ${Type}CollectionView, P
     }
 
     @Contract(pure = true)
-    default @NotNull ${Type}SeqView slice(int beginIndex, int endIndex) {
-        final int ks = this.knownSize();
-        if (ks == 0) {
-            if (beginIndex != 0) {
-                throw new IndexOutOfBoundsException("beginIndex: " + beginIndex);
-            }
-            if (endIndex != 0) {
-                throw new IndexOutOfBoundsException("endIndex: " + endIndex);
-            }
-            return ${Type}SeqView.empty();
-        } else if (ks > 0) {
-            Conditions.checkPositionIndices(beginIndex, endIndex, ks);
-        } else {
-            if (beginIndex < 0) {
-                throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") < 0");
-            }
-            if (beginIndex > endIndex) {
-                throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
-            }
-        }
+    default @NotNull ${Type}SeqView slice(@Index int beginIndex, @Index int endIndex) {
+        final int size = this.size();
+        beginIndex = Indexes.checkBeginIndex(beginIndex, size);
+        endIndex = Indexes.checkEndIndex(beginIndex, endIndex, size);
 
         return new ${Type}SeqViews.Slice(this, beginIndex, endIndex);
     }

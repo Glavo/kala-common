@@ -270,8 +270,11 @@ public final class SeqViews {
         }
 
         @Override
-        public @NotNull SeqView<E> slice(int beginIndex, int endIndex) {
-            Conditions.checkPositionIndices(beginIndex, endIndex, size());
+        public @NotNull SeqView<E> slice(@Index int beginIndex, @Index int endIndex) {
+            final int size = size();
+            beginIndex = Indexes.checkBeginIndex(beginIndex, size);
+            endIndex = Indexes.checkEndIndex(beginIndex, endIndex, size);
+
             final int ns = endIndex - beginIndex;
             switch (ns) {
                 case 0:
@@ -280,11 +283,6 @@ public final class SeqViews {
                     return SeqView.of((E) array[this.beginIndex + beginIndex]);
             }
             return new OfArraySlice<>(array, this.beginIndex + beginIndex, this.beginIndex + endIndex);
-        }
-
-        @Override
-        public @NotNull SeqView<E> sliceView(int beginIndex, int endIndex) {
-            return slice(beginIndex, endIndex);
         }
 
         @Override

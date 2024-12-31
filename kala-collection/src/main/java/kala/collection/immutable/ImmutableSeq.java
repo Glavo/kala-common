@@ -20,6 +20,7 @@ import kala.collection.Seq;
 import kala.collection.SeqLike;
 import kala.collection.base.Traversable;
 import kala.function.*;
+import kala.index.Index;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import kala.annotations.Covariant;
@@ -220,7 +221,7 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     }
 
     @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> slice(int beginIndex, int endIndex) {
+    default @NotNull ImmutableSeq<E> slice(@Index int beginIndex, @Index int endIndex) {
         return AbstractImmutableSeq.slice(this, beginIndex, endIndex, iterableFactory());
     }
 

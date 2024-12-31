@@ -68,7 +68,7 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E>, OrderedTra
     @Override
     @NotNull SeqView<E> view();
 
-    default @NotNull SeqView<E> sliceView(int beginIndex, int endIndex) {
+    default @NotNull SeqView<E> sliceView(@Index int beginIndex, @Index int endIndex) {
         return view().slice(beginIndex, endIndex);
     }
 
@@ -151,7 +151,7 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E>, OrderedTra
     }
 
     @Contract(pure = true)
-    @NotNull SeqLike<E> slice(int beginIndex, int endIndex);
+    @NotNull SeqLike<E> slice(@Index int beginIndex, @Index int endIndex);
 
     @Contract(pure = true)
     @NotNull SeqLike<E> drop(int n);

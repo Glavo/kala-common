@@ -221,8 +221,11 @@ public final class ${Type}SeqViews {
         }
 
         @Override
-        public @NotNull ${Type}SeqView slice(int beginIndex, int endIndex) {
-            Conditions.checkPositionIndices(beginIndex, endIndex, size());
+        public @NotNull ${Type}SeqView slice(@Index int beginIndex, @Index int endIndex) {
+            final int size = this.size();
+            beginIndex = Indexes.checkBeginIndex(beginIndex, size);
+            endIndex = Indexes.checkEndIndex(beginIndex, endIndex, size);
+
             final int ns = endIndex - beginIndex;
             switch (ns) {
                 case 0:

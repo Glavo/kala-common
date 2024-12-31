@@ -44,8 +44,6 @@ import java.util.stream.Collector;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import static kala.Conditions.checkPositionIndices;
-
 @SuppressWarnings("unchecked")
 @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "elements")
 public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>, Serializable {
@@ -352,10 +350,12 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     //endregion
 
     @Override
-    public @NotNull ImmutableSeq<E> slice(int beginIndex, int endIndex) {
+    public @NotNull ImmutableSeq<E> slice(@Index int beginIndex, @Index int endIndex) {
         final Object[] elements = this.elements;
         final int size = elements.length;
-        checkPositionIndices(beginIndex, endIndex, size);
+
+        beginIndex = Indexes.checkBeginIndex(beginIndex, size);
+        endIndex = Indexes.checkEndIndex(beginIndex, endIndex, size);
 
         final int ns = endIndex - beginIndex;
         if (ns == 0) {
@@ -929,8 +929,10 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     //endregion
 
     @Override
-    public @NotNull SeqView<E> sliceView(int beginIndex, int endIndex) {
-        Conditions.checkPositionIndices(beginIndex, endIndex, elements.length);
+    public @NotNull SeqView<E> sliceView(@Index int beginIndex, @Index int endIndex) {
+        beginIndex = Indexes.checkBeginIndex(beginIndex, elements.length);
+        endIndex = Indexes.checkEndIndex(beginIndex, endIndex, elements.length);
+
         final int ns = endIndex - beginIndex;
         if (ns == 0) {
             return SeqView.empty();

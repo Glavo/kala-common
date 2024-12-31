@@ -20,6 +20,8 @@ import kala.collection.internal.convert.AsJavaConvert;
 import kala.function.IndexedBiConsumer;
 import kala.function.IndexedFunction;
 import kala.function.Predicates;
+import kala.index.Index;
+import kala.index.Indexes;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import kala.Conditions;
@@ -70,32 +72,16 @@ public interface SeqView<@Covariant E> extends CollectionView<E>, SeqLike<E>, An
     }
 
     @Override
-    default @NotNull SeqView<E> slice(int beginIndex, int endIndex) {
-        final int ks = this.knownSize();
-        if (ks == 0) {
-            if (beginIndex != 0) {
-                throw new IndexOutOfBoundsException("beginIndex: " + beginIndex);
-            }
-            if (endIndex != 0) {
-                throw new IndexOutOfBoundsException("endIndex: " + endIndex);
-            }
-            return SeqView.empty();
-        } else if (ks > 0) {
-            Conditions.checkPositionIndices(beginIndex, endIndex, ks);
-        } else {
-            if (beginIndex < 0) {
-                throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") < 0");
-            }
-            if (beginIndex > endIndex) {
-                throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
-            }
-        }
+    default @NotNull SeqView<E> slice(@Index int beginIndex, @Index int endIndex) {
+        final int size = this.size();
+        beginIndex = Indexes.checkBeginIndex(beginIndex, size);
+        endIndex = Indexes.checkEndIndex(beginIndex, endIndex, size);
 
         return new SeqViews.Slice<>(this, beginIndex, endIndex);
     }
 
     @Override
-    default @NotNull SeqView<E> sliceView(int beginIndex, int endIndex) {
+    default @NotNull SeqView<E> sliceView(@Index int beginIndex, @Index int endIndex) {
         return slice(beginIndex, endIndex);
     }
 

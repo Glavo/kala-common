@@ -323,7 +323,7 @@ public interface ${Type}SeqLike extends PrimitiveSeqLike<${WrapperType}>, ${Type
     //endregion
 
     @Contract(pure = true)
-    @NotNull ${Type}SeqLike slice(int beginIndex, int endIndex);
+    @NotNull ${Type}SeqLike slice(@Index int beginIndex, @Index int endIndex);
 
     @Contract(pure = true)
     @NotNull ${Type}SeqLike drop(int n);

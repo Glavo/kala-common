@@ -24,6 +24,7 @@ import kala.collection.primitive.internal.view.${Type}SeqViews;
 import kala.collection.immutable.ImmutableSeq;
 import kala.collection.immutable.primitive.Immutable${Type}Seq;
 import kala.function.*;
+import kala.index.Index;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -127,7 +128,7 @@ public interface ${Type}Seq extends PrimitiveSeq<${WrapperType}>, ${Type}Collect
 
     @Override
     @Contract(pure = true)
-    default @NotNull Immutable${Type}Seq slice(int beginIndex, int endIndex) {
+    default @NotNull Immutable${Type}Seq slice(@Index int beginIndex, @Index int endIndex) {
         return view().slice(beginIndex, endIndex).toImmutableSeq();
     }
 

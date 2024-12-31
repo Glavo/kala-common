@@ -17,6 +17,8 @@ import kala.function.*;
 import kala.annotations.Covariant;
 import kala.Conditions;
 import kala.collection.factory.CollectionFactory;
+import kala.index.Index;
+import kala.index.Indexes;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -347,9 +349,11 @@ public sealed abstract class ImmutableVector<@Covariant E> extends AbstractImmut
     abstract @NotNull ImmutableVector<E> slice0(int lo, int hi);
 
     @Override
-    public final @NotNull ImmutableSeq<E> slice(int beginIndex, int endIndex) {
+    public final @NotNull ImmutableSeq<E> slice(@Index int beginIndex, @Index int endIndex) {
         final int size = this.size();
-        Conditions.checkPositionIndices(beginIndex, endIndex, size);
+        beginIndex = Indexes.checkBeginIndex(beginIndex, size);
+        endIndex = Indexes.checkEndIndex(beginIndex, endIndex, size);
+
         final int newSize = endIndex - beginIndex;
         if (newSize == 0) {
             return ImmutableVector.empty();

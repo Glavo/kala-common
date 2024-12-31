@@ -21,6 +21,8 @@ import kala.collection.factory.primitive.${Type}CollectionFactory;
 import kala.collection.primitive.Abstract${Type}Seq;
 import kala.collection.primitive.${Type}SeqLike;
 import kala.function.*;
+import kala.index.Index;
+import kala.index.Indexes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -59,11 +61,12 @@ public abstract class AbstractImmutable${Type}Seq extends Abstract${Type}Seq imp
 
     static <T extends Immutable${Type}Seq, Builder> T slice(
             @NotNull Immutable${Type}Seq seq,
-            int beginIndex, int endIndex,
+            @Index int beginIndex, @Index int endIndex,
             @NotNull ${Type}CollectionFactory<Builder, ? extends T> factory
     ) {
         final int size = seq.size();
-        Conditions.checkPositionIndices(beginIndex, endIndex, size);
+        beginIndex = Indexes.checkBeginIndex(beginIndex, size);
+        endIndex = Indexes.checkEndIndex(beginIndex, endIndex, size);
 
         int ns = endIndex - beginIndex;
         if (ns == 0) {

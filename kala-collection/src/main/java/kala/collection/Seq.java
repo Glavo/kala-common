@@ -12,6 +12,7 @@ import kala.collection.internal.convert.FromJavaConvert;
 import kala.collection.internal.view.SeqViews;
 import kala.comparator.Comparators;
 import kala.function.*;
+import kala.index.Index;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import kala.tuple.Tuple3;
@@ -147,7 +148,7 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
 
     @Override
     @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> slice(int beginIndex, int endIndex) {
+    default @NotNull ImmutableSeq<E> slice(@Index int beginIndex, @Index int endIndex) {
         return view().slice(beginIndex, endIndex).toImmutableSeq();
     }
 

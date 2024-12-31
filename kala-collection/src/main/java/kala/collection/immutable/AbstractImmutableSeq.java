@@ -23,6 +23,8 @@ import kala.annotations.Covariant;
 import kala.Conditions;
 import kala.collection.SeqLike;
 import kala.collection.factory.CollectionFactory;
+import kala.index.Index;
+import kala.index.Indexes;
 import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
 
@@ -109,11 +111,12 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractSeq<E> 
 
     static <E, T extends ImmutableSeq<? extends E>, Builder> T slice(
             @NotNull ImmutableSeq<? extends E> seq,
-            int beginIndex, int endIndex,
+            @Index int beginIndex, @Index int endIndex,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
         final int size = seq.size();
-        Conditions.checkPositionIndices(beginIndex, endIndex, size);
+        beginIndex = Indexes.checkBeginIndex(beginIndex, size);
+        endIndex = Indexes.checkEndIndex(beginIndex, endIndex, size);
 
         int ns = endIndex - beginIndex;
         if (ns == 0) {

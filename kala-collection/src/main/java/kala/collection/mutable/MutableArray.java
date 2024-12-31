@@ -15,12 +15,13 @@
  */
 package kala.collection.mutable;
 
-import kala.Conditions;
 import kala.collection.ArraySeq;
 import kala.collection.base.GenericArrays;
 import kala.collection.base.Traversable;
 import kala.function.IndexedFunction;
 import kala.collection.factory.CollectionFactory;
+import kala.index.Index;
+import kala.index.Indexes;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -232,8 +233,10 @@ public final class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>,
     }
 
     @Override
-    public @NotNull MutableArraySliceView<E> sliceView(int beginIndex, int endIndex) {
-        Conditions.checkPositionIndices(beginIndex, endIndex, elements.length);
+    public @NotNull MutableArraySliceView<E> sliceView(@Index int beginIndex, @Index int endIndex) {
+        beginIndex = Indexes.checkBeginIndex(beginIndex, elements.length);
+        endIndex = Indexes.checkEndIndex(beginIndex, endIndex, elements.length);
+
         return new MutableArraySliceView<>(elements, beginIndex, endIndex);
     }
 

@@ -238,7 +238,10 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
     @Test
     default void sliceViewTest() {
         assertIterableEquals(List.of(), of().sliceView(0, 0));
-        assertThrows(IndexOutOfBoundsException.class, () -> of().sliceView(-1, 0).toImmutableSeq());
+        assertIterableEquals(List.of(), of().sliceView(~0, 0));
+        assertIterableEquals(List.of(), of().sliceView(0, ~0));
+        assertIterableEquals(List.of(), of().sliceView(~0, ~0));
+        assertThrows(IndexOutOfBoundsException.class, () -> of().sliceView(~1, 0).toImmutableSeq());
         assertThrows(IndexOutOfBoundsException.class, () -> of().sliceView(0, 1).toImmutableSeq());
         assertThrows(IndexOutOfBoundsException.class, () -> of().sliceView(-1, 1).toImmutableSeq());
         assertThrows(IndexOutOfBoundsException.class, () -> of().sliceView(Integer.MIN_VALUE, 0).toImmutableSeq());
@@ -247,17 +250,10 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
         for (Integer[] data : data1()) {
             int dl = data.length;
             assertIterableEquals(Arrays.asList(data), from(data).sliceView(0, data.length));
+            assertIterableEquals(Arrays.asList(data), from(data).sliceView(0, ~0));
 
-            if (dl >= 1) {
-                assertIterableEquals(
-                        Arrays.asList(Arrays.copyOfRange(data, 1, dl)),
-                        from(data).sliceView(1, dl)
-                );
-                assertIterableEquals(
-                        Arrays.asList(Arrays.copyOfRange(data, 0, dl - 1)),
-                        from(data).sliceView(0, dl - 1)
-                );
-            }
+            assertIterableEquals(Arrays.asList(Arrays.copyOfRange(data, 1, dl)), from(data).sliceView(1, dl));
+            assertIterableEquals(Arrays.asList(Arrays.copyOfRange(data, 0, dl - 1)), from(data).sliceView(0, dl - 1));
         }
     }
 
@@ -284,21 +280,14 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
         assertEquals(156, of(20, 30, 40, 50).foldIndexed(10, (idx, i1, i2) -> idx + i1 + i2));
 
         assertEquals("init", this.<String>of().foldLeftIndexed("init", (idx, a, b) -> a + b));
-        assertEquals("0 init A", of("A")
-                .foldLeftIndexed("init", (idx, a, b) -> String.format("%d %s %s", idx, a, b)));
-        assertEquals("2 1 0 init A B C", of("A", "B", "C")
-                .foldLeftIndexed("init", (idx, a, b) -> String.format("%d %s %s", idx, a, b)));
-        assertEquals("5 4 3 2 1 0 init A B C D E F", of("A", "B", "C", "D", "E", "F")
-                .foldLeftIndexed("init", (idx, a, b) -> String.format("%d %s %s", idx, a, b)));
+        assertEquals("0 init A", of("A").foldLeftIndexed("init", (idx, a, b) -> String.format("%d %s %s", idx, a, b)));
+        assertEquals("2 1 0 init A B C", of("A", "B", "C").foldLeftIndexed("init", (idx, a, b) -> String.format("%d %s %s", idx, a, b)));
+        assertEquals("5 4 3 2 1 0 init A B C D E F", of("A", "B", "C", "D", "E", "F").foldLeftIndexed("init", (idx, a, b) -> String.format("%d %s %s", idx, a, b)));
 
-        assertEquals("init", this.<String>of()
-                .foldRightIndexed("init", (idx, a, b) -> String.format("%d %s %s", idx, a, b)));
-        assertEquals("0 A init", of("A")
-                .foldRightIndexed("init", (idx, a, b) -> String.format("%d %s %s", idx, a, b)));
-        assertEquals("0 A 1 B 2 C init", of("A", "B", "C")
-                .foldRightIndexed("init", (idx, a, b) -> String.format("%d %s %s", idx, a, b)));
-        assertEquals("0 A 1 B 2 C 3 D 4 E 5 F init", of("A", "B", "C", "D", "E", "F")
-                .foldRightIndexed("init", (idx, a, b) -> String.format("%d %s %s", idx, a, b)));
+        assertEquals("init", this.<String>of().foldRightIndexed("init", (idx, a, b) -> String.format("%d %s %s", idx, a, b)));
+        assertEquals("0 A init", of("A").foldRightIndexed("init", (idx, a, b) -> String.format("%d %s %s", idx, a, b)));
+        assertEquals("0 A 1 B 2 C init", of("A", "B", "C").foldRightIndexed("init", (idx, a, b) -> String.format("%d %s %s", idx, a, b)));
+        assertEquals("0 A 1 B 2 C 3 D 4 E 5 F init", of("A", "B", "C", "D", "E", "F").foldRightIndexed("init", (idx, a, b) -> String.format("%d %s %s", idx, a, b)));
     }
 
     @Test
@@ -312,59 +301,35 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
         assertEquals(60, of(10, 20, 30).reduce(Integer::sum));
         assertEquals(210, of(10, 20, 30, 40, 50, 60).reduce(Integer::sum));
 
-        assertEquals("A", of("A")
-                .reduceLeft((s1, s2) -> String.format("(%s, %s)", s1, s2)));
-        assertEquals("(A, B)", of("A", "B")
-                .reduceLeft((s1, s2) -> String.format("(%s, %s)", s1, s2)));
-        assertEquals("((A, B), C)", of("A", "B", "C")
-                .reduceLeft((s1, s2) -> String.format("(%s, %s)", s1, s2)));
-        assertEquals("(((((A, B), C), D), E), F)", of("A", "B", "C", "D", "E", "F")
-                .reduceLeft((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+        assertEquals("A", of("A").reduceLeft((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+        assertEquals("(A, B)", of("A", "B").reduceLeft((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+        assertEquals("((A, B), C)", of("A", "B", "C").reduceLeft((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+        assertEquals("(((((A, B), C), D), E), F)", of("A", "B", "C", "D", "E", "F").reduceLeft((s1, s2) -> String.format("(%s, %s)", s1, s2)));
 
-        assertEquals("A", of("A")
-                .reduceLeftOrNull((s1, s2) -> String.format("(%s, %s)", s1, s2)));
-        assertEquals("(A, B)", of("A", "B")
-                .reduceLeftOrNull((s1, s2) -> String.format("(%s, %s)", s1, s2)));
-        assertEquals("((A, B), C)", of("A", "B", "C")
-                .reduceLeftOrNull((s1, s2) -> String.format("(%s, %s)", s1, s2)));
-        assertEquals("(((((A, B), C), D), E), F)", of("A", "B", "C", "D", "E", "F")
-                .reduceLeftOrNull((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+        assertEquals("A", of("A").reduceLeftOrNull((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+        assertEquals("(A, B)", of("A", "B").reduceLeftOrNull((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+        assertEquals("((A, B), C)", of("A", "B", "C").reduceLeftOrNull((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+        assertEquals("(((((A, B), C), D), E), F)", of("A", "B", "C", "D", "E", "F").reduceLeftOrNull((s1, s2) -> String.format("(%s, %s)", s1, s2)));
 
-        assertEquals("A", of("A")
-                .reduceLeftOption((s1, s2) -> String.format("(%s, %s)", s1, s2)).get());
-        assertEquals("(A, B)", of("A", "B")
-                .reduceLeftOption((s1, s2) -> String.format("(%s, %s)", s1, s2)).get());
-        assertEquals("((A, B), C)", of("A", "B", "C")
-                .reduceLeftOption((s1, s2) -> String.format("(%s, %s)", s1, s2)).get());
-        assertEquals("(((((A, B), C), D), E), F)", of("A", "B", "C", "D", "E", "F")
-                .reduceLeftOption((s1, s2) -> String.format("(%s, %s)", s1, s2)).get());
+        assertEquals("A", of("A").reduceLeftOption((s1, s2) -> String.format("(%s, %s)", s1, s2)).get());
+        assertEquals("(A, B)", of("A", "B").reduceLeftOption((s1, s2) -> String.format("(%s, %s)", s1, s2)).get());
+        assertEquals("((A, B), C)", of("A", "B", "C").reduceLeftOption((s1, s2) -> String.format("(%s, %s)", s1, s2)).get());
+        assertEquals("(((((A, B), C), D), E), F)", of("A", "B", "C", "D", "E", "F").reduceLeftOption((s1, s2) -> String.format("(%s, %s)", s1, s2)).get());
 
-        assertEquals("A", of("A")
-                .reduceRight((s1, s2) -> String.format("(%s, %s)", s1, s2)));
-        assertEquals("(A, B)", of("A", "B")
-                .reduceRight((s1, s2) -> String.format("(%s, %s)", s1, s2)));
-        assertEquals("(A, (B, C))", of("A", "B", "C")
-                .reduceRight((s1, s2) -> String.format("(%s, %s)", s1, s2)));
-        assertEquals("(A, (B, (C, (D, (E, F)))))", of("A", "B", "C", "D", "E", "F")
-                .reduceRight((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+        assertEquals("A", of("A").reduceRight((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+        assertEquals("(A, B)", of("A", "B").reduceRight((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+        assertEquals("(A, (B, C))", of("A", "B", "C").reduceRight((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+        assertEquals("(A, (B, (C, (D, (E, F)))))", of("A", "B", "C", "D", "E", "F").reduceRight((s1, s2) -> String.format("(%s, %s)", s1, s2)));
 
-        assertEquals("A", of("A")
-                .reduceRightOrNull((s1, s2) -> String.format("(%s, %s)", s1, s2)));
-        assertEquals("(A, B)", of("A", "B")
-                .reduceRightOrNull((s1, s2) -> String.format("(%s, %s)", s1, s2)));
-        assertEquals("(A, (B, C))", of("A", "B", "C")
-                .reduceRightOrNull((s1, s2) -> String.format("(%s, %s)", s1, s2)));
-        assertEquals("(A, (B, (C, (D, (E, F)))))", of("A", "B", "C", "D", "E", "F")
-                .reduceRightOrNull((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+        assertEquals("A", of("A").reduceRightOrNull((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+        assertEquals("(A, B)", of("A", "B").reduceRightOrNull((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+        assertEquals("(A, (B, C))", of("A", "B", "C").reduceRightOrNull((s1, s2) -> String.format("(%s, %s)", s1, s2)));
+        assertEquals("(A, (B, (C, (D, (E, F)))))", of("A", "B", "C", "D", "E", "F").reduceRightOrNull((s1, s2) -> String.format("(%s, %s)", s1, s2)));
 
-        assertEquals("A", of("A")
-                .reduceRightOption((s1, s2) -> String.format("(%s, %s)", s1, s2)).get());
-        assertEquals("(A, B)", of("A", "B")
-                .reduceRightOption((s1, s2) -> String.format("(%s, %s)", s1, s2)).get());
-        assertEquals("(A, (B, C))", of("A", "B", "C")
-                .reduceRightOption((s1, s2) -> String.format("(%s, %s)", s1, s2)).get());
-        assertEquals("(A, (B, (C, (D, (E, F)))))", of("A", "B", "C", "D", "E", "F")
-                .reduceRightOption((s1, s2) -> String.format("(%s, %s)", s1, s2)).get());
+        assertEquals("A", of("A").reduceRightOption((s1, s2) -> String.format("(%s, %s)", s1, s2)).get());
+        assertEquals("(A, B)", of("A", "B").reduceRightOption((s1, s2) -> String.format("(%s, %s)", s1, s2)).get());
+        assertEquals("(A, (B, C))", of("A", "B", "C").reduceRightOption((s1, s2) -> String.format("(%s, %s)", s1, s2)).get());
+        assertEquals("(A, (B, (C, (D, (E, F)))))", of("A", "B", "C", "D", "E", "F").reduceRightOption((s1, s2) -> String.format("(%s, %s)", s1, s2)).get());
     }
 
     @Test
@@ -490,7 +455,6 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
         assertThrows(IndexOutOfBoundsException.class, () -> this.of("str0", "str1").inserted(3, "str2"));
 
 
-
     }
 
     @Test
@@ -539,26 +503,23 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
     @Test
     default void sliceTest() {
         assertIterableEquals(List.of(), of().slice(0, 0));
-        assertThrows(IndexOutOfBoundsException.class, () -> of().slice(-1, 0));
+        assertIterableEquals(List.of(), of().slice(0, ~0));
+        assertIterableEquals(List.of(), of().slice(~0, 0));
+        assertIterableEquals(List.of(), of().slice(~0, ~0));
+
+
+        assertThrows(IndexOutOfBoundsException.class, () -> of().slice(~1, 0));
         assertThrows(IndexOutOfBoundsException.class, () -> of().slice(0, 1));
-        assertThrows(IndexOutOfBoundsException.class, () -> of().slice(-1, 1));
+        assertThrows(IndexOutOfBoundsException.class, () -> of().slice(~1, 1));
         assertThrows(IndexOutOfBoundsException.class, () -> of().slice(Integer.MIN_VALUE, 0));
         assertThrows(IndexOutOfBoundsException.class, () -> of().slice(Integer.MIN_VALUE, 1));
 
         for (Integer[] data : data1()) {
             int dl = data.length;
             assertIterableEquals(Arrays.asList(data), from(data).slice(0, data.length));
-
-            if (dl >= 1) {
-                assertIterableEquals(
-                        Arrays.asList(Arrays.copyOfRange(data, 1, dl)),
-                        from(data).slice(1, dl)
-                );
-                assertIterableEquals(
-                        Arrays.asList(Arrays.copyOfRange(data, 0, dl - 1)),
-                        from(data).slice(0, dl - 1)
-                );
-            }
+            assertIterableEquals(Arrays.asList(data), from(data).slice(0, ~0));
+            assertIterableEquals(Arrays.asList(Arrays.copyOfRange(data, 1, dl)), from(data).slice(1, dl));
+            assertIterableEquals(Arrays.asList(Arrays.copyOfRange(data, 0, dl - 1)), from(data).slice(0, dl - 1));
         }
     }
 
@@ -750,10 +711,7 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
             final var fst = of(1).view().map(i -> i + 1);
             final var snd = of(2);
             final var res = fst.concat(snd).toImmutableSeq();
-            assertIterableEquals(
-                    List.of(2, 2),
-                    res
-            );
+            assertIterableEquals(List.of(2, 2), res);
         }
     }
 

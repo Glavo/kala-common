@@ -856,8 +856,10 @@ final class ImmutableSeqs {
         //region Misc Operations
 
         @Override
-        public @NotNull SeqView<E> slice(int beginIndex, int endIndex) {
-            Conditions.checkPositionIndices(beginIndex, endIndex, size);
+        public @NotNull SeqView<E> slice(@Index int beginIndex, @Index int endIndex) {
+            beginIndex = Indexes.checkBeginIndex(beginIndex, size);
+            endIndex = Indexes.checkEndIndex(beginIndex, endIndex, size);
+
             final int ns = endIndex - beginIndex;
             if (ns == 0) {
                 return SeqView.empty();
@@ -997,8 +999,10 @@ final class ImmutableSeqs {
         //region Misc Operations
 
         @Override
-        public @NotNull ImmutableSeq<E> slice(int beginIndex, int endIndex) {
-            Conditions.checkPositionIndices(beginIndex, endIndex, size);
+        public @NotNull ImmutableSeq<E> slice(@Index int beginIndex, @Index int endIndex) {
+            beginIndex = Indexes.checkBeginIndex(beginIndex, size);
+            endIndex = Indexes.checkEndIndex(beginIndex, endIndex, size);
+
             final int ns = endIndex - beginIndex;
             return ns == 0 ? ImmutableSeq.empty() : new CopiesSeq<>(ns, value);
         }
