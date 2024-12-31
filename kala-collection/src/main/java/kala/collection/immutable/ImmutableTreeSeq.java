@@ -236,12 +236,12 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
 
     @Override
     public E get(@Index int index) {
-        return root.get(Indexes.checkElementIndex(index, size()));
+        return root.get(Indexes.checkIndex(index, size()));
     }
 
     @Override
     public @NotNull ImmutableSeq<E> updated(@Index int index, E newValue) {
-        index = Indexes.checkElementIndex(index, size());
+        index = Indexes.checkIndex(index, size());
         IndexedTree<E> newRoot = root.plus(index, newValue);
         return newRoot != root ? new ImmutableTreeSeq<>(newRoot) : this;
     }
@@ -263,9 +263,9 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
     }
 
     @Override
-    public @NotNull ImmutableSeq<E> removedAt(int index) {
+    public @NotNull ImmutableSeq<E> removedAt(@Index int index) {
         final int size = size();
-        Objects.checkIndex(index, size);
+        index = Indexes.checkIndex(index, size);
         return size > 1 ? new ImmutableTreeSeq<>(root.minus(index).changeKeysBelow(index, -1)) : empty();
     }
 

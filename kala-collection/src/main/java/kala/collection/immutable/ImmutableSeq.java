@@ -306,7 +306,7 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     }
 
     @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> removedAt(int index) {
+    default @NotNull ImmutableSeq<E> removedAt(@Index int index) {
         return AbstractImmutableSeq.removedAt(this, index, iterableFactory());
     }
 

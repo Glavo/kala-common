@@ -313,7 +313,7 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
 
     @Override
     public E get(@Index int index) {
-        return (E) elements[Indexes.checkElementIndex(index, size)];
+        return (E) elements[Indexes.checkIndex(index, size)];
     }
 
     @Override

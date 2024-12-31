@@ -108,11 +108,11 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
 
     @Override
     public char charAt(@Index int index) {
-        return value.charAt(offset + Indexes.checkElementIndex(index, length));
+        return value.charAt(offset + Indexes.checkIndex(index, length));
     }
 
     public int codePointAt(@Index int index) {
-        index = Indexes.checkElementIndex(index, length);
+        index = Indexes.checkIndex(index, length);
 
         char c1 = value.charAt(offset + index);
         if (Character.isHighSurrogate(c1) && index < length - 1) {

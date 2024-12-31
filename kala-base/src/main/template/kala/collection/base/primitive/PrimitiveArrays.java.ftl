@@ -142,7 +142,7 @@ public final class ${Type}Arrays {
     }
 
     public static ${PrimitiveType} get(${PrimitiveType} @NotNull [] array, @Index int index) {
-        return array[Indexes.checkElementIndex(index, array.length)];
+        return array[Indexes.checkIndex(index, array.length)];
     }
 
     public static @Nullable ${WrapperType} getOrNull(${PrimitiveType} @NotNull [] array, @Index int index) {
@@ -164,7 +164,7 @@ public final class ${Type}Arrays {
     }
 
     public static void set(${PrimitiveType} @NotNull [] array, @Index int index, ${PrimitiveType} value) {
-        array[Indexes.checkElementIndex(index, array.length)] = value;
+        array[Indexes.checkIndex(index, array.length)] = value;
     }
 
     //endregion

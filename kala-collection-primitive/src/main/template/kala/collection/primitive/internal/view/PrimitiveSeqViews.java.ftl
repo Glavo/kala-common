@@ -218,7 +218,7 @@ public final class ${Type}SeqViews {
 
         @Override
         public final ${PrimitiveType} get(@Index int index) {
-            return array[Indexes.checkElementIndex(index, size()) + beginIndex];
+            return array[Indexes.checkIndex(index, size()) + beginIndex];
         }
 
         @Override
@@ -480,7 +480,7 @@ public final class ${Type}SeqViews {
 
         @Override
         public final ${PrimitiveType} get(@Index int index) {
-            index = Indexes.checkElementIndex(index, size());
+            index = Indexes.checkIndex(index, size());
             if (index == this.index) {
                 return newValue;
             }
@@ -560,7 +560,7 @@ public final class ${Type}SeqViews {
 
         @Override
         public final ${PrimitiveType} get(@Index int index) {
-            return this.source.get(Indexes.checkElementIndex(index, size()));
+            return this.source.get(Indexes.checkIndex(index, size()));
         }
 
         @Override
@@ -837,7 +837,7 @@ public final class ${Type}SeqViews {
 
         @Override
         public final ${PrimitiveType} get(@Index int index) {
-            index = Indexes.checkElementIndex(index, size());
+            index = Indexes.checkIndex(index, size());
             return index == 0 ? value : source.get(index - 1);
         }
 
@@ -1136,7 +1136,7 @@ public final class ${Type}SeqViews {
         @Override
         public final ${PrimitiveType} get(@Index int index) {
             initSorted();
-            return sorted[Indexes.checkElementIndex(index, sorted.length)];
+            return sorted[Indexes.checkIndex(index, sorted.length)];
         }
 
         @Override

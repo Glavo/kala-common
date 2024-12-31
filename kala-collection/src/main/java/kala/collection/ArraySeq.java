@@ -18,7 +18,6 @@ package kala.collection;
 import kala.collection.base.GenericArrays;
 import kala.collection.base.ObjectArrays;
 import kala.collection.base.Traversable;
-import kala.Conditions;
 import kala.collection.immutable.ImmutableArray;
 import kala.collection.immutable.ImmutableSeq;
 import kala.collection.internal.CollectionHelper;
@@ -266,7 +265,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     //region Positional Access Operations
 
     public final E get(@Index int index) {
-        return (E) elements[Indexes.checkElementIndex(index, elements.length)];
+        return (E) elements[Indexes.checkIndex(index, elements.length)];
     }
 
     //endregion
@@ -461,7 +460,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         final Object[] elements = this.elements;
         final int size = elements.length;
 
-        index = Indexes.checkElementIndex(index, size);
+        index = Indexes.checkIndex(index, size);
 
         Object[] newValues = elements.clone();
         newValues[index] = newValue;
@@ -478,11 +477,10 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     }
 
     @Override
-    public @NotNull ImmutableSeq<E> removedAt(int index) {
+    public @NotNull ImmutableSeq<E> removedAt(@Index int index) {
         final Object[] elements = this.elements;
         final int size = elements.length;
-
-        Objects.checkIndex(index, size);
+        index = Indexes.checkIndex(index, size);
 
         if (size == 1) {
             return ImmutableArray.empty();
@@ -500,7 +498,6 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     public @NotNull ImmutableSeq<E> concat(@NotNull List<? extends E> other) {
         return appendedAll(other);
     }
-
 
     @Override
     public @NotNull ImmutableSeq<E> filter(@NotNull Predicate<? super E> predicate) {

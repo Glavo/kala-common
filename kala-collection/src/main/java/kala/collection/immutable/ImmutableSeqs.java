@@ -22,7 +22,6 @@ import kala.collection.internal.view.SeqViews;
 import kala.control.Option;
 import kala.function.IndexedConsumer;
 import kala.function.IndexedFunction;
-import kala.Conditions;
 import kala.collection.factory.CollectionFactory;
 import kala.index.Index;
 import kala.index.Indexes;
@@ -238,11 +237,12 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public @NotNull ImmutableSeq<E> removedAt(int index) {
-            if (index != 0) {
-                throw new IndexOutOfBoundsException(index);
+        public @NotNull ImmutableSeq<E> removedAt(@Index int index) {
+            if (index == 0 || index == ~1) {
+                return ImmutableSeq.empty();
             }
-            return ImmutableSeq.empty();
+
+            throw Indexes.outOfBounds(index, 1);
         }
 
         @Override
@@ -409,11 +409,11 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public @NotNull ImmutableSeq<E> removedAt(int index) {
+        public @NotNull ImmutableSeq<E> removedAt(@Index int index) {
             return switch (index) {
-                case 0 -> ImmutableSeq.of(value2);
-                case 1 -> ImmutableSeq.of(value1);
-                default -> throw new IndexOutOfBoundsException(index);
+                case 0, ~2 -> ImmutableSeq.of(value2);
+                case 1, ~1 -> ImmutableSeq.of(value1);
+                default -> throw Indexes.outOfBounds(index, 2);
             };
         }
 
@@ -549,7 +549,7 @@ final class ImmutableSeqs {
 
         @Override
         public final E get(@Index int index) {
-            Indexes.checkElementIndex(index, size);
+            Indexes.checkIndex(index, size);
             return value;
         }
 

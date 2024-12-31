@@ -21,7 +21,6 @@ import kala.collection.base.Iterators;
 import kala.collection.mutable.AbstractMutableList;
 import kala.collection.mutable.MutableSinglyLinkedList;
 import kala.function.*;
-import kala.Conditions;
 import kala.collection.factory.CollectionFactory;
 import kala.index.Index;
 import kala.index.Indexes;
@@ -250,7 +249,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
 
     @Override
     public E get(@Index int index) {
-        index = Indexes.checkElementIndex(index, size);
+        index = Indexes.checkIndex(index, size);
 
         Node<E> list = this.node;
         for (int i = 0; i < index; i++) {
@@ -563,7 +562,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
 
         @Override
         public final E get(@Index int index) {
-            index = Indexes.checkElementIndex(index, len);
+            index = Indexes.checkIndex(index, len);
 
             if (index == len - 1)
                 return last.head;

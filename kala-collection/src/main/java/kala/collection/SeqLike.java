@@ -201,7 +201,7 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E>, OrderedTra
     @NotNull SeqLike<E> inserted(@Index int index, E value);
 
     @Contract(pure = true)
-    @NotNull SeqLike<E> removedAt(int index);
+    @NotNull SeqLike<E> removedAt(@Index int index);
 
     @Contract(pure = true)
     @NotNull SeqLike<E> sorted();

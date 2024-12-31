@@ -302,10 +302,10 @@ public final class MutableArrayDeque<E> extends AbstractMutableList<E> implement
         if (isEmpty()) {
             throw new IndexOutOfBoundsException("Index out of range: " + index);
         } else if (begin < end) {
-            index = Indexes.checkElementIndex(index, end - begin);
+            index = Indexes.checkIndex(index, end - begin);
             return (E) elements[begin + index];
         } else {
-            index = Indexes.checkElementIndex(index, elements.length - begin + end);
+            index = Indexes.checkIndex(index, elements.length - begin + end);
             return (E) elements[inc(begin, index, elements.length)];
         }
     }

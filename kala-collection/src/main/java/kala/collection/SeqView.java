@@ -24,14 +24,12 @@ import kala.index.Index;
 import kala.index.Indexes;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
-import kala.Conditions;
 import kala.collection.internal.view.SeqViews;
 import kala.annotations.Covariant;
 import kala.collection.internal.CollectionHelper;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 
 import java.util.Comparator;
 import java.util.LinkedHashSet;
@@ -164,7 +162,7 @@ public interface SeqView<@Covariant E> extends CollectionView<E>, SeqLike<E>, An
     }
 
     default @NotNull SeqView<E> updated(int index, E newValue) {
-        index = Indexes.checkElementIndex(index, size()); // TODO
+        index = Indexes.checkIndex(index, size()); // TODO
         return new SeqViews.Updated<>(this, index, newValue);
     }
 
@@ -176,8 +174,8 @@ public interface SeqView<@Covariant E> extends CollectionView<E>, SeqLike<E>, An
     @Override
     default @NotNull SeqView<E> concat(java.util.@NotNull List<? extends E> other) {
         Objects.requireNonNull(other);
-        if (other instanceof AsJavaConvert.SeqAsJava) {
-            return concat(((AsJavaConvert.SeqAsJava<E, ?>) other).source);
+        if (other instanceof AsJavaConvert.SeqAsJava<? extends E, ?> otherSeq) {
+            return concat(otherSeq.source);
         } else {
             return concat(Seq.wrapJava(other).view());
         }
@@ -216,9 +214,8 @@ public interface SeqView<@Covariant E> extends CollectionView<E>, SeqLike<E>, An
         return new SeqViews.Inserted<>(this, index, value);
     }
 
-    default @NotNull SeqView<E> removedAt(int index) {
-        Objects.checkIndex(index, size());
-        return new SeqViews.RemovedAt<>(this, index);
+    default @NotNull SeqView<E> removedAt(@Index int index) {
+        return new SeqViews.RemovedAt<>(this, Indexes.checkIndex(index, size()));
     }
 
     default @NotNull SeqView<E> sorted() {

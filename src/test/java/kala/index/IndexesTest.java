@@ -21,16 +21,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class IndexesTest {
     @Test
-    void checkElementIndexTest() {
-        assertEquals(0, Indexes.checkElementIndex(0, 10));
-        assertEquals(5, Indexes.checkElementIndex(5, 10));
-        assertEquals(9, Indexes.checkElementIndex(9, 10));
-        assertEquals(9, Indexes.checkElementIndex(~1, 10));
-        assertEquals(0, Indexes.checkElementIndex(~10, 10));
+    void checkIndexTest() {
+        assertEquals(0, Indexes.checkIndex(0, 10));
+        assertEquals(5, Indexes.checkIndex(5, 10));
+        assertEquals(9, Indexes.checkIndex(9, 10));
+        assertEquals(9, Indexes.checkIndex(~1, 10));
+        assertEquals(0, Indexes.checkIndex(~10, 10));
 
-        assertThrows(IndexOutOfBoundsException.class, () -> Indexes.checkElementIndex(10, 10));
-        assertThrows(IndexOutOfBoundsException.class, () -> Indexes.checkElementIndex(~0, 10));
-        assertThrows(IndexOutOfBoundsException.class, () -> Indexes.checkElementIndex(~11, 10));
+        assertThrows(IndexOutOfBoundsException.class, () -> Indexes.checkIndex(10, 10));
+        assertThrows(IndexOutOfBoundsException.class, () -> Indexes.checkIndex(~0, 10));
+        assertThrows(IndexOutOfBoundsException.class, () -> Indexes.checkIndex(~11, 10));
     }
 
     @Test

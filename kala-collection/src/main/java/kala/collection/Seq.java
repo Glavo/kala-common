@@ -1,6 +1,5 @@
 package kala.collection;
 
-import kala.Conditions;
 import kala.annotations.Covariant;
 import kala.annotations.DelegateBy;
 import kala.collection.base.Iterators;
@@ -192,7 +191,7 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
     @Override
     @Contract(pure = true)
     default @NotNull ImmutableSeq<E> updated(@Index int index, E newValue) {
-        index = Indexes.checkElementIndex(index, size());
+        index = Indexes.checkIndex(index, size());
         return view().updated(index, newValue).toImmutableSeq();
     }
 
@@ -252,9 +251,8 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
 
     @Override
     @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> removedAt(int index) {
-        Objects.checkIndex(index, size());
-        return view().removedAt(index).toImmutableSeq();
+    default @NotNull ImmutableSeq<E> removedAt(@Index int index) {
+        return view().removedAt(Indexes.checkIndex(index, size())).toImmutableSeq();
     }
 
     @Override

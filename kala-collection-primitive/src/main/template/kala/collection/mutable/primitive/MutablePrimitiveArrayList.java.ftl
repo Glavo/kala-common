@@ -282,7 +282,7 @@ public final class Mutable${Type}ArrayList extends AbstractMutable${Type}List im
 
     @Override
     public ${PrimitiveType} get(@Index int index) {
-        return elements[Indexes.checkElementIndex(index, size)];
+        return elements[Indexes.checkIndex(index, size)];
     }
 
     @Override

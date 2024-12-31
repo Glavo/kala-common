@@ -139,7 +139,7 @@ public interface ${Type}SeqView extends ${Type}SeqLike, ${Type}CollectionView, P
 
     @Contract(pure = true)
     default @NotNull ${Type}SeqView updated(@Index int index, ${PrimitiveType} newValue) {
-        index = Indexes.checkElementIndex(index, size()); // TODO
+        index = Indexes.checkIndex(index, size()); // TODO
         return new ${Type}SeqViews.Updated(this, index, newValue);
     }
 

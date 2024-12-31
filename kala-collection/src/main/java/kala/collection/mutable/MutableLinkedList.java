@@ -302,7 +302,7 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
 
     @Override
     public E get(@Index int index) {
-        return internalGetNode(Indexes.checkElementIndex(index, len)).value;
+        return internalGetNode(Indexes.checkIndex(index, len)).value;
     }
 
     @Override

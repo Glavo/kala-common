@@ -220,7 +220,7 @@ public final class ObjectArrays {
 
     public static Object @NotNull [] removedAt(Object @NotNull [] array, @Index int index) {
         final int arrayLength = array.length; // implicit null check of array
-        index = Indexes.checkElementIndex(index, arrayLength);
+        index = Indexes.checkIndex(index, arrayLength);
         Object[] result = new Object[arrayLength - 1];
         System.arraycopy(array, 0, result, 0, index);
         System.arraycopy(array, index + 1, result, index, arrayLength - index - 1);
@@ -604,7 +604,7 @@ public final class ObjectArrays {
     public static Object @NotNull [] updated(Object @NotNull [] array, @Index int index, Object newValue) {
         final int length = array.length;
 
-        index = Indexes.checkElementIndex(index, length);
+        index = Indexes.checkIndex(index, length);
         Object[] newValues = array.clone();
         newValues[index] = newValue;
         return newValues;

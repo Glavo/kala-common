@@ -195,7 +195,7 @@ public class ${Type}ArraySeq extends Abstract${Type}Seq implements Indexed${Type
     //region Positional Access Operations
 
     public final ${PrimitiveType} get(@Index int index) {
-        return elements[Indexes.checkElementIndex(index, elements.length)];
+        return elements[Indexes.checkIndex(index, elements.length)];
     }
 
     //endregion

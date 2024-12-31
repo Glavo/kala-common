@@ -42,7 +42,7 @@ public final class Indexes {
         return actualIndex;
     }
 
-    public static int checkElementIndex(@Index int index, @Range(from = 0, to = Integer.MAX_VALUE) int length) {
+    public static int checkIndex(@Index int index, @Range(from = 0, to = Integer.MAX_VALUE) int length) {
         if (index >= length) {
             throw outOfBounds(index, length);
         }

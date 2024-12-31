@@ -15,7 +15,6 @@
  */
 package kala.collection.internal.view;
 
-import kala.Conditions;
 import kala.collection.*;
 import kala.collection.base.AbstractIterator;
 import kala.collection.base.GenericArrays;
@@ -32,7 +31,6 @@ import kala.index.Indexes;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 import java.util.*;
@@ -265,7 +263,7 @@ public final class SeqViews {
 
         @Override
         public final E get(@Index int index) {
-            return (E) array[Indexes.checkElementIndex(index, size()) + beginIndex];
+            return (E) array[Indexes.checkIndex(index, size()) + beginIndex];
         }
 
         @Override
@@ -543,7 +541,7 @@ public final class SeqViews {
 
         @Override
         public final E get(@Index int index) {
-            return this.source.get(Indexes.checkElementIndex(index, size()));
+            return this.source.get(Indexes.checkIndex(index, size()));
         }
 
         @Override
@@ -876,7 +874,7 @@ public final class SeqViews {
 
         @Override
         public final E get(@Index int index) {
-            index = Indexes.checkElementIndex(index, size());
+            index = Indexes.checkIndex(index, size());
 
             if (index == this.index) {
                 return newValue;
@@ -916,7 +914,7 @@ public final class SeqViews {
 
         @Override
         public final E get(@Index int index) {
-            index = Indexes.checkElementIndex(index, size());
+            index = Indexes.checkIndex(index, size());
             return index == 0 ? value : source.get(index - 1);
         }
     }
@@ -985,7 +983,7 @@ public final class SeqViews {
 
         @Override
         public final E get(@Index int index) {
-            index = Indexes.checkElementIndex(index, size());
+            index = Indexes.checkIndex(index, size());
 
             if (index == insertedIndex) {
                 return value;
@@ -1031,7 +1029,7 @@ public final class SeqViews {
 
         @Override
         public E get(@Index int index) {
-            index = Indexes.checkElementIndex(index, size());
+            index = Indexes.checkIndex(index, size());
             return source.get(index < removedIndex ? index : index -1);
         }
     }
@@ -1262,7 +1260,7 @@ public final class SeqViews {
 
         @Override
         public final E get(@Index int index) {
-            index = Indexes.checkElementIndex(index, size());
+            index = Indexes.checkIndex(index, size());
             return mapper.apply(index, source.get(index));
         }
     }
@@ -1429,7 +1427,7 @@ public final class SeqViews {
 
         @Override
         public final @NotNull Tuple2<E, U> get(@Index int index) {
-            index = Indexes.checkElementIndex(index, size());
+            index = Indexes.checkIndex(index, size());
             return Tuple.of(source.get(index), other.get(index));
         }
 

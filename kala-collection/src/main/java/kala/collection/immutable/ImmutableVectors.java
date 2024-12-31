@@ -347,7 +347,7 @@ final class ImmutableVectors {
         public @NotNull ImmutableVector<E> updated(@Index int index, E newValue) {
             final Object[] prefix1 = this.prefix1;
             final int size = prefix1.length;
-            index = Indexes.checkElementIndex(index, size);
+            index = Indexes.checkIndex(index, size);
             Object[] res = prefix1.clone();
             res[index] = newValue;
             return new ImmutableVectors.Vector1<>(res);
@@ -884,7 +884,7 @@ final class ImmutableVectors {
 
         @Override
         public E get(@Index int index) {
-            index = Indexes.checkElementIndex(index, length0);
+            index = Indexes.checkIndex(index, length0);
 
             int io = index - len1;
             if (io >= 0) {
@@ -967,7 +967,7 @@ final class ImmutableVectors {
 
         @Override
         public E get(@Index int index) {
-            index = Indexes.checkElementIndex(index, length0);
+            index = Indexes.checkIndex(index, length0);
 
             int io = index - len12;
             if (io >= 0) {
@@ -1081,7 +1081,7 @@ final class ImmutableVectors {
 
         @Override
         public E get(@Index int index) {
-            index = Indexes.checkElementIndex(index, length0);
+            index = Indexes.checkIndex(index, length0);
             int io = index - len123;
             if (io >= 0) {
                 int i4 = io >>> BITS3;
@@ -1215,7 +1215,7 @@ final class ImmutableVectors {
 
         @Override
         public E get(@Index int index) {
-            index = Indexes.checkElementIndex(index, length0);
+            index = Indexes.checkIndex(index, length0);
             int io = index - len1234;
             if (io >= 0) {
                 int i5 = io >>> BITS4;
@@ -1374,7 +1374,7 @@ final class ImmutableVectors {
 
         @Override
         public E get(@Index int index) {
-            index = Indexes.checkElementIndex(index, length0);
+            index = Indexes.checkIndex(index, length0);
             int io = index - len12345;
             if (io >= 0) {
                 int i6 = io >>> BITS5;

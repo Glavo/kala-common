@@ -469,7 +469,9 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
 
             assertThrows(IndexOutOfBoundsException.class, () -> empty.removedAt(0));
             assertThrows(IndexOutOfBoundsException.class, () -> empty.removedAt(1));
-            assertThrows(IndexOutOfBoundsException.class, () -> empty.removedAt(-1));
+            assertThrows(IndexOutOfBoundsException.class, () -> empty.removedAt(~0));
+            assertThrows(IndexOutOfBoundsException.class, () -> empty.removedAt(~1));
+            assertThrows(IndexOutOfBoundsException.class, () -> empty.removedAt(~2));
             assertThrows(IndexOutOfBoundsException.class, () -> empty.removedAt(Integer.MAX_VALUE));
             assertThrows(IndexOutOfBoundsException.class, () -> empty.removedAt(Integer.MIN_VALUE));
         }
@@ -477,9 +479,11 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
         {
             var seq = from(List.of("str0"));
             assertIterableEquals(List.of(), seq.removedAt(0));
+            assertIterableEquals(List.of(), seq.removedAt(~1));
 
             assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(1));
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(-1));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(~0));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(~2));
             assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(Integer.MAX_VALUE));
             assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(Integer.MIN_VALUE));
         }
@@ -487,10 +491,14 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
         {
             var seq = from(List.of("str0", "str1"));
             assertIterableEquals(List.of("str1"), seq.removedAt(0));
+            assertIterableEquals(List.of("str1"), seq.removedAt(~2));
             assertIterableEquals(List.of("str0"), seq.removedAt(1));
+            assertIterableEquals(List.of("str0"), seq.removedAt(~1));
 
             assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(2));
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(-1));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(3));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(~0));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(~3));
             assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(Integer.MAX_VALUE));
             assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(Integer.MIN_VALUE));
         }
@@ -498,10 +506,17 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
         {
             var seq = from(List.of("str0", "str1", "str2"));
             assertIterableEquals(List.of("str1", "str2"), seq.removedAt(0));
+            assertIterableEquals(List.of("str1", "str2"), seq.removedAt(~3));
             assertIterableEquals(List.of("str0", "str2"), seq.removedAt(1));
+            assertIterableEquals(List.of("str0", "str2"), seq.removedAt(~2));
             assertIterableEquals(List.of("str0", "str1"), seq.removedAt(2));
+            assertIterableEquals(List.of("str0", "str1"), seq.removedAt(~1));
 
             assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(3));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(~0));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(~4));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(Integer.MAX_VALUE));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.removedAt(Integer.MIN_VALUE));
         }
     }
 
@@ -511,7 +526,6 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
         assertIterableEquals(List.of(), of().slice(0, ~0));
         assertIterableEquals(List.of(), of().slice(~0, 0));
         assertIterableEquals(List.of(), of().slice(~0, ~0));
-
 
         assertThrows(IndexOutOfBoundsException.class, () -> of().slice(~1, 0));
         assertThrows(IndexOutOfBoundsException.class, () -> of().slice(0, 1));

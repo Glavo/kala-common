@@ -273,7 +273,7 @@ public final class MutableSmartArrayList<E> extends AbstractMutableList<E> imple
     @Override
     public E get(@Index int index) {
         final int size = this.size;
-        index = Indexes.checkElementIndex(index, size);
+        index = Indexes.checkIndex(index, size);
         if (size == 1) {
             return (E) elem;
         } else {

@@ -20,7 +20,6 @@ import kala.collection.base.Iterators;
 import kala.function.IndexedBiConsumer;
 import kala.function.IndexedFunction;
 import kala.annotations.Covariant;
-import kala.Conditions;
 import kala.collection.SeqLike;
 import kala.collection.factory.CollectionFactory;
 import kala.index.Index;
@@ -43,7 +42,7 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractSeq<E> 
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
         final int size = seq.size();
-        index = Indexes.checkElementIndex(index, size);
+        index = Indexes.checkIndex(index, size);
 
         Builder builder = factory.newBuilder();
 
@@ -84,11 +83,11 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractSeq<E> 
 
     static <E, T, Builder> T removedAt(
             @NotNull ImmutableSeq<? extends E> seq,
-            int index,
+            @Index int index,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
         final int size = seq.size();
-        Objects.checkIndex(index, size);
+        index = Indexes.checkIndex(index, size);
 
         if (size == 1) {
             return factory.empty();

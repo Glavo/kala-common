@@ -233,7 +233,7 @@ public final class GenericArrays {
     }
 
     public static <E> E get(E @NotNull [] array, @Index int index) {
-        return array[Indexes.checkElementIndex(index, array.length)];
+        return array[Indexes.checkIndex(index, array.length)];
     }
 
     public static <E> @Nullable E getOrNull(E @NotNull [] array, @Index int index) {
@@ -257,7 +257,7 @@ public final class GenericArrays {
     }
 
     public static <E> void set(E @NotNull [] array, @Index int index, E value) {
-        array[Indexes.checkElementIndex(index, array.length)] = value;
+        array[Indexes.checkIndex(index, array.length)] = value;
     }
 
     public static <E> E @NotNull [] inserted(E @NotNull [] array, @Index int index, E value) {
@@ -272,7 +272,7 @@ public final class GenericArrays {
 
     public static <E> E @NotNull [] removedAt(E @NotNull [] array, @Index int index) {
         final int arrayLength = array.length; // implicit null check of array
-        index = Indexes.checkElementIndex(index, arrayLength);
+        index = Indexes.checkIndex(index, arrayLength);
         E[] result = newArrayByOldType(array, arrayLength - 1);
         System.arraycopy(array, 0, result, 0, index);
         System.arraycopy(array, index + 1, result, index, arrayLength - index - 1);

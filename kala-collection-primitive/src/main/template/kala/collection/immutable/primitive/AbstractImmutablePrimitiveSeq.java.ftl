@@ -36,7 +36,7 @@ public abstract class AbstractImmutable${Type}Seq extends Abstract${Type}Seq imp
             @NotNull ${Type}CollectionFactory<Builder, ? extends T> factory
     ) {
         final int s = seq.size();
-        index = Indexes.checkElementIndex(index, s);
+        index = Indexes.checkIndex(index, s);
 
         Builder builder = factory.newBuilder();
 
