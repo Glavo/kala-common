@@ -142,8 +142,16 @@ final class ImmutableSeqs {
         }
 
         @Override
+        public @NotNull ImmutableSeq<E> inserted(@Index int index, E value) {
+            if (index == 0 || index == ~0) {
+                return ImmutableSeq.of(value);
+            }
+            throw Indexes.outOfBounds(index, 0);
+        }
+
+        @Override
         public @NotNull ImmutableSeq<E> updated(@Index int index, E newValue) {
-            throw Indexes.outOfBounds(index, size());
+            throw Indexes.outOfBounds(index, 0);
         }
 
         @Override
@@ -221,10 +229,10 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public @NotNull ImmutableSeq<E> inserted(int index, E value) {
+        public @NotNull ImmutableSeq<E> inserted(@Index int index, E value) {
             return switch (index) {
-                case 0 -> ImmutableSeq.of(value, value1);
-                case 1 -> ImmutableSeq.of(value1, value);
+                case 0, ~1 -> ImmutableSeq.of(value, value1);
+                case 1, ~0 -> ImmutableSeq.of(value1, value);
                 default -> throw new IndexOutOfBoundsException(index);
             };
         }
@@ -391,12 +399,12 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public @NotNull ImmutableSeq<E> inserted(int index, E value) {
+        public @NotNull ImmutableSeq<E> inserted(@Index int index, E value) {
             return switch (index) {
-                case 0, ~3 -> ImmutableSeq.of(value, value1, value2);
-                case 1, ~2 -> ImmutableSeq.of(value1, value, value2);
-                case 2, ~1 -> ImmutableSeq.of(value1, value2, value);
-                default -> throw new IndexOutOfBoundsException(index);
+                case 0, ~2 -> ImmutableSeq.of(value, value1, value2);
+                case 1, ~1 -> ImmutableSeq.of(value1, value, value2);
+                case 2, ~0 -> ImmutableSeq.of(value1, value2, value);
+                default -> throw Indexes.outOfBounds(index, 2);
             };
         }
 

@@ -62,12 +62,12 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractSeq<E> 
 
     static <E, T, Builder> T inserted(
             @NotNull ImmutableSeq<? extends E> seq,
-            int index,
+            @Index int index,
             E newValue,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
         final int size = seq.size();
-        Conditions.checkPositionIndex(index, size);
+        index = Indexes.checkPositionIndex(index, size);
 
         Builder builder = factory.newBuilder();
         factory.sizeHint(builder, size - 1);

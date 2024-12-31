@@ -211,8 +211,8 @@ public interface SeqView<@Covariant E> extends CollectionView<E>, SeqLike<E>, An
         return new SeqViews.Concat<>(ArraySeq.wrap(prefix), this);
     }
 
-    default @NotNull SeqLike<E> inserted(int index, E value) {
-        Conditions.checkPositionIndex(index, size());
+    default @NotNull SeqLike<E> inserted(@Index int index, E value) {
+        index = Indexes.checkPositionIndex(index, size());
         return new SeqViews.Inserted<>(this, index, value);
     }
 

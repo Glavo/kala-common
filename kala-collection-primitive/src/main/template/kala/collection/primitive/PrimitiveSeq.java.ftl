@@ -16,7 +16,6 @@
 package kala.collection.primitive;
 
 import kala.collection.AnySeq;
-import kala.collection.SeqIterator;
 import kala.collection.base.primitive.${Type}Iterator;
 import kala.collection.base.primitive.${Type}Traversable;
 import kala.collection.factory.primitive.${Type}CollectionFactory;
@@ -88,6 +87,7 @@ public interface ${Type}Seq extends PrimitiveSeq<${WrapperType}>, ${Type}Collect
     static @NotNull ${Type}Seq fill(int n, @NotNull ${Type}Supplier supplier) {
         return Immutable${Type}Seq.fill(n, supplier);
     }
+
     /*
     static @NotNull ${Type}Seq fill(int n, @NotNull IntTo${Type}Function init) {
         return Immutable${Type}Seq.fill(n, init);

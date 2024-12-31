@@ -15,7 +15,6 @@
  */
 package kala.collection.immutable;
 
-import kala.Conditions;
 import kala.collection.base.Traversable;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.internal.tree.IndexedTree;
@@ -258,8 +257,8 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
     }
 
     @Override
-    public @NotNull ImmutableSeq<E> inserted(int index, E value) {
-        Conditions.checkPositionIndex(index, size());
+    public @NotNull ImmutableSeq<E> inserted(@Index int index, E value) {
+        index = Indexes.checkPositionIndex(index, size());
         return new ImmutableTreeSeq<>(root.changeKeysAbove(index, 1).plus(index, value));
     }
 
@@ -318,7 +317,6 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
     private static final class SerializationReplaced<E> implements Serializable, Externalizable {
         @Serial
         private static final long serialVersionUID = 0L;
-
         private ImmutableTreeSeq<E> value;
 
         public SerializationReplaced() {

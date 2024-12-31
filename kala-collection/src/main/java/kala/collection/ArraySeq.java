@@ -469,11 +469,11 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     }
 
     @Override
-    public @NotNull ImmutableSeq<E> inserted(int index, E value) {
+    public @NotNull ImmutableSeq<E> inserted(@Index int index, E value) {
         final Object[] elements = this.elements;
         final int size = elements.length;
+        index = Indexes.checkPositionIndex(index, size);
 
-        Conditions.checkPositionIndex(index, size);
         return ImmutableArray.Unsafe.wrap(ObjectArrays.inserted(elements, index, value));
     }
 
