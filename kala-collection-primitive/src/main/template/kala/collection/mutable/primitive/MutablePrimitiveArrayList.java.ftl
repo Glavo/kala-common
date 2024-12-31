@@ -211,12 +211,6 @@ public final class Mutable${Type}ArrayList extends AbstractMutable${Type}List im
         return new ${PrimitiveType}[newCapacity];
     }
 
-    private void checkInBound(int index) {
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Index out of range: " + index);
-        }
-    }
-
     ${PrimitiveType} @NotNull [] getArray() {
         return this.elements;
     }
