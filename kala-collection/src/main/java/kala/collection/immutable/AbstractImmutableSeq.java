@@ -475,7 +475,6 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractSeq<E> 
         return factory.build(builder);
     }
 
-
     static <E, U, T, Builder> T mapIndexedNotNull(
             @NotNull ImmutableSeq<? extends E> seq,
             @NotNull IndexedFunction<? super E, ? extends U> mapper,
@@ -491,8 +490,7 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractSeq<E> 
         for (E e : seq) {
             U u = mapper.apply(idx++, e);
             if (u != null) {
-                factory.addToBuilder(builder, u
-                );
+                factory.addToBuilder(builder, u);
             }
         }
         return factory.build(builder);
