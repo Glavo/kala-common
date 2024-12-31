@@ -458,7 +458,7 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractSeq<E> 
     }
 
     static <E, U, T, Builder> T mapIndexed(
-            @NotNull ImmutableSeq<? extends E> Seq,
+            @NotNull ImmutableSeq<? extends E> seq,
             @NotNull IndexedFunction<? super E, ? extends U> mapper,
             @NotNull CollectionFactory<? super U, Builder, ? extends T> factory
     ) {
@@ -466,10 +466,10 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractSeq<E> 
 
         Builder builder = factory.newBuilder();
 
-        factory.sizeHint(builder, Seq);
+        factory.sizeHint(builder, seq);
 
         int idx = 0;
-        for (E e : Seq) {
+        for (E e : seq) {
             factory.addToBuilder(builder, mapper.apply(idx++, e));
         }
         return factory.build(builder);
@@ -477,7 +477,7 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractSeq<E> 
 
 
     static <E, U, T, Builder> T mapIndexedNotNull(
-            @NotNull ImmutableSeq<? extends E> Seq,
+            @NotNull ImmutableSeq<? extends E> seq,
             @NotNull IndexedFunction<? super E, ? extends U> mapper,
             @NotNull CollectionFactory<? super U, Builder, ? extends T> factory
     ) {
@@ -485,10 +485,10 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractSeq<E> 
 
         Builder builder = factory.newBuilder();
 
-        factory.sizeHint(builder, Seq);
+        factory.sizeHint(builder, seq);
 
         int idx = 0;
-        for (E e : Seq) {
+        for (E e : seq) {
             U u = mapper.apply(idx++, e);
             if (u != null) {
                 factory.addToBuilder(builder, u
@@ -499,7 +499,7 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractSeq<E> 
     }
 
     static <E, U, T, Builder> T mapIndexedMulti(
-            @NotNull ImmutableSeq<? extends E> Seq,
+            @NotNull ImmutableSeq<? extends E> seq,
             @NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper,
             @NotNull CollectionFactory<? super U, Builder, ? extends T> factory
     ) {
@@ -509,7 +509,7 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractSeq<E> 
         Consumer<U> consumer = u -> factory.addToBuilder(builder, u);
 
         int idx = 0;
-        for (E e : Seq) {
+        for (E e : seq) {
             mapper.accept(idx++, e, consumer);
         }
         return factory.build(builder);
