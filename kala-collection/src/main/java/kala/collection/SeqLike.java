@@ -22,10 +22,13 @@ import kala.collection.base.OrderedTraversable;
 import kala.collection.internal.SeqIterators;
 import kala.collection.internal.view.SeqViews;
 import kala.collection.mutable.MutableSeq;
+import kala.comparator.Comparators;
 import kala.control.Option;
 import kala.function.IndexedBiConsumer;
 import kala.function.IndexedFunction;
 import kala.index.Index;
+import kala.index.Indexes;
+import kala.internal.ComparableUtils;
 import kala.tuple.Tuple2;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
@@ -106,48 +109,31 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E>, OrderedTra
     @Contract(pure = true)
     @DelegateBy("binarySearch(int, int, E)")
     default int binarySearch(E value) {
-        return binarySearch(0, size(), value);
+        return binarySearch(0, ~0, value);
     }
 
     @Contract(pure = true)
     @DelegateBy("binarySearch(int, int, E, Comparator<E>)")
     default int binarySearch(E value, Comparator<? super E> comparator) {
-        return binarySearch(0, size(), value, comparator);
+        return binarySearch(0, ~0, value, comparator);
     }
 
     @Contract(pure = true)
-    @SuppressWarnings("unchecked")
-    default int binarySearch(int beginIndex, int endIndex, E value) {
-        Conditions.checkPositionIndices(beginIndex, endIndex, size());
-
-        int low = beginIndex;
-        int high = endIndex - 1;
-
-        while (low <= high) {
-            final int mid = (low + high) >>> 1;
-            final E midVal = get(mid);
-            final int cmp = ((Comparable<E>) midVal).compareTo(value);
-            if (cmp < 0) {
-                low = mid + 1;
-            } else if (cmp > 0) {
-                high = mid - 1;
-            } else {
-                return mid;
-            }
-        }
-        return -(low + 1);
+    @DelegateBy("binarySearch(int, int, E, Comparator<E>)")
+    default int binarySearch(@Index int beginIndex, @Index int endIndex, E value) {
+        return binarySearch(beginIndex, endIndex, value, Comparators.naturalOrder());
     }
 
     @Contract(pure = true)
-    default int binarySearch(int beginIndex, int endIndex, E value, Comparator<? super E> comparator) {
+    default int binarySearch(@Index int beginIndex, @Index int endIndex, E value, Comparator<? super E> comparator) {
         if (comparator == null) {
-            return binarySearch(beginIndex, endIndex, value);
+            comparator = Comparators.naturalOrder();
         }
 
-        Conditions.checkPositionIndices(beginIndex, endIndex, size());
+        final int size = size();
 
-        int low = beginIndex;
-        int high = endIndex - 1;
+        int low = Indexes.checkBeginIndex(beginIndex, size);
+        int high = Indexes.checkEndIndex(low, endIndex, size) - 1;
 
         while (low <= high) {
             final int mid = (low + high) >>> 1;

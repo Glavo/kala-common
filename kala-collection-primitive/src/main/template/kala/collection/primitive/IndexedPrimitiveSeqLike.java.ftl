@@ -21,6 +21,7 @@ import kala.collection.base.primitive.${Type}Iterator;
 import kala.control.primitive.${Type}Option;
 import kala.function.*;
 import kala.index.Index;
+import kala.index.Indexes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;
@@ -116,13 +117,14 @@ public interface Indexed${Type}SeqLike extends ${Type}SeqLike, RandomAccess {
     //endregion
 
     default int binarySearch(${PrimitiveType} value) {
-        return binarySearch(0, size(), value);
+        return binarySearch(0, ~0, value);
     }
 
-    default int binarySearch(int beginIndex, int endIndex, ${PrimitiveType} value) {
-        Conditions.checkPositionIndices(beginIndex, endIndex, size());
-        int low = beginIndex;
-        int high = endIndex - 1;
+    default int binarySearch(@Index int beginIndex, @Index int endIndex, ${PrimitiveType} value) {
+        final int size = size();
+
+        int low = Indexes.checkBeginIndex(beginIndex, size);
+        int high = Indexes.checkEndIndex(low, endIndex, size) - 1;
 
         while (low <= high) {
             final int mid = (low + high) >>> 1;
