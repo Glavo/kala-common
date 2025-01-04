@@ -280,7 +280,7 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
 
     @Override
     public @NotNull Iterator<E> iterator(@Index int beginIndex) {
-        return (Iterator<E>) GenericArrays.iterator(elements, beginIndex, size);
+        return (Iterator<E>) GenericArrays.iterator(elements, Indexes.checkPositionIndex(beginIndex, size), size);
     }
 
     @Override

@@ -16,7 +16,6 @@
 package kala.collection;
 
 import kala.collection.immutable.ImmutableArray;
-import kala.collection.immutable.ImmutableSeq;
 import kala.collection.immutable.ImmutableVector;
 import kala.comparator.Comparators;
 import kala.control.Option;
@@ -62,9 +61,13 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
         assertThrows(IndexOutOfBoundsException.class, () -> of("str").iterator(Integer.MAX_VALUE));
 
         assertIteratorEquals(List.of("str1", "str2", "str3"), of("str1", "str2", "str3").iterator(0));
+        assertIteratorEquals(List.of("str1", "str2", "str3"), of("str1", "str2", "str3").iterator(~3));
         assertIteratorEquals(List.of("str2", "str3"), of("str1", "str2", "str3").iterator(1));
+        assertIteratorEquals(List.of("str2", "str3"), of("str1", "str2", "str3").iterator(~2));
         assertIteratorEquals(List.of("str3"), of("str1", "str2", "str3").iterator(2));
+        assertIteratorEquals(List.of("str3"), of("str1", "str2", "str3").iterator(~1));
         assertIteratorEquals(List.of(), of("str1", "str2", "str3").iterator(3));
+        assertIteratorEquals(List.of(), of("str1", "str2", "str3").iterator(~0));
     }
 
     @Test

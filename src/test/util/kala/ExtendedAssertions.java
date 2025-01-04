@@ -20,11 +20,16 @@ import kala.collection.base.Iterators;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
 public class ExtendedAssertions {
     public static void assertIteratorEquals(Iterable<?> expected, Iterator<?> actual) {
-        assertIterableEquals(expected, Iterators.collect(actual, new ArrayList<>()));
+        assertIteratorEquals(expected, actual, null);
+    }
+
+    public static void assertIteratorEquals(Iterable<?> expected, Iterator<?> actual, Supplier<String> messageSupplier) {
+        assertIterableEquals(expected, Iterators.collect(actual, new ArrayList<>()), messageSupplier);
     }
 }

@@ -17,11 +17,18 @@ package kala.collection.mutable;
 
 import kala.collection.factory.CollectionFactory;
 
-public final class MutableArrayListTest implements MutableListTestTemplate {
-
+public class MutableCopyOnWriteListTest implements MutableListTestTemplate{
     @Override
-    public <E> CollectionFactory<E, ?, MutableArrayList<E>> factory() {
-        return MutableArrayList.factory();
+    public <E> CollectionFactory<E, ?, ? extends MutableList<E>> factory() {
+        return (MutableListFactory<E, MutableList<E>>) MutableCopyOnWriteList::create;
     }
 
+    @Override
+    public Class<?> collectionType() {
+        return null;
+    }
+
+    @Override
+    public void serializationTest() {
+    }
 }

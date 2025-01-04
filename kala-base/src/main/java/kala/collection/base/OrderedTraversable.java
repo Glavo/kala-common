@@ -44,7 +44,7 @@ public interface OrderedTraversable<T> extends Traversable<T> {
             final int knownSize = knownSize();
             if (knownSize >= 0) {
                 if (beginIndex > knownSize) {
-                    throw new IndexOutOfBoundsException(beginIndex);
+                    throw Indexes.outOfBounds(beginIndex);
                 }
                 if (beginIndex == knownSize) {
                     return Iterators.empty();
@@ -62,7 +62,7 @@ public interface OrderedTraversable<T> extends Traversable<T> {
         final Iterator<T> it = iterator();
         for (int i = 0; i < beginIndex; i++) {
             if (!it.hasNext()) {
-                throw new IndexOutOfBoundsException(beginIndex);
+                throw Indexes.outOfBounds(beginIndex);
             }
             it.next();
         }

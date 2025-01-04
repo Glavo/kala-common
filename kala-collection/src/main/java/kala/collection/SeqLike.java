@@ -86,7 +86,7 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E>, OrderedTra
     @Flow(sourceIsContainer = true)
     default E get(@Index int index) {
         Iterator<E> it = iterator(index);
-        if (!it.hasNext()) throw new IndexOutOfBoundsException("Index: " + index);
+        if (!it.hasNext()) throw Indexes.outOfBounds(index);
 
         return it.next();
     }
