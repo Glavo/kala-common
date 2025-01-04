@@ -26,7 +26,6 @@ public abstract class AbstractValue<T> implements Value<T> {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof AnyValue<?> other && this.canEqual(other) && other.canEqual(this) && Objects.equals(this.get(), other.getValue());
-
     }
 
     @Override
