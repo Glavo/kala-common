@@ -25,6 +25,7 @@ import java.util.List;
 
 @SuppressWarnings("unchecked")
 public final class SimpleSeqTest implements SeqTestTemplate {
+    @SuppressWarnings("ClassEscapesDefinedScope")
     @Override
     public <E> CollectionFactory<E, ?, SimpleSeq<E>> factory() {
         return (SimpleListFactory<E>) SimpleListFactory.INSTANCE;
