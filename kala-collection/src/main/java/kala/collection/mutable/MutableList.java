@@ -29,6 +29,7 @@ import kala.collection.internal.convert.FromJavaConvert;
 import kala.collection.factory.CollectionFactory;
 import kala.control.Option;
 import kala.index.Index;
+import kala.index.Indexes;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -292,29 +293,20 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
     void insert(@Index int index, @Flow(targetIsContainer = true) E value);
 
     @Contract(mutates = "this")
+    @DelegateBy("insertAll(int, Iterable<E>)")
     default void insertAll(
-            int index,
+            @Index int index,
             @Flow(sourceIsContainer = true, targetIsContainer = true) E @NotNull [] values) {
         insertAll(index, ArraySeq.wrap(values));
     }
 
     @Contract(mutates = "this")
     default void insertAll(
-            int index,
-            @NotNull @Flow(sourceIsContainer = true, targetIsContainer = true) Traversable<? extends E> values
-    ) {
-        insertAll(index, (Iterable<? extends E>) values);
-    }
-
-    @Contract(mutates = "this")
-    default void insertAll(
-            int index,
+            @Index int index,
             @NotNull @Flow(sourceIsContainer = true, targetIsContainer = true) Iterable<? extends E> values
     ) {
         Objects.requireNonNull(values);
-        if (isEmpty() && index != 0) {
-            throw new IndexOutOfBoundsException("Index out of range: " + index);
-        }
+        index = Indexes.checkPositionIndex(index, size());
 
         Object[] valuesArray = CollectionHelper.asArray(values);
         for (Object e : valuesArray) {

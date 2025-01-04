@@ -471,9 +471,9 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
     }
 
     @Override
-    public void insertAll(int index, @NotNull Iterable<? extends E> values) {
+    public void insertAll(@Index int index, @NotNull Iterable<? extends E> values) {
         Objects.requireNonNull(values);
-        Conditions.checkPositionIndex(index, size);
+        index = Indexes.checkPositionIndex(index, size);
 
         final Collection<Object> other = CollectionHelper.asSizedCollection(values);
         final int otherSize = other.size();
@@ -498,9 +498,8 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
     @Override
     public void insertAll(int index, E @NotNull [] values) {
         Objects.requireNonNull(values);
-        if (index < 0 || index > size) {
-            throw new IndexOutOfBoundsException("Index out of range: " + index);
-        }
+        index = Indexes.checkPositionIndex(index, size);
+
         if (values.length == 0) {
             return;
         }

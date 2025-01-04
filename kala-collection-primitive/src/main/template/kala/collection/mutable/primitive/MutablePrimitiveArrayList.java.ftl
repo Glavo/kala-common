@@ -435,7 +435,7 @@ public final class Mutable${Type}ArrayList extends AbstractMutable${Type}List im
     @Override
     public void insertAll(int index, @NotNull ${Type}Traversable values) {
         Objects.requireNonNull(values);
-        Conditions.checkPositionIndex(index, size);
+        index = Indexes.checkPositionIndex(index, size);
 
         final int otherSize = values.size();
 
@@ -458,10 +458,7 @@ public final class Mutable${Type}ArrayList extends AbstractMutable${Type}List im
 
     @Override
     public void insertAll(int index, ${PrimitiveType} @NotNull [] values) {
-        Objects.requireNonNull(values);
-        if (index < 0 || index > size) {
-            throw new IndexOutOfBoundsException("Index out of range: " + index);
-        }
+        index = Indexes.checkPositionIndex(index, size);
         if (values.length == 0) {
             return;
         }

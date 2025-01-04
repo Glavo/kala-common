@@ -24,6 +24,7 @@ import kala.collection.primitive.internal.${Type}SeqIterators;
 import kala.control.primitive.${Type}Option;
 import kala.function.*;
 import kala.index.Index;
+import kala.index.Indexes;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -213,20 +214,17 @@ public interface Mutable${Type}List extends MutablePrimitiveList<${WrapperType}>
 
     @Contract(mutates = "this")
     default void insertAll(
-            int index,
+            @Index int index,
             @Flow(sourceIsContainer = true, targetIsContainer = true) ${PrimitiveType} @NotNull [] values) {
         insertAll(index, ${Type}ArraySeq.wrap(values));
     }
 
     @Contract(mutates = "this")
     default void insertAll(
-            int index,
+            @Index int index,
             @NotNull @Flow(sourceIsContainer = true, targetIsContainer = true) ${Type}Traversable values
     ) {
-        Objects.requireNonNull(values);
-        if (isEmpty() && index != 0) {
-            throw new IndexOutOfBoundsException("Index out of range: " + index);
-        }
+        index = Indexes.checkPositionIndex(index, size());
 
         ${PrimitiveType}[] valuesArray = values.toArray();
         for (${PrimitiveType} e : valuesArray) {

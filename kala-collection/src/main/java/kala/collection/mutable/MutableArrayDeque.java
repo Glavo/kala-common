@@ -387,9 +387,9 @@ public final class MutableArrayDeque<E> extends AbstractMutableList<E> implement
     }
 
     @Override
-    public void insertAll(int index, E @NotNull [] values) {
+    public void insertAll(@Index int index, E @NotNull [] values) {
         final int oldSize = size();
-        Conditions.checkPositionIndex(index, oldSize);
+        index = Indexes.checkPositionIndex(index, oldSize);
 
         final int valuesLength = values.length;
         if (valuesLength == 0) {

@@ -418,40 +418,38 @@ public interface MutableListTestTemplate extends MutableSeqTestTemplate {
     @Test
     default void insertAllTest() {
         // empty test
-        {
-            String[][] arrays = {
-                    {},
-                    {"value"},
-                    {"value0", "value1", "value2", "value3", "value4", "value5", "value6", "value7"}
-            };
+        for (String[] array : new String[][]{
+                {},
+                {"value"},
+                {"value0", "value1", "value2", "value3", "value4", "value5", "value6", "value7"}
+        }) {
+            Iterable<String> iterable = Arrays.asList(array);
 
-            Iterable<String>[] iterables =
-                    Arrays.stream(arrays)
-                            .map(it -> new SimpleIterable<>(Arrays.asList(it)))
-                            .toArray(Iterable[]::new);
+            MutableList<String> list = of();
 
-            for (String[] array : arrays) {
-                MutableList<String> empty = of();
-                assertThrows(IndexOutOfBoundsException.class, () -> empty.insertAll(-1, array));
-                assertThrows(IndexOutOfBoundsException.class, () -> empty.insertAll(1, array));
-                assertThrows(IndexOutOfBoundsException.class, () -> empty.insertAll(Integer.MAX_VALUE, array));
-                assertThrows(IndexOutOfBoundsException.class, () -> empty.insertAll(Integer.MIN_VALUE, array));
+            assertThrows(IndexOutOfBoundsException.class, () -> list.insertAll(~1, array));
+            assertThrows(IndexOutOfBoundsException.class, () -> list.insertAll(1, array));
+            assertThrows(IndexOutOfBoundsException.class, () -> list.insertAll(Integer.MAX_VALUE, array));
+            assertThrows(IndexOutOfBoundsException.class, () -> list.insertAll(Integer.MIN_VALUE, array));
+            assertThrows(IndexOutOfBoundsException.class, () -> list.insertAll(~1, iterable));
+            assertThrows(IndexOutOfBoundsException.class, () -> list.insertAll(1, iterable));
+            assertThrows(IndexOutOfBoundsException.class, () -> list.insertAll(Integer.MAX_VALUE, iterable));
+            assertThrows(IndexOutOfBoundsException.class, () -> list.insertAll(Integer.MIN_VALUE, iterable));
 
-                empty.insertAll(0, array);
-                assertIterableEquals(Arrays.asList(array), empty);
-            }
+            list.insertAll(0, array);
+            assertIterableEquals(Arrays.asList(array), list);
 
-            for (Iterable<String> iterable : iterables) {
-                MutableList<String> empty = of();
-                assertThrows(IndexOutOfBoundsException.class, () -> empty.insertAll(-1, iterable));
-                assertThrows(IndexOutOfBoundsException.class, () -> empty.insertAll(1, iterable));
-                assertThrows(IndexOutOfBoundsException.class, () -> empty.insertAll(Integer.MAX_VALUE, iterable));
-                assertThrows(IndexOutOfBoundsException.class, () -> empty.insertAll(Integer.MIN_VALUE, iterable));
+            list.clear();
+            list.insertAll(0, iterable);
+            assertIterableEquals(iterable, list);
 
-                empty.insertAll(0, iterable);
-                assertIterableEquals(iterable, empty);
-            }
+            list.clear();
+            list.insertAll(~0, array);
+            assertIterableEquals(Arrays.asList(array), list);
 
+            list.clear();
+            list.insertAll(~0, iterable);
+            assertIterableEquals(Arrays.asList(array), list);
         }
     }
 
