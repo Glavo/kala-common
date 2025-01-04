@@ -17,6 +17,8 @@ package kala.index;
 
 import org.jetbrains.annotations.Range;
 
+import java.util.Objects;
+
 public final class Indexes {
 
     public static IndexOutOfBoundsException outOfBounds(int index) {
@@ -28,6 +30,11 @@ public final class Indexes {
                 toString(index),
                 length
         ));
+    }
+
+    private static IndexOutOfBoundsException beginLargeThanEnd(int actualBeginIndex, int actualEndIndex, int length) {
+        return new IndexOutOfBoundsException("beginIndex is larger than endIndex (actualBeginIndex=%d, actualEndIndex=%d, length=%d)"
+                .formatted(actualBeginIndex, actualEndIndex, length));
     }
 
     public static String toString(@Index int index) {
@@ -77,7 +84,7 @@ public final class Indexes {
     public static int checkEndIndex(int checkedBeginIndex, @Index int endIndex, @Range(from = 0, to = Integer.MAX_VALUE) int length) {
         int checkedEndIndex = checkPositionIndex(endIndex, length);
         if (checkedEndIndex < checkedBeginIndex) {
-            throw new IndexOutOfBoundsException("beginIndex is larger than endIndex");
+            throw beginLargeThanEnd(checkedBeginIndex, checkedEndIndex, length);
         }
         return checkedEndIndex;
     }
