@@ -21,7 +21,6 @@ import kala.annotations.ReplaceWith;
 import kala.collection.ArraySeq;
 import kala.collection.Seq;
 import kala.collection.base.Growable;
-import kala.collection.base.Traversable;
 import kala.collection.internal.CollectionHelper;
 import kala.collection.internal.SeqIterators;
 import kala.collection.internal.convert.AsJavaConvert;
