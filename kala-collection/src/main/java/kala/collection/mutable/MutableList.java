@@ -355,7 +355,7 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
     @DelegateBy("removeAt(int)")
     default E removeFirst() {
         if (isEmpty()) {
-            throw new NoSuchElementException("Seq is empty");
+            throw new NoSuchElementException("List is empty");
         }
         return removeAt(0);
     }
@@ -375,11 +375,10 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
     @Contract(mutates = "this")
     @DelegateBy("removeAt(int)")
     default E removeLast() {
-        final int size = this.size();
-        if (size == 0) {
-            throw new NoSuchElementException("Seq is empty");
+        if (isEmpty()) {
+            throw new NoSuchElementException("List is empty");
         }
-        return removeAt(size - 1);
+        return removeAt(~1);
     }
 
     @Contract(mutates = "this")
