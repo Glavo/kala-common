@@ -28,7 +28,6 @@ import kala.function.IndexedBiConsumer;
 import kala.function.IndexedFunction;
 import kala.index.Index;
 import kala.index.Indexes;
-import kala.internal.ComparableUtils;
 import kala.tuple.Tuple2;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
