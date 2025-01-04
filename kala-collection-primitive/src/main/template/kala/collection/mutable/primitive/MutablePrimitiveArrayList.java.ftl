@@ -286,8 +286,8 @@ public final class Mutable${Type}ArrayList extends AbstractMutable${Type}List im
     }
 
     @Override
-    public void set(int index, ${PrimitiveType} newValue) {
-        Objects.checkIndex(index, size);
+    public void set(@Index int index, ${PrimitiveType} newValue) {
+        index = Indexes.checkIndex(index, size);
         elements[index] = newValue;
     }
 

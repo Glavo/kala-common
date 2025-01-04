@@ -228,8 +228,8 @@ public final class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>,
     }
 
     @Override
-    public void set(int index, E newValue) {
-        elements[index] = newValue;
+    public void set(@Index int index, E newValue) {
+        elements[Indexes.checkIndex(index, elements.length)] = newValue;
     }
 
     @Override

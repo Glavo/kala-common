@@ -1,3 +1,18 @@
+/*
+ * Copyright 2025 Glavo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package kala.collection.mutable;
 
 import kala.Conditions;
@@ -12,6 +27,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.*;
@@ -23,6 +39,7 @@ import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 public final class MutableSmartArrayList<E> extends AbstractMutableList<E> implements IndexedSeq<E>, Serializable {
+    @Serial
     private static final long serialVersionUID = 85150510977824651L;
 
     private static final int DEFAULT_CAPACITY = 16;
@@ -115,17 +132,14 @@ public final class MutableSmartArrayList<E> extends AbstractMutableList<E> imple
     @Contract("_ -> new")
     public static <E> @NotNull MutableSmartArrayList<E> from(E @NotNull [] values) {
         final int length = values.length; // implicit null check of values
-        switch (length) {
-            case 0:
-                return new MutableSmartArrayList<>();
-            case 1:
-                return MutableSmartArrayList.of(values[0]);
-            default:
-                return new MutableSmartArrayList<>(
-                        length,
-                        Arrays.copyOf(values, Math.max(length, DEFAULT_CAPACITY), Object[].class)
-                );
-        }
+        return switch (length) {
+            case 0 -> new MutableSmartArrayList<>();
+            case 1 -> MutableSmartArrayList.of(values[0]);
+            default -> new MutableSmartArrayList<>(
+                    length,
+                    Arrays.copyOf(values, Math.max(length, DEFAULT_CAPACITY), Object[].class)
+            );
+        };
     }
 
     public static <E> @NotNull MutableSmartArrayList<E> from(@NotNull Iterable<? extends E> values) {
@@ -234,27 +248,21 @@ public final class MutableSmartArrayList<E> extends AbstractMutableList<E> imple
     @Override
     public @NotNull Iterator<E> iterator() {
         final int size = this.size;
-        switch (size) {
-            case 0:
-                return Iterators.empty();
-            case 1:
-                return Iterators.of((E) elem);
-            default:
-                return (Iterator<E>) GenericArrays.iterator((Object[]) elem, 0, size);
-        }
+        return switch (size) {
+            case 0 -> Iterators.empty();
+            case 1 -> Iterators.of((E) elem);
+            default -> (Iterator<E>) GenericArrays.iterator((Object[]) elem, 0, size);
+        };
     }
 
     @Override
     public @NotNull Spliterator<E> spliterator() {
         final int size = this.size;
-        switch (size) {
-            case 0:
-                return Spliterators.emptySpliterator();
-            case 1:
-                return (Spliterator<E>) Spliterators.spliteratorUnknownSize(Iterators.of(elem), 0);
-            default:
-                return Spliterators.spliterator(((Object[]) elem), 0, size, 0);
-        }
+        return switch (size) {
+            case 0 -> Spliterators.emptySpliterator();
+            case 1 -> (Spliterator<E>) Spliterators.spliteratorUnknownSize(Iterators.of(elem), 0);
+            default -> Spliterators.spliterator(((Object[]) elem), 0, size, 0);
+        };
 
     }
 
@@ -282,9 +290,9 @@ public final class MutableSmartArrayList<E> extends AbstractMutableList<E> imple
     }
 
     @Override
-    public void set(int index, E newValue) {
+    public void set(@Index int index, E newValue) {
         final int size = this.size;
-        Objects.checkIndex(index, size);
+        index = Indexes.checkIndex(index, size);
         if (size == 1) {
             elem = newValue;
         } else {
@@ -470,33 +478,35 @@ public final class MutableSmartArrayList<E> extends AbstractMutableList<E> imple
     public <U> U @NotNull [] toArray(@NotNull Class<U> type) {
         final int size = this.size;
         U[] arr = (U[]) Array.newInstance(type, size);
-        switch (size) {
-            case 0:
-                return arr;
-            case 1:
+        return switch (size) {
+            case 0 -> arr;
+            case 1 -> {
                 arr[0] = (U) elem;
-                return arr;
-            default:
+                yield arr;
+            }
+            default -> {
                 //noinspection SuspiciousSystemArraycopy
                 System.arraycopy(elem, 0, arr, 0, size);
-                return arr;
-        }
+                yield arr;
+            }
+        };
     }
 
     @Override
     public <U> U @NotNull [] toArray(@NotNull IntFunction<U[]> generator) {
         final int size = this.size;
         U[] arr = generator.apply(size);
-        switch (size) {
-            case 0:
-                return arr;
-            case 1:
+        return switch (size) {
+            case 0 -> arr;
+            case 1 -> {
                 arr[0] = (U) elem;
-                return arr;
-            default:
+                yield arr;
+            }
+            default -> {
                 //noinspection SuspiciousSystemArraycopy
                 System.arraycopy(elem, 0, arr, 0, size);
-                return arr;
-        }
+                yield arr;
+            }
+        };
     }
 }

@@ -19,6 +19,8 @@ import kala.collection.base.primitive.*;
 import kala.collection.factory.primitive.${Type}CollectionFactory;
 import kala.collection.primitive.${Type}ArraySeq;
 import kala.function.*;
+import kala.index.Index;
+import kala.index.Indexes;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -161,12 +163,8 @@ public final class Mutable${Type}Array extends ${Type}ArraySeq implements Mutabl
     }
 
     @Override
-    public void set(int index, ${PrimitiveType} newValue) {
-        try {
-            elements[index] = newValue;
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new IndexOutOfBoundsException(e.getMessage());
-        }
+    public void set(@Index int index, ${PrimitiveType} newValue) {
+        elements[Indexes.checkIndex(index, elements.length)] = newValue;
     }
 
     @Override

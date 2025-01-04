@@ -724,8 +724,8 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
         }
 
         @Override
-        public final void set(int index, E newValue) {
-            Objects.checkIndex(index, len);
+        public final void set(@Index int index, E newValue) {
+            index = Indexes.checkIndex(index, len);
 
             ensureUnaliased();
             if (index == len - 1) {

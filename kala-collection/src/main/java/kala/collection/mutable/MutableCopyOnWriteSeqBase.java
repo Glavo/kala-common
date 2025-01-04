@@ -90,7 +90,7 @@ sealed class MutableCopyOnWriteSeqBase<E, S extends MutableSeq<E>> extends Abstr
     //endregion
 
     @Override
-    public void set(int index, E newValue) {
+    public void set(@Index int index, E newValue) {
         ensureExclusive();
         source.set(index, newValue);
     }

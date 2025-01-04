@@ -24,6 +24,7 @@ import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
 import kala.function.IndexedFunction;
 import kala.collection.factory.CollectionFactory;
+import kala.index.Index;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -158,7 +159,7 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E>, MutableAnyS
     }
 
     @Contract(mutates = "this")
-    void set(int index, E newValue);
+    void set(@Index int index, E newValue);
 
     default void swap(int index1, int index2) {
         final E old1 = this.get(index1);

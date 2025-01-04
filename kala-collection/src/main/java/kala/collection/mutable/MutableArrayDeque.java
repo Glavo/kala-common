@@ -311,15 +311,17 @@ public final class MutableArrayDeque<E> extends AbstractMutableList<E> implement
     }
 
     @Override
-    public void set(int index, E newValue) {
+    public void set(@Index int index, E newValue) {
         if (isEmpty()) {
-            throw new IndexOutOfBoundsException();
-        } else if (begin < end) {
-            Objects.checkIndex(index, end - begin);
+            throw Indexes.outOfBounds(index, 0);
+        }
+
+        if (begin < end) {
+            index = Indexes.checkIndex(index, end - begin);
             elements[begin + index] = newValue;
         } else {
             final int size = elements.length - begin + end;
-            Objects.checkIndex(index, size);
+            index = Indexes.checkIndex(index, size);
             elements[inc(begin, index, elements.length)] = newValue;
         }
     }

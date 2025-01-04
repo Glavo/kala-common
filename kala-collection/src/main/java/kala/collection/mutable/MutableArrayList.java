@@ -317,9 +317,8 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
     }
 
     @Override
-    public void set(int index, E newValue) {
-        Objects.checkIndex(index, size);
-        elements[index] = newValue;
+    public void set(@Index int index, E newValue) {
+        elements[Indexes.checkIndex(index, size)] = newValue;
     }
 
     //endregion

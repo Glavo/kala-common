@@ -30,21 +30,27 @@ public interface MutableSeqTestTemplate extends MutableCollectionTestTemplate, S
     default void setTest() {
         assertThrows(IndexOutOfBoundsException.class, () -> of().set(0, "value"));
         assertThrows(IndexOutOfBoundsException.class, () -> of().set(1, "value"));
-        assertThrows(IndexOutOfBoundsException.class, () -> of().set(-1, "value"));
+        assertThrows(IndexOutOfBoundsException.class, () -> of().set(~0, "value"));
+        assertThrows(IndexOutOfBoundsException.class, () -> of().set(~1, "value"));
 
         {
             MutableSeq<String> seq = of("value");
             assertThrows(IndexOutOfBoundsException.class, () -> seq.set(1, "newValue"));
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.set(-1, "newValue"));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.set(~0, "newValue"));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.set(~2, "newValue"));
 
             seq.set(0, "newValue");
             assertIterableEquals(List.of("newValue"), seq);
+
+            seq.set(~1, "newValue2");
+            assertIterableEquals(List.of("newValue2"), seq);
         }
 
         {
             MutableSeq<String> seq = of("str0", "str1", "str2");
             assertThrows(IndexOutOfBoundsException.class, () -> seq.set(3, "value"));
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.set(-1, "value"));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.set(~0, "value"));
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.set(~4, "value"));
 
             seq.set(1, "value");
             assertIterableEquals(List.of("str0", "value", "str2"), seq);
@@ -57,6 +63,9 @@ public interface MutableSeqTestTemplate extends MutableCollectionTestTemplate, S
 
             seq.set(0, "bar");
             assertIterableEquals(List.of("bar", "value", "foo"), seq);
+
+            seq.set(~2, "zzz");
+            assertIterableEquals(List.of("bar", "zzz", "foo"), seq);
         }
     }
 

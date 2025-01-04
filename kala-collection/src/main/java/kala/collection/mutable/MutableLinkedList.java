@@ -525,9 +525,8 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
     }
 
     @Override
-    public void set(int index, E newValue) {
-        Objects.checkIndex(index, len);
-        internalGetNode(index).value = newValue;
+    public void set(@Index int index, E newValue) {
+        internalGetNode(Indexes.checkIndex(index, len)).value = newValue;
     }
 
     @Override
