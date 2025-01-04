@@ -18,6 +18,7 @@ package kala.value;
 import java.io.Serial;
 import java.io.Serializable;
 
+/// A simple mutable value has a mutable object reference.
 public final class Var<T> extends AbstractMutableValue<T> implements Cloneable, Serializable {
     @Serial
     private static final long serialVersionUID = 0L;

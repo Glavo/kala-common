@@ -15,6 +15,7 @@
  */
 package kala.value;
 
+import kala.annotations.ReplaceWith;
 import kala.annotations.UnstableName;
 import kala.collection.base.Iterators;
 import kala.collection.base.Mappable;
@@ -46,6 +47,7 @@ public non-sealed interface Value<T> extends AnyValue<T>, Traversable<T>, Mappab
     T get();
 
     @Override
+    @ReplaceWith("getValue()")
     default T getValue() {
         return get();
     }
