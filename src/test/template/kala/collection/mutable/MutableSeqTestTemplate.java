@@ -134,7 +134,6 @@ public interface MutableSeqTestTemplate extends MutableCollectionTestTemplate, S
             Assertions.assertEquals(data.length, seq.size());
             Assertions.assertTrue(seq.containsAll(data));
         }
-
     }
 
     @Test

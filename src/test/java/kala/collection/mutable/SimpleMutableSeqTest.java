@@ -29,7 +29,7 @@ public final class SimpleMutableSeqTest implements MutableSeqTestTemplate {
     @SuppressWarnings("ClassEscapesDefinedScope")
     @Override
     public <E> CollectionFactory<E, ?, SimpleMutableSeq<E>> factory() {
-        return (SimpleListFactory<E>) SimpleListFactory.INSTANCE;
+        return (SimpleMutableSeqFactory<E>) SimpleMutableSeqFactory.INSTANCE;
     }
 
     @Override
@@ -59,8 +59,8 @@ public final class SimpleMutableSeqTest implements MutableSeqTestTemplate {
         }
     }
 
-    private static final class SimpleListFactory<E> implements CollectionFactory<E, ArrayList<E>, SimpleMutableSeq<E>> {
-        static final SimpleListFactory<?> INSTANCE = new SimpleListFactory<>();
+    private static final class SimpleMutableSeqFactory<E> implements CollectionFactory<E, ArrayList<E>, SimpleMutableSeq<E>> {
+        static final SimpleMutableSeqFactory<?> INSTANCE = new SimpleMutableSeqFactory<>();
 
         @Override
         public ArrayList<E> newBuilder() {
