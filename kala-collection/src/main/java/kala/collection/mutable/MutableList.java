@@ -28,6 +28,7 @@ import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
 import kala.collection.factory.CollectionFactory;
 import kala.control.Option;
+import kala.index.Index;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -288,7 +289,7 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
     }
 
     @Contract(mutates = "this")
-    void insert(int index, @Flow(targetIsContainer = true) E value);
+    void insert(@Index int index, @Flow(targetIsContainer = true) E value);
 
     @Contract(mutates = "this")
     default void insertAll(

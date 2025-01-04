@@ -18,6 +18,7 @@ package kala.collection.mutable;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.immutable.ImmutableSeq;
 import kala.collection.internal.convert.AsImmutableConvert;
+import kala.index.Index;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -85,7 +86,7 @@ public final class MutableCopyOnWriteList<E> extends MutableCopyOnWriteSeqBase<E
     }
 
     @Override
-    public void insert(int index, E value) {
+    public void insert(@Index int index, E value) {
         ensureExclusive();
         source.insert(index, value);
     }

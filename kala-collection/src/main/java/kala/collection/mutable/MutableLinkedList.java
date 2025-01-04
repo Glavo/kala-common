@@ -406,8 +406,8 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
     }
 
     @Override
-    public void insert(int index, E value) {
-        Conditions.checkPositionIndex(index, len);
+    public void insert(@Index int index, E value) {
+        index = Indexes.checkPositionIndex(index, len);
 
         if (index == len) {
             append(value);

@@ -340,7 +340,7 @@ public interface MutableListTestTemplate extends MutableSeqTestTemplate {
     @Test
     default void insertTest() {
         MutableList<String> empty = of();
-        assertThrows(IndexOutOfBoundsException.class, () -> empty.insert(-1, "value"));
+        assertThrows(IndexOutOfBoundsException.class, () -> empty.insert(~1, "value"));
         assertThrows(IndexOutOfBoundsException.class, () -> empty.insert(Integer.MAX_VALUE, "value"));
         assertThrows(IndexOutOfBoundsException.class, () -> empty.insert(1, "value"));
         assertThrows(IndexOutOfBoundsException.class, () -> empty.insert(2, "value"));
@@ -350,7 +350,7 @@ public interface MutableListTestTemplate extends MutableSeqTestTemplate {
         l1.insert(0, "value0");
         assertIterableEquals(List.of("value0"), l1);
 
-        l1.insert(0, "value1");
+        l1.insert(~1, "value1");
         assertIterableEquals(List.of("value1", "value0"), l1);
 
         l1.insert(2, "value2");

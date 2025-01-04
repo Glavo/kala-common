@@ -219,8 +219,8 @@ public final class FromJavaConvert {
         }
 
         @Override
-        public void insert(int index, E value) {
-            source.add(index, value);
+        public void insert(@Index int index, E value) {
+            source.add(Indexes.checkPositionIndex(index, source.size()), value);
         }
 
         @Override

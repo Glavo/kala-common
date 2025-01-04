@@ -653,10 +653,9 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
         }
 
         @Override
-        public void insert(int index, E value) {
-            if (index < 0 || index > len) {
-                throw new IndexOutOfBoundsException("Index out of range: " + index);
-            }
+        public void insert(@Index int index, E value) {
+            index = Indexes.checkPositionIndex(index, len);
+
             if (index == 0) {
                 prepend(value);
                 return;

@@ -454,8 +454,8 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
     }
 
     @Override
-    public void insert(int index, E value) {
-        Conditions.checkPositionIndex(index, size);
+    public void insert(@Index int index, E value) {
+        index = Indexes.checkPositionIndex(index, size);
 
         if (index == size) {
             append(value);

@@ -301,9 +301,9 @@ public final class MutableSmartArrayList<E> extends AbstractMutableList<E> imple
     }
 
     @Override
-    public void insert(int index, E value) {
+    public void insert(@Index int index, E value) {
         final int oldSize = this.size;
-        Conditions.checkPositionIndex(index, oldSize);
+        index = Indexes.checkPositionIndex(index, oldSize);
 
         if (oldSize == 0) {
             elem = value;
