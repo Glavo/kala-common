@@ -96,7 +96,7 @@ sealed class MutableCopyOnWriteSeqBase<E, S extends MutableSeq<E>> extends Abstr
     }
 
     @Override
-    public void swap(int index1, int index2) {
+    public void swap(@Index int index1, @Index int index2) {
         ensureExclusive();
         source.swap(index1, index2);
     }

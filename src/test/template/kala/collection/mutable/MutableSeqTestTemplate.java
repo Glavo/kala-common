@@ -92,8 +92,14 @@ public interface MutableSeqTestTemplate extends MutableCollectionTestTemplate, S
 
     @Test
     default void swapTest() {
+        assertThrows(IndexOutOfBoundsException.class, () -> of().swap(0, 0));
         assertThrows(IndexOutOfBoundsException.class, () -> of().swap(0, 1));
+        assertThrows(IndexOutOfBoundsException.class, () -> of().swap(~0, 1));
 
+        assertIterableEquals(
+                List.of("A", "B", "C"),
+                MutableSeq.edit(of("A", "B", "C")).swap(1, 1).done()
+        );
         assertIterableEquals(
                 List.of("A", "B", "C"),
                 MutableSeq.edit(of("A", "C", "B")).swap(1, 2).done()
@@ -101,6 +107,10 @@ public interface MutableSeqTestTemplate extends MutableCollectionTestTemplate, S
         assertIterableEquals(
                 List.of("A", "B", "C"),
                 MutableSeq.edit(of("A", "C", "B")).swap(2, 1).done()
+        );
+        assertIterableEquals(
+                List.of("A", "B", "C"),
+                MutableSeq.edit(of("A", "C", "B")).swap(~1, 1).done()
         );
     }
 

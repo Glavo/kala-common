@@ -24,6 +24,7 @@ import kala.collection.primitive.internal.${Type}SeqIterators;
 import kala.comparator.primitive.${Type}Comparator;
 import kala.function.*;
 import kala.index.Index;
+import kala.index.Indexes;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -119,12 +120,18 @@ public interface Mutable${Type}Seq extends MutablePrimitiveSeq<${WrapperType}>, 
     @Contract(mutates = "this")
     void set(@Index int index, ${PrimitiveType} newValue);
 
-    default void swap(int index1, int index2) {
-        final ${PrimitiveType} old1 = this.get(index1);
-        final ${PrimitiveType} old2 = this.get(index2);
+    default void swap(@Index int index1, @Index int index2) {
+        final int size = size();
+        index1 = Indexes.checkIndex(index1, size);
+        index2 = Indexes.checkIndex(index2, size);
 
-        this.set(index1, old2);
-        this.set(index2, old1);
+        if (index1 != index2) {
+            final ${PrimitiveType} old1 = this.get(index1);
+            final ${PrimitiveType} old2 = this.get(index2);
+
+            this.set(index1, old2);
+            this.set(index2, old1);
+        }
     }
 
     @Contract(mutates = "this")

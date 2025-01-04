@@ -576,9 +576,9 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
         }
 
         @Override
-        public final void swap(int index1, int index2) {
-            Objects.checkIndex(index1, len);
-            Objects.checkIndex(index2, len);
+        public final void swap(@Index int index1, @Index int index2) {
+            index1 = Indexes.checkIndex(index1, len);
+            index2 = Indexes.checkIndex(index2, len);
             if (index1 == index2) {
                 return;
             }
