@@ -241,7 +241,7 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E>, MutableAnyS
         }
     }
 
-    @DelegateBy("shuffle(Random)")
+    @DelegateBy("shuffle(RandomGenerator)")
     default void shuffle() {
         shuffle(ThreadLocalRandom.current());
     }
