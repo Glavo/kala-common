@@ -17,8 +17,6 @@ package kala.index;
 
 import org.jetbrains.annotations.Range;
 
-import java.util.Objects;
-
 public final class Indexes {
 
     public static IndexOutOfBoundsException outOfBounds(int index) {
