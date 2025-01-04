@@ -213,7 +213,7 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
 
     @Override
     @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> prependedAll(E @NotNull [] values) {
+    default @NotNull ImmutableSeq<E> prependedAll(E... values) {
         return view().prependedAll(values).toImmutableSeq();
     }
 
@@ -237,7 +237,7 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
 
     @Override
     @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> appendedAll(E @NotNull [] values) {
+    default @NotNull ImmutableSeq<E> appendedAll(E... values) {
         return view().appendedAll(values).toImmutableSeq();
     }
 

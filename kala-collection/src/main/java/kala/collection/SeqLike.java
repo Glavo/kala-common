@@ -182,7 +182,8 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E>, OrderedTra
     @NotNull SeqLike<E> prepended(E value);
 
     @Contract(pure = true)
-    @NotNull SeqLike<E> prependedAll(E @NotNull [] values);
+    @SuppressWarnings("unchecked")
+    @NotNull SeqLike<E> prependedAll(E... values);
 
     @Contract(pure = true)
     @NotNull SeqLike<E> prependedAll(@NotNull Iterable<? extends E> values);
@@ -194,7 +195,8 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E>, OrderedTra
     @NotNull SeqLike<E> appendedAll(@NotNull Iterable<? extends E> values);
 
     @Contract(pure = true)
-    @NotNull SeqLike<E> appendedAll(E @NotNull [] values);
+    @SuppressWarnings("unchecked")
+    @NotNull SeqLike<E> appendedAll(E... values);
 
     @Contract(pure = true)
     @NotNull SeqLike<E> inserted(@Index int index, E value);

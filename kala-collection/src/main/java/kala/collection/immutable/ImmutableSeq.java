@@ -276,7 +276,7 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     }
 
     @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> prependedAll(E @NotNull [] values) {
+    default @NotNull ImmutableSeq<E> prependedAll(E... values) {
         return AbstractImmutableSeq.prependedAll(this, values, iterableFactory());
     }
 
@@ -296,7 +296,7 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     }
 
     @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> appendedAll(E @NotNull [] values) {
+    default @NotNull ImmutableSeq<E> appendedAll(E... values) {
         return AbstractImmutableSeq.appendedAll(this, values, iterableFactory());
     }
 

@@ -190,7 +190,7 @@ public interface SeqView<@Covariant E> extends CollectionView<E>, SeqLike<E>, An
         return new SeqViews.Concat<>(this, CollectionHelper.asSeq(postfix));
     }
 
-    default @NotNull SeqView<E> appendedAll(E @NotNull [] postfix) {
+    default @NotNull SeqView<E> appendedAll(E... postfix) {
         Objects.requireNonNull(postfix);
         return new SeqViews.Concat<>(this, ArraySeq.wrap(postfix));
     }
@@ -204,7 +204,7 @@ public interface SeqView<@Covariant E> extends CollectionView<E>, SeqLike<E>, An
         return new SeqViews.Concat<>(CollectionHelper.asSeq(prefix), this);
     }
 
-    default @NotNull SeqView<E> prependedAll(E @NotNull [] prefix) {
+    default @NotNull SeqView<E> prependedAll(E... prefix) {
         Objects.requireNonNull(prefix);
         return new SeqViews.Concat<>(ArraySeq.wrap(prefix), this);
     }

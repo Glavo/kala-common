@@ -96,7 +96,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        public @NotNull ImmutableVector<Object> appendedAll(Object @NotNull [] values) {
+        public @NotNull ImmutableVector<Object> appendedAll(Object... values) {
             return from(values);
         }
 
@@ -126,7 +126,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        public @NotNull ImmutableVector<Object> prependedAll(Object @NotNull [] values) {
+        public @NotNull ImmutableVector<Object> prependedAll(Object... values) {
             return from(values);
         }
 
@@ -243,7 +243,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        public @NotNull ImmutableVector<E> appendedAll(E @NotNull [] values) {
+        public @NotNull ImmutableVector<E> appendedAll(E... values) {
             final int vl = values.length;
             if (vl == 0) {
                 return this;
@@ -277,7 +277,7 @@ final class ImmutableVectors {
         }
 
         @Override
-        public @NotNull ImmutableVector<E> prependedAll(E @NotNull [] values) {
+        public @NotNull ImmutableVector<E> prependedAll(E... values) {
             int vl = values.length;
             if (vl == 0) {
                 return this;

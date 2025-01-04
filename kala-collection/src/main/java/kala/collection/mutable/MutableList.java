@@ -182,7 +182,7 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
     }
 
     @DelegateBy("appendAll(E[])")
-    default void setAll(@Flow(sourceIsContainer = true, targetIsContainer = true) E @NotNull [] values) {
+    default void setAll(@Flow(sourceIsContainer = true, targetIsContainer = true) E... values) {
         this.clear();
         this.appendAll(values);
     }
@@ -202,7 +202,7 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
 
     @Contract(mutates = "this")
     @DelegateBy("appendAll(Iterable<E>)")
-    default void appendAll(@Flow(sourceIsContainer = true, targetIsContainer = true) E @NotNull [] values) {
+    default void appendAll(@Flow(sourceIsContainer = true, targetIsContainer = true) E... values) {
         if (values.length != 0) { // implicit null check of values
             this.appendAll(ArraySeq.wrap(values));
         }
@@ -247,7 +247,8 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
     void prepend(E value);
 
     @Contract(mutates = "this")
-    default void prependAll(@Flow(sourceIsContainer = true, targetIsContainer = true) E @NotNull [] values) {
+    @DelegateBy("prependAll(Iterable<E>)")
+    default void prependAll(@Flow(sourceIsContainer = true, targetIsContainer = true) E... values) {
         this.prependAll(ArraySeq.wrap(values));
     }
 
@@ -295,7 +296,7 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
     @DelegateBy("insertAll(int, Iterable<E>)")
     default void insertAll(
             @Index int index,
-            @Flow(sourceIsContainer = true, targetIsContainer = true) E @NotNull [] values) {
+            @Flow(sourceIsContainer = true, targetIsContainer = true) E... values) {
         insertAll(index, ArraySeq.wrap(values));
     }
 

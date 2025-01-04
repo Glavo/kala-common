@@ -273,7 +273,7 @@ public sealed abstract class ImmutableVector<@Covariant E> extends AbstractImmut
     }
 
     @Override
-    public @NotNull ImmutableVector<E> appendedAll(E @NotNull [] values) {
+    public @NotNull ImmutableVector<E> appendedAll(E... values) {
         ImmutableVectors.VectorBuilder<E> builder = new ImmutableVectors.VectorBuilder<>();
         builder.initFrom(this);
         builder.addAll(values);
@@ -313,7 +313,7 @@ public sealed abstract class ImmutableVector<@Covariant E> extends AbstractImmut
     }
 
     @Override
-    public @NotNull ImmutableVector<E> prependedAll(E @NotNull [] values) {
+    public @NotNull ImmutableVector<E> prependedAll(E... values) {
         ImmutableVectors.VectorBuilder<E> builder = new ImmutableVectors.VectorBuilder<>();
         builder.addAll(values);
         builder.addVector(this);

@@ -56,7 +56,7 @@ public final class MutableCopyOnWriteList<E> extends MutableCopyOnWriteSeqBase<E
     }
 
     @Override
-    public void appendAll(E @NotNull [] values) {
+    public void appendAll(E... values) {
         ensureExclusive();
         source.appendAll(values);
     }
@@ -74,7 +74,7 @@ public final class MutableCopyOnWriteList<E> extends MutableCopyOnWriteSeqBase<E
     }
 
     @Override
-    public void prependAll(E @NotNull [] values) {
+    public void prependAll(E... values) {
         ensureExclusive();
         source.prependAll(values);
     }
@@ -92,7 +92,7 @@ public final class MutableCopyOnWriteList<E> extends MutableCopyOnWriteSeqBase<E
     }
 
     @Override
-    public void insertAll(@Index int index, E @NotNull [] values) {
+    public void insertAll(@Index int index, E... values) {
         ensureExclusive();
         source.insertAll(index, values);
     }

@@ -88,31 +88,33 @@ public interface MutableListTestTemplate extends MutableSeqTestTemplate {
 
     @Test
     default void appendAllTest() {
-        MutableList<Object> b = of();
-        assertIterableEquals(List.of(), b);
+        {
+            MutableList<Object> list = of();
+            assertIterableEquals(List.of(), list);
 
-        b.appendAll(List.of());
-        assertIterableEquals(List.of(), b);
+            list.appendAll(List.of());
+            assertIterableEquals(List.of(), list);
 
-        b.appendAll(GenericArrays.EMPTY_OBJECT_ARRAY);
-        assertIterableEquals(List.of(), b);
+            list.appendAll(GenericArrays.EMPTY_OBJECT_ARRAY);
+            assertIterableEquals(List.of(), list);
 
-        b.appendAll(List.of("str1"));
-        assertIterableEquals(List.of("str1"), b);
+            list.appendAll(List.of("str1"));
+            assertIterableEquals(List.of("str1"), list);
 
-        b.appendAll(new Object[]{"str2", "str3"});
-        assertIterableEquals(List.of("str1", "str2", "str3"), b);
+            list.appendAll("str2", "str3");
+            assertIterableEquals(List.of("str1", "str2", "str3"), list);
 
-        b.appendAll(List.of("str4", "str5", "str6"));
-        assertIterableEquals(List.of("str1", "str2", "str3", "str4", "str5", "str6"), b);
+            list.appendAll(List.of("str4", "str5", "str6"));
+            assertIterableEquals(List.of("str1", "str2", "str3", "str4", "str5", "str6"), list);
 
-        b = (MutableList<Object>) factory().empty();
-        b.appendAll(b);
-        assertIterableEquals(List.of(), b);
+            list = factory().empty();
+            list.appendAll(list);
+            assertIterableEquals(List.of(), list);
 
-        b.append("str");
-        b.appendAll(b);
-        assertIterableEquals(List.of("str", "str"), b);
+            list.append("str");
+            list.appendAll(list);
+            assertIterableEquals(List.of("str", "str"), list);
+        }
 
         final Integer[][] data1 = data1();
         for (int i = 0; i < data1.length - 1; i++) {
@@ -123,20 +125,20 @@ public interface MutableListTestTemplate extends MutableSeqTestTemplate {
             d12.addAll(Arrays.asList(d2));
 
             {
-                b = (MutableList<Object>) factory().empty();
-                assertIterableEquals(List.of(), b);
-                b.appendAll(d1);
-                assertIterableEquals(Arrays.asList(d1), b);
-                b.appendAll(d2);
-                assertIterableEquals(d12, b);
+                MutableList<Integer> list = of();
+                assertIterableEquals(List.of(), list);
+                list.appendAll(d1);
+                assertIterableEquals(Arrays.asList(d1), list);
+                list.appendAll(d2);
+                assertIterableEquals(d12, list);
             }
             {
-                b = (MutableList<Object>) factory().empty();
-                assertIterableEquals(List.of(), b);
-                b.appendAll(Arrays.asList(d1));
-                assertIterableEquals(Arrays.asList(d1), b);
-                b.appendAll(Arrays.asList(d2));
-                assertIterableEquals(d12, b);
+                MutableList<Integer> list = of();
+                assertIterableEquals(List.of(), list);
+                list.appendAll(Arrays.asList(d1));
+                assertIterableEquals(Arrays.asList(d1), list);
+                list.appendAll(Arrays.asList(d2));
+                assertIterableEquals(d12, list);
             }
         }
         for (Integer[] data : data1) {
@@ -144,10 +146,10 @@ public interface MutableListTestTemplate extends MutableSeqTestTemplate {
             l.addAll(Arrays.asList(data));
             l.addAll(Arrays.asList(data));
 
-            b = (MutableList<Object>) factory().empty();
-            b.appendAll(data);
-            b.appendAll(b);
-            assertIterableEquals(l, b);
+            MutableList<Integer> list = of();
+            list.appendAll(data);
+            list.appendAll(list);
+            assertIterableEquals(l, list);
         }
     }
 
@@ -172,31 +174,33 @@ public interface MutableListTestTemplate extends MutableSeqTestTemplate {
 
     @Test
     default void prependAllTest() {
-        MutableList<Object> b = (MutableList<Object>) factory().empty();
-        assertIterableEquals(List.of(), b);
+        {
+            MutableList<Object> list = of();
+            assertIterableEquals(List.of(), list);
 
-        b.prependAll(List.of());
-        assertIterableEquals(List.of(), b);
+            list.prependAll(List.of());
+            assertIterableEquals(List.of(), list);
 
-        b.prependAll(GenericArrays.EMPTY_OBJECT_ARRAY);
-        assertIterableEquals(List.of(), b);
+            list.prependAll(GenericArrays.EMPTY_OBJECT_ARRAY);
+            assertIterableEquals(List.of(), list);
 
-        b.prependAll(List.of("str1"));
-        assertIterableEquals(List.of("str1"), b);
+            list.prependAll(List.of("str1"));
+            assertIterableEquals(List.of("str1"), list);
 
-        b.prependAll(new Object[]{"str2", "str3"});
-        assertIterableEquals(List.of("str2", "str3", "str1"), b);
+            list.prependAll("str2", "str3");
+            assertIterableEquals(List.of("str2", "str3", "str1"), list);
 
-        b.prependAll(List.of("str4", "str5", "str6"));
-        assertIterableEquals(List.of("str4", "str5", "str6", "str2", "str3", "str1"), b);
+            list.prependAll(List.of("str4", "str5", "str6"));
+            assertIterableEquals(List.of("str4", "str5", "str6", "str2", "str3", "str1"), list);
 
-        b = (MutableList<Object>) factory().empty();
-        b.prependAll(b);
-        assertIterableEquals(List.of(), b);
+            list = of();
+            list.prependAll(list);
+            assertIterableEquals(List.of(), list);
 
-        b.prepend("str");
-        b.prependAll(b);
-        assertIterableEquals(List.of("str", "str"), b);
+            list.prepend("str");
+            list.prependAll(list);
+            assertIterableEquals(List.of("str", "str"), list);
+        }
 
         Integer[][] data1 = data1();
         for (int i = 0; i < data1.length - 1; i++) {
@@ -207,20 +211,20 @@ public interface MutableListTestTemplate extends MutableSeqTestTemplate {
             d21.addAll(Arrays.asList(d1));
 
             {
-                b = (MutableList<Object>) factory().empty();
-                assertIterableEquals(List.of(), b);
-                b.prependAll(d1);
-                assertIterableEquals(Arrays.asList(d1), b);
-                b.prependAll(d2);
-                assertIterableEquals(d21, b);
+                MutableList<Integer> list = of();
+                assertIterableEquals(List.of(), list);
+                list.prependAll(d1);
+                assertIterableEquals(Arrays.asList(d1), list);
+                list.prependAll(d2);
+                assertIterableEquals(d21, list);
             }
             {
-                b = (MutableList<Object>) factory().empty();
-                assertIterableEquals(List.of(), b);
-                b.prependAll(Arrays.asList(d1));
-                assertIterableEquals(Arrays.asList(d1), b);
-                b.prependAll(Arrays.asList(d2));
-                assertIterableEquals(d21, b);
+                MutableList<Integer> list = of();
+                assertIterableEquals(List.of(), list);
+                list.prependAll(Arrays.asList(d1));
+                assertIterableEquals(Arrays.asList(d1), list);
+                list.prependAll(Arrays.asList(d2));
+                assertIterableEquals(d21, list);
             }
         }
         for (Integer[] data : data1) {
@@ -228,10 +232,10 @@ public interface MutableListTestTemplate extends MutableSeqTestTemplate {
             l.addAll(Arrays.asList(data));
             l.addAll(Arrays.asList(data));
 
-            b = (MutableList<Object>) factory().empty();
-            b.prependAll(data);
-            b.prependAll(b);
-            assertIterableEquals(l, b);
+            MutableList<Integer> list = of();
+            list.prependAll(data);
+            list.prependAll(list);
+            assertIterableEquals(l, list);
         }
     }
 

@@ -387,7 +387,7 @@ public final class MutableArrayDeque<E> extends AbstractMutableList<E> implement
     }
 
     @Override
-    public void insertAll(@Index int index, E @NotNull [] values) {
+    public void insertAll(@Index int index, E... values) {
         final int oldSize = size();
         index = Indexes.checkPositionIndex(index, oldSize);
 
@@ -490,7 +490,7 @@ public final class MutableArrayDeque<E> extends AbstractMutableList<E> implement
     }
 
     @Override
-    public void prependAll(E @NotNull [] values) {
+    public void prependAll(E... values) {
         final int valuesLength = values.length;
         final int oldSize = size();
 
@@ -538,7 +538,7 @@ public final class MutableArrayDeque<E> extends AbstractMutableList<E> implement
     }
 
     @Override
-    public void appendAll(E @NotNull [] values) {
+    public void appendAll(E... values) {
         final int valuesLength = values.length;
         final int oldSize = size();
 

@@ -496,7 +496,7 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
     }
 
     @Override
-    public void insertAll(int index, E @NotNull [] values) {
+    public void insertAll(int index, E... values) {
         Objects.requireNonNull(values);
         index = Indexes.checkPositionIndex(index, size);
 

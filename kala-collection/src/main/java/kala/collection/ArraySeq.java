@@ -282,7 +282,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     }
 
     @Override
-    public @NotNull ImmutableSeq<E> prependedAll(E @NotNull [] values) {
+    public @NotNull ImmutableSeq<E> prependedAll(E... values) {
         if (values.length == 0) { // implicit null check of prefix
             return ImmutableArray.empty();
         }
@@ -319,7 +319,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     }
 
     @Override
-    public @NotNull ImmutableSeq<E> appendedAll(E @NotNull [] values) {
+    public @NotNull ImmutableSeq<E> appendedAll(E... values) {
         if (values.length == 0) { // implicit null check of values
             return ImmutableArray.empty();
         }
