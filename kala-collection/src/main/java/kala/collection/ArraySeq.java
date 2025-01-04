@@ -25,7 +25,6 @@ import kala.collection.internal.view.SeqViews;
 import kala.collection.mutable.MutableArrayList;
 import kala.collection.factory.CollectionFactory;
 import kala.control.Option;
-import kala.function.CheckedPredicate;
 import kala.function.IndexedBiConsumer;
 import kala.function.IndexedConsumer;
 import kala.function.IndexedFunction;
@@ -527,17 +526,6 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         }
 
         return ImmutableArray.Unsafe.wrap(Arrays.copyOf(tmp, c));
-    }
-
-    @Override
-    public @NotNull <Ex extends Throwable> ImmutableSeq<E> filterChecked(
-            @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) {
-        return filter(predicate);
-    }
-
-    @Override
-    public @NotNull ImmutableSeq<E> filterUnchecked(@NotNull CheckedPredicate<? super E, ?> predicate) {
-        return filter(predicate);
     }
 
     @Override
