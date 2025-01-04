@@ -15,6 +15,7 @@
  */
 package kala.collection.immutable;
 
+import kala.collection.Collection;
 import kala.collection.base.Traversable;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.internal.tree.IndexedTree;
@@ -26,7 +27,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -271,10 +271,13 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
 
     @Serial
     private Object writeReplace() {
-        return new SerializationReplaced<>(this);
+        return new Collection.SerializationWrapper<>(factory(), this);
     }
 
-    private static final class Factory<E> implements CollectionFactory<E, Var<IndexedTree<E>>, ImmutableTreeSeq<E>> {
+    private static final class Factory<E> implements CollectionFactory<E, Var<IndexedTree<E>>, ImmutableTreeSeq<E>>, Serializable {
+
+        @Serial
+        private static final long serialVersionUID = 0L;
 
         @Override
         public ImmutableTreeSeq<E> empty() {
@@ -312,47 +315,11 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
 
             return builder1;
         }
-    }
-
-    private static final class SerializationReplaced<E> implements Serializable, Externalizable {
-        @Serial
-        private static final long serialVersionUID = 0L;
-        private ImmutableTreeSeq<E> value;
-
-        public SerializationReplaced() {
-        }
-
-        public SerializationReplaced(ImmutableTreeSeq<E> value) {
-            this.value = value;
-        }
-
-        @Override
-        public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeInt(value.size());
-            for (E v : value) {
-                out.writeObject(v);
-            }
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            int size = in.readInt();
-            if (size == 0) {
-                this.value = empty();
-                return;
-            }
-
-            IndexedTree<E> node = IndexedTree.empty();
-            for (int i = 0; i < size; i++) {
-                node = node.plus(i, (E) in.readObject());
-            }
-            this.value = new ImmutableTreeSeq<>(node);
-        }
 
         @Serial
         private Object readResolve() {
-            return value;
+            return factory();
         }
     }
+
 }
