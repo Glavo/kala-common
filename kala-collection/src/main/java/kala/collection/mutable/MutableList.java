@@ -160,6 +160,7 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
     }
 
     @Override
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     default @NotNull MutableList<E> clone() {
         return this.<E>iterableFactory().from(this);
     }
@@ -248,19 +249,18 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
             return;
         }
 
-        if (values instanceof Seq<?>) {
-            Iterator<?> iterator = ((Seq<?>) values).reverseIterator();
+        if (values instanceof Seq<?> seq) {
+            Iterator<?> iterator = seq.reverseIterator();
             while (iterator.hasNext()) {
                 this.prepend((E) iterator.next());
             }
             return;
         }
 
-        if (values instanceof List<?> && values instanceof RandomAccess) {
-            List<?> seq = (List<?>) values;
-            int s = seq.size();
+        if (values instanceof List<?> list && values instanceof RandomAccess) {
+            int s = list.size();
             for (int i = s - 1; i >= 0; i--) {
-                prepend((E) seq.get(i));
+                prepend((E) list.get(i));
             }
             return;
         }
