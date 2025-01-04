@@ -106,9 +106,7 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
         if (source instanceof AsJavaConvert.SeqAsJava<?, ?>) {
             return ((AsJavaConvert.SeqAsJava<E, ?>) source).source;
         }
-        return source instanceof RandomAccess
-                ? new FromJavaConvert.IndexedSeqFromJava<>((List<E>) source)
-                : new FromJavaConvert.SeqFromJava<>((List<E>) source);
+        return new FromJavaConvert.SeqFromJava<>((List<E>) source);
     }
 
     //endregion

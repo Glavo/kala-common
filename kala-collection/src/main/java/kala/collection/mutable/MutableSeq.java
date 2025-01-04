@@ -116,7 +116,7 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E>, MutableAnyS
     @Contract("_ -> new")
     static <E> @NotNull MutableSeq<E> wrapJava(java.util.@NotNull List<E> list) {
         Objects.requireNonNull(list);
-        return list instanceof RandomAccess ? new FromJavaConvert.MutableIndexedSeqFromJava<>(list) : new FromJavaConvert.MutableSeqFromJava<>(list);
+        return new FromJavaConvert.MutableSeqFromJava<>(list);
     }
 
     static <E, C extends MutableSeq<E>> @NotNull MutableSeqEditor<E, C> edit(@NotNull C seq) {
@@ -152,6 +152,7 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E>, MutableAnyS
     }
 
     @Override
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     default @NotNull MutableSeq<E> clone() {
         return this.<E>iterableFactory().from(this);
     }

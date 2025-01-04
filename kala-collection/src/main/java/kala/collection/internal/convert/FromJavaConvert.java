@@ -26,7 +26,6 @@ import kala.collection.base.MapIterator;
 import kala.collection.Seq;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -106,6 +105,11 @@ public final class FromJavaConvert {
         }
 
         @Override
+        public boolean supportsFastRandomAccess() {
+            return source instanceof RandomAccess;
+        }
+
+        @Override
         @SuppressWarnings("SuspiciousMethodCalls")
         public int indexOf(Object value) {
             return source.indexOf(value);
@@ -166,12 +170,6 @@ public final class FromJavaConvert {
         }
     }
 
-    public static class IndexedSeqFromJava<E> extends SeqFromJava<E> implements RandomAccess {
-        public IndexedSeqFromJava(@NotNull List<E> list) {
-            super(list);
-        }
-    }
-
     public static class MutableSeqFromJava<E>
             extends SeqFromJava<E> implements MutableSeq<E> {
 
@@ -199,13 +197,6 @@ public final class FromJavaConvert {
         }
     }
 
-    public static class MutableIndexedSeqFromJava<E>
-            extends MutableSeqFromJava<E> implements RandomAccess {
-        public MutableIndexedSeqFromJava(@NotNull List<E> list) {
-            super(list);
-        }
-    }
-
     public static class MutableListFromJava<E>
             extends MutableSeqFromJava<E> implements MutableList<E> {
         public MutableListFromJava(@NotNull List<E> list) {
@@ -224,7 +215,7 @@ public final class FromJavaConvert {
 
         @Override
         public void prepend(E value) {
-            source.add(0, value);
+            source.addFirst(value);
         }
 
         @Override
