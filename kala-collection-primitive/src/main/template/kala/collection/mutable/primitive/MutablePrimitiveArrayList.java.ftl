@@ -416,8 +416,8 @@ public final class Mutable${Type}ArrayList extends AbstractMutable${Type}List im
     }
 
     @Override
-    public void insert(int index, ${PrimitiveType} value) {
-        Conditions.checkPositionIndex(index, size);
+    public void insert(@Index int index, ${PrimitiveType} value) {
+        index = Indexes.checkPositionIndex(index, size);
 
         if (index == size) {
             append(value);

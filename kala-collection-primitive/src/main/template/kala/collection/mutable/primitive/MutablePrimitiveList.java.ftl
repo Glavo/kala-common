@@ -23,6 +23,7 @@ import kala.collection.primitive.*;
 import kala.collection.primitive.internal.${Type}SeqIterators;
 import kala.control.primitive.${Type}Option;
 import kala.function.*;
+import kala.index.Index;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -208,7 +209,7 @@ public interface Mutable${Type}List extends MutablePrimitiveList<${WrapperType}>
     }
 
     @Contract(mutates = "this")
-    void insert(int index, @Flow(targetIsContainer = true) ${PrimitiveType} value);
+    void insert(@Index int index, @Flow(targetIsContainer = true) ${PrimitiveType} value);
 
     @Contract(mutates = "this")
     default void insertAll(
