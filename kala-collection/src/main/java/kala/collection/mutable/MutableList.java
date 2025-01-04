@@ -331,9 +331,10 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
 
     @Contract(mutates = "this")
     @DelegateBy("removeAt(int)")
-    default void removeInRange(int beginIndex, int endIndex) {
-        int size = this.size();
-        Conditions.checkPositionIndices(beginIndex, endIndex, size);
+    default void removeInRange(@Index int beginIndex, @Index int endIndex) {
+        final int size = this.size();
+        beginIndex = Indexes.checkBeginIndex(beginIndex, size);
+        endIndex = Indexes.checkEndIndex(beginIndex, endIndex, size);
 
         int rangeLength = endIndex - beginIndex;
 

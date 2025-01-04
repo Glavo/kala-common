@@ -236,9 +236,10 @@ public interface Mutable${Type}List extends MutablePrimitiveList<${WrapperType}>
     @Flow(sourceIsContainer = true)
     ${PrimitiveType} removeAt(@Index int index);
 
-    default void removeInRange(int beginIndex, int endIndex) {
-        int size = this.size();
-        Conditions.checkPositionIndices(beginIndex, endIndex, size);
+    default void removeInRange(@Index int beginIndex, @Index int endIndex) {
+        final int size = this.size();
+        beginIndex = Indexes.checkBeginIndex(beginIndex, size);
+        endIndex = Indexes.checkEndIndex(beginIndex, endIndex, size);
 
         int rangeLength = endIndex - beginIndex;
 

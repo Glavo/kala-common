@@ -501,8 +501,9 @@ public final class Mutable${Type}ArrayList extends AbstractMutable${Type}List im
 
     @Override
     public void removeInRange(int beginIndex, int endIndex) {
-        int size = this.size();
-        Conditions.checkPositionIndices(beginIndex, endIndex, size);
+        final int size = this.size();
+        beginIndex = Indexes.checkBeginIndex(beginIndex, size);
+        endIndex = Indexes.checkEndIndex(beginIndex, endIndex, size);
 
         int rangeLength = endIndex - beginIndex;
 
@@ -512,11 +513,6 @@ public final class Mutable${Type}ArrayList extends AbstractMutable${Type}List im
 
         if (rangeLength == size) {
             clear();
-            return;
-        }
-
-        if (rangeLength == 1) {
-            removeAt(beginIndex);
             return;
         }
 

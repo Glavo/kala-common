@@ -544,23 +544,18 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
     }
 
     @Override
-    public void removeInRange(int beginIndex, int endIndex) {
-        int size = this.size();
-        Conditions.checkPositionIndices(beginIndex, endIndex, size);
+    public void removeInRange(@Index int beginIndex, @Index int endIndex) {
+        final int size = this.size();
+        beginIndex = Indexes.checkBeginIndex(beginIndex, size);
+        endIndex = Indexes.checkEndIndex(beginIndex, endIndex, size);
 
         int rangeLength = endIndex - beginIndex;
-
         if (rangeLength == 0) {
             return;
         }
 
         if (rangeLength == size) {
             clear();
-            return;
-        }
-
-        if (rangeLength == 1) {
-            removeAt(beginIndex);
             return;
         }
 

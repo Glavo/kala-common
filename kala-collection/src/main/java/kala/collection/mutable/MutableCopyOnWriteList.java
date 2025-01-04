@@ -110,7 +110,7 @@ public final class MutableCopyOnWriteList<E> extends MutableCopyOnWriteSeqBase<E
     }
 
     @Override
-    public void removeInRange(int beginIndex, int endIndex) {
+    public void removeInRange(@Index int beginIndex, @Index int endIndex) {
         ensureExclusive();
         source.removeInRange(beginIndex, endIndex);
     }
