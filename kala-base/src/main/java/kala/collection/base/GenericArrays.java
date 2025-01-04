@@ -261,6 +261,13 @@ public final class GenericArrays {
         array[Indexes.checkIndex(index, array.length)] = value;
     }
 
+    public static <E> void setAll(E @NotNull [] array, E... values) {
+        if (array.length != values.length) {
+            throw new IllegalArgumentException("array.length != values.length");
+        }
+        System.arraycopy(values, 0, array, 0, values.length);
+    }
+
     public static <E> E @NotNull [] inserted(E @NotNull [] array, @Index int index, E value) {
         final int arrayLength = array.length; // implicit null check of array
         index = Indexes.checkPositionIndex(index, arrayLength);

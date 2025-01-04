@@ -209,6 +209,10 @@ public final class ObjectArrays {
         GenericArrays.set(array, index, value);
     }
 
+    public static void setAll(Object @NotNull [] array, Object... values) {
+        GenericArrays.setAll(array, values);
+    }
+
     public static Object @NotNull [] inserted(Object @NotNull [] array, @Index int index, Object value) {
         final int arrayLength = array.length; // implicit null check of array
         index = Indexes.checkPositionIndex(index, arrayLength);

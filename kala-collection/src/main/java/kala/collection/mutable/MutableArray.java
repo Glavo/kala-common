@@ -17,6 +17,7 @@ package kala.collection.mutable;
 
 import kala.collection.ArraySeq;
 import kala.collection.base.GenericArrays;
+import kala.collection.base.ObjectArrays;
 import kala.collection.base.Traversable;
 import kala.function.IndexedFunction;
 import kala.collection.factory.CollectionFactory;
@@ -230,6 +231,11 @@ public final class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>,
     @Override
     public void set(@Index int index, E newValue) {
         elements[Indexes.checkIndex(index, elements.length)] = newValue;
+    }
+
+    @Override
+    public void setAll(E... values) {
+        ObjectArrays.setAll(elements, values);
     }
 
     @Override
