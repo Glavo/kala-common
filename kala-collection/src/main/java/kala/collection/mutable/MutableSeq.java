@@ -114,9 +114,7 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E>, MutableAnyS
     @Contract("_ -> new")
     static <E> @NotNull MutableSeq<E> wrapJava(java.util.@NotNull List<E> list) {
         Objects.requireNonNull(list);
-        return list instanceof RandomAccess
-                ? new FromJavaConvert.MutableIndexedSeqFromJava<>(list)
-                : new FromJavaConvert.MutableSeqFromJava<>(list);
+        return list instanceof RandomAccess ? new FromJavaConvert.MutableIndexedSeqFromJava<>(list) : new FromJavaConvert.MutableSeqFromJava<>(list);
     }
 
     static <E, C extends MutableSeq<E>> @NotNull MutableSeqEditor<E, C> edit(@NotNull C seq) {
@@ -148,9 +146,7 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E>, MutableAnyS
 
     @Override
     default @NotNull java.util.List<E> asJava() {
-        return this.supportsFastRandomAccess()
-                ? new AsJavaConvert.MutableIndexedSeqAsJava<>(this)
-                : new AsJavaConvert.MutableSeqAsJava<>(this);
+        return this.supportsFastRandomAccess() ? new AsJavaConvert.MutableIndexedSeqAsJava<>(this) : new AsJavaConvert.MutableSeqAsJava<>(this);
     }
 
     @Override
@@ -247,8 +243,7 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E>, MutableAnyS
         if (ks == 0 || ks == 1) {
             return;
         }
-        if (supportsFastRandomAccess() || (ks > 0 && ks <= AbstractMutableSeq.SHUFFLE_THRESHOLD)) {
-            assert ks > 0;
+        if ((supportsFastRandomAccess() && ks > 0) || (ks > 0 && ks <= AbstractMutableSeq.SHUFFLE_THRESHOLD)) {
             for (int i = ks; i > 1; i--) {
                 swap(i - 1, random.nextInt(i));
             }

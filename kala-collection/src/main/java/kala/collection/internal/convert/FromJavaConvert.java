@@ -26,6 +26,7 @@ import kala.collection.base.MapIterator;
 import kala.collection.Seq;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -96,6 +97,11 @@ public final class FromJavaConvert {
 
         @Override
         public int size() {
+            return source.size();
+        }
+
+        @Override
+        public int knownSize() {
             return source.size();
         }
 

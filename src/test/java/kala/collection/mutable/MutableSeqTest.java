@@ -4,7 +4,7 @@ import kala.collection.factory.CollectionFactory;
 
 public final class MutableSeqTest implements MutableSeqTestTemplate {
     @Override
-    public <E> CollectionFactory<E, ?, ? extends MutableSeq<? extends E>> factory() {
+    public <E> CollectionFactory<E, ?, ? extends MutableSeq<E>> factory() {
         return MutableSeq.factory();
     }
 

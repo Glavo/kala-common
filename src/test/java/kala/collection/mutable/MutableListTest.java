@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class MutableListTest implements MutableListTestTemplate {
     @Override
-    public <E> CollectionFactory<E, ?, ? extends MutableList<? extends E>> factory() {
+    public <E> CollectionFactory<E, ?, ? extends MutableList<E>> factory() {
         return MutableList.factory();
     }
 
