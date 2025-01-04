@@ -136,6 +136,13 @@ public interface MutableSeqTestTemplate extends MutableCollectionTestTemplate, S
     }
 
     @Test
+    default void reverseTest() {
+        assertIterableEquals(List.of(), MutableSeq.edit(of()).reverse().done());
+        assertIterableEquals(List.of(1), MutableSeq.edit(of(1)).reverse().done());
+        assertIterableEquals(List.of(3, 2, 1), MutableSeq.edit(of(1, 2, 3)).reverse().done());
+    }
+
+    @Test
     default void shuffleTest() {
         for (Integer[] data : data1()) {
             final MutableSeq<Integer> seq = from(data);
