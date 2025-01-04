@@ -252,7 +252,7 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E>, MutableAnyS
         if (ks == 0 || ks == 1) {
             return;
         }
-        if ((supportsFastRandomAccess() && ks > 0) || (ks > 0 && ks <= AbstractMutableSeq.SHUFFLE_THRESHOLD)) {
+        if (ks > 0 && (supportsFastRandomAccess() || ks <= AbstractMutableSeq.SHUFFLE_THRESHOLD)) {
             for (int i = ks; i > 1; i--) {
                 swap(i - 1, random.nextInt(i));
             }
