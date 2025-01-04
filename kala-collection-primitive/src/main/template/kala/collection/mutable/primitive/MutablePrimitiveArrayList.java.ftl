@@ -246,8 +246,8 @@ public final class Mutable${Type}ArrayList extends AbstractMutable${Type}List im
     }
 
     @Override
-    public @NotNull ${Type}Iterator iterator(int beginIndex) {
-        return ${Type}Arrays.iterator(elements, beginIndex, size);
+    public @NotNull ${Type}Iterator iterator(@Index int beginIndex) {
+        return ${Type}Arrays.iterator(elements, Indexes.checkPositionIndex(beginIndex, size), size);
     }
 
     @Override

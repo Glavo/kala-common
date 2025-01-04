@@ -45,16 +45,22 @@ public interface ${Type}SeqLike extends PrimitiveSeqLike<${WrapperType}>, ${Type
     @Override
     @NotNull ${Type}SeqView view();
 
-    default @NotNull ${Type}Iterator iterator(int beginIndex) {
-        if (beginIndex < 0) {
-            throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") < 0");
-        }
-        final int knownSize = knownSize();
-        if (knownSize >= 0) {
-            if (beginIndex > knownSize) {
-                throw new IndexOutOfBoundsException("beginIndex(" + beginIndex + ") > size(" + knownSize + ")");
+    default @NotNull ${Type}Iterator iterator(@Index int beginIndex) {
+        if (beginIndex >= 0) {
+            final int knownSize = knownSize();
+            if (knownSize >= 0) {
+                if (beginIndex > knownSize) {
+                    throw Indexes.outOfBounds(beginIndex);
+                }
+                if (beginIndex == knownSize) {
+                    return ${Type}Iterator.empty();
+                }
             }
-            if (beginIndex == knownSize) {
+        } else {
+            int size = size();
+            beginIndex = Indexes.checkPositionIndex(beginIndex, size);
+
+            if (beginIndex == size) {
                 return ${Type}Iterator.empty();
             }
         }
@@ -62,7 +68,7 @@ public interface ${Type}SeqLike extends PrimitiveSeqLike<${WrapperType}>, ${Type
         final ${Type}Iterator it = iterator();
         for (int i = 0; i < beginIndex; i++) {
             if (!it.hasNext()) {
-                throw new IndexOutOfBoundsException("beginIndex: " + beginIndex);
+                throw Indexes.outOfBounds(beginIndex);
             }
             it.next${Type}();
         }

@@ -15,7 +15,6 @@
  */
 package kala.collection.primitive;
 
-import kala.Conditions;
 import kala.collection.base.primitive.Abstract${Type}Iterator;
 import kala.collection.base.primitive.${Type}Iterator;
 import kala.control.primitive.${Type}Option;
@@ -35,9 +34,9 @@ public interface Indexed${Type}SeqLike extends ${Type}SeqLike, RandomAccess {
     }
 
     @Override
-    default @NotNull ${Type}Iterator iterator(int beginIndex) {
+    default @NotNull ${Type}Iterator iterator(@Index int beginIndex) {
         final int size = size();
-
+        beginIndex = Indexes.checkPositionIndex(beginIndex, size);
         if (size == 0) return ${Type}Iterator.empty();
 
         final class Itr extends Abstract${Type}Iterator {
