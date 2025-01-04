@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package kala.collection;
+package kala.collection.mutable;
 
 import kala.collection.factory.CollectionFactory;
+import kala.index.Index;
+import kala.index.Indexes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public final class SimpleSeqTest implements SeqTestTemplate {
+public final class SimpleMutableSeqTest implements MutableSeqTestTemplate {
     @SuppressWarnings("ClassEscapesDefinedScope")
     @Override
-    public <E> CollectionFactory<E, ?, SimpleSeq<E>> factory() {
+    public <E> CollectionFactory<E, ?, SimpleMutableSeq<E>> factory() {
         return (SimpleListFactory<E>) SimpleListFactory.INSTANCE;
     }
 
@@ -40,10 +41,10 @@ public final class SimpleSeqTest implements SeqTestTemplate {
     public void serializationTest() {
     }
 
-    private static final class SimpleSeq<E> extends AbstractSeq<E> {
-        private final java.util.List<E> list;
+    private static final class SimpleMutableSeq<E> extends AbstractMutableSeq<E> {
+        private final List<E> list;
 
-        SimpleSeq(List<E> list) {
+        SimpleMutableSeq(List<E> list) {
             this.list = list;
         }
 
@@ -51,9 +52,14 @@ public final class SimpleSeqTest implements SeqTestTemplate {
         public @NotNull Iterator<E> iterator() {
             return list.iterator();
         }
+
+        @Override
+        public void set(@Index int index, E newValue) {
+            list.set(Indexes.checkIndex(index, list.size()), newValue);
+        }
     }
 
-    private static final class SimpleListFactory<E> implements CollectionFactory<E, ArrayList<E>, SimpleSeq<E>> {
+    private static final class SimpleListFactory<E> implements CollectionFactory<E, ArrayList<E>, SimpleMutableSeq<E>> {
         static final SimpleListFactory<?> INSTANCE = new SimpleListFactory<>();
 
         @Override
@@ -62,8 +68,8 @@ public final class SimpleSeqTest implements SeqTestTemplate {
         }
 
         @Override
-        public SimpleSeq<E> build(ArrayList<E> es) {
-            return new SimpleSeq<>(es);
+        public SimpleMutableSeq<E> build(ArrayList<E> es) {
+            return new SimpleMutableSeq<>(es);
         }
 
         @Override
