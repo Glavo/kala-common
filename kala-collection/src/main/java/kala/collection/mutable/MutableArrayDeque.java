@@ -436,9 +436,9 @@ public final class MutableArrayDeque<E> extends AbstractMutableList<E> implement
     }
 
     @Override
-    public E removeAt(int index) {
+    public E removeAt(@Index int index) {
         final int oldSize = size();
-        Objects.checkIndex(index, oldSize);
+        index = Indexes.checkIndex(index, oldSize);
 
         if (index == 0) {
             return removeFirst();

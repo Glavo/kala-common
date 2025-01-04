@@ -234,7 +234,7 @@ public interface Mutable${Type}List extends MutablePrimitiveList<${WrapperType}>
 
     @Contract(mutates = "this")
     @Flow(sourceIsContainer = true)
-    ${PrimitiveType} removeAt(int index);
+    ${PrimitiveType} removeAt(@Index int index);
 
     default void removeInRange(int beginIndex, int endIndex) {
         int size = this.size();

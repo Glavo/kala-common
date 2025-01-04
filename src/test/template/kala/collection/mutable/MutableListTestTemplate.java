@@ -15,7 +15,6 @@
  */
 package kala.collection.mutable;
 
-import kala.collection.SimpleIterable;
 import kala.collection.base.GenericArrays;
 import kala.collection.factory.CollectionFactory;
 import kala.control.Option;
@@ -275,7 +274,8 @@ public interface MutableListTestTemplate extends MutableSeqTestTemplate {
         assertThrows(IndexOutOfBoundsException.class, () -> empty.removeAt(0));
         assertThrows(IndexOutOfBoundsException.class, () -> empty.removeAt(1));
         assertThrows(IndexOutOfBoundsException.class, () -> empty.removeAt(Integer.MAX_VALUE));
-        assertThrows(IndexOutOfBoundsException.class, () -> empty.removeAt(-1));
+        assertThrows(IndexOutOfBoundsException.class, () -> empty.removeAt(~0));
+        assertThrows(IndexOutOfBoundsException.class, () -> empty.removeAt(~1));
         assertThrows(IndexOutOfBoundsException.class, () -> empty.removeAt(Integer.MIN_VALUE));
 
         MutableList<String> list = of("str0", "str1", "str2", "str3", "str4");
@@ -285,6 +285,10 @@ public interface MutableListTestTemplate extends MutableSeqTestTemplate {
         assertIterableEquals(List.of("str1", "str2", "str3"), list);
         list.removeAt(1);
         assertIterableEquals(List.of("str1", "str3"), list);
+        list.removeAt(~2);
+        assertIterableEquals(List.of("str3"), list);
+        list.removeAt(~1);
+        assertIterableEquals(List.of(), list);
     }
 
     @Test

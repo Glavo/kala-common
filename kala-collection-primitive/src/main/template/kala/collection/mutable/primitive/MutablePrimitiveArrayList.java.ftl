@@ -487,8 +487,8 @@ public final class Mutable${Type}ArrayList extends AbstractMutable${Type}List im
     }
 
     @Override
-    public ${PrimitiveType} removeAt(int index) {
-        Objects.checkIndex(index, size);
+    public ${PrimitiveType} removeAt(@Index int index) {
+        index = Indexes.checkIndex(index, size);
         ${PrimitiveType} oldValue = elements[index];
         int newSize = size - 1;
         if (newSize > index) {

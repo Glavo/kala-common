@@ -531,8 +531,8 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
     }
 
     @Override
-    public E removeAt(int index) {
-        Objects.checkIndex(index, size);
+    public E removeAt(@Index int index) {
+        index = Indexes.checkIndex(index, size);
         E oldValue = (E) elements[index];
         int newSize = size - 1;
         if (newSize > index) {

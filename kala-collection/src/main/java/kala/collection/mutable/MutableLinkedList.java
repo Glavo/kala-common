@@ -478,8 +478,8 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
     }
 
     @Override
-    public E removeAt(int index) {
-        Objects.checkIndex(index, len);
+    public E removeAt(@Index int index) {
+        index = Indexes.checkIndex(index, len);
 
         final Node<E> node = internalGetNode(index);
         final E value = node.value;

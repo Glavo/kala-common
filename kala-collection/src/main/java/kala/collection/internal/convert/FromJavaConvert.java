@@ -224,8 +224,8 @@ public final class FromJavaConvert {
         }
 
         @Override
-        public E removeAt(int index) {
-            return source.remove(index);
+        public E removeAt(@Index int index) {
+            return source.remove(Indexes.checkIndex(index, source.size()));
         }
 
         @Override

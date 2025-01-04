@@ -336,9 +336,9 @@ public final class MutableSmartArrayList<E> extends AbstractMutableList<E> imple
     }
 
     @Override
-    public E removeAt(int index) {
+    public E removeAt(@Index int index) {
         final int oldSize = this.size;
-        Objects.checkIndex(index, oldSize);
+        index = Indexes.checkIndex(index, oldSize);
         E res;
 
         if (oldSize == 1) {

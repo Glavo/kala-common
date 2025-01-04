@@ -315,7 +315,7 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
 
     @Contract(mutates = "this")
     @Flow(sourceIsContainer = true)
-    E removeAt(int index);
+    E removeAt(@Index int index);
 
     @Contract(mutates = "this")
     @DelegateBy("removeAt(int)")

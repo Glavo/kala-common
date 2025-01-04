@@ -678,8 +678,8 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
         }
 
         @Override
-        public final E removeAt(int index) {
-            Objects.checkIndex(index, len);
+        public final E removeAt(@Index int index) {
+            index = Indexes.checkIndex(index, len);
 
             if (index == 0) {
                 E v = first.head;

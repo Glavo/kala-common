@@ -104,7 +104,7 @@ public final class MutableCopyOnWriteList<E> extends MutableCopyOnWriteSeqBase<E
     }
 
     @Override
-    public E removeAt(int index) {
+    public E removeAt(@Index int index) {
         ensureExclusive();
         return source.removeAt(index);
     }
