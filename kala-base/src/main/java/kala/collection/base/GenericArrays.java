@@ -33,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.*;
+import java.util.random.RandomGenerator;
 import java.util.stream.Stream;
 
 @StaticClass
@@ -317,7 +318,7 @@ public final class GenericArrays {
         ObjectArrays.shuffle(array);
     }
 
-    public static void shuffle(Object @NotNull [] array, @NotNull Random random) {
+    public static void shuffle(Object @NotNull [] array, @NotNull RandomGenerator random) {
         ObjectArrays.shuffle(array, random);
     }
 

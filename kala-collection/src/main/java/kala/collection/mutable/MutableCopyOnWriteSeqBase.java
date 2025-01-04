@@ -21,9 +21,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.Random;
 import java.util.Spliterator;
 import java.util.function.Function;
+import java.util.random.RandomGenerator;
 import java.util.stream.Stream;
 
 sealed class MutableCopyOnWriteSeqBase<E, S extends MutableSeq<E>> extends AbstractMutableSeq<E>
@@ -126,7 +126,7 @@ sealed class MutableCopyOnWriteSeqBase<E, S extends MutableSeq<E>> extends Abstr
     }
 
     @Override
-    public void shuffle(@NotNull Random random) {
+    public void shuffle(@NotNull RandomGenerator random) {
         ensureExclusive();
         source.shuffle(random);
     }

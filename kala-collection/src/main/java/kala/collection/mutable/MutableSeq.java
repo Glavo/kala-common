@@ -35,6 +35,7 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.random.RandomGenerator;
 import java.util.stream.Stream;
 
 public interface MutableSeq<E> extends MutableCollection<E>, Seq<E>, MutableAnySeq<E> {
@@ -238,7 +239,7 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E>, MutableAnyS
         shuffle(ThreadLocalRandom.current());
     }
 
-    default void shuffle(@NotNull Random random) {
+    default void shuffle(@NotNull RandomGenerator random) {
         int ks = this.knownSize();
         if (ks == 0 || ks == 1) {
             return;

@@ -19,7 +19,6 @@ import kala.Conditions;
 import kala.annotations.DelegateBy;
 import kala.collection.base.primitive.*;
 import kala.collection.factory.primitive.${Type}CollectionFactory;
-import kala.collection.internal.convert.FromJavaConvert;
 import kala.collection.primitive.${Type}Seq;
 import kala.collection.primitive.internal.${Type}SeqIterators;
 import kala.comparator.primitive.${Type}Comparator;
@@ -31,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.*;
-import java.util.stream.Stream;
+import java.util.random.RandomGenerator;
 
 public interface Mutable${Type}Seq extends MutablePrimitiveSeq<${WrapperType}>, ${Type}Seq, Mutable${Type}Collection {
 
@@ -182,12 +181,12 @@ public interface Mutable${Type}Seq extends MutablePrimitiveSeq<${WrapperType}>, 
         }
     }
 
-    @DelegateBy("shuffle(Random)")
+    @DelegateBy("shuffle(RandomGenerator)")
     default void shuffle() {
         shuffle(ThreadLocalRandom.current());
     }
 
-    default void shuffle(@NotNull Random random) {
+    default void shuffle(@NotNull RandomGenerator random) {
         int ks = this.knownSize();
         if (ks == 0 || ks == 1) {
             return;

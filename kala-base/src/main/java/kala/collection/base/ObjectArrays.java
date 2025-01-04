@@ -34,6 +34,7 @@ import java.io.UncheckedIOException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.*;
+import java.util.random.RandomGenerator;
 import java.util.stream.Stream;
 
 /**
@@ -251,7 +252,7 @@ public final class ObjectArrays {
         shuffle(array, ThreadLocalRandom.current());
     }
 
-    public static void shuffle(Object @NotNull [] array, @NotNull Random random) {
+    public static void shuffle(Object @NotNull [] array, @NotNull RandomGenerator random) {
         final int size = array.length;
         if (size <= 1) {
             return;

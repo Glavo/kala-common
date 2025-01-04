@@ -30,6 +30,7 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.*;
 import java.util.function.IntFunction;
+import java.util.random.RandomGenerator;
 <#if IsSpecialized>
 import java.util.stream.${Type}Stream;
 </#if>
@@ -202,7 +203,7 @@ public final class ${Type}Arrays {
         shuffle(array, ThreadLocalRandom.current());
     }
 
-    public static void shuffle(${PrimitiveType} @NotNull [] array, @NotNull Random random) {
+    public static void shuffle(${PrimitiveType} @NotNull [] array, @NotNull RandomGenerator random) {
         final int size = array.length;
         if (size <= 1) {
             return;
