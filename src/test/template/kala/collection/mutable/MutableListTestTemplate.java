@@ -505,4 +505,22 @@ public interface MutableListTestTemplate extends MutableSeqTestTemplate {
         assertIterableEquals(List.of(), seq);
     }
 
+    @Test
+    default void clearTest() {
+        MutableList<Integer> list = of();
+        list.clear();
+        assertIterableEquals(List.of(), list);
+
+        list.appendAll(List.of(1, 2, 3));
+        list.clear();
+        assertIterableEquals(List.of(), list);
+
+        list.clear();
+        assertIterableEquals(List.of(), list);
+
+        list.append(1);
+        list.prepend(2);
+        list.clear();
+        assertIterableEquals(List.of(), list);
+    }
 }
