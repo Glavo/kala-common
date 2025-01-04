@@ -66,13 +66,7 @@ public class TypeLiteral<T> implements Serializable {
 
     @Override
     public final boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof TypeLiteral)) {
-            return false;
-        }
-        return type.equals(((TypeLiteral<?>) o).type);
+        return this == o || o instanceof TypeLiteral<?> that && type.equals(that.type);
     }
 
     @Override

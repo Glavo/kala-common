@@ -89,11 +89,9 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         return AnyTraversable.super.spliterator();
     }
 
-    /**
-     * Returns a sequential {@link Stream} with this as its source.
-     *
-     * @return a sequential {@link Stream} over the elements in this {@code Traversable}
-     */
+    /// Returns a sequential [Stream] with this as its source.
+    ///
+    /// @return a sequential [Stream] over the elements in this `Traversable`
     @Override
     default @NotNull Stream<T> stream() {
         return StreamSupport.stream(spliterator(), false);
