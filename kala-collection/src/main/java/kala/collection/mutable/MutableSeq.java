@@ -160,6 +160,16 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E>, MutableAnyS
     @Contract(mutates = "this")
     void set(@Index int index, E newValue);
 
+    @DelegateBy("replaceAllIndexed(IndexedFunction<E, E>)")
+    default void setAll(E... values) {
+        final int size = size();
+        if (size != values.length) {
+            throw new IllegalArgumentException();
+        }
+
+        replaceAllIndexed((idx, ignored) -> values[idx]);
+    }
+
     default void swap(@Index int index1, @Index int index2) {
         final int size = size();
         index1 = Indexes.checkIndex(index1, size);
@@ -259,7 +269,7 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E>, MutableAnyS
         } else {
             @SuppressWarnings("unchecked") final E[] arr = (E[]) this.toArray();
             ObjectArrays.shuffle(arr, random);
-            this.replaceAllIndexed((i, v) -> arr[i]);
+            this.setAll(arr);
         }
     }
 }
