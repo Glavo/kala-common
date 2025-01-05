@@ -17,6 +17,7 @@ package kala.collection;
 
 import kala.collection.immutable.ImmutableArray;
 import kala.collection.immutable.ImmutableVector;
+import kala.collection.mutable.MutableList;
 import kala.comparator.Comparators;
 import kala.control.Option;
 import org.junit.jupiter.api.Test;
@@ -832,6 +833,35 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
             assertIterableEquals(res2, from(data).sorted(Comparators.reverseOrder()));
         }
 
+    }
+
+    @Test
+    default void collectTest() {
+        assertEquals("", this.<String>of().collect(Collectors.joining()));
+        assertEquals("str0|str1|str2", this.of("str0", "str1", "str2").collect(Collectors.joining("|")));
+
+        assertIterableEquals(List.of(), this.<String>of().collect(Seq.factory()));
+        assertIterableEquals(List.of("str0", "str1", "str2"), this.of("str0", "str1", "str2").collect(Seq.factory()));
+
+        {
+            MutableList<String> mutableList = MutableList.create();
+
+            this.<String>of().collect(mutableList);
+            assertIterableEquals(List.of(), mutableList);
+
+            this.of("str0", "str1", "str2").collect(mutableList);
+            assertIterableEquals(List.of("str0", "str1", "str2"), mutableList);
+        }
+
+        {
+            java.util.List<String> list = new ArrayList<>();
+
+            this.<String>of().collect(list);
+            assertIterableEquals(List.of(), list);
+
+            this.of("str0", "str1", "str2").collect(list);
+            assertIterableEquals(List.of("str0", "str1", "str2"), list);
+        }
     }
 
     @Test
