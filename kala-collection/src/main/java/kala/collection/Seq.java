@@ -35,6 +35,7 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 import java.util.function.*;
+import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>, SeqLike<E>, AnySeq<E> {
@@ -98,6 +99,10 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
 
     static <E> @NotNull Seq<E> from(@NotNull Iterator<? extends E> it) {
         return ImmutableSeq.from(it);
+    }
+
+    static <E> @NotNull Seq<E> from(@NotNull Stream<? extends E> stream) {
+        return ImmutableSeq.from(stream);
     }
 
     static <E> @NotNull Seq<E> fill(int n, E value) {

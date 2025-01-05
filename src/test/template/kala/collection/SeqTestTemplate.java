@@ -123,7 +123,6 @@ public interface SeqTestTemplate extends CollectionTestTemplate, SeqLikeTestTemp
                 final MethodHandle fromIterator = lookup.findStatic(klass, "from", MethodType.methodType(klass, Iterator.class));
                 final MethodHandle fromStream = lookup.findStatic(klass, "from", MethodType.methodType(klass, Stream.class));
 
-
                 for (Integer[] data : data1()) {
                     final List<Integer> dataList = Arrays.asList(data);
 
