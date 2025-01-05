@@ -71,6 +71,24 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
     }
 
     @Test
+    default void seqIteratorTest() {
+        SeqIterator<Object> empty = of().seqIterator();
+        assertFalse(empty.hasNext());
+        assertThrows(NoSuchElementException.class, empty::next);
+        assertFalse(empty.hasPrevious());
+        assertThrows(NoSuchElementException.class, empty::previous);
+        assertEquals(0, empty.nextIndex());
+        assertEquals(-1, empty.previousIndex());
+
+        assertThrows(IndexOutOfBoundsException.class, () -> of().seqIterator(~1));
+        assertThrows(IndexOutOfBoundsException.class, () -> of().seqIterator(Integer.MIN_VALUE));
+        assertThrows(IndexOutOfBoundsException.class, () -> of().seqIterator(1));
+        assertThrows(IndexOutOfBoundsException.class, () -> of().seqIterator(Integer.MAX_VALUE));
+
+        // TODO
+    }
+
+    @Test
     default void streamTest() {
         assertEquals(0, of().stream().count());
         assertIterableEquals(List.of("foo"), of("foo").stream().collect(Collectors.toList()));
