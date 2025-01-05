@@ -16,6 +16,7 @@
 package kala.collection.factory;
 
 import kala.annotations.Covariant;
+import kala.annotations.DelegateBy;
 import kala.collection.base.AnyTraversable;
 import kala.collection.base.Traversable;
 import org.jetbrains.annotations.ApiStatus;
@@ -85,9 +86,8 @@ public interface CollectionFactory<E, Builder, @Covariant R>
         return builder;
     }
 
-    @ApiStatus.Experimental
     default @NotNull CollectionBuilder<E, R> newCollectionBuilder(Builder builder) {
-        return new CollectionBuilder<E, R>() {
+        return new CollectionBuilder<>() {
             @Override
             public void plusAssign(E value) {
                 CollectionFactory.this.addToBuilder(builder, value);
@@ -105,12 +105,12 @@ public interface CollectionFactory<E, Builder, @Covariant R>
         };
     }
 
-    @ApiStatus.Experimental
+    @DelegateBy({"newCollectionBuilder(Builder)", "newBuilder()"})
     default @NotNull CollectionBuilder<E, R> newCollectionBuilder() {
         return newCollectionBuilder(newBuilder());
     }
 
-    @ApiStatus.Experimental
+    @DelegateBy({"newCollectionBuilder(Builder)", "newBuilder(int)"})
     default @NotNull CollectionBuilder<E, R> newCollectionBuilder(int capacity) {
         return newCollectionBuilder(newBuilder(capacity));
     }
