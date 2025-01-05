@@ -47,13 +47,7 @@ public final class Suppliers {
         return LazyValue.of(supplier);
     }
 
-    private static final class Constant<T> implements Supplier<T>, Memoized, Serializable {
-        private final T value;
-
-        Constant(T value) {
-            this.value = value;
-        }
-
+    private record Constant<T>(T value) implements Supplier<T>, Memoized, Serializable {
         @Override
         public T get() {
             return value;
@@ -61,7 +55,7 @@ public final class Suppliers {
 
         @Override
         public String toString() {
-            return "Suppliers.Constant[value=" + value + ']';
+            return "Suppliers.Constant[" + value + ']';
         }
     }
 }
