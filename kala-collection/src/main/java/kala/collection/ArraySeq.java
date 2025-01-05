@@ -32,10 +32,8 @@ import kala.index.Index;
 import kala.index.Indexes;
 import org.jetbrains.annotations.*;
 
-import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
-import java.io.UncheckedIOException;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collector;
@@ -1113,44 +1111,12 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
             @NotNull A buffer,
             CharSequence separator, CharSequence prefix, CharSequence postfix
     ) {
-        final int size = elements.length;
-
-        try {
-            buffer.append(prefix);
-            if (size > 0) {
-                buffer.append(Objects.toString(elements[0]));
-                for (int i = 1; i < size; i++) {
-                    buffer.append(separator);
-                    buffer.append(Objects.toString(elements[i]));
-                }
-            }
-            buffer.append(postfix);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-
-        return buffer;
+        return ObjectArrays.joinTo(elements, buffer, separator, prefix, postfix);
     }
 
     @Override
     public <A extends Appendable> @NotNull A joinTo(@NotNull A buffer, CharSequence separator, CharSequence prefix, CharSequence postfix, @NotNull Function<? super E, ? extends CharSequence> transform) {
-        final int size = elements.length;
-
-        try {
-            buffer.append(prefix);
-            if (size > 0) {
-                buffer.append(transform.apply((E) elements[0]));
-                for (int i = 1; i < size; i++) {
-                    buffer.append(separator);
-                    buffer.append(transform.apply((E) elements[i]));
-                }
-            }
-            buffer.append(postfix);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-
-        return buffer;
+        return ObjectArrays.joinTo(elements, buffer, separator, prefix, postfix, transform);
     }
 
     //endregion
