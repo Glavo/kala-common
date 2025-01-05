@@ -1160,27 +1160,12 @@ final class ImmutableSeqs {
 
         @Override
         public int hashCode() {
-            if (value == null) {
-                return SEQ_HASH_MAGIC;
-            }
-            final int vh = value.hashCode();
-            if (vh == 0) {
-                return SEQ_HASH_MAGIC;
-            }
-
-            int h = 0;
-            for (int i = 0; i < size; i++) {
-                h = h * 31 + vh;
-            }
-            return h + SEQ_HASH_MAGIC;
+            return Seq.hashCode(this);
         }
 
         @Override
         public boolean equals(Object obj) {
-            if (!(obj instanceof Seq<?> other)) {
-                return false;
-            }
-            return Seq.equals(this, other);
+            return obj instanceof Seq<?> other && Seq.equals(this, other);
         }
     }
 
