@@ -15,7 +15,6 @@
  */
 package kala.collection.base;
 
-import kala.annotations.UnstableName;
 import kala.control.Option;
 import kala.annotations.Covariant;
 import kala.annotations.StaticClass;
@@ -26,6 +25,7 @@ import kala.index.Index;
 import kala.index.Indexes;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -451,7 +451,7 @@ public final class GenericArrays {
 
     //region Misc Operations
 
-    @UnstableName
+    @ApiStatus.Experimental
     public static <E> E @NotNull [] copyOrUse(E[] a, int beginIndex, int endIndex) {
         return beginIndex == 0 && endIndex == a.length
                 ? a

@@ -15,10 +15,9 @@
  */
 package kala.collection.base;
 
-import kala.annotations.UnstableName;
 import org.jetbrains.annotations.ApiStatus;
 
-@UnstableName
+@ApiStatus.Experimental
 public interface Sized {
 
     boolean isEmpty();

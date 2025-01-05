@@ -15,10 +15,10 @@
  */
 package kala.range.primitive;
 
-import kala.annotations.UnstableName;
 import kala.collection.base.primitive.*;
 import kala.range.BoundType;
 import kala.range.RangeType;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
@@ -145,7 +145,7 @@ public final class ${Type}Range implements IntegralRange<${WrapperType}>, ${Type
             :upperBound;
     }
 
-    @UnstableName
+    @ApiStatus.Experimental
     public ${PrimitiveType} fit(${PrimitiveType} value) {
         if (isEmpty()) {
             throw new UnsupportedOperationException("Range is empty");

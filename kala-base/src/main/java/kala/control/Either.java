@@ -16,7 +16,7 @@
 package kala.control;
 
 import kala.annotations.Covariant;
-import kala.annotations.UnstableName;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -54,7 +54,7 @@ public sealed interface Either<@Covariant A, @Covariant B> extends Serializable 
         return new Right<>(value);
     }
 
-    @UnstableName
+    @ApiStatus.Experimental
     static <T> T join(@NotNull Either<? extends T, ? extends T> either) {
         if (either.isLeft()) {
             return either.getLeftValue();

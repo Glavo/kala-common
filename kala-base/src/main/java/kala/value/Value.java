@@ -16,10 +16,10 @@
 package kala.value;
 
 import kala.annotations.ReplaceWith;
-import kala.annotations.UnstableName;
 import kala.collection.base.Iterators;
 import kala.collection.base.Mappable;
 import kala.collection.base.Traversable;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -34,7 +34,7 @@ public non-sealed interface Value<T> extends AnyValue<T>, Traversable<T>, Mappab
         return new DefaultValue<>(value);
     }
 
-    @UnstableName
+    @ApiStatus.Experimental
     static <T> @NotNull Value<T> by(@NotNull Supplier<? extends T> getter) {
         Objects.requireNonNull(getter);
         return new DelegateValue<>(getter);

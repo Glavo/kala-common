@@ -17,7 +17,7 @@ package kala.value;
 
 import kala.annotations.DelegateBy;
 import kala.annotations.ReplaceWith;
-import kala.annotations.UnstableName;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -57,7 +57,7 @@ public non-sealed interface MutableValue<T> extends MutableAnyValue<T>, Value<T>
         return new AtomicVar<>(initialValue);
     }
 
-    @UnstableName
+    @ApiStatus.Experimental
     static <T> @NotNull MutableValue<T> by(@NotNull Supplier<? extends T> getter, @NotNull Consumer<? super T> setter) {
         Objects.requireNonNull(getter);
         Objects.requireNonNull(setter);

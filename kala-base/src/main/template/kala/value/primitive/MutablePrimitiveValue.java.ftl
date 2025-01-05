@@ -17,8 +17,8 @@ package kala.value.primitive;
 
 import kala.annotations.DelegateBy;
 import kala.annotations.ReplaceWith;
-import kala.annotations.UnstableName;
 import kala.function.*;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -52,7 +52,7 @@ public non-sealed interface Mutable${Type}Value extends MutablePrimitiveValue<${
     }
 
 </#if>
-    @UnstableName
+    @ApiStatus.Experimental
     static @NotNull Mutable${Type}Value by(@NotNull ${Type}Supplier getter, @NotNull ${Type}Consumer setter) {
         Objects.requireNonNull(getter);
         Objects.requireNonNull(setter);
