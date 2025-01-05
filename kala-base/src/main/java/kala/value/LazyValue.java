@@ -119,12 +119,14 @@ public final class LazyValue<@Covariant T> extends AbstractValue<T> implements M
 
     //region Serialization Operations
 
+    @Serial
     @SuppressWarnings("unchecked")
     private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
         value = (T) in.readObject();
         supplier = null;
     }
 
+    @Serial
     private void writeObject(java.io.ObjectOutputStream out) throws IOException {
         out.writeObject(get());
     }
