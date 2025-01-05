@@ -21,7 +21,6 @@ import kala.tuple.Tuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
@@ -63,11 +62,12 @@ public final class Predicates {
         return target == null ? isNull() : new IsSame<>(target);
     }
 
-    public static <T> @NotNull Predicate<T> instanceOf(@NotNull Class<? extends T> type) {
+    public static <T> @NotNull Predicate<T> isInstance(@NotNull Class<? extends T> type) {
         Objects.requireNonNull(type);
-        return type == Object.class ? isNotNull() : new InstanceOf<>(type);
+        return type == Object.class ? isNotNull() : new IsInstance<>(type);
     }
 
+    @SafeVarargs
     public static <T> @NotNull Predicate<T> and(Predicate<? super T> @NotNull ... predicates) {
         if (predicates.length < 2) {
             throw new IllegalArgumentException();
@@ -75,6 +75,7 @@ public final class Predicates {
         return new And<>(predicates.clone());
     }
 
+    @SafeVarargs
     public static <T> @NotNull Predicate<T> or(Predicate<? super T> @NotNull ... predicates) {
         if (predicates.length < 2) {
             throw new IllegalArgumentException();
@@ -188,36 +189,10 @@ public final class Predicates {
         }
     }
 
-    private static final class IsEqual<T> implements Predicate<T>, Serializable {
-        @Serial
-        private static final long serialVersionUID = -9166392848522200720L;
-        private static final int HASH_MAGIC = -793051311;
-
-        private final @NotNull Object target;
-
-        IsEqual(@NotNull Object target) {
-            this.target = target;
-        }
-
+    private record IsEqual<T>(@NotNull Object target) implements Predicate<T>, Serializable {
         @Override
         public boolean test(T t) {
             return target.equals(t);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (!(o instanceof IsEqual<?> other)) {
-                return false;
-            }
-            return target.equals(other.target);
-        }
-
-        @Override
-        public int hashCode() {
-            return HASH_MAGIC + target.hashCode();
         }
 
         @Override
@@ -226,16 +201,7 @@ public final class Predicates {
         }
     }
 
-    private static final class IsSame<T> implements Predicate<T>, Serializable {
-        @Serial
-        private static final long serialVersionUID = 8158787942500779468L;
-        private static final int HASH_MAGIC = 1242821667;
-
-        private final @NotNull Object target;
-
-        IsSame(@NotNull Object target) {
-            this.target = target;
-        }
+    private record IsSame<T>(@NotNull Object target) implements Predicate<T>, Serializable {
 
         @Override
         public boolean test(T t) {
@@ -244,18 +210,7 @@ public final class Predicates {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (!(o instanceof IsSame<?> other)) {
-                return false;
-            }
-            return target == other.target;
-        }
-
-        @Override
-        public int hashCode() {
-            return HASH_MAGIC + target.hashCode();
+            return this == o || o instanceof IsSame<?> other && this.target == other.target;
         }
 
         @Override
@@ -264,56 +219,19 @@ public final class Predicates {
         }
     }
 
-    private static final class InstanceOf<T> implements Predicate<T>, Serializable {
-        @Serial
-        private static final long serialVersionUID = -8612667810008827121L;
-        private static final int HASH_MAGIC = 990779813;
-
-        private final @NotNull Class<?> type;
-
-        InstanceOf(@NotNull Class<?> type) {
-            this.type = type;
-        }
-
+    private record IsInstance<T>(@NotNull Class<?> type) implements Predicate<T>, Serializable {
         @Override
         public boolean test(T t) {
             return type.isInstance(t);
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (!(o instanceof InstanceOf other)) {
-                return false;
-            }
-            return type.equals(other.type);
-        }
-
-        @Override
-        public int hashCode() {
-            return HASH_MAGIC + type.hashCode();
-        }
-
-        @Override
         public String toString() {
-            return "Predicates.InstanceOf[" + type + ']';
+            return "Predicates.IsInstance[" + type + ']';
         }
     }
 
-    private static final class And<T> implements Predicate<T>, Serializable {
-        @Serial
-        private static final long serialVersionUID = -5136772671431728242L;
-
-        private static final int HASH_MAGIC = 67623;
-
-        private final Predicate<? super T>[] predicates;
-
-        And(Predicate<? super T>[] predicates) {
-            this.predicates = predicates;
-        }
-
+    private record And<T>(Predicate<? super T>[] predicates) implements Predicate<T>, Serializable {
         @Override
         public boolean test(T t) {
             for (Predicate<? super T> predicate : predicates) {
@@ -326,18 +244,7 @@ public final class Predicates {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (!(o instanceof And<?> other)) {
-                return false;
-            }
-            return Arrays.equals(predicates, other.predicates);
-        }
-
-        @Override
-        public int hashCode() {
-            return HASH_MAGIC + Arrays.hashCode(predicates);
+            return this == o || o instanceof And<?> other && Arrays.equals(predicates, other.predicates);
         }
 
         @Override
@@ -346,18 +253,7 @@ public final class Predicates {
         }
     }
 
-    private static final class Or<T> implements Predicate<T>, Serializable {
-        @Serial
-        private static final long serialVersionUID = -3902328690682783689L;
-
-        private static final int HASH_MAGIC = -2329323;
-
-        private final Predicate<? super T>[] predicates;
-
-        Or(Predicate<? super T>[] predicates) {
-            this.predicates = predicates;
-        }
-
+    private record Or<T>(Predicate<? super T>[] predicates) implements Predicate<T>, Serializable {
         @Override
         public boolean test(T t) {
             for (Predicate<? super T> predicate : predicates) {
@@ -370,18 +266,7 @@ public final class Predicates {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (!(o instanceof Or<?> other)) {
-                return false;
-            }
-            return Arrays.equals(predicates, other.predicates);
-        }
-
-        @Override
-        public int hashCode() {
-            return HASH_MAGIC + Arrays.hashCode(predicates);
+            return this == o || o instanceof Or<?> other && Arrays.equals(predicates, other.predicates);
         }
 
         @Override

@@ -17,6 +17,10 @@ package kala.function;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -60,5 +64,43 @@ public class PredicatesTest {
         assertTrue(Predicates.isNotNull().test(obj));
         assertTrue(Predicates.isNotNull().test(""));
         assertFalse(Predicates.isNotNull().test(null));
+    }
+
+    @Test
+    void isEqualTest() {
+        var testObject = List.of("A");
+        Predicate<Object> predicate = Predicates.isEqual(testObject);
+
+        assertFalse(predicate.test(null));
+        assertFalse(predicate.test("A"));
+        assertTrue(predicate.test(testObject));
+        assertTrue(predicate.test(new ArrayList<>(testObject)));
+    }
+
+    @Test
+    void isSameTest() {
+        var testObject = List.of("A");
+        Predicate<Object> predicate = Predicates.isSame(testObject);
+
+        assertFalse(predicate.test(null));
+        assertFalse(predicate.test("A"));
+        assertTrue(predicate.test(testObject));
+        assertFalse(predicate.test(new ArrayList<>(testObject)));
+    }
+
+    @Test
+    void andTest() {
+        assertFalse(Predicates.and(Predicates.alwaysFalse(), Predicates.alwaysFalse()).test(obj));
+        assertFalse(Predicates.and(Predicates.alwaysFalse(), Predicates.alwaysTrue()).test(obj));
+        assertFalse(Predicates.and(Predicates.alwaysTrue(), Predicates.alwaysFalse()).test(obj));
+        assertTrue(Predicates.and(Predicates.alwaysTrue(), Predicates.alwaysTrue()).test(obj));
+    }
+
+    @Test
+    void orTest() {
+        assertFalse(Predicates.or(Predicates.alwaysFalse(), Predicates.alwaysFalse()).test(obj));
+        assertTrue(Predicates.or(Predicates.alwaysFalse(), Predicates.alwaysTrue()).test(obj));
+        assertTrue(Predicates.or(Predicates.alwaysTrue(), Predicates.alwaysFalse()).test(obj));
+        assertTrue(Predicates.or(Predicates.alwaysTrue(), Predicates.alwaysTrue()).test(obj));
     }
 }

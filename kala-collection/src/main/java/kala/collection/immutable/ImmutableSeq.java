@@ -24,7 +24,6 @@ import kala.index.Index;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import kala.annotations.Covariant;
-import kala.comparator.Comparators;
 import kala.collection.factory.CollectionFactory;
 import kala.tuple.Tuple3;
 import org.jetbrains.annotations.Contract;
@@ -336,7 +335,7 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     }
 
     default <U> @NotNull ImmutableSeq<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
-        return ((ImmutableSeq<U>) this.filter(Predicates.instanceOf(clazz)));
+        return ((ImmutableSeq<U>) this.filter(Predicates.isInstance(clazz)));
     }
 
     @Override

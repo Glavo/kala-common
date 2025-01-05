@@ -1,8 +1,6 @@
 package kala.collection;
 
 import kala.annotations.DelegateBy;
-import kala.collection.immutable.ImmutableCollection;
-import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.view.CollectionViews;
 import kala.function.Predicates;
 import kala.tuple.Tuple;
@@ -12,7 +10,6 @@ import kala.tuple.Tuple3;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.function.*;
@@ -56,7 +53,7 @@ public interface CollectionView<@Covariant E> extends CollectionLike<E>, AnyColl
 
     @Override
     default <U> @NotNull CollectionView<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
-        return ((CollectionView<U>) filter(Predicates.instanceOf(clazz)));
+        return ((CollectionView<U>) filter(Predicates.isInstance(clazz)));
     }
 
     default <U> @NotNull CollectionView<U> map(@NotNull Function<? super E, ? extends U> mapper) {

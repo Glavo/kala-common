@@ -251,7 +251,7 @@ public interface SeqView<@Covariant E> extends CollectionView<E>, SeqLike<E>, An
 
     @Override
     default <U> @NotNull SeqView<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
-        return (SeqView<U>) filter(Predicates.instanceOf(clazz));
+        return (SeqView<U>) filter(Predicates.isInstance(clazz));
     }
 
     @Override
