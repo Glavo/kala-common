@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
 
