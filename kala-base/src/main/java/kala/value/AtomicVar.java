@@ -38,12 +38,11 @@ public final class AtomicVar<T> extends AtomicReference<T> implements MutableVal
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof AnyValue<?> other))
-            return false;
-        if (!this.canEqual(other) || !other.canEqual(this))
-            return false;
-
-        return Objects.equals(this.get(), other.getValue());
+        return this == obj ||
+               obj instanceof AnyValue<?> other
+               && this.canEqual(other)
+               && !other.canEqual(this)
+               && Objects.equals(this.get(), other.getValue());
     }
 
     @Override
