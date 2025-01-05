@@ -84,6 +84,24 @@ public class StringSliceTest {
     }
 
     @Test
+    void isNotEmptyTest() {
+        assertFalse(StringSlice.of("").isNotEmpty());
+        assertTrue(StringSlice.of("abc").isNotEmpty());
+        assertTrue(StringSlice.of("abc", 1, 2).isNotEmpty());
+        assertFalse(StringSlice.of("abc", 1, 1).isNotEmpty());
+    }
+
+    @Test
+    void isBlankTest() {
+        assertTrue(StringSlice.of("").isBlank());
+        assertTrue(StringSlice.of(" \t\f").isBlank());
+        assertTrue(StringSlice.of("a \t\fb", 1, ~1).isBlank());
+        assertTrue(StringSlice.of("a \t\fb", 0, 0).isBlank());
+
+        assertFalse(StringSlice.of(" \ta\f").isBlank());
+    }
+
+    @Test
     void containsTest() {
         StringSlice slice = StringSlice.of("abc");
         assertTrue(slice.contains(""));
@@ -181,5 +199,33 @@ public class StringSliceTest {
         assertSlicesEquals(List.of("", "a", "", "b", ""), StringSlice.of(":a::b:").split(':'));
         assertSlicesEquals(List.of("", "a", "", "b", ""), StringSlice.of("\uD83D\uDE00a\uD83D\uDE00\uD83D\uDE00b\uD83D\uDE00").split(Character.toCodePoint('\uD83D', '\uDE00')));
         assertSlicesEquals(List.of("", "a", ":b:"), StringSlice.of(":a::b:").split(':', 3));
+    }
+
+    @Test
+    void contextEqualsTest() {
+        StringSlice slice1 = StringSlice.of("abc");
+        StringSlice slice2 = StringSlice.of("  abc  ", 2, 5);
+
+        assertTrue(slice1.contentEquals("abc"));
+        assertTrue(slice2.contentEquals("abc"));
+        assertTrue(slice1.contentEquals(slice1));
+        assertTrue(slice1.contentEquals(slice2));
+        assertTrue(slice2.contentEquals(slice1));
+        assertTrue(slice2.contentEquals(slice2));
+
+        assertFalse(slice1.contentEquals("ab"));
+        assertFalse(slice1.contentEquals("cba"));
+        assertFalse(slice1.contentEquals(StringSlice.of("cba")));
+        assertFalse(slice1.contentEquals(slice1.slice(1)));
+    }
+
+    @Test
+    void hashCodeTest() {
+        StringSlice slice1 = StringSlice.of("abc");
+        StringSlice slice2 = StringSlice.of("  abc  ", 2, 5);
+
+        final int hash = slice1.hashCode();
+        assertEquals(hash, slice1.hashCode());
+        assertEquals(hash, slice2.hashCode());
     }
 }
