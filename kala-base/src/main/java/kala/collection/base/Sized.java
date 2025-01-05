@@ -21,7 +21,6 @@ import org.jetbrains.annotations.ApiStatus;
 @UnstableName
 public interface Sized {
 
-
     boolean isEmpty();
 
     @ApiStatus.NonExtendable
