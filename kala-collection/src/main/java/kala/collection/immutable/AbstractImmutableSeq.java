@@ -26,6 +26,7 @@ import kala.index.Index;
 import kala.index.Indexes;
 import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -438,7 +439,7 @@ public abstract class AbstractImmutableSeq<@Covariant E> extends AbstractSeq<E> 
 
     static <E, T, Builder> T sorted(
             @NotNull ImmutableSeq<? extends E> seq,
-            @NotNull Comparator<? super E> comparator,
+            @Nullable Comparator<? super E> comparator,
             @NotNull CollectionFactory<? super E, Builder, ? extends T> factory
     ) {
         Object[] arr = seq.toArray();

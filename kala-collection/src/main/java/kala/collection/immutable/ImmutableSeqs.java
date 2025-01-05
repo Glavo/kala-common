@@ -930,11 +930,6 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public @NotNull SeqView<E> sorted() {
-            return this;
-        }
-
-        @Override
         public @NotNull SeqView<E> sorted(Comparator<? super E> comparator) {
             return this;
         }
@@ -1147,12 +1142,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public @NotNull ImmutableSeq<E> sorted() {
-            return this;
-        }
-
-        @Override
-        public @NotNull ImmutableSeq<E> sorted(Comparator<? super E> comparator) {
+        public @NotNull ImmutableSeq<E> sorted(@Nullable Comparator<? super E> comparator) {
             return this;
         }
 

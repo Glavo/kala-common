@@ -208,7 +208,7 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E>, OrderedTra
     @NotNull SeqLike<E> sorted();
 
     @Contract(pure = true)
-    @NotNull SeqLike<E> sorted(Comparator<? super E> comparator);
+    @NotNull SeqLike<E> sorted(@Nullable Comparator<? super E> comparator);
 
     @Contract(pure = true)
     @NotNull SeqLike<E> reversed();

@@ -517,11 +517,6 @@ public sealed abstract class ImmutableVector<@Covariant E> extends AbstractImmut
     }
 
     @Override
-    public final @NotNull ImmutableSeq<E> sorted() {
-        return sorted(Comparators.naturalOrder());
-    }
-
-    @Override
     public final @NotNull ImmutableSeq<E> sorted(Comparator<? super E> comparator) {
         return AbstractImmutableSeq.sorted(this, comparator, iterableFactory());
     }

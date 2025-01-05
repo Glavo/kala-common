@@ -24,7 +24,6 @@ import kala.collection.immutable.ImmutableSeq;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
 import kala.collection.internal.view.SeqViews;
-import kala.comparator.Comparators;
 import kala.function.*;
 import kala.index.Index;
 import kala.index.Indexes;
@@ -275,13 +274,14 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
 
     @Override
     @Contract(pure = true)
+    @DelegateBy("sorted(Comparator<E>)")
     default @NotNull ImmutableSeq<E> sorted() {
-        return sorted(Comparators.naturalOrder());
+        return sorted(null);
     }
 
     @Override
     @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> sorted(Comparator<? super E> comparator) {
+    default @NotNull ImmutableSeq<E> sorted(@Nullable Comparator<? super E> comparator) {
         return view().sorted(comparator).toImmutableSeq();
     }
 

@@ -720,18 +720,6 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     }
 
     @Override
-    public @NotNull ImmutableSeq<E> sorted() {
-        final Object[] elements = this.elements;
-        if (elements.length == 0 || elements.length == 1) {
-            return this.toImmutableArray();
-        }
-
-        Object[] newValues = elements.clone();
-        Arrays.sort(newValues);
-        return ImmutableArray.Unsafe.wrap(newValues);
-    }
-
-    @Override
     public @NotNull ImmutableSeq<E> sorted(Comparator<? super E> comparator) {
         final Object[] elements = this.elements;
         if (elements.length == 0 || elements.length == 1) {

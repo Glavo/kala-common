@@ -15,6 +15,7 @@
  */
 package kala.collection;
 
+import kala.annotations.DelegateBy;
 import kala.collection.immutable.ImmutableArray;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.function.IndexedBiConsumer;
@@ -218,6 +219,7 @@ public interface SeqView<@Covariant E> extends CollectionView<E>, SeqLike<E>, An
         return new SeqViews.RemovedAt<>(this, Indexes.checkIndex(index, size()));
     }
 
+    @DelegateBy("sorted(Comparator<E>)")
     default @NotNull SeqView<E> sorted() {
         return sorted(null);
     }
