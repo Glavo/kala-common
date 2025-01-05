@@ -15,7 +15,6 @@
  */
 package kala.collection.mutable;
 
-import kala.Conditions;
 import kala.collection.IndexedSeq;
 import kala.collection.base.Iterators;
 import kala.collection.base.ObjectArrays;
@@ -31,7 +30,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;

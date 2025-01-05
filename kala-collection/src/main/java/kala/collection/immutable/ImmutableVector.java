@@ -5,7 +5,6 @@
  * License:
  * https://github.com/vavr-io/vavr/blob/master/LICENSE
  */
-
 package kala.collection.immutable;
 
 import kala.collection.IndexedSeq;
