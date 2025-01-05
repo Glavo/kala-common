@@ -16,9 +16,9 @@
 package kala.function;
 
 import kala.annotations.StaticClass;
+import kala.internal.InternalIdentifyObject;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
-import kala.tuple.Tuple3;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -85,14 +85,7 @@ public final class Functions {
         return (t, u) -> function.apply(t).apply(u);
     }
 
-    private enum NullHole {
-        INSTANCE;
-
-        @Override
-        public String toString() {
-            return "null";
-        }
-    }
+    private static final InternalIdentifyObject NULL_HOLE = new InternalIdentifyObject();
 
     private enum Identity implements Function<Object, Object> {
         INSTANCE;
@@ -118,37 +111,22 @@ public final class Functions {
         }
     }
 
-    private static final class MemoizedFunction<T, R> implements Function<T, R>, Memoized, Serializable {
-        private static final long serialVersionUID = -904511663627169337L;
-
-        final @NotNull Function<? super T, ? extends R> function;
-        final @NotNull Map<T, Object> cache;
-        final boolean sync;
-
-        MemoizedFunction(@NotNull Function<? super T, ? extends R> function, @NotNull Map<T, Object> cache, boolean sync) {
-            this.function = function;
-            this.cache = cache;
-            this.sync = sync;
-        }
-
+    private record MemoizedFunction<T, R>(@NotNull Function<? super T, ? extends R> function,
+                                          @NotNull Map<T, Object> cache,
+                                          boolean sync) implements Function<T, R>, Memoized, Serializable {
         @Override
         public R apply(T t) {
             Object res = cache.computeIfAbsent(t, key -> {
                 R v = function.apply(key);
-                return v != null ? v : NullHole.INSTANCE;
+                return v != null ? v : NULL_HOLE;
             });
 
-            return res != NullHole.INSTANCE ? (R) res : null;
+            return res != NULL_HOLE ? (R) res : null;
         }
 
         @Override
         public String toString() {
-            return "MemoizedFunction[" +
-                    "function=" + function +
-                    ", cache=" + cache +
-                    ']';
+            return "MemoizedFunction[function=%s, cache=%s]".formatted(function, cache);
         }
-
-
     }
 }
