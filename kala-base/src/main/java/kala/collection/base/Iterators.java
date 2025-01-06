@@ -87,7 +87,7 @@ public final class Iterators {
             return Iterators.empty();
         }
 
-        return new AbstractIterator<E>() {
+        return new AbstractIterator<>() {
             @Override
             public boolean hasNext() {
                 return enumeration.hasMoreElements();
@@ -754,7 +754,7 @@ public final class Iterators {
             return prepended(it, newValue);
         }
 
-        return new AbstractIterator<E>() {
+        return new AbstractIterator<>() {
             private int idx = 0;
 
             @Override
@@ -869,7 +869,7 @@ public final class Iterators {
         if (!it.hasNext()) { // implicit null check of it
             return Iterators.empty();
         }
-        return new AbstractIterator<U>() {
+        return new AbstractIterator<>() {
             @Override
             public boolean hasNext() {
                 return it.hasNext();
@@ -890,7 +890,7 @@ public final class Iterators {
         if (!it.hasNext()) { // implicit null check of it
             return Iterators.empty();
         }
-        return new AbstractIterator<U>() {
+        return new AbstractIterator<>() {
             private int idx = 0;
 
             @Override

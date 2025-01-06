@@ -20,10 +20,12 @@ import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 
+import static kala.ExtendedAssertions.assertIteratorEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class IteratorsTest {
@@ -46,6 +48,18 @@ public class IteratorsTest {
         assertIteratorElements(Iterators.of("A", "B", "C"), "A", "B", "C");
         assertIteratorElements(Iterators.of("A", "B", "C", "D"), "A", "B", "C", "D");
         assertIteratorElements(Iterators.of("A", "B", "C", "D", "E"), "A", "B", "C", "D", "E");
+    }
+
+    @SafeVarargs
+    private static <T> Iterator<T> enumerationIterator(T... values) {
+        return Iterators.ofEnumeration(new java.util.Vector<>(List.of(values)).elements());
+    }
+
+    @Test
+    public void ofEnumerationTest() {
+        assertIteratorEquals(List.of(), enumerationIterator());
+        assertIteratorEquals(List.of("A"), enumerationIterator("A"));
+        assertIteratorEquals(List.of("A", "B", "C"), enumerationIterator("A", "B", "C"));
     }
 
     @Test

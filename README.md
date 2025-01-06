@@ -1,4 +1,4 @@
-# kala-common
+# Kala Common
 
 [![Gradle Check](https://github.com/Glavo/kala-common/actions/workflows/check.yml/badge.svg)](https://github.com/Glavo/kala-common/actions/workflows/check.yml)
 [![codecov](https://codecov.io/github/Glavo/kala-common/graph/badge.svg?token=IHM4ZK7K7A)](https://codecov.io/github/Glavo/kala-common)
