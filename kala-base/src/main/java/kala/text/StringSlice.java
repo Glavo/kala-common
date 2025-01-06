@@ -306,18 +306,21 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         return StringSlice.of(res.toString());
     }
 
-    public @NotNull StringSlice replaceRange(int beginIndex, int endIndex, @NotNull String replacement) {
+    public @NotNull StringSlice replaceRange(@Index int beginIndex, @Index int endIndex, @NotNull String replacement) {
         return replaceRange(beginIndex, endIndex, StringSlice.of(replacement));
     }
 
-    public @NotNull StringSlice replaceRange(int beginIndex, int endIndex, @NotNull StringSlice replacement) {
-        Conditions.checkPositionIndices(beginIndex, endIndex, length);
+    public @NotNull StringSlice replaceRange(@Index int beginIndex, @Index int endIndex, @NotNull StringSlice replacement) {
+        beginIndex = Indexes.checkBeginIndex(beginIndex, length);
+        endIndex = Indexes.checkEndIndex(beginIndex, endIndex, length);
 
-        if (this.length == 0) {
+        final int rangeLength = endIndex - beginIndex;
+
+        if (this.length == rangeLength) {
             return replacement;
         }
 
-        StringBuilder builder = new StringBuilder(this.length - endIndex + beginIndex + replacement.length);
+        StringBuilder builder = new StringBuilder(this.length - rangeLength + replacement.length);
         builder.append(this.value, offset, offset + beginIndex);
         replacement.appendTo(builder);
         builder.append(this.value, offset + endIndex, offset + length);
