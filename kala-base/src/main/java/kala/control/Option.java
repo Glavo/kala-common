@@ -121,11 +121,6 @@ public final class Option<@Covariant T> implements AnyOption<T>, OptionContainer
         return this != None;
     }
 
-    @Override
-    public boolean isEmpty() {
-        return this == None;
-    }
-
     /**
      * Returns the {@code Option}'s value.
      *

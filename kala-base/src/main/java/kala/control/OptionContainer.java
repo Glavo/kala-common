@@ -19,6 +19,7 @@ import kala.collection.base.Iterators;
 import kala.collection.base.Traversable;
 import kala.collection.base.Mappable;
 import kala.annotations.Covariant;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,7 +38,6 @@ import java.util.stream.Stream;
  */
 public interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>, Traversable<T> {
 
-
     /**
      * Returns {@code true} if the container contain a value, otherwise return {@code false}.
      *
@@ -50,6 +50,7 @@ public interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>,
      *
      * @return {@code true} if the container is empty, otherwise {@code false}
      */
+    @ApiStatus.NonExtendable
     default boolean isEmpty() {
         return !isDefined();
     }
