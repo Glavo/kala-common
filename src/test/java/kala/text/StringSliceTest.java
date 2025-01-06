@@ -20,6 +20,7 @@ import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,14 +38,32 @@ public class StringSliceTest {
     void charAtTest() {
         var slice = StringSlice.of("abc");
         assertEquals('a', slice.charAt(0));
+        assertEquals('a', slice.charAt(~3));
         assertEquals('b', slice.charAt(1));
+        assertEquals('b', slice.charAt(~2));
         assertEquals('c', slice.charAt(2));
         assertEquals('c', slice.charAt(~1));
-        assertEquals('b', slice.charAt(~2));
-        assertEquals('a', slice.charAt(~3));
 
-        assertThrows(IndexOutOfBoundsException.class, () -> slice.charAt(4));
+        assertThrows(IndexOutOfBoundsException.class, () -> slice.charAt(3));
+        assertThrows(IndexOutOfBoundsException.class, () -> slice.charAt(~0));
         assertThrows(IndexOutOfBoundsException.class, () -> slice.charAt(~4));
+    }
+
+    @Test
+    void codePointAtTest() {
+        var slice = StringSlice.of("a\uD83D\uDE0Ab");
+        assertEquals('a', slice.codePointAt(0));
+        assertEquals('a', slice.codePointAt(~4));
+        assertEquals(Character.toCodePoint('\uD83D', '\uDE0A'), slice.codePointAt(1));
+        assertEquals(Character.toCodePoint('\uD83D', '\uDE0A'), slice.codePointAt(~3));
+        assertEquals('\uDE0A', slice.codePointAt(2));
+        assertEquals('\uDE0A', slice.codePointAt(~2));
+        assertEquals('b', slice.codePointAt(3));
+        assertEquals('b', slice.codePointAt(~1));
+
+        assertThrows(IndexOutOfBoundsException.class, () -> slice.codePointAt(4));
+        assertThrows(IndexOutOfBoundsException.class, () -> slice.codePointAt(~0));
+        assertThrows(IndexOutOfBoundsException.class, () -> slice.codePointAt(~5));
     }
 
     @Test
@@ -161,10 +180,38 @@ public class StringSliceTest {
         assertSliceEquals("abc", StringSlice.of(" abc ").trim());
         assertSliceEquals("abc", StringSlice.of(" abc\t").trim());
         assertSliceEquals("a b\tc", StringSlice.of(" \ta b\tc\t  \t\b").trim());
+        assertSliceEquals("cde", StringSlice.of("abcdef").trim('a', 'b', 'f'));
     }
 
     @Test
+    void removePrefixTest() {
+        assertSliceEquals("abc", StringSlice.of("abc").removePrefix("b"));
+        assertSliceEquals("abc", StringSlice.of("abc").removePrefix(StringSlice.of("b")));
+        assertSliceEquals("bc", StringSlice.of("abc").removePrefix("a"));
+        assertSliceEquals("bc", StringSlice.of("abc").removePrefix(StringSlice.of("a")));
+        assertSliceEquals("c", StringSlice.of("abc").removePrefix("ab"));
+        assertSliceEquals("c", StringSlice.of("abc").removePrefix(StringSlice.of("ab")));
+        assertSliceEquals("", StringSlice.of("abc").removePrefix("abc"));
+        assertSliceEquals("", StringSlice.of("abc").removePrefix(StringSlice.of("abc")));
+    }
+
+    @Test
+    void removeSuffixTest() {
+        assertSliceEquals("abc", StringSlice.of("abc").removeSuffix("b"));
+        assertSliceEquals("abc", StringSlice.of("abc").removeSuffix(StringSlice.of("b")));
+        assertSliceEquals("ab", StringSlice.of("abc").removeSuffix("c"));
+        assertSliceEquals("ab", StringSlice.of("abc").removeSuffix(StringSlice.of("c")));
+        assertSliceEquals("a", StringSlice.of("abc").removeSuffix("bc"));
+        assertSliceEquals("a", StringSlice.of("abc").removeSuffix(StringSlice.of("bc")));
+        assertSliceEquals("", StringSlice.of("abc").removeSuffix("abc"));
+        assertSliceEquals("", StringSlice.of("abc").removeSuffix(StringSlice.of("abc")));
+    }
+
+
+    @Test
     void replaceTest() {
+        assertSliceEquals("abc", StringSlice.of("abc").replace('a', 'a'));
+        assertSliceEquals("abc", StringSlice.of("abc").replace('d', 'z'));
         assertSliceEquals("zbc", StringSlice.of("abc").replace('a', 'z'));
         assertSliceEquals("zzbcz", StringSlice.of("aabca").replace('a', 'z'));
     }
@@ -177,6 +224,9 @@ public class StringSliceTest {
 
     @Test
     void repeatTest() {
+        assertThrows(IllegalArgumentException.class, () -> StringSlice.of("abc").repeat(-1));
+        assertThrows(IllegalArgumentException.class, () -> StringSlice.of("abc").repeat(-2));
+        assertThrows(IllegalArgumentException.class, () -> StringSlice.of("abc").repeat(Integer.MIN_VALUE));
         assertSliceEquals("", StringSlice.empty().repeat(0));
         assertSliceEquals("", StringSlice.empty().repeat(1));
         assertSliceEquals("", StringSlice.empty().repeat(10));
@@ -185,6 +235,31 @@ public class StringSliceTest {
         assertSliceEquals("a".repeat(10), StringSlice.of("a").repeat(10));
         assertSliceEquals("abc", StringSlice.of("abc").repeat(1));
         assertSliceEquals("abc".repeat(10), StringSlice.of("abc").repeat(10));
+    }
+
+    @Test
+    void toLowerCaseTest() {
+        assertSliceEquals("", StringSlice.of("").toLowerCase());
+        assertSliceEquals("abc", StringSlice.of("abc").toLowerCase());
+        assertSliceEquals("abc", StringSlice.of("ABC").toLowerCase());
+        assertSliceEquals("abc", StringSlice.of("AbC").toLowerCase());
+        assertSliceEquals("abc", StringSlice.of(" AbC ", 1, ~1).toLowerCase());
+
+        //noinspection UnnecessaryUnicodeEscape
+        assertSliceEquals("i\u0307", StringSlice.of("İ").toLowerCase());
+        assertSliceEquals("i", StringSlice.of("İ").toLowerCase(Locale.of("tr")));
+    }
+
+    @Test
+    void toUpperCaseTest() {
+        assertSliceEquals("", StringSlice.of("").toUpperCase());
+        assertSliceEquals("ABC", StringSlice.of("ABC").toUpperCase());
+        assertSliceEquals("ABC", StringSlice.of("abc").toUpperCase());
+        assertSliceEquals("ABC", StringSlice.of("aBc").toUpperCase());
+        assertSliceEquals("ABC", StringSlice.of(" aBc ", 1, ~1).toUpperCase());
+
+        assertSliceEquals("I", StringSlice.of("i").toUpperCase());
+        assertSliceEquals("İ", StringSlice.of("i").toUpperCase(Locale.of("tr")));
     }
 
     @Test
