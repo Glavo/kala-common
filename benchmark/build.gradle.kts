@@ -29,7 +29,7 @@ tasks.compileJava {
     options.release.set(21)
 }
 
-tasks.create<JavaExec>("runBenchmark") {
+tasks.register<JavaExec>("runBenchmark") {
     classpath = sourceSets.main.get().runtimeClasspath
 
     mainClass.set("kala.benchmark.Main")

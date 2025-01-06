@@ -33,32 +33,12 @@ class GeneratePlugin : Plugin<Project> {
                 srcDir(srcGen)
             }
 
-        val generateSources = project.tasks.create<GenerateTask>("generateSources") {
+        val generateSources = project.tasks.register<GenerateTask>("generateSources") {
             templateDirectory = project.file("src/main/template").absolutePath
             generateSourceDirectory = srcGen.absolutePath
         }
 
         project.tasks["compileJava"].dependsOn(generateSources)
         project.tasks["sourcesJar"].dependsOn(generateSources)
-
-        for (multiVersion in 9..21) {
-            if (project.file("src/main/template-java$multiVersion").exists()) {
-                val srcGenMulti = buildDir.resolve("src-gen-java$multiVersion")
-                val generateJavaMultiSources = project.tasks.create<GenerateTask>("generateJava${multiVersion}Sources") {
-                    templateDirectory = project.file("src/main/template-java$multiVersion").absolutePath
-                    generateSourceDirectory = srcGenMulti.absolutePath
-                }
-
-                project.extensions.getByType(JavaPluginExtension::class.java)
-                    .sourceSets
-                    .getByName("java$multiVersion")
-                    .java {
-                        srcDir(srcGenMulti)
-                    }
-
-                project.tasks["compileJava${multiVersion}Java"].dependsOn(generateJavaMultiSources)
-                project.tasks["sourcesJar"].dependsOn(generateJavaMultiSources)
-            }
-        }
     }
 }
