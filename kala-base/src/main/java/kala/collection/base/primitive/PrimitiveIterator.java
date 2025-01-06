@@ -18,14 +18,11 @@ package kala.collection.base.primitive;
 import kala.annotations.ReplaceWith;
 import kala.collection.base.Iterators;
 import kala.control.AnyOption;
-import kala.control.primitive.CharOption;
-import kala.tuple.Tuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 public interface PrimitiveIterator<T, T_CONSUMER> extends java.util.PrimitiveIterator<T, T_CONSUMER> {
 
