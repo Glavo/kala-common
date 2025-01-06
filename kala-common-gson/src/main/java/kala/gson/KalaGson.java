@@ -42,9 +42,6 @@ public final class KalaGson {
     }
 
     public static Gson createKalaGson() {
-
-        
-
         return registerKalaTypeAdapters(new GsonBuilder()).create();
     }
 }

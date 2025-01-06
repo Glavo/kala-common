@@ -30,7 +30,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Objects;
 
-
 /*
  * It is difficult to convert the exception to json. Do we want to provide it?
  */
