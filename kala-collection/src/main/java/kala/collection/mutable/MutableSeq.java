@@ -47,6 +47,11 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E>, MutableAnyS
         return CollectionFactory.narrow(MutableArray.factory());
     }
 
+    @Contract("_ -> new")
+    static <E> @NotNull MutableSeq<E> create(int size) {
+        return MutableArray.create(size);
+    }
+
     static <E> @NotNull MutableSeq<E> of() {
         return MutableArray.of();
     }
