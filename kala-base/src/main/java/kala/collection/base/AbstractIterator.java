@@ -22,9 +22,10 @@ import java.util.NoSuchElementException;
 
 public abstract class AbstractIterator<@Covariant E> implements Iterator<E> {
 
+    /// @throws NoSuchElementException when `hasNext()` returns `false`.
     protected void checkStatus() throws NoSuchElementException {
         if (!hasNext()) {
-            throw new NoSuchElementException();
+            throw new NoSuchElementException("The iterator has no more elements");
         }
     }
 

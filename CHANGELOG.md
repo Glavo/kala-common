@@ -6,7 +6,9 @@
 
 Methods:
 
-* `MutableSeq::setAll(E...)`
+* `kala.text.StringSlice::split(String)`
+* `kala.text.StringSlice::split(String, int)`
+* `kala.collection.mutable.MutableSeq::setAll(E...)`
 
 ### Removed
 

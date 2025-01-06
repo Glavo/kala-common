@@ -199,6 +199,18 @@ public class StringSliceTest {
         assertSlicesEquals(List.of("", "a", "", "b", ""), StringSlice.of(":a::b:").split(':'));
         assertSlicesEquals(List.of("", "a", "", "b", ""), StringSlice.of("\uD83D\uDE00a\uD83D\uDE00\uD83D\uDE00b\uD83D\uDE00").split(Character.toCodePoint('\uD83D', '\uDE00')));
         assertSlicesEquals(List.of("", "a", ":b:"), StringSlice.of(":a::b:").split(':', 3));
+
+        assertSlicesEquals(List.of(""), StringSlice.of("").split(":"));
+        assertSlicesEquals(List.of(""), StringSlice.of("").split(""));
+        assertSlicesEquals(List.of("a", "b", "c"), StringSlice.of("abc").split(""));
+        assertSlicesEquals(List.of("a", "b"), StringSlice.of("a:b").split(":"));
+        assertSlicesEquals(List.of("a", "b"), StringSlice.of("a::b").split("::"));
+        assertSlicesEquals(List.of("a", "", "b"), StringSlice.of("a::b").split(":"));
+        assertSlicesEquals(List.of("a", "", "b"), StringSlice.of("a::::b").split("::"));
+        assertSlicesEquals(List.of("", "a", "", "b", ""), StringSlice.of(":a::b:").split(":"));
+        assertSlicesEquals(List.of("", "a", "", "b", ""), StringSlice.of("::a::::b::").split("::"));
+        assertSlicesEquals(List.of("", "a", ":b:"), StringSlice.of(":a::b:").split(":", 3));
+        assertSlicesEquals(List.of("", "a", "::b::"), StringSlice.of("::a::::b::").split("::", 3));
     }
 
     @Test

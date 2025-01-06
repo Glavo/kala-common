@@ -38,6 +38,7 @@ import java.nio.charset.*;
 import java.text.BreakIterator;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -133,8 +134,7 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         endIndex = Indexes.checkEndIndex(beginIndex, endIndex, length);
 
         int resLength = endIndex - beginIndex;
-        if (resLength == 0)
-            return CharArrays.EMPTY;
+        if (resLength == 0) return CharArrays.EMPTY;
 
         char[] res = new char[resLength];
         value.getChars(offset + beginIndex, offset + endIndex, res, 0);
@@ -157,17 +157,12 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         beginIndex = Indexes.checkBeginIndex(beginIndex, length);
         endIndex = Indexes.checkEndIndex(beginIndex, endIndex, length);
 
-        if (beginIndex == endIndex)
-            return ByteArrays.EMPTY;
-        if (this.value.length() == endIndex - beginIndex)
-            return this.value.getBytes(charset);
+        if (beginIndex == endIndex) return ByteArrays.EMPTY;
+        if (this.value.length() == endIndex - beginIndex) return this.value.getBytes(charset);
 
         ByteBuffer result;
         try {
-            result = charset.newEncoder()
-                    .onMalformedInput(CodingErrorAction.REPLACE)
-                    .onUnmappableCharacter(CodingErrorAction.REPLACE)
-                    .encode(CharBuffer.wrap(value, beginIndex + offset, endIndex + offset));
+            result = charset.newEncoder().onMalformedInput(CodingErrorAction.REPLACE).onUnmappableCharacter(CodingErrorAction.REPLACE).encode(CharBuffer.wrap(value, beginIndex + offset, endIndex + offset));
         } catch (CharacterCodingException e) {
             throw new AssertionError(e);
         }
@@ -230,10 +225,8 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     }
 
     public @NotNull StringSlice concat(@NotNull String other) {
-        if (other.isEmpty())
-            return this;
-        if (this.isEmpty())
-            return StringSlice.of(other);
+        if (other.isEmpty()) return this;
+        if (this.isEmpty()) return StringSlice.of(other);
 
         StringBuilder builder = new StringBuilder(this.length + other.length());
         this.appendTo(builder);
@@ -242,10 +235,8 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     }
 
     public @NotNull StringSlice concat(@NotNull StringSlice other) {
-        if (other.isEmpty())
-            return this;
-        if (this.isEmpty())
-            return other;
+        if (other.isEmpty()) return this;
+        if (this.isEmpty()) return other;
 
         StringBuilder builder = new StringBuilder(this.length + other.length());
         this.appendTo(builder);
@@ -347,9 +338,7 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         }
 
         if (this.length == 1) {
-            return this.value.length() == 1
-                    ? StringSlice.of(this.value.repeat(times))
-                    : StringSlice.of(String.valueOf(this.value.charAt(offset)).repeat(times));
+            return this.value.length() == 1 ? StringSlice.of(this.value.repeat(times)) : StringSlice.of(String.valueOf(this.value.charAt(offset)).repeat(times));
         }
 
         long newLength = (long) this.length * times;
@@ -411,7 +400,21 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     }
 
     public @NotNull Traversable<StringSlice> split(int delimiter, int limit) {
-        return Traversable.ofSupplier(() -> new SplitIterator(this, delimiter, limit));
+        return Traversable.ofSupplier(() -> new CharDelimiterIterator(this, delimiter, limit));
+    }
+
+    public @NotNull Traversable<StringSlice> split(String delimiter) {
+        return split(delimiter, 0);
+    }
+
+    public @NotNull Traversable<StringSlice> split(String delimiter, int limit) {
+        return switch (delimiter.length()) {
+            case 0 -> this.isEmpty()
+                    ? Traversable.wrap(List.of(EMPTY))
+                    : Traversable.ofSupplier(() -> new ZeroLengthStringDelimiterIterator(this, limit));
+            case 1 -> split(delimiter.charAt(0), limit);
+            default -> Traversable.ofSupplier(() -> new StringDelimiterIterator(this, delimiter, limit));
+        };
     }
 
     // ---
@@ -444,8 +447,7 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     }
 
     public boolean startsWith(@NotNull String prefix, int toIndex) {
-        if (toIndex < 0 || toIndex > this.length - prefix.length())
-            return false;
+        if (toIndex < 0 || toIndex > this.length - prefix.length()) return false;
         return value.regionMatches(offset + toIndex, prefix, 0, prefix.length());
     }
 
@@ -454,8 +456,7 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     }
 
     public boolean startsWith(@NotNull StringSlice prefix, int toIndex) {
-        if (toIndex < 0 || toIndex > this.length - prefix.length())
-            return false;
+        if (toIndex < 0 || toIndex > this.length - prefix.length()) return false;
         return value.regionMatches(offset + toIndex, prefix.value, prefix.offset, prefix.length);
     }
 
@@ -546,17 +547,13 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     }
 
     public boolean contentEquals(@NotNull CharSequence other) {
-        if (this.length != other.length())
-            return false;
+        if (this.length != other.length()) return false;
 
-        if (other instanceof StringSlice s)
-            return contentEquals(s);
-        if (other instanceof String s)
-            return contentEquals(s);
+        if (other instanceof StringSlice s) return contentEquals(s);
+        if (other instanceof String s) return contentEquals(s);
 
         for (int i = 0; i < this.length; i++) {
-            if (this.value.charAt(offset + i) != other.charAt(i))
-                return false;
+            if (this.value.charAt(offset + i) != other.charAt(i)) return false;
         }
         return true;
     }
@@ -570,11 +567,9 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     }
 
     public boolean contentEqualsIgnoreCase(@NotNull CharSequence other) {
-        if (this.length != other.length())
-            return false;
+        if (this.length != other.length()) return false;
 
-        if (other instanceof StringSlice)
-            return contentEqualsIgnoreCase(((StringSlice) other));
+        if (other instanceof StringSlice) return contentEqualsIgnoreCase(((StringSlice) other));
 
         return contentEqualsIgnoreCase(other.toString());
     }
@@ -875,8 +870,7 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
     @Override
     public int hashCode() {
         int h = hash;
-        if (h != 0)
-            return h;
+        if (h != 0) return h;
 
         for (int i = offset, end = offset + length; i < end; i++) {
             h = 31 * h + value.charAt(i);
@@ -905,13 +899,12 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         for (int i = 0; i < lim; i++) {
             char c1 = this.charAt(i);
             char c2 = other.charAt(i);
-            if (c1 != c2)
-                return c1 - c2;
+            if (c1 != c2) return c1 - c2;
         }
         return this.length - other.length;
     }
 
-    private static final class SplitIterator extends AbstractIterator<StringSlice> {
+    private static final class CharDelimiterIterator extends AbstractIterator<StringSlice> {
         private final String value;
         private final int end;
         private final int delimiter;
@@ -922,7 +915,7 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         private int resultCount = 0;
         private boolean hasTrailingEmpty = true;
 
-        private SplitIterator(StringSlice slice, int delimiter, int limit) {
+        private CharDelimiterIterator(StringSlice slice, int delimiter, int limit) {
             this.value = slice.value;
             this.end = slice.offset + slice.length;
             this.delimiter = delimiter;
@@ -961,6 +954,100 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
             } else {
                 result = StringSlice.of(value, index, end);
                 hasTrailingEmpty = false;
+                index = end;
+            }
+            resultCount++;
+            return result;
+        }
+    }
+
+    private static final class StringDelimiterIterator extends AbstractIterator<StringSlice> {
+        private final String value;
+        private final int end;
+        private final String delimiter;
+        private final int limit;
+
+        private int index;
+        private int resultCount = 0;
+        private boolean hasTrailingEmpty = true;
+
+        private StringDelimiterIterator(StringSlice slice, String delimiter, int limit) {
+            this.value = slice.value;
+            this.end = slice.offset + slice.length;
+            this.delimiter = delimiter;
+            this.index = slice.offset;
+            this.limit = limit;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return index < end || hasTrailingEmpty;
+        }
+
+        @Override
+        public StringSlice next() {
+            if (index >= end) {
+                if (hasTrailingEmpty) {
+                    hasTrailingEmpty = false;
+                    return StringSlice.empty();
+                } else {
+                    throw new NoSuchElementException();
+                }
+            }
+
+            StringSlice result;
+            if (limit <= 0 || resultCount < limit - 1) {
+                int delimiterIdx = value.indexOf(delimiter, index, end);
+                if (delimiterIdx < 0) {
+                    result = StringSlice.of(value, index, end);
+                    hasTrailingEmpty = false;
+                    index = end;
+                } else {
+                    result = StringSlice.of(value, index, delimiterIdx);
+                    index = delimiterIdx + delimiter.length();
+                }
+            } else {
+                result = StringSlice.of(value, index, end);
+                hasTrailingEmpty = false;
+                index = end;
+            }
+            resultCount++;
+            return result;
+        }
+    }
+
+    private static final class ZeroLengthStringDelimiterIterator extends AbstractIterator<StringSlice> {
+        private final String value;
+        private final int end;
+        private final int limit;
+
+        private int index;
+        private int resultCount = 0;
+
+        private ZeroLengthStringDelimiterIterator(StringSlice slice, int limit) {
+            assert slice.isNotEmpty();
+
+            this.value = slice.value;
+            this.end = slice.offset + slice.length;
+            this.index = slice.offset;
+            this.limit = limit;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return index < end;
+        }
+
+        @Override
+        public StringSlice next() {
+            checkStatus();
+
+            StringSlice result;
+            if (limit <= 0 || resultCount < limit - 1) {
+                result = StringSlice.of(value, index, index + 1);
+                index++;
+            } else {
+                result = StringSlice.of(value, index, end);
                 index = end;
             }
             resultCount++;
