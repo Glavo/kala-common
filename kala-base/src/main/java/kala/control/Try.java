@@ -91,12 +91,11 @@ public sealed interface Try<@Covariant T> extends AnyTry<T>, Traversable<T>, Ser
      */
     @Contract("_ -> fail")
     static <R> R sneakyThrow(Throwable exception) {
-        sneakyThrow0(exception);
-        return null; // make compiler happy
+        return sneakyThrow0(exception);
     }
 
     @Contract("_ -> fail")
-    private static <Ex extends Throwable> void sneakyThrow0(Throwable exception) throws Ex {
+    private static <R, Ex extends Throwable> R sneakyThrow0(Throwable exception) throws Ex {
         throw (Ex) exception;
     }
 
@@ -306,7 +305,7 @@ public sealed interface Try<@Covariant T> extends AnyTry<T>, Traversable<T>, Ser
     @Override
     default @NotNull Throwable getCause() {
         return switch (this) {
-            case Success<T> __ -> throw new UnsupportedOperationException();
+            case Success<T> ignored -> throw new UnsupportedOperationException();
             case Failure(var cause) -> cause;
         };
     }

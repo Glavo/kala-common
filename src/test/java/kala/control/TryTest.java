@@ -25,10 +25,10 @@ import java.util.concurrent.atomic.LongAdder;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TryTest {
+public final class TryTest {
 
     @Test
-    public void throwExceptionTest() {
+    void throwExceptionTest() {
         MyException ex = new MyException();
 
         assertThrows(MyException.class, () -> Try.throwException(ex));
@@ -36,7 +36,16 @@ public class TryTest {
     }
 
     @Test
-    public void ofTest() {
+    void maybeThrowsTest() {
+        try {
+            Try.<IOException>maybeThrows();
+        } catch (IOException ignored) {
+            // empty
+        }
+    }
+
+    @Test
+    void ofTest() {
         assertEquals(Try.success("foo"), Try.of(() -> "foo"));
         assertEquals(Try.success("foo"), Try.ofCallable(() -> "foo"));
         assertEquals(Try.success(null), Try.runCatching(() -> {
@@ -55,7 +64,7 @@ public class TryTest {
     }
 
     @Test
-    public void runTest() {
+    void runTest() {
         assertDoesNotThrow(() -> Try.runIgnoreException(() -> {
             throw new MyException();
         }));
@@ -64,7 +73,7 @@ public class TryTest {
     }
 
     @Test
-    public void usingTest() {
+    void usingTest() {
         class CloseableImpl implements AutoCloseable {
             final LongAdder adder;
 
@@ -176,7 +185,7 @@ public class TryTest {
     }
 
     @Test
-    public void getTest() {
+    void getTest() {
         MyException ex = new MyException();
         Exception defaultValue = new Exception();
 
@@ -217,7 +226,7 @@ public class TryTest {
     }
 
     @Test
-    public void recoverTest() {
+    void recoverTest() {
         MyException ex0 = new MyException();
         IllegalArgumentException ex1 = new IllegalArgumentException();
 
@@ -248,7 +257,7 @@ public class TryTest {
     }
 
     @Test
-    public void rethrowTest() {
+    void rethrowTest() {
         MyException ex = new MyException();
 
         Try<String> success = Try.success("foo");
@@ -268,7 +277,7 @@ public class TryTest {
     }
 
     @Test
-    public void toEitherTest() {
+    void toEitherTest() {
         MyException ex = new MyException();
 
         assertEquals(Either.right("foo"), Try.success("foo").toEither());
@@ -276,7 +285,7 @@ public class TryTest {
     }
 
     @Test
-    public void toResultTest() {
+    void toResultTest() {
         MyException ex = new MyException();
 
         assertEquals(Result.ok("foo"), Try.success("foo").toResult());
@@ -284,7 +293,7 @@ public class TryTest {
     }
 
     @Test
-    public void mapTest() {
+    void mapTest() {
         MyException ex = new MyException();
 
         assertEquals(Try.success(3), Try.success("foo").map(String::length));
@@ -293,7 +302,7 @@ public class TryTest {
     }
 
     @Test
-    public void flatMapTest() {
+    void flatMapTest() {
         MyException ex = new MyException();
 
         Try<String> success = Try.success("foo");
@@ -312,13 +321,13 @@ public class TryTest {
     }
 
     @Test
-    public void iteratorTest() {
+    void iteratorTest() {
         assertIterableEquals(List.of("foo"), Try.success("foo"));
         assertIterableEquals(List.of(), Try.failure(new MyException()));
     }
 
     @Test
-    public void forEachTest() {
+    void forEachTest() {
         MyException ex = new MyException();
 
         Try<String> success = Try.success("foo");
@@ -337,7 +346,7 @@ public class TryTest {
     }
 
     @Test
-    public void serializationTest() throws IOException, ClassNotFoundException {
+    void serializationTest() throws IOException, ClassNotFoundException {
         assertEquals(Try.success("foo"), SerializationUtils.writeAndRead(Try.success("foo")));
         assertInstanceOf(MyException.class, SerializationUtils.writeAndRead(Try.failure(new MyException())).getCause());
     }
