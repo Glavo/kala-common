@@ -20,10 +20,14 @@ import kala.collection.immutable.ImmutableVector;
 import kala.collection.mutable.MutableList;
 import kala.comparator.Comparators;
 import kala.control.Option;
+import kala.tuple.Tuple;
+import kala.tuple.Tuple2;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import static kala.ExtendedAssertions.assertIteratorEquals;
@@ -872,5 +876,47 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
 
         from(List.of("A", "B", "C")).forEachIndexed((i, v) -> al.add(Map.entry(i, v)));
         assertIterableEquals(List.of(Map.entry(0, "A"), Map.entry(1, "B"), Map.entry(2, "C")), al);
+    }
+
+    @Test
+    default void forEachWithTest() {
+        var result = new ArrayList<String>();
+        BiConsumer<String, Integer> adder = (s, i) -> result.add(s + i);
+
+        this.<String>of().forEachWith(of(1, 2, 3), adder);
+        assertIterableEquals(List.of(), result);
+
+        result.clear();
+        of("A", "B", "C").forEachWith(of(), adder);
+        assertIterableEquals(List.of(), result);
+
+        result.clear();
+        of("A", "B", "C").forEachWith(of(1), adder);
+        assertIterableEquals(List.of("A1"), result);
+
+        result.clear();
+        of("A", "B", "C").forEachWith(of(1, 2, 3, 4), adder);
+        assertIterableEquals(List.of("A1", "B2", "C3"), result);
+    }
+
+    @Test
+    default void forEachCrossTest() {
+        var result = new ArrayList<String>();
+        BiConsumer<String, Integer> adder = (s, i) -> result.add(s + i);
+
+        this.<String>of().forEachCross(of(1, 2, 3), adder);
+        assertIterableEquals(List.of(), result);
+
+        result.clear();
+        of("A", "B", "C").forEachCross(of(), adder);
+        assertIterableEquals(List.of(), result);
+
+        result.clear();
+        of("A", "B", "C").forEachCross(of(1), adder);
+        assertIterableEquals(List.of("A1", "B1", "C1"), result);
+
+        result.clear();
+        of("A", "B", "C").forEachCross(of(1, 2, 3), adder);
+        assertIterableEquals(List.of("A1", "A2", "A3", "B1", "B2", "B3", "C1", "C2", "C3"), result);
     }
 }

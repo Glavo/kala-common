@@ -1146,14 +1146,43 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         Iterators.forEachWith(this.iterator(), other.iterator(), action);
     }
 
+    @ApiStatus.NonExtendable
+    @DelegateBy("forEachWith(Iterable<U>, BiConsumer<T, U>)")
     default <U, Ex extends Throwable> void forEachWithChecked(@NotNull Iterable<? extends U> other,
                                                               @NotNull CheckedBiConsumer<? super T, ? super U, ? extends Ex> action) throws Ex {
         forEachWith(other, action);
     }
 
+    @ApiStatus.NonExtendable
+    @DelegateBy("forEachWith(Iterable<U>, BiConsumer<T, U>)")
     default <U> void forEachWithUnchecked(@NotNull Iterable<? extends U> other,
                                           @NotNull CheckedBiConsumer<? super T, ? super U, ?> action) {
         forEachWith(other, action);
+    }
+
+    default <U> void forEachCross(@NotNull Iterable<? extends U> other, @NotNull BiConsumer<? super T, ? super U> action) {
+        Objects.requireNonNull(other);
+        Objects.requireNonNull(action);
+
+        for (T value1 : this) {
+            for (U value2 : other) {
+                action.accept(value1, value2);
+            }
+        }
+    }
+
+    @ApiStatus.NonExtendable
+    @DelegateBy("forEachCross(Iterable<U>, BiConsumer<T, U>)")
+    default <U, Ex extends Throwable> void forEachCrossChecked(@NotNull Iterable<? extends U> other,
+                                                              @NotNull CheckedBiConsumer<? super T, ? super U, ? extends Ex> action) throws Ex {
+        forEachCross(other, action);
+    }
+
+    @ApiStatus.NonExtendable
+    @DelegateBy("forEachCross(Iterable<U>, BiConsumer<T, U>)")
+    default <U> void forEachCrossUnchecked(@NotNull Iterable<? extends U> other,
+                                          @NotNull CheckedBiConsumer<? super T, ? super U, ?> action) {
+        forEachCross(other, action);
     }
 
     //endregion
