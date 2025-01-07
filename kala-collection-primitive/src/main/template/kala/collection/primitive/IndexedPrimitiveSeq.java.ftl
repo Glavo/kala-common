@@ -15,5 +15,12 @@
  */
 package kala.collection.primitive;
 
+import org.jetbrains.annotations.ApiStatus;
+
 public interface Indexed${Type}Seq extends Indexed${Type}SeqLike, ${Type}Seq {
+    @Override
+    @ApiStatus.NonExtendable
+    default int knownSize() {
+        return size();
+    }
 }

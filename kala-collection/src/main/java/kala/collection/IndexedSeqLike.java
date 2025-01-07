@@ -27,6 +27,7 @@ import kala.function.IndexedConsumer;
 import kala.function.IndexedFunction;
 import kala.index.Index;
 import kala.index.Indexes;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -90,6 +91,7 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     //region Positional Access Operations
 
     @Override
+    @ApiStatus.NonExtendable
     default boolean supportsFastRandomAccess() {
         return true;
     }

@@ -239,11 +239,6 @@ public final class SeqViews {
         }
 
         @Override
-        public boolean supportsFastRandomAccess() {
-            return true;
-        }
-
-        @Override
         public @NotNull Iterator<E> iterator() {
             return (Iterator<E>) GenericArrays.iterator(array, beginIndex, endIndex);
         }

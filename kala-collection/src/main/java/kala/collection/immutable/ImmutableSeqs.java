@@ -521,6 +521,11 @@ final class ImmutableSeqs {
         }
 
         @Override
+        public final int knownSize() {
+            return size;
+        }
+
+        @Override
         public final @NotNull Iterator<E> iterator() {
             return Iterators.fill(size, value);
         }
