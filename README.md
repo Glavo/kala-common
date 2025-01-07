@@ -8,30 +8,32 @@
 This is a powerful set of Java base libraries that provide a series of easy-to-use abstractions and collections.
 If you have used Scala, it should be easy for you to get started with this collection library.
 
-It's not production ready and the API may change significantly in the future,
-but we already use it in Aya language:
-[aya-prover/aya-dev](https://github.com/aya-prover/aya-dev)
+> [!NOTE]
+> This library is not production ready.
+> When [JEP 218 (Generics over Primitive Types)](https://openjdk.org/jeps/218) and [JEP 401 (Value Classes and Objects)](https://openjdk.org/jeps/401) were delivered, 
+> we needed to redesign many APIs.
+> 
+> Until Kala Common is production-ready, we do not recommend that you use this library for production.
 
 Its documentation is not ready, please contact me if you have any questions.
 
 This project is hosted on GitHub: [Glavo/kala-common](https://github.com/Glavo/kala-common). 
 
-## Adding Kala to your build
-
-Please replace `$kala_version` with the current kala version.
+## Add Kala Common to your project
 
 Maven:
+
 ```xml
 <dependency>
   <groupId>org.glavo.kala</groupId>
   <artifactId>kala-common</artifactId>
-  <version>$kala_version</version>
+  <version>0.79.0</version>
 </dependency>
 ```
 
 Gradle:
 ```kotlin
-implementation("org.glavo.kala:kala-common:$kala_version")
+implementation("org.glavo.kala:kala-common:0.79.0")
 ```
 
 ## Note
