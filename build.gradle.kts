@@ -179,6 +179,10 @@ tasks.jacocoTestReport {
     }
 }
 
+tasks.register<ReleaseNoteTask>("releaseNote") {
+    group = "documentation"
+}
+
 // ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository
 nexusPublishing {
     repositories {
