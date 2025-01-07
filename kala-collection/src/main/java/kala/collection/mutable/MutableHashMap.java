@@ -77,7 +77,6 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
         super(hasher, initialCapacity, loadFactor);
     }
 
-
     /**
      * @see #clone()
      */

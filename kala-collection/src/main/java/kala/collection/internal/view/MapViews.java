@@ -168,16 +168,6 @@ public final class MapViews {
         }
 
         @Override
-        public <Ex extends Throwable> void forEachChecked(@NotNull CheckedBiConsumer<? super K, ? super V, ? extends Ex> consumer) throws Ex {
-            source.forEachChecked(consumer);
-        }
-
-        @Override
-        public void forEachUnchecked(@NotNull CheckedBiConsumer<? super K, ? super V, ?> consumer) {
-            source.forEachUnchecked(consumer);
-        }
-
-        @Override
         public <A extends Appendable> @NotNull A joinTo(@NotNull A buffer) {
             return source.joinTo(buffer);
         }

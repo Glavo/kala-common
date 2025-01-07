@@ -15,6 +15,7 @@
  */
 package kala.collection;
 
+import kala.annotations.DelegateBy;
 import kala.collection.base.Growable;
 import kala.collection.base.MapIterator;
 import kala.collection.immutable.*;
@@ -22,6 +23,7 @@ import kala.collection.internal.view.MapViews;
 import kala.control.Option;
 import kala.function.CheckedBiConsumer;
 import kala.tuple.Tuple2;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -221,12 +223,16 @@ public interface MapLike<K, V> extends AnyMapLike<K, V> {
         }
     }
 
+    @ApiStatus.NonExtendable
+    @DelegateBy("forEach(BiConsumer<K, V>)")
     default <Ex extends Throwable> void forEachChecked(
             @NotNull CheckedBiConsumer<? super K, ? super V, ? extends Ex> consumer
     ) throws Ex {
         forEach(consumer);
     }
 
+    @ApiStatus.NonExtendable
+    @DelegateBy("forEach(BiConsumer<K, V>)")
     default void forEachUnchecked(@NotNull CheckedBiConsumer<? super K, ? super V, ?> consumer) {
         forEach(consumer);
     }
