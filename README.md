@@ -11,7 +11,7 @@ If you have used Scala, it should be easy for you to get started with this colle
 > [!NOTE]
 > This library is not production ready.
 > When [JEP 218 (Generics over Primitive Types)](https://openjdk.org/jeps/218) and [JEP 401 (Value Classes and Objects)](https://openjdk.org/jeps/401) were delivered, 
-> we needed to redesign many APIs.
+> we needed to redesign many APIs. (See [#76](https://github.com/Glavo/kala-common/issues/76) for more details)
 > 
 > Until Kala Common is production-ready, we do not recommend that you use this library for production.
 
