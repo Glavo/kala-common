@@ -82,11 +82,6 @@ sealed class MutableCopyOnWriteSeqBase<E, S extends MutableSeq<E>> extends Abstr
         return source.size();
     }
 
-    @Override
-    public int knownSize() {
-        return source.knownSize();
-    }
-
     //endregion
 
     @Override

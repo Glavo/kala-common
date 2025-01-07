@@ -180,11 +180,6 @@ public class ${Type}ArraySeq extends Abstract${Type}Seq implements Indexed${Type
         return elements.length;
     }
 
-    @Override
-    public final int knownSize() {
-        return elements.length;
-    }
-
     //endregion
 
     @Override

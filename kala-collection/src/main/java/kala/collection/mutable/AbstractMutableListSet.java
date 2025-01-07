@@ -18,12 +18,14 @@ package kala.collection.mutable;
 import kala.collection.base.OrderedTraversable;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.function.IntFunction;
 
 abstract class AbstractMutableListSet<E, L extends MutableList<E>> extends AbstractMutableSet<E>
         implements OrderedTraversable<E>, Serializable {
+    @Serial
     private static final long serialVersionUID = 0L;
 
     protected final L values;
@@ -44,11 +46,6 @@ abstract class AbstractMutableListSet<E, L extends MutableList<E>> extends Abstr
 
     @Override
     public int size() {
-        return values.size();
-    }
-
-    @Override
-    public int knownSize() {
         return values.size();
     }
 

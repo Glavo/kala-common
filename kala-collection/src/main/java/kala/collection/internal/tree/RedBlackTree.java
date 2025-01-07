@@ -377,10 +377,6 @@ public abstract class RedBlackTree<A, N extends RedBlackTree.Node<A, N>> impleme
         return size;
     }
 
-    public int knownSize() {
-        return size;
-    }
-
     public final void clear() {
         root = null;
         size = 0;

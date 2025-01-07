@@ -561,11 +561,6 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
     }
 
     @Override
-    public int knownSize() {
-        return len;
-    }
-
-    @Override
     public void push(E value) {
         prepend(value);
     }

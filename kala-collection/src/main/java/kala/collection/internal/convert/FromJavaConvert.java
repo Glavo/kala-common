@@ -72,11 +72,6 @@ public final class FromJavaConvert {
         public int size() {
             return source.size();
         }
-
-        @Override
-        public int knownSize() {
-            return size();
-        }
     }
 
     public static class SeqFromJava<E> implements Seq<E> {
@@ -96,11 +91,6 @@ public final class FromJavaConvert {
 
         @Override
         public int size() {
-            return source.size();
-        }
-
-        @Override
-        public int knownSize() {
             return source.size();
         }
 

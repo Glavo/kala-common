@@ -349,11 +349,6 @@ public final class ImmutableSortedArraySet<E>
     }
 
     @Override
-    public int knownSize() {
-        return size();
-    }
-
-    @Override
     public @NotNull ImmutableSortedArraySet<E> added(E value) {
         final int size = elements.length;
 

@@ -21,11 +21,13 @@ import kala.function.ByteConsumer;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.NoSuchElementException;
 
 @ApiStatus.Internal
 public abstract class AbstractDefaultByteSet extends AbstractByteSet implements Serializable {
+    @Serial
     private static final long serialVersionUID = -2058604240590412070L;
 
     protected int size = 0;
@@ -66,33 +68,18 @@ public abstract class AbstractDefaultByteSet extends AbstractByteSet implements 
     }
 
     @Override
-    public int knownSize() {
-        return size;
-    }
-
-    @Override
     public boolean contains(byte value) {
         int v = value + 128;
         int bitsNumber = v / Long.SIZE;
         int bitOffset = v % Long.SIZE;
 
-        long bits;
-        switch (bitsNumber) {
-            case 0:
-                bits = bits0;
-                break;
-            case 1:
-                bits = bits1;
-                break;
-            case 2:
-                bits = bits2;
-                break;
-            case 3:
-                bits = bits3;
-                break;
-            default:
-                throw new AssertionError();
-        }
+        long bits = switch (bitsNumber) {
+            case 0 -> bits0;
+            case 1 -> bits1;
+            case 2 -> bits2;
+            case 3 -> bits3;
+            default -> throw new AssertionError();
+        };
 
         return ((bits >> bitOffset) & 1) != 0;
     }
@@ -108,23 +95,13 @@ public abstract class AbstractDefaultByteSet extends AbstractByteSet implements 
             int bitsNumber = cursor / Long.SIZE;
             int bitOffset = cursor % Long.SIZE;
 
-            long bits;
-            switch (bitsNumber) {
-                case 0:
-                    bits = bits0;
-                    break;
-                case 1:
-                    bits = bits1;
-                    break;
-                case 2:
-                    bits = bits2;
-                    break;
-                case 3:
-                    bits = bits3;
-                    break;
-                default:
-                    throw new AssertionError();
-            }
+            long bits = switch (bitsNumber) {
+                case 0 -> bits0;
+                case 1 -> bits1;
+                case 2 -> bits2;
+                case 3 -> bits3;
+                default -> throw new AssertionError();
+            };
 
             if (((bits >> bitOffset) & 1) != 0) {
                 action.accept((byte) (cursor++ - 128));
@@ -159,23 +136,13 @@ public abstract class AbstractDefaultByteSet extends AbstractByteSet implements 
                 int bitsNumber = cursor / Long.SIZE;
                 int bitOffset = cursor % Long.SIZE;
 
-                long bits;
-                switch (bitsNumber) {
-                    case 0:
-                        bits = bits0;
-                        break;
-                    case 1:
-                        bits = bits1;
-                        break;
-                    case 2:
-                        bits = bits2;
-                        break;
-                    case 3:
-                        bits = bits3;
-                        break;
-                    default:
-                        throw new AssertionError();
-                }
+                long bits = switch (bitsNumber) {
+                    case 0 -> bits0;
+                    case 1 -> bits1;
+                    case 2 -> bits2;
+                    case 3 -> bits3;
+                    default -> throw new AssertionError();
+                };
 
                 if (((bits >> bitOffset) & 1) != 0)
                     return true;

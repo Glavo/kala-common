@@ -63,11 +63,6 @@ public final class AsImmutableConvert {
         public int size() {
             return source.size();
         }
-
-        @Override
-        public int knownSize() {
-            return size();
-        }
     }
 
     public static final class SeqWrapper<E, C extends MutableSeq<E>> extends CollectionWrapper<E, C> implements ImmutableSeq<E> {

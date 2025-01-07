@@ -169,11 +169,6 @@ public interface ${Type}Set extends PrimitiveSet<${WrapperType}>, ${Type}Collect
         return containsTrue() ? 1 : 0;
     }
 
-    @Override
-    default int knownSize() {
-        return size();
-    }
-
     //endregion
 
 </#if>

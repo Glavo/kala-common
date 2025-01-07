@@ -247,11 +247,6 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         return elements.length;
     }
 
-    @Override
-    public final int knownSize() {
-        return elements.length;
-    }
-
     //endregion
 
     @Override

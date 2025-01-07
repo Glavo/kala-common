@@ -152,11 +152,6 @@ public final class MutableEnumSet<E extends Enum<E>> extends AbstractMutableSet<
     }
 
     @Override
-    public int knownSize() {
-        return size();
-    }
-
-    @Override
     public @NotNull Iterator<E> iterator() {
         return enumSet.iterator();
     }

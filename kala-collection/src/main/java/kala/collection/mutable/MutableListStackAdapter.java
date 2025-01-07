@@ -40,11 +40,6 @@ final class MutableListStackAdapter<E> implements MutableStack<E>, Serializable 
     }
 
     @Override
-    public int knownSize() {
-        return seq.knownSize();
-    }
-
-    @Override
     public int size() {
         return seq.size();
     }

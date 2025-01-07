@@ -238,11 +238,6 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
         return size;
     }
 
-    @Override
-    public int knownSize() {
-        return size;
-    }
-
     //endregion
 
     //region Positional Access Operations
@@ -552,11 +547,6 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
 
         @Override
         public final int size() {
-            return len;
-        }
-
-        @Override
-        public final int knownSize() {
             return len;
         }
 

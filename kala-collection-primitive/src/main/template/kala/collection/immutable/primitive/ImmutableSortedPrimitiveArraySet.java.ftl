@@ -150,11 +150,6 @@ public final class ImmutableSorted${Type}ArraySet extends AbstractImmutable${Typ
     }
 
     @Override
-    public int knownSize() {
-        return size();
-    }
-
-    @Override
     public @NotNull ImmutableSorted${Type}ArraySet added(${PrimitiveType} value) {
         final int size = elements.length;
 

@@ -230,11 +230,6 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
     }
 
     @Override
-    public int knownSize() {
-        return size();
-    }
-
-    @Override
     public E get(@Index int index) {
         return root.get(Indexes.checkIndex(index, size()));
     }

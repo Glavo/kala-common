@@ -149,10 +149,6 @@ public abstract class HashBase<K, N extends HashNode<K, N>> implements Serializa
         return contentSize;
     }
 
-    public final int knownSize() {
-        return contentSize;
-    }
-
     public final void sizeHint(int size) {
         final int target = tableSizeFor((int) ((size + 1) / loadFactor));
         if (target > table.length) {

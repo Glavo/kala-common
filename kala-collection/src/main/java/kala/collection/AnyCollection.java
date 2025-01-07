@@ -16,9 +16,16 @@
 package kala.collection;
 
 import kala.Equatable;
+import org.jetbrains.annotations.ApiStatus;
 
 public interface AnyCollection<E> extends AnyCollectionLike<E>, Equatable {
     int SEQ_HASH_MAGIC = -1140647423;
-
     int SET_HASH_MAGIC = 1045751549;
+
+    @Override
+    @ApiStatus.NonExtendable
+    default int knownSize() {
+        // The sizes of collections should be known
+        return size();
+    }
 }
