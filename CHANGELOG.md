@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.80.0
+
+(In development)
+
 ## 0.79.0
 
 (In development)
