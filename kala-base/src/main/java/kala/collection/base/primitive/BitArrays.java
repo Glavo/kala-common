@@ -33,11 +33,19 @@ public final class BitArrays {
         return ((bits >> position) & 1) != 0;
     }
 
+    public static long set(long bits, @Range(from = 0, to = BITS_PRE_VALUE - 1) int position) {
+        return bits | (1L << position);
+    }
+
+    public static long unset(long bits, @Range(from = 0, to = BITS_PRE_VALUE - 1) int position) {
+        return bits & -(1L << position);
+    }
+
     public static long set(long bits, @Range(from = 0, to = BITS_PRE_VALUE - 1) int position, boolean newValue) {
         if (newValue) {
-            return bits | (1L << position);
+            return set(bits, position);
         } else {
-            return bits & -(1L << position);
+            return unset(bits, position);
         }
     }
 

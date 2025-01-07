@@ -2,9 +2,11 @@
 
 ## 0.79.0 (In development)
 
-### Added
+### New APIs
 
-Methods:
+* `kala.collection.mutable.MutableEnumSet` now provides factory methods.
+
+Other new methods:
 
 * `kala.text.StringSlice::split(String)`
 * `kala.text.StringSlice::split(String, int)`
@@ -14,9 +16,10 @@ Methods:
 * `kala.collection.mutable.MutableSeq.create(int)`
 * `kala.collection.mutable.MutableSeq::setAll(E...)`
 
-### Removed
 
-Classes/Interfaces:
+### Removed APIs
+
+The following classes/interfaces have been removed:
 
 * `kala.annotations.UnstableName`
 * `kala.function.Converter`
