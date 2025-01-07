@@ -1,6 +1,6 @@
 # Kala Common
 
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/Glavo/kala-common/blob/main/LICENSE)
 [![Gradle Check](https://github.com/Glavo/kala-common/actions/workflows/check.yml/badge.svg)](https://github.com/Glavo/kala-common/actions/workflows/check.yml)
 [![codecov](https://codecov.io/github/Glavo/kala-common/graph/badge.svg?token=IHM4ZK7K7A)](https://codecov.io/github/Glavo/kala-common)
 ![Code Lines](https://tokei.rs/b1/github/Glavo/kala-common?category=code)
