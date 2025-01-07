@@ -24,8 +24,12 @@ plugins {
 }
 
 allprojects {
-    group = "org.glavo.kala"
-    version = "0.79.0" + "-SNAPSHOT"
+    apply {
+        plugin(ProjectMetadataPlugin::class)
+    }
+
+    group = ext["kala.group"] as String
+    version = ext["kala.version"] as String
 
     description = "Basic components of Kala"
 
