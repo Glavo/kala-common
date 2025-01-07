@@ -78,6 +78,7 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         };
     }
 
+    @ApiStatus.NonExtendable
     default @NotNull Traversable<T> asGeneric() {
         return this;
     }
