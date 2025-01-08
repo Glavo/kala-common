@@ -3,7 +3,7 @@
 Table of contents:
 
 * [Use Kala Collections](#use-kala-collections) (WIP)
-* [Use inverse indexes in Kala Common](#use-reverse-indexes-in-kala-common)
+* [Use reverse indexes in Kala Common](#use-reverse-indexes-in-kala-common)
 * ... (WIP)
 
 ## Use Kala Collections
