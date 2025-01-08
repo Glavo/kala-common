@@ -9,6 +9,9 @@
 The following classes/interfaces have been removed:
 
 * `kala.collection.immutable.ImmutableArraySet`
+* `kala.collection.mutable.AbstractMutableListSet`
+* `kala.collection.mutable.MutableArraySet`
+* `kala.collection.mutable.MutableLinkedSet`
 
 ## 0.79.0
 

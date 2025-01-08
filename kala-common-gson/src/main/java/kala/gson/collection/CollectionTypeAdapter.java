@@ -74,7 +74,8 @@ public class CollectionTypeAdapter<E, C extends CollectionLike<E>> extends TypeA
             if (SetView.class.isAssignableFrom(rawType)) {
                 factory = Set.<E>factory().mapResult(Set::view);
             } else {
-                factory = Seq.<E>factory().mapResult(Seq::view);;
+                factory = Seq.<E>factory().mapResult(Seq::view);
+                ;
             }
         } else {
             // Builtin Types
@@ -120,14 +121,10 @@ public class CollectionTypeAdapter<E, C extends CollectionLike<E>> extends TypeA
                             factory = ImmutableSortedArraySet.factory(null);
                     } else {
                         if (ImmutableSet.class.isAssignableFrom(rawType)) {
-                                factory = ImmutableHashSet.factory();
+                            factory = ImmutableHashSet.factory();
                         } else if (MutableSet.class.isAssignableFrom(rawType)) {
-                            if (MutableLinkedSet.class.isAssignableFrom(rawType))
-                                factory = MutableLinkedSet.factory();
-                            else if (MutableArraySet.class.isAssignableFrom(rawType))
-                                factory = MutableLinkedSet.factory();
-                            else
-                                factory = MutableHashSet.factory();
+
+                            factory = MutableHashSet.factory();
                         } else {
                             factory = ImmutableHashSet.factory();
                         }
