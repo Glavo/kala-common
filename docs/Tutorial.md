@@ -3,6 +3,7 @@
 Table of contents:
 
 * [Use Kala Collections](#use-kala-collections) (WIP)
+* [Use inverse indexes in Kala Common](#use-reverse-indexes-in-kala-common) (WIP)
 * ... (WIP)
 
 ## Use Kala Collections
@@ -137,6 +138,57 @@ var _ = Stream.of(1, 2, 3).collect(Seq.factory()); // ===> [1, 2, 3]
 
 More usage of `CollectionFactory` will be introduced in later chapters.
 
-### 
+### Basic collection operations
 
 (WIP)
+
+## Use reverse indexes in Kala Common
+
+There are many APIs in Kala Common that accept integer indexes, such as `Seq::get(int)`.
+
+> [!NOTE]
+> Currently all of these indexes are of type `int`, and we are planning to migrate them all to `long`.
+> See [#77](https://github.com/Glavo/kala-common/issues/77) for more details.
+
+Unlike most Java libraries, most of the Kala Common API accepts reverse indexes.
+These parameters are marked with `@kala.index.Index`.
+
+When the API receives a negative index `idx`, it calculates the actual index like this:
+
+```java
+int actualIdx = size() - ~idx;
+```
+
+Here are some examples using reverse indexes:
+
+```java
+var seq = Seq.of(1, 2, 3);
+
+// Get the last element
+var _ = seq.get(~1); // ===> 3
+
+// Get a slice of Seq except the first element
+var _ = seq.slice(1, ~0); // ===> [2, 3]
+
+// Get a slice of Seq except the last element
+var _ = seq.slice(0, ~1); // ===> [1, 2]
+```
+
+It is worth noting that Kala Common differs slightly from Python's List
+in that it uses the `~` (Bitwise Complement Operator) to indicate reverse indexes.
+This option has two significant advantages:
+
+* We can use the `~0` to indicate the end of the seq;
+* Some methods (such as `indexOf`) return `-1` for invalid indexes.
+  If some APIs accepted -1 as a valid index, it might confuse users.
+  But `-1` is equal to `~0`, so there is no such confusion in Kala Common. 
+  On the contrary, we can use this to simplify some code.
+  For example:
+  ```java
+  StringSlice getKey(StringSlice value) {
+      return StringSlice.of(value, 0, value.indexOf('=')).trim();
+  }
+  
+  var _ = getKey("i"); // ===> "i"
+  var _ = getPrefix("i = 10"); // ===> "i"
+  ```
