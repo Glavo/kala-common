@@ -120,9 +120,6 @@ public class CollectionTypeAdapter<E, C extends CollectionLike<E>> extends TypeA
                             factory = ImmutableSortedArraySet.factory(null);
                     } else {
                         if (ImmutableSet.class.isAssignableFrom(rawType)) {
-                            if (ImmutableArraySet.class.isAssignableFrom(rawType))
-                                factory = ImmutableArraySet.factory();
-                            else
                                 factory = ImmutableHashSet.factory();
                         } else if (MutableSet.class.isAssignableFrom(rawType)) {
                             if (MutableLinkedSet.class.isAssignableFrom(rawType))

@@ -4,6 +4,12 @@
 
 (In development)
 
+### Breaking Changes
+
+The following classes/interfaces have been removed:
+
+* `kala.collection.immutable.ImmutableArraySet`
+
 ## 0.79.0
 
 Release Date: 2025-01-07
