@@ -38,7 +38,7 @@ graph TD;
 
     Map --> SortedMap;
 
-    classDef impl fill: #4a5659, stroke: #fff, stroke-width: 4px;
+    classDef impl fill: #90EE90, stroke: #fff, stroke-width: 4px;
     class ArraySeq impl;
 ```
 
@@ -59,7 +59,7 @@ graph TD;
     ImmutableSet ----> ImmutableHashSet;
     ArraySeq --> ImmutableArray;
 
-    classDef impl fill: #4a5659, stroke: #fff, stroke-width: 4px;
+    classDef impl fill: #90EE90, stroke: #fff, stroke-width: 4px;
     class ArraySeq,ImmutableArray,ImmutableVector,ImmutableHashSet,ImmutableSortedArraySet,ImmutableLinkedSeq,ImmutableTreeSeq impl;
 ```
 
@@ -86,7 +86,7 @@ graph TD;
   MutableSortedSet --> MutableTreeSet;
   
   
-  classDef impl fill: #4a5659, stroke: #fff, stroke-width: 4px;
+  classDef impl fill: #90EE90, stroke: #fff, stroke-width: 4px;
   class ArraySeq,MutableArray,MutableArrayList,MutableArrayDeque,MutableSmartArrayList,MutableLinkedList,MutableSinglyLinkedList,MutableEnumSet,MutableHashSet,MutableTreeSet impl;
 ```
 
