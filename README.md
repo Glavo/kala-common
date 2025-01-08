@@ -16,10 +16,6 @@ If you have used Scala, it should be easy for you to get started with this colle
 > 
 > Until Kala Common is production-ready, we do not recommend that you use this library for production.
 
-Its documentation is not ready, please contact me if you have any questions.
-
-This project is hosted on GitHub: [Glavo/kala-common](https://github.com/Glavo/kala-common). 
-
 ## Add Kala Common to your project
 
 Maven:
