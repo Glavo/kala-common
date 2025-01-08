@@ -3,6 +3,7 @@
 Table of contents:
 
 * [Use Kala Collections](#use-kala-collections) (WIP)
+* Use Kala Collections for primitive types (WIP)
 * [Use reverse indexes in Kala Common](#use-reverse-indexes-in-kala-common)
 * ... (WIP)
 
@@ -12,10 +13,11 @@ Table of contents:
 
 Kala Collections provides the following common collection interfaces:
 
-* `Collection`: Common interface implemented by collections.
-  * `Seq`: An ordered collection of values that can be accessed by integer index.
-  * `Set`: A collection that contains no duplicate elements.
-    * `SortedSet`: A `Set` that further provides a total ordering on its elements.
+* `Traversable`: An Iterable with more functionality.
+  * `Collection`: Common interface implemented by collections.
+    * `Seq`: An ordered collection of values that can be accessed by integer index.
+    * `Set`: A collection that contains no duplicate elements.
+      * `SortedSet`: A `Set` that further provides a total ordering on its elements.
 * `Map`: An object that maps keys to values.
 
 These collections have immutable and mutable variants.
@@ -138,7 +140,9 @@ var _ = Stream.of(1, 2, 3).collect(Seq.factory()); // ===> [1, 2, 3]
 
 More usage of `CollectionFactory` will be introduced in later chapters.
 
-### Basic collection operations
+### `Traversable`
+
+`Traversable` 
 
 (WIP)
 

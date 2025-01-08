@@ -56,7 +56,6 @@ Due to payment method restrictions, donations are currently only supported throu
 
 Here are the ways to donate: [捐赠支持 Glavo](https://donate.glavo.site/)
 
-
 ## License
 
 All Java code is released under the [Apache 2.0](./LICENSE) license.
