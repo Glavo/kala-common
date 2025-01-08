@@ -30,6 +30,9 @@ This is a diagram of the basic collection types:
 Basic:
 ```mermaid
 graph TD;
+    Sized --> Traversable;
+    Sized --> Map;
+    Traversable --> Collection;
     Collection --> Seq;
     Collection --> Set;
     Set --> SortedSet;
@@ -133,5 +136,7 @@ var _ = Stream.of(1, 2, 3).collect(Seq.factory()); // ===> [1, 2, 3]
 ```
 
 More usage of `CollectionFactory` will be introduced in later chapters.
+
+### 
 
 (WIP)
