@@ -2,16 +2,16 @@
 
 Table of contents:
 
-* [Use Kala Collections](#use-kala-collections) (WIP)
-* Use Kala Collections for primitive types (WIP)
+* [Use Kala Collection](#use-kala-collection) (WIP)
+* Use Kala Collection for primitive types (WIP)
 * [Use reverse indexes in Kala Common](#use-reverse-indexes-in-kala-common)
 * ... (WIP)
 
-## Use Kala Collections
+## Use Kala Collection
 
 ### Overview
 
-Kala Collections provides the following common collection interfaces:
+Kala Collection provides the following common collection interfaces:
 
 * `Traversable`: An Iterable with more functionality.
   * `Collection`: Common interface implemented by collections.
@@ -142,7 +142,13 @@ More usage of `CollectionFactory` will be introduced in later chapters.
 
 ### `Traversable`
 
-`Traversable` 
+Interface `Traversable` inherits from `java.lang.Iterable`.
+Based on `Iterable`, `Traversable` provides a lot of useful methods.
+
+#### `spliterator()`, `stream()` and `parallelStream()`
+
+`Traversable` provides `spliterator()`, `stream()` and `parallelStream()` similar to [`java.util.Collection`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Collection.html).
+Therefore, all collections in Kala Collection can work well with Java Stream.
 
 (WIP)
 
