@@ -37,6 +37,13 @@ implementation("org.glavo.kala:kala-common:0.79.0")
 
 * [Our Tutorial](docs/Tutorial.md)
 
+## Who is using Kala Common?
+
+Although Kala Common is not yet production-ready,
+we are already using it in [Aya Language](https://github.com/aya-prover/aya-dev).
+
+We welcome others to try Kala Common for experimental purposes.
+
 ## Note
 
 The last version compatible with Java 8 was 0.70.0. Building and running kala common now require Java 21.
@@ -48,6 +55,7 @@ If you like this library, donating to me is my greatest support!
 Due to payment method restrictions, donations are currently only supported through payment channels in Chinese mainland (微信，支付宝，爱发电等).
 
 Here are the ways to donate: [捐赠支持 Glavo](https://donate.glavo.site/)
+
 
 ## License
 
