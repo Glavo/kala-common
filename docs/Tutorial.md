@@ -3,7 +3,7 @@
 Table of contents:
 
 * [Use Kala Collections](#use-kala-collections) (WIP)
-* [Use inverse indexes in Kala Common](#use-reverse-indexes-in-kala-common) (WIP)
+* [Use inverse indexes in Kala Common](#use-reverse-indexes-in-kala-common)
 * ... (WIP)
 
 ## Use Kala Collections
@@ -180,9 +180,11 @@ This option has two significant advantages:
 
 * We can use the `~0` to indicate the end of the seq;
 * Some methods (such as `indexOf`) return `-1` for invalid indexes.
-  If some APIs accepted -1 as a valid index, it might confuse users.
+  If some APIs accepted `-1` as a valid index, it might confuse users.
+  
   But `-1` is equal to `~0`, so there is no such confusion in Kala Common. 
   On the contrary, we can use this to simplify some code.
+  
   For example:
   ```java
   StringSlice getKey(StringSlice value) {
