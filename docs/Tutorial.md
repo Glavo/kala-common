@@ -134,3 +134,4 @@ var _ = Stream.of(1, 2, 3).collect(Seq.factory()); // ===> [1, 2, 3]
 
 More usage of `CollectionFactory` will be introduced in later chapters.
 
+(WIP)
