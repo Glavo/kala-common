@@ -127,7 +127,7 @@ var _ = Seq.fill(3, i -> i + 10); // ===> [10, 11, 12]
 var _ = Seq.wrapJava(List.of(1, 2, 3)); // ===> [1, 2, 3]
 ```
 
-In addition, each collection class/interface provides a static `factory()` method 
+In addition, each collection class/interface provides a static method `factory()` 
 to get a `CollectionFactory` corresponding to a collection.
 The `CollectionFactory` instance also provides factory methods similar to the above and can be used as a `java.util.stream.Collector`.
 
@@ -144,11 +144,29 @@ More usage of `CollectionFactory` will be introduced in later chapters.
 
 Interface `Traversable` inherits from `java.lang.Iterable`.
 Based on `Iterable`, `Traversable` provides a lot of useful methods.
+All collections other than `Map` inherited from it.
 
-#### `spliterator()`, `stream()` and `parallelStream()`
+#### Size Info
 
-`Traversable` provides `spliterator()`, `stream()` and `parallelStream()` similar to [`java.util.Collection`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Collection.html).
+Similar to `java.util.Collection`, `Traversable` provides some basic methods for getting its size information:
+
+* `int size()`: Returns the number of elements.
+* `boolean isEmpty()`: Returns `true` if it contains no elements.
+* `boolean isNotEmpty()`: Returns `true` if it contains elements.
+* `int knownSize()`: Returns the number of elements if it can be obtained in constant time, otherwise returns `-1`.
+* `int sizeCompare(int otherSize)`: Compares the size of this `Traversable` to `otherSize` and returns the result.
+* `int sizeCompare(Iterable<?> other)`: Compares the size of this `Traversable` to `other` and returns the result.
+
+The methods `knownSize` and `sizeCompare` are useful for some lazy collections.
+
+#### Stream Operations
+
+Similar to `java.util.Collection`, `Traversable` provides some methods about `java.util.stream.Stream`.
 Therefore, all collections in Kala Collection can work well with Java Stream.
+
+* `Spliterator<T> spliterator()`
+* `Stream<T> stream()`
+* `Stream<T> parallelStream()`
 
 (WIP)
 
