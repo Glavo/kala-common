@@ -2,14 +2,10 @@
 
 Table of contents:
 
-* 
 * [Use Kala Collection](#use-kala-collection) (WIP)
 * Use Kala Collection for primitive types (WIP)
 * [Use reverse indexes in Kala Common](#use-reverse-indexes-in-kala-common)
 * ... (WIP)
-
-## 
-
 
 ## Use Kala Collection
 

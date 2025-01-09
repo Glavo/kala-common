@@ -6,7 +6,7 @@
 ![Code Lines](https://tokei.rs/b1/github/Glavo/kala-common?category=code)
 [![](https://img.shields.io/maven-central/v/org.glavo.kala/kala-common?label=Maven%20Central)](https://search.maven.org/artifact/org.glavo.kala/kala-common)
 
-This is a powerful set of Java base libraries that provide a series of easy-to-use abstractions and collections.
+This is a powerful set of Java core libraries that provide a series of easy-to-use abstractions and collections.
 If you have used Scala, it should be easy for you to get started with this collection library.
 
 > [!NOTE]
