@@ -825,7 +825,11 @@ public final class GenericArrays {
     }
 
     @Contract(pure = true)
-    public static <E> E max(E @NotNull [] array, @NotNull Comparator<? super E> comparator) {
+    public static <E> E max(E @NotNull [] array, Comparator<? super E> comparator) {
+        if (comparator == null) {
+            return (E) ObjectArrays.max(array);
+        }
+
         final int length = array.length;
         if (length == 0) {
             throw new NoSuchElementException();
@@ -842,39 +846,22 @@ public final class GenericArrays {
 
     @Contract(pure = true)
     public static <E extends Comparable<E>> @Nullable E maxOrNull(E @NotNull [] array) {
-        return (E) ObjectArrays.maxOrNull(array);
+        return array.length != 0 ? max(array) : null;
     }
 
     @Contract(pure = true)
-    public static <E> @Nullable E maxOrNull(E @NotNull [] array, @NotNull Comparator<? super E> comparator) {
-        final int length = array.length;
-        if (length == 0) {
-            return null;
-        }
-        E e = array[0];
-        for (int i = 1; i < length; i++) {
-            E v = array[i];
-            if (comparator.compare(e, v) < 0) {
-                e = v;
-            }
-        }
-        return e;
+    public static <E> @Nullable E maxOrNull(E @NotNull [] array, Comparator<? super E> comparator) {
+        return array.length != 0 ? max(array, comparator) : null;
     }
 
     @Contract(pure = true)
     public static <E extends Comparable<E>> @NotNull Option<E> maxOption(E @NotNull [] array) {
-        if (array.length == 0) {
-            return Option.none();
-        }
-        return Option.some((E) ObjectArrays.max(array));
+        return array.length != 0 ? Option.some(max(array)) : Option.none();
     }
 
     @Contract(pure = true)
-    public static <E> @NotNull Option<E> maxOption(E @NotNull [] array, @NotNull Comparator<? super E> comparator) {
-        if (array.length == 0) {
-            return Option.none();
-        }
-        return Option.some(max(array, comparator));
+    public static <E> @NotNull Option<E> maxOption(E @NotNull [] array, Comparator<? super E> comparator) {
+        return array.length != 0 ? Option.some(max(array, comparator)) : Option.none();
     }
 
     @Contract(pure = true)
@@ -883,7 +870,11 @@ public final class GenericArrays {
     }
 
     @Contract(pure = true)
-    public static <E> E min(E @NotNull [] array, @NotNull Comparator<? super E> comparator) {
+    public static <E> E min(E @NotNull [] array, Comparator<? super E> comparator) {
+        if (comparator == null) {
+            return (E) ObjectArrays.min(array);
+        }
+
         final int length = array.length;
         if (length == 0) {
             throw new NoSuchElementException();
@@ -900,40 +891,22 @@ public final class GenericArrays {
 
     @Contract(pure = true)
     public static <E extends Comparable<E>> @Nullable E minOrNull(E @NotNull [] array) {
-        return (E) ObjectArrays.minOrNull(array);
+        return array.length != 0 ? min(array) : null;
     }
 
     @Contract(pure = true)
-    public static <E> @Nullable E minOrNull(E @NotNull [] array, @NotNull Comparator<? super E> comparator) {
-        final int length = array.length;
-        if (length == 0) {
-            return null;
-        }
-
-        E e = array[0];
-        for (int i = 1; i < length; i++) {
-            E v = array[i];
-            if (comparator.compare(e, v) > 0) {
-                e = v;
-            }
-        }
-        return e;
+    public static <E> @Nullable E minOrNull(E @NotNull [] array, Comparator<? super E> comparator) {
+        return array.length != 0 ? min(array, comparator) : null;
     }
 
     @Contract(pure = true)
     public static <E extends Comparable<E>> @NotNull Option<E> minOption(E @NotNull [] array) {
-        if (array.length == 0) {
-            return Option.none();
-        }
-        return Option.some((E) ObjectArrays.min(array));
+        return array.length != 0 ? Option.some(min(array)) : Option.none();
     }
 
     @Contract(pure = true)
-    public static <E> @NotNull Option<E> minOption(E @NotNull [] array, @NotNull Comparator<? super E> comparator) {
-        if (array.length == 0) {
-            return Option.none();
-        }
-        return Option.some(min(array, comparator));
+    public static <E> @NotNull Option<E> minOption(E @NotNull [] array, Comparator<? super E> comparator) {
+        return array.length != 0 ? Option.some(min(array, comparator)) : Option.none();
     }
 
     @Contract(pure = true)

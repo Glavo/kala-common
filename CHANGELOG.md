@@ -13,6 +13,10 @@ The following classes/interfaces have been removed:
 * `kala.collection.mutable.MutableArraySet`
 * `kala.collection.mutable.MutableLinkedSet`
 
+Other changes:
+
+* `kala.collection.base.GenericArrays.{min, minOrNull, minOption, max, maxOrNull, maxOption}` now accepts `null` as the comparator.
+
 ## 0.79.0
 
 Release Date: 2025-01-07
