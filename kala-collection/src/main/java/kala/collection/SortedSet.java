@@ -21,6 +21,7 @@ import kala.collection.base.OrderedTraversable;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.comparator.Comparators;
 import kala.collection.factory.CollectionFactory;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -56,12 +57,14 @@ public interface SortedSet<@Covariant E> extends Set<E>, OrderedTraversable<E> {
     }
 
     @Override
+    @ApiStatus.NonExtendable
     @DelegateBy("getLast()")
     default E max() {
         return getLast();
     }
 
     @Override
+    @ApiStatus.NonExtendable
     @DelegateBy("getFirst()")
     default E min() {
         return getFirst();

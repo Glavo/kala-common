@@ -666,63 +666,13 @@ final class ImmutableSeqs {
         //region Aggregate Operations
 
         @Override
-        public final E max() {
-            return value;
-        }
-
-        @Override
         public E max(Comparator<? super E> comparator) {
-            return max();
-        }
-
-        @Override
-        public final @Nullable E maxOrNull() {
-            return value;
-        }
-
-        @Override
-        public final @Nullable E maxOrNull(@NotNull Comparator<? super E> comparator) {
-            return maxOrNull();
-        }
-
-        @Override
-        public final @NotNull Option<E> maxOption() {
-            return Option.some(value);
-        }
-
-        @Override
-        public final @NotNull Option<E> maxOption(Comparator<? super E> comparator) {
-            return maxOption();
-        }
-
-        @Override
-        public final E min() {
             return value;
         }
 
         @Override
         public E min(Comparator<? super E> comparator) {
-            return min();
-        }
-
-        @Override
-        public final @Nullable E minOrNull() {
             return value;
-        }
-
-        @Override
-        public final @Nullable E minOrNull(@NotNull Comparator<? super E> comparator) {
-            return minOrNull();
-        }
-
-        @Override
-        public final @NotNull Option<E> minOption() {
-            return Option.some(value);
-        }
-
-        @Override
-        public final @NotNull Option<E> minOption(Comparator<? super E> comparator) {
-            return minOption();
         }
 
         //endregion

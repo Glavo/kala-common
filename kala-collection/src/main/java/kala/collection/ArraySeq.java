@@ -917,18 +917,8 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     }
 
     @Override
-    public final E max() {
-        return (E) ObjectArrays.max(elements);
-    }
-
-    @Override
     public final E max(@NotNull Comparator<? super E> comparator) {
         return (E) GenericArrays.max(elements, (Comparator<Object>) comparator);
-    }
-
-    @Override
-    public final E min() {
-        return (E) ObjectArrays.min(elements);
     }
 
     @Override

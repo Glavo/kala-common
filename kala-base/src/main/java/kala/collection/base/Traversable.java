@@ -633,7 +633,7 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
 
     @DelegateBy("max(Comparator<T>)")
     default T max() {
-        return max(Comparators.naturalOrder());
+        return max(null);
     }
 
     default T max(Comparator<? super T> comparator) {
@@ -643,28 +643,32 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
     }
 
     @DelegateBy("max()")
+    @ApiStatus.NonExtendable
     default @Nullable T maxOrNull() {
         return isNotEmpty() ? max() : null;
     }
 
     @DelegateBy("max(Comparator<T>)")
+    @ApiStatus.NonExtendable
     default @Nullable T maxOrNull(@NotNull Comparator<? super T> comparator) {
         return isNotEmpty() ? max(comparator) : null;
     }
 
     @DelegateBy("max()")
+    @ApiStatus.NonExtendable
     default @NotNull Option<T> maxOption() {
         return isNotEmpty() ? Option.some(max()) : Option.none();
     }
 
     @DelegateBy("max(Comparator<T>)")
+    @ApiStatus.NonExtendable
     default @NotNull Option<T> maxOption(Comparator<? super T> comparator) {
         return isNotEmpty() ? Option.some(max(comparator)) : Option.none();
     }
 
     @DelegateBy("min(Comparator<T>)")
     default T min() {
-        return min(Comparators.naturalOrder());
+        return min(null);
     }
 
     default T min(Comparator<? super T> comparator) {
@@ -674,21 +678,25 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
     }
 
     @DelegateBy("min()")
+    @ApiStatus.NonExtendable
     default @Nullable T minOrNull() {
         return isNotEmpty() ? min() : null;
     }
 
     @DelegateBy("min(Comparator<T>)")
+    @ApiStatus.NonExtendable
     default @Nullable T minOrNull(@NotNull Comparator<? super T> comparator) {
         return isNotEmpty() ? min(comparator) : null;
     }
 
     @DelegateBy("min()")
+    @ApiStatus.NonExtendable
     default @NotNull Option<T> minOption() {
         return isNotEmpty() ? Option.some(min()) : Option.none();
     }
 
     @DelegateBy("min(Comparator<T>)")
+    @ApiStatus.NonExtendable
     default @NotNull Option<T> minOption(Comparator<? super T> comparator) {
         return isNotEmpty() ? Option.some(min(comparator)) : Option.none();
     }

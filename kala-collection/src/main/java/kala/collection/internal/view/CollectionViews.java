@@ -276,63 +276,13 @@ public final class CollectionViews {
         }
 
         @Override
-        public final E max() {
-            return source.max();
-        }
-
-        @Override
         public final E max(@NotNull Comparator<? super E> comparator) {
             return source.max(comparator);
         }
 
         @Override
-        public @Nullable E maxOrNull() {
-            return source.maxOrNull();
-        }
-
-        @Override
-        public @Nullable E maxOrNull(@NotNull Comparator<? super E> comparator) {
-            return source.maxOrNull(comparator);
-        }
-
-        @Override
-        public final @NotNull Option<E> maxOption() {
-            return source.maxOption();
-        }
-
-        @Override
-        public final @NotNull Option<E> maxOption(@NotNull Comparator<? super E> comparator) {
-            return source.maxOption(comparator);
-        }
-
-        @Override
-        public final E min() {
-            return source.min();
-        }
-
-        @Override
         public final E min(@NotNull Comparator<? super E> comparator) {
             return source.min(comparator);
-        }
-
-        @Override
-        public @Nullable E minOrNull() {
-            return source.minOrNull();
-        }
-
-        @Override
-        public @Nullable E minOrNull(@NotNull Comparator<? super E> comparator) {
-            return source.minOrNull(comparator);
-        }
-
-        @Override
-        public final @NotNull Option<E> minOption() {
-            return source.minOption();
-        }
-
-        @Override
-        public final @NotNull Option<E> minOption(@NotNull Comparator<? super E> comparator) {
-            return source.minOption(comparator);
         }
 
         @Override
