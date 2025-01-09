@@ -217,7 +217,7 @@ The above mapping operations all accept an optional `CollectionFactory` paramete
 SortedSet<Integer> _ = Seq.of("AAA", "BB", "CC").map(SortedSet.factory(), String::length); // ===> [2, 3]
 ```
 
-And they all have variants that accept a mutable Kala/Java Collection
+And they all have variants with `To` as the name suffix that accept a mutable Kala/Java Collection
 to put the results of the mapping into an existing collection:
 
 ```java
