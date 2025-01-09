@@ -317,14 +317,16 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         return filterTo(factory.newCollectionBuilder(), predicate).build();
     }
 
-    @DelegateBy("filterNotTo(Growable<T>, Predicate<T>)")
+    @ApiStatus.NonExtendable
+    @DelegateBy("filter(CollectionFactory<T, ?, R>, Predicate<T>)")
     default <R> R filterNot(@NotNull CollectionFactory<T, ?, R> factory, @NotNull Predicate<? super T> predicate) {
-        return filterNotTo(factory.newCollectionBuilder(), predicate).build();
+        return filter(factory, predicate.negate());
     }
 
-    @DelegateBy("filterNotNullTo(Growable<T>)")
+    @ApiStatus.NonExtendable
+    @DelegateBy("filter(CollectionFactory<T, ?, R>, Predicate<T>)")
     default <R> R filterNotNull(@NotNull CollectionFactory<T, ?, R> factory) {
-        return filterNotNullTo(factory.newCollectionBuilder()).build();
+        return filter(factory, Predicates.isNotNull());
     }
 
     @DelegateBy("filterIsInstanceTo(Growable<U>, Class<U>)")
