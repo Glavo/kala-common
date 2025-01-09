@@ -162,11 +162,7 @@ Therefore, all collections in Kala Collection can work well with Java Stream.
 * `Stream<T> stream()`
 * `Stream<T> parallelStream()`
 
-### Transformation Operations
-
-Kala Collection provides a rich API for converting one collection into another.
-
-#### Mapping Operations
+### Mapping Operations
 
 Kala provides a number of methods to map each element in a collection to one, zero, or more new elements.
 
