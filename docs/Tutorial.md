@@ -169,21 +169,21 @@ Kala provides a number of methods to map each element in a collection to one, ze
 The method `map` maps each element to a new element:
 
 ```java
-Seq<Boolean> _ = Seq.of(1, 2, 3).map(value -> value % 2 == 0); // [false, true, false]
+ImmutableSeq<Boolean> _ = Seq.of(1, 2, 3).map(value -> value % 2 == 0); // [false, true, false]
 ```
 
 To apply a transformation that additionally uses the element index as an argument, use `mapIndexed`:
 
 ```java
-Seq<Integer> _ = Seq.of(1, 2, 3).mapIndexed((index, value) -> value + index); // [1, 3, 5]
+ImmutableSeq<Integer> _ = Seq.of(1, 2, 3).mapIndexed((index, value) -> value + index); // [1, 3, 5]
 ```
 
 If you want to exclude `null` from the result, 
 you can use the methods `mapNotNull` and `mapIndexedNotNull` to map each element to either zero or one:
 
 ```java
-Seq<String> _ = Seq.of(1, 2, 3).mapNotNull(value -> value == 2 ? null : String.valueOf(value)); // ===> ["1", "3"]
-Seq<String> _ = Seq.of(1, 2, 3).mapIndexedNotNull(
+ImmutableSeq<String> _ = Seq.of(1, 2, 3).mapNotNull(value -> value == 2 ? null : String.valueOf(value)); // ===> ["1", "3"]
+ImmutableSeq<String> _ = Seq.of(1, 2, 3).mapIndexedNotNull(
         (index, value) -> index == 0 ? null : String.valueOf(value)); // ["2", "3"]
 ```
 
@@ -196,7 +196,7 @@ The `Consumer` can be called zero or more times within the mapper,
 and each time the arguments passed to it become part of the result.
 
 ```java
-Seq<String> _ = Seq.of(1, 2, 3).mapMulti((Integer value, Consumer<String> consumer) -> {
+ImmutableSeq<String> _ = Seq.of(1, 2, 3).mapMulti((Integer value, Consumer<String> consumer) -> {
     for (int i = 0; i < value; i++) {
         consumer.accept(String.valueOf(value));
     }
@@ -211,6 +211,22 @@ Seq<String> _ = Seq.of(1, 2, 3).flatMap(
         value -> Seq.fill(value, String.valueOf(value))); // ===> ["1", "2", "2", "3", "3", "3"]
 ```
 
+The above mapping operations all accept an optional `CollectionFactory` parameter to specify the target collection type:
+
+```java
+SortedSet<Integer> _ = Seq.of("AAA", "BB", "CC").map(SortedSet.factory(), String::length); // ===> [2, 3]
+```
+
+And they all have variants that accept a mutable Kala/Java Collection
+to put the results of the mapping into an existing collection:
+
+```java
+var javaList = new java.util.ArrayList<>(Arrays.asList(0));
+
+// The results of the mapping are appended to the `javaList`.
+// The return value of `mapTo` is the `javaList` itself.
+var result = Seq.of(1, 2, 3).mapTo(javaList, value -> value * 3); // ===> [0, 3, 6, 9]
+```
 
 (WIP)
 
