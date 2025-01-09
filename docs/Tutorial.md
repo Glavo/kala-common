@@ -26,7 +26,7 @@ For example, for `Seq`, it has the following important subinterfaces:
 * `Seq`
   * `ImmutableSeq`: An immutable seq. The user cannot modify it, but can generate another seq from an existing seq.
   * `MutableSeq`: A mutable seq. It is similar to an array in that the user can modify this seq, but it does not provide methods that would change the size of the seq.
-    * `MutableList`: It is a better alternative to `java.util.List` and provides more useful methods.
+    * `MutableList`: A mutable and resizable seq. It is a better alternative to `java.util.List` and provides more useful methods.
 
 This is a diagram of the basic collection types:
 
