@@ -342,24 +342,18 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         return destination;
     }
 
+    @ApiStatus.NonExtendable
+    @DelegateBy("filterTo(G, Predicate<T>)")
     @Contract(value = "_, _ -> param1", mutates = "param1")
     default <G extends Growable<? super T>> @NotNull G filterNotTo(@NotNull G destination, @NotNull Predicate<? super T> predicate) {
-        for (T e : this) {
-            if (!predicate.test(e)) {
-                destination.plusAssign(e);
-            }
-        }
-        return destination;
+        return filterTo(destination, predicate.negate());
     }
 
+    @ApiStatus.NonExtendable
+    @DelegateBy("filterTo(G, Predicate<T>)")
     @Contract(value = "_ -> param1", mutates = "param1")
     default <G extends Growable<? super T>> @NotNull G filterNotNullTo(@NotNull G destination) {
-        for (T e : this) {
-            if (e != null) {
-                destination.plusAssign(e);
-            }
-        }
-        return destination;
+        return filterTo(destination, Predicates.isNotNull());
     }
 
     @Contract(value = "_, _ -> param1", mutates = "param1")

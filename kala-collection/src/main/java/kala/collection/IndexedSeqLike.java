@@ -385,30 +385,6 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
     }
 
     @Override
-    default <G extends Growable<? super E>> @NotNull G filterNotTo(@NotNull G destination, @NotNull Predicate<? super E> predicate) {
-        final int size = this.size();
-        for (int i = 0; i < size; i++) {
-            E e = this.get(i);
-            if (!predicate.test(e)) {
-                destination.plusAssign(e);
-            }
-        }
-        return destination;
-    }
-
-    @Override
-    default <G extends Growable<? super E>> @NotNull G filterNotNullTo(@NotNull G destination) {
-        final int size = this.size();
-        for (int i = 0; i < size; i++) {
-            E e = this.get(i);
-            if (e != null) {
-                destination.plusAssign(e);
-            }
-        }
-        return destination;
-    }
-
-    @Override
     default <U, G extends Growable<? super U>> @NotNull G mapTo(@NotNull G destination, @NotNull Function<? super E, ? extends U> mapper) {
         final int size = this.size();
         for (int i = 0; i < size; i++) {
