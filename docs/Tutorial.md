@@ -231,6 +231,43 @@ var javaList = new java.util.ArrayList<>(Arrays.asList(0));
 var _ = Seq.of(1, 2, 3).mapTo(javaList, value -> value * 3);    // ===> [0, 3, 6, 9]
 ```
 
+### Exception handling for collection operations
+
+Because of checked exceptions, 
+users may be annoyed by the ugly try-catch blocks that may appear inside some lambdas passed to collection methods.
+
+Kala Collection provides exception-friendly variants for collection operations to solve  this problem.
+
+```java
+void example(java.io.Writer writer) {
+    // The methods ending with `Checked` declare that they may throw the same type of exception as the lambda parameter.
+    try {
+        Seq.of('A', 'B', 'C').forEachChecked(value -> writer.write(value));
+    } catch (IOException _){
+    }
+
+    // The methods ending with `Unchecked` do not declare that they throw checked exceptions.
+    // While convenient, this actually breaks the Java compiler's checks, so use it with caution.
+    Seq.of('A', 'B', 'C').forEachUnchecked(value -> writer.write(value));
+}
+```
+
+Here is a list of collection operations that have checked and unchecked variants:
+
+* `filter`
+* `filterNot`
+* `map`
+* `mapIndexed`
+* `mapNotNull`
+* `mapIndexedNotNull`
+* `mapMulti`
+* `flatMap`
+* `zip`
+* `cross`
+* `forEach`
+* `forEachWith`
+* `forEachCross`
+
 (WIP)
 
 ## Use reverse indexes in Kala Common
