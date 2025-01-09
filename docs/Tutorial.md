@@ -221,11 +221,14 @@ And they all have variants that accept a mutable Kala/Java Collection
 to put the results of the mapping into an existing collection:
 
 ```java
-var javaList = new java.util.ArrayList<>(Arrays.asList(0));
+// The results of the mapping are appended to the `mutableList`.
+// The return value of `mapTo` is the `mutableList` itself.
+var mutableList = MutableList.of(0);
+var _ = Seq.of(1, 2, 3).mapTo(mutableList, value -> value * 3); // ===> [0, 3, 6, 9]
 
-// The results of the mapping are appended to the `javaList`.
-// The return value of `mapTo` is the `javaList` itself.
-var result = Seq.of(1, 2, 3).mapTo(javaList, value -> value * 3); // ===> [0, 3, 6, 9]
+// This also works for Java Collection.
+var javaList = new java.util.ArrayList<>(Arrays.asList(0));
+var _ = Seq.of(1, 2, 3).mapTo(javaList, value -> value * 3);    // ===> [0, 3, 6, 9]
 ```
 
 (WIP)
