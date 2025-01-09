@@ -186,7 +186,7 @@ If you want to exclude `null` from the result,
 you can use the methods `mapNotNull` and `mapIndexedNotNull` to map each element to either zero or one:
 
 ```java
-Seq<String> _ = Seq.of(1, 2, 3).mapNotNull(value -> value == 2 ? null : String.valueOf(value); // ===> ["1", "3"]
+Seq<String> _ = Seq.of(1, 2, 3).mapNotNull(value -> value == 2 ? null : String.valueOf(value)); // ===> ["1", "3"]
 Seq<String> _ = Seq.of(1, 2, 3).mapIndexedNotNull(
         (index, value) -> index == 0 ? null : String.valueOf(value)); // ["2", "3"]
 ```
