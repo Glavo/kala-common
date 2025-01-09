@@ -169,13 +169,13 @@ Kala provides a number of methods to map each element in a collection to one, ze
 The method `map` maps each element to a new element:
 
 ```java
-ImmutableSeq<Boolean> _ = Seq.of(1, 2, 3).map(value -> value % 2 == 0); // [false, true, false]
+ImmutableSeq<Boolean> _ = Seq.of(1, 2, 3).map(value -> value % 2 == 0); // ===> [false, true, false]
 ```
 
 To apply a transformation that additionally uses the element index as an argument, use `mapIndexed`:
 
 ```java
-ImmutableSeq<Integer> _ = Seq.of(1, 2, 3).mapIndexed((index, value) -> value + index); // [1, 3, 5]
+ImmutableSeq<Integer> _ = Seq.of(1, 2, 3).mapIndexed((index, value) -> value + index); // ===> [1, 3, 5]
 ```
 
 If you want to exclude `null` from the result, 
@@ -184,7 +184,7 @@ you can use the methods `mapNotNull` and `mapIndexedNotNull` to map each element
 ```java
 ImmutableSeq<String> _ = Seq.of(1, 2, 3).mapNotNull(value -> value == 2 ? null : String.valueOf(value)); // ===> ["1", "3"]
 ImmutableSeq<String> _ = Seq.of(1, 2, 3).mapIndexedNotNull(
-        (index, value) -> index == 0 ? null : String.valueOf(value)); // ["2", "3"]
+        (index, value) -> index == 0 ? null : String.valueOf(value)); // ===> ["2", "3"]
 ```
 
 If you want to map each element into any number of elements, 
