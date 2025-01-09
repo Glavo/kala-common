@@ -433,7 +433,7 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
     }
 
     @Contract(value = "_, _ -> param1", mutates = "param1")
-    default <U, G extends IntGrowable> @NotNull G mapToIntTo(@NotNull G destination, @NotNull ToIntFunction<? super T> mapper) {
+    default <G extends IntGrowable> @NotNull G mapToIntTo(@NotNull G destination, @NotNull ToIntFunction<? super T> mapper) {
         for (T e : this) {
             destination.plusAssign(mapper.applyAsInt(e));
         }
@@ -441,7 +441,7 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
     }
 
     @Contract(value = "_, _ -> param1", mutates = "param1")
-    default <U, G extends LongGrowable> @NotNull G mapToLongTo(@NotNull G destination, @NotNull ToLongFunction<? super T> mapper) {
+    default <G extends LongGrowable> @NotNull G mapToLongTo(@NotNull G destination, @NotNull ToLongFunction<? super T> mapper) {
         for (T e : this) {
             destination.plusAssign(mapper.applyAsLong(e));
         }
@@ -449,7 +449,7 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
     }
 
     @Contract(value = "_, _ -> param1", mutates = "param1")
-    default <U, G extends DoubleGrowable> @NotNull G mapToDoubleTo(@NotNull G destination, @NotNull ToDoubleFunction<? super T> mapper) {
+    default <G extends DoubleGrowable> @NotNull G mapToDoubleTo(@NotNull G destination, @NotNull ToDoubleFunction<? super T> mapper) {
         for (T e : this) {
             destination.plusAssign(mapper.applyAsDouble(e));
         }
@@ -457,7 +457,7 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
     }
 
     @Contract(value = "_, _ -> param1", mutates = "param1")
-    default <U, G extends CharGrowable> @NotNull G mapToCharTo(@NotNull G destination, @NotNull ToCharFunction<? super T> mapper) {
+    default <G extends CharGrowable> @NotNull G mapToCharTo(@NotNull G destination, @NotNull ToCharFunction<? super T> mapper) {
         for (T e : this) {
             destination.plusAssign(mapper.applyAsChar(e));
         }
@@ -465,7 +465,7 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
     }
 
     @Contract(value = "_, _ -> param1", mutates = "param1")
-    default <U, G extends BooleanGrowable> @NotNull G mapToBooleanTo(@NotNull G destination, @NotNull ToBooleanFunction<? super T> mapper) {
+    default <G extends BooleanGrowable> @NotNull G mapToBooleanTo(@NotNull G destination, @NotNull ToBooleanFunction<? super T> mapper) {
         for (T e : this) {
             destination.plusAssign(mapper.applyAsBoolean(e));
         }
@@ -538,7 +538,7 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         return destination;
     }
 
-    default <U, G extends IntGrowable> G flatMapToIntTo(
+    default <G extends IntGrowable> G flatMapToIntTo(
             @NotNull G destination,
             @NotNull Function<? super T, ? extends IntTraversable> mapper) {
         for (T value : this) {
@@ -547,7 +547,7 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         return destination;
     }
 
-    default <U, G extends LongGrowable> G flatMapToLongTo(
+    default <G extends LongGrowable> G flatMapToLongTo(
             @NotNull G destination,
             @NotNull Function<? super T, ? extends LongTraversable> mapper) {
         for (T value : this) {
@@ -556,7 +556,7 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
         return destination;
     }
 
-    default <U, G extends DoubleGrowable> G flatMapToDoubleTo(
+    default <G extends DoubleGrowable> G flatMapToDoubleTo(
             @NotNull G destination,
             @NotNull Function<? super T, ? extends DoubleTraversable> mapper) {
         for (T value : this) {
