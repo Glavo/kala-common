@@ -386,6 +386,28 @@ public final class ImmutableSortedArraySet<E>
     }
 
     @Override
+    public @NotNull ImmutableSortedArraySet<E> addedAll(E... values) {
+        final int arrayLength = values.length;
+        if (arrayLength == 0) {
+            return this;
+        }
+        if (arrayLength == 1) {
+            return added(values[0]);
+        }
+
+        final int size = elements.length;
+
+        if (size == 0) {
+            return from(comparator, values);
+        }
+
+        MutableTreeSet<Object> builder = new MutableTreeSet<>(((Comparator<Object>) comparator));
+        builder.addAll(elements);
+        builder.addAll(values);
+        return new ImmutableSortedArraySet<>(comparator, builder.toArray());
+    }
+
+    @Override
     public @NotNull ImmutableSortedArraySet<E> addedAll(@NotNull Iterable<? extends E> values) {
         final Iterator<? extends E> it = values.iterator();
         if (!it.hasNext()) {
@@ -406,28 +428,6 @@ public final class ImmutableSortedArraySet<E>
             return this;
         }
 
-        return new ImmutableSortedArraySet<>(comparator, builder.toArray());
-    }
-
-    @Override
-    public @NotNull ImmutableSortedArraySet<E> addedAll(E @NotNull [] values) {
-        final int arrayLength = values.length;
-        if (arrayLength == 0) {
-            return this;
-        }
-        if (arrayLength == 1) {
-            return added(values[0]);
-        }
-
-        final int size = elements.length;
-
-        if (size == 0) {
-            return from(comparator, values);
-        }
-
-        MutableTreeSet<Object> builder = new MutableTreeSet<>(((Comparator<Object>) comparator));
-        builder.addAll(elements);
-        builder.addAll(values);
         return new ImmutableSortedArraySet<>(comparator, builder.toArray());
     }
 

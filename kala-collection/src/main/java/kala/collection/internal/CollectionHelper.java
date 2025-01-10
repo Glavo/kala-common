@@ -18,12 +18,17 @@ package kala.collection.internal;
 import kala.collection.ArraySeq;
 import kala.collection.Collection;
 import kala.collection.Seq;
+import kala.collection.Set;
+import kala.collection.SortedSet;
 import kala.collection.base.Traversable;
 import kala.collection.factory.CollectionBuilder;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.immutable.ImmutableArray;
 import kala.collection.immutable.ImmutableCollection;
 import kala.collection.immutable.ImmutableSeq;
+import kala.collection.immutable.ImmutableSet;
+import kala.collection.immutable.ImmutableSortedArraySet;
+import kala.collection.immutable.ImmutableSortedSet;
 import kala.collection.internal.convert.FromJavaConvert;
 import kala.annotations.StaticClass;
 import kala.collection.mutable.MutableArrayList;
@@ -74,6 +79,22 @@ public final class CollectionHelper {
             return ImmutableArray.empty();
         } else {
             return ImmutableSeq.empty();
+        }
+    }
+
+    public static <E> CollectionFactory<E, ?, ? extends ImmutableSet<E>> immutableSetFactoryBy(Set<E> set) {
+        if (set instanceof SortedSet<E> sortedSet) {
+            if (set instanceof ImmutableSortedSet<E> immutableSortedSet) {
+                return immutableSortedSet.sortedIterableFactory();
+            } else {
+                return ImmutableSortedArraySet.factory(sortedSet.comparator());
+            }
+        } else {
+            if (set instanceof ImmutableSet<E> immutableSet) {
+                return immutableSet.iterableFactory();
+            } else {
+                return ImmutableSet.factory();
+            }
         }
     }
 

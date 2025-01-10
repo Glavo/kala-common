@@ -15,18 +15,13 @@
  */
 package kala.collection.immutable;
 
-import kala.annotations.DelegateBy;
-import kala.collection.ArraySeq;
-import kala.collection.SortedSet;
 import kala.annotations.Covariant;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.Set;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
@@ -101,79 +96,6 @@ public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<
     @Override
     default <U> @NotNull CollectionFactory<U, ?, ? extends ImmutableSet<U>> iterableFactory() {
         return factory();
-    }
-
-    @Override
-    default @NotNull ImmutableSet<E> added(E value) {
-        if (contains(value))
-            return this;
-
-        CollectionFactory<E, ?, ? extends ImmutableSet<E>> factory;
-        if (this instanceof SortedSet<?> self) {
-            factory = (CollectionFactory<E, ?, ? extends ImmutableSet<E>>)
-                    self.sortedIterableFactory();
-        } else {
-            factory = iterableFactory();
-        }
-        return AbstractImmutableSet.added(this, value, factory);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    default @NotNull ImmutableSet<E> addedAll(@NotNull Iterable<? extends E> values) {
-        CollectionFactory<E, ?, ? extends ImmutableSet<E>> factory;
-        if (this instanceof SortedSet<?> sortedSet) {
-            factory = (CollectionFactory<E, ?, ? extends ImmutableSet<E>>)
-                    sortedSet.sortedIterableFactory();
-        } else {
-            factory = iterableFactory();
-        }
-        return AbstractImmutableSet.addedAll(this, values, factory);
-    }
-
-    default @NotNull ImmutableSet<E> removed(E value) {
-        if (!contains(value))
-            return this;
-
-        CollectionFactory<E, ?, ? extends ImmutableSet<E>> factory;
-
-        if (this instanceof SortedSet<?> self) {
-            factory = (CollectionFactory<E, ?, ? extends ImmutableSet<E>>)
-                    self.sortedIterableFactory();
-        } else {
-            factory = iterableFactory();
-        }
-
-        return AbstractImmutableSet.removed(this, value, factory);
-    }
-
-    default @NotNull ImmutableSet<E> removedAll(@NotNull Iterable<? extends E> values) {
-        CollectionFactory<E, ?, ? extends ImmutableSet<E>> factory;
-        if (this instanceof SortedSet<?> self) {
-            factory = (CollectionFactory<E, ?, ? extends ImmutableSet<E>>)
-                    self.sortedIterableFactory();
-        } else {
-            factory = iterableFactory();
-        }
-        return AbstractImmutableSet.removedAll(this, values, factory);
-    }
-
-    @ApiStatus.NonExtendable
-    @DelegateBy("removedAll(Iterable<E>)")
-    default @NotNull ImmutableSet<E> removedAll(E @NotNull [] values) {
-        return removedAll(ArraySeq.wrap(values));
-    }
-
-    @Override
-    default @NotNull ImmutableSet<E> filter(@NotNull Predicate<? super E> predicate) {
-        CollectionFactory<E, ?, ? extends ImmutableSet<E>> factory;
-        if (this instanceof SortedSet<?> self) {
-            factory = (CollectionFactory<E, ?, ? extends ImmutableSet<E>>)
-                    self.sortedIterableFactory();
-        } else {
-            factory = iterableFactory();
-        }
-        return filter(factory, predicate);
     }
 
     @Override

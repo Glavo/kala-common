@@ -18,6 +18,7 @@ package kala.collection;
 import kala.annotations.DelegateBy;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.immutable.ImmutableSet;
+import kala.collection.internal.CollectionHelper;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
 import kala.collection.internal.view.SetViews;
@@ -25,6 +26,7 @@ import kala.function.Predicates;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -32,6 +34,11 @@ import java.util.stream.Stream;
 public interface Set<E> extends Collection<E>, SetLike<E>, AnySet<E> {
 
     //region Static Factories
+
+    @SuppressWarnings("unchecked")
+    static <E> Set<E> narrow(Set<? extends E> set) {
+        return (Set<E>) set;
+    }
 
     static <E> CollectionFactory<E, ?, Set<E>> factory() {
         return CollectionFactory.narrow(ImmutableSet.factory());
@@ -132,24 +139,99 @@ public interface Set<E> extends Collection<E>, SetLike<E>, AnySet<E> {
 
     @Override
     default @NotNull ImmutableSet<E> added(E value) {
-        return this.view().added(value).toImmutableSet();
-    }
+        if (this instanceof ImmutableSet<E> immutableSet && contains(value)) {
+            return immutableSet;
+        }
 
-    @Override
-    default @NotNull ImmutableSet<E> addedAll(@NotNull Iterable<? extends E> values) {
-        return this.view().addedAll(values).toImmutableSet();
+        var factory = CollectionHelper.immutableSetFactoryBy(this);
+        var builder = factory.newCollectionBuilder();
+        for (E e : this) {
+            builder.plusAssign(e);
+        }
+        builder.plusAssign(value);
+        return builder.build();
     }
 
     @Override
     @ApiStatus.NonExtendable
+    @SuppressWarnings("unchecked")
     @DelegateBy("addedAll(Iterable<E>)")
-    default @NotNull ImmutableSet<E> addedAll(E @NotNull [] values) {
+    default @NotNull ImmutableSet<E> addedAll(E... values) {
         return addedAll(ArraySeq.wrap(values));
     }
 
     @Override
+    default @NotNull ImmutableSet<E> addedAll(@NotNull Iterable<? extends E> values) {
+        var factory = CollectionHelper.immutableSetFactoryBy(this);
+        var builder = factory.newCollectionBuilder();
+        for (E e : this) {
+            builder.plusAssign(e);
+        }
+        for (E value : values) {
+            builder.plusAssign(value);
+        }
+        return builder.build();
+    }
+
+    default @NotNull ImmutableSet<E> removed(E value) {
+        if (this instanceof ImmutableSet<E> immutableSet && !contains(value)) {
+            return immutableSet;
+        }
+
+        var factory = CollectionHelper.immutableSetFactoryBy(this);
+        var builder = factory.newCollectionBuilder();
+        builder.sizeHint(size() -1);
+        if (value == null) {
+            for (E e : this) {
+                if (null != e) {
+                    builder.plusAssign(e);
+                }
+            }
+        } else {
+            for (E e : this) {
+                if (!value.equals(e)) {
+                    builder.plusAssign(e);
+                }
+            }
+        }
+        return builder.build();
+    }
+
+    @ApiStatus.NonExtendable
+    @SuppressWarnings("unchecked")
+    @DelegateBy("removedAll(Iterable<E>)")
+    default @NotNull ImmutableSet<E> removedAll(E... values) {
+        return removedAll(ArraySeq.wrap(values));
+    }
+
+    default @NotNull ImmutableSet<E> removedAll(@NotNull Iterable<? extends E> values) {
+        var factory = CollectionHelper.immutableSetFactoryBy(this);
+
+        Predicate<? super E> contains;
+        if (values instanceof java.util.Set<? extends E> collection) {
+            contains = collection::contains;
+        } else if (values instanceof SetLike<? extends E> setLike) {
+            contains = setLike::contains;
+        } else {
+            HashSet<E> hashSet = new HashSet<>();
+            for (E value : values) {
+                hashSet.add(value);
+            }
+            contains = hashSet::contains;
+        }
+
+        var builder = factory.newCollectionBuilder();
+        for (E e : this) {
+            if (!contains.test(e)) {
+                builder.plusAssign(e);
+            }
+        }
+        return builder.build();
+    }
+
+    @Override
     default @NotNull ImmutableSet<E> filter(@NotNull Predicate<? super E> predicate) {
-        return view().filter(predicate).toImmutableSet();
+        return filter(CollectionHelper.immutableSetFactoryBy(this), predicate);
     }
 
     @Override
@@ -167,10 +249,11 @@ public interface Set<E> extends Collection<E>, SetLike<E>, AnySet<E> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     @ApiStatus.NonExtendable
     @DelegateBy("filter(Predicate<E>)")
     default <U> @NotNull ImmutableSet<U> filterIsInstance(@NotNull Class<? extends U> clazz) {
-        return (ImmutableSet<U>) filter(Predicates.isInstance(clazz));
+        @SuppressWarnings("unchecked")
+        ImmutableSet<U> result = (ImmutableSet<U>) filter(Predicates.isInstance(clazz));
+        return result;
     }
 }

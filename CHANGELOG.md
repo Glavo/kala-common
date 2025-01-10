@@ -8,6 +8,9 @@
 
 * Add `kala.collection.base.OrderedTraversable::mapIndexed(CollectionFactory<U, ?, R>, IndexedFunction<T, U>)`
 * Add `kala.collection.base.OrderedTraversable::mapIndexedTo(G, IndexedFunction<T, U>)`
+* Add `kala.collection.Set::added(E)`
+* Add `kala.collection.Set::addedAll(E...)`
+* Add `kala.collection.Set::addedAll(Iterable<E>)`
 
 ### Breaking Changes
 
