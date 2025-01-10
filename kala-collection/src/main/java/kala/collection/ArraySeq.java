@@ -22,6 +22,7 @@ import kala.collection.immutable.ImmutableArray;
 import kala.collection.immutable.ImmutableSeq;
 import kala.collection.internal.CollectionHelper;
 import kala.collection.internal.view.SeqViews;
+import kala.collection.mutable.MutableArray;
 import kala.collection.mutable.MutableArrayList;
 import kala.collection.factory.CollectionFactory;
 import kala.control.Option;
@@ -42,11 +43,11 @@ import java.util.stream.StreamSupport;
 
 @SuppressWarnings("unchecked")
 @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "elements")
-public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>, Serializable {
+public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>, Serializable
+        permits ArraySeq.Default, ImmutableArray, MutableArray {
+
     @Serial
     private static final long serialVersionUID = 4981379062449237945L;
-
-    private static final ArraySeq<?> EMPTY = new ArraySeq<>(GenericArrays.EMPTY_OBJECT_ARRAY);
 
     private static final ArraySeq.Factory<?> FACTORY = new ArraySeq.Factory<>();
 
@@ -71,11 +72,11 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     @Contract("_ -> new")
     public static <E> @NotNull ArraySeq<E> wrap(@NotNull E[] array) {
         Objects.requireNonNull(array);
-        return new ArraySeq<>(array);
+        return new ArraySeq.Default<>(array);
     }
 
     public static <E> @NotNull ArraySeq<E> empty() {
-        return (ArraySeq<E>) EMPTY;
+        return (ArraySeq<E>) Default.EMPTY;
     }
 
     public static <E> @NotNull ArraySeq<E> of() {
@@ -84,27 +85,27 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     @Contract(value = "_ -> new", pure = true)
     public static <E> @NotNull ArraySeq<E> of(E value1) {
-        return new ArraySeq<>(new Object[]{value1});
+        return new ArraySeq.Default<>(new Object[]{value1});
     }
 
     @Contract(value = "_, _ -> new", pure = true)
     public static <E> @NotNull ArraySeq<E> of(E value1, E value2) {
-        return new ArraySeq<>(new Object[]{value1, value2});
+        return new ArraySeq.Default<>(new Object[]{value1, value2});
     }
 
     @Contract(value = "_, _, _ -> new", pure = true)
     public static <E> @NotNull ArraySeq<E> of(E value1, E value2, E value3) {
-        return new ArraySeq<>(new Object[]{value1, value2, value3});
+        return new ArraySeq.Default<>(new Object[]{value1, value2, value3});
     }
 
     @Contract(value = "_, _, _, _ -> new", pure = true)
     public static <E> @NotNull ArraySeq<E> of(E value1, E value2, E value3, E value4) {
-        return new ArraySeq<>(new Object[]{value1, value2, value3, value4});
+        return new ArraySeq.Default<>(new Object[]{value1, value2, value3, value4});
     }
 
     @Contract(value = "_, _, _, _, _ -> new", pure = true)
     public static <E> @NotNull ArraySeq<E> of(E value1, E value2, E value3, E value4, E value5) {
-        return new ArraySeq<>(new Object[]{value1, value2, value3, value4, value5});
+        return new ArraySeq.Default<>(new Object[]{value1, value2, value3, value4, value5});
     }
 
     @SafeVarargs
@@ -117,7 +118,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     public static <E> @NotNull ArraySeq<E> from(E @NotNull [] values) {
         return values.length == 0
                 ? empty()
-                : new ArraySeq<>(values.clone());
+                : new ArraySeq.Default<>(values.clone());
     }
 
     public static <E> @NotNull ArraySeq<E> from(@NotNull Traversable<? extends E> values) {
@@ -133,11 +134,11 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         if (arr.length == 0) {
             return empty();
         }
-        return new ArraySeq<>(arr);
+        return new ArraySeq.Default<>(arr);
     }
 
     public static <E> @NotNull ArraySeq<E> from(@NotNull java.util.Collection<? extends E> values) {
-        return values.isEmpty() ? empty() : new ArraySeq<>(values.toArray());
+        return values.isEmpty() ? empty() : new ArraySeq.Default<>(values.toArray());
     }
 
     public static <E> @NotNull ArraySeq<E> from(@NotNull Iterable<? extends E> values) {
@@ -150,14 +151,14 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
             return from(((java.util.Collection<E>) values));
         }
 
-        return new ArraySeq<>(MutableArrayList.<E>from(values).toArray());
+        return new ArraySeq.Default<>(MutableArrayList.<E>from(values).toArray());
     }
 
     public static <E> @NotNull ArraySeq<E> from(@NotNull Iterator<? extends E> it) {
         if (!it.hasNext()) { // implicit null check of it
             return empty();
         }
-        return new ArraySeq<>(MutableArrayList.<E>from(it).toArray());
+        return new ArraySeq.Default<>(MutableArrayList.<E>from(it).toArray());
     }
 
     public static <E> @NotNull ArraySeq<E> from(@NotNull Stream<? extends E> stream) {
@@ -169,7 +170,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
             return empty();
         }
 
-        return new ArraySeq<>(ObjectArrays.fill(n, value));
+        return new ArraySeq.Default<>(ObjectArrays.fill(n, value));
     }
 
     public static <E> @NotNull ArraySeq<E> fill(int n, @NotNull IntFunction<? extends E> init) {
@@ -177,7 +178,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
             return empty();
         }
 
-        return new ArraySeq<>(ObjectArrays.fill(n, init));
+        return new ArraySeq.Default<>(ObjectArrays.fill(n, init));
     }
 
     public static <E> @NotNull ArraySeq<E> generateUntil(@NotNull Supplier<? extends E> supplier, @NotNull Predicate<? super E> predicate) {
@@ -188,7 +189,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
                 break;
             builder.append(value);
         }
-        return new ArraySeq<>(builder.toArray());
+        return new ArraySeq.Default<>(builder.toArray());
     }
 
     public static <E> @NotNull ArraySeq<E> generateUntilNull(@NotNull Supplier<? extends @Nullable E> supplier) {
@@ -199,7 +200,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
                 break;
             builder.append(value);
         }
-        return new ArraySeq<>(builder.toArray());
+        return new ArraySeq.Default<>(builder.toArray());
     }
 
 
@@ -996,6 +997,14 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
     //endregion
 
+    static final class Default<E> extends ArraySeq<E> {
+        private static final Default<?> EMPTY = new Default<>(GenericArrays.EMPTY_OBJECT_ARRAY);
+
+        private Default(Object @NotNull [] elements) {
+            super(elements);
+        }
+    }
+
     private static final class Factory<E> implements CollectionFactory<E, MutableArrayList<E>, ArraySeq<E>> {
 
         @Override
@@ -1051,7 +1060,7 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
 
         @Override
         public ArraySeq<E> build(@NotNull MutableArrayList<E> buffer) {
-            return new ArraySeq<>(buffer.toArray());
+            return new ArraySeq.Default<>(buffer.toArray());
         }
     }
 }
