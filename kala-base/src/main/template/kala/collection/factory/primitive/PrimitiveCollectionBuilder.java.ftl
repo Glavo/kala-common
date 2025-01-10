@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.*;
 
-public interface ${Type}CollectionBuilder<R> extends CollectionBuilder<${WrapperType}, R>, ${Type}Growable, ${Type}Consumer {
+public interface ${Type}CollectionBuilder<R> extends CollectionBuilder<${WrapperType}, R>, ${Type}Growable {
 
     @Override
     void plusAssign(${PrimitiveType} value);
@@ -36,12 +36,5 @@ public interface ${Type}CollectionBuilder<R> extends CollectionBuilder<${Wrapper
     @ReplaceWith("plusAssign(${PrimitiveType})")
     default void plusAssign(@NotNull ${WrapperType} value) {
         plusAssign(value.${PrimitiveType}Value());
-    }
-
-    @Override
-    @Deprecated
-    @ReplaceWith("plusAssign(${PrimitiveType})")
-    default void accept(${PrimitiveType} value) {
-        plusAssign(value);
     }
 }

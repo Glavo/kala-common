@@ -17,7 +17,6 @@ package kala.collection;
 
 import kala.Conditions;
 import kala.annotations.DelegateBy;
-import kala.collection.base.Growable;
 import kala.collection.base.OrderedTraversable;
 import kala.collection.internal.SeqIterators;
 import kala.collection.internal.view.SeqViews;
