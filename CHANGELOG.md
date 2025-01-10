@@ -6,6 +6,9 @@
 
 ### New features
 
+* Add `kala.collection.base.OrderedTraversable::mapIndexed(CollectionFactory<U, ?, R>, IndexedFunction<T, U>)`
+* Add `kala.collection.base.OrderedTraversable::mapIndexedTo(G, IndexedFunction<T, U>)`
+
 ### Breaking Changes
 
 The following classes/interfaces have been removed:

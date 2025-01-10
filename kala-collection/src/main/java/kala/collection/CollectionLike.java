@@ -111,7 +111,7 @@ public interface CollectionLike<E> extends Traversable<E>, AnyCollectionLike<E> 
     }
 
     default @NotNull ImmutableSeq<E> toImmutableSeq() {
-        return toImmutableVector();
+        return ImmutableSeq.from(this);
     }
 
     default @NotNull ImmutableArray<E> toImmutableArray() {

@@ -8,7 +8,6 @@
 package kala.collection.immutable;
 
 import kala.collection.IndexedSeq;
-import kala.collection.SeqLike;
 import kala.collection.base.AnyTraversable;
 import kala.collection.base.Traversable;
 import kala.function.*;
@@ -361,79 +360,6 @@ public sealed abstract class ImmutableVector<@Covariant E> extends AbstractImmut
         return slice0(beginIndex, endIndex);
     }
 
-    @Override
-    public final @NotNull ImmutableSeq<E> drop(int n) {
-        if (n < 0) {
-            throw new IllegalArgumentException();
-        }
-        if (n == 0) {
-            return this;
-        }
-        final int size = this.size();
-        if (n >= size) {
-            return ImmutableVector.empty();
-        }
-
-        return slice0(n, size);
-    }
-
-    @Override
-    public final @NotNull ImmutableSeq<E> dropLast(int n) {
-        if (n < 0) {
-            throw new IllegalArgumentException();
-        }
-        if (n == 0) {
-            return this;
-        }
-        final int size = this.size();
-        if (n >= size) {
-            return ImmutableVector.empty();
-        }
-
-        return slice0(0, size - n);
-    }
-
-    @Override
-    public final @NotNull ImmutableSeq<E> take(int n) {
-        if (n < 0) {
-            throw new IllegalArgumentException();
-        }
-        if (n == 0) {
-            return ImmutableVector.empty();
-        }
-        final int size = this.size();
-        if (n >= size) {
-            return this;
-        }
-        return slice0(0, n);
-    }
-
-    @Override
-    public final @NotNull ImmutableSeq<E> takeLast(int n) {
-        if (n < 0) {
-            throw new IllegalArgumentException();
-        }
-        if (n == 0) {
-            return ImmutableVector.empty();
-        }
-        final int size = this.size();
-        if (n >= size) {
-            return this;
-        }
-
-        return slice0(size - n, size);
-    }
-
-    @Override
-    public final @NotNull ImmutableSeq<E> concat(@NotNull SeqLike<? extends E> other) {
-        return appendedAll(other);
-    }
-
-    @Override
-    public final @NotNull ImmutableSeq<E> concat(java.util.@NotNull List<? extends E> other) {
-        return appendedAll(other);
-    }
-
     abstract ImmutableSeq<E> filterImpl(Predicate<? super E> predicate, boolean isFlipped);
 
     @Override
@@ -444,16 +370,6 @@ public sealed abstract class ImmutableVector<@Covariant E> extends AbstractImmut
     @Override
     public final @NotNull ImmutableSeq<E> filterNot(@NotNull Predicate<? super E> predicate) {
         return filterImpl(predicate, true);
-    }
-
-    @Override
-    public final @NotNull ImmutableSeq<E> filterNotNull() {
-        return filter(Predicates.isNotNull());
-    }
-
-    @Override
-    public <U> @NotNull ImmutableSeq<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
-        return ((ImmutableVector<U>) filter(clazz::isInstance));
     }
 
     @Override
@@ -511,11 +427,6 @@ public sealed abstract class ImmutableVector<@Covariant E> extends AbstractImmut
             builder.addAll(mapper.apply(e));
         }
         return builder.build();
-    }
-
-    @Override
-    public final @NotNull ImmutableSeq<E> sorted(Comparator<? super E> comparator) {
-        return AbstractImmutableSeq.sorted(this, comparator, iterableFactory());
     }
 
     @Override

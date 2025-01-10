@@ -16,9 +16,13 @@
 package kala.collection.internal;
 
 import kala.collection.ArraySeq;
+import kala.collection.Collection;
 import kala.collection.Seq;
 import kala.collection.base.Traversable;
+import kala.collection.factory.CollectionBuilder;
+import kala.collection.factory.CollectionFactory;
 import kala.collection.immutable.ImmutableArray;
+import kala.collection.immutable.ImmutableCollection;
 import kala.collection.immutable.ImmutableSeq;
 import kala.collection.internal.convert.FromJavaConvert;
 import kala.annotations.StaticClass;
@@ -27,12 +31,51 @@ import kala.collection.mutable.MutableArray;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
 
 @SuppressWarnings("unchecked")
 @StaticClass
 @ApiStatus.Internal
 public final class CollectionHelper {
+
+    public static <E> CollectionFactory<E, ?, ? extends ImmutableCollection<E>> immutableCollectionFactoryBy(Collection<?> collection) {
+        if (collection instanceof ImmutableCollection<?> immutableCollection) {
+            return immutableCollection.iterableFactory();
+        } else if (collection instanceof ArraySeq<?>) {
+            return ImmutableArray.factory();
+        } else {
+            return ImmutableSeq.factory();
+        }
+    }
+
+    public static <E> CollectionFactory<E, ?, ? extends ImmutableSeq<E>> immutableSeqFactoryBy(Seq<?> seq) {
+        if (seq instanceof ImmutableSeq<?> immutableSeq) {
+            return immutableSeq.iterableFactory();
+        } else if (seq instanceof ArraySeq<?>) {
+            return ImmutableArray.factory();
+        } else {
+            return ImmutableSeq.factory();
+        }
+    }
+
+    public static <E> CollectionBuilder<E, ? extends ImmutableSeq<E>> newImmutableSeqBuilderBy(Seq<?> seq) {
+        if (seq instanceof ImmutableSeq<?> immutableSeq) {
+            return immutableSeq.<E>iterableFactory().newCollectionBuilder();
+        } else {
+            return ImmutableSeq.<E>factory().newCollectionBuilder();
+        }
+    }
+
+    public static <E> ImmutableSeq<E> emptyImmutableSeqBy(@NotNull Seq<? extends E> seq) {
+        if (seq instanceof ImmutableSeq<? extends E> immutableSeq) {
+            return immutableSeq.<E>iterableFactory().empty();
+        } else if (seq instanceof ArraySeq) {
+            return ImmutableArray.empty();
+        } else {
+            return ImmutableSeq.empty();
+        }
+    }
 
     public static Object[] copyToArray(@NotNull Iterable<?> it) {
         if (it instanceof Traversable<?> traversable) {

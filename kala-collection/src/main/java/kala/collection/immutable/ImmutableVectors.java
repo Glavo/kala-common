@@ -143,36 +143,6 @@ final class ImmutableVectors {
             return this;
         }
 
-        @Override
-        public @NotNull <U> ImmutableVector<U> map(@NotNull Function<? super Object, ? extends U> mapper) {
-            return (ImmutableVector<U>) this;
-        }
-
-        @Override
-        public @NotNull <U> ImmutableVector<@NotNull U> mapNotNull(@NotNull Function<? super Object, ? extends @Nullable U> mapper) {
-            return (ImmutableVector<U>) this;
-        }
-
-        @Override
-        public @NotNull <U> ImmutableVector<U> mapIndexed(@NotNull IndexedFunction<? super Object, ? extends U> mapper) {
-            return (ImmutableVector<U>) this;
-        }
-
-        @Override
-        public @NotNull <U> ImmutableVector<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super Object, ? extends @Nullable U> mapper) {
-            return (ImmutableVector<U>) this;
-        }
-
-        @Override
-        public void forEach(@NotNull Consumer<? super Object> action) {
-            // do nothing
-        }
-
-        @Override
-        public void forEachIndexed(@NotNull IndexedConsumer<? super Object> action) {
-            // do nothing
-        }
-
         @Serial
         private Object readResolve() {
             return INSTANCE;

@@ -362,15 +362,6 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
         return new ImmutableLinkedSeq<>(list, size - c);
     }
 
-    @Override
-    public @NotNull ImmutableSeq<E> takeLast(int n) {
-        if (n < 0) throw new IllegalArgumentException();
-        if (n == 0) return ImmutableLinkedSeq.empty();
-        if (n >= size) return this;
-
-        return drop(size - n);
-    }
-
     //endregion
 
     @Serial

@@ -18,7 +18,6 @@ package kala.collection.base;
 import kala.annotations.Covariant;
 import kala.annotations.DelegateBy;
 import kala.collection.base.primitive.*;
-import kala.collection.factory.CollectionBuilder;
 import kala.collection.factory.primitive.*;
 import kala.concurrent.Granularity;
 import kala.concurrent.ConcurrentScope;
@@ -488,11 +487,7 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
     default @NotNull <U, G extends Growable<? super U>> G mapMultiTo(
             @NotNull G destination,
             @NotNull BiConsumer<? super T, ? super Consumer<? super U>> mapper) {
-
-        Consumer<? super U> consumer = destination instanceof CollectionBuilder
-                ? ((CollectionBuilder<? super U, ?>) destination)
-                : destination::plusAssign;
-
+        Consumer<? super U> consumer = destination::plusAssign;
         for (T value : this) {
             mapper.accept(value, consumer);
         }

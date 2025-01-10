@@ -98,40 +98,7 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public @NotNull ImmutableSeq<E> take(int n) {
-            if (n < 0) {
-                throw new IllegalArgumentException();
-            }
-
-            return this;
-        }
-
-        @Override
-        public @NotNull ImmutableSeq<E> takeLast(int n) {
-            if (n < 0) {
-                throw new IllegalArgumentException();
-            }
-            return this;
-        }
-
-        @Override
         public @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
-            return this;
-        }
-
-        @Override
-        public @NotNull ImmutableSeq<E> drop(int n) {
-            if (n < 0) {
-                throw new IllegalArgumentException();
-            }
-            return this;
-        }
-
-        @Override
-        public @NotNull ImmutableSeq<E> dropLast(int n) {
-            if (n < 0) {
-                throw new IllegalArgumentException();
-            }
             return this;
         }
 
@@ -153,25 +120,6 @@ final class ImmutableSeqs {
             throw Indexes.outOfBounds(index, 0);
         }
 
-        @Override
-        public @NotNull <U> ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
-            return ImmutableSeq.empty();
-        }
-
-        @Override
-        public @NotNull <U> ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
-            return ImmutableSeq.empty();
-        }
-
-        @Override
-        public @NotNull <U> ImmutableSeq<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
-            return ImmutableSeq.empty();
-        }
-
-        @Override
-        public @NotNull <U> ImmutableSeq<@NotNull U> mapIndexedNotNull(@NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
-            return ImmutableSeq.empty();
-        }
 
         @Serial
         private Object readResolve() {
@@ -246,55 +194,11 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public @NotNull ImmutableSeq<E> take(int n) {
-            if (n < 0) {
-                throw new IllegalArgumentException();
-            }
-            if (n == 0) {
-                return ImmutableSeq.empty();
-            }
-            return this;
-        }
-
-        @Override
-        public @NotNull ImmutableSeq<E> takeLast(int n) {
-            if (n < 0) {
-                throw new IllegalArgumentException();
-            }
-            if (n == 0) {
-                return ImmutableSeq.empty();
-            }
-            return this;
-        }
-
-        @Override
         public @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
             if (!predicate.test(value1)) {
                 return ImmutableSeq.empty();
             }
             return this;
-        }
-
-        @Override
-        public @NotNull ImmutableSeq<E> drop(int n) {
-            if (n < 0) {
-                throw new IllegalArgumentException();
-            }
-            if (n == 0) {
-                return this;
-            }
-            return ImmutableSeq.empty();
-        }
-
-        @Override
-        public @NotNull ImmutableSeq<E> dropLast(int n) {
-            if (n < 0) {
-                throw new IllegalArgumentException();
-            }
-            if (n == 0) {
-                return this;
-            }
-            return ImmutableSeq.empty();
         }
 
         @Override
@@ -418,34 +322,6 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public @NotNull ImmutableSeq<E> take(int n) {
-            if (n < 0) {
-                throw new IllegalArgumentException();
-            }
-            if (n == 0) {
-                return ImmutableSeq.empty();
-            }
-            if (n == 1) {
-                return ImmutableSeq.of(value1);
-            }
-            return this;
-        }
-
-        @Override
-        public @NotNull ImmutableSeq<E> takeLast(int n) {
-            if (n < 0) {
-                throw new IllegalArgumentException();
-            }
-            if (n == 0) {
-                return ImmutableSeq.empty();
-            }
-            if (n == 1) {
-                return ImmutableSeq.of(value2);
-            }
-            return this;
-        }
-
-        @Override
         public @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
             if (!predicate.test(value1)) {
                 return ImmutableSeq.empty();
@@ -454,32 +330,6 @@ final class ImmutableSeqs {
                 return ImmutableSeq.of(value1);
             }
             return this;
-        }
-
-        @Override
-        public @NotNull ImmutableSeq<E> drop(int n) {
-            if (n < 0) {
-                throw new IllegalArgumentException();
-            }
-            return switch (n) {
-                case 0 -> this;
-                case 1 -> ImmutableSeq.of(value2);
-                default -> ImmutableSeq.empty();
-            };
-        }
-
-        @Override
-        public @NotNull ImmutableSeq<E> dropLast(int n) {
-            if (n < 0) {
-                throw new IllegalArgumentException();
-            }
-            if (n == 0) {
-                return this;
-            }
-            if (n == 1) {
-                return ImmutableSeq.of(value1);
-            }
-            return ImmutableSeq.empty();
         }
 
         @Override
@@ -967,81 +817,16 @@ final class ImmutableSeqs {
         }
 
         @Override
-        public @NotNull ImmutableSeq<E> drop(int n) {
-            if (n < 0) {
-                throw new IllegalArgumentException();
+        public @NotNull ImmutableSeq<E> appendedAll(@NotNull Iterable<? extends E> values) {
+            if (values instanceof CopiesSeq<? extends E> otherSeq && otherSeq.value == this.value) {
+                return new CopiesSeq<>(this.size + otherSeq.size, value);
             }
-            if (n == 0) {
-                return this;
-            }
-            if (n >= size) {
-                return ImmutableSeq.empty();
-            }
-            return new CopiesSeq<>(size - n, value);
-        }
-
-        @Override
-        public @NotNull ImmutableSeq<E> dropLast(int n) {
-            return drop(n);
-        }
-
-        @Override
-        public @NotNull ImmutableSeq<E> dropWhile(@NotNull Predicate<? super E> predicate) {
-            final int size = this.size;
-            final E value = this.value;
-            for (int i = 0; i < size; i++) {
-                if (!predicate.test(value)) {
-                    return drop(i);
-                }
-            }
-            return ImmutableSeq.empty();
-        }
-
-        @Override
-        public @NotNull ImmutableSeq<E> take(int n) {
-            if (n < 0) {
-                throw new IllegalArgumentException();
-            }
-            if (n == 0) {
-                return ImmutableSeq.empty();
-            }
-            if (n >= size) {
-                return this;
-            }
-            return new CopiesSeq<>(n, value);
-        }
-
-        @Override
-        public @NotNull ImmutableSeq<E> takeLast(int n) {
-            return take(n);
-        }
-
-        @Override
-        public @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
-            final int size = this.size;
-            final E value = this.value;
-            for (int i = 0; i < size; i++) {
-                if (!predicate.test(value)) {
-                    return take(i);
-                }
-            }
-            return this;
-        }
-
-        @Override
-        public @NotNull ImmutableSeq<E> concat(@NotNull SeqLike<? extends E> other) {
-            if (other instanceof CopiesSeq) {
-                CopiesSeq<E> ics = (CopiesSeq<E>) other;
-                if (ics.value == this.value) {
-                    return new CopiesSeq<>(this.size + ics.size, value);
-                }
-            }
-            Objects.requireNonNull(other);
+            Objects.requireNonNull(values);
             final ImmutableVectors.VectorBuilder<E> builder = new ImmutableVectors.VectorBuilder<>();
             for (int i = 0; i < size; i++) {
                 builder.add(value);
             }
-            builder.addAll(other);
+            builder.addAll(values);
             return builder.build();
         }
 

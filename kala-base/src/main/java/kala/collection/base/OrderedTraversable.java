@@ -16,10 +16,13 @@
 package kala.collection.base;
 
 import kala.annotations.DelegateBy;
+import kala.collection.factory.CollectionFactory;
 import kala.control.Option;
 import kala.function.CheckedIndexedConsumer;
+import kala.function.IndexedBiConsumer;
 import kala.function.IndexedBiFunction;
 import kala.function.IndexedConsumer;
+import kala.function.IndexedFunction;
 import kala.index.Index;
 import kala.index.Indexes;
 import org.intellij.lang.annotations.Flow;
@@ -29,6 +32,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -290,6 +294,55 @@ public interface OrderedTraversable<T> extends Traversable<T> {
     }
 
     //endregion
+
+    @DelegateBy("mapTo(Growable<U>, Function<T, U>)")
+    default <U, R> R mapIndexed(@NotNull CollectionFactory<@NotNull U, ?, R> factory, @NotNull IndexedFunction<? super T, ? extends U> mapper) {
+        return mapIndexedTo(factory.newCollectionBuilder(knownSize()), mapper).build();
+    }
+
+    @DelegateBy("mapTo(Growable<U>, Function<T, U>)")
+    default <U, R> R mapIndexedNotNull(@NotNull CollectionFactory<@NotNull U, ?, R> factory, @NotNull IndexedFunction<? super T, ? extends @Nullable U> mapper) {
+        return mapIndexedNotNullTo(factory.newCollectionBuilder(knownSize()), mapper).build();
+    }
+
+    default @NotNull <U, R> R mapIndexedMulti(@NotNull CollectionFactory<@NotNull U, ?, R> factory,
+                                              @NotNull IndexedBiConsumer<? super T, ? super Consumer<? super U>> mapper) {
+        return mapIndexedMultiTo(factory.newCollectionBuilder(knownSize()), mapper).build();
+    }
+
+    @Contract(value = "_, _ -> param1", mutates = "param1")
+    default <U, G extends Growable<? super U>> @NotNull G mapIndexedTo(
+            @NotNull G destination, @NotNull IndexedFunction<? super T, ? extends U> mapper) {
+        int idx = 0;
+        for (T e : this) {
+            destination.plusAssign(mapper.apply(idx++, e));
+        }
+        return destination;
+    }
+
+    @Contract(value = "_, _ -> param1", mutates = "param1")
+    default <U, G extends Growable<? super U>> @NotNull G mapIndexedNotNullTo(
+            @NotNull G destination, @NotNull IndexedFunction<? super T, ? extends @Nullable U> mapper) {
+        int idx = 0;
+        for (T e : this) {
+            U u = mapper.apply(idx++, e);
+            if (u != null) {
+                destination.plusAssign(u);
+            }
+        }
+        return destination;
+    }
+
+    default @NotNull <U, G extends Growable<? super U>> G mapIndexedMultiTo(
+            @NotNull G destination, @NotNull IndexedBiConsumer<? super T, ? super Consumer<? super U>> mapper) {
+        Consumer<? super U> consumer = destination::plusAssign;
+        int index = 0;
+        for (T value : this) {
+            mapper.accept(index++, value, consumer);
+        }
+        return destination;
+    }
+
 
     default T foldIndexed(T zero, @NotNull IndexedBiFunction<? super T, ? super T, ? extends T> op) {
         return foldLeftIndexed(zero, op);

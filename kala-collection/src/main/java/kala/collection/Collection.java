@@ -17,7 +17,9 @@ package kala.collection;
 
 import kala.annotations.Covariant;
 import kala.annotations.DelegateBy;
+import kala.collection.base.AnyTraversable;
 import kala.collection.immutable.*;
+import kala.collection.internal.CollectionHelper;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.internal.view.CollectionViews;
@@ -37,9 +39,11 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 import java.io.*;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.function.*;
 
 public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollection<E> {
+
     //region Static Factories
 
     @SuppressWarnings("unchecked")
@@ -76,7 +80,7 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
     @Override
     @Contract(pure = true)
     default @NotNull ImmutableCollection<E> filter(@NotNull Predicate<? super E> predicate) {
-        return filter(ImmutableSeq.factory(), predicate);
+        return filter(CollectionHelper.immutableCollectionFactoryBy(this), predicate);
     }
 
     @Contract(pure = true)
@@ -131,7 +135,7 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
 
     @Contract(pure = true)
     default <U> @NotNull ImmutableCollection<U> map(@NotNull Function<? super E, ? extends U> mapper) {
-        return map(ImmutableSeq.factory(), mapper);
+        return map(CollectionHelper.<U>immutableCollectionFactoryBy(this), mapper);
     }
 
     @Contract(pure = true)
@@ -147,7 +151,7 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
 
     @Contract(pure = true)
     default <U> @NotNull ImmutableCollection<U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
-        return mapNotNull(ImmutableSeq.factory(), mapper);
+        return mapNotNull(CollectionHelper.<U>immutableCollectionFactoryBy(this), mapper);
     }
 
     @Contract(pure = true)
@@ -163,7 +167,7 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
 
     @Contract(pure = true)
     default <U> @NotNull ImmutableCollection<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
-        return mapMulti(ImmutableSeq.factory(), mapper);
+        return mapMulti(CollectionHelper.immutableCollectionFactoryBy(this), mapper);
     }
 
     @Contract(pure = true)
@@ -182,7 +186,7 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
 
     @Contract(pure = true)
     default <U> @NotNull ImmutableCollection<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
-        return flatMap(ImmutableSeq.factory(), mapper);
+        return flatMap(CollectionHelper.immutableCollectionFactoryBy(this), mapper);
     }
 
     @Contract(pure = true)
@@ -211,7 +215,22 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
 
     @Contract(pure = true)
     default <U, R> @NotNull ImmutableCollection<R> zip(@NotNull Iterable<? extends U> other, @NotNull BiFunction<? super E, ? super U, ? extends R> mapper) {
-        return view().<U, R>zip(other, mapper).toImmutableSeq();
+        Objects.requireNonNull(other);
+        Objects.requireNonNull(mapper);
+
+        var factory = CollectionHelper.<R>immutableCollectionFactoryBy(this);
+
+        if (this.isEmpty() || AnyTraversable.knownSize(other) == 0) {
+            return factory.empty();
+        }
+
+        var builder = factory.newCollectionBuilder();
+        Iterator<? extends E> it1 = this.iterator();
+        Iterator<? extends U> it2 = other.iterator();
+        while (it1.hasNext() && it2.hasNext()) {
+            builder.plusAssign(mapper.apply(it1.next(), it2.next()));
+        }
+        return builder.build();
     }
 
     @Contract(pure = true)
@@ -232,7 +251,24 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
 
     @Contract(pure = true)
     default <U, V> @NotNull ImmutableCollection<@NotNull Tuple3<E, U, V>> zip3(@NotNull Iterable<? extends U> other1, @NotNull Iterable<? extends V> other2) {
-        return view().<U, V>zip3(other1, other2).toImmutableSeq();
+        Objects.requireNonNull(other1);
+        Objects.requireNonNull(other2);
+
+        var factory = CollectionHelper.<Tuple3<E, U, V>>immutableCollectionFactoryBy(this);
+
+        if (this.isEmpty() || AnyTraversable.knownSize(other1) == 0 || AnyTraversable.knownSize(other2) == 0) {
+            return factory.empty();
+        }
+
+        var builder = factory.newCollectionBuilder();
+        Iterator<? extends E> it1 = this.iterator();
+        Iterator<? extends U> it2 = other1.iterator();
+        Iterator<? extends V> it3 = other2.iterator();
+
+        while (it1.hasNext() && it2.hasNext() && it3.hasNext()) {
+            builder.plusAssign(Tuple.of(it1.next(), it2.next(), it3.next()));
+        }
+        return builder.build();
     }
 
     @Contract(pure = true)

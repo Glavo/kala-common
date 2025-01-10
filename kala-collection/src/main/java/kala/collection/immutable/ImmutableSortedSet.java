@@ -17,12 +17,20 @@ package kala.collection.immutable;
 
 import kala.collection.SortedSet;
 import kala.collection.factory.CollectionFactory;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
 import java.util.function.Function;
 
 public interface ImmutableSortedSet<E> extends ImmutableSet<E>, SortedSet<E> {
+
+    @Override
+    @ApiStatus.NonExtendable
+    default @NotNull CollectionFactory<E, ?, ? extends ImmutableSortedSet<E>> sortedIterableFactory() {
+        return sortedIterableFactory(null);
+    }
+
     @Override
     <U> @NotNull CollectionFactory<U, ?, ? extends ImmutableSortedSet<U>> sortedIterableFactory(Comparator<? super U> comparator);
 }

@@ -17,10 +17,12 @@ package kala.collection;
 
 import kala.annotations.Covariant;
 import kala.annotations.DelegateBy;
+import kala.collection.base.AnyTraversable;
 import kala.collection.base.Iterators;
 import kala.collection.base.OrderedTraversable;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.immutable.ImmutableSeq;
+import kala.collection.internal.CollectionHelper;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
 import kala.collection.internal.view.SeqViews;
@@ -166,110 +168,295 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
     @Override
     @Contract(pure = true)
     default @NotNull ImmutableSeq<E> slice(@Index int beginIndex, @Index int endIndex) {
-        return view().slice(beginIndex, endIndex).toImmutableSeq();
+        final int size = size();
+        beginIndex = Indexes.checkBeginIndex(beginIndex, size);
+        endIndex = Indexes.checkEndIndex(beginIndex, endIndex, size);
+
+        int newSize = endIndex - beginIndex;
+        if (newSize == 0) {
+            return CollectionHelper.emptyImmutableSeqBy(this);
+        }
+        if (newSize == size) {
+            return toImmutableSeq();
+        }
+
+        var builder = CollectionHelper.<E>newImmutableSeqBuilderBy(this);
+        builder.sizeHint(newSize);
+
+        if (supportsFastRandomAccess()) {
+            for (int i = beginIndex; i < endIndex; i++) {
+                builder.plusAssign(get(i));
+            }
+        } else {
+            Iterator<? extends E> it = iterator(beginIndex);
+            for (int i = 0; i < newSize; i++) {
+                builder.plusAssign(it.next());
+            }
+        }
+        return builder.build();
     }
 
     @Override
     @Contract(pure = true)
+    @DelegateBy("slice(int, int)")
     default @NotNull ImmutableSeq<E> drop(int n) {
-        return view().drop(n).toImmutableSeq();
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
+            return toImmutableSeq();
+        }
+        final int size = size();
+        if (n >= size) {
+            return CollectionHelper.emptyImmutableSeqBy(this);
+        }
+        return slice(n, size);
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull ImmutableSeq<E> dropLast(int n) {
-        return view().dropLast(n).toImmutableSeq();
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
+            return toImmutableSeq();
+        }
+        final int size = size();
+        if (n >= size) {
+            return CollectionHelper.emptyImmutableSeqBy(this);
+        }
+        return slice(0, size - n);
     }
 
     @Override
     @Contract(pure = true)
+    @DelegateBy("drop(int)")
     default @NotNull ImmutableSeq<E> dropWhile(@NotNull Predicate<? super E> predicate) {
-        return view().dropWhile(predicate).toImmutableSeq();
+        int count = 0;
+        boolean empty = true;
+        for (E e : this) {
+            if (predicate.test(e)) {
+                count++;
+            } else {
+                empty = false;
+                break;
+            }
+        }
+
+        if (empty) {
+            return CollectionHelper.emptyImmutableSeqBy(this);
+        }
+        return drop(count);
     }
 
     @Override
     @Contract(pure = true)
+    @DelegateBy("slice(int, int)")
     default @NotNull ImmutableSeq<E> take(int n) {
-        return view().take(n).toImmutableSeq();
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
+            return CollectionHelper.emptyImmutableSeqBy(this);
+        }
+        final int size = size();
+        if (n >= size) {
+            return toImmutableSeq();
+        }
+        return slice(0, n);
     }
 
     @Override
     @Contract(pure = true)
+    @DelegateBy("slice(int, int)")
     default @NotNull ImmutableSeq<E> takeLast(int n) {
-        return view().takeLast(n).toImmutableSeq();
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n == 0) {
+            return CollectionHelper.emptyImmutableSeqBy(this);
+        }
+        final int size = size();
+        if (n >= size) {
+            return toImmutableSeq();
+        }
+        return slice(size - n, size);
     }
 
     @Override
     @Contract(pure = true)
+    @DelegateBy("take(int)")
     default @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
-        return view().takeWhile(predicate).toImmutableSeq();
+        int count = 0;
+        boolean takeAll = true;
+        for (E e : this) {
+            if (predicate.test(e)) {
+                count++;
+            } else {
+                takeAll = false;
+                break;
+            }
+        }
+
+        if (takeAll) {
+            return toImmutableSeq();
+        }
+        return take(count);
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull ImmutableSeq<E> updated(@Index int index, E newValue) {
-        index = Indexes.checkIndex(index, size());
-        return view().updated(index, newValue).toImmutableSeq();
+        final int size = size();
+        index = Indexes.checkIndex(index, size);
+
+        var builder = CollectionHelper.<E>newImmutableSeqBuilderBy(this);
+        builder.sizeHint(size);
+
+        for (E e : this) {
+            if (index-- == 0) {
+                builder.plusAssign(newValue);
+            } else {
+                builder.plusAssign(e);
+            }
+        }
+
+        return builder.build();
     }
 
     @Override
     @Contract(pure = true)
+    @DelegateBy("appendedAll(Iterable<E>)")
     default @NotNull ImmutableSeq<E> concat(@NotNull SeqLike<? extends E> other) {
-        return view().concat(other).toImmutableSeq();
+        return appendedAll(other);
     }
 
     @Override
     @Contract(pure = true)
+    @DelegateBy("appendedAll(Iterable<E>)")
     default @NotNull ImmutableSeq<E> concat(@NotNull List<? extends E> other) {
-        return view().concat(other).toImmutableSeq();
+        return appendedAll(other);
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull ImmutableSeq<E> prepended(E value) {
-        return view().prepended(value).toImmutableSeq();
+        var builder = CollectionHelper.<E>newImmutableSeqBuilderBy(this);
+        builder.sizeHint(size() + 1);
+
+        builder.plusAssign(value);
+        for (E e : this) {
+            builder.plusAssign(e);
+        }
+
+        return builder.build();
     }
 
     @Override
     @Contract(pure = true)
+    @DelegateBy("prependedAll(Iterable<E>)")
     default @NotNull ImmutableSeq<E> prependedAll(E... values) {
-        return view().prependedAll(values).toImmutableSeq();
+        return prependedAll(ArraySeq.wrap(values));
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull ImmutableSeq<E> prependedAll(@NotNull Iterable<? extends E> values) {
-        return view().prependedAll(values).toImmutableSeq();
+        if (isEmpty()) {
+            return CollectionHelper.<E>immutableSeqFactoryBy(this).from(values);
+        }
+
+        var builder = CollectionHelper.<E>newImmutableSeqBuilderBy(this);
+        for (E e : values) {
+            builder.plusAssign(e);
+        }
+        for (E e : this) {
+            builder.plusAssign(e);
+        }
+        return builder.build();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull ImmutableSeq<E> appended(E value) {
-        return view().appended(value).toImmutableSeq();
+        var builder = CollectionHelper.<E>newImmutableSeqBuilderBy(this);
+        builder.sizeHint(size() + 1);
+
+        for (E e : this) {
+            builder.plusAssign(e);
+        }
+        builder.plusAssign(value);
+
+        return builder.build();
+    }
+
+    @Override
+    @Contract(pure = true)
+    @DelegateBy("appendedAll(Iterable<E>)")
+    default @NotNull ImmutableSeq<E> appendedAll(E... values) {
+        return appendedAll(ArraySeq.wrap(values));
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull ImmutableSeq<E> appendedAll(@NotNull Iterable<? extends E> values) {
-        return view().appendedAll(values).toImmutableSeq();
-    }
+        if (isEmpty()) {
+            return CollectionHelper.<E>immutableSeqFactoryBy(this).from(values);
+        }
 
-    @Override
-    @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> appendedAll(E... values) {
-        return view().appendedAll(values).toImmutableSeq();
+        var builder = CollectionHelper.<E>newImmutableSeqBuilderBy(this);
+        for (E e : this) {
+            builder.plusAssign(e);
+        }
+        for (E e : values) {
+            builder.plusAssign(e);
+        }
+        return builder.build();
     }
 
     @Override
     default @NotNull ImmutableSeq<E> inserted(@Index int index, E value) {
-        index = Indexes.checkPositionIndex(index, size());
-        return view().inserted(index, value).toImmutableSeq();
+        final int size = size();
+        index = Indexes.checkPositionIndex(index, size);
+
+        var builder = CollectionHelper.<E>newImmutableSeqBuilderBy(this);
+        builder.sizeHint(size + 1);
+        Iterator<? extends E> iterator = iterator();
+        for (int i = 0; i < index; i++) {
+            builder.plusAssign(iterator.next());
+        }
+        builder.plusAssign(value);
+        while (iterator.hasNext()) {
+            builder.plusAssign(iterator.next());
+        }
+        return builder.build();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull ImmutableSeq<E> removedAt(@Index int index) {
-        return view().removedAt(Indexes.checkIndex(index, size())).toImmutableSeq();
+        final int size = size();
+        index = Indexes.checkIndex(index, size);
+
+        if (size == 1) {
+            return CollectionHelper.emptyImmutableSeqBy(this);
+        }
+
+        var builder = CollectionHelper.<E>newImmutableSeqBuilderBy(this);
+        builder.sizeHint(size - 1);
+
+        Iterator<? extends E> iterator = iterator();
+
+        for (int i = 0; i < index; i++) {
+            builder.plusAssign(iterator.next());
+        }
+
+        iterator.next();
+        while (iterator.hasNext()) {
+            builder.plusAssign(iterator.next());
+        }
+        return builder.build();
     }
 
     @Override
@@ -282,19 +469,28 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
     @Override
     @Contract(pure = true)
     default @NotNull ImmutableSeq<E> sorted(@Nullable Comparator<? super E> comparator) {
-        return view().sorted(comparator).toImmutableSeq();
+        Object[] arr = toArray();
+        Arrays.sort(arr, ((Comparator<? super Object>) comparator));
+        return CollectionHelper.<E>immutableSeqFactoryBy(this).from((E[]) arr);
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull ImmutableSeq<E> reversed() {
-        return view().reversed().toImmutableSeq();
+        final int size = this.size();
+        if (size == 0) {
+            return CollectionHelper.emptyImmutableSeqBy(this);
+        }
+        var builder = CollectionHelper.<E>newImmutableSeqBuilderBy(this);
+        builder.sizeHint(size);
+        reverseIterator().forEachRemaining(builder::plusAssign);
+        return builder.build();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull ImmutableSeq<E> filter(@NotNull Predicate<? super E> predicate) {
-        return view().filter(predicate).toImmutableSeq();
+        return filter(CollectionHelper.immutableSeqFactoryBy(this), predicate);
     }
 
     @Override
@@ -313,12 +509,16 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
 
     @Override
     @Contract(pure = true)
+    @ApiStatus.NonExtendable
+    @DelegateBy("filter(Predicate<E>)")
     default @NotNull ImmutableSeq<E> filterNot(@NotNull Predicate<? super E> predicate) {
-        return view().filterNot(predicate).toImmutableSeq();
+        return filter(predicate.negate());
     }
 
     @Override
     @Contract(pure = true)
+    @ApiStatus.NonExtendable
+    @DelegateBy("filterNot(Predicate<E>)")
     default @NotNull <Ex extends Throwable> ImmutableSeq<E> filterNotChecked(
             @NotNull CheckedPredicate<? super E, ? extends Ex> predicate) throws Ex {
         return filterNot(predicate);
@@ -326,6 +526,8 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
 
     @Override
     @Contract(pure = true)
+    @ApiStatus.NonExtendable
+    @DelegateBy("filterNot(Predicate<E>)")
     default @NotNull ImmutableSeq<E> filterNotUnchecked(
             @NotNull CheckedPredicate<? super E, ?> predicate) {
         return filterNot(predicate);
@@ -333,12 +535,16 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
 
     @Override
     @Contract(pure = true)
+    @ApiStatus.NonExtendable
+    @DelegateBy("filter(Predicate<E>)")
     default @NotNull ImmutableSeq<@NotNull E> filterNotNull() {
         return this.filter(Predicates.isNotNull());
     }
 
     @Override
     @Contract(pure = true)
+    @ApiStatus.NonExtendable
+    @DelegateBy("filter(Predicate<E>)")
     default <U> @NotNull ImmutableSeq<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
         return view().<U>filterIsInstance(clazz).toImmutableSeq();
     }
@@ -346,11 +552,13 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
     @Override
     @Contract(pure = true)
     default <U> @NotNull ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
-        return view().<U>map(mapper).toImmutableSeq();
+        return map(CollectionHelper.<U>immutableSeqFactoryBy(this), mapper);
     }
 
     @Override
     @Contract(pure = true)
+    @ApiStatus.NonExtendable
+    @DelegateBy("map(Function<E, U>)")
     default <U, Ex extends Throwable> @NotNull ImmutableSeq<U> mapChecked(
             @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
         return map(mapper);
@@ -358,6 +566,8 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
 
     @Override
     @Contract(pure = true)
+    @ApiStatus.NonExtendable
+    @DelegateBy("map(Function<E, U>)")
     default <U> @NotNull ImmutableSeq<U> mapUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
         return map(mapper);
     }
@@ -365,16 +575,20 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
     @Override
     @Contract(pure = true)
     default <U> @NotNull ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
-        return view().<U>mapIndexed(mapper).toImmutableSeq();
+        return mapIndexed(CollectionHelper.<U>immutableSeqFactoryBy(this), mapper);
     }
 
     @Contract(pure = true)
+    @ApiStatus.NonExtendable
+    @DelegateBy("mapIndexed(IndexedFunction<E, U>)")
     default <U, Ex extends Throwable> @NotNull ImmutableSeq<U> mapIndexedChecked(
             @NotNull CheckedIndexedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
         return mapIndexed(mapper);
     }
 
     @Contract(pure = true)
+    @ApiStatus.NonExtendable
+    @DelegateBy("mapIndexed(IndexedFunction<E, U>)")
     default <U> @NotNull ImmutableSeq<U> mapIndexedUnchecked(@NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
         return mapIndexed(mapper);
     }
@@ -382,16 +596,20 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
     @Override
     @Contract(pure = true)
     default <U> @NotNull ImmutableSeq<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
-        return view().<U>mapNotNull(mapper).toImmutableSeq();
+        return mapNotNull(CollectionHelper.<U>immutableSeqFactoryBy(this), mapper);
     }
 
     @Contract(pure = true)
+    @ApiStatus.NonExtendable
+    @DelegateBy("mapNotNull(Function<E, U>)")
     default <U, Ex extends Throwable> @NotNull ImmutableSeq<U> mapNotNullChecked(
             @NotNull CheckedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
         return mapNotNull(mapper);
     }
 
     @Contract(pure = true)
+    @ApiStatus.NonExtendable
+    @DelegateBy("mapNotNull(Function<E, U>)")
     default <U> @NotNull ImmutableSeq<U> mapNotNullUnchecked(@NotNull CheckedFunction<? super E, ? extends U, ?> mapper) {
         return mapNotNull(mapper);
     }
@@ -400,13 +618,28 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
     @Contract(pure = true)
     default <U> @NotNull ImmutableSeq<@NotNull U> mapIndexedNotNull(
             @NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
-        return view().<U>mapIndexedNotNull(mapper).toImmutableSeq();
+        return mapIndexedNotNull(CollectionHelper.<U>immutableSeqFactoryBy(this), mapper);
+    }
+
+    @Contract(pure = true)
+    @ApiStatus.NonExtendable
+    @DelegateBy("mapIndexedNotNull(IndexedFunction<E, U>)")
+    default <U, Ex extends Throwable> @NotNull ImmutableSeq<U> mapIndexedNotNullChecked(
+            @NotNull CheckedIndexedFunction<? super E, ? extends U, ? extends Ex> mapper) throws Ex {
+        return mapIndexedNotNull(mapper);
+    }
+
+    @Contract(pure = true)
+    @ApiStatus.NonExtendable
+    @DelegateBy("mapIndexedNotNull(IndexedFunction<E, U>)")
+    default <U> @NotNull ImmutableSeq<U> mapIndexedNotNullUnchecked(@NotNull CheckedIndexedFunction<? super E, ? extends U, ?> mapper) {
+        return mapIndexedNotNull(mapper);
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull <U> ImmutableSeq<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
-        return view().mapMulti(mapper).toImmutableSeq();
+        return mapMulti(CollectionHelper.immutableSeqFactoryBy(this), mapper);
     }
 
     @Override
@@ -428,13 +661,27 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
     @Override
     @Contract(pure = true)
     default @NotNull <U> ImmutableSeq<U> mapIndexedMulti(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
-        return view().mapIndexedMulti(mapper).toImmutableSeq();
+        return mapIndexedMulti(CollectionHelper.immutableSeqFactoryBy(this), mapper);
+    }
+
+    @Contract(pure = true)
+    @DelegateBy("mapIndexedMulti(IndexedBiConsumer<E, Consumer<U>>)")
+    default <U, Ex extends Throwable> @NotNull ImmutableSeq<U> mapIndexedMultiChecked(
+            @NotNull CheckedIndexedBiConsumer<? super E, ? super Consumer<? super U>, Ex> mapper) throws Ex {
+        return mapIndexedMulti(mapper);
+    }
+
+    @Contract(pure = true)
+    @DelegateBy("mapIndexedMulti(IndexedBiConsumer<E, Consumer<U>>)")
+    default <U> @NotNull ImmutableSeq<U> mapIndexedMultiUnchecked(
+            @NotNull CheckedIndexedBiConsumer<? super E, ? super Consumer<? super U>, ?> mapper) {
+        return mapIndexedMulti(mapper);
     }
 
     @Override
     @Contract(pure = true)
     default <U> @NotNull ImmutableSeq<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
-        return view().flatMap(mapper).toImmutableSeq();
+        return flatMap(CollectionHelper.immutableSeqFactoryBy(this), mapper);
     }
 
     @Override
@@ -459,7 +706,22 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
 
     @Contract(pure = true)
     default <U, R> @NotNull ImmutableSeq<R> zip(@NotNull Iterable<? extends U> other, @NotNull BiFunction<? super E, ? super U, ? extends R> mapper) {
-        return view().<U, R>zip(other, mapper).toImmutableSeq();
+        Objects.requireNonNull(other);
+        Objects.requireNonNull(mapper);
+
+        var factory = CollectionHelper.<R>immutableSeqFactoryBy(this);
+
+        if (this.isEmpty() || AnyTraversable.knownSize(other) == 0) {
+            return factory.empty();
+        }
+
+        var builder = factory.newCollectionBuilder();
+        Iterator<? extends E> it1 = this.iterator();
+        Iterator<? extends U> it2 = other.iterator();
+        while (it1.hasNext() && it2.hasNext()) {
+            builder.plusAssign(mapper.apply(it1.next(), it2.next()));
+        }
+        return builder.build();
     }
 
     @Contract(pure = true)
@@ -480,7 +742,24 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
 
     @Override
     default <U, V> @NotNull ImmutableSeq<@NotNull Tuple3<E, U, V>> zip3(@NotNull Iterable<? extends U> other1, @NotNull Iterable<? extends V> other2) {
-        return view().<U, V>zip3(other1, other2).toImmutableSeq();
+        Objects.requireNonNull(other1);
+        Objects.requireNonNull(other2);
+
+        var factory = CollectionHelper.<Tuple3<E, U, V>>immutableSeqFactoryBy(this);
+
+        if (this.isEmpty() || AnyTraversable.knownSize(other1) == 0 || AnyTraversable.knownSize(other2) == 0) {
+            return factory.empty();
+        }
+
+        var builder = factory.newCollectionBuilder();
+        Iterator<? extends E> it1 = this.iterator();
+        Iterator<? extends U> it2 = other1.iterator();
+        Iterator<? extends V> it3 = other2.iterator();
+
+        while (it1.hasNext() && it2.hasNext() && it3.hasNext()) {
+            builder.plusAssign(Tuple.of(it1.next(), it2.next(), it3.next()));
+        }
+        return builder.build();
     }
 
     @Override

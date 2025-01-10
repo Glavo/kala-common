@@ -360,94 +360,6 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
     }
 
     @Override
-    public @NotNull ImmutableSeq<E> drop(int n) {
-        if (n < 0) {
-            throw new IllegalArgumentException();
-        }
-        if (n == 0) {
-            return this.toImmutableArray();
-        }
-
-        final Object[] elements = this.elements;
-        final int size = elements.length;
-
-        if (n >= size) {
-            return ImmutableArray.empty();
-        }
-
-        return ImmutableArray.Unsafe.wrap(Arrays.copyOfRange(elements, n, size));
-    }
-
-    @Override
-    public @NotNull ImmutableSeq<E> dropLast(int n) {
-        if (n < 0) {
-            throw new IllegalArgumentException();
-        }
-        if (n == 0) {
-            return this.toImmutableArray();
-        }
-        return take(Integer.max(0, size() - n)); // TODO
-    }
-
-    @Override
-    public @NotNull ImmutableSeq<E> dropWhile(@NotNull Predicate<? super E> predicate) {
-        final Object[] elements = this.elements;
-        final int size = elements.length;
-
-        int count = 0;
-        while (count < size && predicate.test((E) elements[count])) {
-            ++count;
-        }
-
-        return drop(count);
-    }
-
-    @Override
-    public @NotNull ImmutableSeq<E> take(int n) {
-        if (n < 0) {
-            throw new IllegalArgumentException();
-        }
-
-        final int size = elements.length;
-        if (n == 0) {
-            return ImmutableSeq.empty();
-        }
-        if (n >= size) {
-            return this.toImmutableArray();
-        }
-
-        return ImmutableArray.Unsafe.wrap(Arrays.copyOf(elements, n));
-    }
-
-    @Override
-    public @NotNull ImmutableSeq<E> takeLast(int n) {
-        if (n < 0) {
-            throw new IllegalArgumentException();
-        }
-        if (n == 0) {
-            return ImmutableArray.empty();
-        }
-        return drop(Integer.max(0, size() - n)); // TODO
-    }
-
-    @Override
-    public @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
-        final Object[] elements = this.elements;
-        final int size = elements.length;
-
-        if (size == 0) {
-            return ImmutableArray.empty();
-        }
-
-        int count = 0;
-        while (count < size && predicate.test((E) elements[count])) { // implicit null check of predicate
-            ++count;
-        }
-
-        return take(count);
-    }
-
-    @Override
     public @NotNull ImmutableSeq<E> updated(@Index int index, E newValue) {
         final Object[] elements = this.elements;
         final int size = elements.length;
@@ -479,16 +391,6 @@ public class ArraySeq<E> extends AbstractSeq<E> implements Seq<E>, IndexedSeq<E>
         }
 
         return ImmutableArray.Unsafe.wrap(ObjectArrays.removedAt(elements, index));
-    }
-
-    @Override
-    public @NotNull ImmutableSeq<E> concat(@NotNull SeqLike<? extends E> other) {
-        return appendedAll(other);
-    }
-
-    @Override
-    public @NotNull ImmutableSeq<E> concat(@NotNull List<? extends E> other) {
-        return appendedAll(other);
     }
 
     @Override

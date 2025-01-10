@@ -16,20 +16,32 @@
 package kala.collection.mutable;
 
 import kala.collection.SortedSet;
+import kala.collection.factory.CollectionFactory;
 import kala.collection.internal.convert.AsJavaConvert;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Comparator;
+
 public interface MutableSortedSet<E> extends MutableSet<E>, SortedSet<E> {
+
     @Override
     default java.util.@NotNull SortedSet<E> asJava() {
         return new AsJavaConvert.MutableSortedSetAsJava<>(this);
     }
 
     @Override
+    @ApiStatus.NonExtendable
+    default @NotNull CollectionFactory<E, ?, ? extends MutableSortedSet<E>> sortedIterableFactory() {
+        return sortedIterableFactory(null);
+    }
+
+    @Override
+    @NotNull <U> CollectionFactory<U, ?, ? extends MutableSortedSet<U>> sortedIterableFactory(Comparator<? super U> comparator);
+
+    @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     default @NotNull MutableSet<E> clone() {
-        return sortedIterableFactory(comparator())
-
-        return this;
+        return sortedIterableFactory().from(this);
     }
 }

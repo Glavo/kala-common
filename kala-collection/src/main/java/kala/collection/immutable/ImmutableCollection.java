@@ -16,15 +16,10 @@
 package kala.collection.immutable;
 
 import kala.annotations.Covariant;
-import kala.annotations.DelegateBy;
 import kala.collection.Collection;
 import kala.collection.factory.CollectionFactory;
-import kala.tuple.Tuple;
-import kala.tuple.Tuple2;
-import kala.tuple.Tuple3;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.function.*;
@@ -112,47 +107,6 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E>, Immuta
     @Contract(pure = true)
     default <U> @NotNull CollectionFactory<U, ?, ? extends ImmutableCollection<U>> iterableFactory() {
         return factory();
-    }
-
-    @Contract(pure = true)
-    default @NotNull ImmutableCollection<E> filter(@NotNull Predicate<? super E> predicate) {
-        return filter(iterableFactory(), predicate);
-    }
-
-    @Contract(pure = true)
-    default <U> @NotNull ImmutableCollection<U> map(@NotNull Function<? super E, ? extends U> mapper) {
-        return map(this.<U>iterableFactory(), mapper);
-    }
-
-    @Contract(pure = true)
-    default <U> @NotNull ImmutableCollection<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
-        return mapNotNull(this.<U>iterableFactory(), mapper);
-    }
-
-    @Override
-    default @NotNull <U> ImmutableCollection<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
-        return AbstractImmutableCollection.mapMulti(this, mapper, iterableFactory());
-    }
-
-    @Contract(pure = true)
-    default <U> @NotNull ImmutableCollection<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
-        return flatMap(iterableFactory(), mapper);
-    }
-
-    @Override
-    @DelegateBy("zip(Iterable<U>, BiFunction<E, U, R>)")
-    default <U> @NotNull ImmutableCollection<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
-        return zip(other, Tuple::of);
-    }
-
-    @Contract(pure = true)
-    default <U, R> @NotNull ImmutableCollection<R> zip(@NotNull Iterable<? extends U> other, @NotNull BiFunction<? super E, ? super U, ? extends R> mapper) {
-        return AbstractImmutableCollection.zip(this, other, mapper, this.<R>iterableFactory());
-    }
-
-    @Override
-    default <U, V> @NotNull ImmutableCollection<@NotNull Tuple3<E, U, V>> zip3(@NotNull Iterable<? extends U> other1, @NotNull Iterable<? extends V> other2) {
-        return AbstractImmutableCollection.zip3(this, other1, other2, this.<Tuple3<E, U, V>>iterableFactory());
     }
 
     @Override

@@ -256,16 +256,6 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E>, OrderedTra
     @Contract(pure = true)
     <U> @NotNull SeqLike<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper);
 
-    @Contract(value = "_, _ -> param1", mutates = "param1")
-    default <U, G extends Growable<? super U>> @NotNull G mapIndexedTo(
-            @NotNull G destination, @NotNull IndexedFunction<? super E, ? extends U> mapper) {
-        int idx = 0;
-        for (E e : this) {
-            destination.plusAssign(mapper.apply(idx++, e));
-        }
-        return destination;
-    }
-
     default <U> @NotNull SeqView<@NotNull Tuple2<E, U>> zipView(@NotNull SeqLike<? extends U> other) {
         return new SeqViews.Zip<>(this, other);
     }

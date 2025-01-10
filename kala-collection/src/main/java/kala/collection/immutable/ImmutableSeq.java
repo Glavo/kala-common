@@ -17,15 +17,11 @@ package kala.collection.immutable;
 
 import kala.annotations.DelegateBy;
 import kala.collection.Seq;
-import kala.collection.SeqLike;
 import kala.collection.base.Traversable;
-import kala.function.*;
-import kala.index.Index;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import kala.annotations.Covariant;
 import kala.collection.factory.CollectionFactory;
-import kala.tuple.Tuple3;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -219,174 +215,10 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
         return Seq.super.asJava();
     }
 
-    @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> slice(@Index int beginIndex, @Index int endIndex) {
-        return AbstractImmutableSeq.slice(this, beginIndex, endIndex, iterableFactory());
-    }
-
-    @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> drop(int n) {
-        return AbstractImmutableSeq.drop(this, n, iterableFactory());
-    }
-
-    @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> dropLast(int n) {
-        return AbstractImmutableSeq.dropLast(this, n, iterableFactory());
-    }
-
-    @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> dropWhile(@NotNull Predicate<? super E> predicate) {
-        return AbstractImmutableSeq.dropWhile(this, predicate, iterableFactory());
-    }
-
-    @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> take(int n) {
-        return AbstractImmutableSeq.take(this, n, iterableFactory());
-    }
-
-    @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> takeLast(int n) {
-        return AbstractImmutableSeq.takeLast(this, n, iterableFactory());
-    }
-
-    @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> takeWhile(@NotNull Predicate<? super E> predicate) {
-        return AbstractImmutableSeq.takeWhile(this, predicate, iterableFactory());
-    }
-
-    @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> concat(@NotNull SeqLike<? extends E> other) {
-        return AbstractImmutableSeq.concat(this, other, iterableFactory());
-    }
-
-    @Override
-    default @NotNull ImmutableSeq<E> concat(@NotNull List<? extends E> other) {
-        return AbstractImmutableSeq.concat(this, other, iterableFactory());
-    }
-
-    @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> updated(@Index int index, E newValue) {
-        return AbstractImmutableSeq.updated(this, index, newValue, iterableFactory());
-    }
-
-    @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> prepended(E value) {
-        return AbstractImmutableSeq.prepended(this, value, iterableFactory());
-    }
-
-    @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> prependedAll(E... values) {
-        return AbstractImmutableSeq.prependedAll(this, values, iterableFactory());
-    }
-
-    @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> prependedAll(@NotNull Iterable<? extends E> values) {
-        return AbstractImmutableSeq.prependedAll(this, values, iterableFactory());
-    }
-
-    @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> appended(E value) {
-        return AbstractImmutableSeq.appended(this, value, iterableFactory());
-    }
-
-    @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> appendedAll(@NotNull Iterable<? extends E> values) {
-        return AbstractImmutableSeq.appendedAll(this, values, iterableFactory());
-    }
-
-    @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> appendedAll(E... values) {
-        return AbstractImmutableSeq.appendedAll(this, values, iterableFactory());
-    }
-
-    @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> inserted(@Index int index, E value) {
-        return AbstractImmutableSeq.inserted(this, index, value, iterableFactory());
-    }
-
-    @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> removedAt(@Index int index) {
-        return AbstractImmutableSeq.removedAt(this, index, iterableFactory());
-    }
-
-    @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> sorted(@Nullable Comparator<? super E> comparator) {
-        return AbstractImmutableSeq.sorted(this, comparator, iterableFactory());
-    }
-
-    @Contract(pure = true)
-    default @NotNull ImmutableSeq<E> reversed() {
-        return AbstractImmutableSeq.reversed(this, iterableFactory());
-    }
-
-    @Override
-    default @NotNull ImmutableSeq<E> filter(@NotNull Predicate<? super E> predicate) {
-        return filter(iterableFactory(), predicate);
-    }
-
-    @Override
-    default @NotNull ImmutableSeq<E> filterNot(@NotNull Predicate<? super E> predicate) {
-        return filterNot(iterableFactory(), predicate);
-    }
-
-    @Override
-    default @NotNull ImmutableSeq<@NotNull E> filterNotNull() {
-        return this.filter(Predicates.isNotNull());
-    }
-
-    default <U> @NotNull ImmutableSeq<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
-        return ((ImmutableSeq<U>) this.filter(Predicates.isInstance(clazz)));
-    }
-
-    @Override
-    default <U> @NotNull ImmutableSeq<U> map(@NotNull Function<? super E, ? extends U> mapper) {
-        return map(this.<U>iterableFactory(), mapper);
-    }
-
-    @Contract(pure = true)
-    default <U> @NotNull ImmutableSeq<U> mapIndexed(@NotNull IndexedFunction<? super E, ? extends U> mapper) {
-        return AbstractImmutableSeq.mapIndexed(this, mapper, this.<U>iterableFactory());
-    }
-
-    @Override
-    default <U> @NotNull ImmutableSeq<@NotNull U> mapNotNull(@NotNull Function<? super E, ? extends @Nullable U> mapper) {
-        return mapNotNull(this.<U>iterableFactory(), mapper);
-    }
-
-    default <U> @NotNull ImmutableSeq<@NotNull U> mapIndexedNotNull(
-            @NotNull IndexedFunction<? super E, ? extends @Nullable U> mapper) {
-        return AbstractImmutableSeq.mapIndexedNotNull(this, mapper, this.<U>iterableFactory());
-    }
-
-    @Override
-    default @NotNull <U> ImmutableSeq<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
-        return AbstractImmutableCollection.mapMulti(this, mapper, iterableFactory());
-    }
-
-    @Override
-    default @NotNull <U> ImmutableSeq<U> mapIndexedMulti(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
-        return AbstractImmutableSeq.mapIndexedMulti(this, mapper, iterableFactory());
-    }
-
-    @Override
-    default <U> @NotNull ImmutableSeq<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
-        return flatMap(iterableFactory(), mapper);
-    }
-
     @Override
     @DelegateBy("zip(Iterable<U>, BiFunction<E, U, R>)")
     default <U> @NotNull ImmutableSeq<@NotNull Tuple2<E, U>> zip(@NotNull Iterable<? extends U> other) {
         return zip(other, Tuple::of);
-    }
-
-    @Contract(pure = true)
-    default <U, R> @NotNull ImmutableSeq<R> zip(@NotNull Iterable<? extends U> other, @NotNull BiFunction<? super E, ? super U, ? extends R> mapper) {
-        return AbstractImmutableCollection.zip(this, other, mapper, this.<R>iterableFactory());
-    }
-
-    @Override
-    default <U, V> @NotNull ImmutableSeq<@NotNull Tuple3<E, U, V>> zip3(@NotNull Iterable<? extends U> other1, @NotNull Iterable<? extends V> other2) {
-        return AbstractImmutableCollection.zip3(this, other1, other2, this.<Tuple3<E, U, V>>iterableFactory());
     }
 
     @Override
