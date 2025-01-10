@@ -21,7 +21,7 @@ import kala.collection.SortedSet;
 import kala.annotations.Covariant;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.Set;
-import kala.function.Predicates;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -109,9 +109,9 @@ public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<
             return this;
 
         CollectionFactory<E, ?, ? extends ImmutableSet<E>> factory;
-        if (this instanceof SortedSet<?>) {
+        if (this instanceof SortedSet<?> self) {
             factory = (CollectionFactory<E, ?, ? extends ImmutableSet<E>>)
-                    ((SortedSet<?>) this).iterableFactory(((SortedSet<?>) this).comparator());
+                    self.sortedIterableFactory();
         } else {
             factory = iterableFactory();
         }
@@ -123,18 +123,12 @@ public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<
     default @NotNull ImmutableSet<E> addedAll(@NotNull Iterable<? extends E> values) {
         CollectionFactory<E, ?, ? extends ImmutableSet<E>> factory;
         if (this instanceof SortedSet<?> sortedSet) {
-            factory = (CollectionFactory<E, ?, ? extends ImmutableSet<E>>) sortedSet.iterableFactory(sortedSet.comparator());
+            factory = (CollectionFactory<E, ?, ? extends ImmutableSet<E>>)
+                    sortedSet.sortedIterableFactory();
         } else {
             factory = iterableFactory();
         }
         return AbstractImmutableSet.addedAll(this, values, factory);
-    }
-
-    @Override
-    @DelegateBy("addedAll(Iterable<E>)")
-    default @NotNull ImmutableSet<E> addedAll(E @NotNull [] values) {
-        Objects.requireNonNull(values);
-        return addedAll(ArraySeq.wrap(values));
     }
 
     default @NotNull ImmutableSet<E> removed(E value) {
@@ -143,53 +137,43 @@ public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<
 
         CollectionFactory<E, ?, ? extends ImmutableSet<E>> factory;
 
-        if (this instanceof SortedSet<?>) {
+        if (this instanceof SortedSet<?> self) {
             factory = (CollectionFactory<E, ?, ? extends ImmutableSet<E>>)
-                    ((SortedSet<?>) this).iterableFactory(((SortedSet<?>) this).comparator());
+                    self.sortedIterableFactory();
         } else {
             factory = iterableFactory();
         }
-
-        if (sizeIs(1))
-            return factory.empty();
 
         return AbstractImmutableSet.removed(this, value, factory);
     }
 
     default @NotNull ImmutableSet<E> removedAll(@NotNull Iterable<? extends E> values) {
         CollectionFactory<E, ?, ? extends ImmutableSet<E>> factory;
-        if (this instanceof SortedSet<?>) {
+        if (this instanceof SortedSet<?> self) {
             factory = (CollectionFactory<E, ?, ? extends ImmutableSet<E>>)
-                    ((SortedSet<?>) this).iterableFactory(((SortedSet<?>) this).comparator());
+                    self.sortedIterableFactory();
         } else {
             factory = iterableFactory();
         }
         return AbstractImmutableSet.removedAll(this, values, factory);
     }
 
+    @ApiStatus.NonExtendable
+    @DelegateBy("removedAll(Iterable<E>)")
     default @NotNull ImmutableSet<E> removedAll(E @NotNull [] values) {
         return removedAll(ArraySeq.wrap(values));
     }
 
     @Override
     default @NotNull ImmutableSet<E> filter(@NotNull Predicate<? super E> predicate) {
-        return filter(factory(), predicate);
-    }
-
-    @Override
-    default @NotNull ImmutableSet<E> filterNot(@NotNull Predicate<? super E> predicate) {
-        return filterNot(factory(), predicate);
-    }
-
-    @Override
-    default @NotNull ImmutableSet<@NotNull E> filterNotNull() {
-        return filter(Predicates.isNotNull());
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    default <U> @NotNull ImmutableSet<U> filterIsInstance(@NotNull Class<? extends U> clazz) {
-        return (ImmutableSet<U>) filter(clazz::isInstance);
+        CollectionFactory<E, ?, ? extends ImmutableSet<E>> factory;
+        if (this instanceof SortedSet<?> self) {
+            factory = (CollectionFactory<E, ?, ? extends ImmutableSet<E>>)
+                    self.sortedIterableFactory();
+        } else {
+            factory = iterableFactory();
+        }
+        return filter(factory, predicate);
     }
 
     @Override

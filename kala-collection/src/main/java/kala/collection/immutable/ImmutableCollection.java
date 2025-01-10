@@ -19,7 +19,6 @@ import kala.annotations.Covariant;
 import kala.annotations.DelegateBy;
 import kala.collection.Collection;
 import kala.collection.factory.CollectionFactory;
-import kala.function.Predicates;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import kala.tuple.Tuple3;
@@ -118,21 +117,6 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E>, Immuta
     @Contract(pure = true)
     default @NotNull ImmutableCollection<E> filter(@NotNull Predicate<? super E> predicate) {
         return filter(iterableFactory(), predicate);
-    }
-
-    @Contract(pure = true)
-    default @NotNull ImmutableCollection<E> filterNot(@NotNull Predicate<? super E> predicate) {
-        return filterNot(iterableFactory(), predicate);
-    }
-
-    @Contract(pure = true)
-    default @NotNull ImmutableCollection<@NotNull E> filterNotNull() {
-        return this.filter(Predicates.isNotNull());
-    }
-
-    @Override
-    default <U> @NotNull ImmutableCollection<U> filterIsInstance(@NotNull Class<? extends U> clazz) {
-        return (ImmutableCollection<U>) filter(clazz::isInstance);
     }
 
     @Contract(pure = true)

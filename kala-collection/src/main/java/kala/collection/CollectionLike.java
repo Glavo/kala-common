@@ -36,17 +36,13 @@ public interface CollectionLike<E> extends Traversable<E>, AnyCollectionLike<E> 
     }
 
     @Override
-    @NotNull
-    CollectionView<E> view();
+    @NotNull CollectionView<E> view();
 
-    @NotNull
-    CollectionLike<E> filter(@NotNull Predicate<? super E> predicate);
+    @NotNull CollectionLike<E> filter(@NotNull Predicate<? super E> predicate);
 
-    @NotNull
-    CollectionLike<E> filterNot(@NotNull Predicate<? super E> predicate);
+    @NotNull CollectionLike<E> filterNot(@NotNull Predicate<? super E> predicate);
 
-    @NotNull
-    CollectionLike<@NotNull E> filterNotNull();
+    @NotNull CollectionLike<@NotNull E> filterNotNull();
 
     <U> @NotNull CollectionLike<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz);
 

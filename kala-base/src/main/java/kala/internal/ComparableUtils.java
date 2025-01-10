@@ -16,7 +16,6 @@
 package kala.internal;
 
 import kala.annotations.StaticClass;
-import kala.comparator.Comparators;
 
 import java.util.Comparator;
 
@@ -25,6 +24,7 @@ import java.util.Comparator;
 public class ComparableUtils {
     private ComparableUtils() {
     }
+
 
     public static int compare(Object o1, Object o2) {
         return ((Comparable<Object>) o1).compareTo(o2);
@@ -40,11 +40,11 @@ public class ComparableUtils {
 
     public static boolean comparatorEquals(Comparator comparator1, Comparator comparator2) {
         if (comparator1 == null) {
-            return comparator2 == null || comparator2.equals(Comparators.naturalOrder());
+            return comparator2 == null || comparator2.equals(Comparator.naturalOrder());
         }
         //noinspection ReplaceNullCheck
         if (comparator2 == null) {
-            return comparator1.equals(Comparators.naturalOrder());
+            return comparator1.equals(Comparator.naturalOrder());
         }
         return comparator1.equals(comparator2);
     }

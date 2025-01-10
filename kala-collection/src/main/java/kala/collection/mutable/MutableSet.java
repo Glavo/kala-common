@@ -112,6 +112,7 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
     }
 
     @Override
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     default @NotNull MutableSet<E> clone() {
         return this.<E>iterableFactory().from(this);
     }

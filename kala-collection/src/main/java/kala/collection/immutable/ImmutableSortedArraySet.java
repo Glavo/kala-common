@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.Consumer;
@@ -32,6 +33,7 @@ import java.util.stream.Stream;
 public final class ImmutableSortedArraySet<E>
         extends AbstractImmutableSortedSet<E> implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 418132517516968465L;
 
     private static final ImmutableSortedArraySet.Factory<? extends Comparable<?>> DEFAULT_FACTORY =
@@ -329,12 +331,7 @@ public final class ImmutableSortedArraySet<E>
     }
 
     @Override
-    public <U> @NotNull CollectionFactory<U, ?, ImmutableSortedArraySet<U>> iterableFactory() {
-        return ((ImmutableSortedArraySet.Factory<U>) DEFAULT_FACTORY);
-    }
-
-    @Override
-    public <U> @NotNull CollectionFactory<U, ?, ImmutableSortedArraySet<U>> iterableFactory(Comparator<? super U> comparator) {
+    public <U> @NotNull CollectionFactory<U, ?, ImmutableSortedArraySet<U>> sortedIterableFactory(Comparator<? super U> comparator) {
         return factory(comparator);
     }
 

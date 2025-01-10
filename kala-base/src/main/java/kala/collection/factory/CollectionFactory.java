@@ -40,10 +40,10 @@ public interface CollectionFactory<E, Builder, @Covariant R>
             @NotNull Collector<E, Builder, R> collector
     ) {
         Objects.requireNonNull(collector);
-        if (collector instanceof CollectionFactory<?, ?, ?>) {
-            return ((CollectionFactory<E, Builder, R>) collector);
+        if (collector instanceof CollectionFactory<E, Builder, R> factory) {
+            return factory;
         }
-        return new CollectionFactory<E, Builder, R>() {
+        return new CollectionFactory<>() {
             @Override
             public Builder newBuilder() {
                 return collector.supplier().get();

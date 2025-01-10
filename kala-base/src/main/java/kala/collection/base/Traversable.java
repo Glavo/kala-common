@@ -20,7 +20,6 @@ import kala.annotations.DelegateBy;
 import kala.collection.base.primitive.*;
 import kala.collection.factory.CollectionBuilder;
 import kala.collection.factory.primitive.*;
-import kala.comparator.Comparators;
 import kala.concurrent.Granularity;
 import kala.concurrent.ConcurrentScope;
 import kala.concurrent.LateInitCountDownLatch;

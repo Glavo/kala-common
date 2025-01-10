@@ -15,12 +15,14 @@
  */
 package kala.collection;
 
-import kala.collection.base.Iterators;
+import kala.annotations.DelegateBy;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.immutable.ImmutableSet;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
 import kala.collection.internal.view.SetViews;
+import kala.function.Predicates;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -109,11 +111,6 @@ public interface Set<E> extends Collection<E>, SetLike<E>, AnySet<E> {
     }
 
     @Override
-    default boolean contains(Object value) {
-        return Iterators.contains(iterator(), value);
-    }
-
-    @Override
     default @NotNull String className() {
         return "Set";
     }
@@ -144,17 +141,36 @@ public interface Set<E> extends Collection<E>, SetLike<E>, AnySet<E> {
     }
 
     @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("addedAll(Iterable<E>)")
     default @NotNull ImmutableSet<E> addedAll(E @NotNull [] values) {
-        return this.view().addedAll(values).toImmutableSet();
+        return addedAll(ArraySeq.wrap(values));
     }
 
     @Override
     default @NotNull ImmutableSet<E> filter(@NotNull Predicate<? super E> predicate) {
-        return ImmutableSet.from(view().filter(predicate));
+        return view().filter(predicate).toImmutableSet();
     }
 
     @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("filter(Predicate<E>)")
     default @NotNull ImmutableSet<E> filterNot(@NotNull Predicate<? super E> predicate) {
-        return ImmutableSet.from(view().filterNot(predicate));
+        return filter(predicate.negate());
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("filter(Predicate<E>)")
+    default @NotNull ImmutableSet<@NotNull E> filterNotNull() {
+        return filter(Predicates.isNotNull());
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    @ApiStatus.NonExtendable
+    @DelegateBy("filter(Predicate<E>)")
+    default <U> @NotNull ImmutableSet<U> filterIsInstance(@NotNull Class<? extends U> clazz) {
+        return (ImmutableSet<U>) filter(Predicates.isInstance(clazz));
     }
 }

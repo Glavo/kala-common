@@ -15,10 +15,10 @@
  */
 package kala.range;
 
-import kala.comparator.Comparators;
 import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,8 +42,8 @@ public class GenericRangeTest {
         List.of(
                 GenericRange.is(10),
                 GenericRange.is(10, Integer::compare),
-                GenericRange.is(10, Comparators.naturalOrder()),
-                GenericRange.is(10, Comparators.reverseOrder())
+                GenericRange.is(10, Comparator.naturalOrder()),
+                GenericRange.is(10, Comparator.reverseOrder())
         ).forEach(value -> {
             assertTrue(value.contains(10));
             assertFalse(value.contains(0));

@@ -22,7 +22,6 @@ import kala.collection.base.OrderedTraversable;
 import kala.collection.internal.SeqIterators;
 import kala.collection.internal.view.SeqViews;
 import kala.collection.mutable.MutableSeq;
-import kala.comparator.Comparators;
 import kala.control.Option;
 import kala.function.IndexedBiConsumer;
 import kala.function.IndexedFunction;
@@ -120,13 +119,15 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E>, OrderedTra
     @Contract(pure = true)
     @DelegateBy("binarySearch(int, int, E, Comparator<E>)")
     default int binarySearch(@Index int beginIndex, @Index int endIndex, E value) {
-        return binarySearch(beginIndex, endIndex, value, Comparators.naturalOrder());
+        return binarySearch(beginIndex, endIndex, value, null);
     }
 
     @Contract(pure = true)
     default int binarySearch(@Index int beginIndex, @Index int endIndex, E value, Comparator<? super E> comparator) {
         if (comparator == null) {
-            comparator = Comparators.naturalOrder();
+            @SuppressWarnings("unchecked")
+            Comparator<E> c = (Comparator<E>) Comparator.naturalOrder();
+            comparator = c;
         }
 
         final int size = size();

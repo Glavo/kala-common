@@ -261,19 +261,6 @@ public final class MutableHashSet<E> extends HashBase<E, MutableHashSet.Node<E>>
     }
 
     @Override
-    public boolean addAll(E @NotNull [] values) {
-        final int s = values.length;
-        if (s == 0) {
-            return false;
-        }
-        sizeHint(s);
-        for (E value : values) {
-            this.add(value);
-        }
-        return true;
-    }
-
-    @Override
     public boolean remove(Object value) {
         return removeNode((E) value, HashUtils.computeHash(value)) != null;
     }

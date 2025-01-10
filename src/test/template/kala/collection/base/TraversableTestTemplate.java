@@ -18,7 +18,6 @@ package kala.collection.base;
 import kala.collection.ArraySeq;
 import kala.collection.SimpleIterable;
 import kala.collection.TestData;
-import kala.comparator.Comparators;
 import kala.control.Option;
 import org.junit.jupiter.api.Test;
 
@@ -242,13 +241,13 @@ public interface TraversableTestTemplate {
     @Test
     default void maxTest() {
         assertThrows(NoSuchElementException.class, () -> of().max());
-        assertThrows(NoSuchElementException.class, () -> of().max(Comparators.naturalOrder()));
+        assertThrows(NoSuchElementException.class, () -> this.<Integer>of().max(Comparator.naturalOrder()));
         assertNull(of().maxOrNull());
-        assertNull(of().maxOrNull(Comparators.naturalOrder()));
+        assertNull(this.<Integer>of().maxOrNull(Comparator.naturalOrder()));
         assertEquals(Option.none(), of().maxOption());
-        assertEquals(Option.none(), of().maxOption(Comparators.naturalOrder()));
+        assertEquals(Option.none(), this.<Integer>of().maxOption(Comparator.naturalOrder()));
 
-        Comparator<Integer> reversedComparator = Comparators.<Integer>naturalOrder().reversed();
+        Comparator<Integer> reversedComparator = Comparator.<Integer>naturalOrder().reversed();
 
         assertEquals(0, of(0).max());
         assertEquals(0, of(0).maxOrNull());
@@ -278,13 +277,13 @@ public interface TraversableTestTemplate {
     @Test
     default void minTest() {
         assertThrows(NoSuchElementException.class, () -> of().min());
-        assertThrows(NoSuchElementException.class, () -> of().min(Comparators.naturalOrder()));
+        assertThrows(NoSuchElementException.class, () -> this.<Integer>of().min(Comparator.naturalOrder()));
         assertNull(of().minOrNull());
-        assertNull(of().minOrNull(Comparators.naturalOrder()));
+        assertNull(this.<Integer>of().minOrNull(Comparator.naturalOrder()));
         assertEquals(Option.none(), of().minOption());
-        assertEquals(Option.none(), of().minOption(Comparators.naturalOrder()));
+        assertEquals(Option.none(), this.<Integer>of().minOption(Comparator.naturalOrder()));
 
-        Comparator<Integer> reversedComparator = Comparators.<Integer>naturalOrder().reversed();
+        Comparator<Integer> reversedComparator = Comparator.<Integer>naturalOrder().reversed();
 
         assertEquals(0, of(0).min());
         assertEquals(0, of(0).minOrNull());

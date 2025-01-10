@@ -24,4 +24,12 @@ public interface MutableSortedSet<E> extends MutableSet<E>, SortedSet<E> {
     default java.util.@NotNull SortedSet<E> asJava() {
         return new AsJavaConvert.MutableSortedSetAsJava<>(this);
     }
+
+    @Override
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
+    default @NotNull MutableSet<E> clone() {
+        return sortedIterableFactory(comparator())
+
+        return this;
+    }
 }

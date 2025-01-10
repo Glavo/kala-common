@@ -4,14 +4,22 @@
 
 (In development)
 
+### New features
+
 ### Breaking Changes
 
 The following classes/interfaces have been removed:
 
+* `kala.comparator.Comparators`
 * `kala.collection.immutable.ImmutableArraySet`
 * `kala.collection.mutable.AbstractMutableListSet`
 * `kala.collection.mutable.MutableArraySet`
 * `kala.collection.mutable.MutableLinkedSet`
+
+The following methods have been removed:
+
+* `kala.collection.immutable.ImmutableSortedSet::map(Comparator<U>, Function<E, U>)`
+* `kala.collection.immutable.ImmutableSortedSet::flatMap(Comparator<U>, Function<E, Iterable<U>>)`
 
 Other changes:
 

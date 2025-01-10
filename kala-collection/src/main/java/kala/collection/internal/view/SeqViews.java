@@ -20,7 +20,6 @@ import kala.collection.base.AbstractIterator;
 import kala.collection.base.GenericArrays;
 import kala.collection.base.Iterators;
 import kala.collection.mutable.MutableArrayList;
-import kala.comparator.Comparators;
 import kala.control.Option;
 import kala.function.IndexedBiConsumer;
 import kala.function.IndexedConsumer;
@@ -1365,15 +1364,15 @@ public final class SeqViews {
 
         @Override
         public final @NotNull SeqView<E> sorted(Comparator<? super E> comparator) {
-            if (comparator == Comparators.naturalOrder()) {
+            if (comparator == Comparator.naturalOrder()) {
                 comparator = null;
             }
 
             if (comparator == this.comparator) {
                 return this;
             }
-            if ((comparator == null && this.comparator == Comparators.reverseOrder())
-                    || (comparator == Comparators.reverseOrder() && this.comparator == null)) {
+            if ((comparator == null && this.comparator == Comparator.reverseOrder())
+                    || (comparator == Comparator.reverseOrder() && this.comparator == null)) {
                 return reversed();
             }
 

@@ -25,9 +25,11 @@ import kala.function.CheckedBiConsumer;
 import kala.function.CheckedBiFunction;
 import kala.function.CheckedFunction;
 import kala.function.CheckedPredicate;
+import kala.function.Predicates;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import kala.tuple.Tuple3;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -91,8 +93,10 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
 
     @Override
     @Contract(pure = true)
+    @ApiStatus.NonExtendable
+    @DelegateBy("filter(Predicate<E>)")
     default @NotNull ImmutableCollection<E> filterNot(@NotNull Predicate<? super E> predicate) {
-        return filterNot(ImmutableSeq.factory(), predicate);
+        return filter(predicate.negate());
     }
 
     @Contract(pure = true)
@@ -109,13 +113,20 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
 
     @Override
     @Contract(pure = true)
+    @ApiStatus.NonExtendable
+    @DelegateBy("filter(Predicate<E>)")
     default @NotNull ImmutableCollection<@NotNull E> filterNotNull() {
-        return filterNotNull(ImmutableSeq.factory());
+        return filter(Predicates.isNotNull());
     }
 
+    @Override
     @Contract(pure = true)
+    @ApiStatus.NonExtendable
+    @DelegateBy("filter(Predicate<E>)")
     default <U> @NotNull ImmutableCollection<U> filterIsInstance(@NotNull Class<? extends U> clazz) {
-        return filterIsInstance(ImmutableSeq.factory(), clazz);
+        @SuppressWarnings("unchecked")
+        ImmutableCollection<U> result = (ImmutableCollection<U>) filter(Predicates.isInstance(clazz));
+        return result;
     }
 
     @Contract(pure = true)

@@ -18,7 +18,6 @@ package kala.collection.mutable;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.immutable.ImmutableArray;
 import kala.collection.immutable.ImmutableLinkedSeq;
-import kala.comparator.Comparators;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -26,8 +25,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class MutableLinkedListTest implements MutableListTestTemplate {
 
@@ -73,8 +71,8 @@ public final class MutableLinkedListTest implements MutableListTestTemplate {
     public void sortTest() {
         List<Comparator<Integer>> comparators = Arrays.asList(
                 null,
-                Comparators.naturalOrder(),
-                Comparators.reverseOrder()
+                Comparator.naturalOrder(),
+                Comparator.reverseOrder()
         );
 
         for (Integer[] data : data1()) {

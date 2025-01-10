@@ -19,7 +19,7 @@ module kala.base {
 
     exports kala;
     exports kala.annotations;
-    exports kala.comparator;
+    // exports kala.comparator;
     exports kala.comparator.primitive;
     exports kala.control;
     exports kala.control.primitive;

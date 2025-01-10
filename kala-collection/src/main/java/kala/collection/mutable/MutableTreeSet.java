@@ -295,12 +295,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     }
 
     @Override
-    public <U> @NotNull CollectionFactory<U, ?, MutableTreeSet<U>> iterableFactory() {
-        return ((Factory<U>) DEFAULT_FACTORY);
-    }
-
-    @Override
-    public <U> @NotNull CollectionFactory<U, ?, MutableTreeSet<U>> iterableFactory(Comparator<? super U> comparator) {
+    public <U> @NotNull CollectionFactory<U, ?, MutableTreeSet<U>> sortedIterableFactory(Comparator<? super U> comparator) {
         return factory(comparator);
     }
 

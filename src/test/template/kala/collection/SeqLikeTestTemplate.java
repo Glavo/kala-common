@@ -18,7 +18,6 @@ package kala.collection;
 import kala.collection.immutable.ImmutableArray;
 import kala.collection.immutable.ImmutableVector;
 import kala.collection.mutable.MutableList;
-import kala.comparator.Comparators;
 import kala.control.Option;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
@@ -27,7 +26,6 @@ import org.junit.jupiter.api.Test;
 import java.util.*;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import static kala.ExtendedAssertions.assertIteratorEquals;
@@ -826,15 +824,15 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
     default void sortedTest() {
         assertIterableEquals(List.of(), of().sorted());
         assertIterableEquals(List.of(), of().sorted(null));
-        assertIterableEquals(List.of(), of().sorted(Comparators.reverseOrder()));
+        assertIterableEquals(List.of(), this.<Integer>of().sorted(Comparator.reverseOrder()));
 
         for (Integer[] data : data1()) {
             final List<Integer> res1 = Arrays.stream(data).sorted().collect(Collectors.toList());
-            final List<Integer> res2 = Arrays.stream(data).sorted(Comparators.reverseOrder()).collect(Collectors.toList());
+            final List<Integer> res2 = Arrays.stream(data).sorted(Comparator.reverseOrder()).collect(Collectors.toList());
 
             assertIterableEquals(res1, from(data).sorted());
             assertIterableEquals(res1, from(data).sorted(null));
-            assertIterableEquals(res2, from(data).sorted(Comparators.reverseOrder()));
+            assertIterableEquals(res2, from(data).sorted(Comparator.reverseOrder()));
         }
 
     }

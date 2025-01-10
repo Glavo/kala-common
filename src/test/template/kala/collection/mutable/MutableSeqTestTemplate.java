@@ -17,7 +17,6 @@ package kala.collection.mutable;
 
 import kala.collection.SeqTestTemplate;
 import kala.collection.factory.CollectionFactory;
-import kala.comparator.Comparators;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -118,8 +117,8 @@ public interface MutableSeqTestTemplate extends MutableCollectionTestTemplate, S
     default void sortTest() {
         List<Comparator<Integer>> comparators = Arrays.asList(
                 null,
-                Comparators.naturalOrder(),
-                Comparators.reverseOrder()
+                Comparator.naturalOrder(),
+                Comparator.reverseOrder()
         );
 
         for (Integer[] data : data1()) {

@@ -382,7 +382,7 @@ public abstract class RedBlackTree<A, N extends RedBlackTree.Node<A, N>> impleme
         size = 0;
     }
 
-    public final Comparator<? super A> comparator() {
+    public final @Nullable Comparator<? super A> comparator() {
         return this.comparator;
     }
 
