@@ -2,10 +2,21 @@
 
 Table of contents:
 
+* [Why Kala Common?](#why-kala-common)
 * [Use Kala Collection](#use-kala-collection) (WIP)
 * Use Kala Collection for primitive types (WIP)
 * [Use reverse indexes in Kala Common](#use-reverse-indexes-in-kala-common)
 * ... (WIP)
+
+## Why Kala Common
+
+Kala Common's design draws on the experience of Scala standard library, Kotlin standard library, Vavr, 
+FastUtil and other libraries, with the goal of becoming a more modern and easier-to-use Java core library.
+
+Kala Common is also designed to take advantage of modern Java language features (such as pattern matching).
+However, for this reason,
+Kala Common will remain in preview for a few more years until Project Valhalla is officially delivered.
+By then, Kala Common will redesign some APIs to maximize the use of value classes and universal generics.
 
 ## Use Kala Collection
 
