@@ -15,6 +15,7 @@
  */
 package kala;
 
+import kala.collection.SetLike;
 import kala.collection.base.Iterators;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ExtendedAssertions {
     public static void assertIteratorEquals(Iterable<?> expected, Iterator<?> actual) {
@@ -31,5 +33,15 @@ public class ExtendedAssertions {
 
     public static void assertIteratorEquals(Iterable<?> expected, Iterator<?> actual, Supplier<String> messageSupplier) {
         assertIterableEquals(expected, Iterators.collect(actual, new ArrayList<>()), messageSupplier);
+    }
+
+    public static void assertSetElements(Iterable<?> expected, SetLike<?> actual) {
+        int count = 0;
+        for (Object value : expected) {
+            count++;
+            if (!actual.contains(value)) fail(actual + " does not contain element " + value);
+        }
+
+        if (count != actual.size()) fail(actual + " contains redundant elements");
     }
 }

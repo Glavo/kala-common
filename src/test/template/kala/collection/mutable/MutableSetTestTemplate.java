@@ -15,6 +15,7 @@
  */
 package kala.collection.mutable;
 
+import kala.ExtendedAssertions;
 import kala.collection.SetTestTemplate;
 import kala.collection.factory.CollectionFactory;
 import org.junit.jupiter.api.Test;
@@ -55,14 +56,14 @@ public interface MutableSetTestTemplate extends MutableCollectionTestTemplate, S
             s1.add(values.get(i));
         }
 
-        assertSetElements(values, s1);
+        ExtendedAssertions.assertSetElements(values, s1);
     }
 
     @Test
     default void removeTest() {
         MutableSet<Integer> s1 = of();
         s1.remove(10);
-        assertSetElements(List.of(), s1);
+        ExtendedAssertions.assertSetElements(List.of(), s1);
 
         ArrayList<Integer> values = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
@@ -73,7 +74,7 @@ public interface MutableSetTestTemplate extends MutableCollectionTestTemplate, S
         for (Integer value : values) {
             s1.add(value);
         }
-        assertSetElements(values, s1);
+        ExtendedAssertions.assertSetElements(values, s1);
 
         for (int i = values.size() - 1; i >= 0; i--) {
             if (i % 3 == 0) {
@@ -81,7 +82,7 @@ public interface MutableSetTestTemplate extends MutableCollectionTestTemplate, S
             }
         }
 
-        assertSetElements(values, s1);
+        ExtendedAssertions.assertSetElements(values, s1);
 
     }
 }

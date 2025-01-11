@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public interface SequentialCollectionTestTemplate extends CollectionTestTemplate {
 
     @Test
+    @Override
     default void factoryTest() {
         CollectionFactory<Object, Object, Collection<?>> factory =
                 (CollectionFactory<Object, Object, Collection<?>>) factory();

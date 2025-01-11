@@ -16,6 +16,7 @@
 package kala.collection;
 
 import kala.collection.factory.CollectionFactory;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -52,5 +53,9 @@ public interface CollectionTestTemplate extends CollectionLikeTestTemplate {
             fail(e);
             return null;
         }
+    }
+
+    @Test
+    default void factoryTest() {
     }
 }
