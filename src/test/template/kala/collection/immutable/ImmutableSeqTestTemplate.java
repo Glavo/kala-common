@@ -19,7 +19,7 @@ import kala.collection.SeqTestTemplate;
 import kala.collection.factory.CollectionFactory;
 
 @SuppressWarnings({"unchecked"})
-public interface ImmutableSeqTestTemplate extends ImmutableCollectionTestTemplate, SeqTestTemplate {
+public interface ImmutableSeqTestTemplate extends ImmutableSequentialCollectionTestTemplate, SeqTestTemplate {
     @Override
     <E> CollectionFactory<E, ?, ? extends ImmutableSeq<? extends E>> factory();
 

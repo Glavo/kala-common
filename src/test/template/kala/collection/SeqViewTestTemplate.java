@@ -21,7 +21,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public interface SeqViewTestTemplate extends SeqLikeTestTemplate, CollectionViewTestTemplate {
+public interface SeqViewTestTemplate extends SeqLikeTestTemplate, SequentialCollectionViewTestTemplate {
     @Override
     <E> SeqView<E> of(E... elements);
 

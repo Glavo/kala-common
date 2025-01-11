@@ -30,6 +30,12 @@ import java.util.Iterator;
 
 public interface SortedSet<@Covariant E> extends Set<E>, OrderedTraversable<E> {
 
+    @SuppressWarnings("unchecked")
+    @Contract(value = "_ -> param1", pure = true)
+    static <E> SortedSet<E> narrow(SortedSet<? extends E> set) {
+        return (SortedSet<E>) set;
+    }
+
     <U> @NotNull CollectionFactory<U, ?, ? extends SortedSet<U>> sortedIterableFactory(Comparator<? super U> comparator);
 
     @DelegateBy("sortedIterableFactory(Comparator<E>)")

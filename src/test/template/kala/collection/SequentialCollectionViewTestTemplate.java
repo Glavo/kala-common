@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Glavo
+ * Copyright 2025 Glavo
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,24 +15,13 @@
  */
 package kala.collection;
 
-import kala.collection.base.TraversableTestTemplate;
-import kala.collection.mutable.MutableArray;
-import org.junit.jupiter.api.Test;
-
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
-
-public interface CollectionLikeTestTemplate extends TraversableTestTemplate {
+public interface SequentialCollectionViewTestTemplate extends SequentialCollectionLikeTestTemplate {
+    @Override
+    <E> CollectionView<E> of(E... elements);
 
     @Override
-    @SuppressWarnings("unchecked")
-    <E> CollectionLike<E> of(E... elements);
+    <E> CollectionView<E> from(E[] elements);
 
     @Override
-    <E> CollectionLike<E> from(E[] elements);
-
-    @Override
-    <E> CollectionLike<E> from(Iterable<? extends E> elements);
+    <E> CollectionView<E> from(Iterable<? extends E> elements);
 }

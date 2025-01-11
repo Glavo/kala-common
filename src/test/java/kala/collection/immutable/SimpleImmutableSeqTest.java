@@ -16,7 +16,7 @@
 package kala.collection.immutable;
 
 import kala.collection.CollectionView;
-import kala.collection.CollectionViewTestTemplate;
+import kala.collection.SequentialCollectionViewTestTemplate;
 import kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.NotNull;
 
@@ -73,7 +73,7 @@ public final class SimpleImmutableSeqTest implements ImmutableSeqTestTemplate {
         }
     }
 
-    static final class ViewTest implements CollectionViewTestTemplate {
+    static final class ViewTest implements SequentialCollectionViewTestTemplate {
 
         @Override
         public <E> CollectionView<E> of(E... elements) {

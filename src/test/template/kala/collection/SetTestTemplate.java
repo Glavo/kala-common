@@ -30,17 +30,18 @@ public interface SetTestTemplate extends SetLikeTestTemplate, CollectionTestTemp
     <E> CollectionFactory<E, ?, ? extends Set<? extends E>> factory();
 
     @Override
-    <E> Set<E> of(E... elements);
+    default <E> Set<E> of(E... elements) {
+        return Set.narrow(this.<E>factory().from(elements));
+    }
 
     @Override
-    <E> Set<E> from(E[] elements);
+    default <E> Set<E> from(E[] elements) {
+        return Set.narrow(this.<E>factory().from(elements));
+    }
 
     @Override
-    <E> Set<E> from(Iterable<? extends E> elements);
-
-    @Override
-    default void factoryTest() {
-
+    default <E> Set<E> from(Iterable<? extends E> elements) {
+        return Set.narrow(this.<E>factory().from(elements));
     }
 
     @Test

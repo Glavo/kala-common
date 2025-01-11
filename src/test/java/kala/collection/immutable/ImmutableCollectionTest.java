@@ -27,7 +27,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("unchecked")
-public final class ImmutableCollectionTest implements ImmutableCollectionTestTemplate {
+public final class ImmutableCollectionTest implements ImmutableSequentialCollectionTestTemplate {
     @Override
     public final <E> CollectionFactory<E, ?, ImmutableCollection<E>> factory() {
         return new CollectionFactory<E, ArrayList<E>, ImmutableCollection<E>>() {

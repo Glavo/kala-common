@@ -39,7 +39,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("unchecked")
-public interface SeqTestTemplate extends CollectionTestTemplate, SeqLikeTestTemplate {
+public interface SeqTestTemplate extends SequentialCollectionTestTemplate, SeqLikeTestTemplate {
     @Override
     <E> CollectionFactory<E, ?, ? extends Seq<? extends E>> factory();
 

@@ -21,23 +21,21 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SuppressWarnings("unchecked")
 public interface ImmutableSetTestTemplate extends ImmutableCollectionTestTemplate, SetTestTemplate {
     @Override
     <E> CollectionFactory<E, ?, ? extends ImmutableSet<? extends E>> factory();
 
     default <E> ImmutableSet<E> of(E... elements) {
-        return (ImmutableSet<E>) factory().from(elements);
+        return ImmutableSet.narrow(this.<E>factory().from(elements));
     }
 
     default <E> ImmutableSet<E> from(E[] elements) {
-        return (ImmutableSet<E>) factory().from(elements);
+        return ImmutableSet.narrow(this.<E>factory().from(elements));
     }
 
     default <E> ImmutableSet<E> from(Iterable<? extends E> elements) {
-        return (ImmutableSet<E>) factory().from(elements);
+        return ImmutableSet.narrow(this.<E>factory().from(elements));
     }
 
     @Test

@@ -16,7 +16,7 @@
 package kala.collection.immutable;
 
 import kala.collection.CollectionView;
-import kala.collection.CollectionViewTestTemplate;
+import kala.collection.SequentialCollectionViewTestTemplate;
 import kala.collection.factory.CollectionFactory;
 import org.junit.jupiter.api.Test;
 
@@ -52,7 +52,7 @@ public final class ImmutableSeqTest implements ImmutableSeqTestTemplate {
     public void classNameTest() {
     }
 
-    static final class ViewTest implements CollectionViewTestTemplate {
+    static final class ViewTest implements SequentialCollectionViewTestTemplate {
         @Override
         public <E> CollectionView<E> of(E... elements) {
             return ImmutableSeq.from(elements).view();

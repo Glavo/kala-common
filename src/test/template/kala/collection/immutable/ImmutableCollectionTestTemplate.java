@@ -18,7 +18,7 @@ package kala.collection.immutable;
 import kala.collection.CollectionTestTemplate;
 import kala.collection.factory.CollectionFactory;
 
-public interface ImmutableCollectionTestTemplate extends CollectionTestTemplate { // TODO
+public interface ImmutableCollectionTestTemplate extends CollectionTestTemplate {
     @Override
     <E> CollectionFactory<E, ?, ? extends ImmutableCollection<? extends E>> factory();
 

@@ -27,7 +27,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public interface MutableSeqTestTemplate extends MutableCollectionTestTemplate, SeqTestTemplate {
+public interface MutableSeqTestTemplate extends MutableSequentialCollectionTestTemplate, SeqTestTemplate {
     @Override
     <E> CollectionFactory<E, ?, ? extends MutableSeq<E>> factory();
 

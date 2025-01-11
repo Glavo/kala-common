@@ -13,15 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package kala.collection;
+package kala.collection.immutable;
 
-public interface CollectionViewTestTemplate extends CollectionLikeTestTemplate {
-    @Override
-    <E> CollectionView<E> of(E... elements);
+import kala.collection.SequentialCollectionTestTemplate;
 
-    @Override
-    <E> CollectionView<E> from(E[] elements);
+public interface ImmutableSequentialCollectionTestTemplate extends ImmutableCollectionTestTemplate, SequentialCollectionTestTemplate {
 
-    @Override
-    <E> CollectionView<E> from(Iterable<? extends E> elements);
 }

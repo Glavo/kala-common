@@ -48,11 +48,17 @@ public interface SortedSetTestTemplate extends SetTestTemplate {
 
     <E> CollectionFactory<E, ?, ? extends SortedSet<? extends E>> factory(Comparator<? super E> comparator);
 
-    <E> SortedSet<E> of(Comparator<? super E> comparator, E... elements);
+    default <E> SortedSet<E> of(Comparator<? super E> comparator, E... elements) {
+        return SortedSet.narrow(this.<E>factory(comparator).from(elements));
+    }
 
-    <E> SortedSet<E> from(Comparator<? super E> comparator, E[] elements);
+    default <E> SortedSet<E> from(Comparator<? super E> comparator, E[] elements) {
+        return SortedSet.narrow(this.<E>factory(comparator).from(elements));
+    }
 
-    <E> SortedSet<E> from(Comparator<? super E> comparator, Iterable<? extends E> elements);
+    default <E> SortedSet<E> from(Comparator<? super E> comparator, Iterable<? extends E> elements) {
+        return SortedSet.narrow(this.<E>factory(comparator).from(elements));
+    }
 
     @Test
     default void ofTest() {
