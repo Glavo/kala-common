@@ -184,7 +184,7 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
     boolean remove(Object value);
 
     @Contract(mutates = "this")
-    default boolean removeAll(Object @NotNull [] values) {
+    default boolean removeAll(Object... values) {
         Objects.requireNonNull(values);
         return removeAll(ArraySeq.wrap(values));
     }
@@ -216,12 +216,6 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
         }
 
         return size() != oldSize;
-    }
-
-    @Deprecated
-    @ReplaceWith("removeIf(Predicate<E>)")
-    default boolean removeAll(@NotNull Predicate<? super E> predicate) {
-        return removeIf(predicate);
     }
 
     @Contract(mutates = "this")
@@ -256,35 +250,6 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
     @Contract(mutates = "this")
     @SuppressWarnings("unchecked")
     default boolean retainIf(@NotNull Predicate<? super E> predicate) {
-        Objects.requireNonNull(predicate);
-
-        final Object[] arr = toArray();
-        final int oldSize = arr.length;
-
-        for (Object e : arr) {
-            if (!predicate.test((E) e)) {
-                this.remove(e);
-            }
-        }
-
-        return size() != oldSize;
-    }
-
-    @Deprecated
-    @ReplaceWith("retainIf(Predicate<E>)")
-    default boolean retainAll(@NotNull Predicate<? super E> predicate) {
-        return retainIf(predicate);
-    }
-
-    @Deprecated
-    @ReplaceWith("retainIf(Predicate<E>)")
-    default void filterInPlace(@NotNull Predicate<? super E> predicate) {
-        retainIf(predicate);
-    }
-
-    @Deprecated
-    @ReplaceWith("retainIf(removeIf<E>)")
-    default void filterNotInPlace(@NotNull Predicate<? super E> predicate) {
-        removeIf(predicate);
+        return removeIf(predicate.negate());
     }
 }

@@ -31,6 +31,10 @@ The following methods have been removed:
 
 * `kala.collection.immutable.ImmutableSortedSet::map(Comparator<U>, Function<E, U>)`
 * `kala.collection.immutable.ImmutableSortedSet::flatMap(Comparator<U>, Function<E, Iterable<U>>)`
+* `kala.collection.mutable.MutableSet::removeAll(Predicate<E>)`
+* `kala.collection.mutable.MutableSet::retainAll(Predicate<E>)`
+* `kala.collection.mutable.MutableSet::filterInPlace(Predicate<E>)`
+* `kala.collection.mutable.MutableSet::filterNotInPlace(Predicate<E>)`
 
 Other changes:
 
