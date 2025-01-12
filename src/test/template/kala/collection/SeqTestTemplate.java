@@ -65,48 +65,43 @@ public interface SeqTestTemplate extends SequentialCollectionTestTemplate, SeqLi
             return;
         }
 
-        try {
-            final MethodHandles.Lookup lookup = MethodHandles.publicLookup();
-            final MethodHandle of0 = lookup.findStatic(klass, "of", MethodType.methodType(klass));
-            final MethodHandle of1 = lookup.findStatic(klass, "of", MethodType.methodType(klass, Object.class));
-            final MethodHandle of2 = lookup.findStatic(klass, "of", MethodType.methodType(klass, Object.class, Object.class));
-            final MethodHandle of3 = lookup.findStatic(klass, "of", MethodType.methodType(klass, Object.class, Object.class, Object.class));
-            final MethodHandle of4 = lookup.findStatic(klass, "of", MethodType.methodType(klass, Object.class, Object.class, Object.class, Object.class));
-            final MethodHandle of5 = lookup.findStatic(klass, "of", MethodType.methodType(klass, Object.class, Object.class, Object.class, Object.class, Object.class));
-            final MethodHandle ofAll = lookup.findStatic(klass, "of", MethodType.methodType(klass, Object[].class));
+        final MethodHandles.Lookup lookup = MethodHandles.publicLookup();
+        final MethodHandle of0 = lookup.findStatic(klass, "of", MethodType.methodType(klass));
+        final MethodHandle of1 = lookup.findStatic(klass, "of", MethodType.methodType(klass, Object.class));
+        final MethodHandle of2 = lookup.findStatic(klass, "of", MethodType.methodType(klass, Object.class, Object.class));
+        final MethodHandle of3 = lookup.findStatic(klass, "of", MethodType.methodType(klass, Object.class, Object.class, Object.class));
+        final MethodHandle of4 = lookup.findStatic(klass, "of", MethodType.methodType(klass, Object.class, Object.class, Object.class, Object.class));
+        final MethodHandle of5 = lookup.findStatic(klass, "of", MethodType.methodType(klass, Object.class, Object.class, Object.class, Object.class, Object.class));
+        final MethodHandle ofAll = lookup.findStatic(klass, "of", MethodType.methodType(klass, Object[].class));
 
 
-            Seq<Object> seq0 = (Seq<Object>) of0.invoke();
-            assertTrue(seq0.isEmpty());
+        Seq<Object> seq0 = (Seq<Object>) of0.invoke();
+        assertTrue(seq0.isEmpty());
 
-            Seq<Object> seq1 = (Seq<Object>) of1.invoke("str0");
-            assertEquals(1, seq1.size());
-            assertIterableEquals(List.of("str0"), seq1);
+        Seq<Object> seq1 = (Seq<Object>) of1.invoke("str0");
+        assertEquals(1, seq1.size());
+        assertIterableEquals(List.of("str0"), seq1);
 
-            Seq<Object> seq2 = (Seq<Object>) of2.invoke("str0", "str1");
-            assertEquals(2, seq2.size());
-            assertIterableEquals(List.of("str0", "str1"), seq2);
+        Seq<Object> seq2 = (Seq<Object>) of2.invoke("str0", "str1");
+        assertEquals(2, seq2.size());
+        assertIterableEquals(List.of("str0", "str1"), seq2);
 
-            Seq<Object> seq3 = (Seq<Object>) of3.invoke("str0", "str1", "str2");
-            assertEquals(3, seq3.size());
-            assertIterableEquals(List.of("str0", "str1", "str2"), seq3);
+        Seq<Object> seq3 = (Seq<Object>) of3.invoke("str0", "str1", "str2");
+        assertEquals(3, seq3.size());
+        assertIterableEquals(List.of("str0", "str1", "str2"), seq3);
 
-            Seq<Object> seq4 = (Seq<Object>) of4.invoke("str0", "str1", "str2", "str3");
-            assertEquals(4, seq4.size());
-            assertIterableEquals(List.of("str0", "str1", "str2", "str3"), seq4);
+        Seq<Object> seq4 = (Seq<Object>) of4.invoke("str0", "str1", "str2", "str3");
+        assertEquals(4, seq4.size());
+        assertIterableEquals(List.of("str0", "str1", "str2", "str3"), seq4);
 
-            Seq<Object> seq5 = (Seq<Object>) of5.invoke("str0", "str1", "str2", "str3", "str4");
-            assertEquals(5, seq5.size());
-            assertIterableEquals(List.of("str0", "str1", "str2", "str3", "str4"), seq5);
+        Seq<Object> seq5 = (Seq<Object>) of5.invoke("str0", "str1", "str2", "str3", "str4");
+        assertEquals(5, seq5.size());
+        assertIterableEquals(List.of("str0", "str1", "str2", "str3", "str4"), seq5);
 
-            for (Integer[] data : data1()) {
-                Seq<Integer> size = (Seq<Integer>) ofAll.invoke((Object[]) data);
-                assertEquals(data.length, size.size());
-                assertIterableEquals(Arrays.asList(data), size);
-            }
-
-        } catch (Throwable e) {
-            fail(e);
+        for (Integer[] data : data1()) {
+            Seq<Integer> size = (Seq<Integer>) ofAll.invoke((Object[]) data);
+            assertEquals(data.length, size.size());
+            assertIterableEquals(Arrays.asList(data), size);
         }
     }
 
