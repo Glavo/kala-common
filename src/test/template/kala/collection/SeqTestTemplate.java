@@ -59,7 +59,7 @@ public interface SeqTestTemplate extends SequentialCollectionTestTemplate, SeqLi
     }
 
     @Test
-    default void ofTest() {
+    default void ofTest() throws Throwable {
         final Class<?> klass = collectionType();
         if (klass == null) {
             return;

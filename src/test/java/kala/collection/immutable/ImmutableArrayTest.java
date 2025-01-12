@@ -49,7 +49,7 @@ public final class ImmutableArrayTest implements ImmutableSeqTestTemplate {
     }
 
     @Test
-    public void ofTest() {
+    public void ofTest() throws Throwable {
         ImmutableSeqTestTemplate.super.ofTest();
 
         assertIterableEquals(List.of(), ImmutableArray.of());
@@ -65,7 +65,7 @@ public final class ImmutableArrayTest implements ImmutableSeqTestTemplate {
     }
 
     @Test
-    public void fromTest() {
+    public void fromTest() throws Throwable {
         ImmutableSeqTestTemplate.super.fromTest();
         for (Integer[] data : data1()) {
             assertIterableEquals(Arrays.asList(data), ImmutableArray.from(new SimpleIterable<>(Arrays.asList(data))));

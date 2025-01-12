@@ -33,7 +33,7 @@ public final class ImmutableLinkedSeqTest implements ImmutableSeqTestTemplate {
     }
 
     @Test
-    public void ofTest() {
+    public void ofTest() throws Throwable {
         ImmutableSeqTestTemplate.super.ofTest();
 
         assertIterableEquals(List.of(), ImmutableLinkedSeq.of());
