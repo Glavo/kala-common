@@ -50,4 +50,7 @@ public interface SetLike<E> extends CollectionLike<E>, AnySetLike<E> {
 
     @Override
     @NotNull SetLike<E> filterNot(@NotNull Predicate<? super E> predicate);
+
+    @Override
+    @NotNull SetLike<@NotNull E> filterNotNull();
 }

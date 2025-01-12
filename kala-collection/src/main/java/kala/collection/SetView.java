@@ -88,4 +88,9 @@ public interface SetView<@Covariant E> extends CollectionView<E>, SetLike<E>, An
     default @NotNull SetView<E> filterNot(@NotNull Predicate<? super E> predicate) {
         return filter(predicate.negate());
     }
+
+    @Override
+    default @NotNull SetView<@NotNull E> filterNotNull() {
+        return filter(Predicates.isNotNull());
+    }
 }
