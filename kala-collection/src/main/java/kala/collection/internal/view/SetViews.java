@@ -17,6 +17,7 @@ package kala.collection.internal.view;
 
 import kala.Conditions;
 import kala.collection.*;
+import kala.collection.base.AbstractIterator;
 import kala.collection.base.Iterators;
 import kala.annotations.Covariant;
 import kala.collection.immutable.ImmutableSet;
@@ -45,7 +46,7 @@ public final class SetViews {
 
         @Override
         public @NotNull Iterator<E> iterator() {
-            return Iterators.prepended(source.iterator(), addedValue);
+            return source.contains(addedValue) ? source.iterator() : Iterators.appended(source.iterator(), addedValue);
         }
 
         @Override
@@ -54,7 +55,7 @@ public final class SetViews {
         }
 
         @Override
-        public @NotNull SetLike<E> added(E value) {
+        public @NotNull SetView<E> added(E value) {
             if (this.contains(value)) {
                 return this;
             }
@@ -76,12 +77,57 @@ public final class SetViews {
 
         @Override
         public @NotNull Iterator<E> iterator() {
-            return Iterators.concat(source.iterator(), addedValues.iterator());
+            return new Itr();
         }
 
         @Override
         public boolean contains(Object value) {
             return source.contains(value) || addedValues.contains(value);
+        }
+
+        private final class Itr extends AbstractIterator<E> {
+            private Boolean hasNext;
+            private E nextValue;
+
+            private Iterator<? extends E> sourceIterator = source.iterator();
+            private Iterator<? extends E> addedIterator = addedValues.iterator();
+
+            @Override
+            public boolean hasNext() {
+                if (hasNext == null) {
+                    if (sourceIterator != null) {
+                        if (sourceIterator.hasNext()) {
+                            nextValue = sourceIterator.next();
+                            return hasNext = true;
+                        } else {
+                            sourceIterator = null;
+                        }
+                    }
+
+                    if (addedIterator != null) {
+                        while (addedIterator.hasNext()) {
+                            E value = addedIterator.next();
+                            if (!source.contains(value)) {
+                                nextValue = value;
+                                return hasNext = true;
+                            }
+                        }
+
+                        addedIterator = null;
+                    }
+                    return hasNext = false;
+                }
+                return hasNext;
+            }
+
+            @Override
+            public E next() {
+                checkStatus();
+                E value = nextValue;
+                hasNext = null;
+                nextValue = null;
+                return value;
+            }
         }
     }
 

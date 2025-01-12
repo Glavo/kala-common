@@ -153,37 +153,33 @@ public interface SeqTestTemplate extends SequentialCollectionTestTemplate, SeqLi
     }
 
     @Test
-    default void generateUntilTest() {
+    default void generateUntilTest() throws Throwable {
         final Class<?> klass = collectionType();
         if (klass != null) {
-            try {
-                final MethodHandles.Lookup lookup = MethodHandles.publicLookup();
+            final MethodHandles.Lookup lookup = MethodHandles.publicLookup();
 
-                final MethodHandle generateUntil = lookup.findStatic(klass, "generateUntil", MethodType.methodType(klass, Supplier.class, Predicate.class));
-                final MethodHandle generateUntilNull = lookup.findStatic(klass, "generateUntilNull", MethodType.methodType(klass, Supplier.class));
+            final MethodHandle generateUntil = lookup.findStatic(klass, "generateUntil", MethodType.methodType(klass, Supplier.class, Predicate.class));
+            final MethodHandle generateUntilNull = lookup.findStatic(klass, "generateUntilNull", MethodType.methodType(klass, Supplier.class));
 
-                List<Integer> expected = List.of(0, 1, 2, 3, 4, 5);
+            List<Integer> expected = List.of(0, 1, 2, 3, 4, 5);
 
-                {
-                    IntVar var = new IntVar();
-                    Supplier<Integer> supplier = () -> var.value++;
-                    Predicate<Integer> predicate = it -> it > 5;
+            {
+                IntVar var = new IntVar();
+                Supplier<Integer> supplier = () -> var.value++;
+                Predicate<Integer> predicate = it -> it > 5;
 
-                    assertIterableEquals(expected, (Seq<Integer>) generateUntil.invoke(supplier, predicate));
-                }
-                {
-                    IntVar var = new IntVar();
-                    Supplier<Integer> supplier = () -> {
-                        int res = var.value++;
-                        return res <= 5 ? res : null;
-                    };
-
-                    assertIterableEquals(expected, (Seq<Integer>) generateUntilNull.invoke(supplier));
-                }
-
-            } catch (Throwable e) {
-                fail(e);
+                assertIterableEquals(expected, (Seq<Integer>) generateUntil.invoke(supplier, predicate));
             }
+            {
+                IntVar var = new IntVar();
+                Supplier<Integer> supplier = () -> {
+                    int res = var.value++;
+                    return res <= 5 ? res : null;
+                };
+
+                assertIterableEquals(expected, (Seq<Integer>) generateUntilNull.invoke(supplier));
+            }
+
         }
     }
 

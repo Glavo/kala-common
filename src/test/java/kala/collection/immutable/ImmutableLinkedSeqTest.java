@@ -21,7 +21,6 @@ import kala.collection.factory.CollectionFactory;
 import kala.collection.mutable.MutableSinglyLinkedList;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,22 +29,6 @@ public final class ImmutableLinkedSeqTest implements ImmutableSeqTestTemplate {
     @Override
     public <E> CollectionFactory<E, ?, ImmutableLinkedSeq<E>> factory() {
         return ImmutableLinkedSeq.factory();
-    }
-
-    @Test
-    public void ofTest() throws Throwable {
-        ImmutableSeqTestTemplate.super.ofTest();
-
-        assertIterableEquals(List.of(), ImmutableLinkedSeq.of());
-        assertIterableEquals(List.of("str1"), ImmutableLinkedSeq.of("str1"));
-        assertIterableEquals(List.of("str1", "str2"), ImmutableLinkedSeq.of("str1", "str2"));
-        assertIterableEquals(List.of("str1", "str2", "str3"), ImmutableLinkedSeq.of("str1", "str2", "str3"));
-        assertIterableEquals(List.of("str1", "str2", "str3", "str4"), ImmutableLinkedSeq.of("str1", "str2", "str3", "str4"));
-        assertIterableEquals(List.of("str1", "str2", "str3", "str4", "str5"), ImmutableLinkedSeq.of("str1", "str2", "str3", "str4", "str5"));
-        assertIterableEquals(List.of("str1", "str2", "str3", "str4", "str5", "str6"), ImmutableLinkedSeq.of("str1", "str2", "str3", "str4", "str5", "str6"));
-        for (Integer[] data : data1()) {
-            assertIterableEquals(Arrays.asList(data), ImmutableLinkedSeq.of(data));
-        }
     }
 
     @Test

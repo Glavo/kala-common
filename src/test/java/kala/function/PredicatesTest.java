@@ -78,6 +78,17 @@ public class PredicatesTest {
     }
 
     @Test
+    void isNotEqualTest() {
+        var testObject = List.of("A");
+        Predicate<Object> predicate = Predicates.isNotEqual(testObject);
+
+        assertTrue(predicate.test(null));
+        assertTrue(predicate.test("A"));
+        assertFalse(predicate.test(testObject));
+        assertFalse(predicate.test(new ArrayList<>(testObject)));
+    }
+
+    @Test
     void isSameTest() {
         var testObject = List.of("A");
         Predicate<Object> predicate = Predicates.isSame(testObject);
@@ -86,6 +97,18 @@ public class PredicatesTest {
         assertFalse(predicate.test("A"));
         assertTrue(predicate.test(testObject));
         assertFalse(predicate.test(new ArrayList<>(testObject)));
+    }
+
+
+    @Test
+    void isNotSameTest() {
+        var testObject = List.of("A");
+        Predicate<Object> predicate = Predicates.isNotSame(testObject);
+
+        assertTrue(predicate.test(null));
+        assertTrue(predicate.test("A"));
+        assertFalse(predicate.test(testObject));
+        assertTrue(predicate.test(new ArrayList<>(testObject)));
     }
 
     @Test

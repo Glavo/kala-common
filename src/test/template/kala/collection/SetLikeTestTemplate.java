@@ -15,13 +15,14 @@
  */
 package kala.collection;
 
-import kala.ExtendedAssertions;
 import kala.collection.immutable.ImmutableArray;
+import kala.collection.immutable.ImmutableSet;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
 import java.util.Set;
 
+import static kala.ExtendedAssertions.assertSetElements;
 import static org.junit.jupiter.api.Assertions.*;
 
 public interface SetLikeTestTemplate extends CollectionLikeTestTemplate {
@@ -55,31 +56,31 @@ public interface SetLikeTestTemplate extends CollectionLikeTestTemplate {
 
     @Test
     default void addedTest() {
-        ExtendedAssertions.assertSetElements(Set.of("str"), this.<String>of().added("str"));
-        ExtendedAssertions.assertSetElements(Set.of("str"), this.of("str").added("str"));
-        ExtendedAssertions.assertSetElements(Collections.singleton(null), this.<String>of().added(null));
-        ExtendedAssertions.assertSetElements(Set.of("str1", "str2"), of("str1").added("str2"));
-        ExtendedAssertions.assertSetElements(Set.of("str1", "str2"), of("str1").added("str2").added("str1"));
+        assertSetElements(Set.of("str"), this.<String>of().added("str"));
+        assertSetElements(Set.of("str"), this.of("str").added("str"));
+        assertSetElements(Collections.singleton(null), this.<String>of().added(null));
+        assertSetElements(Set.of("str1", "str2"), of("str1").added("str2"));
+        assertSetElements(Set.of("str1", "str2"), of("str1").added("str2").added("str1"));
 
         final int last = 12345;
         for (Integer[] data : data1()) {
             final Set<Integer> al = new HashSet<>(Arrays.asList(data));
             al.add(last);
-            ExtendedAssertions.assertSetElements(al, from(data).added(last));
+            assertSetElements(al, from(data).added(last));
         }
     }
 
     @Test
     default void addedAllTest() {
-        ExtendedAssertions.assertSetElements(Set.of(), of().addedAll(List.of()));
-        ExtendedAssertions.assertSetElements(Set.of("str"), of("str").addedAll(List.of()));
-        ExtendedAssertions.assertSetElements(Set.of("str"), of("str").addedAll(new String[0]));
-        ExtendedAssertions.assertSetElements(Set.of("str"), this.<String>of().addedAll(new String[]{"str"}));
+        assertSetElements(Set.of(), of().addedAll(List.of()));
+        assertSetElements(Set.of("str"), of("str").addedAll(List.of()));
+        assertSetElements(Set.of("str"), of("str").addedAll());
+        assertSetElements(Set.of("str"), this.<String>of().addedAll("str"));
 
         for (Integer[] data : data1()) {
-            ExtendedAssertions.assertSetElements(Set.of(data), this.<Integer>of().addedAll(data));
-            ExtendedAssertions.assertSetElements(Set.of(data), this.<Integer>of().addedAll(Arrays.asList(data)));
-            ExtendedAssertions.assertSetElements(Set.of(data), this.<Integer>of().addedAll(ImmutableArray.from(data)));
+            assertSetElements(Set.of(data), this.<Integer>of().addedAll(data));
+            assertSetElements(Set.of(data), this.<Integer>of().addedAll(Arrays.asList(data)));
+            assertSetElements(Set.of(data), this.<Integer>of().addedAll(ImmutableArray.from(data)));
         }
 
         for (int i = 0; i < data1().length - 1; i++) {
@@ -88,16 +89,47 @@ public interface SetLikeTestTemplate extends CollectionLikeTestTemplate {
 
             final Set<Integer> tmp = new HashSet<>(Arrays.asList(data));
 
-            ExtendedAssertions.assertSetElements(tmp, this.<Integer>of().addedAll(data));
-            ExtendedAssertions.assertSetElements(tmp, this.<Integer>of().addedAll(Arrays.asList(data)));
-            ExtendedAssertions.assertSetElements(tmp, this.<Integer>of().addedAll(ImmutableArray.from(data)));
+            assertSetElements(tmp, this.<Integer>of().addedAll(data));
+            assertSetElements(tmp, this.<Integer>of().addedAll(Arrays.asList(data)));
+            assertSetElements(tmp, this.<Integer>of().addedAll(ImmutableArray.from(data)));
 
             tmp.addAll(Arrays.asList(data2));
 
-            ExtendedAssertions.assertSetElements(tmp, from(data).addedAll(data2));
-            ExtendedAssertions.assertSetElements(tmp, from(data).addedAll(Arrays.asList(data2)));
-            ExtendedAssertions.assertSetElements(tmp, from(data).addedAll(ImmutableArray.from(data2)));
+            assertSetElements(tmp, from(data).addedAll(data2));
+            assertSetElements(tmp, from(data).addedAll(Arrays.asList(data2)));
+            assertSetElements(tmp, from(data).addedAll(ImmutableArray.from(data2)));
         }
     }
 
+    @Test
+    default void removedTest() {
+        var empty = this.<String>of();
+        assertSetElements(List.of(), empty.removed(null));
+        assertSetElements(List.of(), empty.removed("A"));
+
+        assertSetElements(List.of("str"), of("str").removed(null));
+        assertSetElements(List.of("str"), of("str").removed("not str"));
+        assertSetElements(List.of(), of("str").removed("str"));
+    }
+
+    @Test
+    default void removedAllTest() {
+        var empty = this.<String>of();
+        assertSetElements(List.of(), empty.removedAll((String) null));
+        assertSetElements(List.of(), empty.removedAll("A"));
+        assertSetElements(List.of(), empty.removedAll(List.of()));
+
+        assertSetElements(List.of(1, 2, 3, 4, 5), of(1, 2, 3, 4, 5).removedAll());
+        assertSetElements(List.of(1, 2, 3, 4, 5), of(1, 2, 3, 4, 5).removedAll(List.of()));
+        assertSetElements(List.of(1, 2, 3, 4, 5), of(1, 2, 3, 4, 5).removedAll(java.util.Set.of()));
+        assertSetElements(List.of(1, 2, 3, 4, 5), of(1, 2, 3, 4, 5).removedAll(ImmutableSet.of()));
+        assertSetElements(List.of(1, 2, 4, 5), of(1, 2, 3, 4, 5).removedAll(3));
+        assertSetElements(List.of(1, 2, 4, 5), of(1, 2, 3, 4, 5).removedAll(List.of(3)));
+        assertSetElements(List.of(1, 2, 4, 5), of(1, 2, 3, 4, 5).removedAll(java.util.Set.of(3)));
+        assertSetElements(List.of(1, 2, 4, 5), of(1, 2, 3, 4, 5).removedAll(ImmutableSet.of(3)));
+        assertSetElements(List.of(1, 4, 5), of(1, 2, 3, 4, 5).removedAll(0, 3, 2, 6));
+        assertSetElements(List.of(1, 4, 5), of(1, 2, 3, 4, 5).removedAll(List.of(0, 3, 2, 6)));
+        assertSetElements(List.of(1, 4, 5), of(1, 2, 3, 4, 5).removedAll(java.util.Set.of(0, 3, 2, 6)));
+        assertSetElements(List.of(1, 4, 5), of(1, 2, 3, 4, 5).removedAll(ImmutableSet.of(0, 3, 2, 6)));
+    }
 }

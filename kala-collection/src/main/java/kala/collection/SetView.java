@@ -16,8 +16,9 @@
 package kala.collection;
 
 import kala.annotations.Covariant;
+import kala.collection.immutable.ImmutableSet;
 import kala.collection.internal.view.SetViews;
-import kala.collection.mutable.MutableHashSet;
+import kala.function.Predicates;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -36,30 +37,45 @@ public interface SetView<@Covariant E> extends CollectionView<E>, SetLike<E>, An
     }
 
     @Override
-    default @NotNull SetLike<E> added(E value) {
+    default @NotNull SetView<E> added(E value) {
         return contains(value) ? this : new SetViews.Added<>(this, value);
     }
 
     @Override
-    default @NotNull SetLike<E> addedAll(@NotNull Iterable<? extends E> values) {
-        MutableHashSet<E> addValues = new MutableHashSet<>();
-        for (E value : values) {
-            if (!contains(value)) {
-                addValues.add(value);
-            }
-        }
-        return addValues.isNotEmpty() ? new SetViews.AddedAll<>(this, addValues.toImmutableSet()) : this;
+    default @NotNull SetView<E> addedAll(E @NotNull [] values) {
+        return addedAll(ArraySeq.wrap(values));
     }
 
     @Override
-    default @NotNull SetLike<E> addedAll(E @NotNull [] values) {
-        MutableHashSet<E> addValues = new MutableHashSet<>();
-        for (E value : values) {
-            if (!contains(value)) {
-                addValues.add(value);
-            }
+    default @NotNull SetView<E> addedAll(@NotNull Iterable<? extends E> values) {
+        ImmutableSet<E> addValues;
+        if (values instanceof ImmutableSet<? extends E> immutableSet) {
+            addValues = ImmutableSet.narrow(immutableSet);
+        } else {
+            addValues = ImmutableSet.from(values);
         }
-        return addValues.isNotEmpty() ? new SetViews.AddedAll<>(this, addValues.toImmutableSet()) : this;
+        return addValues.isNotEmpty() ? new SetViews.AddedAll<>(this, addValues) : this;
+    }
+
+    @Override
+    default @NotNull SetView<E> removed(E value) {
+        return new SetViews.Filter<>(this, Predicates.isNotEqual(value));
+    }
+
+    @Override
+    default @NotNull SetView<E> removedAll(E... values) {
+        return removedAll(ArraySeq.wrap(values));
+    }
+
+    @Override
+    default @NotNull SetView<E> removedAll(@NotNull Iterable<? extends E> values) {
+        ImmutableSet<E> removedValues;
+        if (values instanceof ImmutableSet<? extends E> immutableSet) {
+            removedValues = ImmutableSet.narrow(immutableSet);
+        } else {
+            removedValues = ImmutableSet.from(values);
+        }
+        return removedValues.isNotEmpty() ? new SetViews.Filter<>(this, value -> !removedValues.contains(value)) : this;
     }
 
     @Override
@@ -70,7 +86,6 @@ public interface SetView<@Covariant E> extends CollectionView<E>, SetLike<E>, An
 
     @Override
     default @NotNull SetView<E> filterNot(@NotNull Predicate<? super E> predicate) {
-        Objects.requireNonNull(predicate);
-        return new SetViews.Filter<>(this, predicate.negate());
+        return filter(predicate.negate());
     }
 }

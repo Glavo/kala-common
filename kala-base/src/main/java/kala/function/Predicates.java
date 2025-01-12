@@ -58,8 +58,16 @@ public final class Predicates {
         return target == null ? isNull() : new IsEqual<>(target);
     }
 
+    public static <T> @NotNull Predicate<T> isNotEqual(Object target) {
+        return target == null ? isNotNull() : new IsNotEqual<>(target);
+    }
+
     public static <T> @NotNull Predicate<T> isSame(Object target) {
         return target == null ? isNull() : new IsSame<>(target);
+    }
+
+    public static <T> @NotNull Predicate<T> isNotSame(Object target) {
+        return target == null ? isNotNull() : new IsNotSame<>(target);
     }
 
     public static <T> @NotNull Predicate<T> isInstance(@NotNull Class<? extends T> type) {
@@ -201,6 +209,18 @@ public final class Predicates {
         }
     }
 
+    private record IsNotEqual<T>(@NotNull Object target) implements Predicate<T>, Serializable {
+        @Override
+        public boolean test(T t) {
+            return !target.equals(t);
+        }
+
+        @Override
+        public String toString() {
+            return "Predicates.IsNotEqual[" + target + ']';
+        }
+    }
+
     private record IsSame<T>(@NotNull Object target) implements Predicate<T>, Serializable {
 
         @Override
@@ -216,6 +236,24 @@ public final class Predicates {
         @Override
         public String toString() {
             return "Predicates.IsSame[" + target + ']';
+        }
+    }
+
+    private record IsNotSame<T>(@NotNull Object target) implements Predicate<T>, Serializable {
+
+        @Override
+        public boolean test(T t) {
+            return target != t;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return this == o || o instanceof IsNotSame<?> other && this.target == other.target;
+        }
+
+        @Override
+        public String toString() {
+            return "Predicates.IsNotSame[" + target + ']';
         }
     }
 

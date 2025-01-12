@@ -39,6 +39,12 @@ public interface SetLike<E> extends CollectionLike<E>, AnySetLike<E> {
 
     @NotNull SetLike<E> addedAll(@NotNull Iterable<? extends E> values);
 
+    @NotNull SetLike<E> removed(E value);
+
+    @NotNull SetLike<E> removedAll(E... values);
+
+    @NotNull SetLike<E> removedAll(@NotNull Iterable<? extends E> values);
+
     @Override
     @NotNull SetLike<E> filter(@NotNull Predicate<? super E> predicate);
 

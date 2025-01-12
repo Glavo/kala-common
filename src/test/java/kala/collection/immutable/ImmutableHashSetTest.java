@@ -15,11 +15,31 @@
  */
 package kala.collection.immutable;
 
+import kala.collection.SetLike;
+import kala.collection.SetLikeTestTemplate;
 import kala.collection.factory.CollectionFactory;
 
 public class ImmutableHashSetTest implements ImmutableSetTestTemplate {
     @Override
     public <E> CollectionFactory<E, ?, ImmutableHashSet<E>> factory() {
         return ImmutableHashSet.factory();
+    }
+
+    static final class ViewTest implements SetLikeTestTemplate {
+
+        @Override
+        public <E> SetLike<E> of(E... elements) {
+            return ImmutableHashSet.of(elements).view();
+        }
+
+        @Override
+        public <E> SetLike<E> from(E[] elements) {
+            return ImmutableHashSet.from(elements).view();
+        }
+
+        @Override
+        public <E> SetLike<E> from(Iterable<? extends E> elements) {
+            return ImmutableHashSet.<E>from(elements).view();
+        }
     }
 }
