@@ -111,58 +111,49 @@ public interface SeqTestTemplate extends SequentialCollectionTestTemplate, SeqLi
     }
 
     @Test
-    default void fromTest() {
+    default void fromTest() throws Throwable {
         final Class<?> klass = collectionType();
         if (klass != null) {
-            try {
-                final MethodHandles.Lookup lookup = MethodHandles.publicLookup();
+            final MethodHandles.Lookup lookup = MethodHandles.publicLookup();
 
-                final MethodHandle fromArray = lookup.findStatic(klass, "from", MethodType.methodType(klass, Object[].class));
-                final MethodHandle fromIterable = lookup.findStatic(klass, "from", MethodType.methodType(klass, Iterable.class));
-                final MethodHandle fromIterator = lookup.findStatic(klass, "from", MethodType.methodType(klass, Iterator.class));
-                final MethodHandle fromStream = lookup.findStatic(klass, "from", MethodType.methodType(klass, Stream.class));
+            final MethodHandle fromArray = lookup.findStatic(klass, "from", MethodType.methodType(klass, Object[].class));
+            final MethodHandle fromIterable = lookup.findStatic(klass, "from", MethodType.methodType(klass, Iterable.class));
+            final MethodHandle fromIterator = lookup.findStatic(klass, "from", MethodType.methodType(klass, Iterator.class));
+            final MethodHandle fromStream = lookup.findStatic(klass, "from", MethodType.methodType(klass, Stream.class));
 
-                for (Integer[] data : data1()) {
-                    final List<Integer> dataList = Arrays.asList(data);
+            for (Integer[] data : data1()) {
+                final List<Integer> dataList = Arrays.asList(data);
 
-                    assertIterableEquals(dataList, (Seq<Integer>) fromArray.invoke((Object[]) data));
-                    assertIterableEquals(dataList, (Seq<Integer>) fromIterable.invoke(dataList));
-                    assertIterableEquals(dataList, (Seq<Integer>) fromIterator.invoke(dataList.iterator()));
-                    assertIterableEquals(dataList, (Seq<Integer>) fromStream.invoke(dataList.stream()));
-                }
-
-            } catch (Throwable e) {
-                fail(e);
+                assertIterableEquals(dataList, (Seq<Integer>) fromArray.invoke((Object[]) data));
+                assertIterableEquals(dataList, (Seq<Integer>) fromIterable.invoke(dataList));
+                assertIterableEquals(dataList, (Seq<Integer>) fromIterator.invoke(dataList.iterator()));
+                assertIterableEquals(dataList, (Seq<Integer>) fromStream.invoke(dataList.stream()));
             }
         }
     }
 
     @Test
-    default void fillTest() {
+    default void fillTest() throws Throwable {
         final Class<?> klass = collectionType();
         if (klass != null) {
-            try {
-                final MethodHandles.Lookup lookup = MethodHandles.publicLookup();
+            final MethodHandles.Lookup lookup = MethodHandles.publicLookup();
 
-                final MethodHandle fillValue = lookup.findStatic(klass, "fill", MethodType.methodType(klass, int.class, Object.class));
-                final MethodHandle fillIntFunction = lookup.findStatic(klass, "fill", MethodType.methodType(klass, int.class, IntFunction.class));
+            final MethodHandle fillValue = lookup.findStatic(klass, "fill", MethodType.methodType(klass, int.class, Object.class));
+            final MethodHandle fillIntFunction = lookup.findStatic(klass, "fill", MethodType.methodType(klass, int.class, IntFunction.class));
 
-                assertIterableEquals(List.of(), (Seq<String>) fillValue.invoke(0, "value"));
-                assertIterableEquals(List.of("value"), (Seq<String>) fillValue.invoke(1, "value"));
-                assertIterableEquals(List.of("value", "value", "value"), (Seq<String>) fillValue.invoke(3, "value"));
+            assertIterableEquals(List.of(), (Seq<String>) fillValue.invoke(0, "value"));
+            assertIterableEquals(List.of("value"), (Seq<String>) fillValue.invoke(1, "value"));
+            assertIterableEquals(List.of("value", "value", "value"), (Seq<String>) fillValue.invoke(3, "value"));
 
-                assertIterableEquals(List.of("value0"), (Seq<String>) fillIntFunction.invoke(1, (IntFunction<String>) i -> "value" + i));
+            assertIterableEquals(List.of("value0"), (Seq<String>) fillIntFunction.invoke(1, (IntFunction<String>) i -> "value" + i));
 
-                List<Integer> expected = List.of(0, 1, 2, 3, 4, 5);
+            List<Integer> expected = List.of(0, 1, 2, 3, 4, 5);
 
-                IntVar intVar = new IntVar();
-                IntFunction<Integer> function = i -> i;
+            IntVar intVar = new IntVar();
+            IntFunction<Integer> function = i -> i;
 
-                assertIterableEquals(List.of(), (Seq<Integer>) fillIntFunction.invoke(0, function));
-                assertIterableEquals(expected, (Seq<Integer>) fillIntFunction.invoke(6, function));
-            } catch (Throwable e) {
-                fail(e);
-            }
+            assertIterableEquals(List.of(), (Seq<Integer>) fillIntFunction.invoke(0, function));
+            assertIterableEquals(expected, (Seq<Integer>) fillIntFunction.invoke(6, function));
         }
     }
 

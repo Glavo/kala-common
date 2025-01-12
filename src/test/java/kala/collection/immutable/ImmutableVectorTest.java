@@ -67,7 +67,10 @@ public final class ImmutableVectorTest implements ImmutableSeqTestTemplate {
     }
 
     @Test
-    public void fillTest() {
+    @Override
+    public void fillTest() throws Throwable {
+        ImmutableSeqTestTemplate.super.fillTest();
+
         ImmutableVector<String> v;
 
         v = ImmutableVector.fill(ImmutableVectors.WIDTH, "str");
