@@ -248,7 +248,6 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
     }
 
     @Contract(mutates = "this")
-    @SuppressWarnings("unchecked")
     default boolean retainIf(@NotNull Predicate<? super E> predicate) {
         return removeIf(predicate.negate());
     }
