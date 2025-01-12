@@ -27,8 +27,10 @@ import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>, MutableAnySet<E> {
 
@@ -88,6 +90,16 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
     @Contract(value = "_ -> new")
     static <E> @NotNull MutableSet<E> from(@NotNull Iterable<? extends E> values) {
         return MutableHashSet.from(values);
+    }
+
+    @Contract(value = "_ -> new")
+    static <E> @NotNull MutableSet<E> from(@NotNull Iterator<? extends E> it) {
+        return MutableHashSet.from(it);
+    }
+
+    @Contract(value = "_ -> new")
+    static <E> @NotNull MutableSet<E> from(@NotNull Stream<? extends E> stream) {
+        return MutableHashSet.from(stream);
     }
 
     static <E, C extends MutableSet<E>> MutableSetEditor<E, C> edit(@NotNull C set) {

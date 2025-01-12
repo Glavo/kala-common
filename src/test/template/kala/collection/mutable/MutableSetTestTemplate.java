@@ -16,6 +16,7 @@
 package kala.collection.mutable;
 
 import kala.ExtendedAssertions;
+import kala.collection.Set;
 import kala.collection.SetTestTemplate;
 import kala.collection.factory.CollectionFactory;
 import org.junit.jupiter.api.Test;
@@ -30,13 +31,19 @@ public interface MutableSetTestTemplate extends MutableCollectionTestTemplate, S
     <E> CollectionFactory<E, ?, ? extends MutableSet<E>> factory();
 
     @Override
-    <E> MutableSet<E> of(E... elements);
+    default <E> MutableSet<E> of(E... elements) {
+        return this.<E>factory().from(elements);
+    }
 
     @Override
-    <E> MutableSet<E> from(E[] elements);
+    default <E> MutableSet<E> from(E[] elements) {
+        return this.<E>factory().from(elements);
+    }
 
     @Override
-    <E> MutableSet<E> from(Iterable<? extends E> elements);
+    default <E> MutableSet<E> from(Iterable<? extends E> elements) {
+        return this.<E>factory().from(elements);
+    }
 
     @Test
     default void addTest() {
