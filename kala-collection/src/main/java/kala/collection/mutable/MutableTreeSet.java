@@ -282,7 +282,6 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
         return s;
     }
 
-
     @Contract(value = "_, _ -> new")
     public static <E> @NotNull MutableTreeSet<E> from(Comparator<? super E> comparator, @NotNull Stream<? extends E> stream) {
         return stream.collect(factory(comparator));

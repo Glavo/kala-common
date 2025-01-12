@@ -21,13 +21,22 @@ import kala.collection.base.Iterators;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.immutable.ImmutableArray;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.AssertionFailedError;
 
 import java.io.*;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static kala.ExtendedAssertions.assertSetElements;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @SuppressWarnings("unchecked")
 public interface SetTestTemplate extends SetLikeTestTemplate, CollectionTestTemplate {
@@ -48,6 +57,99 @@ public interface SetTestTemplate extends SetLikeTestTemplate, CollectionTestTemp
     @Override
     default <E> Set<E> from(Iterable<? extends E> elements) {
         return Set.narrow(this.<E>factory().from(elements));
+    }
+
+    @Test
+    default void ofTest() throws Throwable {
+        final Class<?> klass = collectionType();
+        if (klass == null) {
+            return;
+        }
+
+        Class<?> argType = SortedSet.class.isAssignableFrom(klass) ? Comparable.class : Object.class;
+
+        final MethodHandles.Lookup lookup = MethodHandles.publicLookup();
+        final MethodHandle of0 = lookup.findStatic(klass, "of", MethodType.methodType(klass));
+        final MethodHandle of1 = lookup.findStatic(klass, "of", MethodType.methodType(klass, argType));
+        final MethodHandle of2 = lookup.findStatic(klass, "of", MethodType.methodType(klass, argType, argType));
+        final MethodHandle of3 = lookup.findStatic(klass, "of", MethodType.methodType(klass, argType, argType, argType));
+        final MethodHandle of4 = lookup.findStatic(klass, "of", MethodType.methodType(klass, argType, argType, argType, argType));
+        final MethodHandle of5 = lookup.findStatic(klass, "of", MethodType.methodType(klass, argType, argType, argType, argType, argType));
+        final MethodHandle ofAll = lookup.findStatic(klass, "of", MethodType.methodType(klass, argType.arrayType()));
+
+        Set<String> set;
+
+        // of0
+
+        set = (Set<String>) of0.invoke();
+        assertTrue(set.isEmpty());
+
+        // of1
+
+        set = (Set<String>) of1.invoke("str0");
+        assertSetElements(List.of("str0"), set);
+
+        // of2
+
+        set = (Set<String>) of2.invoke("str0", "str1");
+        assertSetElements(List.of("str0", "str1"), set);
+
+        set = (Set<String>) of2.invoke("str0", "str0");
+        assertSetElements(List.of("str0"), set);
+
+        // of3
+
+        set = (Set<String>) of3.invoke("str0", "str1", "str2");
+        assertSetElements(List.of("str0", "str1", "str2"), set);
+
+        set = (Set<String>) of3.invoke("str0", "str1", "str0");
+        assertSetElements(List.of("str0", "str1"), set);
+
+        // of4
+
+        set = (Set<String>) of4.invoke("str0", "str1", "str2", "str3");
+        assertSetElements(List.of("str0", "str1", "str2", "str3"), set);
+
+        set = (Set<String>) of4.invoke("str0", "str1", "str2", "str0");
+        assertSetElements(List.of("str0", "str1", "str2"), set);
+
+        // of5
+
+        set = (Set<String>) of5.invoke("str0", "str1", "str2", "str3", "str4");
+        assertSetElements(List.of("str0", "str1", "str2", "str3", "str4"), set);
+
+        set = (Set<String>) of5.invoke("str0", "str1", "str2", "str3", "str0");
+        assertSetElements(List.of("str0", "str1", "str2", "str3"), set);
+
+        for (String[] data : data1s()) {
+            Set<String> size = (Set<String>) ofAll.invoke((String[]) data);
+            assertEquals(data.length, size.size());
+            assertSetElements(Arrays.asList(data), size);
+        }
+
+    }
+
+    @Test
+    default void fromTest() throws Throwable {
+        final Class<?> klass = collectionType();
+        if (klass != null) {
+            final MethodHandles.Lookup lookup = MethodHandles.publicLookup();
+
+            final MethodHandle fromArray = lookup.findStatic(klass, "from", MethodType.methodType(klass,
+                    SortedSet.class.isAssignableFrom(klass) ? Comparable[].class : Object[].class));
+            final MethodHandle fromIterable = lookup.findStatic(klass, "from", MethodType.methodType(klass, Iterable.class));
+            final MethodHandle fromIterator = lookup.findStatic(klass, "from", MethodType.methodType(klass, Iterator.class));
+            final MethodHandle fromStream = lookup.findStatic(klass, "from", MethodType.methodType(klass, Stream.class));
+
+            for (String[] data : data1s()) {
+                final var dataList = Arrays.asList(data);
+
+                assertSetElements(dataList, (Set<String>) fromArray.invoke((Object[]) data));
+                assertSetElements(dataList, (Set<String>) fromIterable.invoke(dataList));
+                assertSetElements(dataList, (Set<String>) fromIterator.invoke(dataList.iterator()));
+                assertSetElements(dataList, (Set<String>) fromStream.invoke(dataList.stream()));
+            }
+        }
     }
 
     @Test

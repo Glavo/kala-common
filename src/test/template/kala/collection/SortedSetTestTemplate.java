@@ -59,20 +59,4 @@ public interface SortedSetTestTemplate extends SetTestTemplate {
     default <E> SortedSet<E> from(Comparator<? super E> comparator, Iterable<? extends E> elements) {
         return SortedSet.narrow(this.<E>factory(comparator).from(elements));
     }
-
-    @Test
-    default void ofTest() {
-        assertIterableEquals(List.of(), of());
-
-        ArrayList<Integer> values = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            values.add(i);
-        }
-        assertIterableEquals(values, from(values));
-
-
-        ArrayList<Integer> shuffleValues = new ArrayList<>(values);
-        Collections.shuffle(shuffleValues);
-        assertIterableEquals(values, from(shuffleValues));
-    }
 }
