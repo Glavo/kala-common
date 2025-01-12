@@ -140,7 +140,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     }
 
     @Contract(value = "_, _ -> new", pure = true)
-    public static <E extends Comparable<? super E>> @NotNull MutableTreeSet<E> of(
+    public static <E> @NotNull MutableTreeSet<E> of(
             Comparator<? super E> comparator,
             E value1
     ) {
@@ -150,7 +150,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     }
 
     @Contract(value = "_, _, _ -> new", pure = true)
-    public static <E extends Comparable<? super E>> @NotNull MutableTreeSet<E> of(
+    public static <E> @NotNull MutableTreeSet<E> of(
             Comparator<? super E> comparator,
             E value1, E value2
     ) {
@@ -161,7 +161,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     }
 
     @Contract(value = "_, _, _, _ -> new", pure = true)
-    public static <E extends Comparable<? super E>> @NotNull MutableTreeSet<E> of(
+    public static <E> @NotNull MutableTreeSet<E> of(
             Comparator<? super E> comparator,
             E value1, E value2, E value3) {
         MutableTreeSet<E> s = new MutableTreeSet<>(comparator);
@@ -172,7 +172,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     }
 
     @Contract(value = "_, _, _, _, _ -> new", pure = true)
-    public static <E extends Comparable<? super E>> @NotNull MutableTreeSet<E> of(
+    public static <E> @NotNull MutableTreeSet<E> of(
             Comparator<? super E> comparator,
             E value1, E value2, E value3, E value4
     ) {
@@ -185,7 +185,7 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     }
 
     @Contract(value = "_, _, _, _, _, _ -> new", pure = true)
-    public static <E extends Comparable<? super E>> @NotNull MutableTreeSet<E> of(
+    public static <E> @NotNull MutableTreeSet<E> of(
             Comparator<? super E> comparator,
             E value1, E value2, E value3, E value4, E value5
     ) {

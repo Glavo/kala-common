@@ -66,16 +66,14 @@ public interface SetTestTemplate extends SetLikeTestTemplate, CollectionTestTemp
             return;
         }
 
-        Class<?> argType = SortedSet.class.isAssignableFrom(klass) ? Comparable.class : Object.class;
-
         final MethodHandles.Lookup lookup = MethodHandles.publicLookup();
         final MethodHandle of0 = lookup.findStatic(klass, "of", MethodType.methodType(klass));
-        final MethodHandle of1 = lookup.findStatic(klass, "of", MethodType.methodType(klass, argType));
-        final MethodHandle of2 = lookup.findStatic(klass, "of", MethodType.methodType(klass, argType, argType));
-        final MethodHandle of3 = lookup.findStatic(klass, "of", MethodType.methodType(klass, argType, argType, argType));
-        final MethodHandle of4 = lookup.findStatic(klass, "of", MethodType.methodType(klass, argType, argType, argType, argType));
-        final MethodHandle of5 = lookup.findStatic(klass, "of", MethodType.methodType(klass, argType, argType, argType, argType, argType));
-        final MethodHandle ofAll = lookup.findStatic(klass, "of", MethodType.methodType(klass, argType.arrayType()));
+        final MethodHandle of1 = lookup.findStatic(klass, "of", MethodType.methodType(klass, Object.class));
+        final MethodHandle of2 = lookup.findStatic(klass, "of", MethodType.methodType(klass, Object.class, Object.class));
+        final MethodHandle of3 = lookup.findStatic(klass, "of", MethodType.methodType(klass, Object.class, Object.class, Object.class));
+        final MethodHandle of4 = lookup.findStatic(klass, "of", MethodType.methodType(klass, Object.class, Object.class, Object.class, Object.class));
+        final MethodHandle of5 = lookup.findStatic(klass, "of", MethodType.methodType(klass, Object.class, Object.class, Object.class, Object.class, Object.class));
+        final MethodHandle ofAll = lookup.findStatic(klass, "of", MethodType.methodType(klass, Object.class.arrayType()));
 
         Set<String> set;
 
@@ -122,7 +120,7 @@ public interface SetTestTemplate extends SetLikeTestTemplate, CollectionTestTemp
         assertSetElements(List.of("str0", "str1", "str2", "str3"), set);
 
         for (String[] data : data1s()) {
-            Set<String> size = (Set<String>) ofAll.invoke((String[]) data);
+            Set<String> size = (Set<String>) ofAll.invoke(data);
             assertEquals(data.length, size.size());
             assertSetElements(Arrays.asList(data), size);
         }
