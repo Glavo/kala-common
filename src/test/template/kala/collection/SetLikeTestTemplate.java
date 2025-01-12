@@ -17,6 +17,7 @@ package kala.collection;
 
 import kala.collection.immutable.ImmutableArray;
 import kala.collection.immutable.ImmutableSet;
+import kala.function.Predicates;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -131,5 +132,25 @@ public interface SetLikeTestTemplate extends CollectionLikeTestTemplate {
         assertSetElements(List.of(1, 4, 5), of(1, 2, 3, 4, 5).removedAll(List.of(0, 3, 2, 6)));
         assertSetElements(List.of(1, 4, 5), of(1, 2, 3, 4, 5).removedAll(java.util.Set.of(0, 3, 2, 6)));
         assertSetElements(List.of(1, 4, 5), of(1, 2, 3, 4, 5).removedAll(ImmutableSet.of(0, 3, 2, 6)));
+    }
+
+    @Test
+    default void filterTest() {
+        assertSetElements(List.of(), of().filter(Predicates.alwaysTrue()));
+        assertSetElements(List.of(), of().filter(Predicates.alwaysFalse()));
+
+        assertSetElements(List.of(), of(1, 2, 3, 4, 5).filter(Predicates.alwaysFalse()));
+        assertSetElements(List.of(1, 2, 3, 4, 5), of(1, 2, 3, 4, 5).filter(Predicates.alwaysTrue()));
+        assertSetElements(List.of(1, 3, 5), of(1, 2, 3, 4, 5).filter(it -> it % 2 == 1));
+    }
+
+    @Test
+    default void filterNotTest() {
+        assertSetElements(List.of(), of().filterNot(Predicates.alwaysTrue()));
+        assertSetElements(List.of(), of().filterNot(Predicates.alwaysFalse()));
+
+        assertSetElements(List.of(), of(1, 2, 3, 4, 5).filterNot(Predicates.alwaysTrue()));
+        assertSetElements(List.of(1, 2, 3, 4, 5), of(1, 2, 3, 4, 5).filterNot(Predicates.alwaysFalse()));
+        assertSetElements(List.of(1, 3, 5), of(1, 2, 3, 4, 5).filterNot(it -> it % 2 == 0));
     }
 }
