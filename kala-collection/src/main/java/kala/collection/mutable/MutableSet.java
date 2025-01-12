@@ -133,7 +133,8 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
     boolean add(@Flow(targetIsContainer = true) E value);
 
     @Contract(mutates = "this")
-    default boolean addAll(@Flow(sourceIsContainer = true, targetIsContainer = true) E @NotNull [] values) {
+    @SuppressWarnings("unchecked")
+    default boolean addAll(@Flow(sourceIsContainer = true, targetIsContainer = true) E... values) {
         Objects.requireNonNull(values);
         return addAll(ArraySeq.wrap(values));
     }

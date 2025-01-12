@@ -45,11 +45,17 @@ public interface MutableSortedSetTestTemplate extends MutableSetTestTemplate, So
     <E> CollectionFactory<E, ?, ? extends MutableSortedSet<E>> factory(Comparator<? super E> comparator);
 
     @Override
-    <E> MutableSortedSet<E> of(Comparator<? super E> comparator, E... elements);
+    default <E> MutableSortedSet<E> of(Comparator<? super E> comparator, E... elements) {
+        return this.<E>factory(comparator).from(elements);
+    }
 
     @Override
-    <E> MutableSortedSet<E> from(Comparator<? super E> comparator, E[] elements);
+    default <E> MutableSortedSet<E> from(Comparator<? super E> comparator, E[] elements) {
+        return this.<E>factory(comparator).from(elements);
+    }
 
     @Override
-    <E> MutableSortedSet<E> from(Comparator<? super E> comparator, Iterable<? extends E> elements);
+    default <E> MutableSortedSet<E> from(Comparator<? super E> comparator, Iterable<? extends E> elements) {
+        return this.<E>factory(comparator).from(elements);
+    }
 }
