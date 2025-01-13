@@ -237,17 +237,6 @@ public final class ImmutableSortedArraySet<E>
     ) {
         Objects.requireNonNull(values);
 
-        if (values instanceof kala.collection.SortedSet<?>) {
-            kala.collection.SortedSet<E> vs = (kala.collection.SortedSet<E>) values;
-            final Comparator<E> comparator = (Comparator<E>) vs.comparator();
-            return vs.isEmpty() ? empty(comparator) : new ImmutableSortedArraySet<>(comparator, vs.toArray());
-        } else if (values instanceof java.util.SortedSet<?>) {
-            java.util.SortedSet<E> vs = (java.util.SortedSet<E>) values;
-            final Comparator<E> comparator = (Comparator<E>) vs.comparator();
-
-            return vs.isEmpty() ? empty(comparator) : new ImmutableSortedArraySet<>(comparator, vs.toArray());
-        }
-
         Iterator<? extends E> it = values.iterator();
         if (!it.hasNext()) {
             return empty();

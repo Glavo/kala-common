@@ -212,30 +212,14 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
     }
 
     @Contract(value = "_ -> new", pure = true)
-    public static <E> @NotNull MutableTreeSet<E> from(@NotNull SortedSet<? extends E> values) {
-        final Comparator<E> comparator = (Comparator<E>) values.comparator();
-        MutableTreeSet<E> s = new MutableTreeSet<>(comparator);
-        s.addAll(values);
-        return s;
-    }
-
-    @Contract(value = "_ -> new", pure = true)
-    public static <E> @NotNull MutableTreeSet<E> from(@NotNull java.util.SortedSet<? extends E> values) {
-        final Comparator<E> comparator = (Comparator<E>) values.comparator();
-        MutableTreeSet<E> s = new MutableTreeSet<>(comparator);
-        s.addAll(values);
-        return s;
-    }
-
-    @Contract(value = "_ -> new", pure = true)
     public static <E extends Comparable<? super E>> @NotNull MutableTreeSet<E> from(@NotNull Iterable<? extends E> values) {
         Objects.requireNonNull(values);
         Comparator<? super E> comparator = null;
 
-        if (values instanceof SortedSet<?>) {
-            comparator = ((SortedSet<E>) values).comparator();
-        } else if (values instanceof java.util.SortedSet<?>) {
-            comparator = ((java.util.SortedSet<E>) values).comparator();
+        if (values instanceof SortedSet<?> sortedSet) {
+            comparator = (Comparator<? super E>) sortedSet.comparator();
+        } else if (values instanceof java.util.SortedSet<?> sortedSet) {
+            comparator = (Comparator<? super E>) sortedSet.comparator();
         }
 
         MutableTreeSet<E> s = new MutableTreeSet<>(comparator);

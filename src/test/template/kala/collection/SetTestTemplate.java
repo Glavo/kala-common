@@ -21,7 +21,6 @@ import kala.collection.base.Iterators;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.immutable.ImmutableArray;
 import org.junit.jupiter.api.Test;
-import org.opentest4j.AssertionFailedError;
 
 import java.io.*;
 import java.lang.invoke.MethodHandle;
@@ -33,10 +32,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static kala.ExtendedAssertions.assertSetElements;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("unchecked")
 public interface SetTestTemplate extends SetLikeTestTemplate, CollectionTestTemplate {
@@ -129,15 +125,14 @@ public interface SetTestTemplate extends SetLikeTestTemplate, CollectionTestTemp
 
     @Test
     default void fromTest() throws Throwable {
-        final Class<?> klass = collectionType();
-        if (klass != null) {
+        final Class<?> collectionType = collectionType();
+        if (collectionType != null) {
             final MethodHandles.Lookup lookup = MethodHandles.publicLookup();
 
-            final MethodHandle fromArray = lookup.findStatic(klass, "from", MethodType.methodType(klass,
-                    SortedSet.class.isAssignableFrom(klass) ? Comparable[].class : Object[].class));
-            final MethodHandle fromIterable = lookup.findStatic(klass, "from", MethodType.methodType(klass, Iterable.class));
-            final MethodHandle fromIterator = lookup.findStatic(klass, "from", MethodType.methodType(klass, Iterator.class));
-            final MethodHandle fromStream = lookup.findStatic(klass, "from", MethodType.methodType(klass, Stream.class));
+            final MethodHandle fromArray = lookup.findStatic(collectionType, "from", MethodType.methodType(collectionType, Object[].class));
+            final MethodHandle fromIterable = lookup.findStatic(collectionType, "from", MethodType.methodType(collectionType, Iterable.class));
+            final MethodHandle fromIterator = lookup.findStatic(collectionType, "from", MethodType.methodType(collectionType, Iterator.class));
+            final MethodHandle fromStream = lookup.findStatic(collectionType, "from", MethodType.methodType(collectionType, Stream.class));
 
             for (String[] data : data1s()) {
                 final var dataList = Arrays.asList(data);
