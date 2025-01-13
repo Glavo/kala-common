@@ -39,6 +39,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E>, OrderedTraversable<E> {
     @Contract(value = "_ -> param1", pure = true)
@@ -99,6 +100,21 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E>, OrderedTra
     @DelegateBy("get(int)")
     default @NotNull Option<E> getOption(@Index int index) {
         return isDefinedAt(index) ? Option.some(get(index)) : Option.none();
+    }
+
+    default @NotNull E getOrDefault(@Index int index, E defaultValue) {
+        return isDefinedAt(index) ? get(index) : defaultValue;
+    }
+
+    default @NotNull E getOrElse(@Index int index, @NotNull Supplier<? extends E> supplier) {
+        return isDefinedAt(index) ? get(index) : supplier.get();
+    }
+
+    default <Ex extends Throwable> @NotNull E getOrThrow(@Index int index, @NotNull Supplier<? extends Ex> supplier) throws Ex {
+        if (isDefinedAt(index)) {
+            return get(index);
+        }
+        throw supplier.get();
     }
 
     //endregion
