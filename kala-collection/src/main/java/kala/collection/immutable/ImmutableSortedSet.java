@@ -18,12 +18,19 @@ package kala.collection.immutable;
 import kala.collection.SortedSet;
 import kala.collection.factory.CollectionFactory;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
 import java.util.function.Function;
 
 public interface ImmutableSortedSet<E> extends ImmutableSet<E>, SortedSet<E> {
+
+    @SuppressWarnings("unchecked")
+    @Contract(value = "_ -> param1", pure = true)
+    static <E> ImmutableSortedSet<E> narrow(ImmutableSortedSet<? extends E> set) {
+        return (ImmutableSortedSet<E>) set;
+    }
 
     @Override
     @ApiStatus.NonExtendable

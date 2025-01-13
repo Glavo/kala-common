@@ -15,21 +15,16 @@
  */
 package kala.collection;
 
-import kala.collection.base.ObjectArrays;
 import kala.collection.factory.CollectionFactory;
 import org.junit.jupiter.api.Test;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static kala.ExtendedAssertions.assertSetElements;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings({"unchecked", "SpellCheckingInspection"})
@@ -38,6 +33,8 @@ public interface SortedSetTestTemplate extends SetTestTemplate {
     default <E> CollectionFactory<E, ?, ? extends SortedSet<? extends E>> factory() {
         return factory(null);
     }
+
+    <E> CollectionFactory<E, ?, ? extends SortedSet<? extends E>> factory(Comparator<? super E> comparator);
 
     @Override
     default <E> SortedSet<E> of(E... elements) {
@@ -53,8 +50,6 @@ public interface SortedSetTestTemplate extends SetTestTemplate {
     default <E> SortedSet<E> from(Iterable<? extends E> elements) {
         return from(null, elements);
     }
-
-    <E> CollectionFactory<E, ?, ? extends SortedSet<? extends E>> factory(Comparator<? super E> comparator);
 
     default <E> SortedSet<E> of(Comparator<? super E> comparator, E... elements) {
         return SortedSet.narrow(this.<E>factory(comparator).from(elements));
