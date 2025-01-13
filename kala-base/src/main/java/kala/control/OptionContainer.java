@@ -144,6 +144,13 @@ public interface OptionContainer<@Covariant T> extends Iterable<T>, Mappable<T>,
         return get();
     }
 
+    default T getOrThrow() {
+        if (isEmpty()) {
+            throw new NoSuchElementException();
+        }
+        return get();
+    }
+
     default <U> U get(@NotNull Function<? super T, ? extends U> mapper) {
         return mapper.apply(get());
     }
