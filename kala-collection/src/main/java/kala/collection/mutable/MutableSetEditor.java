@@ -56,13 +56,13 @@ public class MutableSetEditor<E, C extends MutableSet<E>> extends MutableCollect
     }
 
     @Contract("_ -> this")
-    public @NotNull MutableSetEditor<E, C> removeAll(@NotNull Iterable<? super E> values) {
+    public @NotNull MutableSetEditor<E, C> removeAll(@NotNull Iterable<?> values) {
         source.removeAll(values);
         return this;
     }
 
     @Contract("_ -> this")
-    public @NotNull MutableSetEditor<E, C> removeAll(E @NotNull [] values) {
+    public @NotNull MutableSetEditor<E, C> removeAll(Object @NotNull [] values) {
         source.removeAll(values);
         return this;
     }
@@ -74,13 +74,13 @@ public class MutableSetEditor<E, C extends MutableSet<E>> extends MutableCollect
     }
 
     @Contract("_ -> this")
-    public @NotNull MutableSetEditor<E, C> retainAll(@NotNull Iterable<? super E> values) {
+    public @NotNull MutableSetEditor<E, C> retainAll(@NotNull Iterable<?> values) {
         source.retainAll(values);
         return this;
     }
 
     @Contract("_ -> this")
-    public @NotNull MutableSetEditor<E, C> retainAll(E @NotNull [] values) {
+    public @NotNull MutableSetEditor<E, C> retainAll(Object @NotNull [] values) {
         source.retainAll(values);
         return this;
     }

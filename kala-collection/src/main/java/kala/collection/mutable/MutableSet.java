@@ -15,10 +15,12 @@
  */
 package kala.collection.mutable;
 
+import kala.annotations.DelegateBy;
 import kala.annotations.ReplaceWith;
 import kala.collection.ArraySeq;
 import kala.collection.Collection;
 import kala.collection.base.Growable;
+import kala.collection.immutable.ImmutableSet;
 import kala.collection.internal.CollectionHelper;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.factory.CollectionFactory;
@@ -184,21 +186,37 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
     boolean remove(Object value);
 
     @Contract(mutates = "this")
-    default boolean removeAll(Object... values) {
+    @DelegateBy("removeAll(Iterable<?>)")
+    default boolean removeAll(Object @NotNull [] values) {
         Objects.requireNonNull(values);
         return removeAll(ArraySeq.wrap(values));
     }
 
     @Contract(mutates = "this")
+    @DelegateBy("removeIf(Predicate<?>)")
     default boolean removeAll(@NotNull Iterable<?> values) {
         Objects.requireNonNull(values);
-        boolean m = false;
-        for (Object value : values) {
-            if (remove(value)) {
-                m = true;
+        if (this == values) {
+            if (isEmpty()) {
+                return false;
+            } else {
+                clear();
+                return true;
             }
         }
-        return m;
+
+        return switch (size()) {
+            case 0 -> false;
+            case 1 -> {
+                if (CollectionHelper.contains(values, getAny())) {
+                    clear();
+                    yield true;
+                } else {
+                    yield false;
+                }
+            }
+            default -> removeIf(CollectionHelper.containsPredicate(values));
+        };
     }
 
     @Contract(mutates = "this")
@@ -219,35 +237,35 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
     }
 
     @Contract(mutates = "this")
-    default boolean retainAll(E @NotNull [] values) {
+    @DelegateBy("retainAll(Iterable<?>)")
+    default boolean retainAll(Object @NotNull [] values) {
         return retainAll(ArraySeq.wrap(values));
     }
 
     @Contract(mutates = "this")
-    default boolean retainAll(@NotNull Iterable<? super E> values) {
+    @DelegateBy("retainIf(Predicate<E>)")
+    default boolean retainAll(@NotNull Iterable<?> values) {
         Objects.requireNonNull(values);
-
-        if (isEmpty()) {
+        if (this == values) {
             return false;
         }
 
-        Collection<E> t = CollectionHelper.asCollection(values);
-        if (t.isEmpty()) {
-            return false;
-        }
-
-        final Object[] arr = toArray();
-        final int oldSize = arr.length;
-
-        for (Object value : arr) {
-            if (!t.contains(value)) {
-                this.remove(value);
+        return switch (size()) {
+            case 0 -> false;
+            case 1 -> {
+                if (CollectionHelper.contains(values, getAny())) {
+                    yield false;
+                } else {
+                    clear();
+                    yield true;
+                }
             }
-        }
-        return size() != oldSize;
+            default -> retainIf(CollectionHelper.containsPredicate(values));
+        };
     }
 
     @Contract(mutates = "this")
+    @DelegateBy("removeIf(Predicate<E>)")
     default boolean retainIf(@NotNull Predicate<? super E> predicate) {
         return removeIf(predicate.negate());
     }

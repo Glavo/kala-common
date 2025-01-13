@@ -114,7 +114,11 @@ public final class FromJavaConvert {
         @Override
         @SuppressWarnings("SuspiciousMethodCalls")
         public boolean contains(Object value) {
-            return source.contains(value);
+            try {
+                return source.contains(value);
+            } catch (NullPointerException | ClassCastException ignored) {
+                return false;
+            }
         }
 
         @Override

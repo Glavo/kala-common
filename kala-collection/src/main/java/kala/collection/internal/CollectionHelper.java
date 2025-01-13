@@ -38,6 +38,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 
 @SuppressWarnings("unchecked")
 @StaticClass
@@ -98,6 +99,58 @@ public final class CollectionHelper {
         }
     }
 
+    public static boolean contains(Iterable<?> iterable, Object value) {
+        if (iterable instanceof Traversable<?> traversable) {
+            return traversable.contains(value);
+        }
+        if (iterable instanceof java.util.Collection<?> collection) {
+            try {
+                return collection.contains(value);
+            } catch (NullPointerException | ClassCastException ignored) {
+                return false;
+            }
+        }
+
+        if (value == null) {
+            for (Object o : iterable) {
+                if (null == o) {
+                    return true;
+                }
+            }
+        } else {
+            for (Object o : iterable) {
+                if (value.equals(o)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public static Predicate<Object> containsPredicate(Iterable<?> values) {
+        if (values instanceof Set<?> set) {
+            return set::contains;
+        }
+
+        java.util.Set<?> set;
+        if (values instanceof java.util.Set<?> it) {
+            set = it;
+        } else {
+            var hashSet = new java.util.HashSet<>();
+            values.forEach(hashSet::add);
+            set = hashSet;
+        }
+
+        return value -> {
+            try {
+                return set.contains(value);
+            } catch (NullPointerException | ClassCastException ignored) {
+                return false;
+            }
+        };
+    }
+
     public static Object[] copyToArray(@NotNull Iterable<?> it) {
         if (it instanceof Traversable<?> traversable) {
             return traversable.toArray();
@@ -140,34 +193,6 @@ public final class CollectionHelper {
         }
 
         throw new IllegalArgumentException(obj + " cannot be converted to an sized collection");
-    }
-
-    public static <E> kala.collection.Collection<E> asCollection(Object collection) {
-        if (collection instanceof kala.collection.Collection<?>) {
-            return ((kala.collection.Collection<E>) collection);
-        }
-
-        if (collection instanceof java.util.Collection<?>) {
-            return new FromJavaConvert.CollectionFromJava<>(((java.util.Collection<E>) collection));
-        }
-
-        if (collection instanceof Iterator<?> iterator) {
-            if (!iterator.hasNext()) {
-                return ImmutableSeq.empty();
-            }
-            MutableArrayList<E> buffer = new MutableArrayList<>();
-            while (iterator.hasNext()) {
-                buffer.append(((E) iterator.next()));
-            }
-            return buffer;
-        }
-
-        if (collection instanceof Iterable<?>) {
-            MutableArrayList<E> buffer = new MutableArrayList<>();
-            buffer.appendAll(((Iterable<E>) collection));
-            return buffer;
-        }
-        return null;
     }
 
     public static <E> Seq<E> asSeq(Object collection) {

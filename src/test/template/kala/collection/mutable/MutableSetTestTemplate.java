@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
+import java.util.random.RandomGenerator;
 
 import static kala.ExtendedAssertions.assertSetElements;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -117,15 +118,15 @@ public interface MutableSetTestTemplate extends MutableCollectionTestTemplate, S
     @Test
     default void removeAllTest() {
         MutableSet<Integer> set = of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
-        assertFalse(set.removeAll());
+        assertFalse(set.removeAll(new Object[0]));
         assertFalse(set.removeAll(List.of()));
         assertSetElements(List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9), set);
 
-        assertFalse(set.removeAll(10, 11, 12));
+        assertFalse(set.removeAll(new Object[]{10, 11, 12}));
         assertFalse(set.removeAll(List.of(10, 11, 12)));
         assertSetElements(List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9), set);
 
-        assertTrue(set.removeAll(0, 1, 10));
+        assertTrue(set.removeAll(new Object[]{0, 1, 10}));
         assertSetElements(List.of(2, 3, 4, 5, 6, 7, 8, 9), set);
 
         assertTrue(set.removeAll(List.of(0, 2, 9)));
