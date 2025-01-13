@@ -252,10 +252,10 @@ public interface SortedSetTestTemplate extends SetTestTemplate {
             final MethodHandle fromStreamC = lookup.findStatic(collectionType, "from",
                     methodType(collectionType, Comparator.class, Stream.class));
 
-            final MethodHandle fromSortedSet = lookup.findStatic(collectionType, "from",
-                    methodType(collectionType, SortedSet.class));
-            final MethodHandle fromJavaSortedSet = lookup.findStatic(collectionType, "from",
-                    methodType(collectionType, java.util.SortedSet.class));
+//            final MethodHandle fromSortedSet = lookup.findStatic(collectionType, "from",
+//                    methodType(collectionType, SortedSet.class));
+//            final MethodHandle fromJavaSortedSet = lookup.findStatic(collectionType, "from",
+//                    methodType(collectionType, java.util.SortedSet.class));
 
             var naturalOrder = Comparator.<String>naturalOrder();
             var reverseOrder = Comparator.<String>reverseOrder();
