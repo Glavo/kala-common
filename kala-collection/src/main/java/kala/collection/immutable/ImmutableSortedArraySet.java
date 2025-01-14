@@ -213,16 +213,6 @@ public final class ImmutableSortedArraySet<E>
         return from(comparator, values);
     }
 
-    public static <E> @NotNull ImmutableSortedArraySet<E> from(kala.collection.@NotNull SortedSet<? extends E> values) {
-        final Comparator<E> comparator = (Comparator<E>) values.comparator();
-        return values.isEmpty() ? empty(comparator) : new ImmutableSortedArraySet<>(comparator, values.toArray());
-    }
-
-    public static <E> @NotNull ImmutableSortedArraySet<E> from(java.util.@NotNull SortedSet<? extends E> values) {
-        final Comparator<E> comparator = (Comparator<E>) values.comparator();
-        return values.isEmpty() ? empty(comparator) : new ImmutableSortedArraySet<>(comparator, values.toArray());
-    }
-
     public static <E extends Comparable<? super E>> @NotNull ImmutableSortedArraySet<E> from(E @NotNull [] values) {
         if (values.length == 0) { // implicit null check of values
             return empty();
@@ -311,12 +301,16 @@ public final class ImmutableSortedArraySet<E>
         return stream.collect(factory(comparator));
     }
 
-
     //endregion
 
     @Override
     public @NotNull String className() {
         return "ImmutableSortedArraySet";
+    }
+
+    @Override
+    public @Nullable Comparator<? super E> comparator() {
+        return comparator;
     }
 
     @Override
