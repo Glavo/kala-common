@@ -19,9 +19,9 @@ import kala.collection.factory.CollectionFactory;
 
 import java.util.Comparator;
 
-public final class ImmutableSortedArraySetTest implements ImmutableSortedSetTestTemplate {
+public final class ImmutableTreeSetTest implements ImmutableSortedSetTestTemplate {
     @Override
-    public <E> CollectionFactory<E, ?, ImmutableSortedArraySet<E>> factory(Comparator<? super E> comparator) {
-        return ImmutableSortedArraySet.factory(comparator);
+    public <E> CollectionFactory<E, ?, ImmutableTreeSet<E>> factory(Comparator<? super E> comparator) {
+        return ImmutableTreeSet.factory(comparator);
     }
 }

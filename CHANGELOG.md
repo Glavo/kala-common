@@ -6,6 +6,7 @@
 
 ### New features
 
+* Add a new collection: `kala.collection.immutable.ImmutableTreeSet`
 * Add `kala.control.OptionContainer::getOrThrow()`
 * Add `kala.collection.MapLike::getOrThrow(K)`
 * Add `kala.collection.SeqLike::getOrDefault(int, E)`

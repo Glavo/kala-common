@@ -25,6 +25,9 @@ public class ComparableUtils {
     private ComparableUtils() {
     }
 
+    public static <E> Comparator<E> naturalOrder() {
+        return (Comparator<E>) Comparator.naturalOrder();
+    }
 
     public static int compare(Object o1, Object o2) {
         return ((Comparable<Object>) o1).compareTo(o2);

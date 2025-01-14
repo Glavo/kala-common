@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 // https://github.com/hrldcpr/pcollections/blob/v4.0.2/src/main/java/org/pcollections/KVTree.java
 public final class KVTree<K, V> implements Map.Entry<K, V>, Serializable {
@@ -20,7 +21,7 @@ public final class KVTree<K, V> implements Map.Entry<K, V>, Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    enum SearchType {
+    public enum SearchType {
         LT,
         LE,
         EQ,
@@ -274,7 +275,7 @@ public final class KVTree<K, V> implements Map.Entry<K, V>, Serializable {
     /**
      * @return Whether this tree contains any mappings (i.e., whether its size is 0).
      */
-    boolean isEmpty() {
+    public boolean isEmpty() {
         return this == EMPTY;
     }
 
@@ -501,7 +502,7 @@ public final class KVTree<K, V> implements Map.Entry<K, V>, Serializable {
     /**
      * @return The number of mappings in this tree.
      */
-    int size() {
+    public int size() {
         return this.size;
     }
 
@@ -567,7 +568,7 @@ public final class KVTree<K, V> implements Map.Entry<K, V>, Serializable {
 
         @Override
         public boolean hasNext() {
-            return this.nextSubtree.size > 0 || this.stack.size() > 0;
+            return this.nextSubtree.size > 0 || !this.stack.isEmpty();
         }
 
         @Override
@@ -579,7 +580,7 @@ public final class KVTree<K, V> implements Map.Entry<K, V>, Serializable {
             if (this.stack.isEmpty()) {
                 throw new NoSuchElementException();
             }
-            final KVTree<K, V> result = this.stack.remove(this.stack.size() - 1);
+            final KVTree<K, V> result = this.stack.removeLast();
             this.nextSubtree = secondChild(result);
             return result;
         }
