@@ -205,22 +205,9 @@ public interface Set<E> extends Collection<E>, SetLike<E>, AnySet<E> {
     }
 
     default @NotNull ImmutableSet<E> removedAll(@NotNull Iterable<? extends E> values) {
-        var factory = CollectionHelper.immutableSetFactoryBy(this);
-
-        Predicate<? super E> contains;
-        if (values instanceof java.util.Set<? extends E> collection) {
-            contains = collection::contains;
-        } else if (values instanceof SetLike<? extends E> setLike) {
-            contains = setLike::contains;
-        } else {
-            HashSet<E> hashSet = new HashSet<>();
-            for (E value : values) {
-                hashSet.add(value);
-            }
-            contains = hashSet::contains;
-        }
-
-        var builder = factory.newCollectionBuilder();
+        final var factory = CollectionHelper.immutableSetFactoryBy(this);
+        final Predicate<? super E> contains = CollectionHelper.containsPredicate(values);
+        final var builder = factory.newCollectionBuilder();
         for (E e : this) {
             if (!contains.test(e)) {
                 builder.plusAssign(e);

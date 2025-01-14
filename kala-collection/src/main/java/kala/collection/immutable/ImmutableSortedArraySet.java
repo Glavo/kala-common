@@ -16,6 +16,7 @@
 package kala.collection.immutable;
 
 import kala.collection.base.GenericArrays;
+import kala.collection.base.ObjectArrays;
 import kala.collection.mutable.MutableTreeSet;
 import kala.collection.factory.CollectionFactory;
 import kala.internal.ComparableUtils;
@@ -369,28 +370,6 @@ public final class ImmutableSortedArraySet<E>
     }
 
     @Override
-    public @NotNull ImmutableSortedArraySet<E> addedAll(E... values) {
-        final int arrayLength = values.length;
-        if (arrayLength == 0) {
-            return this;
-        }
-        if (arrayLength == 1) {
-            return added(values[0]);
-        }
-
-        final int size = elements.length;
-
-        if (size == 0) {
-            return from(comparator, values);
-        }
-
-        MutableTreeSet<Object> builder = new MutableTreeSet<>(((Comparator<Object>) comparator));
-        builder.addAll(elements);
-        builder.addAll(values);
-        return new ImmutableSortedArraySet<>(comparator, builder.toArray());
-    }
-
-    @Override
     public @NotNull ImmutableSortedArraySet<E> addedAll(@NotNull Iterable<? extends E> values) {
         final Iterator<? extends E> it = values.iterator();
         if (!it.hasNext()) {
@@ -412,6 +391,27 @@ public final class ImmutableSortedArraySet<E>
         }
 
         return new ImmutableSortedArraySet<>(comparator, builder.toArray());
+    }
+
+    @Override
+    public @NotNull ImmutableSet<E> removed(E value) {
+        final int size = elements.length;
+        int idx;
+        try {
+            idx = Arrays.binarySearch(elements, value, ((Comparator<Object>) comparator));
+        } catch (NullPointerException | ClassCastException ignored) {
+            return this;
+        }
+
+        if (idx < 0) {
+            return this;
+        }
+
+        if (size == 1) {
+            return empty(comparator);
+        }
+
+        return new ImmutableSortedArraySet<>(comparator, ObjectArrays.removedAt(elements, idx));
     }
 
     @Override
