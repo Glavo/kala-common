@@ -421,7 +421,7 @@ public final class ImmutableSortedArraySet<E>
     }
 
     @Override
-    public @NotNull ImmutableSet<E> filter(@NotNull Predicate<? super E> predicate) {
+    public @NotNull ImmutableSortedSet<E> filter(@NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
         if (this.isEmpty()) {
             return this;

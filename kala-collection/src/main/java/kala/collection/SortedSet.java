@@ -18,15 +18,19 @@ package kala.collection;
 import kala.annotations.Covariant;
 import kala.annotations.DelegateBy;
 import kala.collection.base.OrderedTraversable;
+import kala.collection.immutable.ImmutableSortedArraySet;
+import kala.collection.immutable.ImmutableSortedSet;
+import kala.collection.internal.CollectionHelper;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.factory.CollectionFactory;
+import kala.function.Predicates;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
-import java.util.Iterator;
+import java.util.function.Predicate;
 
 public interface SortedSet<@Covariant E> extends Set<E>, OrderedTraversable<E> {
 
@@ -74,5 +78,122 @@ public interface SortedSet<@Covariant E> extends Set<E>, OrderedTraversable<E> {
     @DelegateBy("getFirst()")
     default E min() {
         return getFirst();
+    }
+
+    private CollectionFactory<E, ?, ? extends ImmutableSortedSet<E>> immutableSortedSetFactory() {
+        if (this instanceof ImmutableSortedSet<E> immutableSortedSet) {
+            return immutableSortedSet.sortedIterableFactory();
+        } else {
+            return ImmutableSortedArraySet.factory(comparator());
+        }
+    }
+
+    @Override
+    default @NotNull ImmutableSortedSet<E> added(E value) {
+        if (this instanceof ImmutableSortedSet<E> immutableSet && contains(value)) {
+            return immutableSet;
+        }
+
+        final var factory = immutableSortedSetFactory();
+        final var builder = factory.newCollectionBuilder();
+        for (E e : this) {
+            builder.plusAssign(e);
+        }
+        builder.plusAssign(value);
+        return builder.build();
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @SuppressWarnings("unchecked")
+    @DelegateBy("addedAll(Iterable<E>)")
+    default @NotNull ImmutableSortedSet<E> addedAll(E... values) {
+        return addedAll(ArraySeq.wrap(values));
+    }
+
+    @Override
+    default @NotNull ImmutableSortedSet<E> addedAll(@NotNull Iterable<? extends E> values) {
+        final var factory = immutableSortedSetFactory();
+        final var builder = factory.newCollectionBuilder();
+        for (E e : this) {
+            builder.plusAssign(e);
+        }
+        for (E value : values) {
+            builder.plusAssign(value);
+        }
+        return builder.build();
+    }
+
+    @Override
+    default @NotNull ImmutableSortedSet<E> removed(E value) {
+        if (this instanceof ImmutableSortedSet<E> immutableSet && !contains(value)) {
+            return immutableSet;
+        }
+
+        final var factory = immutableSortedSetFactory();
+        final var builder = factory.newCollectionBuilder();
+        builder.sizeHint(size() - 1);
+        if (value == null) {
+            for (E e : this) {
+                if (null != e) {
+                    builder.plusAssign(e);
+                }
+            }
+        } else {
+            for (E e : this) {
+                if (!value.equals(e)) {
+                    builder.plusAssign(e);
+                }
+            }
+        }
+        return builder.build();
+    }
+
+    @ApiStatus.NonExtendable
+    @SuppressWarnings("unchecked")
+    @DelegateBy("removedAll(Iterable<E>)")
+    default @NotNull ImmutableSortedSet<E> removedAll(E... values) {
+        return removedAll(ArraySeq.wrap(values));
+    }
+
+    @Override
+    default @NotNull ImmutableSortedSet<E> removedAll(@NotNull Iterable<? extends E> values) {
+        final var factory = immutableSortedSetFactory();
+        final Predicate<? super E> contains = CollectionHelper.containsPredicate(values);
+        final var builder = factory.newCollectionBuilder();
+        for (E e : this) {
+            if (!contains.test(e)) {
+                builder.plusAssign(e);
+            }
+        }
+        return builder.build();
+    }
+
+    @Override
+    default @NotNull ImmutableSortedSet<E> filter(@NotNull Predicate<? super E> predicate) {
+        return filter(immutableSortedSetFactory(), predicate);
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("filter(Predicate<E>)")
+    default @NotNull ImmutableSortedSet<E> filterNot(@NotNull Predicate<? super E> predicate) {
+        return filter(predicate.negate());
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("filter(Predicate<E>)")
+    default @NotNull ImmutableSortedSet<@NotNull E> filterNotNull() {
+        return filter(Predicates.isNotNull());
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("filter(Predicate<E>)")
+    default <U> @NotNull ImmutableSortedSet<U> filterIsInstance(@NotNull Class<? extends U> clazz) {
+        @SuppressWarnings("unchecked")
+        ImmutableSortedSet<U> result = (ImmutableSortedSet<U>) filter(Predicates.isInstance(clazz));
+        return result;
     }
 }

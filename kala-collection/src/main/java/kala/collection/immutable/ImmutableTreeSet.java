@@ -345,13 +345,13 @@ public final class ImmutableTreeSet<E> extends AbstractImmutableSortedSet<E> imp
     }
 
     @Override
-    public @NotNull ImmutableSet<E> added(E value) {
+    public @NotNull ImmutableSortedSet<E> added(E value) {
         KVTree<E, Void> newTree = tree.plus(value, null, factory.actualComparator);
         return newTree == tree ? this : new ImmutableTreeSet<>(factory, newTree);
     }
 
     @Override
-    public @NotNull ImmutableSet<E> addedAll(@NotNull Iterable<? extends E> values) {
+    public @NotNull ImmutableSortedSet<E> addedAll(@NotNull Iterable<? extends E> values) {
         KVTree<E, Void> newTree = this.tree;
         for (E value : values) {
             newTree = newTree.plus(value, null, factory.actualComparator);
@@ -360,7 +360,7 @@ public final class ImmutableTreeSet<E> extends AbstractImmutableSortedSet<E> imp
     }
 
     @Override
-    public @NotNull ImmutableSet<E> removed(E value) {
+    public @NotNull ImmutableSortedSet<E> removed(E value) {
         try {
             KVTree<E, Void> newTree = tree.minus(value, factory.actualComparator);
             return newTree == tree ? this : new ImmutableTreeSet<>(factory, newTree);
@@ -370,7 +370,7 @@ public final class ImmutableTreeSet<E> extends AbstractImmutableSortedSet<E> imp
     }
 
     @Override
-    public @NotNull ImmutableSet<E> removedAll(@NotNull Iterable<? extends E> values) {
+    public @NotNull ImmutableSortedSet<E> removedAll(@NotNull Iterable<? extends E> values) {
         try {
             KVTree<E, Void> newTree = this.tree;
             for (E value : values) {
