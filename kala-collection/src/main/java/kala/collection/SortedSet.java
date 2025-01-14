@@ -59,12 +59,7 @@ public interface SortedSet<@Covariant E> extends Set<E>, OrderedTraversable<E> {
 
     @Contract(pure = true)
     default E getLast() {
-        Iterator<E> iterator = iterator();
-        E res = iterator.next();
-        while (iterator.hasNext()) {
-            res = iterator.next();
-        }
-        return res;
+        return reverseIterator().next();
     }
 
     @Override

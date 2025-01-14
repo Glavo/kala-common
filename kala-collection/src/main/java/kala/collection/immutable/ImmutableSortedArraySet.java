@@ -28,6 +28,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
@@ -325,6 +326,11 @@ public final class ImmutableSortedArraySet<E>
     }
 
     @Override
+    public @NotNull Iterator<E> reverseIterator() {
+        return (Iterator<E>) GenericArrays.reverseIterator(elements);
+    }
+
+    @Override
     public int size() {
         return elements.length;
     }
@@ -394,7 +400,7 @@ public final class ImmutableSortedArraySet<E>
     }
 
     @Override
-    public @NotNull ImmutableSet<E> removed(E value) {
+    public @NotNull ImmutableSortedSet<E> removed(E value) {
         final int size = elements.length;
         int idx;
         try {
@@ -412,6 +418,53 @@ public final class ImmutableSortedArraySet<E>
         }
 
         return new ImmutableSortedArraySet<>(comparator, ObjectArrays.removedAt(elements, idx));
+    }
+
+    @Override
+    public @NotNull ImmutableSet<E> filter(@NotNull Predicate<? super E> predicate) {
+        Objects.requireNonNull(predicate);
+        if (this.isEmpty()) {
+            return this;
+        }
+
+        int targetIndex = -1;
+        for (int i = 0; i < elements.length; i++) {
+            if (!predicate.test((E) elements[i])) {
+                targetIndex = i;
+                break;
+            }
+        }
+
+        if (targetIndex < 0) {
+            return this;
+        }
+
+        if (elements.length == 1) {
+            return empty(comparator);
+        }
+
+        Object[] newElements = new Object[elements.length - 1];
+        System.arraycopy(elements, 0, newElements, 0, targetIndex);
+
+        int sourceIndex = targetIndex + 1;
+        while (sourceIndex < elements.length) {
+            E e = (E) elements[sourceIndex];
+            if (predicate.test(e)) {
+                newElements[targetIndex++] = e;
+            }
+
+            sourceIndex++;
+        }
+
+        if (targetIndex == 0) {
+            return empty(comparator);
+        }
+
+        if (targetIndex < newElements.length) {
+            newElements = Arrays.copyOf(newElements, targetIndex);
+        }
+
+        return new ImmutableSortedArraySet<>(comparator, newElements);
     }
 
     @Override
