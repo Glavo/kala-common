@@ -144,6 +144,7 @@ public interface SetLikeTestTemplate extends CollectionLikeTestTemplate {
 
         assertSetElements(List.of(), of(1, 2, 3, 4, 5).filter(Predicates.alwaysFalse()));
         assertSetElements(List.of(1, 2, 3, 4, 5), of(1, 2, 3, 4, 5).filter(Predicates.alwaysTrue()));
+        assertSetElements(List.of(2, 3, 4, 5), of(1, 2, 3, 4, 5).filter(it -> it > 1));
         assertSetElements(List.of(2, 4), of(1, 2, 3, 4, 5).filter(it -> it % 2 == 0));
         assertSetElements(List.of(1, 3, 5), of(1, 2, 3, 4, 5).filter(it -> it % 2 == 1));
         assertSetElements(List.of(1, 2), of(1, 2, 3, 4, 5).filter(it -> it < 3));

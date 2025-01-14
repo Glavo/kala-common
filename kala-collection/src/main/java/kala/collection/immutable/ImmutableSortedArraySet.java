@@ -285,7 +285,7 @@ public final class ImmutableSortedArraySet<E>
         return new ImmutableSortedArraySet<>(comparator, s.toArray());
     }
 
-    @Contract(value = "_, _ -> new", pure = true)
+    @Contract(value = "_, _ -> new")
     public static <E> @NotNull ImmutableSortedArraySet<E> from(Comparator<? super E> comparator, @NotNull Iterator<? extends E> it) {
         if (!it.hasNext()) { // implicit null check of it
             return empty(comparator);
