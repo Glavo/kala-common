@@ -191,7 +191,7 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
     }
 
     @Contract(mutates = "this")
-    @DelegateBy("removeIf(Predicate<?>)")
+    @DelegateBy({"removeIf(Predicate<?>)", "remove(Object)"})
     default boolean removeAll(@NotNull Iterable<?> values) {
         Objects.requireNonNull(values);
         if (this == values) {
@@ -213,7 +213,19 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
                     yield false;
                 }
             }
-            default -> removeIf(CollectionHelper.containsPredicate(values));
+            default -> {
+                if (values instanceof Set<?> otherSet) {
+                    yield removeIf(otherSet::contains);
+                } else if (values instanceof java.util.Set<?> otherSet) {
+                    yield removeIf(otherSet::contains);
+                } else {
+                    boolean result = false;
+                    for (Object value : values) {
+                        result |= remove(value);
+                    }
+                    yield result;
+                }
+            }
         };
     }
 
