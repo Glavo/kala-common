@@ -35,12 +35,14 @@ public interface SetLike<E> extends CollectionLike<E>, AnySetLike<E> {
 
     @NotNull SetLike<E> added(E value);
 
+    @SuppressWarnings("unchecked")
     @NotNull SetLike<E> addedAll(E... values);
 
     @NotNull SetLike<E> addedAll(@NotNull Iterable<? extends E> values);
 
     @NotNull SetLike<E> removed(E value);
 
+    @SuppressWarnings("unchecked")
     @NotNull SetLike<E> removedAll(E... values);
 
     @NotNull SetLike<E> removedAll(@NotNull Iterable<? extends E> values);
