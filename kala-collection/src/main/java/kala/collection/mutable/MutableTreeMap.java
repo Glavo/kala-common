@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -42,6 +43,7 @@ import java.util.stream.Collector;
 @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
 public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.Node<K, V>>
         implements MutableMap<K, V>, kala.collection.SortedMap<K, V>, Serializable {
+    @Serial
     private static final long serialVersionUID = 5474475537398882423L;
 
     private static final Factory<?, ?> DEFAULT_FACTORY = new Factory<>(null);
@@ -699,6 +701,7 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
         }
     }
 
+    @Serial
     private void writeObject(java.io.ObjectOutputStream s)
             throws java.io.IOException {
         s.defaultWriteObject();
@@ -711,10 +714,7 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
 
     }
 
-    /**
-     * Reconstitute the {@code TreeMap} instance from a stream (i.e.,
-     * deserialize it).
-     */
+    @Serial
     private void readObject(final java.io.ObjectInputStream s)
             throws java.io.IOException, ClassNotFoundException {
         s.defaultReadObject();
