@@ -63,6 +63,7 @@ public interface SetView<@Covariant E> extends CollectionView<E>, SetLike<E>, An
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     default @NotNull SetView<E> removedAll(E... values) {
         return removedAll(ArraySeq.wrap(values));
     }
