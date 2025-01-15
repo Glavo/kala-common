@@ -18,7 +18,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
       - name: Running Tests
-        run: ./gradlew check jacocoTestReport --info --no-daemon --stacktrace
+        run: ./gradlew check jacocoTestReport --scan --info --no-daemon --stacktrace
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         with:
