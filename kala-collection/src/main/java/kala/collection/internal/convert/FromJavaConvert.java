@@ -15,6 +15,7 @@
  */
 package kala.collection.internal.convert;
 
+import kala.collection.AbstractSeq;
 import kala.collection.mutable.*;
 import kala.control.Option;
 import kala.index.Index;
@@ -27,6 +28,7 @@ import kala.collection.Seq;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -36,7 +38,7 @@ import java.util.stream.Stream;
 public final class FromJavaConvert {
     private static final Object NULL_HOLE = new InternalIdentifyObject();
 
-    public static class CollectionFromJava<E> extends kala.collection.AbstractCollection<E> implements kala.collection.Collection<E> {
+    public static class CollectionFromJava<E> extends kala.collection.AbstractCollection<E> implements kala.collection.Collection<E>, Serializable {
         protected final @NotNull java.util.Collection<E> source;
 
         public CollectionFromJava(@NotNull java.util.Collection<E> source) {
@@ -74,7 +76,7 @@ public final class FromJavaConvert {
         }
     }
 
-    public static class SeqFromJava<E> implements Seq<E> {
+    public static class SeqFromJava<E> extends AbstractSeq<E> implements Serializable {
         protected final @NotNull List<E> source;
 
         public SeqFromJava(@NotNull List<E> source) {
@@ -165,7 +167,7 @@ public final class FromJavaConvert {
     }
 
     public static class MutableSeqFromJava<E>
-            extends SeqFromJava<E> implements MutableSeq<E> {
+            extends SeqFromJava<E> implements MutableSeq<E>, Serializable {
 
         public MutableSeqFromJava(@NotNull List<E> list) {
             super(list);
@@ -192,7 +194,7 @@ public final class FromJavaConvert {
     }
 
     public static class MutableListFromJava<E>
-            extends MutableSeqFromJava<E> implements MutableList<E> {
+            extends MutableSeqFromJava<E> implements MutableList<E>, Serializable {
         public MutableListFromJava(@NotNull List<E> list) {
             super(list);
         }
@@ -228,14 +230,14 @@ public final class FromJavaConvert {
         }
     }
 
-    public static class MutableIndexedListFromJava<E> extends MutableListFromJava<E> implements RandomAccess {
+    public static class MutableIndexedListFromJava<E> extends MutableListFromJava<E> implements RandomAccess, Serializable {
         public MutableIndexedListFromJava(@NotNull List<E> list) {
             super(list);
         }
     }
 
     public static class SetFromJava<E> extends kala.collection.AbstractSet<E>
-            implements kala.collection.Set<E> {
+            implements kala.collection.Set<E>, Serializable {
 
         protected final @NotNull java.util.Set<E> source;
 
@@ -255,7 +257,7 @@ public final class FromJavaConvert {
         }
     }
 
-    public static class MutableSetFromJava<E> extends SetFromJava<E> implements MutableSet<E> {
+    public static class MutableSetFromJava<E> extends SetFromJava<E> implements MutableSet<E>, Serializable {
 
         public MutableSetFromJava(@NotNull Set<E> source) {
             super(source);
@@ -284,7 +286,7 @@ public final class FromJavaConvert {
     }
 
     @SuppressWarnings("unchecked")
-    public static class MapFromJava<K, V> extends kala.collection.AbstractMap<K, V> {
+    public static class MapFromJava<K, V> extends kala.collection.AbstractMap<K, V> implements Serializable {
         protected final java.util.Map<K, V> source;
 
         public MapFromJava(java.util.Map<K, V> source) {
@@ -380,7 +382,7 @@ public final class FromJavaConvert {
 
     }
 
-    public static class MutableMapFromJava<K, V> extends MapFromJava<K, V> implements MutableMap<K, V> {
+    public static class MutableMapFromJava<K, V> extends MapFromJava<K, V> implements MutableMap<K, V>, Serializable {
 
         public MutableMapFromJava(java.util.Map<K, V> source) {
             super(source);

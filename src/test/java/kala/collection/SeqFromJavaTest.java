@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-public class SeqFromJavaTest implements SeqTestTemplate {
+public final class SeqFromJavaTest implements SeqTestTemplate {
 
     @Override
     @SuppressWarnings("unchecked")
@@ -31,10 +31,6 @@ public class SeqFromJavaTest implements SeqTestTemplate {
     @Override
     public Class<?> collectionType() {
         return null;
-    }
-
-    @Override
-    public void serializationTest() {
     }
 
     private static final class SeqFromJavaFactory<E> implements CollectionFactory<E, ArrayList<E>, Seq<E>> {
