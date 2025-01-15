@@ -127,10 +127,6 @@ public interface MapLike<K, V> extends AnyMapLike<K, V> {
         return getOption(key).getOrThrow(supplier);
     }
 
-    default V getOrThrow(K key) {
-        return getOption(key).getOrThrow();
-    }
-
     //region Element Conditions
 
     default boolean contains(Tuple2<? extends K, ?> value) {

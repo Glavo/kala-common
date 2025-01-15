@@ -16,6 +16,8 @@
 package kala.collection.mutable;
 
 import kala.SerializationUtils;
+import kala.collection.MapLike;
+import kala.collection.factory.MapFactory;
 import kala.tuple.Tuple;
 import org.junit.jupiter.api.Test;
 
@@ -26,6 +28,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 // See also: https://github.com/scala/scala/blob/8cc248dc1305df4c17bb6b5738b700b60c9b5437/test/junit/scala/collection/mutable/HashMapTest.scala
 public class MutableHashMapTest implements MutableMapTestTemplate {
+
+    @Override
+    public <K, V> MapFactory<K, V, ?, MutableHashMap<K, V>> factory() {
+        return MutableHashMap.factory();
+    }
+
     @Override
     public <K, V> MutableHashMap<K, V> create() {
         return new MutableHashMap<>();

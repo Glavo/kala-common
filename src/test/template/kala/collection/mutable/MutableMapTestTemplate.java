@@ -16,6 +16,8 @@
 package kala.collection.mutable;
 
 import kala.collection.MapTestTemplate;
+import kala.collection.factory.MapFactory;
+import kala.tuple.Tuple2;
 import org.junit.jupiter.api.*;
 
 import java.util.List;
@@ -26,6 +28,15 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 public interface MutableMapTestTemplate extends MapTestTemplate {
     <K, V> MutableMap<K, V> create();
+
+    @Override
+    <K, V> MapFactory<K, V, ?, ? extends MutableMap<K, V>> factory();
+
+    @Override
+    @SuppressWarnings("unchecked")
+    default <K, V> MutableMap<K, V> ofEntries(Tuple2<K, V>... tuples) {
+        return this.<K, V>factory().ofEntries(tuples);
+    }
 
     @TestFactory
     default DynamicNode getOrPutTestFactory() {

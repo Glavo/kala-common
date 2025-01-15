@@ -17,9 +17,11 @@ package kala.collection.factory;
 
 import kala.collection.base.AnyTraversable;
 import kala.collection.base.Sized;
+import kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collector;
@@ -43,6 +45,21 @@ public interface MapFactory<K, V, Builder, R> extends Factory<Builder, R> {
     }
 
     Builder mergeBuilder(Builder builder1, Builder builder2);
+
+    private static <K, V, Builder, R> R ofEntriesImpl(
+            MapFactory<K, V, Builder, R> factory,
+            @NotNull Tuple2<? extends K, ? extends V>... entries) {
+        final Builder builder = factory.newBuilder();
+        for (var entry : entries) {
+            factory.addToBuilder(builder, entry.getKey(), entry.getValue());
+        }
+        return factory.build(builder);
+    }
+
+    @SuppressWarnings("unchecked")
+    default R ofEntries(@NotNull Tuple2<? extends K, ? extends V>... entries) {
+        return ofEntriesImpl(this, entries);
+    }
 
     default <T> @NotNull Collector<T, Builder, R> collector(
             @NotNull Function<? super T, ? extends K> keyMapper,

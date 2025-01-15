@@ -351,7 +351,7 @@ public final class FromJavaConvert {
         public <Ex extends Throwable> V getOrThrow(K key, @NotNull Supplier<? extends Ex> supplier) throws Ex {
             Objects.requireNonNull(supplier);
             final Object res = ((Map<Object, Object>) source).getOrDefault(key, NULL_HOLE);
-            if (res == null) {
+            if (res == NULL_HOLE) {
                 throw supplier.get();
             }
             return (V) res;
@@ -361,7 +361,7 @@ public final class FromJavaConvert {
         public <Ex extends Throwable> V getOrThrowException(K key, @NotNull Ex exception) throws Ex {
             Objects.requireNonNull(exception);
             final Object res = ((Map<Object, Object>) source).getOrDefault(key, NULL_HOLE);
-            if (res == null) {
+            if (res == NULL_HOLE) {
                 throw exception;
             }
             return (V) res;
@@ -440,7 +440,7 @@ public final class FromJavaConvert {
 
         @Override
         public final @NotNull MutableSet<Tuple2<K, V>> asMutableSet() {
-            return new AbstractMutableSet<Tuple2<K, V>>() {
+            return new AbstractMutableSet<>() {
                 @Override
                 public boolean add(@NotNull Tuple2<K, V> value) {
                     return MutableMapFromJava.this.put(value.component1(), value.component2()).isDefined();

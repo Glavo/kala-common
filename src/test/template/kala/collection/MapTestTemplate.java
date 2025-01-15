@@ -15,7 +15,16 @@
  */
 package kala.collection;
 
+import kala.collection.factory.MapFactory;
+import kala.tuple.Tuple2;
+
 public interface MapTestTemplate extends MapLikeTestTemplate {
+    @Override
+    <K, V> MapFactory<K, V, ?, ? extends Map<K, V>> factory();
 
-
+    @Override
+    @SuppressWarnings("unchecked")
+    default <K, V> Map<K, V> ofEntries(Tuple2<K, V>... tuples) {
+        return this.<K, V>factory().ofEntries(tuples);
+    }
 }

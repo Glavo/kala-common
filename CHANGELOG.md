@@ -8,7 +8,6 @@
 
 * Add a new collection: `kala.collection.immutable.ImmutableTreeSet`
 * Add `kala.control.OptionContainer::getOrThrow()`
-* Add `kala.collection.MapLike::getOrThrow(K)`
 * Add `kala.collection.SeqLike::getOrDefault(int, E)`
 * Add `kala.collection.SeqLike::getOrElse(int, Supplier<E>)`
 * Add `kala.collection.SeqLike::getOrThrow(int, Supplier<Ex>)`

@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package kala.collection.mutable;
+package kala.collection.immutable;
 
+import kala.collection.MapTestTemplate;
 import kala.collection.factory.MapFactory;
+import kala.tuple.Tuple2;
 
-public class MutableLinkedHashMapTest implements MutableMapTestTemplate {
+public interface ImmutableMapTestTemplate extends MapTestTemplate {
     @Override
-    public <K, V> MutableLinkedHashMap<K, V> create() {
-        return new MutableLinkedHashMap<>();
-    }
+    <K, V> MapFactory<K, V, ?, ? extends ImmutableMap<K, V>> factory();
 
     @Override
-    public <K, V> MapFactory<K, V, ?, ? extends MutableMap<K, V>> factory() {
-        return MutableLinkedHashMap.factory();
+    @SuppressWarnings("unchecked")
+    default <K, V> ImmutableMap<K, V> ofEntries(Tuple2<K, V>... tuples) {
+        return this.<K, V>factory().ofEntries(tuples);
     }
 }
