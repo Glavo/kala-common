@@ -93,4 +93,11 @@ public interface SetView<@Covariant E> extends CollectionView<E>, SetLike<E>, An
     default @NotNull SetView<@NotNull E> filterNotNull() {
         return filter(Predicates.isNotNull());
     }
+
+    @Override
+    default <U> @NotNull SetView<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
+        @SuppressWarnings("unchecked")
+        SetView<U> result = (SetView<U>) filter(Predicates.isInstance(clazz));
+        return result;
+    }
 }

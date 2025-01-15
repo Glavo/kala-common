@@ -18,6 +18,7 @@
 * Add `kala.collection.SetLike::removed(E)`
 * Add `kala.collection.SetLike::removedAll(E...)`
 * Add `kala.collection.SetLike::removedAll(Iterable<E>)`
+* Add `kala.collection.SetLike::filterIsInstance(Class<U>)`
 * Add `kala.collection.base.OrderedTraversable::mapIndexed(CollectionFactory<U, ?, R>, IndexedFunction<T, U>)`
 * Add `kala.collection.base.OrderedTraversable::mapIndexedTo(G, IndexedFunction<T, U>)`
 * Add `kala.function.Predicates.isNotEquals(T)`

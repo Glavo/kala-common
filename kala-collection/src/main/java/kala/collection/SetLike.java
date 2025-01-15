@@ -55,4 +55,7 @@ public interface SetLike<E> extends CollectionLike<E>, AnySetLike<E> {
 
     @Override
     @NotNull SetLike<@NotNull E> filterNotNull();
+
+    @Override
+    <U> @NotNull SetLike<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz);
 }
