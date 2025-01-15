@@ -60,7 +60,7 @@ Here are the ways to donate: [捐赠支持 Glavo](https://donate.glavo.site/)
 
 All Java code is released under the [Apache 2.0](./LICENSE) license.
 
-This README file is released under the [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) license.
+This README file and all docs is released under the [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) license.
 
 ## Especially thanks
 
@@ -69,7 +69,6 @@ This README file is released under the [CC BY-SA 4.0](https://creativecommons.or
 Thanks to [PLCT Lab](https://plctlab.org) for supporting me.
 
 ![IntelliJ IDEA logo](https://resources.jetbrains.com/storage/products/company/brand/logos/IntelliJ_IDEA.svg)
-
 
 This project is developed using JetBrains IDEA.
 Thanks to JetBrains for providing me with a free license, which is a strong support for me.
