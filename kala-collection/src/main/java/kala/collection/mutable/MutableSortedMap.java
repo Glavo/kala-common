@@ -15,11 +15,19 @@
  */
 package kala.collection.mutable;
 
+import kala.collection.SortedMap;
 import kala.collection.factory.MapFactory;
+import org.jetbrains.annotations.NotNull;
 
-public class MutableLinkedHashMapTest implements MutableMapTestTemplate {
+import java.util.Comparator;
+
+public interface MutableSortedMap<K, V> extends MutableMap<K, V>, SortedMap<K, V> {
+
     @Override
-    public <K, V> MapFactory<K, V, ?, ? extends MutableMap<K, V>> factory() {
-        return MutableLinkedHashMap.factory();
+    default @NotNull MapFactory<K, V, ?, ? extends MutableSortedMap<K, V>> sortedMapFactory() {
+        return sortedMapFactory(comparator());
     }
+
+    @Override
+    @NotNull <NK, NV> MapFactory<NK, NV, ?, ? extends MutableSortedMap<NK, NV>> sortedMapFactory(Comparator<? super NK> comparator);
 }

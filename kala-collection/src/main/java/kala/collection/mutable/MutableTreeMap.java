@@ -42,7 +42,7 @@ import java.util.stream.Collector;
 @SuppressWarnings("unchecked")
 @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
 public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.Node<K, V>>
-        implements MutableMap<K, V>, kala.collection.SortedMap<K, V>, Serializable {
+        implements MutableSortedMap<K, V>, Serializable {
     @Serial
     private static final long serialVersionUID = 5474475537398882423L;
 
@@ -440,7 +440,12 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
     }
 
     @Override
-    public @NotNull <NK, NV> MapFactory<NK, NV, ?, MutableTreeMap<NK, NV>> mapFactory(Comparator<? super NK> comparator) {
+    public @NotNull MapFactory<K, V, ?, MutableTreeMap<K, V>> sortedMapFactory() {
+        return sortedMapFactory(comparator);
+    }
+
+    @Override
+    public @NotNull <NK, NV> MapFactory<NK, NV, ?, MutableTreeMap<NK, NV>> sortedMapFactory(Comparator<? super NK> comparator) {
         return MutableTreeMap.factory(comparator);
     }
 

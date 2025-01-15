@@ -19,6 +19,7 @@ import kala.collection.factory.MapFactory;
 import kala.control.Option;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.util.NoSuchElementException;
@@ -33,6 +34,10 @@ public interface MapLikeTestTemplate {
 
     default String[][] data1s() {
         return TestData.data1s;
+    }
+
+    default <K, V> @NotNull Tuple2<K, V> entry(K key, V value) {
+        return Tuple.of(key, value);
     }
 
     <K, V> MapFactory<K, V, ?, ? extends MapLike<K, V>> factory();

@@ -22,11 +22,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Comparator;
 
 public interface SortedMap<K, V> extends Map<K, V> {
-    @NotNull <NK, NV> MapFactory<NK, NV, ?, ? extends Map<NK, NV>> mapFactory(Comparator<? super NK> comparator);
-
-    default @Nullable Comparator<? super K> comparator() {
-        return null;
+    default @NotNull MapFactory<K, V, ?, ? extends SortedMap<K, V>> sortedMapFactory() {
+        return sortedMapFactory(comparator());
     }
+
+    @NotNull <NK, NV> MapFactory<NK, NV, ?, ? extends SortedMap<NK, NV>> sortedMapFactory(Comparator<? super NK> comparator);
+
+    @Nullable Comparator<? super K> comparator();
 
     K firstKey();
 

@@ -309,6 +309,11 @@ public final class ImmutableTreeSet<E> extends AbstractImmutableSortedSet<E> imp
     }
 
     @Override
+    public @NotNull String className() {
+        return "ImmutableTreeSet";
+    }
+
+    @Override
     public @Nullable Comparator<? super E> comparator() {
         return factory.comparator;
     }

@@ -13,13 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package kala.collection.mutable;
+package kala.collection.immutable;
 
+import kala.collection.SortedMap;
 import kala.collection.factory.MapFactory;
+import org.jetbrains.annotations.NotNull;
 
-public class MutableLinkedHashMapTest implements MutableMapTestTemplate {
+import java.util.Comparator;
+
+public interface ImmutableSortedMap<K, V> extends ImmutableMap<K, V>, SortedMap<K, V> {
+
     @Override
-    public <K, V> MapFactory<K, V, ?, ? extends MutableMap<K, V>> factory() {
-        return MutableLinkedHashMap.factory();
+    default @NotNull MapFactory<K, V, ?, ? extends ImmutableSortedMap<K, V>> sortedMapFactory() {
+        return sortedMapFactory(comparator());
     }
+
+    @Override
+    @NotNull <NK, NV> MapFactory<NK, NV, ?, ? extends ImmutableSortedMap<NK, NV>> sortedMapFactory(Comparator<? super NK> comparator);
 }

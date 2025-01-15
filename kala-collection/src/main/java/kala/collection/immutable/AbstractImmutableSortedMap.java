@@ -13,13 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package kala.collection.mutable;
+package kala.collection.immutable;
 
-import kala.collection.factory.MapFactory;
-
-public class MutableLinkedHashMapTest implements MutableMapTestTemplate {
-    @Override
-    public <K, V> MapFactory<K, V, ?, ? extends MutableMap<K, V>> factory() {
-        return MutableLinkedHashMap.factory();
-    }
+public abstract class AbstractImmutableSortedMap<K, V> extends AbstractImmutableMap<K, V> implements ImmutableSortedMap<K, V> {
 }

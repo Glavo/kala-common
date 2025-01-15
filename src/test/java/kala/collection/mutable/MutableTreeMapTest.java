@@ -16,10 +16,14 @@
 package kala.collection.mutable;
 
 import kala.collection.factory.MapFactory;
+import kala.collection.immutable.ImmutableSortedMapTestTemplate;
+import kala.collection.immutable.ImmutableTreeMap;
 
-public class MutableLinkedHashMapTest implements MutableMapTestTemplate {
+import java.util.Comparator;
+
+public final class MutableTreeMapTest implements MutableSortedMapTestTemplate {
     @Override
-    public <K, V> MapFactory<K, V, ?, ? extends MutableMap<K, V>> factory() {
-        return MutableLinkedHashMap.factory();
+    public <K, V> MapFactory<K, V, ?, MutableTreeMap<K, V>> factory(Comparator<? super K> comparator) {
+        return MutableTreeMap.factory(comparator);
     }
 }

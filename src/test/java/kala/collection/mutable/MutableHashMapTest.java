@@ -16,7 +16,6 @@
 package kala.collection.mutable;
 
 import kala.SerializationUtils;
-import kala.collection.MapLike;
 import kala.collection.factory.MapFactory;
 import kala.tuple.Tuple;
 import org.junit.jupiter.api.Test;
@@ -32,11 +31,6 @@ public class MutableHashMapTest implements MutableMapTestTemplate {
     @Override
     public <K, V> MapFactory<K, V, ?, MutableHashMap<K, V>> factory() {
         return MutableHashMap.factory();
-    }
-
-    @Override
-    public <K, V> MutableHashMap<K, V> create() {
-        return new MutableHashMap<>();
     }
 
     @Test

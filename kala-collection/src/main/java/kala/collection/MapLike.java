@@ -189,6 +189,10 @@ public interface MapLike<K, V> extends AnyMapLike<K, V> {
         return ImmutableMap.from(this);
     }
 
+    default @NotNull ImmutableSeq<Tuple2<K, V>> toSeq() {
+        return ImmutableSeq.from(iterator());
+    }
+
     default @NotNull ImmutableSeq<Tuple2<K, V>> toImmutableSeq() {
         return ImmutableSeq.from(iterator());
     }

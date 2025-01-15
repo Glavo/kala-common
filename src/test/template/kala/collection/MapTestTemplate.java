@@ -89,23 +89,47 @@ public interface MapTestTemplate extends MapLikeTestTemplate {
 
         Map<Integer, String> map;
 
+        // of0
+
         map = (Map<Integer, String>) of0.invoke();
         assertTrue(map.isEmpty());
+
+        // of1
 
         map = (Map<Integer, String>) of1.invoke(0, "0");
         assertEquals(Map.of(0, "0"), map);
 
+        // of2
+
         map = (Map<Integer, String>) of2.invoke(0, "0", 1, "1");
         assertEquals(Map.of(0, "0", 1, "1"), map);
+
+        map = (Map<Integer, String>) of2.invoke(0, "0", 0, "1");
+        assertEquals(Map.of(0, "1"), map);
+
+        // of3
 
         map = (Map<Integer, String>) of3.invoke(0, "0", 1, "1", 2, "2");
         assertEquals(Map.of(0, "0", 1, "1", 2, "2"), map);
 
+        map = (Map<Integer, String>) of3.invoke(0, "0", 1, "1", 0, "2");
+        assertEquals(Map.of(0, "2", 1, "1"), map);
+
+        // of4
+
         map = (Map<Integer, String>) of4.invoke(0, "0", 1, "1", 2, "2", 3, "3");
         assertEquals(Map.of(0, "0", 1, "1", 2, "2", 3, "3"), map);
 
+        map = (Map<Integer, String>) of4.invoke(0, "0", 1, "1", 2, "2", 0, "3");
+        assertEquals(Map.of(0, "3", 1, "1", 2, "2"), map);
+
+        // of5
+
         map = (Map<Integer, String>) of5.invoke(0, "0", 1, "1", 2, "2", 3, "3", 4, "4");
         assertEquals(Map.of(0, "0", 1, "1", 2, "2", 3, "3", 4, "4"), map);
+
+        map = (Map<Integer, String>) of5.invoke(0, "0", 1, "1", 2, "2", 3, "3", 0, "4");
+        assertEquals(Map.of(0, "4", 1, "1", 2, "2", 3, "3"), map);
     }
 
     @Test
@@ -126,23 +150,47 @@ public interface MapTestTemplate extends MapLikeTestTemplate {
 
         Map<Integer, String> map;
 
+        // of0
+
         map = (Map<Integer, String>) of0.invoke();
         assertTrue(map.isEmpty());
+
+        // of1
 
         map = (Map<Integer, String>) of1.invoke(Tuple.of(0, "0"));
         assertEquals(Map.of(0, "0"), map);
 
+        // of2
+
         map = (Map<Integer, String>) of2.invoke(Tuple.of(0, "0"), Tuple.of(1, "1"));
         assertEquals(Map.of(0, "0", 1, "1"), map);
+
+        map = (Map<Integer, String>) of2.invoke(Tuple.of(0, "0"), Tuple.of(0, "1"));
+        assertEquals(Map.of(0, "1"), map);
+
+        // of3
 
         map = (Map<Integer, String>) of3.invoke(Tuple.of(0, "0"), Tuple.of(1, "1"), Tuple.of(2, "2"));
         assertEquals(Map.of(0, "0", 1, "1", 2, "2"), map);
 
+        map = (Map<Integer, String>) of3.invoke(Tuple.of(0, "0"), Tuple.of(1, "1"), Tuple.of(0, "2"));
+        assertEquals(Map.of(0, "2", 1, "1"), map);
+
+        // of4
+
         map = (Map<Integer, String>) of4.invoke(Tuple.of(0, "0"), Tuple.of(1, "1"), Tuple.of(2, "2"), Tuple.of(3, "3"));
         assertEquals(Map.of(0, "0", 1, "1", 2, "2", 3, "3"), map);
 
+        map = (Map<Integer, String>) of4.invoke(Tuple.of(0, "0"), Tuple.of(1, "1"), Tuple.of(2, "2"), Tuple.of(0, "3"));
+        assertEquals(Map.of(0, "3", 1, "1", 2, "2"), map);
+
+        // of5
+
         map = (Map<Integer, String>) of5.invoke(Tuple.of(0, "0"), Tuple.of(1, "1"), Tuple.of(2, "2"), Tuple.of(3, "3"), Tuple.of(4, "4"));
         assertEquals(Map.of(0, "0", 1, "1", 2, "2", 3, "3", 4, "4"), map);
+
+        map = (Map<Integer, String>) of5.invoke(Tuple.of(0, "0"), Tuple.of(1, "1"), Tuple.of(2, "2"), Tuple.of(3, "3"), Tuple.of(0, "4"));
+        assertEquals(Map.of(0, "4", 1, "1", 2, "2", 3, "3"), map);
 
         for (Integer[] data : data1()) {
             Tuple2<Integer, String>[] array = (Tuple2<Integer, String>[])

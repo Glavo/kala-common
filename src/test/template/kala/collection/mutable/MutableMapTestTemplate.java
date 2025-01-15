@@ -26,9 +26,8 @@ import java.util.function.Supplier;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
+@SuppressWarnings("unchecked")
 public interface MutableMapTestTemplate extends MapTestTemplate {
-    <K, V> MutableMap<K, V> create();
-
     @Override
     <K, V> MapFactory<K, V, ?, ? extends MutableMap<K, V>> factory();
 
@@ -42,7 +41,7 @@ public interface MutableMapTestTemplate extends MapTestTemplate {
     default DynamicNode getOrPutTestFactory() {
         return DynamicContainer.dynamicContainer("getOrPutTest", List.of(
                 dynamicTest("mutationInCallback", () -> {
-                    MutableMap<String, String> hm = create();
+                    MutableMap<String, String> hm = ofEntries();
 
                     Supplier<String> add = () -> {
                         // add enough elements to resize the hash table in the callback
@@ -57,7 +56,7 @@ public interface MutableMapTestTemplate extends MapTestTemplate {
                     assertEquals("str", hm.get("0"));
                 }),
                 dynamicTest("evalOnce", () -> {
-                    MutableMap<Integer, Integer> hm = create();
+                    MutableMap<Integer, Integer> hm = ofEntries();
                     int[] i = new int[]{0};
                     hm.getOrPut(0, () -> {
                         i[0] += 1;
@@ -66,12 +65,12 @@ public interface MutableMapTestTemplate extends MapTestTemplate {
                     assertEquals(1, hm.get(0));
                 }),
                 dynamicTest("noEval", () -> {
-                    MutableMap<Integer, Integer> hm = create();
+                    MutableMap<Integer, Integer> hm = ofEntries();
                     hm.put(0, 0);
                     assertEquals(0, hm.getOrPut(0, Assertions::fail));
                 }),
                 dynamicTest("keyIdempotence", () -> {
-                    MutableMap<String, String> hm = create();
+                    MutableMap<String, String> hm = ofEntries();
                     String key = "key";
                     hm.getOrPut(key, () -> {
                         hm.getOrPut(key, () -> "value1");

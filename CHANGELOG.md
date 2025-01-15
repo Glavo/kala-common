@@ -6,6 +6,9 @@
 
 ### New features
 
+* Add a new collection: `kala.collection.mutable.MutableSortedMap`
+* Add a new collection: `kala.collection.immutable.ImutableSortedMap`
+* Add a new collection: `kala.collection.immutable.ImmutableTreeMap`
 * Add a new collection: `kala.collection.immutable.ImmutableTreeSet`
 * Add `kala.control.OptionContainer::getOrThrow()`
 * Add `kala.collection.SeqLike::getOrDefault(int, E)`
