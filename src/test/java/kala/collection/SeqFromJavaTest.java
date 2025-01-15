@@ -24,8 +24,8 @@ public final class SeqFromJavaTest implements SeqTestTemplate {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <E> CollectionFactory<E, ?, ? extends Seq<? extends E>> factory() {
-        return (CollectionFactory<E, ?, ? extends Seq<? extends E>>) SeqFromJavaFactory.INSTANCE;
+    public <E> CollectionFactory<E, ?, Seq<E>> factory() {
+        return (Factory<E>) Factory.INSTANCE;
     }
 
     @Override
@@ -33,8 +33,8 @@ public final class SeqFromJavaTest implements SeqTestTemplate {
         return null;
     }
 
-    private static final class SeqFromJavaFactory<E> implements CollectionFactory<E, ArrayList<E>, Seq<E>> {
-        static final SeqFromJavaFactory<?> INSTANCE = new SeqFromJavaFactory<>();
+    private static final class Factory<E> implements CollectionFactory<E, ArrayList<E>, Seq<E>> {
+        static final Factory<?> INSTANCE = new Factory<>();
 
         @Override
         public ArrayList<E> newBuilder() {

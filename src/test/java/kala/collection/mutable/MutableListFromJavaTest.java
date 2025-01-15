@@ -20,11 +20,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-public final class MutableSeqFromJavaTest implements MutableSeqTestTemplate {
+public final class MutableListFromJavaTest implements MutableListTestTemplate {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <E> CollectionFactory<E, ?, MutableSeq<E>> factory() {
+    public <E> CollectionFactory<E, ?, MutableList<E>> factory() {
         return (Factory<E>) Factory.INSTANCE;
     }
 
@@ -33,7 +33,7 @@ public final class MutableSeqFromJavaTest implements MutableSeqTestTemplate {
         return null;
     }
 
-    private static final class Factory<E> implements CollectionFactory<E, ArrayList<E>, MutableSeq<E>> {
+    private static final class Factory<E> implements CollectionFactory<E, ArrayList<E>, MutableList<E>> {
         static final Factory<?> INSTANCE = new Factory<>();
 
         @Override
@@ -42,13 +42,13 @@ public final class MutableSeqFromJavaTest implements MutableSeqTestTemplate {
         }
 
         @Override
-        public MutableSeq<E> build(ArrayList<E> es) {
-            return MutableSeq.wrapJava(new ArrayList<>(es));
+        public MutableList<E> build(ArrayList<E> list) {
+            return MutableList.wrapJava(new ArrayList<>(list));
         }
 
         @Override
-        public void addToBuilder(@NotNull ArrayList<E> es, E value) {
-            es.add(value);
+        public void addToBuilder(@NotNull ArrayList<E> list, E value) {
+            list.add(value);
         }
 
         @Override
