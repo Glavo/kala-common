@@ -58,7 +58,13 @@ Here are the ways to donate: [捐赠支持 Glavo](https://donate.glavo.site/)
 
 ## License
 
-All Java code is released under the [Apache 2.0](./LICENSE) license.
+Most Java code is released under the [Apache 2.0](./LICENSE) license.
+
+The following classes are copied from [pcollections](https://github.com/hrldcpr/pcollections),
+which are distributed under the [MIT](https://github.com/hrldcpr/pcollections/blob/master/LICENSE) license:
+
+* `kala.collection.internal.tree.IntTree`
+* `kala.collection.internal.tree.KVTree`
 
 This README file and all docs is released under the [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) license.
 
