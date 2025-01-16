@@ -11,14 +11,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 // https://github.com/hrldcpr/pcollections/blob/master/src/main/java/org/pcollections/IntTree.java
-public final class IndexedTree<V> implements Iterable<V> {
+public final class IntTree<V> implements Iterable<V> {
 
     // marker value:
-    private static final IndexedTree<?> EMPTY_NODE = new IndexedTree<>();
+    private static final IntTree<?> EMPTY_NODE = new IntTree<>();
 
     @SuppressWarnings("unchecked")
-    public static <E> IndexedTree<E> empty() {
-        return (IndexedTree<E>) EMPTY_NODE;
+    public static <E> IntTree<E> empty() {
+        return (IntTree<E>) EMPTY_NODE;
     }
 
     // we use longs so relative keys can express all ints
@@ -29,10 +29,10 @@ public final class IndexedTree<V> implements Iterable<V> {
     private final long key;
 
     private final V value;
-    private final IndexedTree<V> left, right;
+    private final IntTree<V> left, right;
     private final int size;
 
-    private IndexedTree() {
+    private IntTree() {
         size = 0;
 
         key = 0;
@@ -41,7 +41,7 @@ public final class IndexedTree<V> implements Iterable<V> {
         right = this;
     }
 
-    public IndexedTree(final long key, final V value, final IndexedTree<V> left, final IndexedTree<V> right) {
+    public IntTree(final long key, final V value, final IntTree<V> left, final IntTree<V> right) {
         this.key = key;
         this.value = value;
         this.left = left;
@@ -49,9 +49,9 @@ public final class IndexedTree<V> implements Iterable<V> {
         this.size = 1 + left.size + right.size;
     }
 
-    private IndexedTree<V> withKey(final long newKey) {
+    private IntTree<V> withKey(final long newKey) {
         if (size == 0 || newKey == key) return this;
-        return new IndexedTree<>(newKey, value, left, right);
+        return new IntTree<>(newKey, value, left, right);
     }
 
     @Override
@@ -73,7 +73,7 @@ public final class IndexedTree<V> implements Iterable<V> {
     }
 
     public V get(long key) {
-        IndexedTree<V> node = this;
+        IntTree<V> node = this;
         while (true) {
             if (node.size == 0) {
                 return null;
@@ -89,16 +89,16 @@ public final class IndexedTree<V> implements Iterable<V> {
         }
     }
 
-    public IndexedTree<V> plus(final long key, final V value) {
-        if (size == 0) return new IndexedTree<>(key, value, this, this);
+    public IntTree<V> plus(final long key, final V value) {
+        if (size == 0) return new IntTree<>(key, value, this, this);
         if (key < this.key) return rebalanced(left.plus(key - this.key, value), right);
         if (key > this.key) return rebalanced(left, right.plus(key - this.key, value));
         // otherwise key==this.key, so we simply replace this, with no effect on balance:
         if (value == this.value) return this;
-        return new IndexedTree<>(key, value, left, right);
+        return new IntTree<>(key, value, left, right);
     }
 
-    public IndexedTree<V> minus(final long key) {
+    public IntTree<V> minus(final long key) {
         if (size == 0) return this;
         if (key < this.key) return rebalanced(left.minus(key - this.key), right);
         if (key > this.key) return rebalanced(left, right.minus(key - this.key));
@@ -119,12 +119,12 @@ public final class IndexedTree<V> implements Iterable<V> {
 
         V newValue = right.get(newKey - this.key);
         // now that we've got the new stuff, take it out of the right subtree:
-        IndexedTree<V> newRight = right.minus(newKey - this.key);
+        IntTree<V> newRight = right.minus(newKey - this.key);
 
         // lastly, make the subtree keys relative to newKey (currently they are relative to this.key):
         newRight = newRight.withKey((newRight.key + this.key) - newKey);
         // left is definitely not empty:
-        IndexedTree<V> newLeft = left.withKey((left.key + this.key) - newKey);
+        IntTree<V> newLeft = left.withKey((left.key + this.key) - newKey);
 
         return rebalanced(newKey, newValue, newLeft, newRight);
     }
@@ -138,20 +138,20 @@ public final class IndexedTree<V> implements Iterable<V> {
      * <p>In other words, this method must not result in any change in the order of the keys in this,
      * since the tree structure is not being changed at all.
      */
-    public IndexedTree<V> changeKeysAbove(final long key, final int delta) {
+    public IntTree<V> changeKeysAbove(final long key, final int delta) {
         if (size == 0 || delta == 0) return this;
 
         if (this.key >= key)
             // adding delta to this.key changes the keys of _all_ children of this,
             // so we now need to un-change the children of this smaller than key,
             // all of which are to the left. note that we still use the 'old' relative key...:
-            return new IndexedTree<>(
+            return new IntTree<>(
                     this.key + delta, value, left.changeKeysBelow(key - this.key, -delta), right);
 
         // otherwise, doesn't apply yet, look to the right:
-        IndexedTree<V> newRight = right.changeKeysAbove(key - this.key, delta);
+        IntTree<V> newRight = right.changeKeysAbove(key - this.key, delta);
         if (newRight == right) return this;
-        return new IndexedTree<>(this.key, value, left, newRight);
+        return new IntTree<>(this.key, value, left, newRight);
     }
 
     /**
@@ -163,20 +163,20 @@ public final class IndexedTree<V> implements Iterable<V> {
      * <p>In other words, this method must not result in any overlap or change in the order of the
      * keys in this, since the tree _structure_ is not being changed at all.
      */
-    public IndexedTree<V> changeKeysBelow(final long key, final int delta) {
+    public IntTree<V> changeKeysBelow(final long key, final int delta) {
         if (size == 0 || delta == 0) return this;
 
         if (this.key < key)
             // adding delta to this.key changes the keys of _all_ children of this,
             // so we now need to un-change the children of this larger than key,
             // all of which are to the right. note that we still use the 'old' relative key...:
-            return new IndexedTree<>(
+            return new IntTree<>(
                     this.key + delta, value, left, right.changeKeysAbove(key - this.key, -delta));
 
         // otherwise, doesn't apply yet, look to the left:
-        IndexedTree<V> newLeft = left.changeKeysBelow(key - this.key, delta);
+        IntTree<V> newLeft = left.changeKeysBelow(key - this.key, delta);
         if (newLeft == left) return this;
-        return new IndexedTree<>(this.key, value, newLeft, right);
+        return new IntTree<>(this.key, value, newLeft, right);
     }
 
     // min key in this:
@@ -186,7 +186,7 @@ public final class IndexedTree<V> implements Iterable<V> {
         return left.minKey() + this.key;
     }
 
-    private IndexedTree<V> rebalanced(final IndexedTree<V> newLeft, final IndexedTree<V> newRight) {
+    private IntTree<V> rebalanced(final IntTree<V> newLeft, final IntTree<V> newRight) {
         if (newLeft == left && newRight == right) return this; // already balanced
         return rebalanced(key, value, newLeft, newRight);
     }
@@ -195,54 +195,54 @@ public final class IndexedTree<V> implements Iterable<V> {
     private static final int ALPHA = 2;
 
     // rebalance a tree that is off-balance by at most 1:
-    private static <V> IndexedTree<V> rebalanced(
-            final long key, final V value, final IndexedTree<V> left, final IndexedTree<V> right) {
+    private static <V> IntTree<V> rebalanced(
+            final long key, final V value, final IntTree<V> left, final IntTree<V> right) {
         if (left.size + right.size > 1) {
             if (left.size >= OMEGA * right.size) { // rotate to the right
-                IndexedTree<V> ll = left.left, lr = left.right;
+                IntTree<V> ll = left.left, lr = left.right;
                 if (lr.size < ALPHA * ll.size) // single rotation
-                    return new IndexedTree<>(
+                    return new IntTree<>(
                             left.key + key,
                             left.value,
                             ll,
-                            new IndexedTree<>(-left.key, value, lr.withKey(lr.key + left.key), right));
+                            new IntTree<>(-left.key, value, lr.withKey(lr.key + left.key), right));
                 else { // double rotation:
-                    IndexedTree<V> lrl = lr.left, lrr = lr.right;
-                    return new IndexedTree<>(
+                    IntTree<V> lrl = lr.left, lrr = lr.right;
+                    return new IntTree<>(
                             lr.key + left.key + key,
                             lr.value,
-                            new IndexedTree<>(-lr.key, left.value, ll, lrl.withKey(lrl.key + lr.key)),
-                            new IndexedTree<>(
+                            new IntTree<>(-lr.key, left.value, ll, lrl.withKey(lrl.key + lr.key)),
+                            new IntTree<>(
                                     -left.key - lr.key, value, lrr.withKey(lrr.key + lr.key + left.key), right));
                 }
             } else if (right.size >= OMEGA * left.size) { // rotate to the left
-                IndexedTree<V> rl = right.left, rr = right.right;
+                IntTree<V> rl = right.left, rr = right.right;
                 if (rl.size < ALPHA * rr.size) // single rotation
-                    return new IndexedTree<>(
+                    return new IntTree<>(
                             right.key + key,
                             right.value,
-                            new IndexedTree<>(-right.key, value, left, rl.withKey(rl.key + right.key)),
+                            new IntTree<>(-right.key, value, left, rl.withKey(rl.key + right.key)),
                             rr);
                 else { // double rotation:
-                    IndexedTree<V> rll = rl.left, rlr = rl.right;
-                    return new IndexedTree<>(
+                    IntTree<V> rll = rl.left, rlr = rl.right;
+                    return new IntTree<>(
                             rl.key + right.key + key,
                             rl.value,
-                            new IndexedTree<>(
+                            new IntTree<>(
                                     -right.key - rl.key, value, left, rll.withKey(rll.key + rl.key + right.key)),
-                            new IndexedTree<>(-rl.key, right.value, rlr.withKey(rlr.key + rl.key), rr));
+                            new IntTree<>(-rl.key, right.value, rlr.withKey(rlr.key + rl.key), rr));
                 }
             }
         }
         // otherwise already balanced enough:
-        return new IndexedTree<>(key, value, left, right);
+        return new IntTree<>(key, value, left, right);
     }
 
     private static final class Itr<V> extends AbstractIterator<V> {
-        private final List<IndexedTree<V>> stack = new ArrayList<>(); // path of nonempty nodes
+        private final List<IntTree<V>> stack = new ArrayList<>(); // path of nonempty nodes
         private int key = 0; // note we use _int_ here since this is a truly absolute key
 
-        Itr(final IndexedTree<V> root) {
+        Itr(final IntTree<V> root) {
             gotoMinOf(root);
         }
 
@@ -251,7 +251,7 @@ public final class IndexedTree<V> implements Iterable<V> {
         }
 
         public V next() {
-            IndexedTree<V> node = stack.getLast();
+            IntTree<V> node = stack.getLast();
             final V result = node.value;
 
             // find next node.
@@ -274,7 +274,7 @@ public final class IndexedTree<V> implements Iterable<V> {
         }
 
         // extend the stack to its least non-empty node:
-        private void gotoMinOf(IndexedTree<V> node) {
+        private void gotoMinOf(IntTree<V> node) {
             while (node.size > 0) {
                 stack.add(node);
                 key += node.key;

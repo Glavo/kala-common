@@ -18,7 +18,7 @@ package kala.collection.immutable;
 import kala.collection.Collection;
 import kala.collection.base.Traversable;
 import kala.collection.factory.CollectionFactory;
-import kala.collection.internal.tree.IndexedTree;
+import kala.collection.internal.tree.IntTree;
 import kala.index.Index;
 import kala.index.Indexes;
 import kala.value.Var;
@@ -38,11 +38,11 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
     private static final long serialVersionUID = 5783543850996772547L;
 
     private static final Factory<?> FACTORY = new Factory<>();
-    private static final ImmutableTreeSeq<?> EMPTY = new ImmutableTreeSeq<>(IndexedTree.empty());
+    private static final ImmutableTreeSeq<?> EMPTY = new ImmutableTreeSeq<>(IntTree.empty());
 
-    private final IndexedTree<E> root;
+    private final IntTree<E> root;
 
-    private ImmutableTreeSeq(IndexedTree<E> root) {
+    private ImmutableTreeSeq(IntTree<E> root) {
         this.root = root;
     }
 
@@ -63,18 +63,18 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
     }
 
     public static <E> @NotNull ImmutableTreeSeq<E> of(E value1) {
-        return new ImmutableTreeSeq<>(IndexedTree.<E>empty().plus(0, value1));
+        return new ImmutableTreeSeq<>(IntTree.<E>empty().plus(0, value1));
     }
 
     public static <E> @NotNull ImmutableTreeSeq<E> of(E value1, E value2) {
-        return new ImmutableTreeSeq<>(IndexedTree.<E>empty()
+        return new ImmutableTreeSeq<>(IntTree.<E>empty()
                 .plus(0, value1)
                 .plus(1, value2)
         );
     }
 
     public static <E> @NotNull ImmutableTreeSeq<E> of(E value1, E value2, E value3) {
-        return new ImmutableTreeSeq<>(IndexedTree.<E>empty()
+        return new ImmutableTreeSeq<>(IntTree.<E>empty()
                 .plus(0, value1)
                 .plus(1, value2)
                 .plus(2, value3)
@@ -82,7 +82,7 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
     }
 
     public static <E> @NotNull ImmutableTreeSeq<E> of(E value1, E value2, E value3, E value4) {
-        return new ImmutableTreeSeq<>(IndexedTree.<E>empty()
+        return new ImmutableTreeSeq<>(IntTree.<E>empty()
                 .plus(0, value1)
                 .plus(1, value2)
                 .plus(2, value3)
@@ -91,7 +91,7 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
     }
 
     public static <E> @NotNull ImmutableTreeSeq<E> of(E value1, E value2, E value3, E value4, E value5) {
-        return new ImmutableTreeSeq<>(IndexedTree.<E>empty()
+        return new ImmutableTreeSeq<>(IntTree.<E>empty()
                 .plus(0, value1)
                 .plus(1, value2)
                 .plus(2, value3)
@@ -110,7 +110,7 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
             return empty();
         }
 
-        IndexedTree<E> node = IndexedTree.empty();
+        IntTree<E> node = IntTree.empty();
         int i = 0;
         for (E value : values) {
             node = node.plus(i++, value);
@@ -123,7 +123,7 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
         if (values.isEmpty()) {
             return empty();
         }
-        IndexedTree<E> node = IndexedTree.empty();
+        IntTree<E> node = IntTree.empty();
         int i = 0;
         for (E value : values) {
             node = node.plus(i++, value);
@@ -147,7 +147,7 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
     }
 
     public static <E> @NotNull ImmutableTreeSeq<E> from(@NotNull Iterator<? extends E> it) {
-        IndexedTree<E> node = IndexedTree.empty();
+        IntTree<E> node = IntTree.empty();
         int i = 0;
         while (it.hasNext()) {
             node = node.plus(i++, it.next());
@@ -163,7 +163,7 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
         if (n <= 0) {
             return empty();
         }
-        IndexedTree<E> node = IndexedTree.empty();
+        IntTree<E> node = IntTree.empty();
         for (int i = 0; i < n; i++) {
             node = node.plus(i, value);
         }
@@ -174,7 +174,7 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
         if (n <= 0) {
             return empty();
         }
-        IndexedTree<E> node = IndexedTree.empty();
+        IntTree<E> node = IntTree.empty();
         for (int i = 0; i < n; i++) {
             node = node.plus(i, init.apply(i));
         }
@@ -182,7 +182,7 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
     }
 
     public static <E> @NotNull ImmutableTreeSeq<E> generateUntil(@NotNull Supplier<? extends E> supplier, @NotNull Predicate<? super E> predicate) {
-        IndexedTree<E> node = IndexedTree.empty();
+        IntTree<E> node = IntTree.empty();
         int i = 0;
         while (true) {
             E value = supplier.get();
@@ -195,7 +195,7 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
     }
 
     public static <E> @NotNull ImmutableTreeSeq<E> generateUntilNull(@NotNull Supplier<? extends @Nullable E> supplier) {
-        IndexedTree<E> node = IndexedTree.empty();
+        IntTree<E> node = IntTree.empty();
         int i = 0;
         while (true) {
             E value = supplier.get();
@@ -237,7 +237,7 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
     @Override
     public @NotNull ImmutableSeq<E> updated(@Index int index, E newValue) {
         index = Indexes.checkIndex(index, size());
-        IndexedTree<E> newRoot = root.plus(index, newValue);
+        IntTree<E> newRoot = root.plus(index, newValue);
         return newRoot != root ? new ImmutableTreeSeq<>(newRoot) : this;
     }
 
@@ -269,7 +269,7 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
         return new Collection.SerializationWrapper<>(factory(), this);
     }
 
-    private static final class Factory<E> implements CollectionFactory<E, Var<IndexedTree<E>>, ImmutableTreeSeq<E>>, Serializable {
+    private static final class Factory<E> implements CollectionFactory<E, Var<IntTree<E>>, ImmutableTreeSeq<E>>, Serializable {
 
         @Serial
         private static final long serialVersionUID = 0L;
@@ -280,25 +280,25 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
         }
 
         @Override
-        public Var<IndexedTree<E>> newBuilder() {
-            return new Var<>(IndexedTree.empty());
+        public Var<IntTree<E>> newBuilder() {
+            return new Var<>(IntTree.empty());
         }
 
         @Override
-        public ImmutableTreeSeq<E> build(Var<IndexedTree<E>> builder) {
+        public ImmutableTreeSeq<E> build(Var<IntTree<E>> builder) {
             return builder.value.size() == 0 ? ImmutableTreeSeq.empty() : new ImmutableTreeSeq<>(builder.value);
         }
 
         @Override
-        public void addToBuilder(@NotNull Var<IndexedTree<E>> builder, E value) {
+        public void addToBuilder(@NotNull Var<IntTree<E>> builder, E value) {
             builder.value = builder.value.plus(builder.value.size(), value);
         }
 
         @Override
-        public Var<IndexedTree<E>> mergeBuilder(@NotNull Var<IndexedTree<E>> builder1, @NotNull Var<IndexedTree<E>> builder2) {
+        public Var<IntTree<E>> mergeBuilder(@NotNull Var<IntTree<E>> builder1, @NotNull Var<IntTree<E>> builder2) {
             if (builder2.value.size() > 0) {
                 if (builder1.value.size() > 0) {
-                    IndexedTree<E> newValue = builder1.value;
+                    IntTree<E> newValue = builder1.value;
                     for (E e : builder2.value) {
                         newValue = newValue.plus(newValue.size(), e);
                     }
