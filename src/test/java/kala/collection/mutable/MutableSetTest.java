@@ -17,7 +17,7 @@ package kala.collection.mutable;
 
 import kala.collection.factory.CollectionFactory;
 
-public class MutableSetTest implements MutableSetTestTemplate {
+public final class MutableSetTest implements MutableSetTestTemplate {
     @Override
     public <E> CollectionFactory<E, ?, ? extends MutableSet<E>> factory() {
         return MutableSet.factory();

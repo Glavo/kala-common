@@ -15,6 +15,8 @@
  */
 package kala.collection.immutable;
 
+import kala.collection.SetLikeTestTemplate;
+import kala.collection.SetView;
 import kala.collection.factory.CollectionFactory;
 
 import java.util.Comparator;
@@ -23,5 +25,22 @@ public final class ImmutableSortedArraySetTest implements ImmutableSortedSetTest
     @Override
     public <E> CollectionFactory<E, ?, ImmutableSortedArraySet<E>> factory(Comparator<? super E> comparator) {
         return ImmutableSortedArraySet.factory(comparator);
+    }
+
+    static final class ViewTest implements SetLikeTestTemplate {
+        @Override
+        public <E> SetView<E> of(E... elements) {
+            return ImmutableSortedArraySet.from(null, elements).view();
+        }
+
+        @Override
+        public <E> SetView<E> from(E[] elements) {
+            return ImmutableSortedArraySet.from(null, elements).view();
+        }
+
+        @Override
+        public <E> SetView<E> from(Iterable<? extends E> elements) {
+            return ImmutableSortedArraySet.<E>from(null, elements).view();
+        }
     }
 }

@@ -19,7 +19,7 @@ import kala.collection.factory.CollectionFactory;
 
 import java.util.Comparator;
 
-public class MutableTreeSetTest implements MutableSortedSetTestTemplate {
+public final class MutableTreeSetTest implements MutableSortedSetTestTemplate {
 
     @Override
     public <E> CollectionFactory<E, ?, ? extends MutableSortedSet<E>> factory(Comparator<? super E> comparator) {

@@ -28,7 +28,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class OptionTypeAdapterTest {
+public final class OptionTypeAdapterTest {
     private final Gson gson = new GsonBuilder()
             .registerTypeAdapterFactory(OptionTypeAdapter.factory())
             .registerTypeAdapterFactory(PrimitiveOptionTypeAdapter.factory())

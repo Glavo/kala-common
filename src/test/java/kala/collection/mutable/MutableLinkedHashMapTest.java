@@ -17,7 +17,7 @@ package kala.collection.mutable;
 
 import kala.collection.factory.MapFactory;
 
-public class MutableLinkedHashMapTest implements MutableMapTestTemplate {
+public final class MutableLinkedHashMapTest implements MutableMapTestTemplate {
     @Override
     public <K, V> MapFactory<K, V, ?, ? extends MutableMap<K, V>> factory() {
         return MutableLinkedHashMap.factory();

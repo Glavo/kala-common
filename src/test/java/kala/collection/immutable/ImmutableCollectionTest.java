@@ -29,27 +29,27 @@ import static org.junit.jupiter.api.Assertions.*;
 @SuppressWarnings("unchecked")
 public final class ImmutableCollectionTest implements ImmutableSequentialCollectionTestTemplate {
     @Override
-    public final <E> CollectionFactory<E, ?, ImmutableCollection<E>> factory() {
+    public <E> CollectionFactory<E, ?, ImmutableCollection<E>> factory() {
         return new CollectionFactory<E, ArrayList<E>, ImmutableCollection<E>>() {
 
             @Override
-            public final ArrayList<E> newBuilder() {
+            public ArrayList<E> newBuilder() {
                 return new ArrayList<>();
             }
 
             @Override
-            public final void addToBuilder(@NotNull ArrayList<E> es, E value) {
+            public void addToBuilder(@NotNull ArrayList<E> es, E value) {
                 es.add(value);
             }
 
             @Override
-            public final ArrayList<E> mergeBuilder(@NotNull ArrayList<E> builder1, @NotNull ArrayList<E> builder2) {
+            public ArrayList<E> mergeBuilder(@NotNull ArrayList<E> builder1, @NotNull ArrayList<E> builder2) {
                 builder1.addAll(builder2);
                 return builder1;
             }
 
             @Override
-            public final ImmutableCollection<E> build(@NotNull ArrayList<E> es) {
+            public ImmutableCollection<E> build(@NotNull ArrayList<E> es) {
                 return new SimpleImmutableCollection<>(es);
             }
         };
@@ -71,7 +71,7 @@ public final class ImmutableCollectionTest implements ImmutableSequentialCollect
     }
 
     @Test
-    public final void ofTest() {
+    public void ofTest() {
 
         assertIterableEquals(List.of(), ImmutableCollection.of());
         assertIterableEquals(List.of("str1"), ImmutableCollection.of("str1"));
@@ -86,7 +86,7 @@ public final class ImmutableCollectionTest implements ImmutableSequentialCollect
     }
 
     @Test
-    public final void classNameTest() {
+    public void classNameTest() {
         assertEquals("ImmutableCollection", new SimpleImmutableCollection<>(List.of()).className());
     }
 

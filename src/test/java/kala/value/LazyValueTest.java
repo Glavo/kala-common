@@ -24,7 +24,7 @@ import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class LazyValueTest {
+public final class LazyValueTest {
 
     @Test
     public void ofTest() {

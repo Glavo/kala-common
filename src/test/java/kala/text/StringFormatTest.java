@@ -19,7 +19,7 @@ import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class StringFormatTest {
+public final class StringFormatTest {
 
     @Test
     void test() {

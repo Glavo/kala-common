@@ -19,7 +19,7 @@ import kala.collection.SetLike;
 import kala.collection.SetLikeTestTemplate;
 import kala.collection.factory.CollectionFactory;
 
-public class ImmutableHashSetTest implements ImmutableSetTestTemplate {
+public final class ImmutableHashSetTest implements ImmutableSetTestTemplate {
     @Override
     public <E> CollectionFactory<E, ?, ImmutableHashSet<E>> factory() {
         return ImmutableHashSet.factory();

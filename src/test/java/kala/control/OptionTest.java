@@ -25,7 +25,7 @@ import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class OptionTest {
+public final class OptionTest {
     Option<?>[] opts = new Option<?>[]{
             Option.none(),
             Option.some("foo"),

@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class IndexesTest {
+public final class IndexesTest {
     @Test
     void checkIndexTest() {
         assertEquals(0, Indexes.checkIndex(0, 10));

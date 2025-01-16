@@ -25,7 +25,7 @@ import java.util.function.Function;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("DataFlowIssue")
-public class FunctionsTest {
+public final class FunctionsTest {
     private final Object obj = new Object();
 
     @Test

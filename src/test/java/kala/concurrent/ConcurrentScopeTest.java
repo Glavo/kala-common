@@ -23,7 +23,7 @@ import java.util.concurrent.ForkJoinPool;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ConcurrentScopeTest {
+public final class ConcurrentScopeTest {
     @Test
     void test() {
         assertSame(ForkJoinPool.commonPool(), ConcurrentScope.currentExecutor());

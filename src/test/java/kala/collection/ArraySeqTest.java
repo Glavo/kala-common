@@ -17,7 +17,7 @@ package kala.collection;
 
 import kala.collection.factory.CollectionFactory;
 
-public class ArraySeqTest implements SeqTestTemplate {
+public final class ArraySeqTest implements SeqTestTemplate {
     @Override
     public <E> CollectionFactory<E, ?, ? extends ArraySeq<E>> factory() {
         return ArraySeq.factory();

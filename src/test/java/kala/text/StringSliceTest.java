@@ -24,7 +24,7 @@ import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class StringSliceTest {
+public final class StringSliceTest {
 
     private static void assertSliceEquals(String expected, StringSlice actual) {
         assertEquals(StringSlice.of(expected), actual);

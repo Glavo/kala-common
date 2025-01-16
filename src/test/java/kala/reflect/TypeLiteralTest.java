@@ -24,7 +24,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TypeLiteralTest {
+public final class TypeLiteralTest {
     @Test
     public void test() {
         assertThrows(IllegalStateException.class, () -> {

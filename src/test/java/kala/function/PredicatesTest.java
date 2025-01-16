@@ -24,7 +24,7 @@ import java.util.function.Predicate;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PredicatesTest {
+public final class PredicatesTest {
 
     private static final Object obj = new Object();
 

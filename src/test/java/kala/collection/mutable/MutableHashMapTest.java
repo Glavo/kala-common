@@ -26,7 +26,7 @@ import java.util.NoSuchElementException;
 import static org.junit.jupiter.api.Assertions.*;
 
 // See also: https://github.com/scala/scala/blob/8cc248dc1305df4c17bb6b5738b700b60c9b5437/test/junit/scala/collection/mutable/HashMapTest.scala
-public class MutableHashMapTest implements MutableMapTestTemplate {
+public final class MutableHashMapTest implements MutableMapTestTemplate {
 
     @Override
     public <K, V> MapFactory<K, V, ?, MutableHashMap<K, V>> factory() {

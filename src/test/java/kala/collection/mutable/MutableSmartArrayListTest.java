@@ -17,7 +17,7 @@ package kala.collection.mutable;
 
 import kala.collection.factory.CollectionFactory;
 
-public class MutableSmartArrayListTest implements MutableListTestTemplate {
+public final class MutableSmartArrayListTest implements MutableListTestTemplate {
     @Override
     public <E> CollectionFactory<E, ?, MutableSmartArrayList<E>> factory() {
         return MutableSmartArrayList.factory();

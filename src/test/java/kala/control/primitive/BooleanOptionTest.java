@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class BooleanOptionTest {
+public final class BooleanOptionTest {
     @Test
     public void serializationTest() {
         assertAll(Stream.of(BooleanOption.True, BooleanOption.False, BooleanOption.None).map(opt -> () -> {

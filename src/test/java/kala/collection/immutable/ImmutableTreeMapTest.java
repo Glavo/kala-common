@@ -15,7 +15,10 @@
  */
 package kala.collection.immutable;
 
+import kala.collection.MapLike;
+import kala.collection.MapLikeTestTemplate;
 import kala.collection.factory.MapFactory;
+import kala.tuple.Tuple2;
 
 import java.util.Comparator;
 
@@ -23,5 +26,13 @@ public final class ImmutableTreeMapTest implements ImmutableSortedMapTestTemplat
     @Override
     public <K, V> MapFactory<K, V, ?, ImmutableTreeMap<K, V>> factory(Comparator<? super K> comparator) {
         return ImmutableTreeMap.factory(comparator);
+    }
+
+    static final class ViewTest implements MapLikeTestTemplate {
+
+        @Override
+        public <K, V> MapLike<K, V> ofEntries(Tuple2<K, V>... entries) {
+            return ImmutableTreeMap.ofEntries(null, entries).view();
+        }
     }
 }

@@ -23,7 +23,7 @@ import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ResultTest {
+public final class ResultTest {
 
     private static final Result<String, ?> ok = Result.ok("value");
     private static final Result<?, Integer> err = Result.err(10);

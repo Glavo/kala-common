@@ -17,7 +17,7 @@ package kala.collection.mutable;
 
 import kala.collection.factory.CollectionFactory;
 
-public class MutableCopyOnWriteListTest implements MutableListTestTemplate{
+public final class MutableCopyOnWriteListTest implements MutableListTestTemplate{
     @Override
     public <E> CollectionFactory<E, ?, ? extends MutableList<E>> factory() {
         return (MutableListFactory<E, MutableList<E>>) MutableCopyOnWriteList::create;

@@ -27,7 +27,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class EitherTypeAdapterTest {
+public final class EitherTypeAdapterTest {
     private final Gson gson = new GsonBuilder().registerTypeAdapterFactory(EitherTypeAdapter.factory()).create();
 
     @Test

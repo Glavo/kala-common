@@ -26,7 +26,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TryTypeAdapterTest {
+public final class TryTypeAdapterTest {
     private final Gson gson = new GsonBuilder()
             .registerTypeAdapterFactory(TryTypeAdapter.factory())
             .registerTypeAdapterFactory(PrimitiveOptionTypeAdapter.factory())

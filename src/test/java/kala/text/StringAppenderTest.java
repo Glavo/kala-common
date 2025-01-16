@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class StringAppenderTest {
+public final class StringAppenderTest {
 
     @Test
     public void serializeTest() throws Exception {
