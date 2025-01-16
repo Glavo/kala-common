@@ -167,14 +167,6 @@ public interface ImmutableMap<K, V> extends Map<K, V> {
         return ImmutableMap.factory();
     }
 
-    default @NotNull ImmutableMap<K, V> putted(K key, V value) {
-        return AbstractImmutableMap.putted(this, key, value, mapFactory());
-    }
-
-    default @NotNull ImmutableMap<K, V> removed(K key) {
-        return AbstractImmutableMap.removed(this, key, mapFactory());
-    }
-
     @Override
     default @NotNull ImmutableMap<K, V> toImmutableMap() {
         return this;

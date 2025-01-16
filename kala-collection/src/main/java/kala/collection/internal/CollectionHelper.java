@@ -17,14 +17,17 @@ package kala.collection.internal;
 
 import kala.collection.ArraySeq;
 import kala.collection.Collection;
+import kala.collection.Map;
 import kala.collection.Seq;
 import kala.collection.Set;
 import kala.collection.SortedSet;
 import kala.collection.base.Traversable;
 import kala.collection.factory.CollectionBuilder;
 import kala.collection.factory.CollectionFactory;
+import kala.collection.factory.MapFactory;
 import kala.collection.immutable.ImmutableArray;
 import kala.collection.immutable.ImmutableCollection;
+import kala.collection.immutable.ImmutableMap;
 import kala.collection.immutable.ImmutableSeq;
 import kala.collection.immutable.ImmutableSet;
 import kala.collection.immutable.ImmutableSortedArraySet;
@@ -62,6 +65,14 @@ public final class CollectionHelper {
             return ImmutableArray.factory();
         } else {
             return ImmutableSeq.factory();
+        }
+    }
+
+    public static <K, V> MapFactory<K, V, ?, ? extends ImmutableMap<K, V>> immutableMapFactoryBy(Map<?, ?> map) {
+        if (map instanceof ImmutableMap<?,?> immutableMap) {
+            return immutableMap.mapFactory();
+        } else {
+            return ImmutableMap.factory();
         }
     }
 

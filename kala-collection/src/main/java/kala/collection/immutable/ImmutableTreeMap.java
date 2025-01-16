@@ -20,7 +20,6 @@ import kala.collection.base.AbstractMapIterator;
 import kala.collection.base.MapIterator;
 import kala.collection.factory.MapFactory;
 import kala.collection.internal.tree.KVTree;
-import kala.collection.mutable.MutableHashMap;
 import kala.control.Option;
 import kala.internal.ComparableUtils;
 import kala.tuple.Tuple2;
@@ -29,11 +28,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Collector;
 
 @SuppressWarnings("unchecked")
 public final class ImmutableTreeMap<K, V> extends AbstractImmutableSortedMap<K, V> {
@@ -488,27 +484,7 @@ public final class ImmutableTreeMap<K, V> extends AbstractImmutableSortedMap<K, 
 
     @Override
     public @NotNull MapIterator<K, V> iterator() {
-        final var iterator = tree.entryIterator(true);
-        return new AbstractMapIterator<>() {
-            V value;
-
-            @Override
-            public boolean hasNext() {
-                return iterator.hasNext();
-            }
-
-            @Override
-            public K nextKey() {
-                Map.Entry<K, V> next = iterator.next();
-                value = next.getValue();
-                return next.getKey();
-            }
-
-            @Override
-            public V getValue() {
-                return value;
-            }
-        };
+        return MapIterator.ofIterator(tree.entryIterator(true));
     }
 
     @Override

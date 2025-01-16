@@ -16,10 +16,10 @@
 package kala.collection.internal.view;
 
 import kala.collection.*;
+import kala.collection.base.AbstractMapIterator;
 import kala.collection.base.Iterators;
 import kala.collection.base.MapIterator;
 import kala.control.Option;
-import kala.function.CheckedBiConsumer;
 import kala.tuple.Tuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -401,5 +401,113 @@ public final class MapViews {
         }
 
         //endregion
+    }
+
+    public static class Putted<K, V> extends AbstractMapView<K, V> {
+        protected final @NotNull MapLike<K, V> source;
+        protected final K key;
+        protected final V value;
+
+        public Putted(@NotNull MapLike<K, V> source, K key, V value) {
+            this.source = source;
+            this.key = key;
+            this.value = value;
+        }
+
+        @Override
+        public int size() {
+            return source.size() + (source.containsKey(key) ? 0 : 1);
+        }
+
+        @Override
+        public @NotNull MapIterator<K, V> iterator() {
+            final var it = source.iterator();
+
+            return new AbstractMapIterator<>() {
+                private boolean first = true;
+
+                private Boolean hasNext = null;
+                private K nextKey;
+                private V nextValue;
+
+                @Override
+                public boolean hasNext() {
+                    if (first) {
+                        return true;
+                    }
+
+                    if (hasNext != null) {
+                        return hasNext;
+                    }
+
+                    K k;
+                    while (it.hasNext()) {
+                        k = it.nextKey();
+                        if (!source.equals(k)) {
+                            nextKey = k;
+                            nextValue = it.getValue();
+                            hasNext = true;
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                @Override
+                public K nextKey() {
+                    checkStatus();
+                    if (first) {
+                        first = false;
+                        nextValue = Putted.this.value;
+                        return Putted.this.key;
+                    } else {
+                        hasNext = null;
+                        return nextKey;
+                    }
+                }
+
+                @Override
+                public V getValue() {
+                    return nextValue;
+                }
+            };
+        }
+
+        @Override
+        public boolean containsKey(K key) {
+            return Objects.equals(key, this.key) || source.containsKey(key);
+        }
+
+        @Override
+        public @NotNull Option<V> getOption(K key) {
+            return this.key.equals(key) ? Option.some(value) : source.getOption(key);
+        }
+    }
+
+    public static class Removed<K, V> extends AbstractMapView<K, V> {
+
+        protected final @NotNull MapLike<K, V> source;
+        protected final K key;
+
+        public Removed(@NotNull MapLike<K, V> source, K key) {
+            this.source = source;
+            this.key = key;
+        }
+
+        @Override
+        public int size() {
+            return source.size() - (source.containsKey(key) ? 1 : 0);
+        }
+
+        @Override
+        public boolean containsKey(K key) {
+            return !Objects.equals(this.key, key) && source.containsKey(key);
+        }
+
+        @Override
+        public @NotNull MapIterator<K, V> iterator() {
+            return source.iterator().removed(key);
+        }
     }
 }

@@ -56,6 +56,10 @@ public interface MapFactory<K, V, Builder, R> extends Factory<Builder, R> {
         return factory.build(builder);
     }
 
+    default R empty() {
+        return build(newBuilder());
+    }
+
     @SuppressWarnings("unchecked")
     default R ofEntries(@NotNull Tuple2<? extends K, ? extends V>... entries) {
         return ofEntriesImpl(this, entries);

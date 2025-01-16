@@ -154,4 +154,49 @@ public final class MapIterators {
             return mapper.apply(k, source.getValue());
         }
     }
+
+    public static final class Removed<K, V> extends AbstractMapIterator<K, V> {
+        private final @NotNull MapIterator<? extends K, ? extends V> source;
+        private final K key;
+
+        private Boolean hasNext;
+        private K nextKey;
+        private V nextValue;
+
+        public Removed(@NotNull MapIterator<? extends K, ? extends V> source, K key) {
+            this.source = source;
+            this.key = key;
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (hasNext != null) {
+                return hasNext;
+            }
+
+            K k;
+            while (source.hasNext()) {
+                k = source.nextKey();
+                if (!key.equals(k)) {
+                    nextKey = k;
+                    nextValue = source.getValue();
+                    hasNext = true;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        @Override
+        public K nextKey() {
+            checkStatus();
+            return nextKey;
+        }
+
+        @Override
+        public V getValue() {
+            return nextValue;
+        }
+    }
 }

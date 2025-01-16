@@ -20,6 +20,7 @@ import kala.collection.base.MapIterator;
 import kala.collection.factory.MapFactory;
 import kala.collection.immutable.ImmutableHashMap;
 import kala.collection.immutable.ImmutableMap;
+import kala.collection.internal.CollectionHelper;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
 import kala.tuple.Tuple2;
@@ -121,7 +122,7 @@ public interface Map<K, V> extends AnyMap<K, V>, MapLike<K, V>, Equatable {
         return ImmutableMap.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5);
     }
 
-    static <K, V> @NotNull Map<K, V> of(Object ...values) {
+    static <K, V> @NotNull Map<K, V> of(Object... values) {
         return ImmutableMap.of(values);
     }
 
@@ -208,6 +209,60 @@ public interface Map<K, V> extends AnyMap<K, V>, MapLike<K, V>, Equatable {
 
     default <NK, NV> @NotNull MapFactory<NK, NV, ?, ? extends Map<NK, NV>> mapFactory() {
         return Map.factory();
+    }
+
+    private <Builder> ImmutableMap<K, V> puttedImpl(
+            @NotNull MapFactory<K, V, Builder, ? extends ImmutableMap<K, V>> factory,
+            K key, V value
+    ) {
+        Builder builder = factory.newBuilder();
+        factory.sizeHint(builder, size() + 1);
+        forEach((k, v) -> factory.addToBuilder(builder, k, v));
+        factory.addToBuilder(builder, key, value);
+        return factory.build(builder);
+    }
+
+    private <Builder> ImmutableMap<K, V> removedImpl(
+            @NotNull MapFactory<K, V, Builder, ? extends ImmutableMap<K, V>> factory,
+            K key
+    ) {
+        final int size = this.size();
+        if (size == 1) {
+            return factory.empty();
+        }
+
+        Builder builder = factory.newBuilder();
+        factory.sizeHint(builder, size() - 1);
+        if (key == null) {
+            forEach((k, v) -> {
+                if (null != k) {
+                    factory.addToBuilder(builder, k, v);
+                }
+            });
+        } else {
+            forEach((k, v) -> {
+                if (!key.equals(k)) {
+                    factory.addToBuilder(builder, k, v);
+                }
+            });
+        }
+        return factory.build(builder);
+    }
+
+    default @NotNull ImmutableMap<K, V> putted(K key, V value) {
+        if (this instanceof ImmutableMap<K, V> immutableMap && contains(key, value)) {
+            return immutableMap;
+        }
+
+        return puttedImpl(CollectionHelper.immutableMapFactoryBy(this), key, value);
+    }
+
+    default @NotNull ImmutableMap<K, V> removed(K key) {
+        if (this instanceof ImmutableMap<K, V> immutableMap && !containsKey(key)) {
+            return immutableMap;
+        }
+
+        return removedImpl(CollectionHelper.immutableMapFactoryBy(this), key);
     }
 
     default java.util.@NotNull @UnmodifiableView Map<K, V> asJava() {

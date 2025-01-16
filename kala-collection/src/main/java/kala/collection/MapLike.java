@@ -174,6 +174,10 @@ public interface MapLike<K, V> extends AnyMapLike<K, V> {
 
     //endregion
 
+    @NotNull MapLike<K, V> putted(K key, V value);
+
+    @NotNull MapLike<K, V> removed(K key);
+
     default <R, G extends Growable<? super R>> @NotNull G mapTo(
             @NotNull G destination, @NotNull BiFunction<? super K, ? super V, ? extends R> mapper) {
         this.forEach((k, v) -> destination.plusAssign(mapper.apply(k, v)));
