@@ -350,6 +350,16 @@ public final class ImmutableTreeSet<E> extends AbstractImmutableSortedSet<E> imp
     }
 
     @Override
+    public E getFirst() {
+        return tree.getLeftmost().getKey();
+    }
+
+    @Override
+    public E getLast() {
+        return tree.getRightmost().getKey();
+    }
+
+    @Override
     public @NotNull ImmutableSortedSet<E> added(E value) {
         KVTree<E, Void> newTree = tree.plus(value, null, factory.actualComparator);
         return newTree == tree ? this : new ImmutableTreeSet<>(factory, newTree);

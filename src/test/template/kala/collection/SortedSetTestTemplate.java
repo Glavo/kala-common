@@ -16,19 +16,17 @@
 package kala.collection;
 
 import kala.collection.factory.CollectionFactory;
-import kala.collection.immutable.ImmutableSortedArraySet;
-import kala.collection.immutable.ImmutableSortedSet;
 import org.junit.jupiter.api.Test;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
 import static java.lang.invoke.MethodType.methodType;
@@ -303,5 +301,25 @@ public interface SortedSetTestTemplate extends SetTestTemplate {
 //                assertIterableEquals(reversed, (Set<String>) fromJavaSortedSet.invoke(reversedJavaSortedSet));
             }
         }
+    }
+
+    @Test
+    default void getFirstTest() {
+        assertThrows(NoSuchElementException.class, () -> this.<Integer>of().getFirst());
+
+        assertEquals(1, this.of(1).getFirst());
+        assertEquals(1, this.of(1, 2, 3, 4, 5).getFirst());
+        assertEquals(1, this.of(5, 4, 3, 2, 1).getFirst());
+        assertEquals(1, this.of(1, 4, 5, 3, 2).getFirst());
+    }
+
+    @Test
+    default void getLastTest() {
+        assertThrows(NoSuchElementException.class, () -> this.<Integer>of().getLast());
+
+        assertEquals(1, this.of(1).getLast());
+        assertEquals(5, this.of(1, 2, 3, 4, 5).getLast());
+        assertEquals(5, this.of(5, 4, 3, 2, 1).getLast());
+        assertEquals(5, this.of(1, 4, 5, 3, 2).getLast());
     }
 }
