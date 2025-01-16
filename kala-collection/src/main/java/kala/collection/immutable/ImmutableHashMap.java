@@ -365,26 +365,6 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V> imp
         source.forEach(consumer);
     }
 
-    @Override
-    public @NotNull ImmutableHashMap<K, V> putted(K key, V value) {
-        if (source.contains(key, value)) {
-            return this;
-        }
-        MutableHashMap<K, V> nm = source.clone();
-        nm.put(key, value);
-        return new ImmutableHashMap<>(nm);
-    }
-
-    @Override
-    public @NotNull ImmutableHashMap<K, V> removed(K key) {
-        if (!source.containsKey(key)) {
-            return this;
-        }
-        MutableHashMap<K, V> nm = source.clone();
-        nm.remove(key);
-        return nm.isEmpty() ? empty() : new ImmutableHashMap<>(nm);
-    }
-
     private static final class Factory<K, V> implements MapFactory<K, V, Builder<K, V>, ImmutableHashMap<K, V>> {
         @Override
         public Builder<K, V> newBuilder() {

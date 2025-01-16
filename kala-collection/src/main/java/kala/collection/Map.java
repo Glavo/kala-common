@@ -211,6 +211,14 @@ public interface Map<K, V> extends AnyMap<K, V>, MapLike<K, V>, Equatable {
         return Map.factory();
     }
 
+    default @NotNull ImmutableMap<K, V> putted(K key, V value) {
+        if (this instanceof ImmutableMap<K, V> immutableMap && contains(key, value)) {
+            return immutableMap;
+        }
+
+        return puttedImpl(CollectionHelper.immutableMapFactoryBy(this), key, value);
+    }
+
     private <Builder> ImmutableMap<K, V> puttedImpl(
             @NotNull MapFactory<K, V, Builder, ? extends ImmutableMap<K, V>> factory,
             K key, V value
@@ -220,6 +228,14 @@ public interface Map<K, V> extends AnyMap<K, V>, MapLike<K, V>, Equatable {
         forEach((k, v) -> factory.addToBuilder(builder, k, v));
         factory.addToBuilder(builder, key, value);
         return factory.build(builder);
+    }
+
+    default @NotNull ImmutableMap<K, V> removed(K key) {
+        if (this instanceof ImmutableMap<K, V> immutableMap && !containsKey(key)) {
+            return immutableMap;
+        }
+
+        return removedImpl(CollectionHelper.immutableMapFactoryBy(this), key);
     }
 
     private <Builder> ImmutableMap<K, V> removedImpl(
@@ -232,7 +248,7 @@ public interface Map<K, V> extends AnyMap<K, V>, MapLike<K, V>, Equatable {
         }
 
         Builder builder = factory.newBuilder();
-        factory.sizeHint(builder, size() - 1);
+        factory.sizeHint(builder, size - 1);
         if (key == null) {
             forEach((k, v) -> {
                 if (null != k) {
@@ -247,22 +263,6 @@ public interface Map<K, V> extends AnyMap<K, V>, MapLike<K, V>, Equatable {
             });
         }
         return factory.build(builder);
-    }
-
-    default @NotNull ImmutableMap<K, V> putted(K key, V value) {
-        if (this instanceof ImmutableMap<K, V> immutableMap && contains(key, value)) {
-            return immutableMap;
-        }
-
-        return puttedImpl(CollectionHelper.immutableMapFactoryBy(this), key, value);
-    }
-
-    default @NotNull ImmutableMap<K, V> removed(K key) {
-        if (this instanceof ImmutableMap<K, V> immutableMap && !containsKey(key)) {
-            return immutableMap;
-        }
-
-        return removedImpl(CollectionHelper.immutableMapFactoryBy(this), key);
     }
 
     default java.util.@NotNull @UnmodifiableView Map<K, V> asJava() {

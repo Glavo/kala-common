@@ -15,15 +15,22 @@
  */
 package kala;
 
+import kala.collection.MapLike;
 import kala.collection.SetLike;
 import kala.collection.base.Iterators;
+import kala.control.Option;
+import kala.tuple.Tuple2;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class ExtendedAssertions {
@@ -43,5 +50,24 @@ public class ExtendedAssertions {
         }
 
         if (count != actual.size()) fail(actual + " contains redundant elements");
+    }
+
+    public static <K, V> void assertMapEntries(Iterable<? extends Tuple2<K, ?>> expected, MapLike<K, ?> actual) {
+        var expectedMap = new java.util.HashMap<K, Object>();
+        for (var pair : expected) {
+            if (expectedMap.put(pair.getKey(), pair.getValue()) != null) {
+                throw new AssertionError("duplicate key " + pair.getKey());
+            }
+        }
+
+        Supplier<String> messageSupplier = () -> "Expected: %s\nActual: %s".formatted(expectedMap, actual.joinToString(", ", "{", "}"));
+
+        actual.iterator().forEach((k, v) -> {
+            assertTrue(expectedMap.containsKey(k), messageSupplier);
+            assertEquals(expectedMap.get(k), v, messageSupplier);
+        });
+
+        assertEquals(expectedMap.size(), actual.size(), messageSupplier);
+
     }
 }

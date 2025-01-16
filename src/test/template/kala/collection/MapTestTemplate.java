@@ -30,7 +30,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 @SuppressWarnings("unchecked")
 public interface MapTestTemplate extends MapLikeTestTemplate {
-    @Override
     <K, V> MapFactory<K, V, ?, ? extends Map<K, V>> factory();
 
     @Override

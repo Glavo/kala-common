@@ -22,8 +22,10 @@ import kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
+import static kala.ExtendedAssertions.assertMapEntries;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("unchecked")
@@ -40,11 +42,7 @@ public interface MapLikeTestTemplate {
         return Tuple.of(key, value);
     }
 
-    <K, V> MapFactory<K, V, ?, ? extends MapLike<K, V>> factory();
-
-    default <K, V> MapLike<K, V> ofEntries(Tuple2<K, V>... tuples) {
-        return this.<K, V>factory().ofEntries(tuples);
-    }
+    <K, V> MapLike<K, V> ofEntries(Tuple2<K, V>... entries);
 
     private MapLike<Integer, String> testMap() {
         return ofEntries(
@@ -136,5 +134,24 @@ public interface MapLikeTestTemplate {
         assertEquals("3", map.getOrThrow(3, MyException::new));
         assertEquals("4", map.getOrThrow(4, MyException::new));
         assertThrows(MyException.class, () -> map.getOrThrow(5, MyException::new));
+    }
+
+    @Test
+    default void puttedTest() {
+        var empty = this.<Integer, String>ofEntries();
+        assertMapEntries(List.of(entry(0, "0")), empty.putted(0, "0"));
+        assertMapEntries(List.of(entry(0, "0"), entry(1, "1")), empty.putted(0, "0").putted(1, "1"));
+        assertMapEntries(List.of(entry(0, "1")), empty.putted(0, "0").putted(0, "1"));
+    }
+
+    @Test
+    default void removedTest() {
+        var empty = this.<Integer, String>ofEntries();
+        assertMapEntries(List.of(), empty.removed(0));
+
+        var testMap = testMap();
+        assertMapEntries(List.of(entry(1, "1"), entry(2, "2"), entry(3, "3"), entry(4, "4")), testMap.removed(0));
+        assertMapEntries(List.of(entry(0, "0"), entry(2, "2"), entry(3, "3"), entry(4, "4")), testMap.removed(1));
+        assertMapEntries(List.of(entry(0, "0"), entry(1, "1"), entry(2, "2"), entry(3, "3"), entry(4, "4")), testMap.removed(5));
     }
 }

@@ -681,31 +681,6 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
         return className() + '{' + joinToString() + '}';
     }
 
-    @Override
-    public void forEach(@NotNull BiConsumer<? super K, ? super V> consumer) {
-        Node<K, V> node = this.root;
-        while (node != null) {
-            consumer.accept(node.key, node.value);
-
-            Node<K, V> n;
-            if (node.right != null) {
-                n = node.right;
-                while (n.left != null) {
-                    n = n.left;
-                }
-            } else {
-                n = node.parent;
-                Node<K, V> c = node;
-
-                while (n != null && c == n.right) {
-                    c = n;
-                    n = n.parent;
-                }
-            }
-            node = n;
-        }
-    }
-
     @Serial
     private void writeObject(java.io.ObjectOutputStream s)
             throws java.io.IOException {

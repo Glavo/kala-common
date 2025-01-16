@@ -191,6 +191,7 @@ public final class MapIterators {
         @Override
         public K nextKey() {
             checkStatus();
+            hasNext = null;
             return nextKey;
         }
 

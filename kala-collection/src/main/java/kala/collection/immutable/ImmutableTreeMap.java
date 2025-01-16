@@ -508,16 +508,24 @@ public final class ImmutableTreeMap<K, V> extends AbstractImmutableSortedMap<K, 
         return tree.isEmpty() ? Option.none() : Option.some(tree.getValue());
     }
 
+    private @NotNull ImmutableTreeMap<K, V> withTree(@NotNull KVTree<K, V> newTree) {
+        if (newTree.isEmpty()) {
+            return factory.empty;
+        }
+        if (newTree == this.tree) {
+            return this;
+        }
+        return new ImmutableTreeMap<>(factory, newTree);
+    }
+
     @Override
     public @NotNull ImmutableMap<K, V> putted(K key, V value) {
-        var newTree = tree.plus(key, value, factory.actualComparator);
-        return newTree == tree ? this : new ImmutableTreeMap<>(factory, newTree);
+        return withTree(tree.plus(key, value, factory.actualComparator));
     }
 
     @Override
     public @NotNull ImmutableMap<K, V> removed(K key) {
-        var newTree = tree.minus(key, factory.actualComparator);
-        return newTree == tree ? this : new ImmutableTreeMap<>(factory, newTree);
+        return withTree(tree.minus(key, factory.actualComparator));
     }
 
     private static final class Builder<K, V> {
@@ -547,6 +555,11 @@ public final class ImmutableTreeMap<K, V> extends AbstractImmutableSortedMap<K, 
             this.comparator = comparator;
             this.actualComparator = Objects.requireNonNullElse(comparator, ComparableUtils.naturalOrder());
             this.empty = new ImmutableTreeMap<>(this, KVTree.empty());
+        }
+
+        @Override
+        public ImmutableTreeMap<K, V> empty() {
+            return empty;
         }
 
         @Override

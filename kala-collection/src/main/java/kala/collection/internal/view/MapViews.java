@@ -405,18 +405,18 @@ public final class MapViews {
 
     public static class Putted<K, V> extends AbstractMapView<K, V> {
         protected final @NotNull MapLike<K, V> source;
-        protected final K key;
-        protected final V value;
+        protected final K puttedKey;
+        protected final V puttedValue;
 
-        public Putted(@NotNull MapLike<K, V> source, K key, V value) {
+        public Putted(@NotNull MapLike<K, V> source, K puttedKey, V puttedValue) {
             this.source = source;
-            this.key = key;
-            this.value = value;
+            this.puttedKey = puttedKey;
+            this.puttedValue = puttedValue;
         }
 
         @Override
         public int size() {
-            return source.size() + (source.containsKey(key) ? 0 : 1);
+            return source.size() + (source.containsKey(puttedKey) ? 0 : 1);
         }
 
         @Override
@@ -443,7 +443,7 @@ public final class MapViews {
                     K k;
                     while (it.hasNext()) {
                         k = it.nextKey();
-                        if (!source.equals(k)) {
+                        if (!Objects.equals(puttedKey, k)) {
                             nextKey = k;
                             nextValue = it.getValue();
                             hasNext = true;
@@ -459,8 +459,8 @@ public final class MapViews {
                     checkStatus();
                     if (first) {
                         first = false;
-                        nextValue = Putted.this.value;
-                        return Putted.this.key;
+                        nextValue = Putted.this.puttedValue;
+                        return Putted.this.puttedKey;
                     } else {
                         hasNext = null;
                         return nextKey;
@@ -476,12 +476,12 @@ public final class MapViews {
 
         @Override
         public boolean containsKey(K key) {
-            return Objects.equals(key, this.key) || source.containsKey(key);
+            return Objects.equals(key, this.puttedKey) || source.containsKey(key);
         }
 
         @Override
         public @NotNull Option<V> getOption(K key) {
-            return this.key.equals(key) ? Option.some(value) : source.getOption(key);
+            return this.puttedKey.equals(key) ? Option.some(puttedValue) : source.getOption(key);
         }
     }
 
@@ -503,6 +503,15 @@ public final class MapViews {
         @Override
         public boolean containsKey(K key) {
             return !Objects.equals(this.key, key) && source.containsKey(key);
+        }
+
+        @Override
+        public @NotNull Option<V> getOption(K key) {
+            if (Objects.equals(this.key, key)) {
+                return Option.none();
+            } else {
+                return source.getOption(key);
+            }
         }
 
         @Override
