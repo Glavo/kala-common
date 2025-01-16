@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-// https://github.com/hrldcpr/pcollections/blob/master/src/main/java/org/pcollections/IntTree.java
+// https://github.com/hrldcpr/pcollections/v4.0.2/master/src/main/java/org/pcollections/IntTree.java
 public final class IntTree<V> implements Iterable<V> {
 
     // marker value:
