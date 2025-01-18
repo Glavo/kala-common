@@ -75,7 +75,7 @@ public sealed abstract class ChampMapNode<K, V> extends ChampNode<ChampMapNode<K
 
     public abstract int size();
 
-    public abstract void forEach(BiConsumer<K, V> consumer);
+    public abstract void forEach(BiConsumer<? super K, ? super V> consumer);
 
     public abstract <U> ChampMapNode<K, U> transform(BiFunction<K, V, U> function);
 

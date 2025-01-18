@@ -181,7 +181,7 @@ public final class HashCollisionChampMapNode<K, V> extends ChampMapNode<K, V> {
     }
 
     @Override
-    public void forEach(BiConsumer<K, V> consumer) {
+    public void forEach(BiConsumer<? super K, ? super V> consumer) {
         content.forEach(Consumers.tupled(consumer));
     }
 

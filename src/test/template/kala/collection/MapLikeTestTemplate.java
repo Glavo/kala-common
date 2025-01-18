@@ -20,12 +20,14 @@ import kala.TestValue;
 import kala.control.Option;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
+import kala.value.primitive.BooleanVar;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.BiConsumer;
 
 import static kala.ExtendedAssertions.assertMapEntries;
 import static org.junit.jupiter.api.Assertions.*;
@@ -254,5 +256,46 @@ public interface MapLikeTestTemplate {
         assertMapEntries(List.of(entry(1, "1"), entry(2, "2"), entry(3, "3"), entry(4, "4")), testMap.removed(0));
         assertMapEntries(List.of(entry(0, "0"), entry(2, "2"), entry(3, "3"), entry(4, "4")), testMap.removed(1));
         assertMapEntries(List.of(entry(0, "0"), entry(1, "1"), entry(2, "2"), entry(3, "3"), entry(4, "4")), testMap.removed(5));
+    }
+
+    @Test
+    default void forEachTest() {
+        {
+            final var empty = this.<Integer, String>ofEntries();
+            final var holder =  new BooleanVar(false);
+            empty.forEach((k, v) -> holder.value = true);
+            assertFalse(holder.value);
+        }
+
+        class Helper<K, V> implements BiConsumer<K, V>, AutoCloseable {
+            final java.util.HashMap<K, V> values = new java.util.HashMap<>();
+
+            @Override
+            public void accept(K k, V v) {
+                assertTrue(values.remove(k, v), () -> "Value not removed: key=" + k + ", value=" + v);
+            }
+
+            public void close() {
+                assertTrue(values.isEmpty(), () -> "The remaining values: " + values);
+            }
+        }
+
+        try (var helper = new Helper<Integer, String>()) {
+            final int n = 5;
+            for (int i = 0; i < n; i++) {
+                helper.values.put(i, Integer.toString(i));
+            }
+
+            testMap(n).forEach(helper);
+        }
+
+        try (var helper = new Helper<HashCollisionsValue, Integer>()) {
+            final int n = 10000;
+            for (int i = 0; i < n; i++) {
+                helper.values.put(new HashCollisionsValue(i), i);
+            }
+
+            testMapHashCollisions(n).forEach(helper);
+        }
     }
 }

@@ -28,6 +28,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.function.BiConsumer;
 
 import static kala.collection.internal.champ.ChampNode.improve;
 
@@ -263,6 +264,11 @@ public final class ImmutableChampMap<K, V> extends AbstractImmutableMap<K, V> {
     public @NotNull ImmutableMap<K, V> removed(K key) {
         int keyUnimprovedHash = Objects.hashCode(key);
         return withTree(rootNode.removed(key, keyUnimprovedHash, improve(keyUnimprovedHash), 0));
+    }
+
+    @Override
+    public void forEach(@NotNull BiConsumer<? super K, ? super V> consumer) {
+        rootNode.forEach(consumer);
     }
 
     private static final class Factory<K, V> implements MapFactory<K, V, ChampMapBuilder<K, V>, ImmutableChampMap<K, V>> {
