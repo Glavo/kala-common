@@ -271,6 +271,11 @@ public interface MapLikeTestTemplate {
 
             assertMapEntries(data, map);
 
+            assertMapEntries(data.prepended(Tuple.of(new HashCollisionsValue(-1), Integer.MAX_VALUE)),
+                    map.updated(new HashCollisionsValue(-1), Integer.MAX_VALUE));
+            assertMapEntries(data.appended(Tuple.of(new HashCollisionsValue(n), Integer.MAX_VALUE)),
+                    map.updated(new HashCollisionsValue(n), Integer.MAX_VALUE));
+
             for (int i = 0; i < n; i++) {
                 assertMapEntries(data.updated(i, Tuple.of(new HashCollisionsValue(i), Integer.MAX_VALUE)),
                         map.updated(new HashCollisionsValue(i), Integer.MAX_VALUE));
