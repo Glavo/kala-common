@@ -15,6 +15,7 @@
  */
 package kala.collection.mutable;
 
+import kala.collection.SortedMap;
 import kala.collection.SortedMapTestTemplate;
 import kala.collection.factory.MapFactory;
 import kala.tuple.Tuple2;
@@ -38,5 +39,15 @@ public interface MutableSortedMapTestTemplate extends MutableMapTestTemplate, So
 
     default <K, V> MutableSortedMap<K, V> ofEntries(Comparator<? super K> comparator, @NotNull Tuple2<K, V>... tuples) {
         return this.<K, V>factory(comparator).ofEntries(tuples);
+    }
+
+    @Override
+    default <K, V> MutableSortedMap<K, V> from(Iterable<Tuple2<K, V>> entries) {
+        return this.<K, V>factory().from(entries);
+    }
+
+    @Override
+    default <K, V> MutableSortedMap<K, V> from(Comparator<? super K> comparator, Iterable<Tuple2<K, V>> entries) {
+        return this.<K, V>factory(comparator).from(entries);
     }
 }

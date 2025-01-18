@@ -15,6 +15,7 @@
  */
 package kala.collection.immutable;
 
+import kala.collection.MapLike;
 import kala.collection.MapTestTemplate;
 import kala.collection.factory.MapFactory;
 import kala.tuple.Tuple2;
@@ -27,5 +28,10 @@ public interface ImmutableMapTestTemplate extends MapTestTemplate {
     @SuppressWarnings("unchecked")
     default <K, V> ImmutableMap<K, V> ofEntries(Tuple2<K, V>... tuples) {
         return this.<K, V>factory().ofEntries(tuples);
+    }
+
+    @Override
+    default <K, V> ImmutableMap<K, V> from(Iterable<Tuple2<K, V>> entries) {
+        return this.<K, V>factory().from(entries);
     }
 }

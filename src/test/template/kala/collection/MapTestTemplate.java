@@ -37,6 +37,11 @@ public interface MapTestTemplate extends MapLikeTestTemplate {
         return this.<K, V>factory().ofEntries(tuples);
     }
 
+    @Override
+    default <K, V> Map<K, V> from(Iterable<Tuple2<K, V>> entries) {
+        return this.<K, V>factory().from(entries);
+    }
+
     default Class<?> mapType() {
         final String testClassName = this.getClass().getName();
         assertTrue(testClassName.endsWith("Test"));

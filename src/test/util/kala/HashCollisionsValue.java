@@ -29,4 +29,9 @@ public record HashCollisionsValue(int value) implements Comparable<HashCollision
     public int compareTo(@NotNull HashCollisionsValue that) {
         return Integer.compare(this.value, that.value);
     }
+
+    @Override
+    public String toString() {
+        return "#(" + value + ")";
+    }
 }

@@ -45,6 +45,15 @@ public interface SortedMapTestTemplate extends MapTestTemplate {
         return this.<K, V>factory(comparator).ofEntries(tuples);
     }
 
+    @Override
+    default <K, V> SortedMap<K, V> from(Iterable<Tuple2<K, V>> entries) {
+        return this.<K, V>factory().from(entries);
+    }
+
+    default <K, V> SortedMap<K, V> from(Comparator<? super K> comparator, Iterable<Tuple2<K, V>> entries) {
+        return this.<K, V>factory(comparator).from(entries);
+    }
+
     @Test
     @Override
     default void ofTest() throws Throwable {

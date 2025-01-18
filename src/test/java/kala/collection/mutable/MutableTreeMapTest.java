@@ -15,8 +15,8 @@
  */
 package kala.collection.mutable;
 
+import kala.collection.MapLike;
 import kala.collection.MapLikeTestTemplate;
-import kala.collection.MapView;
 import kala.collection.factory.MapFactory;
 import kala.tuple.Tuple2;
 
@@ -31,8 +31,8 @@ public final class MutableTreeMapTest implements MutableSortedMapTestTemplate {
     static final class ViewTest implements MapLikeTestTemplate {
 
         @Override
-        public <K, V> MapView<K, V> ofEntries(Tuple2<K, V>... entries) {
-            return MutableTreeMap.ofEntries(null, entries).view();
+        public <K, V> MapLike<K, V> from(Iterable<Tuple2<K, V>> entries) {
+            return MutableTreeMap.from(null, entries).view();
         }
     }
 }

@@ -16,9 +16,7 @@
 package kala.collection;
 
 import kala.HashCollisionsValue;
-import kala.TestValue;
 import kala.collection.immutable.ImmutableSeq;
-import kala.collection.mutable.MutableArrayList;
 import kala.control.Option;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
@@ -26,10 +24,9 @@ import kala.value.primitive.BooleanVar;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.function.BiConsumer;
 
 import static kala.ExtendedAssertions.assertMapEntries;
 import static org.junit.jupiter.api.Assertions.*;
@@ -49,37 +46,18 @@ public interface MapLikeTestTemplate {
         return Tuple.of(key, value);
     }
 
-    <K, V> MapLike<K, V> ofEntries(Tuple2<K, V>... entries);
-
-    /// Data:
-    /// ```
-    ///{
-    ///   0: "0",
-    ///   1: "1",
-    ///   2: "2",
-    ///   3: "3",
-    ///   4: "4",
-    ///   5: "5"
-    ///}
-    ///```
-    private MapLike<Integer, String> testMap() {
-        return testMap(5);
+    default <K, V> MapLike<K, V> ofEntries(Tuple2<K, V>... entries) {
+        return from(Arrays.asList(entries));
     }
 
-    private Seq<Tuple2<Integer, String>> testMapData(int n) {
+    <K, V> MapLike<K, V> from(Iterable<Tuple2<K, V>> entries);
+
+    private Seq<Tuple2<Integer, String>> testData(int n) {
         return ImmutableSeq.fill(n, i -> Tuple.of(i, String.valueOf(i)));
     }
 
-    private MapLike<Integer, String> testMap(int n) {
-        return ofEntries(testMapData(n).toArray(new Tuple2[0]));
-    }
-
-    private Seq<Tuple2<HashCollisionsValue, Integer>> hashCollisions(int n) {
+    private Seq<Tuple2<HashCollisionsValue, Integer>> testHashCollisionsData(int n) {
         return ImmutableSeq.fill(n, i -> Tuple.of(new HashCollisionsValue(i), i));
-    }
-
-    private MapLike<HashCollisionsValue, Integer> testMapHashCollisions(int n) {
-        return ofEntries(hashCollisions(n).toArray(new Tuple2[0]));
     }
 
     @Test
@@ -87,19 +65,19 @@ public interface MapLikeTestTemplate {
         assertThrows(NoSuchElementException.class, () -> this.<Integer, String>ofEntries().get(0));
 
         {
-            var map = this.testMap();
+            final int n = 10;
+            final var map = from(testData(n));
+
+            for (int i = 0; i < n; i++) {
+                assertEquals(String.valueOf(i), map.get(i));
+            }
             assertThrows(NoSuchElementException.class, () -> map.get(-1));
-            assertEquals("0", map.get(0));
-            assertEquals("1", map.get(1));
-            assertEquals("2", map.get(2));
-            assertEquals("3", map.get(3));
-            assertEquals("4", map.get(4));
-            assertThrows(NoSuchElementException.class, () -> map.get(5));
+            assertThrows(NoSuchElementException.class, () -> map.get(n));
         }
 
         {
-            int n = 100;
-            var map = testMapHashCollisions(n);
+            final int n = 100;
+            final var map = from(testHashCollisionsData(n));
 
             assertThrows(NoSuchElementException.class, () -> map.get(new HashCollisionsValue(-1)));
             assertThrows(NoSuchElementException.class, () -> map.get(new HashCollisionsValue(n)));
@@ -115,19 +93,19 @@ public interface MapLikeTestTemplate {
         assertNull(this.<Integer, String>ofEntries().getOrNull(0));
 
         {
-            var map = this.testMap();
+            final int n = 10;
+            final var map = from(testData(n));
+
+            for (int i = 0; i < n; i++) {
+                assertEquals(String.valueOf(i), map.getOrNull(i));
+            }
             assertNull(map.getOrNull(-1));
-            assertEquals("0", map.getOrNull(0));
-            assertEquals("1", map.getOrNull(1));
-            assertEquals("2", map.getOrNull(2));
-            assertEquals("3", map.getOrNull(3));
-            assertEquals("4", map.getOrNull(4));
-            assertNull(map.getOrNull(5));
+            assertNull(map.getOrNull(n));
         }
 
         {
-            int n = 100;
-            var map = testMapHashCollisions(n);
+            final int n = 100;
+            final var map = from(testHashCollisionsData(n));
 
             assertNull(map.getOrNull(new HashCollisionsValue(-1)));
             assertNull(map.getOrNull(new HashCollisionsValue(n)));
@@ -143,19 +121,20 @@ public interface MapLikeTestTemplate {
         assertEquals(Option.none(), this.<Integer, String>ofEntries().getOption(0));
 
         {
-            var map = this.testMap();
+            final int n = 10;
+            final var map = from(testData(n));
+
             assertEquals(Option.none(), map.getOption(-1));
-            assertEquals(Option.some("0"), map.getOption(0));
-            assertEquals(Option.some("1"), map.getOption(1));
-            assertEquals(Option.some("2"), map.getOption(2));
-            assertEquals(Option.some("3"), map.getOption(3));
-            assertEquals(Option.some("4"), map.getOption(4));
-            assertEquals(Option.none(), map.getOption(5));
+            assertEquals(Option.none(), map.getOption(n));
+
+            for (int i = 0; i < n; i++) {
+                assertEquals(Option.some(String.valueOf(i)), map.getOption(i));
+            }
         }
 
         {
-            int n = 100;
-            var map = testMapHashCollisions(n);
+            final int n = 100;
+            final var map = from(testHashCollisionsData(n));
 
             assertEquals(Option.none(), map.getOption(new HashCollisionsValue(-1)));
             assertEquals(Option.none(), map.getOption(new HashCollisionsValue(n)));
@@ -171,22 +150,19 @@ public interface MapLikeTestTemplate {
         assertNull(this.<Integer, String>ofEntries().getOrDefault(0, null));
         assertEquals("default", this.<Integer, String>ofEntries().getOrDefault(0, "default"));
 
-        var map = this.testMap();
-        assertEquals("default", map.getOrDefault(-1, "default"));
-        assertEquals("0", map.getOrDefault(0, "default"));
-        assertEquals("1", map.getOrDefault(1, "default"));
-        assertEquals("2", map.getOrDefault(2, "default"));
-        assertEquals("3", map.getOrDefault(3, "default"));
-        assertEquals("4", map.getOrDefault(4, "default"));
-        assertEquals("default", map.getOrDefault(5, "default"));
+        {
+            final int n = 10;
+            final var map = from(testData(n));
 
-        assertNull(map.getOrDefault(-1, null));
-        assertEquals("0", map.getOrDefault(0, null));
-        assertEquals("1", map.getOrDefault(1, null));
-        assertEquals("2", map.getOrDefault(2, null));
-        assertEquals("3", map.getOrDefault(3, null));
-        assertEquals("4", map.getOrDefault(4, null));
-        assertNull(map.getOrDefault(5, null));
+            for (int i = 0; i < n; i++) {
+                assertEquals(String.valueOf(i), map.getOrDefault(i, "default"));
+            }
+
+            assertEquals("default", map.getOrDefault(-1, "default"));
+            assertEquals("default", map.getOrDefault(n, "default"));
+            assertNull(map.getOrDefault(-1, null));
+            assertNull(map.getOrDefault(n, null));
+        }
     }
 
     @Test
@@ -194,16 +170,20 @@ public interface MapLikeTestTemplate {
         class MyException extends Throwable {
         }
 
-        assertThrows(MyException.class, () -> this.<Integer, String>ofEntries().getOrThrow(0, MyException::new));
+        {
+            assertThrows(MyException.class, () -> this.<Integer, String>ofEntries().getOrThrow(0, MyException::new));
+        }
 
-        var map = this.testMap();
-        assertThrows(MyException.class, () -> map.getOrThrow(-1, MyException::new));
-        assertEquals("0", map.getOrThrow(0, MyException::new));
-        assertEquals("1", map.getOrThrow(1, MyException::new));
-        assertEquals("2", map.getOrThrow(2, MyException::new));
-        assertEquals("3", map.getOrThrow(3, MyException::new));
-        assertEquals("4", map.getOrThrow(4, MyException::new));
-        assertThrows(MyException.class, () -> map.getOrThrow(5, MyException::new));
+        {
+            final int n = 10;
+            final var map = from(testData(n));
+
+            for (int i = 0; i < n; i++) {
+                assertEquals(String.valueOf(i), map.getOrThrow(i, MyException::new));
+            }
+            assertThrows(MyException.class, () -> map.getOrThrow(-1, MyException::new));
+            assertThrows(MyException.class, () -> map.getOrThrow(n, MyException::new));
+        }
     }
 
     @Test
@@ -218,8 +198,8 @@ public interface MapLikeTestTemplate {
         }
 
         {
-            final int n = 5;
-            var testMap = testMap(n);
+            final int n = 10;
+            var testMap = from(testData(n));
 
             assertFalse(testMap.containsKey(-1));
             assertFalse(testMap.containsKey(n));
@@ -230,7 +210,7 @@ public interface MapLikeTestTemplate {
 
         {
             int n = 100;
-            var map = testMapHashCollisions(n);
+            var map = from(testHashCollisionsData(n));
 
             assertFalse(map.containsKey(new HashCollisionsValue(-1)));
             assertFalse(map.containsKey(new HashCollisionsValue(n)));
@@ -251,23 +231,23 @@ public interface MapLikeTestTemplate {
         }
 
         {
-            final int n = 5;
-            var map = this.testMap(n);
+            final int n = 10;
+            final var data = testData(n);
+            final var map = from(data);
 
-            assertMapEntries(List.of(entry(-1, "-1"), entry(0, "0"), entry(1, "1"), entry(2, "2"), entry(3, "3"), entry(4, "4")), map.updated(-1, "-1"));
-            assertMapEntries(List.of(entry(0, "---"), entry(1, "1"), entry(2, "2"), entry(3, "3"), entry(4, "4")), map.updated(0, "---"));
-            assertMapEntries(List.of(entry(0, "0"), entry(1, "---"), entry(2, "2"), entry(3, "3"), entry(4, "4")), map.updated(1, "---"));
-            assertMapEntries(List.of(entry(0, "0"), entry(1, "1"), entry(2, "---"), entry(3, "3"), entry(4, "4")), map.updated(2, "---"));
-            assertMapEntries(List.of(entry(0, "0"), entry(1, "1"), entry(2, "2"), entry(3, "---"), entry(4, "4")), map.updated(3, "---"));
-            assertMapEntries(List.of(entry(0, "0"), entry(1, "1"), entry(2, "2"), entry(3, "3"), entry(4, "---")), map.updated(4, "---"));
-            assertMapEntries(List.of(entry(0, "0"), entry(1, "1"), entry(2, "2"), entry(3, "3"), entry(4, "4"), entry(5, "---")), map.updated(5, "---"));
+            for (int i = 0; i < n; i++) {
+                assertMapEntries(data.updated(i, Tuple.of(i, "---")), map.updated(i, "---"));
+            }
+
+            assertMapEntries(data.prepended(Tuple.of(-1, "---")), map.updated(-1, "---"));
+            assertMapEntries(data.appended(Tuple.of(n, "---")), map.updated(n, "---"));
         }
 
         {
             final int n = 100;
 
-            var data = hashCollisions(n);
-            var map = testMapHashCollisions(n);
+            var data = testHashCollisionsData(n);
+            var map = from(data);
 
             assertMapEntries(data, map);
 
@@ -285,13 +265,39 @@ public interface MapLikeTestTemplate {
 
     @Test
     default void removedTest() {
-        var empty = this.<Integer, String>ofEntries();
-        assertMapEntries(List.of(), empty.removed(0));
+        {
+            var empty = this.<Integer, String>ofEntries();
+            assertMapEntries(List.of(), empty.removed(0));
+            assertMapEntries(List.of(), empty.removed(1));
+            assertMapEntries(List.of(), empty.removed(-1));
+        }
 
-        var testMap = testMap();
-        assertMapEntries(List.of(entry(1, "1"), entry(2, "2"), entry(3, "3"), entry(4, "4")), testMap.removed(0));
-        assertMapEntries(List.of(entry(0, "0"), entry(2, "2"), entry(3, "3"), entry(4, "4")), testMap.removed(1));
-        assertMapEntries(List.of(entry(0, "0"), entry(1, "1"), entry(2, "2"), entry(3, "3"), entry(4, "4")), testMap.removed(5));
+        {
+            final int n = 10;
+            final var data = testData(n);
+            final var map = from(data);
+
+            for (int i = 0; i < n; i++) {
+                assertMapEntries(data.removedAt(i), map.removed(i));
+            }
+
+            assertMapEntries(data, map.removed(-1));
+            assertMapEntries(data, map.removed(n));
+        }
+
+        {
+            final int n = 100;
+
+            final var data = testHashCollisionsData(n);
+            final var map = from(data);
+
+            for (int i = 0; i < n; i++) {
+                assertMapEntries(data.removedAt(i), map.removed(new HashCollisionsValue(i)));
+            }
+
+            assertMapEntries(data, map.removed(new HashCollisionsValue(-1)));
+            assertMapEntries(data, map.removed(new HashCollisionsValue(n)));
+        }
     }
 
     @Test
@@ -303,35 +309,19 @@ public interface MapLikeTestTemplate {
             assertFalse(holder.value);
         }
 
-        class Helper<K, V> implements BiConsumer<K, V>, AutoCloseable {
-            final java.util.HashMap<K, V> values = new java.util.HashMap<>();
+        forEachTest(testData(10));
+        forEachTest(testHashCollisionsData(100));
+    }
 
-            @Override
-            public void accept(K k, V v) {
-                assertTrue(values.remove(k, v), () -> "Value not removed: key=" + k + ", value=" + v);
-            }
-
-            public void close() {
-                assertTrue(values.isEmpty(), () -> "The remaining values: " + values);
-            }
+    private <K, V> void forEachTest(Seq<Tuple2<K, V>> data) {
+        final java.util.HashMap<K, V> values = new java.util.HashMap<>();
+        for (var entry : data) {
+            values.put(entry.getKey(), entry.getValue());
         }
 
-        try (var helper = new Helper<Integer, String>()) {
-            final int n = 5;
-            for (int i = 0; i < n; i++) {
-                helper.values.put(i, Integer.toString(i));
-            }
+        from(data).forEach((k, v) ->
+                assertTrue(values.remove(k, v), () -> "Value not removed: key=" + k + ", value=" + v));
 
-            testMap(n).forEach(helper);
-        }
-
-        try (var helper = new Helper<HashCollisionsValue, Integer>()) {
-            final int n = 100;
-            for (int i = 0; i < n; i++) {
-                helper.values.put(new HashCollisionsValue(i), i);
-            }
-
-            testMapHashCollisions(n).forEach(helper);
-        }
+        assertTrue(values.isEmpty(), () -> "The remaining values: " + values);
     }
 }

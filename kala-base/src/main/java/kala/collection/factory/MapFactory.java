@@ -40,29 +40,35 @@ public interface MapFactory<K, V, Builder, R> extends Factory<Builder, R> {
 
     void addToBuilder(Builder builder, K key, V value);
 
-    default void addAllToBuilder(Builder builder, java.util.@NotNull Map<? extends K, ? extends V> values) {
-        values.forEach((k, v) -> addToBuilder(builder, k, v));
+    default void addToBuilder(Builder builder, java.util.Map.@NotNull Entry<? extends K, ? extends V> entry) {
+        addToBuilder(builder, entry.getKey(), entry.getValue());
+    }
+
+    default void addToBuilder(Builder builder, Tuple2<? extends K, ? extends V> entry) {
+        addToBuilder(builder, (java.util.Map.Entry<? extends K, ? extends V>) entry);
     }
 
     Builder mergeBuilder(Builder builder1, Builder builder2);
 
-    private static <K, V, Builder, R> R ofEntriesImpl(
-            MapFactory<K, V, Builder, R> factory,
-            @NotNull Tuple2<? extends K, ? extends V>... entries) {
-        final Builder builder = factory.newBuilder();
-        for (var entry : entries) {
-            factory.addToBuilder(builder, entry.getKey(), entry.getValue());
-        }
-        return factory.build(builder);
-    }
-
-    default R empty() {
-        return build(newBuilder());
+    default void addAllToBuilder(Builder builder, java.util.@NotNull Map<? extends K, ? extends V> values) {
+        values.forEach((k, v) -> addToBuilder(builder, k, v));
     }
 
     @SuppressWarnings("unchecked")
     default R ofEntries(@NotNull Tuple2<? extends K, ? extends V>... entries) {
-        return ofEntriesImpl(this, entries);
+        final Builder builder = newBuilder();
+        for (var entry : entries) {
+            addToBuilder(builder, entry.getKey(), entry.getValue());
+        }
+        return build(builder);
+    }
+
+    default R from(@NotNull Iterable<? extends java.util.Map.Entry<? extends K, ? extends V>> entries) {
+        final Builder builder = newBuilder();
+        for (Map.Entry<? extends K, ? extends V> entry : entries) {
+            addToBuilder(builder, entry.getKey(), entry.getValue());
+        }
+        return build(builder);
     }
 
     default <T> @NotNull Collector<T, Builder, R> collector(

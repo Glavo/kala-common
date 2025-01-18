@@ -15,6 +15,7 @@
  */
 package kala.collection.mutable;
 
+import kala.collection.Map;
 import kala.collection.MapTestTemplate;
 import kala.collection.factory.MapFactory;
 import kala.tuple.Tuple2;
@@ -35,6 +36,11 @@ public interface MutableMapTestTemplate extends MapTestTemplate {
     @SuppressWarnings("unchecked")
     default <K, V> MutableMap<K, V> ofEntries(Tuple2<K, V>... tuples) {
         return this.<K, V>factory().ofEntries(tuples);
+    }
+
+    @Override
+    default <K, V> MutableMap<K, V> from(Iterable<Tuple2<K, V>> entries) {
+        return this.<K, V>factory().from(entries);
     }
 
     @TestFactory

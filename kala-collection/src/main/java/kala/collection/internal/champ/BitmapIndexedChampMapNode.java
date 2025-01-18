@@ -312,11 +312,12 @@ public final class BitmapIndexedChampMapNode<K, V> extends ChampMapNode<K, V> {
                     if (index == 0)
                         return new BitmapIndexedChampMapNode<>(newDataMap, 0, new Object[]{getKey(1), getValue(1)}, new int[]{originalHashes[1]}, 1, improve(getHash(1)));
                     else
-                        return new BitmapIndexedChampMapNode<K, V>(newDataMap, 0, new Object[]{getKey(0), getValue(0)}, new int[]{originalHashes[0]}, 1, improve(getHash(0)));
+                        return new BitmapIndexedChampMapNode<>(newDataMap, 0, new Object[]{getKey(0), getValue(0)}, new int[]{originalHashes[0]}, 1, improve(getHash(0)));
                 } else
                     return copyAndRemoveValue(bitpos, keyHash);
-            } else
+            } else {
                 return this;
+            }
         } else if ((nodeMap & bitpos) != 0) {
             int index = indexFrom(nodeMap, mask, bitpos);
             ChampMapNode<K, V> subNode = this.getNode(index);
@@ -324,8 +325,9 @@ public final class BitmapIndexedChampMapNode<K, V> extends ChampMapNode<K, V> {
             ChampMapNode<K, V> subNodeNew = subNode.removed(key, originalHash, keyHash, shift + BitPartitionSize);
             // assert(subNodeNew.size != 0, "Sub-node must have at least one element.")
 
-            if (subNodeNew == subNode)
+            if (subNodeNew == subNode) {
                 return this;
+            }
 
             // cache just in case subNodeNew is a hashCollision node, in which in which case a little arithmetic is avoided
             // in Vector#length

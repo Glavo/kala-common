@@ -29,10 +29,9 @@ public final class ImmutableTreeMapTest implements ImmutableSortedMapTestTemplat
     }
 
     static final class ViewTest implements MapLikeTestTemplate {
-
         @Override
-        public <K, V> MapLike<K, V> ofEntries(Tuple2<K, V>... entries) {
-            return ImmutableTreeMap.ofEntries(null, entries).view();
+        public <K, V> MapLike<K, V> from(Iterable<Tuple2<K, V>> entries) {
+            return ImmutableTreeMap.from(null, entries).view();
         }
     }
 }

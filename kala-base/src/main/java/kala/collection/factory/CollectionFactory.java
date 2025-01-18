@@ -183,10 +183,6 @@ public interface CollectionFactory<E, Builder, @Covariant R>
         this.sizeHint(builder, (AnyTraversable<?>) it, delta);
     }
 
-    default R empty() {
-        return build(newBuilder());
-    }
-
     default R from(E @NotNull [] values) {
         if (values.length == 0) {
             return empty();

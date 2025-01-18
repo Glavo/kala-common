@@ -123,7 +123,7 @@ public final class HashCollisionChampMapNode<K, V> extends ChampMapNode<K, V> {
         if (!this.containsKey(key, originalHash, hash, shift)) {
             return this;
         } else {
-            var updatedContent = content.filter(keyValuePair -> keyValuePair.getKey() != key);
+            var updatedContent = content.filter(keyValuePair -> !Objects.equals(keyValuePair.getKey(), key));
             // assert(updatedContent.size == content.size - 1)
 
             if (updatedContent.size() == 1) {
@@ -211,7 +211,7 @@ public final class HashCollisionChampMapNode<K, V> extends ChampMapNode<K, V> {
 
         for (var tuple : content) {
             int index = node.indexOf(tuple.getKey());
-            if (index < 0 || tuple.getValue() != node.content.get(index).getValue()) {
+            if (index < 0 || !Objects.equals(tuple.getValue(), node.content.get(index).getValue())) {
                 return false;
             }
         }

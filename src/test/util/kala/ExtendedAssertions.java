@@ -28,7 +28,6 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -53,7 +52,7 @@ public class ExtendedAssertions {
     }
 
     public static <K, V> void assertMapEntries(Iterable<? extends Tuple2<K, ?>> expected, MapLike<K, ?> actual) {
-        var expectedMap = new java.util.HashMap<K, Object>();
+        var expectedMap = new java.util.LinkedHashMap<K, Object>();
         for (var pair : expected) {
             if (expectedMap.put(pair.getKey(), pair.getValue()) != null) {
                 throw new AssertionError("duplicate key " + pair.getKey());
@@ -63,8 +62,8 @@ public class ExtendedAssertions {
         Supplier<String> messageSupplier = () -> "Expected: %s\nActual: %s".formatted(expectedMap, actual.joinToString(", ", "{", "}"));
 
         actual.iterator().forEach((k, v) -> {
-            assertTrue(expectedMap.containsKey(k), messageSupplier);
-            assertEquals(expectedMap.get(k), v, messageSupplier);
+            assertTrue(expectedMap.containsKey(k), () -> "Actual Key: %s, Actual Value: %s\n".formatted(k, v) + messageSupplier.get());
+            assertEquals(expectedMap.get(k), v, () -> "Actual Key: %s, Actual Value: %s\n".formatted(k, v) + messageSupplier.get());
         });
 
         assertEquals(expectedMap.size(), actual.size(), messageSupplier);
