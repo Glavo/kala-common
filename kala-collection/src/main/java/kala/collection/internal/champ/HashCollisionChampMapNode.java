@@ -43,7 +43,6 @@ public final class HashCollisionChampMapNode<K, V> extends ChampMapNode<K, V> {
         this.originalHash = originalHash;
         this.hash = hash;
         this.content = content;
-
     }
 
     int indexOf(Object key) {
