@@ -231,7 +231,7 @@ public final class ImmutableChampMap<K, V> extends AbstractImmutableMap<K, V> {
     public boolean containsKey(K key) {
         int keyUnimprovedHash = Objects.hashCode(key);
         int keyHash = improve(keyUnimprovedHash);
-        return rootNode.containsKey(key, keyHash, keyHash, 0);
+        return rootNode.containsKey(key, keyUnimprovedHash, keyHash, 0);
     }
 
     @Override

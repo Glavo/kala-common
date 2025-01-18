@@ -59,13 +59,15 @@ public interface MapLikeTestTemplate {
     ///}
     ///```
     private MapLike<Integer, String> testMap() {
-        return ofEntries(
-                Tuple.of(0, "0"),
-                Tuple.of(1, "1"),
-                Tuple.of(2, "2"),
-                Tuple.of(3, "3"),
-                Tuple.of(4, "4")
-        );
+        return testMap(5);
+    }
+
+    private MapLike<Integer, String> testMap(int n) {
+        var list = new ArrayList<Tuple2<Integer, String>>(n);
+        for (int i = 0; i < n; i++) {
+            list.add(Tuple.of(i, String.valueOf(i)));
+        }
+        return ofEntries(list.toArray(new Tuple2[0]));
     }
 
     private MapLike<HashCollisionsValue, Integer> testMapHashCollisions(int n) {
@@ -198,6 +200,41 @@ public interface MapLikeTestTemplate {
         assertEquals("3", map.getOrThrow(3, MyException::new));
         assertEquals("4", map.getOrThrow(4, MyException::new));
         assertThrows(MyException.class, () -> map.getOrThrow(5, MyException::new));
+    }
+
+    @Test
+    default void containsKeyTest() {
+        {
+            var empty = this.<Integer, String>ofEntries();
+            assertFalse(empty.containsKey(-1));
+            assertFalse(empty.containsKey(0));
+            assertFalse(empty.containsKey(1));
+            assertFalse(empty.containsKey(Integer.MIN_VALUE));
+            assertFalse(empty.containsKey(Integer.MAX_VALUE));
+        }
+
+        {
+            final int n = 5;
+            var testMap = testMap(n);
+
+            assertFalse(testMap.containsKey(-1));
+            assertFalse(testMap.containsKey(n));
+            for (int i = 0; i < n; i++) {
+                assertTrue(testMap.containsKey(i));
+            }
+        }
+
+        {
+            int n = 10000;
+            var map = testMapHashCollisions(n);
+
+            assertFalse(map.containsKey(new HashCollisionsValue(-1)));
+            assertFalse(map.containsKey(new HashCollisionsValue(n)));
+
+            for (int i = 0; i < n; i++) {
+                assertTrue(map.containsKey(new HashCollisionsValue(i)));
+            }
+        }
     }
 
     @Test
