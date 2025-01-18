@@ -52,6 +52,7 @@ Other changes:
 
 * `kala.collection.base.GenericArrays.{min, minOrNull, minOption, max, maxOrNull, maxOption}` now accepts `null` as the comparator.
 * `kala.collection.factory.CollectionBuilder` no longer inherit from `java.util.Consumer`.
+* `kala.collection.Map::putted(K, V)`  is renamed to `updated`.
 
 ## 0.79.0
 
