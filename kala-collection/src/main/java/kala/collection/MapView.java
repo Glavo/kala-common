@@ -54,8 +54,8 @@ public interface MapView<K, V> extends MapLike<K, V> {
     }
 
     @Override
-    default @NotNull MapView<K, V> putted(K key, V value) {
-        return new MapViews.Putted<>(this, key, value);
+    default @NotNull MapView<K, V> updated(K key, V value) {
+        return new MapViews.Updated<>(this, key, value);
     }
 
     @Override

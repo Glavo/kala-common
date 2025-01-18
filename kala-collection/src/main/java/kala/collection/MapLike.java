@@ -174,7 +174,7 @@ public interface MapLike<K, V> extends AnyMapLike<K, V> {
 
     //endregion
 
-    @NotNull MapLike<K, V> putted(K key, V value);
+    @NotNull MapLike<K, V> updated(K key, V value);
 
     @NotNull MapLike<K, V> removed(K key);
 

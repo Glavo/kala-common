@@ -255,7 +255,7 @@ public final class ImmutableChampMap<K, V> extends AbstractImmutableMap<K, V> {
     }
 
     @Override
-    public @NotNull ImmutableMap<K, V> putted(K key, V value) {
+    public @NotNull ImmutableMap<K, V> updated(K key, V value) {
         int keyUnimprovedHash = Objects.hashCode(key);
         return withTree(rootNode.updated(key, value, keyUnimprovedHash, improve(keyUnimprovedHash), 0, true));
     }

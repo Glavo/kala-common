@@ -519,7 +519,7 @@ public final class ImmutableTreeMap<K, V> extends AbstractImmutableSortedMap<K, 
     }
 
     @Override
-    public @NotNull ImmutableMap<K, V> putted(K key, V value) {
+    public @NotNull ImmutableMap<K, V> updated(K key, V value) {
         return withTree(tree.plus(key, value, factory.actualComparator));
     }
 

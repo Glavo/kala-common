@@ -56,7 +56,7 @@ final class ImmutableMaps {
         }
 
         @Override
-        public @NotNull ImmutableMap<K, V> putted(K key, V value) {
+        public @NotNull ImmutableMap<K, V> updated(K key, V value) {
             return new Map1<>(key, value);
         }
 
@@ -99,7 +99,7 @@ final class ImmutableMaps {
         }
 
         @Override
-        public @NotNull ImmutableMap<K, V> putted(K key, V value) {
+        public @NotNull ImmutableMap<K, V> updated(K key, V value) {
             if (Objects.equals(key, k0)) {
                 if (value == v0) {
                     return this;
@@ -160,7 +160,7 @@ final class ImmutableMaps {
         }
 
         @Override
-        public @NotNull ImmutableMap<K, V> putted(K key, V value) {
+        public @NotNull ImmutableMap<K, V> updated(K key, V value) {
             if (Objects.equals(key, k0)) {
                 if (value == v0) {
                     return this;
@@ -234,7 +234,7 @@ final class ImmutableMaps {
         }
 
         @Override
-        public @NotNull ImmutableMap<K, V> putted(K key, V value) {
+        public @NotNull ImmutableMap<K, V> updated(K key, V value) {
             if (Objects.equals(key, k0)) {
                 if (value == v0) {
                     return this;
@@ -259,7 +259,7 @@ final class ImmutableMaps {
                 }
             }
 
-            return super.putted(key, value);
+            return super.updated(key, value);
         }
     }
 }

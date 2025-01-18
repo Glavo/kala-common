@@ -403,20 +403,20 @@ public final class MapViews {
         //endregion
     }
 
-    public static class Putted<K, V> extends AbstractMapView<K, V> {
+    public static class Updated<K, V> extends AbstractMapView<K, V> {
         protected final @NotNull MapLike<K, V> source;
-        protected final K puttedKey;
-        protected final V puttedValue;
+        protected final K targetKey;
+        protected final V newValue;
 
-        public Putted(@NotNull MapLike<K, V> source, K puttedKey, V puttedValue) {
+        public Updated(@NotNull MapLike<K, V> source, K targetKey, V newValue) {
             this.source = source;
-            this.puttedKey = puttedKey;
-            this.puttedValue = puttedValue;
+            this.targetKey = targetKey;
+            this.newValue = newValue;
         }
 
         @Override
         public int size() {
-            return source.size() + (source.containsKey(puttedKey) ? 0 : 1);
+            return source.size() + (source.containsKey(targetKey) ? 0 : 1);
         }
 
         @Override
@@ -443,7 +443,7 @@ public final class MapViews {
                     K k;
                     while (it.hasNext()) {
                         k = it.nextKey();
-                        if (!Objects.equals(puttedKey, k)) {
+                        if (!Objects.equals(targetKey, k)) {
                             nextKey = k;
                             nextValue = it.getValue();
                             hasNext = true;
@@ -459,8 +459,8 @@ public final class MapViews {
                     checkStatus();
                     if (first) {
                         first = false;
-                        nextValue = Putted.this.puttedValue;
-                        return Putted.this.puttedKey;
+                        nextValue = Updated.this.newValue;
+                        return Updated.this.targetKey;
                     } else {
                         hasNext = null;
                         return nextKey;
@@ -476,12 +476,12 @@ public final class MapViews {
 
         @Override
         public boolean containsKey(K key) {
-            return Objects.equals(key, this.puttedKey) || source.containsKey(key);
+            return Objects.equals(key, this.targetKey) || source.containsKey(key);
         }
 
         @Override
         public @NotNull Option<V> getOption(K key) {
-            return this.puttedKey.equals(key) ? Option.some(puttedValue) : source.getOption(key);
+            return this.targetKey.equals(key) ? Option.some(newValue) : source.getOption(key);
         }
     }
 

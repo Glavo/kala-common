@@ -15,7 +15,6 @@
  */
 package kala.collection;
 
-import kala.collection.factory.MapFactory;
 import kala.control.Option;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
@@ -137,11 +136,11 @@ public interface MapLikeTestTemplate {
     }
 
     @Test
-    default void puttedTest() {
+    default void updatedTest() {
         var empty = this.<Integer, String>ofEntries();
-        assertMapEntries(List.of(entry(0, "0")), empty.putted(0, "0"));
-        assertMapEntries(List.of(entry(0, "0"), entry(1, "1")), empty.putted(0, "0").putted(1, "1"));
-        assertMapEntries(List.of(entry(0, "1")), empty.putted(0, "0").putted(0, "1"));
+        assertMapEntries(List.of(entry(0, "0")), empty.updated(0, "0"));
+        assertMapEntries(List.of(entry(0, "0"), entry(1, "1")), empty.updated(0, "0").updated(1, "1"));
+        assertMapEntries(List.of(entry(0, "1")), empty.updated(0, "0").updated(0, "1"));
     }
 
     @Test

@@ -12,7 +12,7 @@
 * Add a new collection: `kala.collection.immutable.ImmutableTreeMap`
 * Add a new collection: `kala.collection.immutable.ImmutableTreeSet`
 * Add `kala.control.OptionContainer::getOrThrow()`
-* Add `kala.collection.MapLike::putted(K, V)`
+* Add `kala.collection.MapLike::updated(K, V)`
 * Add `kala.collection.MapLike::removed(K)`
 * Add `kala.collection.SeqLike::getOrDefault(int, E)`
 * Add `kala.collection.SeqLike::getOrElse(int, Supplier<E>)`

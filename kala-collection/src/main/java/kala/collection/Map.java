@@ -234,15 +234,15 @@ public interface Map<K, V> extends AnyMap<K, V>, MapLike<K, V>, Equatable {
         return size();
     }
 
-    default @NotNull ImmutableMap<K, V> putted(K key, V value) {
+    default @NotNull ImmutableMap<K, V> updated(K key, V value) {
         if (this instanceof ImmutableMap<K, V> immutableMap && contains(key, value)) {
             return immutableMap;
         }
 
-        return puttedImpl(CollectionHelper.immutableMapFactoryBy(this), key, value);
+        return updatedImpl(CollectionHelper.immutableMapFactoryBy(this), key, value);
     }
 
-    private <Builder> ImmutableMap<K, V> puttedImpl(
+    private <Builder> ImmutableMap<K, V> updatedImpl(
             @NotNull MapFactory<K, V, Builder, ? extends ImmutableMap<K, V>> factory,
             K key, V value
     ) {
