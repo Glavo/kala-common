@@ -15,17 +15,17 @@
  */
 package kala.control;
 
-import kala.TestValue;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class EitherTest {
-    private final TestValue<?> value = new TestValue<>("value");
-    private final TestValue<?> otherValue = new TestValue<>("otherValue");
 
-    private final Either.Left<TestValue<?>, ?> left = Either.left(value);
-    private final Either.Right<?, TestValue<?>> right = Either.right(value);
+    private final String value = "value";
+    private final String otherValue = "otherValue";
+
+    private final Either.Left<String, ?> left = Either.left(value);
+    private final Either.Right<?, String> right = Either.right(value);
 
     @Test
     public void swapTest() {
@@ -55,8 +55,5 @@ public final class EitherTest {
 
         assertEquals(left, left.rightProjection().map(it -> otherValue).getEither());
         assertEquals(Either.right(otherValue), right.rightProjection().map(it -> otherValue).getEither());
-    }
-
-    private EitherTest() {
     }
 }
