@@ -15,6 +15,7 @@
  */
 package kala.collection.internal.champ;
 
+import kala.collection.base.ObjectArrays;
 import kala.collection.base.primitive.IntArrays;
 import kala.collection.immutable.ImmutableVector;
 import kala.collection.mutable.MutableQueue;
@@ -34,12 +35,15 @@ import static java.lang.Integer.bitCount;
 
 @SuppressWarnings("unchecked")
 public final class BitmapIndexedChampMapNode<K, V> extends ChampMapNode<K, V> {
-    private int dataMap;
-    private int nodeMap;
-    private Object[] content;
-    private int[] originalHashes;
-    private int size;
-    private int cachedJavaKeySetHashCode;
+
+    static final BitmapIndexedChampMapNode<?, ?> EmptyMapNode = new BitmapIndexedChampMapNode<>(0, 0, ObjectArrays.EMPTY, IntArrays.EMPTY, 0, 0);
+
+    int dataMap;
+    int nodeMap;
+    Object[] content;
+    int[] originalHashes;
+    int size;
+    int cachedJavaKeySetHashCode;
 
     public BitmapIndexedChampMapNode(int dataMap, int nodeMap, Object[] content, int[] originalHashes, int size, int cachedJavaKeySetHashCode) {
         this.dataMap = dataMap;
@@ -159,7 +163,7 @@ public final class BitmapIndexedChampMapNode<K, V> extends ChampMapNode<K, V> {
     }
 
     @Override
-    public ChampMapNode<K, V> updated(K key, V value, int originalHash, int keyHash, int shift, boolean replaceValue) {
+    public BitmapIndexedChampMapNode<K, V> updated(K key, V value, int originalHash, int keyHash, int shift, boolean replaceValue) {
         int mask = maskFrom(keyHash, shift);
         int bitpos = bitposFrom(mask);
 
@@ -573,12 +577,12 @@ public final class BitmapIndexedChampMapNode<K, V> extends ChampMapNode<K, V> {
     }
 
     @Override
-    public void buildTo(ChampHashMapBuilder<K, V> builder) {
+    public void buildTo(ChampMapBuilder<K, V> builder) {
         int i = 0;
         int iN = payloadArity();
         int jN = nodeArity();
         while (i < iN) {
-            builder.addOne(getKey(i), getValue(i), getHash(i));
+            builder.add(getKey(i), getValue(i), getHash(i));
             i += 1;
         }
 
@@ -629,7 +633,7 @@ public final class BitmapIndexedChampMapNode<K, V> extends ChampMapNode<K, V> {
     }
 
     @Override
-    public void mergeInto(ChampMapNode<K, V> that, ChampHashMapBuilder<K, V> builder, int shift, BinaryOperator<Tuple2<K, V>> mergef) {
+    public void mergeInto(ChampMapNode<K, V> that, ChampMapBuilder<K, V> builder, int shift, BinaryOperator<Tuple2<K, V>> mergef) {
         if (!(that instanceof BitmapIndexedChampMapNode<K, V> bm)) {
             throw new RuntimeException("Cannot merge BitmapIndexedMapNode with HashCollisionMapNode");
         }
@@ -665,10 +669,10 @@ public final class BitmapIndexedChampMapNode<K, V> extends ChampMapNode<K, V> {
                         V rightValue = bm.getValue(rightIdx);
                         int rightOriginalHash = bm.getHash(rightIdx);
                         if (leftOriginalHash == rightOriginalHash && leftKey == rightKey) {
-                            builder.addOne(mergef.apply(Tuple.of(leftKey, leftValue), Tuple.of(rightKey, rightValue)));
+                            builder.add(mergef.apply(Tuple.of(leftKey, leftValue), Tuple.of(rightKey, rightValue)));
                         } else {
-                            builder.addOne(leftKey, leftValue, leftOriginalHash);
-                            builder.addOne(rightKey, rightValue, rightOriginalHash);
+                            builder.add(leftKey, leftValue, leftOriginalHash);
+                            builder.add(rightKey, rightValue, rightOriginalHash);
                         }
                         rightIdx += 1;
                     } else if ((bitpos & bm.nodeMap) != 0) {
@@ -679,15 +683,15 @@ public final class BitmapIndexedChampMapNode<K, V> extends ChampMapNode<K, V> {
                         if (removed == subNode) {
                             // no overlap in leftData and rightNode, just build both children to builder
                             subNode.buildTo(builder);
-                            builder.addOne(leftKey, leftValue, leftOriginalHash, leftImprovedHash);
+                            builder.add(leftKey, leftValue, leftOriginalHash, leftImprovedHash);
                         } else {
                             // there is collision, so special treatment for that key
                             removed.buildTo(builder);
-                            builder.addOne(mergef.apply(Tuple.of(leftKey, leftValue), subNode.getTuple(leftKey, leftOriginalHash, leftImprovedHash, shift + BitPartitionSize)));
+                            builder.add(mergef.apply(Tuple.of(leftKey, leftValue), subNode.getTuple(leftKey, leftOriginalHash, leftImprovedHash, shift + BitPartitionSize)));
                         }
                     } else {
                         // left data and nothing on right
-                        builder.addOne(leftKey, leftValue, leftOriginalHash);
+                        builder.add(leftKey, leftValue, leftOriginalHash);
                     }
                     leftIdx += 1;
                 } else if ((bitpos & nodeMap) != 0) {
@@ -703,11 +707,11 @@ public final class BitmapIndexedChampMapNode<K, V> extends ChampMapNode<K, V> {
                         if (removed == subNode) {
                             // no overlap in leftNode and rightData, just build both children to builder
                             subNode.buildTo(builder);
-                            builder.addOne(rightKey, rightValue, rightOriginalHash, rightImprovedHash);
+                            builder.add(rightKey, rightValue, rightOriginalHash, rightImprovedHash);
                         } else {
                             // there is collision, so special treatment for that key
                             removed.buildTo(builder);
-                            builder.addOne(mergef.apply(subNode.getTuple(rightKey, rightOriginalHash, rightImprovedHash, shift + BitPartitionSize), Tuple.of(rightKey, rightValue)));
+                            builder.add(mergef.apply(subNode.getTuple(rightKey, rightOriginalHash, rightImprovedHash, shift + BitPartitionSize), Tuple.of(rightKey, rightValue)));
                         }
                         rightIdx += 1;
 
@@ -721,7 +725,7 @@ public final class BitmapIndexedChampMapNode<K, V> extends ChampMapNode<K, V> {
                 } else if ((bitpos & bm.dataMap) != 0) {
                     // nothing on left, right data
                     int dataIndex = bm.dataIndex(bitpos);
-                    builder.addOne(bm.getKey(dataIndex), bm.getValue(dataIndex), bm.getHash(dataIndex));
+                    builder.add(bm.getKey(dataIndex), bm.getValue(dataIndex), bm.getHash(dataIndex));
                     rightIdx += 1;
 
                 } else if ((bitpos & bm.nodeMap) != 0) {
@@ -1040,7 +1044,7 @@ public final class BitmapIndexedChampMapNode<K, V> extends ChampMapNode<K, V> {
     }
 
     @Override
-    public ChampMapNode<K, V> copy() {
+    public BitmapIndexedChampMapNode<K, V> copy() {
         Object[] contentClone = content.clone();
         int contentLength = contentClone.length;
         int i = bitCount(dataMap) * TupleLength;

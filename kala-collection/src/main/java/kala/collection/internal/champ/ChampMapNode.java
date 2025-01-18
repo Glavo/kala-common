@@ -23,13 +23,14 @@ import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.BinaryOperator;
 
+@SuppressWarnings("unchecked")
 public sealed abstract class ChampMapNode<K, V> extends ChampNode<ChampMapNode<K, V>>
         permits BitmapIndexedChampMapNode, HashCollisionChampMapNode {
 
     public static final int TupleLength = 2;
 
     public static <K, V> BitmapIndexedChampMapNode<K, V> empty() {
-        return null; // TODO
+        return (BitmapIndexedChampMapNode<K, V>) BitmapIndexedChampMapNode.EmptyMapNode;
     }
 
     public abstract V apply(K key, int originalHash, int hash, int shift);
@@ -92,7 +93,7 @@ public sealed abstract class ChampMapNode<K, V> extends ChampNode<ChampMapNode<K
      * @param that node from the "right" HashMap. Must also be at the same "path" or "position" within the right tree,
      *             as this is, within the left tree
      */
-    public abstract void mergeInto(ChampMapNode<K, V> that, ChampHashMapBuilder<K, V> builder, int shift, BinaryOperator<Tuple2<K, V>> mergef);
+    public abstract void mergeInto(ChampMapNode<K, V> that, ChampMapBuilder<K, V> builder, int shift, BinaryOperator<Tuple2<K, V>> mergef);
 
     /**
      * Returns the exact (equal by reference) key, and value, associated to a given key.
@@ -103,5 +104,5 @@ public sealed abstract class ChampMapNode<K, V> extends ChampNode<ChampMapNode<K
     /**
      * Adds all key-value pairs to a builder
      */
-    public abstract void buildTo(ChampHashMapBuilder<K, V> builder);
+    public abstract void buildTo(ChampMapBuilder<K, V> builder);
 }

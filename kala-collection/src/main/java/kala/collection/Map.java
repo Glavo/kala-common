@@ -24,6 +24,7 @@ import kala.collection.internal.CollectionHelper;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
 import kala.tuple.Tuple2;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
@@ -209,6 +210,28 @@ public interface Map<K, V> extends AnyMap<K, V>, MapLike<K, V>, Equatable {
 
     default <NK, NV> @NotNull MapFactory<NK, NV, ?, ? extends Map<NK, NV>> mapFactory() {
         return Map.factory();
+    }
+
+    @Override
+    default boolean isEmpty() {
+        return size() == 0;
+    }
+
+    @Override
+    default int size() {
+        int c = 0;
+        MapIterator<K, V> it = iterator();
+        while (it.hasNext()) {
+            it.nextKey();
+            ++c;
+        }
+        return c;
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    default int knownSize() {
+        return size();
     }
 
     default @NotNull ImmutableMap<K, V> putted(K key, V value) {

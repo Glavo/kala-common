@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Glavo
+ * Copyright 2025 Glavo
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package kala.collection.immutable;
 
-module kala.collection {
-    requires static org.jetbrains.annotations;
+import kala.collection.factory.MapFactory;
 
-    requires transitive kala.base;
-    requires jdk.jdi;
-
-    exports kala.collection;
-    exports kala.collection.mutable;
-    exports kala.collection.immutable;
-    exports kala.collection.internal;
-    exports kala.collection.internal.tree;
-    exports kala.collection.internal.convert;
+public final class ImmutableChampMapTest implements ImmutableMapTestTemplate {
+    @Override
+    public <K, V> MapFactory<K, V, ?, ImmutableChampMap<K, V>> factory() {
+        return ImmutableChampMap.factory();
+    }
 }

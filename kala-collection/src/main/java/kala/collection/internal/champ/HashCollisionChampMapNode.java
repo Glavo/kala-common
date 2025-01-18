@@ -31,9 +31,9 @@ import java.util.function.BinaryOperator;
 
 @SuppressWarnings("unchecked")
 public final class HashCollisionChampMapNode<K, V> extends ChampMapNode<K, V> {
-    private final int originalHash;
-    private final int hash;
-    private ImmutableSeq<Tuple2<K, V>> content;
+    final int originalHash;
+    final int hash;
+    ImmutableSeq<Tuple2<K, V>> content;
 
     public HashCollisionChampMapNode(int originalHash, int hash, ImmutableSeq<Tuple2<K, V>> content) {
         if (content.size() < 2) {
@@ -254,7 +254,7 @@ public final class HashCollisionChampMapNode<K, V> extends ChampMapNode<K, V> {
     }
 
     @Override
-    public void mergeInto(ChampMapNode<K, V> that, ChampHashMapBuilder<K, V> builder, int shift, BinaryOperator<Tuple2<K, V>> mergef) {
+    public void mergeInto(ChampMapNode<K, V> that, ChampMapBuilder<K, V> builder, int shift, BinaryOperator<Tuple2<K, V>> mergef) {
         if (!(that instanceof HashCollisionChampMapNode<K, V> hc)) {
             throw new UnsupportedOperationException("Cannot merge HashCollisionChampMapNode with BitmapIndexedChampMapNode");
         }
@@ -264,12 +264,12 @@ public final class HashCollisionChampMapNode<K, V> extends ChampMapNode<K, V> {
             var index = rightIndexOf(rightArray, nextPayload.getKey());
 
             if (index == -1) {
-                builder.addOne(nextPayload);
+                builder.add(nextPayload);
             } else {
                 var rightPayload = (Tuple2<K, V>) rightArray[index];
                 rightArray = null;
 
-                builder.addOne(mergef.apply(nextPayload, rightPayload));
+                builder.add(mergef.apply(nextPayload, rightPayload));
             }
         }
 
@@ -278,16 +278,16 @@ public final class HashCollisionChampMapNode<K, V> extends ChampMapNode<K, V> {
         while (i < rightArray.length) {
             var elem = rightArray[i];
             if (elem != null) {
-                builder.addOne((Tuple2<K, V>) elem);
+                builder.add((Tuple2<K, V>) elem);
             }
             i += 1;
         }
     }
 
     @Override
-    public void buildTo(ChampHashMapBuilder<K, V> builder) {
+    public void buildTo(ChampMapBuilder<K, V> builder) {
         for (var tuple : content) {
-            builder.addOne(tuple.getKey(), tuple.getValue(), originalHash, hash);
+            builder.add(tuple.getKey(), tuple.getValue(), originalHash, hash);
         }
     }
 

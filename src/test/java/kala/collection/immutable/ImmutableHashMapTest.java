@@ -13,24 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package kala.collection.internal.champ;
+package kala.collection.immutable;
 
-import kala.tuple.Tuple2;
+import kala.collection.factory.MapFactory;
 
-public final class ChampHashMapBuilder<K, V> {
-    public void addOne(final Tuple2<K, V> tuple) {
-        // TODO
-    }
-
-    public void addOne(K key, V value) {
-        // TODO
-    }
-
-    public void addOne(final K key, final V value, final int originalHash) {
-        // TODO
-    }
-
-    public void addOne(final K key, final V value, final int originalHash, final int hash) {
-        // TODO
+public final class ImmutableHashMapTest implements ImmutableMapTestTemplate {
+    @Override
+    public <K, V> MapFactory<K, V, ?, ImmutableHashMap<K, V>> factory() {
+        return ImmutableHashMap.factory();
     }
 }

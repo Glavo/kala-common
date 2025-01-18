@@ -23,7 +23,7 @@ public abstract class ChampNode<T extends ChampNode<T>> {
     public static final int MaxDepth = (int) Math.ceil((double) HashCodeLength / BitPartitionSize);
     public static final int BranchingFactor = 1 << BitPartitionSize;
 
-    protected static int improve(int hcode) {
+    public static int improve(int hcode) {
         int h = hcode + ~(hcode << 9);
         h = h ^ (h >>> 14);
         h = h + (h << 4);

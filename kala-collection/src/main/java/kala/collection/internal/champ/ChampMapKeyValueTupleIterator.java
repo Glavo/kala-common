@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Glavo
+ * Copyright 2025 Glavo
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package kala.collection.internal.champ;
 
-module kala.collection {
-    requires static org.jetbrains.annotations;
+import kala.tuple.Tuple2;
 
-    requires transitive kala.base;
-    requires jdk.jdi;
+public class ChampMapKeyValueTupleIterator<K, V> extends ChampBaseIterator<Tuple2<K, V>, ChampMapNode<K, V>> {
 
-    exports kala.collection;
-    exports kala.collection.mutable;
-    exports kala.collection.immutable;
-    exports kala.collection.internal;
-    exports kala.collection.internal.tree;
-    exports kala.collection.internal.convert;
+    public ChampMapKeyValueTupleIterator(ChampMapNode<K, V> rootNode) {
+        super(rootNode);
+    }
+
+    @Override
+    public Tuple2<K, V> next() {
+        checkStatus();
+        var payload = currentValueNode.getPayload(currentValueCursor);
+        currentValueCursor += 1;
+        return payload;
+    }
 }
