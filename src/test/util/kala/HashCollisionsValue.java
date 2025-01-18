@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Glavo
+ * Copyright 2025 Glavo
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,21 +17,16 @@ package kala;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
-public record TestValue<T extends Comparable<T>>(T value, int hash) implements Comparable<TestValue<T>> {
-
-    public TestValue(T value) {
-        this(value, Objects.hashCode(value));
-    }
+public record HashCollisionsValue(int value) implements Comparable<HashCollisionsValue> {
 
     @Override
     public int hashCode() {
-        return hash;
+        int mod = value % 16;
+        return (mod << 28) | (mod << 24) | (mod << 20) | (mod << 16) | (mod << 12) | (mod << 8) | (mod << 4) | (mod);
     }
 
     @Override
-    public int compareTo(@NotNull TestValue<T> other) {
-        return value.compareTo(other.value);
+    public int compareTo(@NotNull HashCollisionsValue that) {
+        return Integer.compare(this.value, that.value);
     }
 }

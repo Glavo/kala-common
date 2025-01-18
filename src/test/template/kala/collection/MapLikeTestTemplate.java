@@ -15,12 +15,15 @@
  */
 package kala.collection;
 
+import kala.HashCollisionsValue;
+import kala.TestValue;
 import kala.control.Option;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -29,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("unchecked")
 public interface MapLikeTestTemplate {
+
     default Integer[][] data1() {
         return TestData.data1;
     }
@@ -43,6 +47,17 @@ public interface MapLikeTestTemplate {
 
     <K, V> MapLike<K, V> ofEntries(Tuple2<K, V>... entries);
 
+    /// Data:
+    /// ```
+    ///{
+    ///   0: "0",
+    ///   1: "1",
+    ///   2: "2",
+    ///   3: "3",
+    ///   4: "4",
+    ///   5: "5"
+    ///}
+    ///```
     private MapLike<Integer, String> testMap() {
         return ofEntries(
                 Tuple.of(0, "0"),
@@ -53,18 +68,40 @@ public interface MapLikeTestTemplate {
         );
     }
 
+    private MapLike<HashCollisionsValue, Integer> testMapHashCollisions(int n) {
+        var list = new ArrayList<Tuple2<HashCollisionsValue, Integer>>(n);
+        for (int i = 0; i < n; i++) {
+            list.add(Tuple.of(new HashCollisionsValue(i), i));
+        }
+        return ofEntries(list.toArray(new Tuple2[0]));
+    }
+
     @Test
     default void getTest() {
         assertThrows(NoSuchElementException.class, () -> this.<Integer, String>ofEntries().get(0));
 
-        var map = this.testMap();
-        assertThrows(NoSuchElementException.class, () -> map.get(-1));
-        assertEquals("0", map.get(0));
-        assertEquals("1", map.get(1));
-        assertEquals("2", map.get(2));
-        assertEquals("3", map.get(3));
-        assertEquals("4", map.get(4));
-        assertThrows(NoSuchElementException.class, () -> map.get(5));
+        {
+            var map = this.testMap();
+            assertThrows(NoSuchElementException.class, () -> map.get(-1));
+            assertEquals("0", map.get(0));
+            assertEquals("1", map.get(1));
+            assertEquals("2", map.get(2));
+            assertEquals("3", map.get(3));
+            assertEquals("4", map.get(4));
+            assertThrows(NoSuchElementException.class, () -> map.get(5));
+        }
+
+        {
+            int n = 10000;
+            var map = testMapHashCollisions(n);
+
+            assertThrows(NoSuchElementException.class, () -> map.get(new HashCollisionsValue(-1)));
+            assertThrows(NoSuchElementException.class, () -> map.get(new HashCollisionsValue(n)));
+
+            for (int i = 0; i < n; i++) {
+                assertEquals(i, map.get(new HashCollisionsValue(i)));
+            }
+        }
     }
 
     @Test
