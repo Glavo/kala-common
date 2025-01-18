@@ -96,7 +96,7 @@ public final class BitmapIndexedChampMapNode<K, V> extends ChampMapNode<K, V> {
 
         if ((dataMap & bitpos) != 0) {
             int index = indexFrom(dataMap, mask, bitpos);
-            if (key == getKey(index)) {
+            if (Objects.equals(key, getKey(index))) {
                 return getValue(index);
             } else {
                 throw new NoSuchElementException("key not found: " + key);
@@ -116,7 +116,7 @@ public final class BitmapIndexedChampMapNode<K, V> extends ChampMapNode<K, V> {
         if ((dataMap & bitpos) != 0) {
             int index = indexFrom(dataMap, mask, bitpos);
             K key0 = this.getKey(index);
-            return key == key0 ? Option.some(this.getValue(index)) : Option.none();
+            return Objects.equals(key, key0) ? Option.some(this.getValue(index)) : Option.none();
         } else if ((nodeMap & bitpos) != 0) {
             int index = indexFrom(nodeMap, mask, bitpos);
             return this.getNode(index).getOption(key, originalHash, keyHash, shift + BitPartitionSize);
@@ -154,7 +154,7 @@ public final class BitmapIndexedChampMapNode<K, V> extends ChampMapNode<K, V> {
         if ((dataMap & bitpos) != 0) {
             int index = indexFrom(dataMap, mask, bitpos);
             // assert(hashes(index) == computeHash(this.getKey(index)), (hashes.toSeq, content.toSeq, index, key, keyHash, shift))
-            return (originalHashes[index] == originalHash) && key == getKey(index);
+            return (originalHashes[index] == originalHash) && Objects.equals(key, getKey(index));
         } else if ((nodeMap & bitpos) != 0) {
             return getNode(indexFrom(nodeMap, mask, bitpos)).containsKey(key, originalHash, keyHash, shift + BitPartitionSize);
         } else {
@@ -668,7 +668,7 @@ public final class BitmapIndexedChampMapNode<K, V> extends ChampMapNode<K, V> {
                         K rightKey = bm.getKey(rightIdx);
                         V rightValue = bm.getValue(rightIdx);
                         int rightOriginalHash = bm.getHash(rightIdx);
-                        if (leftOriginalHash == rightOriginalHash && leftKey == rightKey) {
+                        if (leftOriginalHash == rightOriginalHash && Objects.equals(leftKey, rightKey)) {
                             builder.add(mergef.apply(Tuple.of(leftKey, leftValue), Tuple.of(rightKey, rightValue)));
                         } else {
                             builder.add(leftKey, leftValue, leftOriginalHash);
@@ -746,7 +746,7 @@ public final class BitmapIndexedChampMapNode<K, V> extends ChampMapNode<K, V> {
             var i = 0;
 
             while (isEqual && i < length) {
-                isEqual = a1[i] == a2[i];
+                isEqual = Objects.equals(a1[i], a2[i]);
                 i += 1;
             }
 

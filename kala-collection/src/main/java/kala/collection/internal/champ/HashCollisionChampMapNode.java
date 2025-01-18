@@ -24,6 +24,7 @@ import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -47,9 +48,10 @@ public final class HashCollisionChampMapNode<K, V> extends ChampMapNode<K, V> {
 
     int indexOf(Object key) {
         int i = 0;
-        for (Tuple2<K, V> kvTuple2 : content) {
-            if (kvTuple2.getKey() == key)
+        for (var entry : content) {
+            if (Objects.equals(entry.getKey(), key)) {
                 return i;
+            }
             i += 1;
         }
         return -1;

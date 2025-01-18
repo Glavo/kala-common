@@ -211,7 +211,6 @@ public final class ImmutableChampMap<K, V> extends AbstractImmutableMap<K, V> {
         return builder.build();
     }
 
-
     private final BitmapIndexedChampMapNode<K, V> rootNode;
 
     private ImmutableChampMap(BitmapIndexedChampMapNode<K, V> rootNode) {

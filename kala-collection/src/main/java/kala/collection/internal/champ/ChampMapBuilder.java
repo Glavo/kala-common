@@ -93,7 +93,7 @@ public final class ChampMapBuilder<K, V> {
                 K key0 = bm.getKey(index);
                 int key0UnimprovedHash = bm.getHash(index);
 
-                if (key0UnimprovedHash == originalHash && key0 == key) {
+                if (key0UnimprovedHash == originalHash && Objects.equals(key0, key)) {
                     bm.content[TupleLength * index + 1] = value;
                 } else {
                     V value0 = bm.getValue(index);

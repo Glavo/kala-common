@@ -108,28 +108,56 @@ public interface MapLikeTestTemplate {
     default void getOrNullTest() {
         assertNull(this.<Integer, String>ofEntries().getOrNull(0));
 
-        var map = this.testMap();
-        assertNull(map.getOrNull(-1));
-        assertEquals("0", map.getOrNull(0));
-        assertEquals("1", map.getOrNull(1));
-        assertEquals("2", map.getOrNull(2));
-        assertEquals("3", map.getOrNull(3));
-        assertEquals("4", map.getOrNull(4));
-        assertNull(map.getOrNull(5));
+        {
+            var map = this.testMap();
+            assertNull(map.getOrNull(-1));
+            assertEquals("0", map.getOrNull(0));
+            assertEquals("1", map.getOrNull(1));
+            assertEquals("2", map.getOrNull(2));
+            assertEquals("3", map.getOrNull(3));
+            assertEquals("4", map.getOrNull(4));
+            assertNull(map.getOrNull(5));
+        }
+
+        {
+            int n = 10000;
+            var map = testMapHashCollisions(n);
+
+            assertNull(map.getOrNull(new HashCollisionsValue(-1)));
+            assertNull(map.getOrNull(new HashCollisionsValue(n)));
+
+            for (int i = 0; i < n; i++) {
+                assertEquals(i, map.getOrNull(new HashCollisionsValue(i)));
+            }
+        }
     }
 
     @Test
     default void getOptionTest() {
         assertEquals(Option.none(), this.<Integer, String>ofEntries().getOption(0));
 
-        var map = this.testMap();
-        assertEquals(Option.none(), map.getOption(-1));
-        assertEquals(Option.some("0"), map.getOption(0));
-        assertEquals(Option.some("1"), map.getOption(1));
-        assertEquals(Option.some("2"), map.getOption(2));
-        assertEquals(Option.some("3"), map.getOption(3));
-        assertEquals(Option.some("4"), map.getOption(4));
-        assertEquals(Option.none(), map.getOption(5));
+        {
+            var map = this.testMap();
+            assertEquals(Option.none(), map.getOption(-1));
+            assertEquals(Option.some("0"), map.getOption(0));
+            assertEquals(Option.some("1"), map.getOption(1));
+            assertEquals(Option.some("2"), map.getOption(2));
+            assertEquals(Option.some("3"), map.getOption(3));
+            assertEquals(Option.some("4"), map.getOption(4));
+            assertEquals(Option.none(), map.getOption(5));
+        }
+
+        {
+            int n = 10000;
+            var map = testMapHashCollisions(n);
+
+            assertEquals(Option.none(), map.getOption(new HashCollisionsValue(-1)));
+            assertEquals(Option.none(), map.getOption(new HashCollisionsValue(n)));
+
+            for (int i = 0; i < n; i++) {
+                assertEquals(Option.some(i), map.getOption(new HashCollisionsValue(i)));
+            }
+        }
     }
 
     @Test
