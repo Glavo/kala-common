@@ -90,6 +90,21 @@ public interface MutableSeqTestTemplate extends MutableSequentialCollectionTestT
     }
 
     @Test
+    default void setAllTest() {
+        MutableSeq<String> seq = of();
+        seq.setAll();
+        assertIterableEquals(List.of(), seq);
+
+        assertThrows(IllegalArgumentException.class, () -> of().setAll("value"));
+
+        seq = of("str0", "str1", "str2");
+        seq.setAll("0", "1", "2");
+        assertIterableEquals(List.of("0", "1", "2"), seq);
+        assertThrows(IllegalArgumentException.class, () -> of().setAll("value"));
+        assertThrows(IllegalArgumentException.class, () -> of().setAll("0", "1", "2", "3"));
+    }
+
+    @Test
     default void swapTest() {
         assertThrows(IndexOutOfBoundsException.class, () -> of().swap(0, 0));
         assertThrows(IndexOutOfBoundsException.class, () -> of().swap(0, 1));

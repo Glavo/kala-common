@@ -15,6 +15,7 @@
  */
 package kala.collection.mutable;
 
+import kala.collection.base.ObjectArrays;
 import kala.collection.factory.CollectionFactory;
 import org.junit.jupiter.api.Test;
 
@@ -42,6 +43,14 @@ public final class MutableArrayDequeTest implements MutableListTestTemplate {
     @Override
     public <E> MutableArrayDeque<E> from(Iterable<? extends E> elements) {
         return this.<E>factory().from(elements);
+    }
+
+    @Test
+    public void constructorTest() {
+        assertThrows(IllegalArgumentException.class, () -> new MutableArrayDeque<>(-1));
+
+        MutableArrayDeque<String> deque = new MutableArrayDeque<>();
+        assertSame(ObjectArrays.EMPTY, deque.elements);
     }
 
     @Test

@@ -67,6 +67,32 @@ public interface MutableListTestTemplate extends MutableSeqTestTemplate {
     }
 
     @Test
+    @Override
+    default void setAllTest() {
+        MutableList<String> list = of();
+        list.setAll();
+        assertIterableEquals(List.of(), list);
+
+        list.setAll("value");
+        assertIterableEquals(List.of("value"), list);
+
+        list.setAll("0", "1", "2");
+        assertIterableEquals(List.of("0", "1", "2"), list);
+
+        list.setAll("value");
+        assertIterableEquals(List.of("value"), list);
+
+        list.setAll(List.of());
+        assertIterableEquals(List.of(), list);
+
+        list.setAll(List.of("0", "1", "2"));
+        assertIterableEquals(List.of("0", "1", "2"), list);
+
+        list.setAll(List.of("0"));
+        assertIterableEquals(List.of("0"), list);
+    }
+
+    @Test
     default void appendTest() {
         MutableList<Object> b = (MutableList<Object>) factory().empty();
         assertIterableEquals(List.of(), b);
