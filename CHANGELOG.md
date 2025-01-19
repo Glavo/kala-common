@@ -1,8 +1,12 @@
 # Changelog
 
-## 0.80.0
+## 0.81.0
 
 (In development)
+
+## 0.80.0
+
+Release Date: 2025-01-19
 
 ### New features
 
