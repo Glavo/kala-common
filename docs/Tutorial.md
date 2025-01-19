@@ -73,6 +73,7 @@ graph TD;
     ImmutableSeq --> ImmutableLinkedSeq;
     ImmutableSeq --> ImmutableTreeSeq;
     ImmutableSortedSet ---> ImmutableSortedArraySet;
+    ImmutableSortedSet ---> ImmutableTreeSet;
     ImmutableSet ----> ImmutableHashSet;
     ArraySeq --> ImmutableArray;
 
