@@ -78,7 +78,7 @@ graph TD;
     ArraySeq --> ImmutableArray;
 
     classDef impl fill: #90EE90, stroke: #fff, stroke-width: 4px;
-    class ArraySeq,ImmutableArray,ImmutableVector,ImmutableHashSet,ImmutableSortedArraySet,ImmutableLinkedSeq,ImmutableTreeSeq impl;
+    class ArraySeq,ImmutableArray,ImmutableVector,ImmutableHashSet,ImmutableSortedArraySet,ImmutableLinkedSeq,ImmutableTreeSeq,ImmutableTreeSet impl;
 ```
 
 Mutable Collections:
