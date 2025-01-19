@@ -32,6 +32,8 @@ import java.util.function.BiConsumer;
 
 import static kala.collection.internal.champ.ChampNode.improve;
 
+/// CHAMP (Compressed Hash-Array Mapped Prefix-tree) based implementation of the `ImmutableMap` interface.
+/// It is planned to be used instead of [ImmutableHashMap] in a future version.
 @ApiStatus.Experimental
 public final class ImmutableChampMap<K, V> extends AbstractImmutableMap<K, V> {
 
