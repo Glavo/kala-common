@@ -15,15 +15,16 @@
  */
 package kala.collection.mutable;
 
-import kala.collection.Map;
 import kala.collection.MapTestTemplate;
 import kala.collection.factory.MapFactory;
+import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import org.junit.jupiter.api.*;
 
 import java.util.List;
 import java.util.function.Supplier;
 
+import static kala.ExtendedAssertions.assertMapEntries;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
@@ -87,5 +88,20 @@ public interface MutableMapTestTemplate extends MapTestTemplate {
                     assertEquals("value2", hm.get(key));
                 })
         ));
+    }
+
+    @Test
+    default void clearTest() {
+        var map = this.<String, Integer>ofEntries();
+        map.clear();
+        assertMapEntries(List.of(), map);
+
+        map = this.ofEntries(Tuple.of("A", 1));
+        map.clear();
+        assertMapEntries(List.of(), map);
+
+        map = this.ofEntries(Tuple.of("A", 1), Tuple.of("B", 2), Tuple.of("C", 3));
+        map.clear();
+        assertMapEntries(List.of(), map);
     }
 }
