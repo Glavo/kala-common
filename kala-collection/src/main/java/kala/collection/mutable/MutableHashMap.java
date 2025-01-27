@@ -40,8 +40,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
-import static kala.collection.internal.hash.HashUtils.computeHash;
-
 @SuppressWarnings("unchecked")
 @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
 public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<K, V>> implements MutableMap<K, V>, Cloneable, Serializable {
@@ -65,15 +63,15 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
         this(Hasher.optimizedHasher(), initialCapacity, loadFactor);
     }
 
-    public MutableHashMap(Hasher<? super K> hasher) {
+    public MutableHashMap(@NotNull Hasher<? super K> hasher) {
         this(hasher, DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR);
     }
 
-    public MutableHashMap(Hasher<? super K> hasher, int initialCapacity) {
+    public MutableHashMap(@NotNull Hasher<? super K> hasher, int initialCapacity) {
         this(hasher, initialCapacity, DEFAULT_LOAD_FACTOR);
     }
 
-    public MutableHashMap(Hasher<? super K> hasher, int initialCapacity, double loadFactor) {
+    public MutableHashMap(@NotNull Hasher<? super K> hasher, int initialCapacity, double loadFactor) {
         super(hasher, initialCapacity, loadFactor);
     }
 
@@ -529,7 +527,7 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
         if (contentSize + 1 >= threshold) {
             growTable(table.length * 2);
         }
-        final int hash = computeHash(key);
+        final int hash = hasher.hash(key);
         final int idx = index(hash);
         set0(key, value, hash, idx);
     }
@@ -539,7 +537,7 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
         if (contentSize + 1 >= threshold) {
             growTable(table.length * 2);
         }
-        final int hash = computeHash(key);
+        final int hash = hasher.hash(key);
         final int idx = index(hash);
         return put0(key, value, hash, idx);
     }

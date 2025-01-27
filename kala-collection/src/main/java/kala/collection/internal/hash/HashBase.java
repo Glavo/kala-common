@@ -16,6 +16,7 @@
 package kala.collection.internal.hash;
 
 import kala.function.Hasher;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serial;
@@ -42,7 +43,7 @@ public abstract class HashBase<K, N extends HashNode<K, N>> implements Serializa
 
     protected transient int contentSize = 0;
 
-    protected HashBase(Hasher<? super K> hasher, int initialCapacity, double loadFactor) {
+    protected HashBase(@NotNull Hasher<? super K> hasher, int initialCapacity, double loadFactor) {
         if (initialCapacity < 0) {
             throw new IllegalArgumentException("Illegal initial capacity: " + initialCapacity);
         }

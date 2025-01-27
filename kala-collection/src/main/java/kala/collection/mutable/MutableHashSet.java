@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InvalidObjectException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -34,6 +35,7 @@ import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 public final class MutableHashSet<E> extends HashBase<E, MutableHashSet.Node<E>> implements MutableSet<E>, Serializable {
+    @Serial
     private static final long serialVersionUID = 2267952928135789371L;
     private static final MutableHashSet.Factory<?> FACTORY = new Factory<>();
 
@@ -236,7 +238,7 @@ public final class MutableHashSet<E> extends HashBase<E, MutableHashSet.Node<E>>
             final Node<E> old = n;
             Node<E> prev = null;
             while ((n != null) && n.hash <= hash) {
-                if (n.hash == hash && hasher.test(value, n.key)) {
+                if (n.hash == hash && hasher.equals(value, n.key)) {
                     return false;
                 }
                 prev = n;
@@ -257,12 +259,12 @@ public final class MutableHashSet<E> extends HashBase<E, MutableHashSet.Node<E>>
         if (contentSize + 1 >= threshold) {
             growTable(table.length * 2);
         }
-        return add(value, HashUtils.computeHash(value));
+        return add(value, hasher.hash(value));
     }
 
     @Override
     public boolean remove(Object value) {
-        return removeNode((E) value, HashUtils.computeHash(value)) != null;
+        return removeNode((E) value, hasher.hash((E) value)) != null;
     }
 
     //endregion
@@ -331,6 +333,7 @@ public final class MutableHashSet<E> extends HashBase<E, MutableHashSet.Node<E>>
         }
     }
 
+    @Serial
     private void writeObject(java.io.ObjectOutputStream out)
             throws IOException {
         out.writeInt(contentSize);

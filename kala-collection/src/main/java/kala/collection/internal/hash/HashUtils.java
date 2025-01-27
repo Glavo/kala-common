@@ -28,16 +28,4 @@ public final class HashUtils {
     public static int tableSizeFor(int capacity) {
         return Integer.min(Integer.highestOneBit(Integer.max(capacity - 1, 4)) * 2, 1 << 30);
     }
-
-    public static int improveHash(int originalHash) {
-        return originalHash ^ (originalHash >>> 16);
-    }
-
-    public static int unimproveHash(int improvedHash) {
-        return improveHash(improvedHash);
-    }
-
-    public static int computeHash(Object o) {
-        return o == null ? 0 : improveHash(o.hashCode());
-    }
 }
