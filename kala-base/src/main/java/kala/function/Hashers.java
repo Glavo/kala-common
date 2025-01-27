@@ -20,6 +20,13 @@ import java.io.Serializable;
 import java.util.Objects;
 
 final class Hashers {
+    static int improveHash(final int origin) {
+        int h = origin + ~(origin << 9);
+        h = h ^ (h >>> 14);
+        h = h + (h << 4);
+        return h ^ (h >>> 10);
+    }
+
     static final Hasher<?> DEFAULT = new Default<>();
     static final Hasher<?> OPTIMIZED = new Optimized<>();
     static final Hasher<?> IDENTITY = new Identity<>();

@@ -44,6 +44,8 @@ public abstract class HashBase<K, N extends HashNode<K, N>> implements Serializa
     protected transient int contentSize = 0;
 
     protected HashBase(@NotNull Hasher<? super K> hasher, int initialCapacity, double loadFactor) {
+        this.hasher = Objects.requireNonNull(hasher);
+
         if (initialCapacity < 0) {
             throw new IllegalArgumentException("Illegal initial capacity: " + initialCapacity);
         }
@@ -55,7 +57,6 @@ public abstract class HashBase<K, N extends HashNode<K, N>> implements Serializa
             initialCapacity = MAXIMUM_CAPACITY;
         }
 
-        this.hasher = Objects.requireNonNull(hasher);
         this.loadFactor = loadFactor;
 
         final int tableSize = tableSizeFor(initialCapacity);

@@ -46,43 +46,16 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
     @Serial
     private static final long serialVersionUID = 4445503260710443405L;
 
-    private static final Factory<?, ?> FACTORY = new Factory<>();
+    private static final Factory<?, ?> FACTORY = new Factory<>(defaultHasher());
 
     public static final int DEFAULT_INITIAL_CAPACITY = HashBase.DEFAULT_INITIAL_CAPACITY;
     public static final double DEFAULT_LOAD_FACTOR = HashBase.DEFAULT_LOAD_FACTOR;
 
-    public MutableHashMap() {
-        this(DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR);
-    }
-
-    public MutableHashMap(int initialCapacity) {
-        this(initialCapacity, DEFAULT_LOAD_FACTOR);
-    }
-
-    public MutableHashMap(int initialCapacity, double loadFactor) {
-        this(Hasher.optimizedHasher(), initialCapacity, loadFactor);
-    }
-
-    public MutableHashMap(@NotNull Hasher<? super K> hasher) {
-        this(hasher, DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR);
-    }
-
-    public MutableHashMap(@NotNull Hasher<? super K> hasher, int initialCapacity) {
-        this(hasher, initialCapacity, DEFAULT_LOAD_FACTOR);
-    }
-
-    public MutableHashMap(@NotNull Hasher<? super K> hasher, int initialCapacity, double loadFactor) {
-        super(hasher, initialCapacity, loadFactor);
-    }
-
-    /**
-     * @see #clone()
-     */
-    private MutableHashMap(@NotNull MutableHashMap<K, V> old) {
-        super(old);
-    }
-
     //region Static Factories
+
+    public static <K> @NotNull Hasher<K> defaultHasher() {
+        return Hasher.optimizedHasher();
+    }
 
     public static <K, V> @NotNull MapFactory<K, V, ?, MutableHashMap<K, V>> factory() {
         return (Factory<K, V>) FACTORY;
@@ -278,6 +251,37 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
 
     //endregion
 
+    public MutableHashMap() {
+        this(DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR);
+    }
+
+    public MutableHashMap(int initialCapacity) {
+        this(initialCapacity, DEFAULT_LOAD_FACTOR);
+    }
+
+    public MutableHashMap(int initialCapacity, double loadFactor) {
+        this(defaultHasher(), initialCapacity, loadFactor);
+    }
+
+    public MutableHashMap(@NotNull Hasher<? super K> hasher) {
+        this(hasher, DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR);
+    }
+
+    public MutableHashMap(@NotNull Hasher<? super K> hasher, int initialCapacity) {
+        this(hasher, initialCapacity, DEFAULT_LOAD_FACTOR);
+    }
+
+    public MutableHashMap(@NotNull Hasher<? super K> hasher, int initialCapacity, double loadFactor) {
+        super(hasher, initialCapacity, loadFactor);
+    }
+
+    /**
+     * @see #clone()
+     */
+    private MutableHashMap(@NotNull MutableHashMap<K, V> old) {
+        super(old);
+    }
+
     @Override
     protected Node<K, V>[] createNodeArray(int length) {
         return new Node[length];
@@ -377,14 +381,6 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
         contentSize += 1;
     }
 
-    private Option<V> put0(K key, V value, int hash) {
-        if (contentSize + 1 >= threshold) {
-            growTable(table.length * 2);
-        }
-        final int idx = index(hash);
-        return put0(key, value, hash, idx);
-    }
-
     private Option<V> put0(K key, V value, int hash, int idx) {
         final Node<K, V>[] table = this.table;
         final Node<K, V> old = table[idx];
@@ -444,14 +440,6 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
         return new AsJava<>(this);
     }
 
-    @NotNull MutableHashMap<K, V> shallowClone() {
-        try {
-            return (MutableHashMap<K, V>) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError(e);
-        }
-    }
-
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     public @NotNull MutableHashMap<K, V> clone() {
@@ -494,10 +482,10 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
     }
 
     @Override
-    public V getOrPut(K key, @NotNull Supplier<? extends V> defaultValue) {
+    public V getOrPut(K key, @NotNull Supplier<? extends V> supplier) {
         final Node<K, V> node = findNode(key);
         if (node == null) {
-            V value = defaultValue.get();
+            V value = supplier.get();
             set(key, value);
             return value;
         }
@@ -845,9 +833,15 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
     }
 
     private static final class Factory<K, V> extends AbstractMutableMapFactory<K, V, MutableHashMap<K, V>> {
+        private final @NotNull Hasher<? super K> hasher;
+
+        public Factory(@NotNull Hasher<? super K> hasher) {
+            this.hasher = hasher;
+        }
+
         @Override
         public MutableHashMap<K, V> newBuilder() {
-            return new MutableHashMap<>();
+            return new MutableHashMap<>(hasher);
         }
     }
 
