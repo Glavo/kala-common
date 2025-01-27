@@ -64,7 +64,7 @@ public abstract class HashBase<K, N extends HashNode<K, N>> implements Serializa
         this.threshold = newThreshold(tableSize);
     }
 
-    protected HashBase(HashBase<K, N> old) {
+    protected HashBase(@NotNull HashBase<K, N> old) {
         this.hasher = old.hasher;
         this.loadFactor = old.loadFactor;
         this.threshold = old.threshold;
