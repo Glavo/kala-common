@@ -4,6 +4,12 @@
 
 (In development)
 
+## Fixes
+
+* Fix `kala.collection.mutable.MutableHashMap::{set, put}` not working with custom hasher.
+* Fix `kala.collection.mutable.MutableHashSet::{add, remove}` not working with custom hasher.
+* Fix `kala.function.Hashers.Identity::toString()`.
+
 ## 0.80.0
 
 Release Date: 2025-01-19
