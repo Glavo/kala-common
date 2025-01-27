@@ -4,6 +4,10 @@
 
 (In development)
 
+### New features
+
+* Add `kala.collection.mutable.MutableHashMap.factory(Hasher<K>)`.
+
 ## Fixes
 
 * Fix `kala.collection.mutable.MutableHashMap::{set, put}` not working with custom hasher.
@@ -16,28 +20,28 @@ Release Date: 2025-01-19
 
 ### New features
 
-* Add a new collection: `kala.collection.mutable.MutableSortedMap`
-* Add a new collection: `kala.collection.immutable.ImmutableChampMap`
-* Add a new collection: `kala.collection.immutable.ImutableSortedMap`
-* Add a new collection: `kala.collection.immutable.ImmutableTreeMap`
-* Add a new collection: `kala.collection.immutable.ImmutableTreeSet`
-* Add `kala.control.OptionContainer::getOrThrow()`
-* Add `kala.collection.MapLike::updated(K, V)`
-* Add `kala.collection.MapLike::removed(K)`
-* Add `kala.collection.SeqLike::getOrDefault(int, E)`
-* Add `kala.collection.SeqLike::getOrElse(int, Supplier<E>)`
-* Add `kala.collection.SeqLike::getOrThrow(int, Supplier<Ex>)`
-* Add `kala.collection.Set::added(E)`
-* Add `kala.collection.Set::addedAll(E...)`
-* Add `kala.collection.Set::addedAll(Iterable<E>)`
-* Add `kala.collection.SetLike::removed(E)`
-* Add `kala.collection.SetLike::removedAll(E...)`
-* Add `kala.collection.SetLike::removedAll(Iterable<E>)`
-* Add `kala.collection.SetLike::filterIsInstance(Class<U>)`
-* Add `kala.collection.base.OrderedTraversable::mapIndexed(CollectionFactory<U, ?, R>, IndexedFunction<T, U>)`
-* Add `kala.collection.base.OrderedTraversable::mapIndexedTo(G, IndexedFunction<T, U>)`
-* Add `kala.function.Predicates.isNotEquals(T)`
-* Add `kala.function.Predicates.isNotSame(T)`
+* Add a new collection: `kala.collection.mutable.MutableSortedMap`.
+* Add a new collection: `kala.collection.immutable.ImmutableChampMap`.
+* Add a new collection: `kala.collection.immutable.ImutableSortedMap`.
+* Add a new collection: `kala.collection.immutable.ImmutableTreeMap`.
+* Add a new collection: `kala.collection.immutable.ImmutableTreeSet`.
+* Add `kala.control.OptionContainer::getOrThrow()`.
+* Add `kala.collection.MapLike::updated(K, V)`.
+* Add `kala.collection.MapLike::removed(K)`.
+* Add `kala.collection.SeqLike::getOrDefault(int, E)`.
+* Add `kala.collection.SeqLike::getOrElse(int, Supplier<E>)`.
+* Add `kala.collection.SeqLike::getOrThrow(int, Supplier<Ex>)`.
+* Add `kala.collection.Set::added(E)`.
+* Add `kala.collection.Set::addedAll(E...)`.
+* Add `kala.collection.Set::addedAll(Iterable<E>)`.
+* Add `kala.collection.SetLike::removed(E)`.
+* Add `kala.collection.SetLike::removedAll(E...)`.
+* Add `kala.collection.SetLike::removedAll(Iterable<E>)`.
+* Add `kala.collection.SetLike::filterIsInstance(Class<U>)`.
+* Add `kala.collection.base.OrderedTraversable::mapIndexed(CollectionFactory<U, ?, R>, IndexedFunction<T, U>)`.
+* Add `kala.collection.base.OrderedTraversable::mapIndexedTo(G, IndexedFunction<T, U>)`.
+* Add `kala.function.Predicates.isNotEquals(T)`.
+* Add `kala.function.Predicates.isNotSame(T)`.
 
 ### Breaking Changes
 
