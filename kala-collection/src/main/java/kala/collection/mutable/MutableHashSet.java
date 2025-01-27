@@ -53,19 +53,19 @@ public final class MutableHashSet<E> extends HashBase<E, MutableHashSet.Node<E>>
         super(Hasher.optimizedHasher(), initialCapacity, loadFactor);
     }
 
-    public MutableHashSet(Hasher<? super E> hasher) {
+    public MutableHashSet(@NotNull Hasher<? super E> hasher) {
         this(hasher, DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR);
     }
 
-    public MutableHashSet(Hasher<? super E> hasher, int initialCapacity) {
+    public MutableHashSet(@NotNull Hasher<? super E> hasher, int initialCapacity) {
         this(hasher, initialCapacity, DEFAULT_LOAD_FACTOR);
     }
 
-    public MutableHashSet(Hasher<? super E> hasher, int initialCapacity, double loadFactor) {
+    public MutableHashSet(@NotNull Hasher<? super E> hasher, int initialCapacity, double loadFactor) {
         super(hasher, initialCapacity, loadFactor);
     }
 
-    private MutableHashSet(HashBase<E, Node<E>> old) {
+    private MutableHashSet(@NotNull HashBase<E, Node<E>> old) {
         super(old);
     }
 
@@ -151,7 +151,7 @@ public final class MutableHashSet<E> extends HashBase<E, MutableHashSet.Node<E>>
         return s;
     }
 
-    @Contract(value = "_ -> new", pure = true)
+    @Contract(value = "_ -> new")
     public static <E> @NotNull MutableHashSet<E> from(@NotNull Iterator<? extends E> it) {
         MutableHashSet<E> s = new MutableHashSet<>();
         while (it.hasNext()) {
@@ -287,6 +287,7 @@ public final class MutableHashSet<E> extends HashBase<E, MutableHashSet.Node<E>>
     }
 
     @Override
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     public @NotNull MutableHashSet<E> clone() {
         return new MutableHashSet<>(this);
     }
@@ -310,6 +311,7 @@ public final class MutableHashSet<E> extends HashBase<E, MutableHashSet.Node<E>>
 
     //region Serialization
 
+    @Serial
     private void readObject(java.io.ObjectInputStream in)
             throws IOException, ClassNotFoundException {
         final int size = in.readInt();
