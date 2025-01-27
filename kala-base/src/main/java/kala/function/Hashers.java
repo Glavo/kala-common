@@ -85,7 +85,7 @@ final class Hashers {
 
         @Override
         public String toString() {
-            return "Hashers.Optimized";
+            return "Hashers.Identity";
         }
 
         @Serial
