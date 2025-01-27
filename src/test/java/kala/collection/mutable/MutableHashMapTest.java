@@ -17,11 +17,11 @@ package kala.collection.mutable;
 
 import kala.SerializationUtils;
 import kala.collection.factory.MapFactory;
-import kala.tuple.Tuple;
+import kala.function.Hasher;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
-import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,111 +34,6 @@ public final class MutableHashMapTest implements MutableMapTestTemplate {
     }
 
     @Test
-    public void ofTest() {
-        assertEquals(0, MutableHashMap.of().size());
-        assertFalse(MutableHashMap.of().iterator().hasNext());
-
-        MutableHashMap<String, Integer> map1 = MutableHashMap.of("key1", 1);
-        assertEquals(1, map1.size());
-        assertEquals(1, map1.get("key1"));
-        assertThrows(NoSuchElementException.class, () -> map1.get("other"));
-
-        MutableHashMap<String, Integer> map2 = MutableHashMap.of("key1", 1, "key2", 2);
-        assertEquals(2, map2.size());
-        assertEquals(1, map2.get("key1"));
-        assertEquals(2, map2.get("key2"));
-        assertThrows(NoSuchElementException.class, () -> map2.get("other"));
-
-        MutableHashMap<String, Integer> map3 =
-                MutableHashMap.of("key1", 1, "key2", 2, "key3", 3);
-        assertEquals(3, map3.size());
-        assertEquals(1, map3.get("key1"));
-        assertEquals(2, map3.get("key2"));
-        assertEquals(3, map3.get("key3"));
-        assertThrows(NoSuchElementException.class, () -> map3.get("other"));
-
-        MutableHashMap<String, Integer> map4 =
-                MutableHashMap.of("key1", 1, "key2", 2, "key3", 3, "key4", 4);
-        assertEquals(4, map4.size());
-        assertEquals(1, map4.get("key1"));
-        assertEquals(2, map4.get("key2"));
-        assertEquals(3, map4.get("key3"));
-        assertEquals(4, map4.get("key4"));
-        assertThrows(NoSuchElementException.class, () -> map4.get("other"));
-
-        MutableHashMap<String, Integer> map5 =
-                MutableHashMap.of("key1", 1, "key2", 2, "key3", 3, "key4", 4, "key5", 5);
-        assertEquals(5, map5.size());
-        assertEquals(1, map5.get("key1"));
-        assertEquals(2, map5.get("key2"));
-        assertEquals(3, map5.get("key3"));
-        assertEquals(4, map5.get("key4"));
-        assertEquals(5, map5.get("key5"));
-        assertThrows(NoSuchElementException.class, () -> map5.get("other"));
-    }
-
-    @Test
-    public void ofEntriesTest() {
-        assertEquals(0, MutableHashMap.ofEntries().size());
-        assertFalse(MutableHashMap.ofEntries().iterator().hasNext());
-
-        MutableHashMap<String, Integer> map1 = MutableHashMap.ofEntries(Tuple.of("key1", 1));
-        assertEquals(1, map1.size());
-        assertEquals(1, map1.get("key1"));
-        assertThrows(NoSuchElementException.class, () -> map1.get("other"));
-
-        MutableHashMap<String, Integer> map2 = MutableHashMap.ofEntries(Tuple.of("key1", 1), Tuple.of("key2", 2));
-        assertEquals(2, map2.size());
-        assertEquals(1, map2.get("key1"));
-        assertEquals(2, map2.get("key2"));
-        assertThrows(NoSuchElementException.class, () -> map2.get("other"));
-
-        MutableHashMap<String, Integer> map3 =
-                MutableHashMap.ofEntries(Tuple.of("key1", 1), Tuple.of("key2", 2), Tuple.of("key3", 3));
-        assertEquals(3, map3.size());
-        assertEquals(1, map3.get("key1"));
-        assertEquals(2, map3.get("key2"));
-        assertEquals(3, map3.get("key3"));
-        assertThrows(NoSuchElementException.class, () -> map3.get("other"));
-
-        MutableHashMap<String, Integer> map4 =
-                MutableHashMap.ofEntries(Tuple.of("key1", 1), Tuple.of("key2", 2), Tuple.of("key3", 3), Tuple.of("key4", 4));
-        assertEquals(4, map4.size());
-        assertEquals(1, map4.get("key1"));
-        assertEquals(2, map4.get("key2"));
-        assertEquals(3, map4.get("key3"));
-        assertEquals(4, map4.get("key4"));
-        assertThrows(NoSuchElementException.class, () -> map4.get("other"));
-
-        MutableHashMap<String, Integer> map5 =
-                MutableHashMap.ofEntries(
-                        Tuple.of("key1", 1), Tuple.of("key2", 2),
-                        Tuple.of("key3", 3), Tuple.of("key4", 4),
-                        Tuple.of("key5", 5));
-        assertEquals(5, map5.size());
-        assertEquals(1, map5.get("key1"));
-        assertEquals(2, map5.get("key2"));
-        assertEquals(3, map5.get("key3"));
-        assertEquals(4, map5.get("key4"));
-        assertEquals(5, map5.get("key5"));
-        assertThrows(NoSuchElementException.class, () -> map5.get("other"));
-
-        MutableHashMap<String, Integer> map6 =
-                MutableHashMap.ofEntries(
-                        Tuple.of("key1", 1), Tuple.of("key2", 2),
-                        Tuple.of("key3", 3), Tuple.of("key4", 4),
-                        Tuple.of("key5", 5), Tuple.of("key6", 6));
-        assertEquals(6, map6.size());
-        assertEquals(1, map6.get("key1"));
-        assertEquals(2, map6.get("key2"));
-        assertEquals(3, map6.get("key3"));
-        assertEquals(4, map6.get("key4"));
-        assertEquals(5, map6.get("key5"));
-        assertEquals(6, map6.get("key6"));
-        assertThrows(NoSuchElementException.class, () -> map5.get("other"));
-    }
-
-    @Test
     public void fromTest() {
         assertEquals(MutableHashMap.of("str1", 1, "str2", 2, "str3", 3),
                 MutableHashMap.from(java.util.Map.of("str1", 1, "str2", 2, "str3", 3)));
@@ -146,7 +41,6 @@ public final class MutableHashMapTest implements MutableMapTestTemplate {
 
     @Test
     public void cloneTest() {
-
         Integer[][] data1 = data1();
         String[][] data1s = data1s();
 
@@ -256,6 +150,23 @@ public final class MutableHashMapTest implements MutableMapTestTemplate {
             assertNotSame(map1, map2);
             assertEquals(map1.size(), map2.size());
             map1.forEach((k, v) -> assertEquals(v, map2.get(k)));
+        }
+    }
+
+    static final class CustomHasherTest implements MutableMapTestTemplate {
+
+        private static <K> Hasher<K> hasher() {
+            return key -> Objects.hashCode(key) + 1;
+        }
+
+        @Override
+        public <K, V> MapFactory<K, V, ?, MutableHashMap<K, V>> factory() {
+            return MutableHashMap.factory(hasher());
+        }
+
+        @Override
+        public Class<?> mapType() {
+            return null;
         }
     }
 }
