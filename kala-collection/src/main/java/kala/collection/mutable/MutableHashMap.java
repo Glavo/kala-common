@@ -61,6 +61,10 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
         return (Factory<K, V>) FACTORY;
     }
 
+    public static <K, V> @NotNull MapFactory<K, V, ?, MutableHashMap<K, V>> factory(@NotNull Hasher<? super K> hasher) {
+        return hasher == defaultHasher() ? factory() : new Factory<>(hasher);
+    }
+
     static <T, K, V> @NotNull Collector<T, ?, MutableHashMap<K, V>> collector(
             @NotNull Function<? super T, ? extends K> keyMapper,
             @NotNull Function<? super T, ? extends V> valueMapper
