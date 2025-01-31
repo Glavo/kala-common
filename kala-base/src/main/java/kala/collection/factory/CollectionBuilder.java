@@ -19,6 +19,11 @@ import kala.collection.base.Growable;
 
 public interface CollectionBuilder<E, R> extends Growable<E>  {
 
+    @SuppressWarnings("unchecked")
+    static <E, R> CollectionBuilder<E, R> narrow(CollectionBuilder<? super E, ? extends R> builder) {
+        return (CollectionBuilder<E, R>) builder;
+    }
+
     void plusAssign(E value);
 
     R build();

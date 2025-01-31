@@ -15,6 +15,7 @@
  */
 package kala.collection.immutable;
 
+import kala.collection.factory.CollectionBuilder;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.internal.convert.FromJavaConvert;
 import org.jetbrains.annotations.Contract;
@@ -55,6 +56,11 @@ public final class ImmutableHashSet<E> extends FromJavaConvert.SetFromJava<E> im
 
     public static <E> @NotNull CollectionFactory<E, ?, ImmutableHashSet<E>> factory() {
         return ((ImmutableHashSet.Factory<E>) FACTORY);
+    }
+
+    @Contract("-> new")
+    public static <E> @NotNull CollectionBuilder<E, ImmutableHashSet<E>> newBuilder() {
+        return ImmutableHashSet.<E>factory().newCollectionBuilder();
     }
 
     public static <E> @NotNull ImmutableHashSet<E> empty() {

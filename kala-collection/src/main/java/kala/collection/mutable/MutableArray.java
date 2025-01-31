@@ -19,6 +19,7 @@ import kala.collection.ArraySeq;
 import kala.collection.base.GenericArrays;
 import kala.collection.base.ObjectArrays;
 import kala.collection.base.Traversable;
+import kala.collection.factory.CollectionBuilder;
 import kala.function.IndexedFunction;
 import kala.collection.factory.CollectionFactory;
 import kala.index.Index;
@@ -57,6 +58,11 @@ public final class MutableArray<E> extends ArraySeq<E> implements MutableSeq<E>,
 
     public static <E> @NotNull CollectionFactory<E, ?, MutableArray<E>> factory() {
         return (Factory<E>) FACTORY;
+    }
+
+    @Contract("-> new")
+    public static <E> @NotNull CollectionBuilder<E, MutableArray<E>> newBuilder() {
+        return MutableArray.<E>factory().newCollectionBuilder();
     }
 
     @Contract("_ -> new")

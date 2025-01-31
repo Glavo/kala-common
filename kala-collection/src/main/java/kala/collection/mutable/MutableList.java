@@ -21,6 +21,7 @@ import kala.annotations.ReplaceWith;
 import kala.collection.ArraySeq;
 import kala.collection.Seq;
 import kala.collection.base.Growable;
+import kala.collection.factory.CollectionBuilder;
 import kala.collection.internal.CollectionHelper;
 import kala.collection.internal.SeqIterators;
 import kala.collection.internal.convert.AsJavaConvert;
@@ -47,6 +48,11 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
 
     static <E> @NotNull CollectionFactory<E, ?, MutableList<E>> factory() {
         return CollectionFactory.narrow(MutableArrayList.factory());
+    }
+
+    @Contract("-> new")
+    static <E> @NotNull CollectionBuilder<E, MutableList<E>> newBuilder() {
+        return CollectionBuilder.narrow(MutableArrayList.newBuilder());
     }
 
     @Contract("-> new")

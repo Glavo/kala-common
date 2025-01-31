@@ -18,6 +18,7 @@ package kala.collection.immutable;
 import kala.annotations.DelegateBy;
 import kala.collection.Seq;
 import kala.collection.base.Traversable;
+import kala.collection.factory.CollectionBuilder;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import kala.annotations.Covariant;
@@ -47,6 +48,11 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
 
     static <E> @NotNull CollectionFactory<E, ?, ImmutableSeq<E>> factory() {
         return (ImmutableSeqs.Factory<E>) ImmutableSeqs.FACTORY;
+    }
+
+    @Contract("-> new")
+    static <E> @NotNull CollectionBuilder<E, ImmutableSeq<E>> newBuilder() {
+        return ImmutableSeq.<E>factory().newCollectionBuilder();
     }
 
     static <E> @NotNull ImmutableSeq<E> empty() {

@@ -18,6 +18,7 @@ package kala.collection;
 import kala.SerializationUtils;
 import kala.collection.base.GenericArrays;
 import kala.collection.base.Iterators;
+import kala.collection.factory.CollectionBuilder;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.immutable.ImmutableArray;
 import org.junit.jupiter.api.Test;
@@ -53,6 +54,103 @@ public interface SetTestTemplate extends SetLikeTestTemplate, CollectionTestTemp
     @Override
     default <E> Set<E> from(Iterable<? extends E> elements) {
         return Set.narrow(this.<E>factory().from(elements));
+    }
+
+    @Test
+    @Override
+    default void factoryTest() {
+        CollectionFactory<Object, Object, Set<?>> factory =
+                (CollectionFactory<Object, Object, Set<?>>) factory();
+        assertSetElements(List.of(), factory.empty());
+        assertSetElements(List.of(), factory.from(GenericArrays.EMPTY_OBJECT_ARRAY));
+        assertSetElements(List.of(), factory.from(java.util.List.of()));
+        assertSetElements(List.of(), factory.from(new Object[]{}));
+        assertSetElements(List.of(), factory.from(Iterators.empty()));
+
+        for (Integer[] data : data1()) {
+            var dataSet = java.util.Set.of(data);
+
+            assertSetElements(dataSet, factory.from(data));
+            assertSetElements(dataSet, factory.from(ImmutableArray.from(Arrays.asList(data))));
+            assertSetElements(dataSet, factory.from(Arrays.asList(data)));
+            assertSetElements(dataSet, factory.from(Arrays.asList(data).iterator()));
+        }
+
+        assertSetElements(List.of(), factory.build(factory.newBuilder()));
+
+        for (Integer[] data : data1()) {
+            Object builder = factory.newBuilder();
+            for (Integer i : data) {
+                factory.addToBuilder(builder, i);
+            }
+            assertSetElements(Arrays.asList(data), factory.build(builder));
+        }
+
+        Object b1;
+        Object b2;
+
+        {
+            b1 = factory.newBuilder();
+            b2 = factory.newBuilder();
+            factory.addAllToBuilder(b1, List.of("foo", "bar"));
+            assertSetElements(List.of("foo", "bar"), factory.build(factory.mergeBuilder(b1, b2)));
+        }
+
+        {
+            b1 = factory.newBuilder();
+            b2 = factory.newBuilder();
+            factory.addAllToBuilder(b2, List.of("foo", "bar"));
+            assertSetElements(List.of("foo", "bar"), factory.build(factory.mergeBuilder(b1, b2)));
+        }
+
+        {
+            b1 = factory.newBuilder();
+            b2 = factory.newBuilder();
+            factory.addAllToBuilder(b1, List.of("foo", "bar"));
+            factory.addAllToBuilder(b2, List.of("A", "B"));
+            assertSetElements(List.of("foo", "bar", "A", "B"), factory.build(factory.mergeBuilder(b1, b2)));
+        }
+    }
+
+    @Test
+    default void newBuilderTest() throws Throwable {
+        final Class<?> klass = collectionType();
+        if (klass == null) {
+            return;
+        }
+
+        final MethodHandles.Lookup lookup = MethodHandles.publicLookup();
+        final MethodHandle newBuilder = lookup.findStatic(klass, "newBuilder", MethodType.methodType(CollectionBuilder.class));
+
+        var helper = new Object() {
+            <E> CollectionBuilder<E, Set<E>> newBuilder() {
+                try {
+                    return (CollectionBuilder<E, Set<E>>) newBuilder.invokeExact();
+                } catch (Throwable e) {
+                    throw new AssertionError(e);
+                }
+            }
+        };
+
+        CollectionBuilder<Integer, Set<Integer>> builder = helper.newBuilder();
+        assertSetElements(List.of(), builder.build());
+
+        for (int n = 0; n <= 10; n++) {
+            builder = helper.newBuilder();
+            for (int i = 0; i < n; i++) {
+                builder.plusAssign(i);
+            }
+            assertSetElements(Seq.fill(n, i -> i), builder.build());
+
+            builder = helper.newBuilder();
+            for (int i = 0; i < n; i++) {
+                builder.plusAssign(i);
+            }
+            for (int i = 0; i < n; i++) {
+                builder.plusAssign(i);
+            }
+            assertSetElements(Seq.fill(n, i -> i), builder.build());
+        }
     }
 
     @Test
@@ -142,62 +240,6 @@ public interface SetTestTemplate extends SetLikeTestTemplate, CollectionTestTemp
                 assertSetElements(dataList, (Set<String>) fromIterator.invoke(dataList.iterator()));
                 assertSetElements(dataList, (Set<String>) fromStream.invoke(dataList.stream()));
             }
-        }
-    }
-
-    @Test
-    @Override
-    default void factoryTest() {
-        CollectionFactory<Object, Object, Set<?>> factory =
-                (CollectionFactory<Object, Object, Set<?>>) factory();
-        assertSetElements(List.of(), factory.empty());
-        assertSetElements(List.of(), factory.from(GenericArrays.EMPTY_OBJECT_ARRAY));
-        assertSetElements(List.of(), factory.from(java.util.List.of()));
-        assertSetElements(List.of(), factory.from(new Object[]{}));
-        assertSetElements(List.of(), factory.from(Iterators.empty()));
-
-        for (Integer[] data : data1()) {
-            var dataSet = java.util.Set.of(data);
-
-            assertSetElements(dataSet, factory.from(data));
-            assertSetElements(dataSet, factory.from(ImmutableArray.from(Arrays.asList(data))));
-            assertSetElements(dataSet, factory.from(Arrays.asList(data)));
-            assertSetElements(dataSet, factory.from(Arrays.asList(data).iterator()));
-        }
-
-        assertSetElements(List.of(), factory.build(factory.newBuilder()));
-
-        for (Integer[] data : data1()) {
-            Object builder = factory.newBuilder();
-            for (Integer i : data) {
-                factory.addToBuilder(builder, i);
-            }
-            assertSetElements(Arrays.asList(data), factory.build(builder));
-        }
-
-        Object b1;
-        Object b2;
-
-        {
-            b1 = factory.newBuilder();
-            b2 = factory.newBuilder();
-            factory.addAllToBuilder(b1, List.of("foo", "bar"));
-            assertSetElements(List.of("foo", "bar"), factory.build(factory.mergeBuilder(b1, b2)));
-        }
-
-        {
-            b1 = factory.newBuilder();
-            b2 = factory.newBuilder();
-            factory.addAllToBuilder(b2, List.of("foo", "bar"));
-            assertSetElements(List.of("foo", "bar"), factory.build(factory.mergeBuilder(b1, b2)));
-        }
-
-        {
-            b1 = factory.newBuilder();
-            b2 = factory.newBuilder();
-            factory.addAllToBuilder(b1, List.of("foo", "bar"));
-            factory.addAllToBuilder(b2, List.of("A", "B"));
-            assertSetElements(List.of("foo", "bar", "A", "B"), factory.build(factory.mergeBuilder(b1, b2)));
         }
     }
 

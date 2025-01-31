@@ -19,6 +19,7 @@ import kala.annotations.DelegateBy;
 import kala.annotations.ReplaceWith;
 import kala.collection.ArraySeq;
 import kala.collection.base.Growable;
+import kala.collection.factory.CollectionBuilder;
 import kala.collection.internal.CollectionHelper;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.factory.CollectionFactory;
@@ -44,6 +45,11 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
     @Contract(value = "-> new")
     static <E> @NotNull MutableSet<E> create() {
         return MutableHashSet.create();
+    }
+
+    @Contract("-> new")
+    static <E> @NotNull CollectionBuilder<E, MutableSet<E>> newBuilder() {
+        return CollectionBuilder.narrow(MutableHashSet.newBuilder());
     }
 
     @Contract(value = "-> new")

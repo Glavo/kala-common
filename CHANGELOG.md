@@ -7,6 +7,7 @@
 ### New features
 
 * Add `kala.collection.mutable.MutableHashMap.factory(Hasher<K>)`.
+* Add new factory method for all `Seq`/`Set`: `newBuilder()`.
 
 ## Fixes
 

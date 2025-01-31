@@ -16,6 +16,7 @@
 package kala.collection;
 
 import kala.SerializationUtils;
+import kala.collection.factory.CollectionBuilder;
 import kala.collection.immutable.ImmutableArray;
 import kala.collection.immutable.ImmutableVector;
 import kala.collection.mutable.MutableArray;
@@ -56,6 +57,38 @@ public interface SeqTestTemplate extends SequentialCollectionTestTemplate, SeqLi
     @Override
     default <E> Seq<E> from(Iterable<? extends E> elements) {
         return (Seq<E>) this.<E>factory().from(elements);
+    }
+
+    @Test
+    default void newBuilderTest() throws Throwable {
+        final Class<?> klass = collectionType();
+        if (klass == null) {
+            return;
+        }
+
+        final MethodHandles.Lookup lookup = MethodHandles.publicLookup();
+        final MethodHandle newBuilder = lookup.findStatic(klass, "newBuilder", MethodType.methodType(CollectionBuilder.class));
+
+        var helper = new Object() {
+            <E> CollectionBuilder<E, Seq<E>> newBuilder() {
+                try {
+                    return (CollectionBuilder<E, Seq<E>>) newBuilder.invokeExact();
+                } catch (Throwable e) {
+                    throw new AssertionError(e);
+                }
+            }
+        };
+
+        CollectionBuilder<Integer, Seq<Integer>> builder = helper.newBuilder();
+        assertIterableEquals(List.of(), builder.build());
+
+        for (int n = 0; n <= 10; n++) {
+            builder = helper.newBuilder();
+            for (int i = 0; i < n; i++) {
+                builder.plusAssign(i);
+            }
+            assertIterableEquals(Seq.fill(n, i -> i), builder.build());
+        }
     }
 
     @Test

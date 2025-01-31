@@ -16,6 +16,7 @@
 package kala.collection.mutable;
 
 import kala.collection.Set;
+import kala.collection.factory.CollectionBuilder;
 import kala.collection.internal.hash.HashBase;
 import kala.collection.internal.hash.HashNode;
 import kala.collection.internal.hash.HashUtils;
@@ -75,6 +76,11 @@ public final class MutableHashSet<E> extends HashBase<E, MutableHashSet.Node<E>>
 
     public static <E> @NotNull CollectionFactory<E, ?, MutableHashSet<E>> factory() {
         return ((Factory<E>) FACTORY);
+    }
+
+    @Contract("-> new")
+    public static <E> @NotNull CollectionBuilder<E, MutableHashSet<E>> newBuilder() {
+        return MutableHashSet.<E>factory().newCollectionBuilder();
     }
 
     @Contract(value = "-> new", pure = true)

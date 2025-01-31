@@ -16,6 +16,7 @@
 package kala.collection.immutable;
 
 import kala.annotations.Covariant;
+import kala.collection.factory.CollectionBuilder;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.Set;
 import org.jetbrains.annotations.Contract;
@@ -34,8 +35,13 @@ public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<
 
     //region Static Factories
 
-    static <E> CollectionFactory<E, ?, ? extends ImmutableSet<E>> factory() {
-        return ImmutableHashSet.factory();
+    static <E> @NotNull CollectionFactory<E, ?, ImmutableSet<E>> factory() {
+        return CollectionFactory.narrow(ImmutableHashSet.factory());
+    }
+
+    @Contract("-> new")
+    static <E> @NotNull CollectionBuilder<E, ImmutableSet<E>> newBuilder() {
+        return ImmutableSet.<E>factory().newCollectionBuilder();
     }
 
     static <E> @NotNull ImmutableSet<E> empty() {

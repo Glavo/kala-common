@@ -20,6 +20,7 @@ import kala.annotations.DelegateBy;
 import kala.collection.base.AnyTraversable;
 import kala.collection.base.Iterators;
 import kala.collection.base.OrderedTraversable;
+import kala.collection.factory.CollectionBuilder;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.immutable.ImmutableSeq;
 import kala.collection.internal.CollectionHelper;
@@ -55,6 +56,11 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
 
     static <E> @NotNull CollectionFactory<E, ?, Seq<E>> factory() {
         return CollectionFactory.narrow(ImmutableSeq.factory());
+    }
+
+    @Contract("-> new")
+    static <E> @NotNull CollectionBuilder<E, Seq<E>> newBuilder() {
+        return Seq.<E>factory().newCollectionBuilder();
     }
 
     static <E> @NotNull Seq<E> empty() {

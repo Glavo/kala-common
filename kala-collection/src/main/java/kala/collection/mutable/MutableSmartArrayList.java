@@ -15,10 +15,10 @@
  */
 package kala.collection.mutable;
 
-import kala.Conditions;
 import kala.collection.IndexedSeq;
 import kala.collection.base.GenericArrays;
 import kala.collection.base.Iterators;
+import kala.collection.factory.CollectionBuilder;
 import kala.function.IndexedFunction;
 import kala.collection.factory.CollectionFactory;
 import kala.index.Index;
@@ -62,6 +62,11 @@ public final class MutableSmartArrayList<E> extends AbstractMutableList<E> imple
 
     public static <E> @NotNull CollectionFactory<E, ?, MutableSmartArrayList<E>> factory() {
         return MutableListFactory.cast(FACTORY);
+    }
+
+    @Contract("-> new")
+    public static <E> @NotNull CollectionBuilder<E, MutableSmartArrayList<E>> newBuilder() {
+        return MutableSmartArrayList.<E>factory().newCollectionBuilder();
     }
 
     @Contract("-> new")

@@ -15,6 +15,7 @@
  */
 package kala.collection.mutable;
 
+import kala.collection.factory.CollectionBuilder;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.immutable.ImmutableLinkedSeq;
 import org.jetbrains.annotations.Contract;
@@ -41,6 +42,11 @@ public final class MutableSinglyLinkedList<E> extends ImmutableLinkedSeq.Builder
 
     public static <E> @NotNull CollectionFactory<E, ?, MutableSinglyLinkedList<E>> factory() {
         return MutableListFactory.cast(FACTORY);
+    }
+
+    @Contract("-> new")
+    public static <E> @NotNull CollectionBuilder<E, MutableSinglyLinkedList<E>> newBuilder() {
+        return MutableSinglyLinkedList.<E>factory().newCollectionBuilder();
     }
 
     @Contract(" -> new")

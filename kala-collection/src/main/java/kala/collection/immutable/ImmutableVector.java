@@ -10,6 +10,7 @@ package kala.collection.immutable;
 import kala.collection.IndexedSeq;
 import kala.collection.base.AnyTraversable;
 import kala.collection.base.Traversable;
+import kala.collection.factory.CollectionBuilder;
 import kala.function.*;
 import kala.annotations.Covariant;
 import kala.collection.factory.CollectionFactory;
@@ -50,6 +51,11 @@ public sealed abstract class ImmutableVector<@Covariant E> extends AbstractImmut
     @SuppressWarnings("unchecked")
     public static <E> @NotNull CollectionFactory<E, ?, ImmutableVector<E>> factory() {
         return (Factory<E>) FACTORY;
+    }
+
+    @Contract("-> new")
+    public static <E> @NotNull CollectionBuilder<E, ImmutableVector<E>> newBuilder() {
+        return ImmutableVector.<E>factory().newCollectionBuilder();
     }
 
     @SuppressWarnings("unchecked")

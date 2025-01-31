@@ -17,6 +17,7 @@ package kala.collection.mutable;
 
 import kala.Conditions;
 import kala.collection.base.Iterators;
+import kala.collection.factory.CollectionBuilder;
 import kala.function.IndexedConsumer;
 import kala.function.IndexedFunction;
 import kala.collection.factory.CollectionFactory;
@@ -58,6 +59,11 @@ public final class MutableLinkedList<E> extends AbstractMutableList<E> implement
     @Contract("-> new")
     public static <E> @NotNull MutableLinkedList<E> create() {
         return new MutableLinkedList<>();
+    }
+
+    @Contract("-> new")
+    public static <E> @NotNull CollectionBuilder<E, MutableHashSet<E>> newBuilder() {
+        return MutableHashSet.<E>factory().newCollectionBuilder();
     }
 
     @Contract("-> new")

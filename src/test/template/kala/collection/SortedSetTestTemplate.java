@@ -15,11 +15,13 @@
  */
 package kala.collection;
 
+import kala.collection.factory.CollectionBuilder;
 import kala.collection.factory.CollectionFactory;
 import org.junit.jupiter.api.Test;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,6 +32,7 @@ import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
 import static java.lang.invoke.MethodType.methodType;
+import static kala.ExtendedAssertions.assertSetElements;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings({"unchecked", "SpellCheckingInspection"})
@@ -66,6 +69,63 @@ public interface SortedSetTestTemplate extends SetTestTemplate {
 
     default <E> SortedSet<E> from(Comparator<? super E> comparator, Iterable<? extends E> elements) {
         return SortedSet.narrow(this.<E>factory(comparator).from(elements));
+    }
+
+    @Test
+    @Override
+    default void newBuilderTest() throws Throwable {
+        final Class<?> klass = collectionType();
+        if (klass == null) {
+            return;
+        }
+
+        final MethodHandles.Lookup lookup = MethodHandles.publicLookup();
+        final MethodHandle newBuilder = lookup.findStatic(klass, "newBuilder", MethodType.methodType(CollectionBuilder.class));
+        final MethodHandle newBuilderC = lookup.findStatic(klass, "newBuilder", MethodType.methodType(CollectionBuilder.class, Comparator.class));
+
+        var helper = new Object() {
+            <E extends Comparable<? super E>> CollectionBuilder<E, SortedSet<E>> newBuilder() {
+                try {
+                    return (CollectionBuilder<E, SortedSet<E>>) newBuilder.invokeExact();
+                } catch (Throwable e) {
+                    throw new AssertionError(e);
+                }
+            }
+
+            <E> CollectionBuilder<E, SortedSet<E>> newBuilder(Comparator<? super E> comparator) {
+                try {
+                    return (CollectionBuilder<E, SortedSet<E>>) newBuilderC.invokeExact(comparator);
+                } catch (Throwable e) {
+                    throw new AssertionError(e);
+                }
+            }
+        };
+
+        CollectionBuilder<Integer, SortedSet<Integer>> builder = helper.newBuilder();
+        assertIterableEquals(List.of(), builder.build());
+
+        for (int n = 0; n <= 10; n++) {
+            builder = helper.newBuilder();
+            for (int i = 0; i < n; i++) {
+                builder.plusAssign(i);
+            }
+            assertIterableEquals(Seq.fill(n, i -> i), builder.build());
+
+            builder = helper.newBuilder();
+            for (int i = 0; i < n; i++) {
+                builder.plusAssign(i);
+            }
+            for (int i = 0; i < n; i++) {
+                builder.plusAssign(i);
+            }
+            assertIterableEquals(Seq.fill(n, i -> i), builder.build());
+
+            builder = helper.newBuilder(Comparator.reverseOrder());
+            for (int i = 0; i < n; i++) {
+                builder.plusAssign(i);
+            }
+            assertIterableEquals(Seq.fill(n, i -> i).reversed(), builder.build());
+        }
     }
 
     @Test

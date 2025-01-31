@@ -18,6 +18,7 @@ package kala.collection.mutable;
 import kala.collection.IndexedSeq;
 import kala.collection.base.Iterators;
 import kala.collection.base.ObjectArrays;
+import kala.collection.factory.CollectionBuilder;
 import kala.collection.factory.CollectionFactory;
 import kala.index.Index;
 import kala.index.Indexes;
@@ -129,6 +130,11 @@ public final class MutableArrayDeque<E> extends AbstractMutableList<E> implement
 
     public static <E> @NotNull CollectionFactory<E, ?, MutableArrayDeque<E>> factory() {
         return MutableListFactory.cast(FACTORY);
+    }
+
+    @Contract("-> new")
+    public static <E> @NotNull CollectionBuilder<E, MutableArrayDeque<E>> newBuilder() {
+        return MutableArrayDeque.<E>factory().newCollectionBuilder();
     }
 
     public static <E> MutableArrayDeque<E> create() {

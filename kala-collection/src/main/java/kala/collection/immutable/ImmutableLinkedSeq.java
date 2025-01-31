@@ -18,6 +18,7 @@ package kala.collection.immutable;
 import kala.annotations.Covariant;
 import kala.collection.base.AbstractIterator;
 import kala.collection.base.Iterators;
+import kala.collection.factory.CollectionBuilder;
 import kala.collection.mutable.AbstractMutableList;
 import kala.collection.mutable.MutableSinglyLinkedList;
 import kala.function.*;
@@ -63,6 +64,11 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
 
     public static <E> @NotNull CollectionFactory<E, ?, ImmutableLinkedSeq<E>> factory() {
         return (Factory<E>) FACTORY;
+    }
+
+    @Contract("-> new")
+    public static <E> @NotNull CollectionBuilder<E, ImmutableLinkedSeq<E>> newBuilder() {
+        return ImmutableLinkedSeq.<E>factory().newCollectionBuilder();
     }
 
     public static <E> ImmutableLinkedSeq<E> empty() {

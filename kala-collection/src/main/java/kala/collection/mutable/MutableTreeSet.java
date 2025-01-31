@@ -20,6 +20,7 @@ import kala.collection.SortedSet;
 import kala.collection.base.Iterators;
 import kala.collection.Set;
 import kala.collection.base.AbstractIterator;
+import kala.collection.factory.CollectionBuilder;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.internal.tree.RedBlackTree;
 import kala.internal.ComparableUtils;
@@ -67,6 +68,16 @@ public final class MutableTreeSet<E> extends RedBlackTree<E, MutableTreeSet.Node
 
     public static <E> @NotNull CollectionFactory<E, ?, MutableTreeSet<E>> factory(Comparator<? super E> comparator) {
         return comparator == null ? (Factory<E>) DEFAULT_FACTORY : new Factory<>(comparator);
+    }
+
+    @Contract("-> new")
+    public static <E extends Comparable<? super E>> @NotNull CollectionBuilder<E, MutableTreeSet<E>> newBuilder() {
+        return MutableTreeSet.<E>factory().newCollectionBuilder();
+    }
+
+    @Contract("_ -> new")
+    public static <E> @NotNull CollectionBuilder<E, MutableTreeSet<E>> newBuilder(Comparator<? super E> comparator) {
+        return MutableTreeSet.<E>factory(comparator).newCollectionBuilder();
     }
 
     @Contract(value = " -> new", pure = true)

@@ -17,6 +17,7 @@ package kala.collection.immutable;
 
 import kala.collection.base.GenericArrays;
 import kala.collection.base.ObjectArrays;
+import kala.collection.factory.CollectionBuilder;
 import kala.collection.mutable.MutableTreeSet;
 import kala.collection.factory.CollectionFactory;
 import kala.internal.ComparableUtils;
@@ -63,7 +64,17 @@ public final class ImmutableSortedArraySet<E>
         return comparator == null ? (Factory<E>) DEFAULT_FACTORY : new Factory<>(comparator);
     }
 
-    @Contract
+    @Contract("-> new")
+    public static <E extends Comparable<? super E>> @NotNull CollectionBuilder<E, ImmutableSortedArraySet<E>> newBuilder() {
+        return ImmutableSortedArraySet.<E>factory().newCollectionBuilder();
+    }
+
+    @Contract("_ -> new")
+    public static <E> @NotNull CollectionBuilder<E, ImmutableSortedArraySet<E>> newBuilder(Comparator<? super E> comparator) {
+        return ImmutableSortedArraySet.<E>factory(comparator).newCollectionBuilder();
+    }
+
+    @Contract(pure = true)
     public static <E extends Comparable<? super E>> @NotNull ImmutableSortedArraySet<@NotNull E> empty() {
         return ((ImmutableSortedArraySet<E>) DEFAULT_FACTORY.empty());
     }

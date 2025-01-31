@@ -19,6 +19,7 @@ import kala.Conditions;
 import kala.annotations.DelegateBy;
 import kala.collection.Seq;
 import kala.collection.base.ObjectArrays;
+import kala.collection.factory.CollectionBuilder;
 import kala.collection.internal.SeqIterators;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
@@ -50,6 +51,11 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E>, MutableAnyS
     @Contract("_ -> new")
     static <E> @NotNull MutableSeq<E> create(int size) {
         return MutableArray.create(size);
+    }
+
+    @Contract("-> new")
+    static <E> @NotNull CollectionBuilder<E, MutableSeq<E>> newBuilder() {
+        return CollectionBuilder.narrow(MutableArray.newBuilder());
     }
 
     static <E> @NotNull MutableSeq<E> of() {

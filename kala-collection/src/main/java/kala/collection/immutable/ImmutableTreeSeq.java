@@ -17,11 +17,13 @@ package kala.collection.immutable;
 
 import kala.collection.Collection;
 import kala.collection.base.Traversable;
+import kala.collection.factory.CollectionBuilder;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.internal.tree.IntTree;
 import kala.index.Index;
 import kala.index.Indexes;
 import kala.value.Var;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,6 +53,11 @@ public final class ImmutableTreeSeq<E> extends AbstractImmutableSeq<E> implement
     @SuppressWarnings("unchecked")
     public static <E> @NotNull CollectionFactory<E, ?, ImmutableTreeSeq<E>> factory() {
         return (ImmutableTreeSeq.Factory<E>) FACTORY;
+    }
+
+    @Contract("-> new")
+    public static <E> @NotNull CollectionBuilder<E, ImmutableTreeSeq<E>> newBuilder() {
+        return ImmutableTreeSeq.<E>factory().newCollectionBuilder();
     }
 
     @SuppressWarnings("unchecked")

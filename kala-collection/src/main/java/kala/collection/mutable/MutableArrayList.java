@@ -22,6 +22,7 @@ import kala.collection.SeqLike;
 import kala.collection.base.AnyTraversable;
 import kala.collection.base.GenericArrays;
 import kala.collection.base.ObjectArrays;
+import kala.collection.factory.CollectionBuilder;
 import kala.collection.immutable.ImmutableArray;
 import kala.collection.internal.CollectionHelper;
 import kala.collection.factory.CollectionFactory;
@@ -79,6 +80,11 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
 
     public static <E> @NotNull CollectionFactory<E, ?, MutableArrayList<E>> factory() {
         return (Factory<E>) FACTORY;
+    }
+
+    @Contract("-> new")
+    public static <E> @NotNull CollectionBuilder<E, MutableArrayList<E>> newBuilder() {
+        return MutableArrayList.<E>factory().newCollectionBuilder();
     }
 
     @Contract("-> new")

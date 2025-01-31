@@ -18,6 +18,7 @@ package kala.collection;
 import kala.collection.base.GenericArrays;
 import kala.collection.base.ObjectArrays;
 import kala.collection.base.Traversable;
+import kala.collection.factory.CollectionBuilder;
 import kala.collection.immutable.ImmutableArray;
 import kala.collection.immutable.ImmutableSeq;
 import kala.collection.internal.CollectionHelper;
@@ -73,6 +74,11 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
     public static <E> @NotNull ArraySeq<E> wrap(@NotNull E[] array) {
         Objects.requireNonNull(array);
         return new ArraySeq.Default<>(array);
+    }
+
+    @Contract("-> new")
+    public static <E> @NotNull CollectionBuilder<E, ? extends ArraySeq<E>> newBuilder() {
+        return CollectionBuilder.narrow(ArraySeq.<E>factory().newCollectionBuilder());
     }
 
     public static <E> @NotNull ArraySeq<E> empty() {

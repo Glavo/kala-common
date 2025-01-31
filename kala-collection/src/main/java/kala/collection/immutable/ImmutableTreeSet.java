@@ -61,6 +61,16 @@ public final class ImmutableTreeSet<E> extends AbstractImmutableSortedSet<E> imp
         return factoryImpl(comparator);
     }
 
+    @Contract("-> new")
+    public static <E extends Comparable<? super E>> @NotNull CollectionBuilder<E, ImmutableTreeSet<E>> newBuilder() {
+        return ImmutableTreeSet.<E>factory().newCollectionBuilder();
+    }
+
+    @Contract("_ -> new")
+    public static <E> @NotNull CollectionBuilder<E, ImmutableTreeSet<E>> newBuilder(Comparator<? super E> comparator) {
+        return ImmutableTreeSet.<E>factory(comparator).newCollectionBuilder();
+    }
+
     @Contract
     public static <E extends Comparable<? super E>> @NotNull ImmutableTreeSet<@NotNull E> empty() {
         return ImmutableTreeSet.<E>factory().empty();

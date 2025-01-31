@@ -18,10 +18,8 @@ package kala.collection.immutable;
 import kala.collection.*;
 import kala.collection.base.GenericArrays;
 import kala.collection.base.Traversable;
+import kala.collection.factory.CollectionBuilder;
 import kala.collection.mutable.MutableArrayList;
-import kala.function.*;
-import kala.collection.internal.CollectionHelper;
-import kala.Conditions;
 import kala.tuple.Tuple2;
 import kala.annotations.Covariant;
 import kala.annotations.StaticClass;
@@ -35,8 +33,6 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Stream;
-
-import static kala.Conditions.checkPositionIndices;
 
 @SuppressWarnings("unchecked")
 public final class ImmutableArray<@Covariant E> extends ArraySeq<E> implements ImmutableSeq<E>, Serializable {
@@ -64,6 +60,11 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E> implements I
 
     public static <E> @NotNull CollectionFactory<E, ?, ImmutableArray<E>> factory() {
         return (ImmutableArray.Factory<E>) FACTORY;
+    }
+
+    @Contract("-> new")
+    public static <E> @NotNull CollectionBuilder<E, ImmutableArray<E>> newBuilder() {
+        return ImmutableArray.<E>factory().newCollectionBuilder();
     }
 
     public static <E> @NotNull ImmutableArray<E> empty() {
