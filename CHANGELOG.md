@@ -2,7 +2,7 @@
 
 ## 0.81.0
 
-(In development)
+Release Date: 2025-02-11
 
 ### New features
 
