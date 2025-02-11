@@ -15,11 +15,13 @@
  */
 package kala.control;
 
+import kala.annotations.DelegateBy;
 import kala.annotations.ReplaceWith;
 import kala.collection.base.Iterators;
 import kala.collection.base.Traversable;
 import kala.function.*;
 import kala.annotations.Covariant;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -132,9 +134,9 @@ public sealed interface Try<@Covariant T> extends AnyTry<T>, Traversable<T>, Ser
     @SuppressWarnings("removal")
     static boolean isFatal(Throwable exception) {
         return exception instanceof InterruptedException
-                || exception instanceof LinkageError
-                || exception instanceof ThreadDeath
-                || exception instanceof VirtualMachineError;
+               || exception instanceof LinkageError
+               || exception instanceof ThreadDeath
+               || exception instanceof VirtualMachineError;
     }
 
     static <T> @NotNull Try<T> success(T value) {
@@ -475,8 +477,32 @@ public sealed interface Try<@Covariant T> extends AnyTry<T>, Traversable<T>, Ser
         }
     }
 
-    record Success<T>(T value) implements Try<T> {
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("forEach(Consumer<T>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull Try<T> onEach(@NotNull Consumer<? super T> action) {
+        forEach(action);
+        return this;
+    }
 
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<T, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default <Ex extends Throwable> @NotNull Try<T> onEachChecked(@NotNull CheckedConsumer<? super T, ? extends Ex> action) throws Ex {
+        return onEach(action);
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<T, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull Try<T> onEachUnchecked(@NotNull CheckedConsumer<? super T, ?> action) {
+        return onEach(action);
+    }
+
+    record Success<T>(T value) implements Try<T> {
         @Override
         public int hashCode() {
             return Objects.hashCode(value) + SUCCESS_HASH_MAGIC;

@@ -15,13 +15,18 @@
  */
 package kala.collection.mutable;
 
+import kala.annotations.DelegateBy;
 import kala.collection.Collection;
+import kala.collection.immutable.ImmutableCollection;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.factory.CollectionFactory;
+import kala.function.CheckedConsumer;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public interface MutableCollection<E> extends Collection<E>, MutableAnyCollection<E> {
@@ -106,5 +111,30 @@ public interface MutableCollection<E> extends Collection<E>, MutableAnyCollectio
     @SuppressWarnings({"MethodDoesntCallSuperMethod"})
     default @NotNull MutableCollection<E> clone() {
         return this.<E>iterableFactory().from(this);
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("forEach(Consumer<E, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull MutableCollection<E> onEach(@NotNull Consumer<? super E> action) {
+        forEach(action);
+        return this;
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<E, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default <Ex extends Throwable> @NotNull MutableCollection<E> onEachChecked(@NotNull CheckedConsumer<? super E, ? extends Ex> action) throws Ex {
+        return onEach(action);
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<T, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull MutableCollection<E> onEachUnchecked(@NotNull CheckedConsumer<? super E, ?> action) {
+        return onEach(action);
     }
 }

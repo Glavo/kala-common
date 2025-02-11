@@ -15,13 +15,16 @@
  */
 package kala.collection;
 
+import kala.annotations.DelegateBy;
 import kala.collection.base.Traversable;
 import kala.collection.factory.MapFactory;
 import kala.collection.immutable.*;
 import kala.collection.mutable.MutableSeq;
+import kala.function.CheckedConsumer;
 import kala.tuple.Tuple2;
 import kala.tuple.Tuple3;
 import org.intellij.lang.annotations.Flow;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -227,4 +230,28 @@ public interface CollectionLike<E> extends Traversable<E>, AnyCollectionLike<E> 
         return factory.build(builder);
     }
 
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("forEach(Consumer<E, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull CollectionLike<E> onEach(@NotNull Consumer<? super E> action) {
+        forEach(action);
+        return this;
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<E, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default <Ex extends Throwable> @NotNull CollectionLike<E> onEachChecked(@NotNull CheckedConsumer<? super E, ? extends Ex> action) throws Ex {
+        return onEach(action);
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<T, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull CollectionLike<E> onEachUnchecked(@NotNull CheckedConsumer<? super E, ?> action) {
+        return onEach(action);
+    }
 }

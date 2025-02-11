@@ -16,12 +16,17 @@
 package kala.control;
 
 import kala.annotations.Covariant;
+import kala.annotations.DelegateBy;
+import kala.collection.base.Traversable;
+import kala.function.CheckedConsumer;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.NoSuchElementException;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 @SuppressWarnings("unchecked")
@@ -98,6 +103,31 @@ public sealed interface Result<@Covariant T, @Covariant E> extends OptionContain
             case Ok(var value) -> Either.right(value);
             case Err(var err) -> Either.left(err);
         };
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("forEach(Consumer<T>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull Result<T, E> onEach(@NotNull Consumer<? super T> action) {
+        forEach(action);
+        return this;
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<T, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default <Ex extends Throwable> @NotNull Result<T, E> onEachChecked(@NotNull CheckedConsumer<? super T, ? extends Ex> action) throws Ex {
+        return onEach(action);
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<T, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull Result<T, E> onEachUnchecked(@NotNull CheckedConsumer<? super T, ?> action) {
+        return onEach(action);
     }
 
     record Ok<T, E>(T value) implements Result<T, E> {

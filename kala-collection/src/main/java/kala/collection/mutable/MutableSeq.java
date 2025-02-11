@@ -20,19 +20,25 @@ import kala.annotations.DelegateBy;
 import kala.collection.Seq;
 import kala.collection.base.ObjectArrays;
 import kala.collection.factory.CollectionBuilder;
+import kala.collection.immutable.ImmutableSeq;
 import kala.collection.internal.SeqIterators;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
+import kala.function.CheckedConsumer;
+import kala.function.CheckedIndexedConsumer;
+import kala.function.IndexedConsumer;
 import kala.function.IndexedFunction;
 import kala.collection.factory.CollectionFactory;
 import kala.index.Index;
 import kala.index.Indexes;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
@@ -282,5 +288,55 @@ public interface MutableSeq<E> extends MutableCollection<E>, Seq<E>, MutableAnyS
             ObjectArrays.shuffle(arr, random);
             this.setAll(arr);
         }
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("forEach(Consumer<E, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull MutableSeq<E> onEach(@NotNull Consumer<? super E> action) {
+        forEach(action);
+        return this;
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<E, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default <Ex extends Throwable> @NotNull MutableSeq<E> onEachChecked(@NotNull CheckedConsumer<? super E, ? extends Ex> action) throws Ex {
+        return onEach(action);
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<T, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull MutableSeq<E> onEachUnchecked(@NotNull CheckedConsumer<? super E, ?> action) {
+        return onEach(action);
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("forEachIndexed(IndexedConsumer<T, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull MutableSeq<E> onEachIndexed(@NotNull IndexedConsumer<? super E> action) {
+        forEachIndexed(action);
+        return this;
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEachIndexed(IndexedConsumer<E, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default <Ex extends Throwable> @NotNull MutableSeq<E> onEachChecked(@NotNull CheckedIndexedConsumer<? super E, ? extends Ex> action) throws Ex {
+        return onEachIndexed(action);
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEachIndexed(IndexedConsumer<E, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull MutableSeq<E> onEachUnchecked(@NotNull CheckedIndexedConsumer<? super E, ?> action) {
+        return onEachIndexed(action);
     }
 }

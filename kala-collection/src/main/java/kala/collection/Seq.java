@@ -779,4 +779,53 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
         return view().distinct().toImmutableSeq();
     }
 
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("forEach(Consumer<E, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull Seq<E> onEach(@NotNull Consumer<? super E> action) {
+        forEach(action);
+        return this;
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<E, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default <Ex extends Throwable> @NotNull Seq<E> onEachChecked(@NotNull CheckedConsumer<? super E, ? extends Ex> action) throws Ex {
+        return onEach(action);
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<T, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull Seq<E> onEachUnchecked(@NotNull CheckedConsumer<? super E, ?> action) {
+        return onEach(action);
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("forEachIndexed(IndexedConsumer<T, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull Seq<E> onEachIndexed(@NotNull IndexedConsumer<? super E> action) {
+        forEachIndexed(action);
+        return this;
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEachIndexed(IndexedConsumer<E, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default <Ex extends Throwable> @NotNull Seq<E> onEachChecked(@NotNull CheckedIndexedConsumer<? super E, ? extends Ex> action) throws Ex {
+        return onEachIndexed(action);
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEachIndexed(IndexedConsumer<E, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull Seq<E> onEachUnchecked(@NotNull CheckedIndexedConsumer<? super E, ?> action) {
+        return onEachIndexed(action);
+    }
 }

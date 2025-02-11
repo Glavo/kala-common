@@ -20,16 +20,20 @@ import kala.annotations.ReplaceWith;
 import kala.collection.ArraySeq;
 import kala.collection.base.Growable;
 import kala.collection.factory.CollectionBuilder;
+import kala.collection.immutable.ImmutableSet;
 import kala.collection.internal.CollectionHelper;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.Set;
+import kala.function.CheckedConsumer;
 import org.intellij.lang.annotations.Flow;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -284,5 +288,30 @@ public interface MutableSet<E> extends MutableCollection<E>, Set<E>, Growable<E>
     @DelegateBy("removeIf(Predicate<E>)")
     default boolean retainIf(@NotNull Predicate<? super E> predicate) {
         return removeIf(predicate.negate());
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("forEach(Consumer<E, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull MutableSet<E> onEach(@NotNull Consumer<? super E> action) {
+        forEach(action);
+        return this;
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<E, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default <Ex extends Throwable> @NotNull MutableSet<E> onEachChecked(@NotNull CheckedConsumer<? super E, ? extends Ex> action) throws Ex {
+        return onEach(action);
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<T, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull MutableSet<E> onEachUnchecked(@NotNull CheckedConsumer<? super E, ?> action) {
+        return onEach(action);
     }
 }

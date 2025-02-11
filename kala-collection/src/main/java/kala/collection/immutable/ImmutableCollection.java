@@ -16,8 +16,11 @@
 package kala.collection.immutable;
 
 import kala.annotations.Covariant;
+import kala.annotations.DelegateBy;
 import kala.collection.Collection;
 import kala.collection.factory.CollectionFactory;
+import kala.function.CheckedConsumer;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -112,5 +115,30 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E>, Immuta
     @Override
     default @NotNull ImmutableCollection<E> distinct() {
         return distinct(this.iterableFactory());
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("forEach(Consumer<E, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull ImmutableCollection<E> onEach(@NotNull Consumer<? super E> action) {
+        forEach(action);
+        return this;
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<E, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default <Ex extends Throwable> @NotNull ImmutableCollection<E> onEachChecked(@NotNull CheckedConsumer<? super E, ? extends Ex> action) throws Ex {
+        return onEach(action);
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<T, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull ImmutableCollection<E> onEachUnchecked(@NotNull CheckedConsumer<? super E, ?> action) {
+        return onEach(action);
     }
 }

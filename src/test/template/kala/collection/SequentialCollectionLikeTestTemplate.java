@@ -284,6 +284,26 @@ public interface SequentialCollectionLikeTestTemplate extends CollectionLikeTest
     }
 
     @Test
+    default void onEachTest() {
+        ArrayList<Object> al = new ArrayList<>();
+        var empty  = of();
+        assertSame(empty, empty.onEach(al::add));
+        assertIterableEquals(List.of(), al);
+
+        CollectionLike<Integer> seq = from(List.of(0, 1, 2));
+        assertSame(seq, seq.onEach(al::add));
+        assertIterableEquals(List.of(0, 1, 2), al);
+        al.clear();
+
+        for (Integer[] data : data1()) {
+            seq = from(data);
+            assertSame(seq, seq.onEach(al::add));
+            assertIterableEquals(Arrays.asList(data), al);
+            al.clear();
+        }
+    }
+
+    @Test
     default void copyToTest() {
         CollectionLike<Integer> collection = of(0, 1, 2, 3);
 

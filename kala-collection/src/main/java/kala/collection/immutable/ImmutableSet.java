@@ -16,13 +16,17 @@
 package kala.collection.immutable;
 
 import kala.annotations.Covariant;
+import kala.annotations.DelegateBy;
 import kala.collection.factory.CollectionBuilder;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.Set;
+import kala.function.CheckedConsumer;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
@@ -107,5 +111,30 @@ public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<
     @Override
     default @NotNull ImmutableSet<E> toImmutableSet() {
         return this;
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("forEach(Consumer<E, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull ImmutableSet<E> onEach(@NotNull Consumer<? super E> action) {
+        forEach(action);
+        return this;
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<E, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default <Ex extends Throwable> @NotNull ImmutableSet<E> onEachChecked(@NotNull CheckedConsumer<? super E, ? extends Ex> action) throws Ex {
+        return onEach(action);
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<T, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull ImmutableSet<E> onEachUnchecked(@NotNull CheckedConsumer<? super E, ?> action) {
+        return onEach(action);
     }
 }

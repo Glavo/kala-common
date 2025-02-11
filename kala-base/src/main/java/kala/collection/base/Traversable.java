@@ -1173,15 +1173,38 @@ public interface Traversable<@Covariant T> extends Iterable<T>, AnyTraversable<T
     @ApiStatus.NonExtendable
     @DelegateBy("forEachCross(Iterable<U>, BiConsumer<T, U>)")
     default <U, Ex extends Throwable> void forEachCrossChecked(@NotNull Iterable<? extends U> other,
-                                                              @NotNull CheckedBiConsumer<? super T, ? super U, ? extends Ex> action) throws Ex {
+                                                               @NotNull CheckedBiConsumer<? super T, ? super U, ? extends Ex> action) throws Ex {
         forEachCross(other, action);
     }
 
     @ApiStatus.NonExtendable
     @DelegateBy("forEachCross(Iterable<U>, BiConsumer<T, U>)")
     default <U> void forEachCrossUnchecked(@NotNull Iterable<? extends U> other,
-                                          @NotNull CheckedBiConsumer<? super T, ? super U, ?> action) {
+                                           @NotNull CheckedBiConsumer<? super T, ? super U, ?> action) {
         forEachCross(other, action);
+    }
+
+
+    @ApiStatus.NonExtendable
+    @DelegateBy("forEach(Consumer<T>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull Traversable<T> onEach(@NotNull Consumer<? super T> action) {
+        forEach(action);
+        return this;
+    }
+
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<T, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default <Ex extends Throwable> @NotNull Traversable<T> onEachChecked(@NotNull CheckedConsumer<? super T, ? extends Ex> action) throws Ex {
+        return onEach(action);
+    }
+
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<T, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull Traversable<T> onEachUnchecked(@NotNull CheckedConsumer<? super T, ?> action) {
+        return onEach(action);
     }
 
     //endregion

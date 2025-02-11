@@ -15,11 +15,14 @@
  */
 package kala.control;
 
+import kala.annotations.DelegateBy;
 import kala.collection.base.Iterators;
 import kala.control.primitive.PrimitiveOption;
+import kala.function.CheckedConsumer;
 import kala.tuple.Tuple2;
 import kala.annotations.Covariant;
 import org.intellij.lang.annotations.Flow;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -218,6 +222,31 @@ public final class Option<@Covariant T> implements AnyOption<T>, OptionContainer
     @Override
     public @NotNull Iterator<T> iterator() {
         return isDefined() ? Iterators.of(value) : Iterators.empty();
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("forEach(Consumer<T>)")
+    @Contract(value = "_ -> this", pure = true)
+    public @NotNull Option<T> onEach(@NotNull Consumer<? super T> action) {
+        forEach(action);
+        return this;
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<T, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    public <Ex extends Throwable> @NotNull Option<T> onEachChecked(@NotNull CheckedConsumer<? super T, ? extends Ex> action) throws Ex {
+        return onEach(action);
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<T, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    public @NotNull Option<T> onEachUnchecked(@NotNull CheckedConsumer<? super T, ?> action) {
+        return onEach(action);
     }
 
     @Override

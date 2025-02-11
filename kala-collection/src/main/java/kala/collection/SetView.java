@@ -16,12 +16,17 @@
 package kala.collection;
 
 import kala.annotations.Covariant;
+import kala.annotations.DelegateBy;
 import kala.collection.immutable.ImmutableSet;
 import kala.collection.internal.view.SetViews;
+import kala.function.CheckedConsumer;
 import kala.function.Predicates;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public interface SetView<@Covariant E> extends CollectionView<E>, SetLike<E>, AnySetView<E> {
@@ -100,5 +105,30 @@ public interface SetView<@Covariant E> extends CollectionView<E>, SetLike<E>, An
         @SuppressWarnings("unchecked")
         SetView<U> result = (SetView<U>) filter(Predicates.isInstance(clazz));
         return result;
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("forEach(Consumer<E, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull SetView<E> onEach(@NotNull Consumer<? super E> action) {
+        forEach(action);
+        return this;
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<E, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default <Ex extends Throwable> @NotNull SetView<E> onEachChecked(@NotNull CheckedConsumer<? super E, ? extends Ex> action) throws Ex {
+        return onEach(action);
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<T, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull SetView<E> onEachUnchecked(@NotNull CheckedConsumer<? super E, ?> action) {
+        return onEach(action);
     }
 }

@@ -15,14 +15,18 @@
  */
 package kala.collection.immutable;
 
+import kala.annotations.DelegateBy;
 import kala.collection.SortedSet;
 import kala.collection.factory.CollectionFactory;
+import kala.function.CheckedConsumer;
+import kala.function.CheckedIndexedConsumer;
+import kala.function.IndexedConsumer;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 public interface ImmutableSortedSet<E> extends ImmutableSet<E>, SortedSet<E> {
 
@@ -40,4 +44,54 @@ public interface ImmutableSortedSet<E> extends ImmutableSet<E>, SortedSet<E> {
 
     @Override
     <U> @NotNull CollectionFactory<U, ?, ? extends ImmutableSortedSet<U>> sortedIterableFactory(Comparator<? super U> comparator);
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("forEach(Consumer<E, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull ImmutableSortedSet<E> onEach(@NotNull Consumer<? super E> action) {
+        forEach(action);
+        return this;
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<E, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default <Ex extends Throwable> @NotNull ImmutableSortedSet<E> onEachChecked(@NotNull CheckedConsumer<? super E, ? extends Ex> action) throws Ex {
+        return onEach(action);
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<T, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull ImmutableSortedSet<E> onEachUnchecked(@NotNull CheckedConsumer<? super E, ?> action) {
+        return onEach(action);
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("forEachIndexed(IndexedConsumer<T, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull ImmutableSortedSet<E> onEachIndexed(@NotNull IndexedConsumer<? super E> action) {
+        forEachIndexed(action);
+        return this;
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEachIndexed(IndexedConsumer<E, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default <Ex extends Throwable> @NotNull ImmutableSortedSet<E> onEachChecked(@NotNull CheckedIndexedConsumer<? super E, ? extends Ex> action) throws Ex {
+        return onEachIndexed(action);
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEachIndexed(IndexedConsumer<E, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull ImmutableSortedSet<E> onEachUnchecked(@NotNull CheckedIndexedConsumer<? super E, ?> action) {
+        return onEachIndexed(action);
+    }
 }

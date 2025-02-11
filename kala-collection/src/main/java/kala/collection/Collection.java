@@ -25,6 +25,7 @@ import kala.collection.factory.CollectionFactory;
 import kala.collection.internal.view.CollectionViews;
 import kala.function.CheckedBiConsumer;
 import kala.function.CheckedBiFunction;
+import kala.function.CheckedConsumer;
 import kala.function.CheckedFunction;
 import kala.function.CheckedPredicate;
 import kala.function.Predicates;
@@ -274,6 +275,31 @@ public interface Collection<@Covariant E> extends CollectionLike<E>, AnyCollecti
     @Contract(pure = true)
     default @NotNull ImmutableCollection<E> distinct() {
         return distinct(ImmutableSeq.factory());
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("forEach(Consumer<E, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull Collection<E> onEach(@NotNull Consumer<? super E> action) {
+        forEach(action);
+        return this;
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<E, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default <Ex extends Throwable> @NotNull Collection<E> onEachChecked(@NotNull CheckedConsumer<? super E, ? extends Ex> action) throws Ex {
+        return onEach(action);
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<T, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull Collection<E> onEachUnchecked(@NotNull CheckedConsumer<? super E, ?> action) {
+        return onEach(action);
     }
 
     final class SerializationWrapper<E, C extends Collection<E>> implements Serializable {

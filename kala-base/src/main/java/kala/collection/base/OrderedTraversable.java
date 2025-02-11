@@ -18,6 +18,7 @@ package kala.collection.base;
 import kala.annotations.DelegateBy;
 import kala.collection.factory.CollectionFactory;
 import kala.control.Option;
+import kala.function.CheckedConsumer;
 import kala.function.CheckedIndexedConsumer;
 import kala.function.IndexedBiConsumer;
 import kala.function.IndexedBiFunction;
@@ -26,6 +27,7 @@ import kala.function.IndexedFunction;
 import kala.index.Index;
 import kala.index.Indexes;
 import org.intellij.lang.annotations.Flow;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -446,5 +448,51 @@ public interface OrderedTraversable<T> extends Traversable<T> {
 
     default void forEachIndexedUnchecked(@NotNull CheckedIndexedConsumer<? super T, ?> action) {
         forEachIndexed(action);
+    }
+
+    @Override
+    @DelegateBy("forEach(Consumer<T, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull OrderedTraversable<T> onEach(@NotNull Consumer<? super T> action) {
+        forEach(action);
+        return this;
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<T, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default <Ex extends Throwable> @NotNull OrderedTraversable<T> onEachChecked(@NotNull CheckedConsumer<? super T, ? extends Ex> action) throws Ex {
+        return onEach(action);
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEach(Consumer<T, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull OrderedTraversable<T> onEachUnchecked(@NotNull CheckedConsumer<? super T, ?> action) {
+        return onEach(action);
+    }
+
+    @ApiStatus.NonExtendable
+    @DelegateBy("forEachIndexed(IndexedConsumer<T, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull OrderedTraversable<T> onEachIndexed(@NotNull IndexedConsumer<? super T> action) {
+        forEachIndexed(action);
+        return this;
+    }
+
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEachIndexed(IndexedConsumer<T, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default <Ex extends Throwable> @NotNull OrderedTraversable<T> onEachChecked(@NotNull CheckedIndexedConsumer<? super T, ? extends Ex> action) throws Ex {
+        return onEachIndexed(action);
+    }
+
+    @ApiStatus.NonExtendable
+    @DelegateBy("onEachIndexed(IndexedConsumer<T, Ex>)")
+    @Contract(value = "_ -> this", pure = true)
+    default @NotNull OrderedTraversable<T> onEachUnchecked(@NotNull CheckedIndexedConsumer<? super T, ?> action) {
+        return onEachIndexed(action);
     }
 }

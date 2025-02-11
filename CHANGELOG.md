@@ -6,6 +6,12 @@
 
 ### New features
 
+* Add `kala.collection.base.Traversable::onEach(Consumer<T>)`
+* Add `kala.collection.base.Traversable::onEachChecked(CheckedConsumer<T, Ex>)`
+* Add `kala.collection.base.Traversable::onEachUnchecked(CheckedConsumer<T, ?>)`
+* Add `kala.collection.base.OrderedTraversable::onEachIndexed(IndexedConsumer<T>)`
+* Add `kala.collection.base.OrderedTraversable::onEachIndexedChecked(CheckedIndexedConsumer<T, Ex>)`
+* Add `kala.collection.base.OrderedTraversable::onEachIndexedUnchecked(CheckedIndexedConsumer<T, ?>)`
 * Add `kala.collection.mutable.MutableHashMap.factory(Hasher<K>)`.
 * Add new factory method for all `Seq`/`Set`: `newBuilder()`.
 
