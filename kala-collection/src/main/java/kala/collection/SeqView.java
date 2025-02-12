@@ -310,7 +310,7 @@ public interface SeqView<@Covariant E> extends CollectionView<E>, SeqLike<E>, An
         for (E e : this) {
             set.add(e);
         }
-        return ImmutableArray.Unsafe.<E>wrap(set.toArray()).view();
+        return ((ImmutableArray<E>) ImmutableArray.Unsafe.wrap(set.toArray())).view();
     }
 
     @Override

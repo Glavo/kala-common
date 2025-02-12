@@ -118,7 +118,9 @@ public interface CollectionLike<E> extends Traversable<E>, AnyCollectionLike<E> 
     }
 
     default @NotNull ImmutableArray<E> toImmutableArray() {
-        return ImmutableArray.Unsafe.wrap(toArray());
+        @SuppressWarnings("unchecked")
+        ImmutableArray<E> res = (ImmutableArray<E>) ImmutableArray.Unsafe.wrap(toArray());
+        return res;
     }
 
     default @NotNull ImmutableLinkedSeq<E> toImmutableLinkedSeq() {

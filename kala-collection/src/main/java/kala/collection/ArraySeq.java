@@ -52,10 +52,8 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
 
     private static final ArraySeq.Factory<?> FACTORY = new ArraySeq.Factory<>();
 
-    protected final Object @NotNull [] elements;
-
-    protected ArraySeq(Object @NotNull [] elements) {
-        this.elements = elements;
+    private static <E> @NotNull ImmutableArray<E> wrapImmutable(Object[] array) {
+        return (ImmutableArray<E>) ImmutableArray.Unsafe.wrap(array);
     }
 
     @Contract(value = "_ -> param1", pure = true)
@@ -212,6 +210,12 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
 
     //endregion
 
+    protected final Object @NotNull [] elements;
+
+    protected ArraySeq(Object @NotNull [] elements) {
+        this.elements = elements;
+    }
+
     @Override
     public @NotNull String className() {
         return "ArraySeq";
@@ -277,7 +281,7 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
         newValues[0] = value;
         System.arraycopy(elements, 0, newValues, 1, elements.length);
 
-        return ImmutableArray.Unsafe.wrap(newValues);
+        return (ImmutableSeq<E>) ImmutableArray.Unsafe.wrap(newValues);
     }
 
     @Override
@@ -289,7 +293,7 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
         Object[] newValues = Arrays.copyOf(values, values.length + elements.length, Object[].class);
         System.arraycopy(elements, 0, newValues, values.length, elements.length);
 
-        return ImmutableArray.Unsafe.wrap(newValues);
+        return (ImmutableSeq<E>) ImmutableArray.Unsafe.wrap(newValues);
     }
 
     @Override
@@ -303,7 +307,7 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
         System.arraycopy(data, 0, newValues, 0, data.length);
         System.arraycopy(elements, 0, newValues, data.length, elements.length);
 
-        return ImmutableArray.Unsafe.wrap(newValues);
+        return (ImmutableSeq<E>) ImmutableArray.Unsafe.wrap(newValues);
     }
 
     @Override
@@ -314,7 +318,7 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
         Object[] newValues = Arrays.copyOf(elements, size + 1);
         newValues[size] = value;
 
-        return ImmutableArray.Unsafe.wrap(newValues);
+        return (ImmutableSeq<E>) ImmutableArray.Unsafe.wrap(newValues);
     }
 
     @Override
@@ -329,7 +333,7 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
         Object[] newValues = Arrays.copyOf(elements, values.length + size);
         System.arraycopy(values, 0, newValues, size, values.length);
 
-        return ImmutableArray.Unsafe.wrap(newValues);
+        return (ImmutableSeq<E>) ImmutableArray.Unsafe.wrap(newValues);
     }
 
     @Override
@@ -342,7 +346,7 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
         Object[] newValues = Arrays.copyOf(elements, elements.length + data.length);
         System.arraycopy(data, 0, newValues, elements.length, data.length);
 
-        return ImmutableArray.Unsafe.wrap(newValues);
+        return wrapImmutable(newValues);
     }
 
     //endregion
@@ -363,7 +367,7 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
             return this.toImmutableArray();
         }
 
-        return ImmutableArray.Unsafe.wrap(Arrays.copyOfRange(elements, beginIndex, endIndex));
+        return wrapImmutable(Arrays.copyOfRange(elements, beginIndex, endIndex));
     }
 
     @Override
@@ -375,7 +379,7 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
 
         Object[] newValues = elements.clone();
         newValues[index] = newValue;
-        return ImmutableArray.Unsafe.wrap(newValues);
+        return wrapImmutable(newValues);
     }
 
     @Override
@@ -384,7 +388,7 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
         final int size = elements.length;
         index = Indexes.checkPositionIndex(index, size);
 
-        return ImmutableArray.Unsafe.wrap(ObjectArrays.inserted(elements, index, value));
+        return wrapImmutable(ObjectArrays.inserted(elements, index, value));
     }
 
     @Override
@@ -397,7 +401,7 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
             return ImmutableArray.empty();
         }
 
-        return ImmutableArray.Unsafe.wrap(ObjectArrays.removedAt(elements, index));
+        return wrapImmutable(ObjectArrays.removedAt(elements, index));
     }
 
     @Override
@@ -427,7 +431,7 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
             return this.toImmutableArray();
         }
 
-        return ImmutableArray.Unsafe.wrap(Arrays.copyOf(tmp, c));
+        return wrapImmutable(Arrays.copyOf(tmp, c));
     }
 
     @Override
@@ -458,7 +462,7 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
             return this.toImmutableArray();
         }
 
-        return ImmutableArray.Unsafe.wrap(Arrays.copyOf(tmp, c));
+        return wrapImmutable(Arrays.copyOf(tmp, c));
     }
 
     @Override
@@ -487,7 +491,7 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
             return this.toImmutableArray();
         }
 
-        return ImmutableArray.Unsafe.wrap(Arrays.copyOf(tmp, c));
+        return wrapImmutable(Arrays.copyOf(tmp, c));
     }
 
     @Override
@@ -516,7 +520,7 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
             return (ImmutableSeq<U>) this.toImmutableArray();
         }
 
-        return ImmutableArray.Unsafe.wrap(Arrays.copyOf(tmp, c));
+        return wrapImmutable(Arrays.copyOf(tmp, c));
     }
 
     @Override
@@ -527,7 +531,7 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
             return ImmutableArray.empty();
         }
 
-        return ImmutableArray.Unsafe.wrap(ObjectArrays.map(elements, mapper));
+        return wrapImmutable(ObjectArrays.map(elements, mapper));
     }
 
     @Override
@@ -538,7 +542,7 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
             return ImmutableArray.empty();
         }
 
-        return ImmutableArray.Unsafe.wrap(ObjectArrays.mapIndexed(elements, mapper));
+        return wrapImmutable(ObjectArrays.mapIndexed(elements, mapper));
     }
 
     @Override
@@ -563,10 +567,10 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
             return ImmutableArray.empty();
         }
         if (c == size) {
-            return ImmutableArray.Unsafe.wrap(tmp);
+            return wrapImmutable(tmp);
         }
 
-        return ImmutableArray.Unsafe.wrap(Arrays.copyOf(tmp, c));
+        return wrapImmutable(Arrays.copyOf(tmp, c));
     }
 
     @Override
@@ -591,22 +595,22 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
             return ImmutableArray.empty();
         }
         if (c == size) {
-            return ImmutableArray.Unsafe.wrap(tmp);
+            return wrapImmutable(tmp);
         }
 
-        return ImmutableArray.Unsafe.wrap(Arrays.copyOf(tmp, c));
+        return wrapImmutable(Arrays.copyOf(tmp, c));
     }
 
     @Override
     public <U> @NotNull ImmutableSeq<U> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<? super U>> mapper) {
         Object[] arr = ObjectArrays.mapMulti(elements, mapper);
-        return arr.length != 0 ? ImmutableArray.Unsafe.wrap(arr) : ImmutableArray.empty();
+        return arr.length != 0 ? wrapImmutable(arr) : ImmutableArray.empty();
     }
 
     @Override
     public <U> @NotNull ImmutableSeq<U> mapIndexedMulti(@NotNull IndexedBiConsumer<? super E, ? super Consumer<? super U>> mapper) {
         Object[] arr = ObjectArrays.mapIndexedMulti(elements, mapper);
-        return arr.length != 0 ? ImmutableArray.Unsafe.wrap(arr) : ImmutableArray.empty();
+        return arr.length != 0 ? wrapImmutable(arr) : ImmutableArray.empty();
     }
 
     @Override
@@ -632,7 +636,7 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
 
         Object[] newValues = elements.clone();
         Arrays.sort(newValues, (Comparator<Object>) comparator);
-        return ImmutableArray.Unsafe.wrap(newValues);
+        return wrapImmutable(newValues);
     }
 
     @Override
@@ -641,7 +645,7 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
         if (size == 0) {
             return ImmutableArray.empty();
         }
-        return ImmutableArray.Unsafe.wrap(ObjectArrays.reversed(elements));
+        return wrapImmutable(ObjectArrays.reversed(elements));
     }
 
     @Override
@@ -664,7 +668,7 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
         if (i < size) {
             tmp = Arrays.copyOf(tmp, i);
         }
-        return ImmutableArray.Unsafe.wrap(tmp);
+        return wrapImmutable(tmp);
     }
 
     //region Search Operations
