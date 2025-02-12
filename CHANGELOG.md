@@ -4,6 +4,10 @@
 
 (In development)
 
+### New features
+
+* Add a new collection: `kala.collection.mutable.MutableLinkedHashSet`.
+
 ## 0.81.0
 
 Release Date: 2025-02-11
