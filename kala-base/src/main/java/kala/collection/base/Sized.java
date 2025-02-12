@@ -17,7 +17,6 @@ package kala.collection.base;
 
 import org.jetbrains.annotations.ApiStatus;
 
-@ApiStatus.Experimental
 public interface Sized {
 
     boolean isEmpty();
