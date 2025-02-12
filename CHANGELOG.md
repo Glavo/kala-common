@@ -8,6 +8,10 @@
 
 * Add a new collection: `kala.collection.mutable.MutableLinkedHashSet`.
 
+### Breaking Changes
+
+* The parameter type of `kala.collection.immutable.ImmutableArraySeq.Unsafe.wrap(Object[])` is changed to `E[]`.
+
 ## 0.81.0
 
 Release Date: 2025-02-11
