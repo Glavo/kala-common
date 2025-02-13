@@ -27,6 +27,8 @@ Other changes:
 * The parameter type of `kala.collection.immutable.ImmutableArraySeq.Unsafe.wrap(Object[])` is changed to `E[]`.
 * The return type of `kala.collection.CollectionLike::toSeq()` changes to `ImmutableSeq<E>`.
 * The return type of `kala.collection.CollectionLike::toSet()` changes to `ImmutableSet<E>`.
+* The return type of `kala.collection.CollectionLike::associateBy(Function<E, K>)` changes to `ImmutableMap<K, E>`.
+* The return type of `kala.collection.CollectionLike::associateBy(Function<E, K>, Function<K, V>)` changes to `ImmutableMap<K, V>`.
 * `kala.collection.CollectionLike::toImmutableSeq()` is deprecated for removal and is replaced by `toSeq()`.
 * `kala.collection.CollectionLike::toImmutableSet()` is deprecated for removal and is replaced by `toSet()`.
 

@@ -137,74 +137,68 @@ public interface CollectionLike<E> extends Traversable<E>, AnyCollectionLike<E> 
         return ImmutableSet.from(this);
     }
 
-    default <K, V> @NotNull Map<K, V> associate(@NotNull Function<? super E, ? extends java.util.Map.Entry<? extends K, ? extends V>> transform) {
+    default <K, V> @NotNull ImmutableMap<K, V> associate(@NotNull Function<? super E, ? extends java.util.Map.Entry<? extends K, ? extends V>> transform) {
         final int ks = knownSize();
         if (ks == 0) {
-            return Map.empty();
+            return ImmutableMap.empty();
         }
         final Iterator<E> it = this.iterator();
         if (!it.hasNext()) {
-            return Map.empty();
+            return ImmutableMap.empty();
         }
 
-        @SuppressWarnings({"unchecked", "rawtypes"}) final MapFactory<K, V, Object, Map<K, V>> factory =
-                (MapFactory) Map.factory();
-        final Object builder = factory.newBuilder();
+        final var builder = ImmutableMap.<K, V>newMapBuilder();
         if (ks > 0) {
-            factory.sizeHint(builder, ks);
+            builder.sizeHint(ks);
         }
         while (it.hasNext()) {
-            final java.util.Map.Entry<? extends K, ? extends V> v = transform.apply(it.next());
-            factory.addToBuilder(builder, v.getKey(), v.getValue());
+            final var v = transform.apply(it.next());
+            builder.plusAssign(v.getKey(), v.getValue());
         }
-        return factory.build(builder);
+        return builder.build();
     }
 
-    default <K> @NotNull Map<K, E> associateBy(@NotNull Function<? super E, ? extends K> keySelector) {
+    default <K> @NotNull ImmutableMap<K, E> associateBy(@NotNull Function<? super E, ? extends K> keySelector) {
         final int ks = knownSize();
         if (ks == 0) {
-            return Map.empty();
+            return ImmutableMap.empty();
         }
         final Iterator<E> it = this.iterator();
         if (!it.hasNext()) {
-            return Map.empty();
+            return ImmutableMap.empty();
         }
 
-        @SuppressWarnings({"unchecked", "rawtypes"}) final MapFactory<K, E, Object, Map<K, E>> factory =
-                (MapFactory) Map.factory();
-        final Object builder = factory.newBuilder();
+        final var builder = ImmutableMap.<K, E>newMapBuilder();
         if (ks > 0) {
-            factory.sizeHint(builder, ks);
+            builder.sizeHint(ks);
         }
         while (it.hasNext()) {
             final E e = it.next();
-            factory.addToBuilder(builder, keySelector.apply(e), e);
+            builder.plusAssign(keySelector.apply(e), e);
         }
-        return factory.build(builder);
+        return builder.build();
     }
 
-    default <K, V> @NotNull Map<K, V> associateBy(
+    default <K, V> @NotNull ImmutableMap<K, V> associateBy(
             @NotNull Function<? super E, ? extends K> keySelector, @NotNull Function<? super E, ? extends V> valueTransform) {
         final int ks = knownSize();
         if (ks == 0) {
-            return Map.empty();
+            return ImmutableMap.empty();
         }
         final Iterator<E> it = this.iterator();
         if (!it.hasNext()) {
-            return Map.empty();
+            return ImmutableMap.empty();
         }
 
-        @SuppressWarnings({"unchecked", "rawtypes"}) final MapFactory<K, V, Object, Map<K, V>> factory =
-                (MapFactory) Map.factory();
-        final Object builder = factory.newBuilder();
+        final var builder = ImmutableMap.<K, V>newMapBuilder();
         if (ks > 0) {
-            factory.sizeHint(builder, ks);
+            builder.sizeHint(ks);
         }
         while (it.hasNext()) {
             final E e = it.next();
-            factory.addToBuilder(builder, keySelector.apply(e), valueTransform.apply(e));
+            builder.plusAssign(keySelector.apply(e), valueTransform.apply(e));
         }
-        return factory.build(builder);
+        return builder.build();
     }
 
     //region Deprecated

@@ -16,7 +16,6 @@
 package kala.collection.internal.view;
 
 import kala.collection.*;
-import kala.collection.Map;
 import kala.collection.base.Iterators;
 import kala.collection.immutable.*;
 import kala.control.Option;
@@ -359,19 +358,19 @@ public final class CollectionViews {
         }
 
         @Override
-        public final @NotNull <K, V> Map<K, V> associate(
+        public final @NotNull <K, V> ImmutableMap<K, V> associate(
                 @NotNull Function<? super E, ? extends java.util.Map.Entry<? extends K, ? extends V>> transform) {
             return source.associate(transform);
         }
 
         @Override
-        public final @NotNull <K, V> Map<K, V> associateBy(
+        public final @NotNull <K, V> ImmutableMap<K, V> associateBy(
                 @NotNull Function<? super E, ? extends K> keySelector, @NotNull Function<? super E, ? extends V> valueTransform) {
             return source.associateBy(keySelector, valueTransform);
         }
 
         @Override
-        public final @NotNull <K> Map<K, E> associateBy(@NotNull Function<? super E, ? extends K> keySelector) {
+        public final @NotNull <K> ImmutableMap<K, E> associateBy(@NotNull Function<? super E, ? extends K> keySelector) {
             return source.associateBy(keySelector);
         }
 

@@ -18,7 +18,6 @@ package kala.collection;
 import kala.collection.base.AbstractIterator;
 import kala.collection.base.Growable;
 import kala.collection.base.Iterators;
-import kala.collection.factory.MapFactory;
 import kala.collection.mutable.MutableSeq;
 import kala.control.Option;
 import kala.function.IndexedBiFunction;
@@ -641,68 +640,6 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
             arr[i] = (U) get(i);
         }
         return arr;
-    }
-
-    @Override
-    default <K, V> kala.collection.@NotNull Map<K, V> associate(
-            @NotNull Function<? super E, ? extends java.util.Map.Entry<? extends K, ? extends V>> transform) {
-        final int size = this.size();
-        if (size == 0) {
-            return kala.collection.Map.empty();
-        }
-
-        @SuppressWarnings({"unchecked", "rawtypes"}) final MapFactory<K, V, Object, kala.collection.Map<K, V>> factory =
-                (MapFactory) kala.collection.Map.factory();
-        final Object builder = factory.newBuilder();
-        factory.sizeHint(builder, size);
-
-        for (int i = 0; i < size; i++) {
-            final java.util.Map.Entry<? extends K, ? extends V> v = transform.apply(this.get(i));
-            factory.addToBuilder(builder, v.getKey(), v.getValue());
-        }
-
-        return factory.build(builder);
-    }
-
-    @Override
-    default <K> kala.collection.@NotNull Map<K, E> associateBy(@NotNull Function<? super E, ? extends K> keySelector) {
-        final int size = this.size();
-        if (size == 0) {
-            return kala.collection.Map.empty();
-        }
-
-        @SuppressWarnings({"unchecked", "rawtypes"}) final MapFactory<K, E, Object, kala.collection.Map<K, E>> factory =
-                (MapFactory) kala.collection.Map.factory();
-        final Object builder = factory.newBuilder();
-        factory.sizeHint(builder, size);
-
-        for (int i = 0; i < size; i++) {
-            final E e = this.get(i);
-            factory.addToBuilder(builder, keySelector.apply(e), e);
-        }
-
-        return factory.build(builder);
-    }
-
-    @Override
-    default <K, V> kala.collection.@NotNull Map<K, V> associateBy(
-            @NotNull Function<? super E, ? extends K> keySelector, @NotNull Function<? super E, ? extends V> valueTransform) {
-        final int size = this.size();
-        if (size == 0) {
-            return kala.collection.Map.empty();
-        }
-
-        @SuppressWarnings({"unchecked", "rawtypes"}) final MapFactory<K, V, Object, kala.collection.Map<K, V>> factory =
-                (MapFactory) kala.collection.Map.factory();
-        final Object builder = factory.newBuilder();
-        factory.sizeHint(builder, size);
-
-        for (int i = 0; i < size; i++) {
-            final E e = this.get(i);
-            factory.addToBuilder(builder, keySelector.apply(e), valueTransform.apply(e));
-        }
-
-        return factory.build(builder);
     }
 
     @Override

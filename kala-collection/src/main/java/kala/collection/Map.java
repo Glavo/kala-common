@@ -17,6 +17,7 @@ package kala.collection;
 
 import kala.Equatable;
 import kala.collection.base.MapIterator;
+import kala.collection.factory.MapBuilder;
 import kala.collection.factory.MapFactory;
 import kala.collection.immutable.ImmutableHashMap;
 import kala.collection.immutable.ImmutableMap;
@@ -75,6 +76,10 @@ public interface Map<K, V> extends AnyMap<K, V>, MapLike<K, V>, Equatable {
             @NotNull Function<? super T, ? extends V> valueMapper
     ) {
         return MapFactory.collector(factory(), keyMapper, valueMapper);
+    }
+
+    static <K, V> @NotNull MapBuilder<K, V, Map<K, V>> newMapBuilder() {
+        return MapBuilder.narrow(ImmutableMap.<K, V>factory().newMapBuilder());
     }
 
     static <K, V> @NotNull Map<K, V> empty() {
