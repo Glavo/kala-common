@@ -24,13 +24,13 @@ Maven:
 <dependency>
   <groupId>org.glavo.kala</groupId>
   <artifactId>kala-common</artifactId>
-  <version>0.80.0</version>
+  <version>0.82.0</version>
 </dependency>
 ```
 
 Gradle:
 ```kotlin
-implementation("org.glavo.kala:kala-common:0.80.0")
+implementation("org.glavo.kala:kala-common:0.82.0")
 ```
 
 ## Learn about Kala Common
