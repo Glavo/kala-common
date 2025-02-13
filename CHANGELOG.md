@@ -7,6 +7,7 @@
 ### New features
 
 * Add a new collection: `kala.collection.mutable.MutableLinkedHashSet`.
+* Add `kala.collection.CollectionLike::collect()`
 * Add `kala.collection.CollectionLike::toArraySeq()`
 
 ### Breaking Changes
