@@ -164,7 +164,7 @@ public final class MutableLinkedHashSet<E> extends FromJavaConvert.MutableSetFro
     private static final class Factory<E> extends AbstractMutableSetFactory<E, MutableLinkedHashSet<E>> {
         @Override
         public MutableLinkedHashSet<E> newBuilder() {
-            return new MutableLinkedHashSet<>(new LinkedHashSet<>());
+            return new MutableLinkedHashSet<>();
         }
     }
 }
