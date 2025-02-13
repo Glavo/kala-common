@@ -76,7 +76,7 @@ public final class ImmutableSortedArraySet<E>
 
     @Contract(pure = true)
     public static <E extends Comparable<? super E>> @NotNull ImmutableSortedArraySet<@NotNull E> empty() {
-        return ((ImmutableSortedArraySet<E>) DEFAULT_FACTORY.empty());
+        return (ImmutableSortedArraySet<E>) DEFAULT_FACTORY.empty();
     }
 
     public static <E extends Comparable<? super E>> @NotNull ImmutableSortedArraySet<@NotNull E> of() {
