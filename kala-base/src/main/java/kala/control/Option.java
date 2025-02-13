@@ -19,7 +19,6 @@ import kala.annotations.DelegateBy;
 import kala.collection.base.Iterators;
 import kala.control.primitive.PrimitiveOption;
 import kala.function.CheckedConsumer;
-import kala.tuple.Tuple2;
 import kala.annotations.Covariant;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.ApiStatus;
@@ -182,16 +181,6 @@ public final class Option<@Covariant T> implements AnyOption<T>, OptionContainer
 
     public @NotNull Option<@NotNull T> filterNotNull() {
         return value == null ? none() : this;
-    }
-
-    public @NotNull Tuple2<@NotNull Option<T>, @NotNull Option<T>> span(@NotNull Predicate<? super T> predicate) {
-        if (isEmpty()) {
-            return new Tuple2<>(none(), none());
-        } else if (predicate.test(value)) {
-            return new Tuple2<>(this, none());
-        } else {
-            return new Tuple2<>(none(), this);
-        }
     }
 
     public <U> @NotNull Result<T, U> toResult(U errValue) {

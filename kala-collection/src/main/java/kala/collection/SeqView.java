@@ -26,8 +26,6 @@ import kala.function.IndexedFunction;
 import kala.function.Predicates;
 import kala.index.Index;
 import kala.index.Indexes;
-import kala.tuple.Tuple;
-import kala.tuple.Tuple2;
 import kala.collection.internal.view.SeqViews;
 import kala.annotations.Covariant;
 import kala.collection.internal.CollectionHelper;
@@ -300,10 +298,6 @@ public interface SeqView<@Covariant E> extends CollectionView<E>, SeqLike<E>, An
     default <U> @NotNull SeqView<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
         Objects.requireNonNull(mapper);
         return new SeqViews.FlatMapped<>(this, mapper);
-    }
-
-    default @NotNull Tuple2<? extends SeqView<E>, ? extends SeqView<E>> span(@NotNull Predicate<? super E> predicate) {
-        return Tuple.of(takeWhile(predicate), dropWhile(predicate));
     }
 
     @Override

@@ -20,7 +20,6 @@ import kala.collection.base.GenericArrays;
 import kala.collection.base.Traversable;
 import kala.collection.factory.CollectionBuilder;
 import kala.collection.mutable.MutableArrayList;
-import kala.tuple.Tuple2;
 import kala.annotations.Covariant;
 import kala.annotations.StaticClass;
 import kala.collection.factory.CollectionFactory;
@@ -234,38 +233,6 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E> implements I
     @Override
     public @NotNull Spliterator<E> spliterator() {
         return Spliterators.spliterator(elements, Spliterator.IMMUTABLE);
-    }
-
-    //@Override
-    public @NotNull Tuple2<@NotNull ImmutableSeq<E>, @NotNull ImmutableSeq<E>> span(@NotNull Predicate<? super E> predicate) {
-        Objects.requireNonNull(predicate);
-
-        final Object[] elements = this.elements;
-        final int size = elements.length;
-
-        if (size == 0) {
-            return new Tuple2<>(empty(), empty());
-        }
-
-        int idx = 0;
-        while (idx < size) {
-            if (!predicate.test((E) elements[idx])) {
-                break;
-            }
-            ++idx;
-        }
-
-        if (idx == 0) {
-            return new Tuple2<>(empty(), this);
-        } else if (idx == size) {
-            return new Tuple2<>(this, empty());
-        } else {
-            return new Tuple2<>(
-                    new ImmutableArray<>(Arrays.copyOfRange(elements, 0, idx)),
-                    new ImmutableArray<>(Arrays.copyOfRange(elements, idx, size))
-            );
-        }
-
     }
 
     @Override

@@ -8,9 +8,12 @@
 
 The following methods have been removed:
 
+* `kala.control.Option::span(Predicate<T>)`
 * `kala.collection.CollectionLike::toImmutableSeq()`
 * `kala.collection.CollectionLike::toImmutableSet()`
 * `kala.collection.CollectionLike::toImmutableMap()`
+* `kala.collection.SeqView::span(Predicate<E>)`
+* `kala.collection.immutable.ImmutableArray::span(Predicate<E>)`
 
 ## 0.82.0
 
