@@ -24,7 +24,6 @@ import kala.control.Option;
 import kala.function.IndexedBiConsumer;
 import kala.function.IndexedConsumer;
 import kala.function.IndexedFunction;
-import kala.function.Predicates;
 import kala.index.Index;
 import kala.index.Indexes;
 import kala.tuple.Tuple;
@@ -1102,55 +1101,6 @@ public final class SeqViews {
         @Override
         public @NotNull Stream<E> parallelStream() {
             return source.parallelStream().filter(predicate);
-        }
-    }
-
-    public static final class FilterNot<E> extends AbstractSeqView<E> {
-        private final @NotNull SeqView<E> source;
-
-        private final @NotNull Predicate<? super E> predicate;
-
-        public FilterNot(@NotNull SeqView<E> source, @NotNull Predicate<? super E> predicate) {
-            this.source = source;
-            this.predicate = predicate;
-        }
-
-        @Override
-        public final @NotNull Iterator<E> iterator() {
-            return Iterators.filterNot(source.iterator(), predicate);
-        }
-
-        @Override
-        public @NotNull Stream<E> stream() {
-            return source.stream().filter(predicate.negate());
-        }
-
-        @Override
-        public @NotNull Stream<E> parallelStream() {
-            return source.parallelStream().filter(predicate.negate());
-        }
-    }
-
-    public static final class FilterNotNull<E> extends AbstractSeqView<E> {
-        private final @NotNull SeqView<E> source;
-
-        public FilterNotNull(@NotNull SeqView<E> source) {
-            this.source = source;
-        }
-
-        @Override
-        public final @NotNull Iterator<E> iterator() {
-            return Iterators.filterNotNull(source.iterator());
-        }
-
-        @Override
-        public @NotNull Stream<E> stream() {
-            return source.stream().filter(Predicates.isNotNull());
-        }
-
-        @Override
-        public @NotNull Stream<E> parallelStream() {
-            return source.parallelStream().filter(Predicates.isNotNull());
         }
     }
 

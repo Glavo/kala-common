@@ -91,16 +91,19 @@ public interface SetView<@Covariant E> extends CollectionView<E>, SetLike<E>, An
     }
 
     @Override
+    @DelegateBy("filter(Predicate<E>)")
     default @NotNull SetView<E> filterNot(@NotNull Predicate<? super E> predicate) {
         return filter(predicate.negate());
     }
 
     @Override
+    @DelegateBy("filter(Predicate<E>)")
     default @NotNull SetView<@NotNull E> filterNotNull() {
         return filter(Predicates.isNotNull());
     }
 
     @Override
+    @DelegateBy("filter(Predicate<E>)")
     default <U> @NotNull SetView<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
         @SuppressWarnings("unchecked")
         SetView<U> result = (SetView<U>) filter(Predicates.isInstance(clazz));

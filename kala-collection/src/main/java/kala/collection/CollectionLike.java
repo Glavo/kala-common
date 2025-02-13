@@ -18,6 +18,7 @@ package kala.collection;
 import kala.annotations.DelegateBy;
 import kala.collection.base.Traversable;
 import kala.collection.immutable.*;
+import kala.collection.internal.view.CollectionViews;
 import kala.collection.mutable.MutableSeq;
 import kala.function.CheckedConsumer;
 import kala.tuple.Tuple;
@@ -41,7 +42,9 @@ public interface CollectionLike<E> extends Traversable<E>, AnyCollectionLike<E> 
     @Override
     @NotNull CollectionView<E> view();
 
-    @NotNull CollectionLike<E> filter(@NotNull Predicate<? super E> predicate);
+    default @NotNull CollectionLike<E> filter(@NotNull Predicate<? super E> predicate) {
+        return new CollectionViews.Filter<>(this, predicate);
+    }
 
     @NotNull CollectionLike<E> filterNot(@NotNull Predicate<? super E> predicate);
 

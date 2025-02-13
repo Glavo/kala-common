@@ -567,10 +567,10 @@ public final class CollectionViews {
     }
 
     public static final class Filter<@Covariant E> extends AbstractCollectionView<E> {
-        private final @NotNull CollectionView<E> source;
+        private final @NotNull CollectionLike<E> source;
         private final @NotNull Predicate<? super E> predicate;
 
-        public Filter(@NotNull CollectionView<E> source, @NotNull Predicate<? super E> predicate) {
+        public Filter(@NotNull CollectionLike<E> source, @NotNull Predicate<? super E> predicate) {
             this.source = source;
             this.predicate = predicate;
         }
@@ -591,51 +591,12 @@ public final class CollectionViews {
         }
     }
 
-    public static final class FilterNot<@Covariant E> extends AbstractCollectionView<E> {
-        private final @NotNull CollectionView<E> source;
-
-        private final @NotNull Predicate<? super E> predicate;
-
-        public FilterNot(@NotNull CollectionView<E> source, @NotNull Predicate<? super E> predicate) {
-            this.source = source;
-            this.predicate = predicate;
-        }
-
-        @Override
-        public @NotNull Iterator<E> iterator() {
-            return Iterators.filterNot(source.iterator(), predicate);
-        }
-
-        @Override
-        public @NotNull Stream<E> stream() {
-            return source.stream().filter(predicate.negate());
-        }
-
-        @Override
-        public @NotNull Stream<E> parallelStream() {
-            return source.stream().filter(predicate.negate()).parallel();
-        }
-    }
-
-    public static final class FilterNotNull<@Covariant E> extends AbstractCollectionView<E> {
-        private final @NotNull CollectionView<E> source;
-
-        public FilterNotNull(@NotNull CollectionView<E> source) {
-            this.source = source;
-        }
-
-        @Override
-        public @NotNull Iterator<E> iterator() {
-            return Iterators.filterNotNull(source.iterator());
-        }
-    }
-
     public static final class FlatMapped<@Covariant E, T> extends AbstractCollectionView<E> {
-        private final @NotNull CollectionView<? extends T> source;
+        private final @NotNull CollectionLike<? extends T> source;
         private final @NotNull Function<? super T, ? extends Iterable<? extends E>> mapper;
 
         public FlatMapped(
-                @NotNull CollectionView<? extends T> source,
+                @NotNull CollectionLike<? extends T> source,
                 @NotNull Function<? super T, ? extends Iterable<? extends E>> mapper) {
             this.source = source;
             this.mapper = mapper;
@@ -648,11 +609,11 @@ public final class CollectionViews {
     }
 
     public static final class Zip<E, U, R> extends AbstractCollectionView<R> {
-        private final @NotNull CollectionView<? extends E> source;
+        private final @NotNull CollectionLike<? extends E> source;
         private final @NotNull Iterable<? extends U> other;
         private final @NotNull BiFunction<? super E, ? super U, ? extends R> mapper;
 
-        public Zip(@NotNull CollectionView<? extends E> source, @NotNull Iterable<? extends U> other, @NotNull BiFunction<? super E, ? super U, ? extends R> mapper) {
+        public Zip(@NotNull CollectionLike<? extends E> source, @NotNull Iterable<? extends U> other, @NotNull BiFunction<? super E, ? super U, ? extends R> mapper) {
             this.source = source;
             this.other = other;
             this.mapper = mapper;
@@ -665,11 +626,11 @@ public final class CollectionViews {
     }
 
     public static final class Zip3<E, U, V> extends AbstractCollectionView<Tuple3<E, U, V>> {
-        private final @NotNull CollectionView<? extends E> source;
+        private final @NotNull CollectionLike<? extends E> source;
         private final @NotNull Iterable<? extends U> other1;
         private final @NotNull Iterable<? extends V> other2;
 
-        public Zip3(@NotNull CollectionView<? extends E> source, @NotNull Iterable<? extends U> other1, @NotNull Iterable<? extends V> other2) {
+        public Zip3(@NotNull CollectionLike<? extends E> source, @NotNull Iterable<? extends U> other1, @NotNull Iterable<? extends V> other2) {
             this.source = source;
             this.other1 = other1;
             this.other2 = other2;

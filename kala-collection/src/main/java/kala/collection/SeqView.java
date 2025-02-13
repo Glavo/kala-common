@@ -243,17 +243,19 @@ public interface SeqView<@Covariant E> extends CollectionView<E>, SeqLike<E>, An
     }
 
     @Override
+    @DelegateBy("filter(Predicate<E>)")
     default @NotNull SeqView<E> filterNot(@NotNull Predicate<? super E> predicate) {
-        Objects.requireNonNull(predicate);
-        return new SeqViews.FilterNot<>(this, predicate);
+        return filter(predicate.negate());
     }
 
     @Override
+    @DelegateBy("filter(Predicate<E>)")
     default @NotNull SeqView<@NotNull E> filterNotNull() {
-        return new SeqViews.FilterNotNull<>(this);
+        return filter(Predicates.isNotNull());
     }
 
     @Override
+    @DelegateBy("filter(Predicate<E>)")
     default <U> @NotNull SeqView<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
         return (SeqView<U>) filter(Predicates.isInstance(clazz));
     }

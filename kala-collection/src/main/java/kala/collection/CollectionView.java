@@ -54,23 +54,27 @@ public interface CollectionView<@Covariant E> extends CollectionLike<E>, AnyColl
         return this;
     }
 
+    @Override
     default @NotNull CollectionView<E> filter(@NotNull Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
         return new CollectionViews.Filter<>(this, predicate);
     }
 
+    @Override
+    @DelegateBy("filter(Predicate<E>)")
     default @NotNull CollectionView<E> filterNot(@NotNull Predicate<? super E> predicate) {
-        Objects.requireNonNull(predicate);
-        return new CollectionViews.FilterNot<>(this, predicate);
+       return filter(predicate.negate());
     }
 
+    @Override
+    @DelegateBy("filter(Predicate<E>)")
     default @NotNull CollectionView<@NotNull E> filterNotNull() {
-        return new CollectionViews.FilterNotNull<>(this);
+        return filter(Predicates.isNotNull());
     }
 
     @Override
     default <U> @NotNull CollectionView<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
-        return ((CollectionView<U>) filter(Predicates.isInstance(clazz)));
+        return (CollectionView<U>) filter(Predicates.isInstance(clazz));
     }
 
     default <U> @NotNull CollectionView<U> map(@NotNull Function<? super E, ? extends U> mapper) {
