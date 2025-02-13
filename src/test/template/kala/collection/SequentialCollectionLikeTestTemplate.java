@@ -35,6 +35,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import static kala.ExtendedAssertions.assertMapEntries;
+import static kala.ExtendedAssertions.assertSetElements;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -215,6 +217,38 @@ public interface SequentialCollectionLikeTestTemplate extends CollectionLikeTest
     }
 
     @Test
+    default void toSeqTest() {
+        assertIterableEquals(List.of(), of().toSeq());
+        assertIterableEquals(List.of(1), of(1).toSeq());
+        assertIterableEquals(List.of(1, 2, 3), of(1, 2, 3).toSeq());
+    }
+
+    @Test
+    default void toArraySeqTest() {
+        assertIterableEquals(List.of(), of().toArraySeq());
+        assertIterableEquals(List.of(1), of(1).toArraySeq());
+        assertIterableEquals(List.of(1, 2, 3), of(1, 2, 3).toArraySeq());
+    }
+
+
+    @Test
+    default void toSetTest() {
+        assertSetElements(List.of(), of().toSet());
+        assertSetElements(List.of(1), of(1).toSet());
+        assertSetElements(List.of(1, 2, 3, 4), of(1, 2, 3, 1, 4, 2).toSet());
+    }
+
+    @Test
+    default void associateTest() {
+        assertMapEntries(List.of(), this.<Integer>of().associate(value -> Tuple.of(value, value.toString())));
+        assertMapEntries(List.of(Tuple.of(1, "1")), this.of(1).associate(value -> Tuple.of(value, value.toString())));
+        assertMapEntries(List.of(Tuple.of(1, "1"), Tuple.of(2, "2"), Tuple.of(3, "3")),
+                this.of(1, 2, 3).associate(value -> Tuple.of(value, value.toString())));
+        assertMapEntries(List.of(Tuple.of(1, "1"), Tuple.of(2, "2"), Tuple.of(3, "3")),
+                this.of(1, 2, 3, 1).associate(value -> Tuple.of(value, value.toString())));
+    }
+
+    @Test
     default void toArrayTest() {
         assertArrayEquals(GenericArrays.EMPTY_OBJECT_ARRAY, of().toArray());
         assertArrayEquals(GenericArrays.EMPTY_OBJECT_ARRAY, of().toArray(Object.class));
@@ -286,7 +320,7 @@ public interface SequentialCollectionLikeTestTemplate extends CollectionLikeTest
     @Test
     default void onEachTest() {
         ArrayList<Object> al = new ArrayList<>();
-        var empty  = of();
+        var empty = of();
         assertSame(empty, empty.onEach(al::add));
         assertIterableEquals(List.of(), al);
 
