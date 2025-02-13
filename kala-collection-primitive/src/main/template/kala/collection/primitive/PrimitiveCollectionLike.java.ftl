@@ -51,11 +51,6 @@ public interface ${Type}CollectionLike extends PrimitiveCollectionLike<${Wrapper
         return Immutable${Type}Seq.from(this);
     }
 
-    @Deprecated(forRemoval = true)
-    default @NotNull Immutable${Type}Seq toImmutableSeq() {
-        return toSeq();
-    }
-
     default @NotNull Immutable${Type}Array toImmutableArray() {
         return Immutable${Type}Array.from(this);
     }

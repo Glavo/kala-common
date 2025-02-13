@@ -4,6 +4,14 @@
 
 (In development)
 
+### Breaking Changes
+
+The following methods have been removed:
+
+* `kala.collection.CollectionLike::toImmutableSeq()`
+* `kala.collection.CollectionLike::toImmutableSet()`
+* `kala.collection.CollectionLike::toImmutableMap()`
+
 ## 0.82.0
 
 Release Date: 2025-02-13
@@ -35,6 +43,7 @@ Other changes:
 * The return type of `kala.collection.CollectionLike::associateBy(Function<E, K>, Function<K, V>)` changes to `ImmutableMap<K, V>`.
 * `kala.collection.CollectionLike::toImmutableSeq()` is deprecated for removal and is replaced by `toSeq()`.
 * `kala.collection.CollectionLike::toImmutableSet()` is deprecated for removal and is replaced by `toSet()`.
+* `kala.collection.CollectionLike::toImmutableMap()` is deprecated for removal.
 
 ## 0.81.0
 

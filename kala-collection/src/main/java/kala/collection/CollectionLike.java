@@ -16,9 +16,7 @@
 package kala.collection;
 
 import kala.annotations.DelegateBy;
-import kala.annotations.ReplaceWith;
 import kala.collection.base.Traversable;
-import kala.collection.factory.MapFactory;
 import kala.collection.immutable.*;
 import kala.collection.mutable.MutableSeq;
 import kala.function.CheckedConsumer;
@@ -169,46 +167,6 @@ public interface CollectionLike<E> extends Traversable<E>, AnyCollectionLike<E> 
             @NotNull Function<? super E, ? extends K> keySelector, @NotNull Function<? super E, ? extends V> valueTransform) {
         return associate(value -> Tuple.of(keySelector.apply(value), valueTransform.apply(value)));
     }
-
-    //region Deprecated
-
-    @Deprecated(forRemoval = true)
-    @ReplaceWith("toSeq()")
-    default @NotNull ImmutableSeq<E> toImmutableSeq() {
-        return toSeq();
-    }
-
-    @Deprecated(forRemoval = true)
-    @ReplaceWith("toSet()")
-    default @NotNull ImmutableSet<E> toImmutableSet() {
-        return toSet();
-    }
-
-    @Deprecated(forRemoval = true)
-    default <K, V> @NotNull ImmutableMap<K, V> toImmutableMap(CollectionLike<E /* ? extends java.util.Map.Entry<? extends K, ? extends V> */>this) {
-        final int ks = knownSize();
-        if (ks == 0) {
-            return ImmutableMap.empty();
-        }
-        final Iterator<E> it = this.iterator();
-        if (!it.hasNext()) {
-            return ImmutableMap.empty();
-        }
-
-        @SuppressWarnings({"unchecked", "rawtypes"}) final MapFactory<K, V, Object, ImmutableMap<K, V>> factory =
-                (MapFactory) ImmutableMap.factory();
-        final Object builder = factory.newBuilder();
-        if (ks > 0) {
-            factory.sizeHint(builder, ks);
-        }
-        while (it.hasNext()) {
-            @SuppressWarnings("unchecked") final java.util.Map.Entry<K, V> v = (java.util.Map.Entry<K, V>) it.next();
-            factory.addToBuilder(builder, v.getKey(), v.getValue());
-        }
-        return factory.build(builder);
-    }
-
-    //endregion
 
     @Override
     @ApiStatus.NonExtendable
