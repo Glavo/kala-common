@@ -87,7 +87,7 @@ public interface ${Type}Collection extends PrimitiveCollection<${WrapperType}>, 
 
     @Override
     default @NotNull ${Type}CollectionView view() {
-        return isEmpty() ? ${Type}CollectionView.empty() : new ${Type}CollectionViews.Of(this);
+        return isEmpty() ? ${Type}CollectionView.empty() : new ${Type}CollectionViews.Of<>(this);
     }
 
     @Override
@@ -96,28 +96,28 @@ public interface ${Type}Collection extends PrimitiveCollection<${WrapperType}>, 
     }
 
     default @NotNull Immutable${Type}Collection filter(@NotNull ${Type}Predicate predicate) {
-        return view().filter(predicate).toImmutableSeq();
+        return view().filter(predicate).toSeq();
     }
 
     default @NotNull Immutable${Type}Collection filterNot(@NotNull ${Type}Predicate predicate) {
-        return view().filterNot(predicate).toImmutableSeq();
+        return view().filterNot(predicate).toSeq();
     }
 
     default @NotNull Immutable${Type}Collection map(@NotNull ${Type}UnaryOperator mapper) {
-        return view().map(mapper).toImmutableSeq();
+        return view().map(mapper).toSeq();
     }
 
     default <U> @NotNull ImmutableCollection<U> mapToObj(@NotNull ${Type}Function<? extends U> mapper) {
-        return view().<U>mapToObj(mapper).toImmutableSeq();
+        return view().<U>mapToObj(mapper).toSeq();
     }
 
     @Contract(pure = true)
     default @NotNull Immutable${Type}Collection flatMap(@NotNull ${Type}Function<? extends ${Type}Traversable> mapper) {
-        return view().flatMap(mapper).toImmutableSeq();
+        return view().flatMap(mapper).toSeq();
     }
 
     @Override
     default @NotNull <T> ImmutableCollection<T> flatMapToObj(@NotNull ${Type}Function<? extends Iterable<? extends T>> mapper) {
-        return view().flatMapToObj(mapper).toImmutableSeq();
+        return view().flatMapToObj(mapper).toSeq();
     }
 }

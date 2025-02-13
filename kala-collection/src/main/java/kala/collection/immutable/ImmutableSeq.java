@@ -242,6 +242,12 @@ public interface ImmutableSeq<@Covariant E> extends ImmutableCollection<E>, Seq<
     }
 
     @Override
+    default @NotNull ImmutableCollection<E> toCollection() {
+        return this;
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
     default @NotNull ImmutableSeq<E> toSeq() {
         return this;
     }

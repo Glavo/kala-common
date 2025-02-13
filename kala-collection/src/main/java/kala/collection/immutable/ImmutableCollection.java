@@ -119,6 +119,12 @@ public interface ImmutableCollection<@Covariant E> extends Collection<E>, Immuta
 
     @Override
     @ApiStatus.NonExtendable
+    default @NotNull ImmutableCollection<E> toCollection() {
+        return this;
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
     @DelegateBy("forEach(Consumer<E, Ex>)")
     @Contract(value = "_ -> this", pure = true)
     default @NotNull ImmutableCollection<E> onEach(@NotNull Consumer<? super E> action) {

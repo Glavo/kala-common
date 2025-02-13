@@ -648,7 +648,7 @@ public final class MutableArrayList<E> extends AbstractMutableList<E> implements
     }
 
     @Override
-    public @NotNull ImmutableArray<E> toImmutableArray() {
+    public @NotNull ImmutableArray<E> toArraySeq() {
         return size == 0 ? ImmutableArray.empty() : (ImmutableArray<E>) ImmutableArray.Unsafe.wrap(Arrays.copyOf(elements, size));
     }
 

@@ -246,7 +246,7 @@ public interface Immutable${Type}Seq extends ImmutablePrimitiveSeq<${WrapperType
     }
 
     @Override
-    default @NotNull Immutable${Type}Seq toImmutableSeq() {
+    default @NotNull Immutable${Type}Seq toSeq() {
         return this;
     }
 }

@@ -62,7 +62,7 @@ public final class SetViews {
 
             var addedValues = ImmutableSet.of(value, addedValue);
             Conditions.assertEquals(2, addedValues.size());
-            return new AddedAll<>(this, addedValues.toImmutableSet());
+            return new AddedAll<>(this, addedValues.toSet());
         }
     }
 

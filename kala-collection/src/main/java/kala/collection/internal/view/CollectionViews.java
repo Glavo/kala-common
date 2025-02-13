@@ -354,13 +354,8 @@ public final class CollectionViews {
         }
 
         @Override
-        public final @NotNull ImmutableArray<E> toImmutableArray() {
-            return source.toImmutableArray();
-        }
-
-        @Override
-        public final @NotNull <K, V> ImmutableMap<K, V> toImmutableMap() {
-            return source.toImmutableMap();
+        public final @NotNull ImmutableArray<E> toArraySeq() {
+            return source.toArraySeq();
         }
 
         @Override
@@ -665,7 +660,7 @@ public final class CollectionViews {
         }
 
         @Override
-        public Iterator<R> iterator() {
+        public @NotNull Iterator<R> iterator() {
             return Iterators.zip(source.iterator(), other.iterator(), mapper);
         }
     }

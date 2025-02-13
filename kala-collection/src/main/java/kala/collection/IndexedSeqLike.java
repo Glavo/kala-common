@@ -19,7 +19,6 @@ import kala.collection.base.AbstractIterator;
 import kala.collection.base.Growable;
 import kala.collection.base.Iterators;
 import kala.collection.factory.MapFactory;
-import kala.collection.immutable.ImmutableMap;
 import kala.collection.mutable.MutableSeq;
 import kala.control.Option;
 import kala.function.IndexedBiFunction;
@@ -642,26 +641,6 @@ public interface IndexedSeqLike<E> extends SeqLike<E>, RandomAccess {
             arr[i] = (U) get(i);
         }
         return arr;
-    }
-
-    @Override
-    default @NotNull <K, V> ImmutableMap<K, V> toImmutableMap() {
-        final int size = this.size();
-        if (size == 0) {
-            return ImmutableMap.empty();
-        }
-
-        @SuppressWarnings({"unchecked", "rawtypes"}) final MapFactory<K, V, Object, ImmutableMap<K, V>> factory =
-                (MapFactory) kala.collection.Map.factory();
-        final Object builder = factory.newBuilder();
-        factory.sizeHint(builder, size);
-
-        for (int i = 0; i < size; i++) {
-            @SuppressWarnings("unchecked") final java.util.Map.Entry<K, V> v = (java.util.Map.Entry<K, V>) this.get(i);
-            factory.addToBuilder(builder, v.getKey(), v.getValue());
-        }
-
-        return factory.build(builder);
     }
 
     @Override

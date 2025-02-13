@@ -128,11 +128,7 @@ public interface ${Type}SeqLike extends PrimitiveSeqLike<${WrapperType}>, ${Type
         if (!it.hasNext()) {
             return it;
         }
-        Mutable${Type}ArrayList builder = new Mutable${Type}ArrayList();
-        while (it.hasNext()) {
-            builder.append(it.next${Type}());
-        }
-        return builder.reverseIterator();
+        return Mutable${Type}ArrayList.from(this).reverseIterator();
     }
 
     //endregion

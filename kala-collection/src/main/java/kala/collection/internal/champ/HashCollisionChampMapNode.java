@@ -197,7 +197,7 @@ public final class HashCollisionChampMapNode<K, V> extends ChampMapNode<K, V> {
             newContent.append(Tuple.of(tuple.getKey(), newValue));
             anyChanges |= (tuple.getValue() != newValue);
         }
-        return anyChanges ? new HashCollisionChampMapNode<>(originalHash, hash, newContent.toImmutableArray()) : (HashCollisionChampMapNode<K, U>) this;
+        return anyChanges ? new HashCollisionChampMapNode<>(originalHash, hash, newContent.toArraySeq()) : (HashCollisionChampMapNode<K, U>) this;
     }
 
     @Override
@@ -239,7 +239,7 @@ public final class HashCollisionChampMapNode<K, V> extends ChampMapNode<K, V> {
                     newContent.append(nextPayload);
                 }
             }
-            return newContent == null ? hc : new HashCollisionChampMapNode<>(originalHash, hash, newContent.toImmutableArray());
+            return newContent == null ? hc : new HashCollisionChampMapNode<>(originalHash, hash, newContent.toArraySeq());
         }
     }
 

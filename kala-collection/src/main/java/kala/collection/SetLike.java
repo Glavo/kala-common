@@ -16,6 +16,8 @@
 package kala.collection;
 
 import kala.annotations.DelegateBy;
+import kala.collection.immutable.ImmutableCollection;
+import kala.collection.immutable.ImmutableSet;
 import kala.function.CheckedConsumer;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
@@ -63,6 +65,17 @@ public interface SetLike<E> extends CollectionLike<E>, AnySetLike<E> {
 
     @Override
     <U> @NotNull SetLike<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz);
+
+    @Override
+    @ApiStatus.NonExtendable
+    default @NotNull ImmutableSet<E> collect() {
+        return toSet();
+    }
+
+    @Override
+    default @NotNull ImmutableCollection<E> toCollection() {
+        return toSet();
+    }
 
     @Override
     @ApiStatus.NonExtendable

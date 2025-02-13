@@ -47,12 +47,13 @@ public interface ${Type}CollectionLike extends PrimitiveCollectionLike<${Wrapper
     @Contract(pure = true)
     <T> @NotNull CollectionLike<T> flatMapToObj(@NotNull ${Type}Function<? extends Iterable<? extends T>> mapper);
 
-    default @NotNull ${Type}Seq toSeq() {
-        return toImmutableSeq();
+    default @NotNull Immutable${Type}Seq toSeq() {
+        return Immutable${Type}Seq.from(this);
     }
 
+    @Deprecated(forRemoval = true)
     default @NotNull Immutable${Type}Seq toImmutableSeq() {
-        return Immutable${Type}Seq.from(this);
+        return toSeq();
     }
 
     default @NotNull Immutable${Type}Array toImmutableArray() {

@@ -705,11 +705,11 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
             assertIterableEquals(List.of("bar"), seq.updated(0, "bar"));
             assertIterableEquals(List.of("foo"), seq.updated(~1, "foo"));
             assertIterableEquals(List.of("bar"), seq.updated(~1, "bar"));
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(1, "bar").toImmutableSeq());
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(~0, "bar").toImmutableSeq());
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(~2, "bar").toImmutableSeq());
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MAX_VALUE, "bar").toImmutableSeq());
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MIN_VALUE, "bar").toImmutableSeq());
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(1, "bar").toSeq());
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(~0, "bar").toSeq());
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(~2, "bar").toSeq());
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MAX_VALUE, "bar").toSeq());
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MIN_VALUE, "bar").toSeq());
         }
 
         {
@@ -718,11 +718,11 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
             assertIterableEquals(List.of("zzz", "bar"), seq.updated(~2, "zzz"));
             assertIterableEquals(List.of("foo", "zzz"), seq.updated(1, "zzz"));
             assertIterableEquals(List.of("foo", "zzz"), seq.updated(~1, "zzz"));
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(2, "zzz").toImmutableSeq());
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MIN_VALUE, "zzz").toImmutableSeq());
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(2, "zzz").toSeq());
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MIN_VALUE, "zzz").toSeq());
             assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(~0, "zzz"));
             assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(~3, "zzz"));
-            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MIN_VALUE, "zzz").toImmutableSeq());
+            assertThrows(IndexOutOfBoundsException.class, () -> seq.updated(Integer.MIN_VALUE, "zzz").toSeq());
         }
     }
 
@@ -759,7 +759,7 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
         {
             final var fst = of(1).view().map(i -> i + 1);
             final var snd = of(2);
-            final var res = fst.concat(snd).toImmutableSeq();
+            final var res = fst.concat(snd).toSeq();
             assertIterableEquals(List.of(2, 2), res);
         }
     }

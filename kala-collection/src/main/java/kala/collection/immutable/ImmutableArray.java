@@ -136,7 +136,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E> implements I
             case ImmutableArray<?> immutableArray -> ((ImmutableArray<E>) values);
             case Traversable<?> traversable -> from((Traversable<E>) values);
             case java.util.Collection<?> collection -> from(((java.util.Collection<E>) values));
-            default -> MutableArrayList.<E>from(values).toImmutableArray();
+            default -> ((CollectionLike<E>) MutableArrayList.<E>from(values)).toArraySeq();
         };
 
     }
@@ -149,7 +149,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E> implements I
         while (it.hasNext()) {
             buffer.append(it.next());
         }
-        return buffer.toImmutableArray();
+        return buffer.toArraySeq();
     }
 
     public static <E> @NotNull ImmutableArray<E> from(@NotNull Stream<? extends E> stream) {
@@ -189,7 +189,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E> implements I
                 break;
             builder.append(value);
         }
-        return builder.toImmutableArray();
+        return builder.toArraySeq();
     }
 
     public static <E> @NotNull ImmutableArray<E> generateUntilNull(@NotNull Supplier<? extends @Nullable E> supplier) {
@@ -200,7 +200,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E> implements I
                 break;
             builder.append(value);
         }
-        return builder.toImmutableArray();
+        return builder.toArraySeq();
     }
 
     @StaticClass
@@ -269,7 +269,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E> implements I
     }
 
     @Override
-    public @NotNull ImmutableArray<E> toImmutableArray() {
+    public @NotNull ImmutableArray<E> toArraySeq() {
         return this;
     }
 
@@ -330,7 +330,7 @@ public final class ImmutableArray<@Covariant E> extends ArraySeq<E> implements I
 
         @Override
         public ImmutableArray<E> build(@NotNull MutableArrayList<E> buffer) {
-            return buffer.toImmutableArray();
+            return buffer.toArraySeq();
         }
 
     }

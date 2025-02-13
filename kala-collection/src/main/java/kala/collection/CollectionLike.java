@@ -109,50 +109,31 @@ public interface CollectionLike<E> extends Traversable<E>, AnyCollectionLike<E> 
 
     //endregion
 
+    @ApiStatus.NonExtendable
+    default @NotNull ImmutableCollection<E> collect() {
+        return toCollection();
+    }
+
+    default @NotNull ImmutableCollection<E> toCollection() {
+        return ImmutableCollection.from(this);
+    }
+
     default @NotNull ImmutableSeq<E> toSeq() {
         return ImmutableSeq.from(this);
     }
 
-    @Deprecated(forRemoval = true)
-    default @NotNull ImmutableSeq<E> toImmutableSeq() {
-        return toSeq();
-    }
-
-    default @NotNull ImmutableArray<E> toImmutableArray() {
+    default @NotNull ImmutableArray<E> toArraySeq() {
         @SuppressWarnings("unchecked")
         ImmutableArray<E> res = (ImmutableArray<E>) ImmutableArray.Unsafe.wrap(toArray());
         return res;
     }
 
-    default @NotNull Set<E> toSet() {
-        return toImmutableSet();
+    default @NotNull ImmutableArray<E> toImmutableArray() { // TODO: Do we need to keep this method?
+        return toArraySeq();
     }
 
-    default @NotNull ImmutableSet<E> toImmutableSet() {
+    default @NotNull ImmutableSet<E> toSet() {
         return ImmutableSet.from(this);
-    }
-
-    default <K, V> @NotNull ImmutableMap<K, V> toImmutableMap(CollectionLike<E /* ? extends java.util.Map.Entry<? extends K, ? extends V> */>this) {
-        final int ks = knownSize();
-        if (ks == 0) {
-            return ImmutableMap.empty();
-        }
-        final Iterator<E> it = this.iterator();
-        if (!it.hasNext()) {
-            return ImmutableMap.empty();
-        }
-
-        @SuppressWarnings({"unchecked", "rawtypes"}) final MapFactory<K, V, Object, ImmutableMap<K, V>> factory =
-                (MapFactory) ImmutableMap.factory();
-        final Object builder = factory.newBuilder();
-        if (ks > 0) {
-            factory.sizeHint(builder, ks);
-        }
-        while (it.hasNext()) {
-            @SuppressWarnings("unchecked") final java.util.Map.Entry<K, V> v = (java.util.Map.Entry<K, V>) it.next();
-            factory.addToBuilder(builder, v.getKey(), v.getValue());
-        }
-        return factory.build(builder);
     }
 
     default <K, V> @NotNull Map<K, V> associate(@NotNull Function<? super E, ? extends java.util.Map.Entry<? extends K, ? extends V>> transform) {
@@ -224,6 +205,44 @@ public interface CollectionLike<E> extends Traversable<E>, AnyCollectionLike<E> 
         }
         return factory.build(builder);
     }
+
+    //region Deprecated
+
+    @Deprecated(forRemoval = true)
+    default @NotNull ImmutableSeq<E> toImmutableSeq() {
+        return toSeq();
+    }
+
+    @Deprecated(forRemoval = true)
+    default @NotNull ImmutableSet<E> toImmutableSet() {
+        return toSet();
+    }
+
+    @Deprecated(forRemoval = true)
+    default <K, V> @NotNull ImmutableMap<K, V> toImmutableMap(CollectionLike<E /* ? extends java.util.Map.Entry<? extends K, ? extends V> */>this) {
+        final int ks = knownSize();
+        if (ks == 0) {
+            return ImmutableMap.empty();
+        }
+        final Iterator<E> it = this.iterator();
+        if (!it.hasNext()) {
+            return ImmutableMap.empty();
+        }
+
+        @SuppressWarnings({"unchecked", "rawtypes"}) final MapFactory<K, V, Object, ImmutableMap<K, V>> factory =
+                (MapFactory) ImmutableMap.factory();
+        final Object builder = factory.newBuilder();
+        if (ks > 0) {
+            factory.sizeHint(builder, ks);
+        }
+        while (it.hasNext()) {
+            @SuppressWarnings("unchecked") final java.util.Map.Entry<K, V> v = (java.util.Map.Entry<K, V>) it.next();
+            factory.addToBuilder(builder, v.getKey(), v.getValue());
+        }
+        return factory.build(builder);
+    }
+
+    //endregion
 
     @Override
     @ApiStatus.NonExtendable

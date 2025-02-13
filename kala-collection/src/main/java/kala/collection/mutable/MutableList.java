@@ -221,7 +221,7 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
     ) {
         Objects.requireNonNull(values);
         if (values == this) {
-            for (E e : this.toImmutableSeq()) { // avoid mutating under our own iterator
+            for (E e : this.toSeq()) { // avoid mutating under our own iterator
                 //noinspection ConstantConditions
                 this.append(e);
             }
@@ -265,7 +265,7 @@ public interface MutableList<E> extends MutableSeq<E>, Growable<E> {
     ) {
         Objects.requireNonNull(values);
         if (values == this) {
-            Iterator<?> iterator = ((Seq<?>) values).toImmutableArray().reverseIterator(); // avoid mutating under our own iterator
+            Iterator<?> iterator = ((Seq<?>) values).toArraySeq().reverseIterator(); // avoid mutating under our own iterator
             while (iterator.hasNext()) {
                 //noinspection ConstantConditions
                 this.prepend((E) iterator.next());

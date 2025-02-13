@@ -183,7 +183,7 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
             return CollectionHelper.emptyImmutableSeqBy(this);
         }
         if (newSize == size) {
-            return toImmutableSeq();
+            return toSeq();
         }
 
         var builder = CollectionHelper.<E>newImmutableSeqBuilderBy(this);
@@ -210,7 +210,7 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
             throw new IllegalArgumentException();
         }
         if (n == 0) {
-            return toImmutableSeq();
+            return toSeq();
         }
         final int size = size();
         if (n >= size) {
@@ -226,7 +226,7 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
             throw new IllegalArgumentException();
         }
         if (n == 0) {
-            return toImmutableSeq();
+            return toSeq();
         }
         final int size = size();
         if (n >= size) {
@@ -268,7 +268,7 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
         }
         final int size = size();
         if (n >= size) {
-            return toImmutableSeq();
+            return toSeq();
         }
         return slice(0, n);
     }
@@ -285,7 +285,7 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
         }
         final int size = size();
         if (n >= size) {
-            return toImmutableSeq();
+            return toSeq();
         }
         return slice(size - n, size);
     }
@@ -306,7 +306,7 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
         }
 
         if (takeAll) {
-            return toImmutableSeq();
+            return toSeq();
         }
         return take(count);
     }
@@ -552,7 +552,7 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
     @ApiStatus.NonExtendable
     @DelegateBy("filter(Predicate<E>)")
     default <U> @NotNull ImmutableSeq<@NotNull U> filterIsInstance(@NotNull Class<? extends U> clazz) {
-        return view().<U>filterIsInstance(clazz).toImmutableSeq();
+        return view().<U>filterIsInstance(clazz).toSeq();
     }
 
     @Override
@@ -776,7 +776,7 @@ public interface Seq<@Covariant E> extends Collection<E>, OrderedTraversable<E>,
 
     @Contract(pure = true)
     default @NotNull ImmutableSeq<E> distinct() {
-        return view().distinct().toImmutableSeq();
+        return view().distinct().toSeq();
     }
 
     @Override

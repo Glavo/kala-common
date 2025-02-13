@@ -129,139 +129,139 @@ public interface ${Type}Seq extends PrimitiveSeq<${WrapperType}>, ${Type}Collect
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq slice(@Index int beginIndex, @Index int endIndex) {
-        return view().slice(beginIndex, endIndex).toImmutableSeq();
+        return view().slice(beginIndex, endIndex).toSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq drop(int n) {
-        return view().drop(n).toImmutableSeq();
+        return view().drop(n).toSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq dropLast(int n) {
-        return view().dropLast(n).toImmutableSeq();
+        return view().dropLast(n).toSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq dropWhile(@NotNull ${Type}Predicate predicate) {
-        return view().dropWhile(predicate).toImmutableSeq();
+        return view().dropWhile(predicate).toSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq take(int n) {
-        return view().take(n).toImmutableSeq();
+        return view().take(n).toSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq takeLast(int n) {
-        return view().takeLast(n).toImmutableSeq();
+        return view().takeLast(n).toSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq takeWhile(@NotNull ${Type}Predicate predicate) {
-        return view().takeWhile(predicate).toImmutableSeq();
+        return view().takeWhile(predicate).toSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq updated(@Index int index, ${PrimitiveType} newValue) {
-        return view().updated(index, newValue).toImmutableSeq();
+        return view().updated(index, newValue).toSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq concat(@NotNull ${Type}SeqLike other) {
-        return view().concat(other).toImmutableSeq();
+        return view().concat(other).toSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq prepended(${PrimitiveType} value) {
-        return view().prepended(value).toImmutableSeq();
+        return view().prepended(value).toSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq prependedAll(${PrimitiveType} @NotNull [] values) {
-        return view().prependedAll(values).toImmutableSeq();
+        return view().prependedAll(values).toSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq prependedAll(@NotNull ${Type}Traversable values) {
-        return view().prependedAll(values).toImmutableSeq();
+        return view().prependedAll(values).toSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq appended(${PrimitiveType} value) {
-        return view().appended(value).toImmutableSeq();
+        return view().appended(value).toSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq appendedAll(@NotNull ${Type}Traversable values) {
-        return view().appendedAll(values).toImmutableSeq();
+        return view().appendedAll(values).toSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq appendedAll(${PrimitiveType} @NotNull [] values) {
-        return view().appendedAll(values).toImmutableSeq();
+        return view().appendedAll(values).toSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq sorted() {
-        return view().sorted().toImmutableSeq();
+        return view().sorted().toSeq();
     }
 
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq reversed() {
-        return view().reversed().toImmutableSeq();
+        return view().reversed().toSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq filter(@NotNull ${Type}Predicate predicate) {
-        return view().filter(predicate).toImmutableSeq();
+        return view().filter(predicate).toSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq filterNot(@NotNull ${Type}Predicate predicate) {
-        return view().filterNot(predicate).toImmutableSeq();
+        return view().filterNot(predicate).toSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq map(@NotNull ${Type}UnaryOperator mapper) {
-        return view().map(mapper).toImmutableSeq();
+        return view().map(mapper).toSeq();
     }
 
     @Override
     @Contract(pure = true)
     default <U> @NotNull ImmutableSeq<U> mapToObj(@NotNull ${Type}Function<? extends U> mapper) {
-        return view().<U>mapToObj(mapper).toImmutableSeq();
+        return view().<U>mapToObj(mapper).toSeq();
     }
 
     @Override
     @Contract(pure = true)
     default @NotNull Immutable${Type}Seq flatMap(@NotNull ${Type}Function<? extends ${Type}Traversable> mapper) {
-        return view().flatMap(mapper).toImmutableSeq();
+        return view().flatMap(mapper).toSeq();
     }
 
     @Override
     @Contract(pure = true)
     default <T> @NotNull ImmutableSeq<T> flatMapToObj(@NotNull ${Type}Function<? extends Iterable<? extends T>> mapper) {
-        return view().flatMapToObj(mapper).toImmutableSeq();
+        return view().flatMapToObj(mapper).toSeq();
     }
 }

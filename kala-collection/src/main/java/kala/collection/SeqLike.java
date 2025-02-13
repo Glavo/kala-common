@@ -18,6 +18,8 @@ package kala.collection;
 import kala.Conditions;
 import kala.annotations.DelegateBy;
 import kala.collection.base.OrderedTraversable;
+import kala.collection.immutable.ImmutableCollection;
+import kala.collection.immutable.ImmutableSeq;
 import kala.collection.internal.SeqIterators;
 import kala.collection.internal.view.SeqViews;
 import kala.collection.mutable.MutableSeq;
@@ -277,6 +279,17 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E>, OrderedTra
 
     default <U> @NotNull SeqView<@NotNull Tuple2<E, U>> zipView(@NotNull SeqLike<? extends U> other) {
         return new SeqViews.Zip<>(this, other);
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    default @NotNull ImmutableSeq<E> collect() {
+        return toSeq();
+    }
+
+    @Override
+    default @NotNull ImmutableCollection<E> toCollection() {
+        return toSeq();
     }
 
     @Override

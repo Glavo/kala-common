@@ -590,12 +590,6 @@ final class ImmutableSeqs {
             return res;
         }
 
-        @Override
-        public final @NotNull <K, V> ImmutableMap<K, V> toImmutableMap() {
-            Map.Entry<K, V> entry = (Map.Entry<K, V>) value;
-            return ImmutableMap.of(entry.getKey(), entry.getValue());
-        }
-
         //endregion
 
         //region Traverse Operations
@@ -743,7 +737,6 @@ final class ImmutableSeqs {
 
     }
 
-    @SuppressWarnings("unchecked")
     static final class CopiesSeq<E> extends CopiesSeqBase<E> implements ImmutableSeq<E>, Serializable {
         @Serial
         private static final long serialVersionUID = 6615175156982747837L;

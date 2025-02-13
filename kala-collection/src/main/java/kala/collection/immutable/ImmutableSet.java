@@ -109,7 +109,14 @@ public interface ImmutableSet<@Covariant E> extends ImmutableCollection<E>, Set<
     }
 
     @Override
-    default @NotNull ImmutableSet<E> toImmutableSet() {
+    @ApiStatus.NonExtendable
+    default @NotNull ImmutableCollection<E> toCollection() {
+        return this;
+    }
+
+    @Override
+    @ApiStatus.NonExtendable
+    default @NotNull ImmutableSet<E> toSet() {
         return this;
     }
 

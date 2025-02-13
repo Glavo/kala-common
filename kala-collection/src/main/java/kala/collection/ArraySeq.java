@@ -364,7 +364,7 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
             return ImmutableArray.empty();
         }
         if (ns == size) {
-            return this.toImmutableArray();
+            return this.toArraySeq();
         }
 
         return wrapImmutable(Arrays.copyOfRange(elements, beginIndex, endIndex));
@@ -428,7 +428,7 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
             return ImmutableArray.empty();
         }
         if (c == size) {
-            return this.toImmutableArray();
+            return this.toArraySeq();
         }
 
         return wrapImmutable(Arrays.copyOf(tmp, c));
@@ -459,7 +459,7 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
             return ImmutableArray.empty();
         }
         if (c == size) {
-            return this.toImmutableArray();
+            return this.toArraySeq();
         }
 
         return wrapImmutable(Arrays.copyOf(tmp, c));
@@ -488,7 +488,7 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
             return ImmutableArray.empty();
         }
         if (c == size) {
-            return this.toImmutableArray();
+            return this.toArraySeq();
         }
 
         return wrapImmutable(Arrays.copyOf(tmp, c));
@@ -517,7 +517,7 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
             return ImmutableArray.empty();
         }
         if (c == size) {
-            return (ImmutableSeq<U>) this.toImmutableArray();
+            return (ImmutableSeq<U>) this.toArraySeq();
         }
 
         return wrapImmutable(Arrays.copyOf(tmp, c));
@@ -624,14 +624,14 @@ public abstract sealed class ArraySeq<E> extends AbstractSeq<E> implements Seq<E
         for (Object value : elements) {
             builder.appendAll(mapper.apply((E) value));
         }
-        return builder.toImmutableArray();
+        return builder.toArraySeq();
     }
 
     @Override
     public @NotNull ImmutableSeq<E> sorted(Comparator<? super E> comparator) {
         final Object[] elements = this.elements;
         if (elements.length == 0 || elements.length == 1) {
-            return this.toImmutableArray();
+            return this.toArraySeq();
         }
 
         Object[] newValues = elements.clone();
