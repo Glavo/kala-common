@@ -435,11 +435,6 @@ public sealed abstract class ImmutableVector<@Covariant E> extends AbstractImmut
         return builder.build();
     }
 
-    @Override
-    public final @NotNull ImmutableVector<E> toImmutableVector() {
-        return this;
-    }
-
     private static final class Factory<E> implements CollectionFactory<E, ImmutableVectors.VectorBuilder<E>, ImmutableVector<E>> {
 
         @Override

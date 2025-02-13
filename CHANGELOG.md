@@ -10,6 +10,13 @@
 
 ### Breaking Changes
 
+The following methods have been removed:
+
+* `kala.collection.CollectionLike::toImmutableLinkedSeq()`
+* `kala.collection.CollectionLike::toImmutableVector()`
+
+Other changes:
+
 * The parameter type of `kala.collection.immutable.ImmutableArraySeq.Unsafe.wrap(Object[])` is changed to `E[]`.
 
 ## 0.81.0

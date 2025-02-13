@@ -123,14 +123,6 @@ public interface CollectionLike<E> extends Traversable<E>, AnyCollectionLike<E> 
         return res;
     }
 
-    default @NotNull ImmutableLinkedSeq<E> toImmutableLinkedSeq() {
-        return ImmutableLinkedSeq.from(this);
-    }
-
-    default @NotNull ImmutableVector<E> toImmutableVector() {
-        return ImmutableVector.from(this);
-    }
-
     default @NotNull Set<E> toSet() {
         return toImmutableSet();
     }

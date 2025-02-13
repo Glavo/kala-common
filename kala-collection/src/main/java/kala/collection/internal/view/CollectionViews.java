@@ -25,7 +25,6 @@ import kala.collection.factory.CollectionFactory;
 import kala.tuple.Tuple3;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.*;
@@ -108,11 +107,6 @@ public final class CollectionViews {
         @Override
         public final Object @NotNull [] toArray() {
             return new Object[0];
-        }
-
-        @Override
-        public final @NotNull ImmutableVector<E> toImmutableVector() {
-            return ImmutableVector.empty();
         }
 
         @Override
@@ -367,16 +361,6 @@ public final class CollectionViews {
         @Override
         public final @NotNull ImmutableArray<E> toImmutableArray() {
             return source.toImmutableArray();
-        }
-
-        @Override
-        public final @NotNull ImmutableLinkedSeq<E> toImmutableLinkedSeq() {
-            return source.toImmutableLinkedSeq();
-        }
-
-        @Override
-        public final @NotNull ImmutableVector<E> toImmutableVector() {
-            return source.toImmutableVector();
         }
 
         @Override

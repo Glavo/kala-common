@@ -205,14 +205,6 @@ public interface MapLike<K, V> extends AnyMapLike<K, V> {
         return ImmutableArray.from(toArray());
     }
 
-    default @NotNull ImmutableLinkedSeq<Tuple2<K, V>> toImmutableLinkedSeq() {
-        return ImmutableLinkedSeq.from(this.iterator());
-    }
-
-    default @NotNull ImmutableVector<Tuple2<K, V>> toImmutableVector() {
-        return ImmutableVector.from(iterator());
-    }
-
     @SuppressWarnings("unchecked")
     default @NotNull Tuple2<K, V>[] toArray() {
         final int size = this.size();

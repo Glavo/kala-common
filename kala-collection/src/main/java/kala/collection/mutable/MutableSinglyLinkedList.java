@@ -213,11 +213,6 @@ public final class MutableSinglyLinkedList<E> extends ImmutableLinkedSeq.Builder
         return this.getFirst();
     }
 
-    @Override
-    public @NotNull ImmutableLinkedSeq<E> freeze() {
-        return toImmutableLinkedSeq();
-    }
-
     @Serial
     @SuppressWarnings("unchecked")
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {

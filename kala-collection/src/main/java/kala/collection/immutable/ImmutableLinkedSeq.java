@@ -16,10 +16,12 @@
 package kala.collection.immutable;
 
 import kala.annotations.Covariant;
+import kala.collection.Seq;
 import kala.collection.base.AbstractIterator;
 import kala.collection.base.Iterators;
 import kala.collection.factory.CollectionBuilder;
 import kala.collection.mutable.AbstractMutableList;
+import kala.collection.mutable.FreezableMutableList;
 import kala.collection.mutable.MutableSinglyLinkedList;
 import kala.function.*;
 import kala.collection.factory.CollectionFactory;
@@ -181,7 +183,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
                 break;
             builder.append(value);
         }
-        return builder.toImmutableLinkedSeq();
+        return builder.freeze();
     }
 
     public static <E> @NotNull ImmutableLinkedSeq<E> generateUntilNull(@NotNull Supplier<? extends @Nullable E> supplier) {
@@ -192,7 +194,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
                 break;
             builder.append(value);
         }
-        return builder.toImmutableLinkedSeq();
+        return builder.freeze();
     }
 
 
@@ -386,7 +388,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
 
         @Override
         public ImmutableLinkedSeq<E> build(MutableSinglyLinkedList<E> builder) {
-            return builder.toImmutableLinkedSeq();
+            return builder.freeze();
         }
 
         @Override
@@ -474,12 +476,10 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
      */
     @ApiStatus.Internal
     @SuppressWarnings("unchecked")
-    public static abstract class Builder<E> extends AbstractMutableList<E> {
-        Node<E> first = null;
-        Node<E> last = null;
-
-        int len = 0;
-
+    public sealed static abstract class Builder<E> extends AbstractMutableList<E> implements FreezableMutableList<E> permits MutableSinglyLinkedList {
+        private Node<E> first = null;
+        private Node<E> last = null;
+        private int len = 0;
         private boolean aliased = false;
 
         static <E> Builder<E> merge(@NotNull Builder<E> b1, @NotNull Builder<E> b2) {
@@ -700,13 +700,18 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
         }
 
         @Override
-        public final @NotNull ImmutableLinkedSeq<E> toImmutableLinkedSeq() {
+        public final @NotNull ImmutableLinkedSeq<E> freeze() {
             final Node<E> first = this.first;
             if (first == null || first == NIL_NODE) {
                 return ImmutableLinkedSeq.empty();
             }
             aliased = true;
             return new ImmutableLinkedSeq<>(first, len);
+        }
+
+        @Override
+        public @NotNull Seq<E> toSeq() {
+            return freeze();
         }
 
         @Override

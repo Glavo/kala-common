@@ -18,6 +18,7 @@ package kala.collection.mutable;
 import kala.collection.factory.CollectionFactory;
 import kala.collection.immutable.ImmutableArray;
 import kala.collection.immutable.ImmutableLinkedSeq;
+import kala.collection.immutable.ImmutableSeq;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ public final class MutableSinglyLinkedListTest implements MutableListTestTemplat
         ImmutableArray<String> values = ImmutableArray.of("value1", "value2", "value3");
 
         MutableSinglyLinkedList<String> seq = MutableSinglyLinkedList.from(values);
-        ImmutableLinkedSeq<String> immSeq = seq.toImmutableLinkedSeq();
+        ImmutableLinkedSeq<String> immSeq = seq.freeze();
 
         assertIterableEquals(values, immSeq);
 
@@ -86,10 +87,10 @@ public final class MutableSinglyLinkedListTest implements MutableListTestTemplat
                 assertIterableEquals(list, seq);
             }
             for (Comparator<Integer> comparator : comparators) {
-                MutableSeq<Integer> seq = from(data);
+                MutableSinglyLinkedList<Integer> seq = from(data);
                 ArrayList<Integer> list = new ArrayList<>(Arrays.asList(data));
 
-                ImmutableLinkedSeq<Integer> frozen = seq.toImmutableLinkedSeq();
+                ImmutableSeq<Integer> frozen = seq.freeze();
                 @SuppressWarnings({"unchecked", "rawtypes"})
                 List<Integer> frozenValues = (List) Arrays.asList(frozen.toArray());
 
