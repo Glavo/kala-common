@@ -37,7 +37,7 @@ public final class MutableLinkedHashSet<E> extends FromJavaConvert.MutableSetFro
     //region Static Factories
 
     public static <E> @NotNull CollectionFactory<E, ?, MutableLinkedHashSet<E>> factory() {
-        return ((MutableLinkedHashSet.Factory<E>) FACTORY);
+        return (Factory<E>) FACTORY;
     }
 
     @Contract("-> new")
