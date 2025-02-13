@@ -349,13 +349,8 @@ public final class CollectionViews {
         }
 
         @Override
-        public final @NotNull Seq<E> toSeq() {
+        public final @NotNull ImmutableSeq<E> toSeq() {
             return source.toSeq();
-        }
-
-        @Override
-        public final @NotNull ImmutableSeq<E> toImmutableSeq() {
-            return source.toImmutableSeq();
         }
 
         @Override

@@ -35,7 +35,7 @@ public interface FreezableMutableList<E> extends MutableList<E> {
     @NotNull ImmutableSeq<E> freeze();
 
     @Override
-    default @NotNull ImmutableSeq<E> toImmutableSeq() {
+    default @NotNull ImmutableSeq<E> toSeq() {
         return freeze();
     }
 }

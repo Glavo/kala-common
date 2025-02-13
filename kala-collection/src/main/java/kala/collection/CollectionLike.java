@@ -109,12 +109,13 @@ public interface CollectionLike<E> extends Traversable<E>, AnyCollectionLike<E> 
 
     //endregion
 
-    default @NotNull Seq<E> toSeq() {
-        return toImmutableSeq();
+    default @NotNull ImmutableSeq<E> toSeq() {
+        return ImmutableSeq.from(this);
     }
 
+    @Deprecated(forRemoval = true)
     default @NotNull ImmutableSeq<E> toImmutableSeq() {
-        return ImmutableSeq.from(this);
+        return toSeq();
     }
 
     default @NotNull ImmutableArray<E> toImmutableArray() {

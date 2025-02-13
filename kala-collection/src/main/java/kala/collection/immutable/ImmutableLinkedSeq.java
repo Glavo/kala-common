@@ -710,7 +710,7 @@ public final class ImmutableLinkedSeq<E> extends AbstractImmutableSeq<E> impleme
         }
 
         @Override
-        public @NotNull Seq<E> toSeq() {
+        public @NotNull ImmutableSeq<E> toSeq() {
             return freeze();
         }
 

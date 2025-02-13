@@ -265,11 +265,11 @@ public interface SeqLikeTestTemplate extends CollectionLikeTestTemplate, Sequent
         assertIterableEquals(List.of(), of().sliceView(~0, 0));
         assertIterableEquals(List.of(), of().sliceView(0, ~0));
         assertIterableEquals(List.of(), of().sliceView(~0, ~0));
-        assertThrows(IndexOutOfBoundsException.class, () -> of().sliceView(~1, 0).toImmutableSeq());
-        assertThrows(IndexOutOfBoundsException.class, () -> of().sliceView(0, 1).toImmutableSeq());
-        assertThrows(IndexOutOfBoundsException.class, () -> of().sliceView(-1, 1).toImmutableSeq());
-        assertThrows(IndexOutOfBoundsException.class, () -> of().sliceView(Integer.MIN_VALUE, 0).toImmutableSeq());
-        assertThrows(IndexOutOfBoundsException.class, () -> of().sliceView(Integer.MIN_VALUE, 1).toImmutableSeq());
+        assertThrows(IndexOutOfBoundsException.class, () -> of().sliceView(~1, 0).toSeq());
+        assertThrows(IndexOutOfBoundsException.class, () -> of().sliceView(0, 1).toSeq());
+        assertThrows(IndexOutOfBoundsException.class, () -> of().sliceView(-1, 1).toSeq());
+        assertThrows(IndexOutOfBoundsException.class, () -> of().sliceView(Integer.MIN_VALUE, 0).toSeq());
+        assertThrows(IndexOutOfBoundsException.class, () -> of().sliceView(Integer.MIN_VALUE, 1).toSeq());
 
         for (Integer[] data : data1()) {
             int dl = data.length;

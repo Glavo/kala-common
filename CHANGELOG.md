@@ -18,6 +18,8 @@ The following methods have been removed:
 Other changes:
 
 * The parameter type of `kala.collection.immutable.ImmutableArraySeq.Unsafe.wrap(Object[])` is changed to `E[]`.
+* The return type of `kala.collection.CollectionLike::toSeq()` changes to `ImmutableSeq<E>`.
+* `kala.collection.CollectionLike::toImmutableSeq()` is deprecated for removal and is replaced by `toSeq()`.
 
 ## 0.81.0
 
