@@ -17,6 +17,7 @@ package kala.collection.immutable;
 
 import kala.collection.Map;
 import kala.collection.MapLike;
+import kala.collection.factory.MapBuilder;
 import kala.collection.factory.MapFactory;
 import kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
@@ -38,6 +39,10 @@ public interface ImmutableMap<K, V> extends Map<K, V> {
             @NotNull Function<? super T, ? extends V> valueMapper
     ) {
         return MapFactory.collector(factory(), keyMapper, valueMapper);
+    }
+
+    static <K, V> @NotNull MapBuilder<K, V, ImmutableMap<K, V>> newMapBuilder() {
+        return MapBuilder.narrow(ImmutableHashMap.<K, V>factory().newMapBuilder());
     }
 
     static <K, V> @NotNull ImmutableMap<K, V> empty() {

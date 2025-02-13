@@ -18,7 +18,6 @@ module kala.collection {
     requires static org.jetbrains.annotations;
 
     requires transitive kala.base;
-    requires jdk.jdi;
 
     exports kala.collection;
     exports kala.collection.mutable;

@@ -15,6 +15,7 @@
  */
 package kala.collection;
 
+import kala.collection.factory.MapBuilder;
 import kala.collection.factory.MapFactory;
 import kala.tuple.Tuple2;
 import org.jetbrains.annotations.NotNull;
@@ -52,6 +53,75 @@ public interface SortedMapTestTemplate extends MapTestTemplate {
 
     default <K, V> SortedMap<K, V> from(Comparator<? super K> comparator, Iterable<Tuple2<K, V>> entries) {
         return this.<K, V>factory(comparator).from(entries);
+    }
+
+    @Test
+    @Override
+    default void newMapFactoryTest() throws Throwable {
+        final Class<?> mapType = mapType();
+        if (mapType == null) {
+            return;
+        }
+
+        var newMapFactory = MethodHandles.publicLookup()
+                .findStatic(mapType, "newMapBuilder", MethodType.methodType(MapBuilder.class));
+        var newMapFactoryC = MethodHandles.publicLookup()
+                .findStatic(mapType, "newMapBuilder", MethodType.methodType(MapBuilder.class, Comparator.class));
+
+        var helper = new Object() {
+            <K extends Comparable<? super K>, V> MapBuilder<K, V, Map<K, V>> newMapBuilder() throws Throwable {
+                return (MapBuilder<K, V, Map<K, V>>) newMapFactory.invokeExact();
+            }
+
+            <K, V> MapBuilder<K, V, Map<K, V>> newMapBuilder(Comparator<? super K> comparator) throws Throwable {
+                return (MapBuilder<K, V, Map<K, V>>) newMapFactoryC.invokeExact(comparator);
+            }
+        };
+
+        MapBuilder<Integer, String, Map<Integer, String>> builder;
+
+        builder = helper.newMapBuilder();
+        assertTrue(builder.build().isEmpty());
+
+        builder = helper.newMapBuilder();
+        builder.plusAssign(0, "0");
+        assertIterableEquals(List.of(entry(0, "0")), builder.build().toSeq());
+
+        builder = helper.newMapBuilder();
+        builder.plusAssign(3, "3");
+        builder.plusAssign(2, "2");
+        builder.plusAssign(0, "0");
+        builder.plusAssign(1, "1");
+        assertIterableEquals(List.of(entry(0, "0"), entry(1, "1"), entry(2, "2"), entry(3, "3")), builder.build().toSeq());
+
+        builder = helper.newMapBuilder();
+        builder.plusAssign(2, "2");
+        builder.plusAssign(0, "0");
+        builder.plusAssign(1, "1");
+        builder.plusAssign(0, "3");
+        assertIterableEquals(List.of(entry(0, "3"), entry(1, "1"), entry(2, "2")), builder.build().toSeq());
+
+
+        builder = helper.newMapBuilder(Comparator.reverseOrder());
+        assertTrue(builder.build().isEmpty());
+
+        builder = helper.newMapBuilder(Comparator.reverseOrder());
+        builder.plusAssign(0, "0");
+        assertIterableEquals(List.of(entry(0, "0")), builder.build().toSeq());
+
+        builder = helper.newMapBuilder(Comparator.reverseOrder());
+        builder.plusAssign(3, "3");
+        builder.plusAssign(2, "2");
+        builder.plusAssign(0, "0");
+        builder.plusAssign(1, "1");
+        assertIterableEquals(List.of(entry(3, "3"), entry(2, "2"), entry(1, "1"), entry(0, "0")), builder.build().toSeq());
+
+        builder = helper.newMapBuilder(Comparator.reverseOrder());
+        builder.plusAssign(2, "2");
+        builder.plusAssign(0, "0");
+        builder.plusAssign(1, "1");
+        builder.plusAssign(0, "3");
+        assertIterableEquals(List.of(entry(2, "2"), entry(1, "1"), entry(0, "3")), builder.build().toSeq());
     }
 
     @Test

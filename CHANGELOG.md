@@ -6,9 +6,14 @@
 
 ### New features
 
+* Add a new class: `kala.collection.factory.MapBuilder`
 * Add a new collection: `kala.collection.mutable.MutableLinkedHashSet`.
+* Add `kala.collection.factory.MapFactory::newMapBuilder()`
+* Add `kala.collection.factory.MapFactory::newMapBuilder(int)`
+* Add `kala.collection.factory.MapFactory::newBuilder(int)`
 * Add `kala.collection.CollectionLike::collect()`
 * Add `kala.collection.CollectionLike::toArraySeq()`
+* Add new factory method for all `Map`s: `newMapBuilder()`.
 
 ### Breaking Changes
 

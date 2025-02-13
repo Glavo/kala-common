@@ -19,6 +19,7 @@ import kala.collection.MapLike;
 import kala.collection.base.AbstractIterator;
 import kala.collection.base.AbstractMapIterator;
 import kala.collection.base.MapIterator;
+import kala.collection.factory.MapBuilder;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.hash.*;
 import kala.control.Option;
@@ -70,6 +71,14 @@ public final class MutableHashMap<K, V> extends HashBase<K, MutableHashMap.Node<
             @NotNull Function<? super T, ? extends V> valueMapper
     ) {
         return MapFactory.collector(factory(), keyMapper, valueMapper);
+    }
+
+    public static <K, V> @NotNull MapBuilder<K, V, MutableHashMap<K, V>> newMapBuilder() {
+        return MutableHashMap.<K, V>factory().newMapBuilder();
+    }
+
+    public static <K, V> @NotNull MapBuilder<K, V, MutableHashMap<K, V>> newMapBuilder(@NotNull Hasher<? super K> hasher) {
+        return MutableHashMap.<K, V>factory(hasher).newMapBuilder();
     }
 
     public static <K, V> @NotNull MutableHashMap<K, V> create() {

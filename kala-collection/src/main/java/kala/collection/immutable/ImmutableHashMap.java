@@ -15,6 +15,7 @@
  */
 package kala.collection.immutable;
 
+import kala.collection.factory.MapBuilder;
 import kala.collection.mutable.MutableHashMap;
 import kala.control.Option;
 import kala.collection.MapLike;
@@ -51,6 +52,14 @@ public final class ImmutableHashMap<K, V> extends AbstractImmutableMap<K, V> imp
 
     public static <K, V> @NotNull MapFactory<K, V, ?, ImmutableHashMap<K, V>> factory() {
         return (Factory<K, V>) FACTORY;
+    }
+
+    public static <K, V> @NotNull MapBuilder<K, V, ImmutableHashMap<K, V>> newMapBuilder() {
+        return ImmutableHashMap.<K, V>factory().newMapBuilder();
+    }
+
+    public static <K, V> @NotNull MapBuilder<K, V, ImmutableHashMap<K, V>> newMapBuilder(int capacity) {
+        return ImmutableHashMap.<K, V>factory().newMapBuilder(capacity);
     }
 
     static <T, K, V> @NotNull Collector<T, ?, ImmutableHashMap<K, V>> collector(

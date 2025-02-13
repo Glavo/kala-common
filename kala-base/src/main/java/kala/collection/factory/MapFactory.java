@@ -36,6 +36,39 @@ public interface MapFactory<K, V, Builder, R> extends Factory<Builder, R> {
 
     Builder newBuilder();
 
+    default Builder newBuilder(int capacity) {
+        Builder builder = newBuilder();
+        sizeHint(builder, capacity);
+        return builder;
+    }
+
+    default @NotNull MapBuilder<K, V, R> newMapBuilder(Builder builder) {
+        return new MapBuilder<>() {
+            @Override
+            public void plusAssign(K key, V value) {
+                MapFactory.this.addToBuilder(builder, key, value);
+            }
+
+            @Override
+            public R build() {
+                return MapFactory.this.build(builder);
+            }
+
+            @Override
+            public void sizeHint(int size) {
+                MapFactory.this.sizeHint(builder, size);
+            }
+        };
+    }
+
+    default @NotNull MapBuilder<K, V, R> newMapBuilder() {
+        return newMapBuilder(newBuilder());
+    }
+
+    default @NotNull MapBuilder<K, V, R> newMapBuilder(int capacity) {
+        return newMapBuilder(newBuilder(capacity));
+    }
+
     R build(Builder builder);
 
     void addToBuilder(Builder builder, K key, V value);

@@ -16,8 +16,8 @@
 package kala.collection.immutable;
 
 import kala.collection.MapLike;
-import kala.collection.base.AbstractMapIterator;
 import kala.collection.base.MapIterator;
+import kala.collection.factory.MapBuilder;
 import kala.collection.factory.MapFactory;
 import kala.collection.internal.tree.KVTree;
 import kala.control.Option;
@@ -28,7 +28,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
-import java.util.Map;
 import java.util.Objects;
 
 @SuppressWarnings("unchecked")
@@ -52,6 +51,14 @@ public final class ImmutableTreeMap<K, V> extends AbstractImmutableSortedMap<K, 
 
     public static <K, V> @NotNull MapFactory<K, V, ?, ImmutableTreeMap<K, V>> factory(Comparator<? super K> comparator) {
         return factoryImpl(comparator);
+    }
+
+    public static <K extends Comparable<? super K>, V> @NotNull MapBuilder<K, V, ImmutableTreeMap<K, V>> newMapBuilder() {
+        return ImmutableTreeMap.<K, V>factory().newMapBuilder();
+    }
+
+    public static <K, V> @NotNull MapBuilder<K, V, ImmutableTreeMap<K, V>> newMapBuilder(Comparator<? super K> comparator) {
+        return ImmutableTreeMap.<K, V>factory(comparator).newMapBuilder();
     }
 
     public static <K extends Comparable<? super K>, V> @NotNull ImmutableTreeMap<K, V> empty() {

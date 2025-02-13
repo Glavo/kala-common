@@ -15,6 +15,7 @@
  */
 package kala.collection;
 
+import kala.collection.factory.MapBuilder;
 import kala.collection.factory.MapFactory;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
@@ -55,6 +56,47 @@ public interface MapTestTemplate extends MapLikeTestTemplate {
             return null;
         }
     }
+
+    @Test
+    default void newMapFactoryTest() throws Throwable {
+        final Class<?> mapType = mapType();
+        if (mapType == null) {
+            return;
+        }
+
+        var newMapFactory = MethodHandles.publicLookup()
+                .findStatic(mapType, "newMapBuilder", MethodType.methodType(MapBuilder.class));
+
+        var helper = new Object() {
+            <K, V> MapBuilder<K, V, Map<K, V>> newMapBuilder() throws Throwable {
+                return (MapBuilder<K, V, Map<K, V>>) newMapFactory.invokeExact();
+            }
+        };
+
+        MapBuilder<Integer, String, Map<Integer, String>> builder;
+
+        builder = helper.newMapBuilder();
+        assertTrue(builder.build().isEmpty());
+
+        builder = helper.newMapBuilder();
+        builder.plusAssign(0, "0");
+        assertEquals(Map.of(0, "0"), builder.build());
+
+        builder = helper.newMapBuilder();
+        builder.plusAssign(0, "0");
+        builder.plusAssign(1, "1");
+        builder.plusAssign(2, "2");
+        builder.plusAssign(3, "3");
+        assertEquals(Map.of(0, "0", 1, "1", 2, "2", 3, "3"), builder.build());
+
+        builder = helper.newMapBuilder();
+        builder.plusAssign(0, "0");
+        builder.plusAssign(1, "1");
+        builder.plusAssign(2, "2");
+        builder.plusAssign(0, "3");
+        assertEquals(Map.of(0, "3", 1, "1", 2, "2"), builder.build());
+    }
+
 
     @Test
     default void ofTest() throws Throwable {

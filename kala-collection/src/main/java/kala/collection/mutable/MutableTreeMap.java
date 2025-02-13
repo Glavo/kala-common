@@ -19,6 +19,7 @@ import kala.collection.base.AbstractMapIterator;
 import kala.collection.MapLike;
 import kala.collection.base.MapIterator;
 import kala.collection.base.*;
+import kala.collection.factory.MapBuilder;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.tree.RedBlackTree;
 import kala.control.Option;
@@ -33,7 +34,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -83,6 +83,14 @@ public final class MutableTreeMap<K, V> extends RedBlackTree<K, MutableTreeMap.N
             @NotNull Function<? super T, ? extends V> valueMapper
     ) {
         return MapFactory.collector(factory(comparator), keyMapper, valueMapper);
+    }
+
+    public static <K extends Comparable<? super K>, V> @NotNull MapBuilder<K, V, MutableTreeMap<K, V>> newMapBuilder() {
+        return MutableTreeMap.<K, V>factory().newMapBuilder();
+    }
+
+    public static <K, V> @NotNull MapBuilder<K, V, MutableTreeMap<K, V>> newMapBuilder(Comparator<? super K> comparator) {
+        return MutableTreeMap.<K, V>factory(comparator).newMapBuilder();
     }
 
     public static <K extends Comparable<? super K>, V> @NotNull MutableTreeMap<K, V> of() {

@@ -16,6 +16,7 @@
 package kala.collection.mutable;
 
 import kala.collection.MapLike;
+import kala.collection.factory.MapBuilder;
 import kala.collection.factory.MapFactory;
 import kala.collection.internal.convert.FromJavaConvert;
 import kala.tuple.Tuple2;
@@ -28,22 +29,6 @@ public final class MutableLinkedHashMap<K, V> extends FromJavaConvert.MutableMap
 
     private static final Factory<?, ?> FACTORY = new Factory<>();
 
-    public MutableLinkedHashMap() {
-        this(new java.util.LinkedHashMap<>());
-    }
-
-    public MutableLinkedHashMap(int initialCapacity) {
-        this(new java.util.LinkedHashMap<>(initialCapacity));
-    }
-
-    public MutableLinkedHashMap(int initialCapacity, double loadFactor) {
-        this(new java.util.LinkedHashMap<>(initialCapacity, ((float) loadFactor)));
-    }
-
-    private MutableLinkedHashMap(java.util.@NotNull LinkedHashMap<K, V> source) {
-        super(source);
-    }
-
     //region Static Factories
 
     @SuppressWarnings("unchecked")
@@ -51,11 +36,15 @@ public final class MutableLinkedHashMap<K, V> extends FromJavaConvert.MutableMap
         return (Factory<K, V>) FACTORY;
     }
 
-    static <T, K, V> @NotNull Collector<T, ?, MutableLinkedHashMap<K, V>> collector(
+    public static <T, K, V> @NotNull Collector<T, ?, MutableLinkedHashMap<K, V>> collector(
             @NotNull Function<? super T, ? extends K> keyMapper,
             @NotNull Function<? super T, ? extends V> valueMapper
     ) {
         return MapFactory.collector(factory(), keyMapper, valueMapper);
+    }
+
+    public static <K, V> @NotNull MapBuilder<K, V, MutableLinkedHashMap<K, V>> newMapBuilder() {
+        return MutableLinkedHashMap.<K, V>factory().newMapBuilder();
     }
 
     public static <K, V> @NotNull MutableLinkedHashMap<K, V> of() {
@@ -222,6 +211,22 @@ public final class MutableLinkedHashMap<K, V> extends FromJavaConvert.MutableMap
     }
 
     //endregion
+
+    public MutableLinkedHashMap() {
+        this(new java.util.LinkedHashMap<>());
+    }
+
+    public MutableLinkedHashMap(int initialCapacity) {
+        this(new java.util.LinkedHashMap<>(initialCapacity));
+    }
+
+    public MutableLinkedHashMap(int initialCapacity, double loadFactor) {
+        this(new java.util.LinkedHashMap<>(initialCapacity, ((float) loadFactor)));
+    }
+
+    private MutableLinkedHashMap(java.util.@NotNull LinkedHashMap<K, V> source) {
+        super(source);
+    }
 
     @Override
     public @NotNull String className() {

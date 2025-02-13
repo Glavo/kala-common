@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Glavo
+ * Copyright 2025 Glavo
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,14 @@
  */
 package kala.collection.factory;
 
-import kala.collection.base.Growable;
-
-public interface CollectionBuilder<E, R> extends Growable<E> {
+public interface MapBuilder<K, V, R> {
 
     @SuppressWarnings("unchecked")
-    static <E, R> CollectionBuilder<E, R> narrow(CollectionBuilder<? super E, ? extends R> builder) {
-        return (CollectionBuilder<E, R>) builder;
+    static <K, V, R> MapBuilder<K, V, R> narrow(MapBuilder<? super K, ? super V, ? extends R> builder) {
+        return (MapBuilder<K, V, R>) builder;
     }
 
-    void plusAssign(E value);
+    void plusAssign(K key, V value);
 
     R build();
 

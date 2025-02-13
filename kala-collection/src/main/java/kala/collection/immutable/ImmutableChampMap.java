@@ -17,6 +17,7 @@ package kala.collection.immutable;
 
 import kala.collection.MapLike;
 import kala.collection.base.MapIterator;
+import kala.collection.factory.MapBuilder;
 import kala.collection.factory.MapFactory;
 import kala.collection.internal.champ.BitmapIndexedChampMapNode;
 import kala.collection.internal.champ.ChampMapBuilder;
@@ -43,6 +44,10 @@ public final class ImmutableChampMap<K, V> extends AbstractImmutableMap<K, V> {
     @SuppressWarnings("unchecked")
     public static <K, V> @NotNull MapFactory<K, V, ?, ImmutableChampMap<K, V>> factory() {
         return (Factory<K, V>) FACTORY;
+    }
+
+    public static <K, V> @NotNull MapBuilder<K, V, ImmutableChampMap<K, V>> newMapBuilder() {
+        return ImmutableChampMap.<K, V>factory().newMapBuilder();
     }
 
     public static <K, V> ImmutableChampMap<K, V> empty() {

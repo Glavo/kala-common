@@ -16,6 +16,7 @@
 package kala.collection.mutable;
 
 import kala.collection.MapLike;
+import kala.collection.factory.MapBuilder;
 import kala.collection.internal.convert.AsJavaConvert;
 import kala.collection.internal.convert.FromJavaConvert;
 import kala.tuple.Tuple2;
@@ -41,6 +42,10 @@ public interface MutableMap<K, V> extends Map<K, V>, MutableMapLike<K, V> {
             @NotNull Function<? super T, ? extends V> valueMapper
     ) {
         return MapFactory.collector(factory(), keyMapper, valueMapper);
+    }
+
+    static <K, V> @NotNull MapBuilder<K, V, MutableMap<K, V>> newMapBuilder() {
+        return MapBuilder.narrow(MutableHashMap.newMapBuilder());
     }
 
     static <K, V> @NotNull MutableMap<K, V> create() {
