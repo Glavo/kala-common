@@ -4,6 +4,10 @@
 
 (In development)
 
+## 0.82.0
+
+Release Date: 2025-02-13
+
 ### New features
 
 * Add a new class: `kala.collection.factory.MapBuilder`
