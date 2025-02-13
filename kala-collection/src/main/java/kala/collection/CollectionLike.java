@@ -22,6 +22,7 @@ import kala.collection.factory.MapFactory;
 import kala.collection.immutable.*;
 import kala.collection.mutable.MutableSeq;
 import kala.function.CheckedConsumer;
+import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
 import kala.tuple.Tuple3;
 import org.intellij.lang.annotations.Flow;
@@ -158,47 +159,15 @@ public interface CollectionLike<E> extends Traversable<E>, AnyCollectionLike<E> 
         return builder.build();
     }
 
+    @DelegateBy("associate(Function<E, Map.Entry<K, V>>)")
     default <K> @NotNull ImmutableMap<K, E> associateBy(@NotNull Function<? super E, ? extends K> keySelector) {
-        final int ks = knownSize();
-        if (ks == 0) {
-            return ImmutableMap.empty();
-        }
-        final Iterator<E> it = this.iterator();
-        if (!it.hasNext()) {
-            return ImmutableMap.empty();
-        }
-
-        final var builder = ImmutableMap.<K, E>newMapBuilder();
-        if (ks > 0) {
-            builder.sizeHint(ks);
-        }
-        while (it.hasNext()) {
-            final E e = it.next();
-            builder.plusAssign(keySelector.apply(e), e);
-        }
-        return builder.build();
+        return associate(value -> Tuple.of(keySelector.apply(value), value));
     }
 
+    @DelegateBy("associate(Function<E, Map.Entry<K, V>>)")
     default <K, V> @NotNull ImmutableMap<K, V> associateBy(
             @NotNull Function<? super E, ? extends K> keySelector, @NotNull Function<? super E, ? extends V> valueTransform) {
-        final int ks = knownSize();
-        if (ks == 0) {
-            return ImmutableMap.empty();
-        }
-        final Iterator<E> it = this.iterator();
-        if (!it.hasNext()) {
-            return ImmutableMap.empty();
-        }
-
-        final var builder = ImmutableMap.<K, V>newMapBuilder();
-        if (ks > 0) {
-            builder.sizeHint(ks);
-        }
-        while (it.hasNext()) {
-            final E e = it.next();
-            builder.plusAssign(keySelector.apply(e), valueTransform.apply(e));
-        }
-        return builder.build();
+        return associate(value -> Tuple.of(keySelector.apply(value), valueTransform.apply(value)));
     }
 
     //region Deprecated
