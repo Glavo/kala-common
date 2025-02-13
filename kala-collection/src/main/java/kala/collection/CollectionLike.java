@@ -16,6 +16,7 @@
 package kala.collection;
 
 import kala.annotations.DelegateBy;
+import kala.annotations.ReplaceWith;
 import kala.collection.base.Traversable;
 import kala.collection.factory.MapFactory;
 import kala.collection.immutable.*;
@@ -209,11 +210,13 @@ public interface CollectionLike<E> extends Traversable<E>, AnyCollectionLike<E> 
     //region Deprecated
 
     @Deprecated(forRemoval = true)
+    @ReplaceWith("toSeq()")
     default @NotNull ImmutableSeq<E> toImmutableSeq() {
         return toSeq();
     }
 
     @Deprecated(forRemoval = true)
+    @ReplaceWith("toSet()")
     default @NotNull ImmutableSet<E> toImmutableSet() {
         return toSet();
     }
