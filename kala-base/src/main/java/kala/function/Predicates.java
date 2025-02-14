@@ -77,7 +77,7 @@ public final class Predicates {
 
     @SafeVarargs
     public static <T> @NotNull Predicate<T> and(Predicate<? super T> @NotNull ... predicates) {
-        if (predicates.length < 2) {
+        if (predicates.length == 0) {
             throw new IllegalArgumentException();
         }
         return new And<>(predicates.clone());
@@ -85,7 +85,7 @@ public final class Predicates {
 
     @SafeVarargs
     public static <T> @NotNull Predicate<T> or(Predicate<? super T> @NotNull ... predicates) {
-        if (predicates.length < 2) {
+        if (predicates.length == 0) {
             throw new IllegalArgumentException();
         }
         return new Or<>(predicates.clone());
