@@ -72,7 +72,7 @@ public final class Predicates {
 
     public static <T> @NotNull Predicate<T> isInstance(@NotNull Class<? extends T> type) {
         Objects.requireNonNull(type);
-        return type == Object.class ? isNotNull() : new IsInstance<>(type);
+        return new IsInstance<>(type);
     }
 
     @SafeVarargs
