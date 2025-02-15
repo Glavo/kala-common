@@ -394,11 +394,11 @@ public final class SeqViews {
     }
 
     public static class Slice<E> extends AbstractSeqView<E> {
-        protected final @NotNull SeqView<E> source;
+        protected final @NotNull SeqLike<E> source;
         protected final int beginIndex;
         protected final int endIndex;
 
-        public Slice(@NotNull SeqView<E> source, int beginIndex, int endIndex) {
+        public Slice(@NotNull SeqLike<E> source, int beginIndex, int endIndex) {
             this.source = source;
             this.beginIndex = beginIndex;
             this.endIndex = endIndex;
@@ -465,11 +465,11 @@ public final class SeqViews {
     }
 
     public static class Drop<E> extends AbstractSeqView<E> {
-        protected final @NotNull SeqView<E> source;
+        protected final @NotNull SeqLike<E> source;
 
         protected final int n;
 
-        public Drop(@NotNull SeqView<E> source, @Range(from = 1, to = Integer.MAX_VALUE) int n) {
+        public Drop(@NotNull SeqLike<E> source, @Range(from = 1, to = Integer.MAX_VALUE) int n) {
             this.source = source;
             this.n = n;
         }
@@ -508,7 +508,7 @@ public final class SeqViews {
             if (n == 0) {
                 return this;
             }
-            return source.drop(n + this.n);
+            return source.view().drop(n + this.n);
         }
     }
 
@@ -558,11 +558,11 @@ public final class SeqViews {
 
     public static class DropWhile<E> extends AbstractSeqView<E> {
 
-        private final @NotNull SeqView<E> source;
+        private final @NotNull SeqLike<E> source;
 
         private final @NotNull Predicate<? super E> predicate;
 
-        public DropWhile(@NotNull SeqView<E> source, @NotNull Predicate<? super E> predicate) {
+        public DropWhile(@NotNull SeqLike<E> source, @NotNull Predicate<? super E> predicate) {
             this.source = source;
             this.predicate = predicate;
         }
@@ -584,11 +584,11 @@ public final class SeqViews {
     }
 
     public static class Take<E> extends AbstractSeqView<E> {
-        protected final @NotNull SeqView<E> source;
+        protected final @NotNull SeqLike<E> source;
 
         protected final @Range(from = 1, to = Integer.MAX_VALUE) int n;
 
-        public Take(@NotNull SeqView<E> source, @Range(from = 1, to = Integer.MAX_VALUE) int n) {
+        public Take(@NotNull SeqLike<E> source, @Range(from = 1, to = Integer.MAX_VALUE) int n) {
             this.source = source;
             this.n = n;
         }
@@ -645,11 +645,11 @@ public final class SeqViews {
     }
 
     public static class TakeLast<E> extends AbstractSeqView<E> {
-        protected final @NotNull SeqView<E> source;
+        protected final @NotNull SeqLike<E> source;
 
         private final int n;
 
-        public TakeLast(@NotNull SeqView<E> source, @Range(from = 1, to = Integer.MAX_VALUE) int n) {
+        public TakeLast(@NotNull SeqLike<E> source, @Range(from = 1, to = Integer.MAX_VALUE) int n) {
             this.source = source;
             this.n = n;
         }
@@ -756,11 +756,11 @@ public final class SeqViews {
     }
 
     public static class TakeWhile<E> extends AbstractSeqView<E> {
-        private final @NotNull SeqView<E> source;
+        private final @NotNull SeqLike<E> source;
 
         private final @NotNull Predicate<? super E> predicate;
 
-        public TakeWhile(@NotNull SeqView<E> source, @NotNull Predicate<? super E> predicate) {
+        public TakeWhile(@NotNull SeqLike<E> source, @NotNull Predicate<? super E> predicate) {
             this.source = source;
             this.predicate = predicate;
         }
@@ -815,12 +815,12 @@ public final class SeqViews {
     }
 
     public static class Updated<E> extends AbstractSeqView<E> {
-        private final @NotNull SeqView<E> source;
+        private final @NotNull SeqLike<E> source;
 
         private final int index;
         private final E newValue;
 
-        public Updated(@NotNull SeqView<E> source, int index, E newValue) {
+        public Updated(@NotNull SeqLike<E> source, int index, E newValue) {
             this.source = source;
             this.index = index;
             this.newValue = newValue;
@@ -878,10 +878,10 @@ public final class SeqViews {
 
     public static class Prepended<E> extends AbstractSeqView<E> {
 
-        private final @NotNull SeqView<E> source;
+        private final @NotNull SeqLike<E> source;
         private final E value;
 
-        public Prepended(@NotNull SeqView<E> source, E value) {
+        public Prepended(@NotNull SeqLike<E> source, E value) {
             this.source = source;
             this.value = value;
         }
@@ -913,11 +913,11 @@ public final class SeqViews {
     }
 
     public static class Appended<E> extends AbstractSeqView<E> {
-        protected final @NotNull SeqView<E> source;
+        protected final @NotNull SeqLike<E> source;
 
         protected final E value;
 
-        public Appended(@NotNull SeqView<E> source, E value) {
+        public Appended(@NotNull SeqLike<E> source, E value) {
             this.source = source;
             this.value = value;
         }
@@ -943,12 +943,12 @@ public final class SeqViews {
     }
 
     public static class Inserted<E> extends AbstractSeqView<E> {
-        private final @NotNull SeqView<E> source;
+        private final @NotNull SeqLike<E> source;
 
         private final int insertedIndex;
         private final E value;
 
-        public Inserted(@NotNull SeqView<E> source, int index, E value) {
+        public Inserted(@NotNull SeqLike<E> source, int index, E value) {
             this.source = source;
             this.insertedIndex = index;
             this.value = value;
@@ -989,11 +989,11 @@ public final class SeqViews {
     }
 
     public static class RemovedAt<E> extends AbstractSeqView<E> {
-        protected final @NotNull SeqView<E> source;
+        protected final @NotNull SeqLike<E> source;
 
         protected final int removedIndex;
 
-        public RemovedAt(@NotNull SeqView<E> source, int index) {
+        public RemovedAt(@NotNull SeqLike<E> source, int index) {
             this.source = source;
             this.removedIndex = index;
         }
@@ -1028,9 +1028,9 @@ public final class SeqViews {
     }
 
     public static class Reversed<E> extends AbstractSeqView<E> {
-        protected final @NotNull SeqView<E> source;
+        protected final @NotNull SeqLike<E> source;
 
-        public Reversed(@NotNull SeqView<E> source) {
+        public Reversed(@NotNull SeqLike<E> source) {
             this.source = source;
         }
 
@@ -1069,7 +1069,7 @@ public final class SeqViews {
 
         @Override
         public final @NotNull SeqView<E> reversed() {
-            return source;
+            return source.view();
         }
 
         @Override
@@ -1079,11 +1079,11 @@ public final class SeqViews {
     }
 
     public static final class Filter<E> extends AbstractSeqView<E> {
-        private final @NotNull SeqView<E> source;
+        private final @NotNull SeqLike<E> source;
 
         private final @NotNull Predicate<? super E> predicate;
 
-        public Filter(@NotNull SeqView<E> source, @NotNull Predicate<? super E> predicate) {
+        public Filter(@NotNull SeqLike<E> source, @NotNull Predicate<? super E> predicate) {
             this.source = source;
             this.predicate = predicate;
         }
@@ -1124,10 +1124,10 @@ public final class SeqViews {
     }
 
     public static class Mapped<E, T> extends AbstractSeqView<E> {
-        private final @NotNull SeqView<T> source;
+        private final @NotNull SeqLike<T> source;
         private final @NotNull Function<? super T, ? extends E> mapper;
 
-        public Mapped(@NotNull SeqView<T> source, @NotNull Function<? super T, ? extends E> mapper) {
+        public Mapped(@NotNull SeqLike<T> source, @NotNull Function<? super T, ? extends E> mapper) {
             this.source = source;
             this.mapper = mapper;
         }
@@ -1169,7 +1169,7 @@ public final class SeqViews {
     }
 
     public static class MapIndexed<E, T> extends AbstractSeqView<E> {
-        private final @NotNull SeqView<T> source;
+        private final @NotNull SeqLike<T> source;
 
         private final @NotNull IndexedFunction<? super T, ? extends E> mapper;
 
@@ -1210,11 +1210,11 @@ public final class SeqViews {
     }
 
     public static class MapNotNull<E, T> extends AbstractSeqView<E> {
-        private final @NotNull SeqView<T> source;
+        private final @NotNull SeqLike<T> source;
 
         private final @NotNull Function<? super T, ? extends E> mapper;
 
-        public MapNotNull(@NotNull SeqView<T> source, @NotNull Function<? super T, ? extends E> mapper) {
+        public MapNotNull(@NotNull SeqLike<T> source, @NotNull Function<? super T, ? extends E> mapper) {
             this.source = source;
             this.mapper = mapper;
         }
@@ -1226,10 +1226,10 @@ public final class SeqViews {
     }
 
     public static class MapIndexedNotNull<E, T> extends AbstractSeqView<E> {
-        private final @NotNull SeqView<T> source;
+        private final @NotNull SeqLike<T> source;
         private final @NotNull IndexedFunction<? super T, ? extends E> mapper;
 
-        public MapIndexedNotNull(@NotNull SeqView<T> source, @NotNull IndexedFunction<? super T, ? extends E> mapper) {
+        public MapIndexedNotNull(@NotNull SeqLike<T> source, @NotNull IndexedFunction<? super T, ? extends E> mapper) {
             this.source = source;
             this.mapper = mapper;
         }
@@ -1241,10 +1241,10 @@ public final class SeqViews {
     }
 
     public static final class MapMulti<E, T> extends AbstractSeqView<E> {
-        private final @NotNull SeqView<T> source;
+        private final @NotNull SeqLike<T> source;
         private final @NotNull BiConsumer<? super T, ? super Consumer<? super E>> mapper;
 
-        public MapMulti(@NotNull SeqView<T> source, @NotNull BiConsumer<? super T, ? super Consumer<? super E>> mapper) {
+        public MapMulti(@NotNull SeqLike<T> source, @NotNull BiConsumer<? super T, ? super Consumer<? super E>> mapper) {
             this.source = source;
             this.mapper = mapper;
         }
@@ -1256,10 +1256,10 @@ public final class SeqViews {
     }
 
     public static final class MapIndexedMulti<E, T> extends AbstractSeqView<E> {
-        private final @NotNull SeqView<T> source;
+        private final @NotNull SeqLike<T> source;
         private final @NotNull IndexedBiConsumer<? super T, ? super Consumer<? super E>> mapper;
 
-        public MapIndexedMulti(@NotNull SeqView<T> source, @NotNull IndexedBiConsumer<? super T, ? super Consumer<? super E>> mapper) {
+        public MapIndexedMulti(@NotNull SeqLike<T> source, @NotNull IndexedBiConsumer<? super T, ? super Consumer<? super E>> mapper) {
             this.source = source;
             this.mapper = mapper;
         }

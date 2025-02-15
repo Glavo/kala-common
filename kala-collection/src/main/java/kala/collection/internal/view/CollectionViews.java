@@ -487,11 +487,11 @@ public final class CollectionViews {
 
     public static final class Mapped<@Covariant E, T> extends AbstractCollectionView<E> {
 
-        private final @NotNull CollectionView<T> source;
+        private final @NotNull CollectionLike<T> source;
 
         private final @NotNull Function<? super T, ? extends E> mapper;
 
-        public Mapped(@NotNull CollectionView<T> source, @NotNull Function<? super T, ? extends E> mapper) {
+        public Mapped(@NotNull CollectionLike<T> source, @NotNull Function<? super T, ? extends E> mapper) {
             this.source = source;
             this.mapper = mapper;
         }
@@ -537,10 +537,10 @@ public final class CollectionViews {
     }
 
     public static class MapNotNull<E, T> extends AbstractCollectionView<E> {
-        private final @NotNull CollectionView<T> source;
+        private final @NotNull CollectionLike<T> source;
         private final @NotNull Function<? super T, ? extends E> mapper;
 
-        public MapNotNull(@NotNull CollectionView<T> source, @NotNull Function<? super T, ? extends E> mapper) {
+        public MapNotNull(@NotNull CollectionLike<T> source, @NotNull Function<? super T, ? extends E> mapper) {
             this.source = source;
             this.mapper = mapper;
         }
@@ -552,10 +552,10 @@ public final class CollectionViews {
     }
 
     public static class MapMulti<E, T> extends AbstractCollectionView<E> {
-        private final @NotNull CollectionView<T> source;
+        private final @NotNull CollectionLike<T> source;
         private final @NotNull BiConsumer<? super T, ? super Consumer<? super E>> mapper;
 
-        public MapMulti(@NotNull CollectionView<T> source, @NotNull BiConsumer<? super T, ? super Consumer<? super E>> mapper) {
+        public MapMulti(@NotNull CollectionLike<T> source, @NotNull BiConsumer<? super T, ? super Consumer<? super E>> mapper) {
             this.source = source;
             this.mapper = mapper;
         }
