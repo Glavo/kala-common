@@ -847,7 +847,7 @@ public final class StringSlice implements Comparable<StringSlice>, CharSequence,
         for (int i = offset, end = offset + length; i < end; ) {
             char c1 = value.charAt(i++);
             if (Character.isHighSurrogate(c1) && i < end) {
-                char c2 = value.charAt(i + 1);
+                char c2 = value.charAt(i);
                 if (Character.isLowSurrogate(c2)) {
                     i++;
                     action.accept(Character.toCodePoint(c1, c2));

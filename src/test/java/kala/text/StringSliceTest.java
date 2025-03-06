@@ -67,7 +67,15 @@ public final class StringSliceTest {
     }
 
     @Test
-    void graphemes() {
+    void forEachCodePointTest() {
+        ArrayList<Integer> result = new ArrayList<>();
+
+        StringSlice.of("a\uD83D\uDE0Ab").forEachCodePoint(result::add);
+        assertIterableEquals(List.of((int) 'a', Character.toCodePoint('\uD83D', '\uDE0A'), (int) 'b'), result);
+    }
+
+    @Test
+    void forEachGraphemesTest() {
         String family = "\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67\u200D\uD83D\uDC66";
 
         var expected = List.of("a", "b", "c", " ", "你", "好", " ", family, "\uD83D\uDE0A");
