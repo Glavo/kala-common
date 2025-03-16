@@ -330,5 +330,5 @@ This option has two significant advantages:
   }
   
   var _ = getKey("i"); // ===> "i"
-  var _ = getPrefix("i = 10"); // ===> "i"
+  var _ = getKey("i = 10"); // ===> "i"
   ```
