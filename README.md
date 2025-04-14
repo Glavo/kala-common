@@ -46,7 +46,10 @@ We welcome others to try Kala Common for experimental purposes.
 
 ## Note
 
-The last version compatible with Java 8 was 0.70.0. Building and running kala common now require Java 21.
+The last version compatible with Java 8 was 0.70.0;
+The last version compatible with Java 21 was 0.82.0.
+
+Building and running kala common now require Java 24.
 
 ## Donate
 
