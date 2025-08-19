@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.*;
@@ -28,6 +29,9 @@ import java.util.stream.Stream;
 @SuppressWarnings("unchecked")
 public sealed abstract class ImmutableVector<@Covariant E> extends AbstractImmutableSeq<E> implements IndexedSeq<E>, Serializable
         permits ImmutableVectors.Vector0, ImmutableVectors.Vector1, ImmutableVectors.BigVector {
+
+    @Serial
+    private static final long serialVersionUID = -1087938624105900991L;
 
     final Object[] prefix1;
 

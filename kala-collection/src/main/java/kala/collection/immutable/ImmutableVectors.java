@@ -440,6 +440,9 @@ final class ImmutableVectors {
 
     @Debug.Renderer(hasChildren = "true", childrenArray = "toArray()")
     static sealed abstract class BigVector<E> extends ImmutableVector<E> {
+        @Serial
+        private static final long serialVersionUID = -3362902229147594179L;
+
         final Object[] suffix1;
         final int length0;
 
@@ -812,6 +815,9 @@ final class ImmutableVectors {
     //endregion
 
     static final class Vector2<E> extends BigVector<E> {
+        @Serial
+        private static final long serialVersionUID = -6327072065599672646L;
+
         private final int len1;
         private final Object[] @NotNull [] data2;
 
@@ -881,6 +887,9 @@ final class ImmutableVectors {
     }
 
     static final class Vector3<E> extends BigVector<E> {
+        @Serial
+        private static final long serialVersionUID = 1735018128818835276L;
+
         final int len1;
         final Object[][] prefix2;
         final int len12;
@@ -973,6 +982,9 @@ final class ImmutableVectors {
     }
 
     static final class Vector4<E> extends BigVector<E> {
+        @Serial
+        private static final long serialVersionUID = 3811086259071329797L;
+
         final int len1;
         final Object[][] prefix2;
         final int len12;
@@ -1092,6 +1104,9 @@ final class ImmutableVectors {
     }
 
     static final class Vector5<E> extends BigVector<E> {
+        @Serial
+        private static final long serialVersionUID = 4548991529397360728L;
+
         final int len1;
         final Object[][] prefix2;
         final int len12;
@@ -1235,6 +1250,9 @@ final class ImmutableVectors {
     }
 
     static final class Vector6<E> extends BigVector<E> {
+        @Serial
+        private static final long serialVersionUID = -4969151671547068422L;
+
         final int len1;
         final Object[][] prefix2;
         final int len12;
