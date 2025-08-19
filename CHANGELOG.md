@@ -1,8 +1,12 @@
 # Changelog
 
-## 0.82.0
+## 0.83.0
 
 (In development)
+
+### Fixes
+
+* Add `serialVersionUID` to `kala.collection.immutable.ImmutableVector`.
 
 ### Breaking Changes
 
@@ -63,7 +67,7 @@ Release Date: 2025-02-11
 * Add `kala.collection.mutable.MutableHashMap.factory(Hasher<K>)`.
 * Add new factory method for all `Seq`/`Set`: `newBuilder()`.
 
-## Fixes
+### Fixes
 
 * Fix `kala.collection.mutable.MutableHashMap::{set, put}` not working with custom hasher.
 * Fix `kala.collection.mutable.MutableHashSet::{add, remove}` not working with custom hasher.
