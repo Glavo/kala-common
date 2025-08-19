@@ -19,7 +19,7 @@ plugins {
     id("maven-publish")
     id("signing")
     id("io.github.gradle-nexus.publish-plugin") version "2.0.0"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.gradleup.shadow") version "9.0.2"
     id("org.glavo.load-maven-publish-properties") version "0.1.0"
 }
 
@@ -187,7 +187,9 @@ tasks.register<ReleaseNoteTask>("releaseNote") {
 nexusPublishing {
     repositories {
         sonatype {
-            stagingProfileId.set(rootProject.ext["sonatypeStagingProfileId"].toString())
+            nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
+
             username.set(rootProject.ext["sonatypeUsername"].toString())
             password.set(rootProject.ext["sonatypePassword"].toString())
         }

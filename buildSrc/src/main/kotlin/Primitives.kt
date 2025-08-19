@@ -21,6 +21,9 @@ enum class Primitives(internal val properties: MutableMap<String, Any?> = mutabl
     Map<String, Any?> by properties {
     Boolean, Byte, Short, Int, Long, Float, Double, Char;
 
+    override val entries: Set<Map.Entry<String, Any?>>
+        get() = properties.entries
+
     val type: String
         get() = this.name
 
