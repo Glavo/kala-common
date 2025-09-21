@@ -59,7 +59,7 @@ allprojects {
     }
 
     tasks.compileJava {
-        options.release.set(24)
+        options.release.set(25)
         options.javaModuleVersion.set(project.version.toString())
         options.encoding = "UTF-8"
         options.isWarnings = false
@@ -68,7 +68,7 @@ allprojects {
     tasks.withType<Javadoc>().configureEach {
         (options as StandardJavadocDocletOptions).also {
             it.encoding("UTF-8")
-            it.addStringOption("link", "https://docs.oracle.com/en/java/javase/24/docs/api/")
+            it.addStringOption("link", "https://docs.oracle.com/en/java/javase/25/docs/api/")
             it.addBooleanOption("html5", true)
             it.addStringOption("Xdoclint:none", "-quiet")
         }
@@ -144,7 +144,7 @@ sourceSets {
 }
 
 tasks.compileTestJava {
-    options.release.set(24)
+    options.release.set(25)
 }
 
 tasks.test {
