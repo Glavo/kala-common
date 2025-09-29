@@ -15,6 +15,7 @@
  */
 package kala.collection;
 
+import kala.tuple.Tuple;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -49,5 +50,23 @@ public interface SeqViewTestTemplate extends SeqLikeTestTemplate, SequentialColl
         assertIterableEquals(List.of(0, 1), of(0, 1, 2).take(2).take(2));
         assertIterableEquals(List.of(0, 1), of(0, 1, 2).take(2).take(3));
         assertIterableEquals(List.of(0, 1, 2), of(0, 1, 2).take(3).take(3));
+    }
+
+    @Test
+    @Override
+    default void zipTest() {
+        SequentialCollectionViewTestTemplate.super.zipTest();
+
+        assertIterableEquals(List.of(), of(0, 1, 2).zip(of()));
+        assertIterableEquals(List.of(), of().zip(of("A", "B", "C")));
+        assertIterableEquals(List.of(Tuple.of(0, "A")), of(0, 1, 2).zip(of("A")));
+        assertIterableEquals(List.of(Tuple.of(0, "A"), Tuple.of(1, "B"), Tuple.of(2, "C")), of(0, 1, 2).zip(of("A", "B", "C")));
+        assertIterableEquals(List.of(Tuple.of(0, "A"), Tuple.of(1, "B"), Tuple.of(2, "C")), of(0, 1, 2).zip(of("A", "B", "C", "D", "E")));
+
+        assertIterableEquals(List.of(), of(0, 1, 2).zip(of(), "%s%s"::formatted));
+        assertIterableEquals(List.of(), of().zip(of("A", "B", "C")));
+        assertIterableEquals(List.of("0A"), of(0, 1, 2).zip(of("A"), "%s%s"::formatted));
+        assertIterableEquals(List.of("0A", "1B", "2C"), of(0, 1, 2).zip(of("A", "B", "C"), "%s%s"::formatted));
+        assertIterableEquals(List.of("0A", "1B", "2C"), of(0, 1, 2).zip(of("A", "B", "C", "D", "E"), "%s%s"::formatted));
     }
 }
