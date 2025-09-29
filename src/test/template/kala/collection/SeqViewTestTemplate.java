@@ -68,5 +68,17 @@ public interface SeqViewTestTemplate extends SeqLikeTestTemplate, SequentialColl
         assertIterableEquals(List.of("0A"), of(0, 1, 2).zip(of("A"), "%s%s"::formatted));
         assertIterableEquals(List.of("0A", "1B", "2C"), of(0, 1, 2).zip(of("A", "B", "C"), "%s%s"::formatted));
         assertIterableEquals(List.of("0A", "1B", "2C"), of(0, 1, 2).zip(of("A", "B", "C", "D", "E"), "%s%s"::formatted));
+
+        assertEquals(0, of(0, 1, 2).zip(of()).size());
+        assertEquals(0, of().zip(of("A", "B", "C")).size());
+        assertEquals(1, of(0, 1, 2).zip(of("A")).size());
+        assertEquals(3, of(0, 1, 2).zip(of("A", "B", "C")).size());
+        assertEquals(3, of(0, 1, 2).zip(of("A", "B", "C", "D", "E")).size());
+
+        assertTrue(of(0, 1, 2).zip(of()).isEmpty());
+        assertTrue(of().zip(of("A", "B", "C")).isEmpty());
+        assertFalse(of(0, 1, 2).zip(of("A")).isEmpty());
+        assertFalse(of(0, 1, 2).zip(of("A", "B", "C")).isEmpty());
+        assertFalse(of(0, 1, 2).zip(of("A", "B", "C", "D", "E")).isEmpty());
     }
 }
