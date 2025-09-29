@@ -18,6 +18,7 @@ package kala.collection;
 import kala.annotations.DelegateBy;
 import kala.collection.immutable.ImmutableArray;
 import kala.collection.internal.convert.AsJavaConvert;
+import kala.collection.internal.view.CollectionViews;
 import kala.function.CheckedConsumer;
 import kala.function.CheckedIndexedConsumer;
 import kala.function.IndexedBiConsumer;
@@ -29,6 +30,9 @@ import kala.index.Indexes;
 import kala.collection.internal.view.SeqViews;
 import kala.annotations.Covariant;
 import kala.collection.internal.CollectionHelper;
+import kala.tuple.Tuple;
+import kala.tuple.Tuple2;
+import kala.tuple.Tuple3;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -37,10 +41,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.Objects;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
 
 @SuppressWarnings("unchecked")
 public interface SeqView<@Covariant E> extends CollectionView<E>, SeqLike<E>, AnySeqView<E> {
@@ -298,6 +299,24 @@ public interface SeqView<@Covariant E> extends CollectionView<E>, SeqLike<E>, An
     default <U> @NotNull SeqView<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper) {
         Objects.requireNonNull(mapper);
         return new SeqViews.FlatMapped<>(this, mapper);
+    }
+
+    @DelegateBy("zip(Iterable<U>, BiFunction<E, U, R>)")
+    default <U> @NotNull SeqView<@NotNull Tuple2<E, U>> zip(@NotNull SeqLike<? extends U> other) {
+        return zip(other, Tuple::of);
+    }
+
+    @Contract(pure = true)
+    default <U, R> @NotNull SeqView<R> zip(@NotNull SeqLike<? extends U> other, @NotNull BiFunction<? super E, ? super U, ? extends R> mapper) {
+        Objects.requireNonNull(other);
+        Objects.requireNonNull(mapper);
+        return new SeqViews.Zip<>(this, other, mapper);
+    }
+
+    default <U, V> @NotNull SeqView<@NotNull Tuple3<E, U, V>> zip3(@NotNull SeqLike<? extends U> other1, @NotNull SeqLike<? extends V> other2) {
+        Objects.requireNonNull(other1);
+        Objects.requireNonNull(other2);
+        return new SeqViews.Zip3<>(this, other1, other2);
     }
 
     @Override

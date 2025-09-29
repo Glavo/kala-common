@@ -28,14 +28,12 @@ import kala.index.Index;
 import kala.index.Indexes;
 import kala.tuple.Tuple;
 import kala.tuple.Tuple2;
+import kala.tuple.Tuple3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -1023,7 +1021,7 @@ public final class SeqViews {
         @Override
         public E get(@Index int index) {
             index = Indexes.checkIndex(index, size());
-            return source.get(index < removedIndex ? index : index -1);
+            return source.get(index < removedIndex ? index : index - 1);
         }
     }
 
@@ -1330,18 +1328,20 @@ public final class SeqViews {
         }
     }
 
-    public static class Zip<E, U> extends AbstractSeqView<Tuple2<E, U>> {
+    public static class Zip<E, U, R> extends AbstractSeqView<R> {
         private final @NotNull SeqLike<? extends E> source;
         private final @NotNull SeqLike<? extends U> other;
+        private final @NotNull BiFunction<? super E, ? super U, ? extends R> mapper;
 
-        public Zip(@NotNull SeqLike<? extends E> source, @NotNull SeqLike<? extends U> other) {
+        public Zip(@NotNull SeqLike<? extends E> source, @NotNull SeqLike<? extends U> other, @NotNull BiFunction<? super E, ? super U, ? extends R> mapper) {
             this.source = source;
             this.other = other;
+            this.mapper = mapper;
         }
 
         @Override
-        public final @NotNull Iterator<Tuple2<E, U>> iterator() {
-            return Iterators.zip(source.iterator(), other.iterator());
+        public final @NotNull Iterator<R> iterator() {
+            return Iterators.zip(source.iterator(), other.iterator(), mapper);
         }
 
         @Override
@@ -1370,14 +1370,42 @@ public final class SeqViews {
         }
 
         @Override
-        public final @NotNull Tuple2<E, U> get(@Index int index) {
+        public final @NotNull R get(@Index int index) {
             index = Indexes.checkIndex(index, size());
-            return Tuple.of(source.get(index), other.get(index));
+            return mapper.apply(source.get(index), other.get(index));
         }
 
         @Override
-        public final @NotNull SeqView<Tuple2<E, U>> reversed() {
-            return (SeqView) source.view().reversed().zipView(other.view().reversed());
+        public final @NotNull SeqView<R> reversed() {
+            return source.view().reversed().zip(other.view().reversed(), mapper);
+        }
+    }
+
+    public static final class Zip3<E, U, V> extends AbstractSeqView<Tuple3<E, U, V>> {
+        private final @NotNull SeqLike<? extends E> source;
+        private final @NotNull SeqLike<? extends U> other1;
+        private final @NotNull SeqLike<? extends V> other2;
+
+        public Zip3(@NotNull SeqLike<? extends E> source, @NotNull SeqLike<? extends U> other1, @NotNull SeqLike<? extends V> other2) {
+            this.source = source;
+            this.other1 = other1;
+            this.other2 = other2;
+        }
+
+        @Override
+        public @NotNull Iterator<Tuple3<E, U, V>> iterator() {
+            return Iterators.zip3(source.iterator(), other1.iterator(), other2.iterator());
+        }
+
+        @Override
+        public final @NotNull Tuple3<E, U, V> get(@Index int index) {
+            index = Indexes.checkIndex(index, size());
+            return Tuple.of(source.get(index), other1.get(index), other2.get(index));
+        }
+
+        @Override
+        public final @NotNull SeqView<Tuple3<E, U, V>> reversed() {
+            return (SeqView) source.view().reversed().zip3(other1.view().reversed(), other2.view().reversed());
         }
     }
 }

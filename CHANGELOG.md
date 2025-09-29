@@ -4,6 +4,12 @@
 
 (In development)
 
+### New features
+
+* Add `kala.collection.SeqView::zip(SeqLike<U>)`.
+* Add `kala.collection.SeqView::zip(SeqLike<U>, BiFunction<E, U, R>)`.
+* Add `kala.collection.SeqView::zip3(SeqLike<U>, SeqLike<V>)`.
+
 ## 0.83.0
 
 Release Date: 2025-08-19

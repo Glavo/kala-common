@@ -278,7 +278,7 @@ public interface SeqLike<E> extends CollectionLike<E>, AnySeqLike<E>, OrderedTra
     <U> @NotNull SeqLike<U> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends U>> mapper);
 
     default <U> @NotNull SeqView<@NotNull Tuple2<E, U>> zipView(@NotNull SeqLike<? extends U> other) {
-        return new SeqViews.Zip<>(this, other);
+        return this.view().zip(other);
     }
 
     @Override
