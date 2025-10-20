@@ -24,6 +24,7 @@ import kala.internal.InternalIdentifyObject;
 import kala.tuple.Tuple2;
 import kala.annotations.StaticClass;
 import kala.collection.base.MapIterator;
+import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,6 +38,7 @@ import java.util.stream.Stream;
 public final class FromJavaConvert {
     private static final Object NULL_HOLE = new InternalIdentifyObject();
 
+    @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
     public static class CollectionFromJava<E> extends kala.collection.AbstractCollection<E> implements kala.collection.Collection<E>, Serializable {
         protected final @NotNull java.util.Collection<E> source;
 
@@ -75,6 +77,7 @@ public final class FromJavaConvert {
         }
     }
 
+    @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
     public static class SeqFromJava<E> extends AbstractSeq<E> implements Serializable {
         protected final @NotNull List<E> source;
 
@@ -165,6 +168,7 @@ public final class FromJavaConvert {
         }
     }
 
+    @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
     public static class MutableSeqFromJava<E>
             extends SeqFromJava<E> implements MutableSeq<E>, Serializable {
 
@@ -192,6 +196,7 @@ public final class FromJavaConvert {
         }
     }
 
+    @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
     public static class MutableListFromJava<E>
             extends MutableSeqFromJava<E> implements MutableList<E>, Serializable {
         public MutableListFromJava(@NotNull List<E> list) {
@@ -229,12 +234,14 @@ public final class FromJavaConvert {
         }
     }
 
+    @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
     public static class MutableIndexedListFromJava<E> extends MutableListFromJava<E> implements RandomAccess, Serializable {
         public MutableIndexedListFromJava(@NotNull List<E> list) {
             super(list);
         }
     }
 
+    @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
     public static class SetFromJava<E> extends kala.collection.AbstractSet<E>
             implements kala.collection.Set<E>, Serializable {
 
@@ -256,6 +263,7 @@ public final class FromJavaConvert {
         }
     }
 
+    @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
     public static class MutableSetFromJava<E> extends SetFromJava<E> implements MutableSet<E>, Serializable {
 
         public MutableSetFromJava(@NotNull Set<E> source) {

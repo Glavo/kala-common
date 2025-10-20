@@ -4,6 +4,10 @@
 
 (In development)
 
+### New features
+
+* Add `@Debug.Renderer` to collections in `kala.collection.internal.convert`.
+
 ## 0.84.0
 
 Release Date: 2025-09-29

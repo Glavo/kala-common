@@ -22,6 +22,7 @@ import kala.collection.immutable.ImmutableSeq;
 import kala.collection.mutable.MutableCollection;
 import kala.collection.mutable.MutableSeq;
 import kala.index.Index;
+import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -31,6 +32,7 @@ import java.util.stream.Stream;
 @StaticClass
 public final class AsImmutableConvert {
 
+    @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
     public static class CollectionWrapper<E, C extends MutableCollection<E>> extends AbstractImmutableCollection<E> {
 
         protected final C source;
@@ -65,6 +67,7 @@ public final class AsImmutableConvert {
         }
     }
 
+    @Debug.Renderer(hasChildren = "isNotEmpty()", childrenArray = "toArray()")
     public static final class SeqWrapper<E, C extends MutableSeq<E>> extends CollectionWrapper<E, C> implements ImmutableSeq<E> {
         public SeqWrapper(C source) {
             super(source);
