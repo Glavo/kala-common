@@ -7,6 +7,7 @@
 ### New features
 
 * Add `@Debug.Renderer` to collections in `kala.collection.internal.convert`.
+* Export package `kala.gson` from module `kala.gson`.
 
 ## 0.84.0
 
