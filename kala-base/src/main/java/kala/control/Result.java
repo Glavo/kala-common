@@ -68,6 +68,13 @@ public sealed interface Result<@Covariant T, @Covariant E> extends OptionContain
         }
     }
 
+    default T getOrElse(Function<? super E, ? extends T> onErr) {
+        return switch (this) {
+            case Ok(var value) -> value;
+            case Err(var err) -> onErr.apply(err);
+        };
+    }
+
     default E getErr() {
         if (this instanceof Err(var err)) {
             return err;
@@ -137,7 +144,7 @@ public sealed interface Result<@Covariant T, @Covariant E> extends OptionContain
         }
 
         @Override
-        public String toString() {
+        public @NotNull String toString() {
             return "Result.Ok[" + get() + "]";
         }
     }
@@ -149,7 +156,7 @@ public sealed interface Result<@Covariant T, @Covariant E> extends OptionContain
         }
 
         @Override
-        public String toString() {
+        public @NotNull String toString() {
             return "Result.Err[" + getErr() + "]";
         }
     }
