@@ -157,12 +157,19 @@ public final class MutableEnumSet<E extends Enum<E>> extends AbstractMutableSet<
     }
 
     @Override
+    public boolean contains(Object value) {
+        //noinspection SuspiciousMethodCalls
+        return enumSet.contains(value);
+    }
+
+    @Override
     public boolean add(E value) {
         return enumSet.add(value);
     }
 
     @Override
     public boolean remove(Object value) {
+        //noinspection SuspiciousMethodCalls
         return enumSet.remove(value);
     }
 

@@ -4,6 +4,10 @@
 
 (In development)
 
+### New features
+
+* Optimize `kala.collection.mutable.MutableEnumSet::contains(Object)`.
+
 ## 0.85.0
 
 Release Date: 2025-10-21
