@@ -21,6 +21,7 @@ plugins {
     id("io.github.gradle-nexus.publish-plugin") version "2.0.0"
     id("com.gradleup.shadow") version "9.0.2"
     id("org.glavo.load-maven-publish-properties") version "0.1.0"
+    id("org.glavo.gradle-wrapper-neo") version "0.2.0"
 }
 
 allprojects {
