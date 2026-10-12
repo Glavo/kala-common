@@ -15,7 +15,7 @@
  */
 
 dependencies {
-    api("com.google.code.gson:gson:2.13.1")
+    api(libs.gson)
     compileOnly(project(":kala-base"))
     compileOnly(project(":kala-collection"))
 }

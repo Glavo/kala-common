@@ -22,9 +22,6 @@ plugins {
     java
 }
 
-val jmhVersion = "1.37"
-val jolVersion = "0.17"
-
 tasks.compileJava {
     options.release.set(25)
 }
@@ -60,7 +57,7 @@ repositories {
 
 dependencies {
     implementation(rootProject)
-    implementation("org.openjdk.jol:jol-core:$jolVersion")
-    implementation("org.openjdk.jmh:jmh-core:$jmhVersion")
-    annotationProcessor("org.openjdk.jmh:jmh-generator-annprocess:$jmhVersion")
+    implementation(libs.jol.core)
+    implementation(libs.jmh.core)
+    annotationProcessor(libs.jmh.generator.annprocess)
 }
