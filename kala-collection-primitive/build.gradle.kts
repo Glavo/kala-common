@@ -29,6 +29,7 @@ tasks.getByName<GenerateTask>("generateSources") {
             generate("${model["Name"]}MapLike", model, "IntKeyMapLike")
             generate("${model["Name"]}Map", model, "IntKeyMap")
             generate("Abstract${model["Name"]}Map", model, "AbstractIntKeyMap")
+            generate("Sorted${model["Name"]}Map", model, "SortedIntKeyMap")
         }
 
         for (model in Primitives.all) {
@@ -84,6 +85,8 @@ tasks.getByName<GenerateTask>("generateSources") {
         for (model in Primitives.intMapModels) {
             generate("Immutable${model["Name"]}Map", model, "ImmutableIntKeyMap")
             generate("Immutable${model["Name"]}HashMap", model, "ImmutableIntKeyHashMap")
+            generate("ImmutableSorted${model["Name"]}Map", model, "ImmutableSortedIntKeyMap")
+            generate("Immutable${model["Name"]}TreeMap", model, "ImmutableIntKeyTreeMap")
         }
 
         for (model in Primitives.all) {
@@ -106,6 +109,8 @@ tasks.getByName<GenerateTask>("generateSources") {
         for (model in Primitives.intMapModels) {
             generate("Mutable${model["Name"]}Map", model, "MutableIntKeyMap")
             generate("Mutable${model["Name"]}HashMap", model, "MutableIntKeyHashMap")
+            generate("MutableSorted${model["Name"]}Map", model, "MutableSortedIntKeyMap")
+            generate("Mutable${model["Name"]}TreeMap", model, "MutableIntKeyTreeMap")
         }
 
         for (model in Primitives.all) {
