@@ -42,6 +42,11 @@ public interface Map<K, V> extends AnyMap<K, V>, MapLike<K, V>, Equatable {
         return map.iterator().hash() + Map.HASH_MAGIC;
     }
 
+    /// Returns whether both maps permit comparison and contain the same mappings.
+    /// Primitive-specialized maps are compared using their boxed iterator entries.
+    ///
+    /// @param map1 the first non-null map
+    /// @param map2 the second non-null map
     @SuppressWarnings("unchecked")
     static boolean equals(@NotNull Map<?, ?> map1, @NotNull AnyMap<?, ?> map2) {
         if (!map1.canEqual(map2) || !map2.canEqual(map1)) {
@@ -51,10 +56,18 @@ public interface Map<K, V> extends AnyMap<K, V>, MapLike<K, V>, Equatable {
             return false;
         }
 
-        MapIterator<?, ?> it = map1.iterator();
+        final MapIterator<?, ?> it;
+        final Map<Object, ?> lookup;
+        if (map2 instanceof Map<?, ?> genericMap) {
+            it = map1.iterator();
+            lookup = (Map<Object, ?>) genericMap;
+        } else {
+            it = map2.iterator();
+            lookup = (Map<Object, ?>) map1;
+        }
         try {
             while (it.hasNext()) {
-                if (!((Map<Object, ?>) map2).contains(it.nextKey(), it.getValue())) {
+                if (!lookup.contains(it.nextKey(), it.getValue())) {
                     return false;
                 }
             }

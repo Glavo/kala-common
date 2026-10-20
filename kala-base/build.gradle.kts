@@ -29,6 +29,10 @@ tasks.getByName<GenerateTask>("generateSources") {
     }
 
     withPackage("kala.collection.base.primitive") {
+        for (model in Primitives.intMapModels) {
+            generate("${model["Name"]}MapIterator", model, "IntKeyMapIterator")
+        }
+
         for (model in Primitives.all) {
             val type = model.type
 
@@ -85,6 +89,10 @@ tasks.getByName<GenerateTask>("generateSources") {
     }
 
     withPackage("kala.function") {
+        for (model in Primitives.intMapModels) {
+            generate(model["ConsumerName"] as String, model, "IntKeyConsumer")
+        }
+
         for (model in Primitives.all) {
             val type = model.type
 

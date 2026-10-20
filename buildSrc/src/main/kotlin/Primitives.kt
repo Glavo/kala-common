@@ -109,6 +109,30 @@ enum class Primitives(internal val properties: MutableMap<String, Any?> = mutabl
 
         val allWithoutBoolean = all.filterNot { it == Boolean }
 
+        /** Template models for int-key maps with int or object values. */
+        val intMapModels = listOf(true, false).map { primitive ->
+            mapOf(
+                "IsPrimitiveValue" to primitive,
+                "Name" to if (primitive) "IntInt" else "IntObj",
+                "Generic" to if (primitive) "" else "<V>",
+                "Wildcard" to if (primitive) "" else "<?>",
+                "Covariant" to if (primitive) "" else "<? extends V>",
+                "MethodGeneric" to if (primitive) "" else "<V> ",
+                "Diamond" to if (primitive) "" else "<>",
+                "Value" to if (primitive) "int" else "V",
+                "BoxedValue" to if (primitive) "Integer" else "V",
+                "ArrayValue" to if (primitive) "int" else "Object",
+                "DefaultValue" to if (primitive) "0" else "null",
+                "Option" to if (primitive) "IntOption" else "Option<V>",
+                "OptionClass" to if (primitive) "IntOption" else "Option",
+                "ValueGetter" to if (primitive) "getIntValue" else "getValue",
+                "Supplier" to if (primitive) "IntSupplier" else "Supplier<? extends V>",
+                "Supply" to if (primitive) "getAsInt" else "get",
+                "ConsumerName" to if (primitive) "IntIntConsumer" else "IntObjConsumer",
+                "Consumer" to if (primitive) "IntIntConsumer" else "IntObjConsumer<? super V>"
+            )
+        }
+
         val specializedPairs = all.filter { it.isSpecialized }.let { specialized ->
             specialized.flatMap { it1 ->
                 specialized.map { it2 ->

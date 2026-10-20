@@ -25,6 +25,12 @@ dependencies {
 
 tasks.getByName<GenerateTask>("generateSources") {
     withPackage("kala.collection.primitive") {
+        for (model in Primitives.intMapModels) {
+            generate("${model["Name"]}MapLike", model, "IntKeyMapLike")
+            generate("${model["Name"]}Map", model, "IntKeyMap")
+            generate("Abstract${model["Name"]}Map", model, "AbstractIntKeyMap")
+        }
+
         for (model in Primitives.all) {
             generate("${model["Type"]}Collection", model, "PrimitiveCollection")
             generate("${model["Type"]}CollectionView", model, "PrimitiveCollectionView")
@@ -75,6 +81,11 @@ tasks.getByName<GenerateTask>("generateSources") {
     }
 
     withPackage("kala.collection.immutable.primitive") {
+        for (model in Primitives.intMapModels) {
+            generate("Immutable${model["Name"]}Map", model, "ImmutableIntKeyMap")
+            generate("Immutable${model["Name"]}HashMap", model, "ImmutableIntKeyHashMap")
+        }
+
         for (model in Primitives.all) {
             generate("Immutable${model["Type"]}Collection", model, "ImmutablePrimitiveCollection")
             generate("AbstractImmutable${model["Type"]}Collection", model, "AbstractImmutablePrimitiveCollection")
@@ -92,6 +103,11 @@ tasks.getByName<GenerateTask>("generateSources") {
     }
 
     withPackage("kala.collection.mutable.primitive") {
+        for (model in Primitives.intMapModels) {
+            generate("Mutable${model["Name"]}Map", model, "MutableIntKeyMap")
+            generate("Mutable${model["Name"]}HashMap", model, "MutableIntKeyHashMap")
+        }
+
         for (model in Primitives.all) {
             generate("Mutable${model["Type"]}Collection", model, "MutablePrimitiveCollection")
             generate("AbstractMutable${model["Type"]}Collection", model, "AbstractMutablePrimitiveCollection")

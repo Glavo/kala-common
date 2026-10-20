@@ -72,6 +72,11 @@ allprojects {
             it.addStringOption("link", "https://docs.oracle.com/en/java/javase/25/docs/api/")
             it.addBooleanOption("html5", true)
             it.addStringOption("Xdoclint:none", "-quiet")
+            it.tags(
+                "apiNote:a:API Note:",
+                "implSpec:a:Implementation Requirements:",
+                "implNote:a:Implementation Note:"
+            )
         }
     }
 
